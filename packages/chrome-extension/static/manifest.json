@@ -11,7 +11,7 @@
       "run_at": "document_idle",
       "css": ["resources/style.css"],
       "js": ["contentscript.js"],
-      "matches": ["https://github.com/*", "https://raw.githubusercontent.com/*"],
+      "matches": ["https://github.com/*"],
       "all_frames": true
     }
   ],

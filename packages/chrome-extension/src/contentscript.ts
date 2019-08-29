@@ -39,10 +39,15 @@ function extractOpenFileExtension(url: string) {
   return openFileExtension;
 }
 
-function init() {
-  const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
-  if (!githubEditor) {
+async function init() {
+  const githubDomElements = await new GitHubDomElementsFactory().create();
+  if (!githubDomElements.githubEditor) {
     console.info(`[Kogito] Not GitHub edit page.`);
+    return;
+  }
+
+  if (!githubDomElements.allFound()) {
+    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
     return;
   }
 
@@ -52,40 +57,34 @@ function init() {
     return;
   }
 
-  const router = new ChromeRouter(new GwtEditorRoutes({bpmnPath: "bpmn"}));
+  const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
   if (!router.getLanguageData(openFileExtension)) {
     console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
 
-  const containers = ChromeAppContainersFactory.create();
-  if (!containers.allFound()) {
-    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
-    return;
-  }
-
   const app = React.createElement(ChromeExtensionApp, {
-    containers: containers,
+    githubDomElements: githubDomElements,
     openFileExtension: openFileExtension,
-    router: router,
-    githubEditor: githubEditor
+    router: router
   });
 
-  ReactDOM.render(app, containers.main);
+  ReactDOM.render(app, githubDomElements.main);
 }
 
-export interface ChromeAppContainers {
+export interface GitHubDomElements {
   iframe: HTMLElement;
   iframeFullscreen: HTMLElement;
   toolbar: Element;
   main: Element;
+  githubEditor: HTMLElement;
 
   allFound(): boolean;
 }
 
-export class ChromeAppContainersFactory {
+export class GitHubDomElementsFactory {
   //FIXME: cannot call twice
-  public static create(): ChromeAppContainers {
+  public async create(): Promise<GitHubDomElements> {
     document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
     document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
@@ -94,6 +93,7 @@ export class ChromeAppContainersFactory {
       iframe: document.getElementById("kogito-iframe-container")!,
       iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
       toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!,
+      githubEditor: document.querySelector(".js-code-editor")! as HTMLElement,
       main: document.getElementById("kogito-container")!,
       allFound() {
         return Object.keys(this).reduce((p, k) => p && !!this[k], true);
@@ -102,4 +102,6 @@ export class ChromeAppContainersFactory {
   }
 }
 
-init();
+// if (window.location.origin.endsWith("github.com")) {
+  init();
+// }
