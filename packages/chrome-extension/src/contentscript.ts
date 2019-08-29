@@ -40,7 +40,7 @@ function extractOpenFileExtension(url: string) {
 }
 
 async function init() {
-  const githubDomElements = await new GitHubDomElementsFactory().create();
+  const githubDomElements = new GitHubDomElementsFactory().create();
   if (!githubDomElements.githubEditor) {
     console.info(`[Kogito] Not GitHub edit page.`);
     return;
@@ -84,7 +84,7 @@ export interface GitHubDomElements {
 
 export class GitHubDomElementsFactory {
   //FIXME: cannot call twice
-  public async create(): Promise<GitHubDomElements> {
+  public create(): GitHubDomElements {
     document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
     document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
@@ -102,6 +102,4 @@ export class GitHubDomElementsFactory {
   }
 }
 
-// if (window.location.origin.endsWith("github.com")) {
-  init();
-// }
+init();
