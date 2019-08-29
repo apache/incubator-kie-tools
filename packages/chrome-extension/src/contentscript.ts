@@ -91,7 +91,7 @@ export class ChromeAppContainersFactory {
     document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
 
     return {
-      iframe: document.getElementById("kogito-iframe-container2")!,
+      iframe: document.getElementById("kogito-iframe-container")!,
       iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
       toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!,
       main: document.getElementById("kogito-container")!,
