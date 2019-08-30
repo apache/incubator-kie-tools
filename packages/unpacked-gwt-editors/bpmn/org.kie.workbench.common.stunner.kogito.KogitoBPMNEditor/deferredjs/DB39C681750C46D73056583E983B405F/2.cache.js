@@ -1,1 +1,0 @@
-$wnd.org_kie_workbench_common_stunner_kogito_KogitoBPMNEditor.runAsyncCallback2('OnC(lhc)(2);\n//# sourceMappingURL=sourcemaps/DB39C681750C46D73056583E983B405F_sourceMap2.json \n//# sourceURL=org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor-2.js\n')
