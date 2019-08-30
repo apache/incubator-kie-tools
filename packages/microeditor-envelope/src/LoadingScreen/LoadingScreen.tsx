@@ -42,28 +42,26 @@ export function LoadingScreen(props: { visible: boolean }) {
   }
 
   return (
-    <>
-      {mustRender && (
-        <div className="loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
-          <Page>
-          <Bullseye>
-            <EmptyState variant={EmptyStateVariant.large}>
-              <div className="pf-u-mb-lg">
-                <div className="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-                  <div className="pf-c-spinner__clipper" />
-                  <div className="pf-c-spinner__lead-ball" />
-                  <div className="pf-c-spinner__tail-ball" />
-                </div>
+    (mustRender && (
+      <div className="loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
+        <Page>
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.large}>
+            <div className="pf-u-mb-lg">
+              <div className="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+                <div className="pf-c-spinner__clipper" />
+                <div className="pf-c-spinner__lead-ball" />
+                <div className="pf-c-spinner__tail-ball" />
               </div>
-              <Title headingLevel="h5" size="lg">
-                Loading...
-              </Title>
-              <EmptyStateBody />
-            </EmptyState>
-          </Bullseye>
-          </Page>
-        </div>
-      )}
-    </>
+            </div>
+            <Title headingLevel="h5" size="lg">
+              Loading...
+            </Title>
+            <EmptyStateBody />
+          </EmptyState>
+        </Bullseye>
+        </Page>
+      </div>
+    )) || <></>
   );
 }
