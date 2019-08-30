@@ -35,7 +35,8 @@ module.exports = {
       { from: "./static/manifest.json" },
       { from: "./static/newtab", to: "./newtab" },
       { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" }
+      { from: "./static/envelope", to: "./envelope" },
+      { from: "../../node_modules/codemirror/lib/codemirror.js", to: "./resources" }
     ]),
     new CopyPlugin([
       { from: "../unpacked-gwt-editors/dmn", to: "./editors/dmn" },

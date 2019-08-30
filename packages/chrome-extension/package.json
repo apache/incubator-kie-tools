@@ -12,7 +12,9 @@
   "dependencies": {
     "@types/chrome": "^0.0.81",
     "@types/react": "16.8.8",
+    "@types/codemirror": "0.0.76",
     "@types/react-dom": "16.8.2",
+    "codemirror": "5.48.4",
     "react": "16.8.0",
     "react-dom": "16.8.4",
     "appformer-js-microeditor-envelope": "0.1.0",

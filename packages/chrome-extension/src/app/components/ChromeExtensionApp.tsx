@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "../../contentscript";
+import { GitHubDomElements } from "../../GitHubDomElementsFactory";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -34,9 +34,9 @@ export function ChromeExtensionApp(props: {
   useLayoutEffect(
     () => {
       if (!globalState.fullscreen) {
-        props.githubDomElements.iframeFullscreen.classList.add("hidden");
+        props.githubDomElements.iframeFullscreen().classList.add("hidden");
       } else {
-        props.githubDomElements.iframeFullscreen.classList.remove("hidden");
+        props.githubDomElements.iframeFullscreen().classList.remove("hidden");
       }
     },
     [globalState]
@@ -45,11 +45,11 @@ export function ChromeExtensionApp(props: {
   useEffect(
     () => {
       if (globalState.textMode) {
-        props.githubDomElements.githubEditor.classList.remove("hidden");
-        props.githubDomElements.iframe.classList.add("hidden");
+        props.githubDomElements.githubEditor().classList.remove("hidden");
+        props.githubDomElements.iframe().classList.add("hidden");
       } else {
-        props.githubDomElements.githubEditor.classList.add("hidden");
-        props.githubDomElements.iframe.classList.remove("hidden");
+        props.githubDomElements.githubEditor().classList.add("hidden");
+        props.githubDomElements.iframe().classList.remove("hidden");
       }
     },
     [globalState]
@@ -57,15 +57,16 @@ export function ChromeExtensionApp(props: {
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbar)}
-      {globalState.fullscreen && ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreen)}
+      {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbar())}
+      {globalState.fullscreen &&
+        ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreen())}
       {ReactDOM.createPortal(
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
           router={props.router}
-          githubEditor={props.githubDomElements.githubEditor}
+          githubEditorCodeMirror={props.githubDomElements.githubEditorCodeMirror()}
         />,
-        globalState.fullscreen ? props.githubDomElements.iframeFullscreen : props.githubDomElements.iframe
+        globalState.fullscreen ? props.githubDomElements.iframeFullscreen() : props.githubDomElements.iframe()
       )}
     </GlobalContext.Provider>
   );

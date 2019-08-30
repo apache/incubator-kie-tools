@@ -19,10 +19,14 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
+import { GitHubCodeMirrorEditor } from "../../GitHubCodeMirrorEditor";
 
-export function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
+export function KogitoEditorIframe(props: {
+  openFileExtension: string;
+  githubEditorCodeMirror: HTMLElement & GitHubCodeMirrorEditor;
+  router: Router;
+}) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
 
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
@@ -43,21 +47,18 @@ export function KogitoEditorIframe(props: { openFileExtension: string; githubEdi
       },
       receive_contentResponse(content: string) {
         // enableCommitButton();
-        // getGitHubEditor().CodeMirror.setValue(content);
+        props.githubEditorCodeMirror.CodeMirror.setValue(content);
       },
       receive_contentRequest() {
-        // const githubEditorContent = getGitHubEditor().CodeMirror.getValue() || "";
-        // self.respond_contentRequest(githubEditorContent);
-        self.respond_contentRequest(
-          (document.querySelector(
-            ".form-control.file-editor-textarea.js-blob-contents.js-code-textarea"
-          ) as HTMLTextAreaElement)!.textContent!
-        );
+        const githubEditorCodeMirrorContent = props.githubEditorCodeMirror.CodeMirror.getValue() || "";
+        self.respond_contentRequest(githubEditorCodeMirrorContent);
       },
       receive_setContentError() {
+        //FIXME: Display a nice message with explanation why "setContent" failed
         console.info("Set content error");
       },
       receive_dirtyIndicatorChange(isDirty: boolean) {
+        //FIXME: Perhaps show window.alert to warn that the changes were not saved?
         console.info(`Dirty indicator changed to ${isDirty}`);
       },
       receive_ready() {

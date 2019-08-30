@@ -19,6 +19,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
 import { GwtEditorRoutes } from "appformer-js-gwt-editors";
+import { GitHubDomElementsFactory } from "./GitHubDomElementsFactory";
+import * as CodeMirror from "codemirror";
 
 function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
@@ -46,11 +48,6 @@ async function init() {
     return;
   }
 
-  if (!githubDomElements.allFound()) {
-    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
-    return;
-  }
-
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
     console.info(`[Kogito] Unable to determine file extension from URL`);
@@ -63,43 +60,21 @@ async function init() {
     return;
   }
 
+  if (!githubDomElements.allFound()) {
+    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
+    return;
+  }
+
+  CodeMirror(document.body);
+  CodeMirror.fromTextArea(githubDomElements.githubEditorCodeMirrorTarget());
+
   const app = React.createElement(ChromeExtensionApp, {
     githubDomElements: githubDomElements,
     openFileExtension: openFileExtension,
     router: router
   });
 
-  ReactDOM.render(app, githubDomElements.main);
-}
-
-export interface GitHubDomElements {
-  iframe: HTMLElement;
-  iframeFullscreen: HTMLElement;
-  toolbar: Element;
-  main: Element;
-  githubEditor: HTMLElement;
-
-  allFound(): boolean;
-}
-
-export class GitHubDomElementsFactory {
-  //FIXME: cannot call twice
-  public create(): GitHubDomElements {
-    document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
-    document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
-    document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
-
-    return {
-      iframe: document.getElementById("kogito-iframe-container")!,
-      iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
-      toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!,
-      githubEditor: document.querySelector(".js-code-editor")! as HTMLElement,
-      main: document.getElementById("kogito-container")!,
-      allFound() {
-        return Object.keys(this).reduce((p, k) => p && !!this[k], true);
-      }
-    };
-  }
+  ReactDOM.render(app, githubDomElements.main());
 }
 
 init();
