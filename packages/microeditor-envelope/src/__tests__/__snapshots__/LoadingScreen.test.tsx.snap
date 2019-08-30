@@ -2,7 +2,7 @@
 
 exports[`LoadingScreen when just made not visible 1`] = `
 <div
-  className="loading-screen"
+  className="kogito-tooling--loading-screen"
   onTransitionEnd={[Function]}
   style={
     Object {
@@ -62,7 +62,7 @@ exports[`LoadingScreen when not visible after fadeout delay 1`] = `<Fragment />`
 
 exports[`LoadingScreen when visible 1`] = `
 <div
-  className="loading-screen"
+  className="kogito-tooling--loading-screen"
   onTransitionEnd={[Function]}
   style={
     Object {

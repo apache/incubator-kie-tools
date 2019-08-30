@@ -8,7 +8,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       id="loading-screen"
     >
       <div
-        class="loading-screen"
+        class="kogito-tooling--loading-screen"
         style="opacity: 0; transition: opacity 400ms;"
       >
         <div
@@ -66,7 +66,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
         id="loading-screen"
       >
         <div
-          class="loading-screen"
+          class="kogito-tooling--loading-screen"
           style="opacity: 0; transition: opacity 400ms;"
         >
           <div
@@ -122,7 +122,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       visible={false}
     >
       <div
-        className="loading-screen"
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
@@ -223,7 +223,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       id="loading-screen"
     >
       <div
-        class="loading-screen"
+        class="kogito-tooling--loading-screen"
         style="opacity: 1;"
       >
         <div
@@ -281,7 +281,7 @@ exports[`EditorEnvelopeController opens 1`] = `
         id="loading-screen"
       >
         <div
-          class="loading-screen"
+          class="kogito-tooling--loading-screen"
           style="opacity: 1;"
         >
           <div
@@ -337,7 +337,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       visible={true}
     >
       <div
-        className="loading-screen"
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
@@ -430,7 +430,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       id="loading-screen"
     >
       <div
-        class="loading-screen"
+        class="kogito-tooling--loading-screen"
         style="opacity: 1;"
       >
         <div
@@ -488,7 +488,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         id="loading-screen"
       >
         <div
-          class="loading-screen"
+          class="kogito-tooling--loading-screen"
           style="opacity: 1;"
         >
           <div
@@ -544,7 +544,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       visible={true}
     >
       <div
-        className="loading-screen"
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
@@ -637,7 +637,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       id="loading-screen"
     >
       <div
-        class="loading-screen"
+        class="kogito-tooling--loading-screen"
         style="opacity: 1;"
       >
         <div
@@ -695,7 +695,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
         id="loading-screen"
       >
         <div
-          class="loading-screen"
+          class="kogito-tooling--loading-screen"
           style="opacity: 1;"
         >
           <div
@@ -751,7 +751,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       visible={true}
     >
       <div
-        className="loading-screen"
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {

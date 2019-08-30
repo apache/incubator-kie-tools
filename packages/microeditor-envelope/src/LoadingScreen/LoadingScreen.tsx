@@ -43,7 +43,7 @@ export function LoadingScreen(props: { visible: boolean }) {
 
   return (
     (mustRender && (
-      <div className="loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
+      <div className="kogito-tooling--loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
         <Page>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.large}>
