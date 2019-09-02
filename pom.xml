@@ -31,6 +31,7 @@
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.org.kie.lienzo>${project.version}</version.org.kie.lienzo>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.junit>4.11</version.junit>
     <version.org.mockito>1.10.19</version.org.mockito>
@@ -64,7 +65,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
-      <version>${project.version}</version>
+      <version>${version.org.kie.lienzo}</version>
       <scope>provided</scope>
     </dependency>
     
