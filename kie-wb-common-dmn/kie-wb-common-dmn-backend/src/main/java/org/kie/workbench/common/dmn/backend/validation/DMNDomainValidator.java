@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.backend.validation;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,16 +42,20 @@ import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.backend.DMNMarshaller;
+import org.kie.workbench.common.dmn.backend.common.DMNIOHelper;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.ImportConverter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.Paths;
 
 @ApplicationScoped
 public class DMNDomainValidator implements DomainValidator {
@@ -61,17 +66,20 @@ public class DMNDomainValidator implements DomainValidator {
 
     private DMNValidator dmnValidator;
 
-    private DMNMarshaller dmnMarshaller;
-    private DMNDiagramUtils dmnDiagramUtils;
-    private DMNMarshallerImportsHelper importsHelper;
+    private final DMNMarshaller dmnMarshaller;
+    private final DMNDiagramUtils dmnDiagramUtils;
+    private final DMNMarshallerImportsHelper importsHelper;
+    private final DMNIOHelper dmnIOHelper;
 
     @Inject
     public DMNDomainValidator(final DMNMarshaller dmnMarshaller,
                               final DMNDiagramUtils dmnDiagramUtils,
-                              final DMNMarshallerImportsHelper importsHelper) {
+                              final DMNMarshallerImportsHelper importsHelper,
+                              final DMNIOHelper dmnIOHelper) {
         this.dmnMarshaller = dmnMarshaller;
         this.dmnDiagramUtils = dmnDiagramUtils;
         this.importsHelper = importsHelper;
+        this.dmnIOHelper = dmnIOHelper;
     }
 
     @PostConstruct
@@ -104,7 +112,9 @@ public class DMNDomainValidator implements DomainValidator {
             final Definitions uiDefinitions = dmnDiagramUtils.getDefinitions(diagram);
             final List<Import> uiImports = uiDefinitions.getImport();
             final List<org.kie.dmn.model.api.Import> dmnImports = uiImports.stream().map(ImportConverter::dmnFromWb).collect(Collectors.toList());
-            final Map<org.kie.dmn.model.api.Import, String> importedDiagramsXML = importsHelper.getImportXML(diagram.getMetadata(), dmnImports);
+            final Metadata metadata = diagram.getMetadata();
+
+            final Map<org.kie.dmn.model.api.Import, String> importedDiagramsXML = importsHelper.getImportXML(metadata, dmnImports);
             importedDiagramsXML.values().forEach(importedDiagramXML -> dmnXMLReaders.add(getStringReader(importedDiagramXML)));
 
             final Reader[] aDMNXMLReaders = new Reader[]{};
@@ -112,6 +122,7 @@ public class DMNDomainValidator implements DomainValidator {
                     .validateUsing(DMNValidator.Validation.VALIDATE_MODEL,
                                    DMNValidator.Validation.VALIDATE_COMPILATION,
                                    DMNValidator.Validation.ANALYZE_DECISION_TABLE)
+                    .usingImports(getValidatorImportReaderResolver(metadata))
                     .theseModels(dmnXMLReaders.toArray(aDMNXMLReaders));
 
             resultConsumer.accept(convert(messages));
@@ -127,6 +138,25 @@ public class DMNDomainValidator implements DomainValidator {
                 }
             });
         }
+    }
+
+    DMNValidator.ValidatorBuilder.ValidatorImportReaderResolver getValidatorImportReaderResolver(final Metadata metadata) {
+
+        return (modelNamespace, modelName, locationURI) -> {
+
+            final Path modelPath = importsHelper.getDMNModelPath(metadata, modelNamespace, modelName);
+            final URI pmmlURI = getPMMLURI(modelPath, locationURI);
+            final String pmmlXML = importsHelper.loadPath(getPath(pmmlURI)).map(dmnIOHelper::isAsString).orElse("");
+
+            return getStringReader(pmmlXML);
+        };
+    }
+
+    URI getPMMLURI(final Path modelPath,
+                   final String pmmlRelativeURI) {
+        return URI
+                .create(modelPath.toURI())
+                .resolve(pmmlRelativeURI);
     }
 
     StringReader getStringReader(final String xml) {
@@ -166,5 +196,9 @@ public class DMNDomainValidator implements DomainValidator {
             default:
                 return Violation.Type.INFO;
         }
+    }
+
+    org.uberfire.java.nio.file.Path getPath(final URI uri) {
+        return Paths.get(uri);
     }
 }

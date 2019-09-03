@@ -57,6 +57,7 @@ import org.uberfire.java.nio.IOException;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -85,6 +86,9 @@ public class DMNMarshallerImportsHelperImplTest {
     private DMNMarshaller marshaller;
 
     @Mock
+    private DMNIOHelper dmnIOHelper;
+
+    @Mock
     private PMMLIncludedDocumentFactory pmmlDocumentFactory;
 
     private DMNMarshallerImportsHelperImpl helper;
@@ -94,6 +98,7 @@ public class DMNMarshallerImportsHelperImplTest {
         helper = spy(new DMNMarshallerImportsHelperImpl(pathsHelper,
                                                         projectService,
                                                         marshaller,
+                                                        dmnIOHelper,
                                                         pmmlDocumentFactory,
                                                         ioService));
     }
@@ -185,18 +190,8 @@ public class DMNMarshallerImportsHelperImplTest {
         final List<Path> paths = asList(path1, path2);
 
         when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
-        when(inputStream1.read(any())).thenAnswer(i -> {
-            final byte[] buffer = (byte[]) i.getArguments()[0];
-            final byte[] bytes = xml1.getBytes();
-            System.arraycopy(bytes, 0, buffer, 0, bytes.length);
-            return bytes.length;
-        }).thenReturn(-1);
-        when(inputStream2.read(any())).thenAnswer(i -> {
-            final byte[] buffer = (byte[]) i.getArguments()[0];
-            final byte[] bytes = xml2.getBytes();
-            System.arraycopy(bytes, 0, buffer, 0, bytes.length);
-            return bytes.length;
-        }).thenReturn(-1);
+        when(dmnIOHelper.isAsString(inputStream1)).thenReturn(xml1);
+        when(dmnIOHelper.isAsString(inputStream2)).thenReturn(xml2);
 
         doReturn(Optional.of(inputStream1)).when(helper).loadPath(path1);
         doReturn(Optional.of(inputStream2)).when(helper).loadPath(path2);
@@ -522,6 +517,48 @@ public class DMNMarshallerImportsHelperImplTest {
         final List<ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition2);
 
         assertEquals(expectedItemDefinitions, actualItemDefinitions);
+    }
+
+    @Test
+    public void testGetModelPath() {
+
+        final Metadata metadata = mock(Metadata.class);
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        final Path metadataPath = mock(Path.class);
+        final Path path1 = mock(Path.class);
+        final Path path2 = mock(Path.class);
+        final Path path3 = mock(Path.class);
+        final Definitions definitions1 = mock(Definitions.class);
+        final Definitions definitions2 = mock(Definitions.class);
+        final String modelNamespace = "0000-1111-2222-3333";
+        final String modelName = "model name";
+
+        doReturn(Optional.of(definitions1)).when(helper).getDefinitionsByPath(path1);
+        doReturn(Optional.of(definitions2)).when(helper).getDefinitionsByPath(path2);
+        doReturn(Optional.empty()).when(helper).getDefinitionsByPath(path3);
+        when(definitions1.getNamespace()).thenReturn("0000-0000-0000-0000");
+        when(definitions2.getNamespace()).thenReturn("0000-1111-2222-3333");
+        when(definitions1.getName()).thenReturn("modll name");
+        when(definitions2.getName()).thenReturn("model name");
+        when(metadata.getPath()).thenReturn(metadataPath);
+        when(projectService.resolveProject(metadataPath)).thenReturn(workspaceProject);
+        when(pathsHelper.getDMNModelsPaths(workspaceProject)).thenReturn(asList(path1, path2, path3));
+
+        final Path modelPath = helper.getDMNModelPath(metadata, modelNamespace, modelName);
+
+        assertEquals(path2, modelPath);
+    }
+
+    @Test
+    public void testGetModelPathWhenDMNModelCouldNotBeFound() {
+
+        final Metadata metadata = mock(Metadata.class);
+        final String modelNamespace = "0000-1111-2222-3333";
+        final String modelName = "model name";
+
+        assertThatThrownBy(() -> helper.getDMNModelPath(metadata, modelNamespace, modelName))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessageContaining("No DMN model could be found for the following namespace: 0000-1111-2222-3333");
     }
 
     private Path makePath(final String uri) {

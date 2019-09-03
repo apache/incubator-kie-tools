@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.common;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,23 +67,27 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
     private final DMNMarshaller marshaller;
 
+    private final DMNIOHelper dmnIOHelper;
+
     public static final QName NAMESPACE = new QName("Namespace");
 
     private final PMMLIncludedDocumentFactory pmmlDocumentFactory;
 
     public DMNMarshallerImportsHelperImpl() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     @Inject
     public DMNMarshallerImportsHelperImpl(final DMNPathsHelper pathsHelper,
                                           final WorkspaceProjectService projectService,
                                           final DMNMarshaller marshaller,
+                                          final DMNIOHelper dmnIOHelper,
                                           final PMMLIncludedDocumentFactory pmmlDocumentFactory,
                                           final @Named("ioStrategy") IOService ioService) {
         this.pathsHelper = pathsHelper;
         this.projectService = projectService;
         this.marshaller = marshaller;
+        this.dmnIOHelper = dmnIOHelper;
         this.pmmlDocumentFactory = pmmlDocumentFactory;
         this.ioService = ioService;
     }
@@ -143,8 +145,23 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         return importXML;
     }
 
-    StringReader toStringReader(final String xml) {
-        return new StringReader(xml);
+    @Override
+    public Path getDMNModelPath(final Metadata metadata,
+                                final String modelNamespace,
+                                final String modelName) {
+
+        final WorkspaceProject workspaceProject = getProject(metadata);
+
+        for (final Path dmnModelPath : pathsHelper.getDMNModelsPaths(workspaceProject)) {
+
+            final Optional<Definitions> definitions = getDefinitionsByPath(dmnModelPath);
+
+            if (definitions.map(d -> Objects.equals(d.getNamespace(), modelNamespace) && Objects.equals(d.getName(), modelName)).orElse(false)) {
+                return dmnModelPath;
+            }
+        }
+
+        throw new UnsupportedOperationException("No DMN model could be found for the following namespace: " + modelNamespace);
     }
 
     @Override
@@ -186,7 +203,7 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         return pathsHelper
                 .getDMNModelsPaths(workspaceProject)
                 .stream()
-                .map(path -> loadPath(path).map(this::toInputStreamReader).map(marshaller::unmarshal).orElse(null))
+                .map(path -> getDefinitionsByPath(path).orElse(null))
                 .filter(Objects::nonNull)
                 .filter(definitions -> Objects.equals(definitions.getNamespace(), namespace))
                 .findAny();
@@ -304,7 +321,7 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
                 .collect(Collectors.toList());
     }
 
-    Definitions toDefinitions(final InputStream inputStream) {
+    private Definitions toDefinitions(final InputStream inputStream) {
         try (InputStream inputStreamAutoClosable = inputStream;
              InputStreamReader reader = toInputStreamReader(inputStreamAutoClosable)) {
             return marshaller.unmarshal(reader);
@@ -322,46 +339,43 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         return new InputStreamReader(inputStream);
     }
 
-    List<String> getOtherDMNDiagramsXML(final Metadata metadata) {
+    Optional<Definitions> getDefinitionsByPath(final Path dmnModelPath) {
+        return loadPath(dmnModelPath).map(this::toInputStreamReader).map(marshaller::unmarshal);
+    }
+
+    StringReader toStringReader(final String xml) {
+        return new StringReader(xml);
+    }
+
+    private List<String> getOtherDMNDiagramsXML(final Metadata metadata) {
         final List<Path> diagramPaths = pathsHelper.getDMNModelsPaths(getProject(metadata));
         return diagramPaths
                 .stream()
                 .filter(path -> !Objects.equals(metadata.getPath(), path))
                 .map(path -> loadPath(path).orElse(null))
                 .filter(Objects::nonNull)
-                .map(this::toString)
+                .map(dmnIOHelper::isAsString)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     Optional<InputStream> loadPath(final Path path) {
+        return loadPath(convertPath(path));
+    }
+
+    @Override
+    public Optional<InputStream> loadPath(final org.uberfire.java.nio.file.Path path) {
         try {
-            return Optional.ofNullable(ioService.newInputStream(convertPath(path)));
+            return Optional.ofNullable(ioService.newInputStream(path));
         } catch (final Exception e) {
             return Optional.empty();
         }
     }
 
-    String toString(final InputStream inputStream) {
-        try (InputStream inputStreamAutoClosable = inputStream;
-             ByteArrayOutputStream result = new ByteArrayOutputStream()) {
-            final byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStreamAutoClosable.read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-
-            return result.toString(StandardCharsets.UTF_8.name());
-        } catch (IOException ioe) {
-            //Swallow. null is returned by default.
-        }
-        return null;
-    }
-
     private WorkspaceProject getProject(final Metadata metadata) {
         try {
             return projectService.resolveProject(metadata.getPath());
-        } catch (final NullPointerException e) {
+        } catch (final Exception e) {
             // There's not project when the webapp is running on standalone mode, thus NullPointerException is raised.
             return null;
         }

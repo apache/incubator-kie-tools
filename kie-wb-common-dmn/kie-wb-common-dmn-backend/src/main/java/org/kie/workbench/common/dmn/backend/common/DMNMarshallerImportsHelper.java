@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.common;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.dmn.model.api.DRGElement;
@@ -27,6 +29,7 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.backend.DMNMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * This helper provides methods to handle imports into the {@link DMNMarshaller}.
@@ -84,4 +87,22 @@ public interface DMNMarshallerImportsHelper {
     List<ItemDefinition> getImportedItemDefinitionsByNamespace(final WorkspaceProject workspaceProject,
                                                                final String modelName,
                                                                final String namespace);
+
+    /**
+     * This method finds the {@link Path} of DMN model.
+     * @param metadata represents the metadata from the a DMN model from the scanned project.
+     * @param modelNamespace represents the namespace of the desired DMN model.
+     * @param modelName represents the mode name of the desired DMN model.
+     * @return the {@link Path} of the desired DMN model.
+     */
+    Path getDMNModelPath(final Metadata metadata,
+                         final String modelNamespace,
+                         final String modelName);
+
+    /**
+     * This method loads the {@link InputStream} from a given {@link org.uberfire.java.nio.file.Path}.
+     * @param path to be loaded.
+     * @return the {@link InputStream} when the path is valid, otherwise is returns empty.
+     */
+    Optional<InputStream> loadPath(final org.uberfire.java.nio.file.Path path);
 }
