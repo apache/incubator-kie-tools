@@ -8,5 +8,5 @@ cp -rv ${SCRIPT_DIR}/s2i/bin /usr/local/s2i
 mkdir $KOGITO_HOME/bin
 
 chmod 755 /usr/local/s2i/*
-chown -R 1001:1001 ${KOGITO_HOME}
+chown -R 1001:0 ${KOGITO_HOME}
 chmod -R ug+rwX ${KOGITO_HOME}
