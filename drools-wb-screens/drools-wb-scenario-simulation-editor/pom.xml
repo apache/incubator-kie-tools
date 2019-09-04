@@ -31,6 +31,14 @@
   <name>Drools Workbench - Scenario Simulation Editor</name>
   <description>Drools Workbench - Scenario Simulation Editor</description>
 
+  <properties>
+    <!-- Explicit enable jacoco/sonar -->
+    <code.coverage.disabled>false</code.coverage.disabled>
+    <sonar.skip>false</sonar.skip>
+    <!-- Needed to analyze/upload code coverage to sonar -->
+    <sonar.coverage.exclusions></sonar.coverage.exclusions>
+  </properties>
+
   <modules>
     <module>drools-wb-scenario-simulation-editor-api</module>
     <module>drools-wb-scenario-simulation-editor-client</module>

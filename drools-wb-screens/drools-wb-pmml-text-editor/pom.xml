@@ -34,4 +34,11 @@
     <module>drools-wb-pmml-text-editor-client</module>
   </modules>
 
+  <properties>
+    <code.coverage.disabled>true</code.coverage.disabled>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
+
+
 </project>

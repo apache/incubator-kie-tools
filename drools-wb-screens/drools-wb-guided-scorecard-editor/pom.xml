@@ -21,4 +21,11 @@
     <module>drools-wb-guided-scorecard-editor-client</module>
   </modules>
 
+  <properties>
+    <code.coverage.disabled>true</code.coverage.disabled>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
+
+
 </project>

@@ -13,7 +13,13 @@
   <description>Drools Workbench - Extensions</description>
 
   <modules>
-   <module>drools-wb-drl-extension</module>
+    <module>drools-wb-drl-extension</module>
   </modules>
+
+  <properties>
+    <code.coverage.disabled>true</code.coverage.disabled>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
 
 </project>
