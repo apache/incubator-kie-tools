@@ -100,9 +100,9 @@ public interface DMNMarshallerImportsHelper {
                          final String modelName);
 
     /**
-     * This method loads the {@link InputStream} from a given {@link org.uberfire.java.nio.file.Path}.
+     * This method loads the {@link InputStream} from a given {@link org.uberfire.backend.vfs.Path}.
      * @param path to be loaded.
      * @return the {@link InputStream} when the path is valid, otherwise is returns empty.
      */
-    Optional<InputStream> loadPath(final org.uberfire.java.nio.file.Path path);
+    Optional<InputStream> loadPath(final Path path);
 }

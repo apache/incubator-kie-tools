@@ -359,14 +359,10 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
                 .collect(Collectors.toList());
     }
 
-    Optional<InputStream> loadPath(final Path path) {
-        return loadPath(convertPath(path));
-    }
-
     @Override
-    public Optional<InputStream> loadPath(final org.uberfire.java.nio.file.Path path) {
+    public Optional<InputStream> loadPath(final Path path) {
         try {
-            return Optional.ofNullable(ioService.newInputStream(path));
+            return Optional.ofNullable(ioService.newInputStream(convertPath(path)));
         } catch (final Exception e) {
             return Optional.empty();
         }

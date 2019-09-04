@@ -177,7 +177,7 @@ public class DMNDomainValidatorTest {
         final String pmmlXML = "<pmml/>";
         final Path modelPath = mock(Path.class);
         final URI pmmlURI = URI.create(locationURI);
-        final org.uberfire.java.nio.file.Path pmmlPath = mock(org.uberfire.java.nio.file.Path.class);
+        final Path pmmlPath = mock(Path.class);
         final InputStream inputStream = mock(InputStream.class);
 
         when(importsHelper.getDMNModelPath(metadata, modelNamespace, modelName)).thenReturn(modelPath);

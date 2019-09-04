@@ -198,7 +198,11 @@ public class DMNDomainValidator implements DomainValidator {
         }
     }
 
-    org.uberfire.java.nio.file.Path getPath(final URI uri) {
-        return Paths.get(uri);
+    Path getPath(final URI uri) {
+        return convertPath(Paths.get(uri));
+    }
+
+    Path convertPath(final org.uberfire.java.nio.file.Path path) {
+        return org.uberfire.backend.server.util.Paths.convert(path);
     }
 }
