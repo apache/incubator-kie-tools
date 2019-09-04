@@ -81,6 +81,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -102,6 +103,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Embedded process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Embedded process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -164,6 +166,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process07";
 
@@ -187,6 +190,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -208,6 +212,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Embedded process04 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Embedded process04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -270,6 +275,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process08";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCatchingIntermediateEventTest<IntermediateConditionalEvent> {
 
@@ -42,11 +41,14 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
 
     private static final String SLA_DUE_DATE = "12/25/1983";
 
-    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 31;
+    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 35;
 
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
     private static final String CONDITION_EXPRESSION_LANGUAGE = "drools";
     private static final String CONDITION_ERPRESSION_TYPE = "stunner.bpmn.ScriptType";
+
+    public BoundaryCatchingIntermediateConditionalEventTest() throws Exception {
+    }
 
     @Test
     @Override
@@ -55,13 +57,13 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
         final String EVENT_DOCUMENTATION = "Boundary 01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent filledTopEvent = getCatchingIntermediateNodeById(diagram,
                                                                                       FILLED_TOP_LEVEL_EVENT_ID,
                                                                                       HAS_NO_INCOME_EDGE,
-                                                                                      HAS_NO_OUTGOING_EDGE);
+                                                                                      ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledTopEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -74,13 +76,13 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent emptyTopEvent = getCatchingIntermediateNodeById(diagram,
                                                                                      EMPTY_TOP_LEVEL_EVENT_ID,
                                                                                      HAS_NO_INCOME_EDGE,
-                                                                                     HAS_NO_OUTGOING_EDGE);
+                                                                                     ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptyTopEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
@@ -97,13 +99,13 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
         final String EVENT_DOCUMENTATION = "Boundary 03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                              FILLED_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                              HAS_NO_INCOME_EDGE,
-                                                                                             HAS_NO_OUTGOING_EDGE);
+                                                                                             ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledSubprocessEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -116,13 +118,13 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                             EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                             HAS_NO_INCOME_EDGE,
-                                                                                            HAS_NO_OUTGOING_EDGE);
+                                                                                            ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptySubprocessEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
@@ -134,18 +136,18 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelEventWithEdgesFilledProperties() {
         final String EVENT_NAME = "Boundary02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "Boundary 02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                              FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID,
                                                                                              HAS_NO_INCOME_EDGE,
-                                                                                             HAS_OUTGOING_EDGE);
+                                                                                             TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledSubprocessEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -157,14 +159,14 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEventWithEdgesEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+    public void testUnmarshallTopLevelEventWithEdgesEmptyProperties() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent emptyEvent = getCatchingIntermediateNodeById(diagram,
                                                                                   EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID,
                                                                                   HAS_NO_INCOME_EDGE,
-                                                                                  HAS_OUTGOING_EDGE);
+                                                                                  TWO_OUTGOING_EDGES);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptyEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
@@ -176,14 +178,14 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelEventWithEdgesEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+    public void testUnmarshallSubprocessLevelEventWithEdgesEmptyProperties() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                             EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                             HAS_NO_INCOME_EDGE,
-                                                                                            HAS_OUTGOING_EDGE);
+                                                                                            TWO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptySubprocessEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
@@ -195,18 +197,18 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelEventWithEdgesFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelEventWithEdgesFilledProperties() {
         final String EVENT_NAME = "Boundary04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "Boundary 04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateConditionalEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                              FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                              HAS_NO_INCOME_EDGE,
-                                                                                             HAS_OUTGOING_EDGE);
+                                                                                             TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledSubprocessEvent.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -227,8 +229,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     }
 
     @Override
-    String getFilledTopLevelEventId() {
-        return FILLED_TOP_LEVEL_EVENT_ID;
+    String[] getFilledTopLevelEventIds() {
+        return new String[]{FILLED_TOP_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -237,8 +239,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     }
 
     @Override
-    String getFilledSubprocessLevelEventId() {
-        return FILLED_SUBPROCESS_LEVEL_EVENT_ID;
+    String[] getFilledSubprocessLevelEventIds() {
+        return new String[]{FILLED_SUBPROCESS_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -247,8 +249,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     }
 
     @Override
-    String getFilledTopLevelEventWithEdgesId() {
-        return FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID;
+    String[] getFilledTopLevelEventWithEdgesIds() {
+        return new String[]{FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -257,8 +259,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     }
 
     @Override
-    String getFilledSubprocessLevelEventWithEdgesId() {
-        return FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID;
+    String[] getFilledSubprocessLevelEventWithEdgesIds() {
+        return new String[]{FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -272,16 +274,16 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                                     String conditionExpressionType,
                                                     boolean isCancelling,
                                                     String slaDueDate) {
-        assertNotNull(executionSet);
-        assertNotNull(executionSet.getConditionExpression());
-        assertNotNull(executionSet.getConditionExpression().getValue());
-        assertNotNull(executionSet.getConditionExpression().getType());
+        assertThat(executionSet).isNotNull();
+        assertThat(executionSet.getConditionExpression()).isNotNull();
+        assertThat(executionSet.getConditionExpression().getValue()).isNotNull();
+        assertThat(executionSet.getConditionExpression().getType()).isNotNull();
 
-        assertEquals(conditionExpressionLanguage, executionSet.getConditionExpression().getValue().getLanguage());
-        assertEquals(conditionExpressionScript, executionSet.getConditionExpression().getValue().getScript());
-        assertEquals(conditionExpressionType, executionSet.getConditionExpression().getType().getName());
+        assertThat(executionSet.getConditionExpression().getValue().getLanguage()).isEqualTo(conditionExpressionLanguage);
+        assertThat(executionSet.getConditionExpression().getValue().getScript()).isEqualTo(conditionExpressionScript);
+        assertThat(executionSet.getConditionExpression().getType().getName()).isEqualTo(conditionExpressionType);
 
         assertEventCancelActivity(executionSet, isCancelling);
-        assertTimerEventSlaDueDate(executionSet, slaDueDate);
+        assertEventSlaDueDate(executionSet, slaDueDate);
     }
 }

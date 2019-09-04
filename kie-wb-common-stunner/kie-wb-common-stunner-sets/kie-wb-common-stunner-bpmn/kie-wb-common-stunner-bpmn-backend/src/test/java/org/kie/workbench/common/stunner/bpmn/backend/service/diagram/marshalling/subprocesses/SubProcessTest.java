@@ -106,6 +106,24 @@ public abstract class SubProcessTest<T extends BaseSubprocess> extends BPMNDiagr
         checkSubProcessMarshalling(getSubProcessLevelSubProcessWithEdgesId(), ONE_INCOME_EDGE, FOUR_OUTCOME_EDGES);
     }
 
+    @Test
+    public abstract void testUnmarshallTopLevelEmptyPropertiesSubProcess() throws Exception;
+
+    @Test
+    public abstract void testUnmarshallTopLevelFilledPropertiesSubProcess() throws Exception;
+
+    @Test
+    public abstract void testUnmarshallTopLevelSubProcessWithEdges() throws Exception;
+
+    @Test
+    public abstract void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() throws Exception;
+
+    @Test
+    public abstract void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() throws Exception;
+
+    @Test
+    public abstract void testUnmarshallSubProcessLevelSubProcessWithEdges() throws Exception;
+
     abstract Class<T> getSubProcessType();
 
     abstract String getBpmnSubProcessFilePath();

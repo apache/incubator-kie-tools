@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEventTest<IntermediateMessageEventThrowing> {
 
@@ -35,12 +34,15 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "882E78A5-450C-4BE1-9F7E-4F61367F257C";
     private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "252328FA-FA08-42B0-BD60-971A94DFA755";
 
-    private static final String EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID = "A38272BC-35C4-4F28-808C-08E3B6969BBE";
-    private static final String FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID = "5CD4BF0B-AD61-4DBD-B08D-C8B0F7364BE0";
-    private static final String EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "ACF512B7-D95D-42F0-99E2-8427F2B23D49";
-    private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "A893CEAD-3027-447F-84A6-F33679EFD770";
+    private static final String EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID = "A38272BC-35C4-4F28-808C-08E3B6969BBE";
+    private static final String FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID = "5CD4BF0B-AD61-4DBD-B08D-C8B0F7364BE0";
+    private static final String EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID = "ACF512B7-D95D-42F0-99E2-8427F2B23D49";
+    private static final String FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID = "A893CEAD-3027-447F-84A6-F33679EFD770";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
+
+    public ThrowingIntermediateMessageEventTest() throws Exception {
+    }
 
     @Test
     @Override
@@ -50,12 +52,12 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_REF = "message01";
         final String EVENT_DATA_INPUT = "message01:String||||[din]ProcessGlobalVar->message01";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing filledTopEvent = getThrowingIntermediateNodeById(diagram,
                                                                                           FILLED_TOP_LEVEL_EVENT_ID,
-                                                                                          HAS_NO_INCOME_EDGE);
+                                                                                          HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_INPUT);
@@ -64,12 +66,12 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing emptyTopEvent = getThrowingIntermediateNodeById(diagram,
                                                                                          EMPTY_TOP_LEVEL_EVENT_ID,
-                                                                                         HAS_NO_INCOME_EDGE);
+                                                                                         HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
@@ -83,12 +85,12 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_REF = "message03";
         final String EVENT_DATA_INPUT = "message03:String||||[din]ProcessGlobalVar->message03";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing filledSubprocessEvent = getThrowingIntermediateNodeById(diagram,
                                                                                                  FILLED_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                 HAS_NO_INCOME_EDGE);
+                                                                                                 HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
@@ -97,12 +99,12 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing emptySubprocessEvent = getThrowingIntermediateNodeById(diagram,
                                                                                                 EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                HAS_NO_INCOME_EDGE);
+                                                                                                HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
@@ -110,18 +112,18 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEventWithIncomeFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelEventWithEdgesFilledProperties() {
         final String EVENT_NAME = "message02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message02";
         final String EVENT_DATA_INPUT = "message02:String||||[din]ProcessGlobalVar->message02";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing filledSubprocessEvent = getThrowingIntermediateNodeById(diagram,
-                                                                                                 FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                                 HAS_INCOME_EDGE);
+                                                                                                 FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID,
+                                                                                                 HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
@@ -129,13 +131,13 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEventWithIncomeEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+    public void testUnmarshallTopLevelEventWithEdgesEmptyProperties() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing emptyEvent = getThrowingIntermediateNodeById(diagram,
-                                                                                      EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                      HAS_INCOME_EDGE);
+                                                                                      EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID,
+                                                                                      HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
@@ -143,13 +145,13 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelEventWithIncomeEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+    public void testUnmarshallSubprocessLevelEventWithEdgesEmptyProperties() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing emptySubprocessEvent = getThrowingIntermediateNodeById(diagram,
-                                                                                                EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                HAS_INCOME_EDGE);
+                                                                                                EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                                HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
@@ -157,18 +159,18 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelEventWithIncomeFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelEventWithEdgesFilledProperties() {
         final String EVENT_NAME = "message04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message04";
         final String EVENT_DATA_INPUT = "message04:String||||[din]ProcessGlobalVar->message04";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateMessageEventThrowing filledSubprocessEvent = getThrowingIntermediateNodeById(diagram,
-                                                                                                 FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                 HAS_INCOME_EDGE);
+                                                                                                 FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                                 HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
@@ -185,8 +187,8 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     }
 
     @Override
-    String getFilledTopLevelEventId() {
-        return FILLED_TOP_LEVEL_EVENT_ID;
+    String[] getFilledTopLevelEventIds() {
+        return new String[]{FILLED_TOP_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -195,8 +197,8 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     }
 
     @Override
-    String getFilledSubprocessLevelEventId() {
-        return FILLED_SUBPROCESS_LEVEL_EVENT_ID;
+    String[] getFilledSubprocessLevelEventIds() {
+        return new String[]{FILLED_SUBPROCESS_LEVEL_EVENT_ID};
     }
 
     @Override
@@ -205,28 +207,28 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
     }
 
     @Override
-    String getFilledTopLevelEventWithIncomeId() {
-        return FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID;
+    String[] getFilledTopLevelEventWithEdgesIds() {
+        return new String[]{FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID};
     }
 
     @Override
-    String getEmptyTopLevelEventWithIncomeId() {
-        return EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID;
+    String getEmptyTopLevelEventWithEdgesId() {
+        return EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID;
     }
 
     @Override
-    String getFilledSubprocessLevelEventWithIncomeId() {
-        return FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
+    String[] getFilledSubprocessLevelEventWithEdgesIds() {
+        return new String[]{FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID};
     }
 
     @Override
-    String getEmptySubprocessLevelEventWithIncomeId() {
-        return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
+    String getEmptySubprocessLevelEventWithEdgesId() {
+        return EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
     private void assertMessageEventExecutionSet(MessageEventExecutionSet executionSet, String messageReference) {
-        assertNotNull(executionSet);
-        assertNotNull(executionSet.getMessageRef());
-        assertEquals(messageReference, executionSet.getMessageRef().getValue());
+        assertThat(executionSet).isNotNull();
+        assertThat(executionSet.getMessageRef()).isNotNull();
+        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(messageReference);
     }
 }

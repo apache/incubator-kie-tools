@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class CatchingIntermediateEventTest<T extends BaseCatchingIntermediateEvent> extends BPMNDiagramMarshallerBaseTest {
 
@@ -39,63 +38,96 @@ public abstract class CatchingIntermediateEventTest<T extends BaseCatchingInterm
     static final boolean NON_CANCELLING = false;
     static final boolean HAS_INCOME_EDGE = true;
     static final boolean HAS_NO_INCOME_EDGE = false;
-    static final boolean HAS_OUTGOING_EDGE = true;
-    static final boolean HAS_NO_OUTGOING_EDGE = false;
+    static final int TWO_OUTGOING_EDGES = 2;
+    static final int ZERO_OUTGOING_EDGES = 0;
 
     private static final int DEFAULT_AMOUNT_OF_INCOME_EDGES = 1;
 
-    CatchingIntermediateEventTest() {
+    private Diagram<Graph, Metadata> diagram;
+    private Diagram<Graph, Metadata> roundTripDiagram;
+
+    public Diagram<Graph, Metadata> getDiagram() {
+        return diagram;
+    }
+
+    public void setDiagram(Diagram<Graph, Metadata> diagram) {
+        this.diagram = diagram;
+    }
+
+    public Diagram<Graph, Metadata> getRoundTripDiagram() {
+        return roundTripDiagram;
+    }
+
+    public void setRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        this.roundTripDiagram = diagram;
+    }
+
+    CatchingIntermediateEventTest() throws Exception {
         super.init();
+        marshallDiagramWithNewMarshaller();
+    }
+
+    private void marshallDiagramWithNewMarshaller() throws Exception {
+        setDiagram(unmarshall(marshaller, getBpmnCatchingIntermediateEventFilePath()));
+        setRoundTripDiagram(unmarshall(marshaller, getStream(marshaller.marshall(getDiagram()))));
     }
 
     @Test
-    public void testMarshallTopLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledTopLevelEventId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventFilledProperties() {
+        for (String eventId : getFilledTopLevelEventIds()) {
+            checkEventMarshalling(eventId, HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
+        }
     }
 
     @Test
-    public void testMarshallTopLevelEventEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptyTopLevelEventId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventEmptyProperties() {
+        checkEventMarshalling(getEmptyTopLevelEventId(), HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledSubprocessLevelEventId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventFilledProperties() {
+        for (String eventId : getFilledSubprocessLevelEventIds()) {
+            checkEventMarshalling(eventId, HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
+        }
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptySubprocessLevelEventId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventEmptyProperties() {
+        checkEventMarshalling(getEmptySubprocessLevelEventId(), HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
     }
 
     @Test
-    public void testMarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledTopLevelEventWithEdgesId(), HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventWithEdgesFilledProperties() {
+        for (String eventId : getFilledTopLevelEventWithEdgesIds()) {
+            checkEventMarshalling(eventId, HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
+        }
     }
 
     @Test
-    public void testMarshallTopLevelEventWithEdgesEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptyTopLevelEventWithEdgesId(), HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventWithEdgesEmptyProperties() {
+        checkEventMarshalling(getEmptyTopLevelEventWithEdgesId(), HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventWithEdgesFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledSubprocessLevelEventWithEdgesId(), HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventWithEdgesFilledProperties() {
+        for (String eventId : getFilledSubprocessLevelEventWithEdgesIds()) {
+            checkEventMarshalling(eventId, HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
+        }
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventWithEdgesEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptySubprocessLevelEventWithEdgesId(), HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventWithEdgesEmptyProperties() {
+        checkEventMarshalling(getEmptySubprocessLevelEventWithEdgesId(), HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
     }
 
-    protected void assertTimerEventSlaDueDate(BaseCancellingEventExecutionSet executionSet, String slaDueDate) {
-        assertNotNull(executionSet.getSlaDueDate());
-        assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
+    protected void assertEventSlaDueDate(BaseCancellingEventExecutionSet executionSet, String slaDueDate) {
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
+        assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
     }
 
     protected void assertEventCancelActivity(BaseCancellingEventExecutionSet executionSet, boolean isCancelling) {
-        assertNotNull(executionSet.getCancelActivity());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+        assertThat(executionSet.getCancelActivity()).isNotNull();
+        assertThat(executionSet.getCancelActivity().getValue()).isEqualTo(isCancelling);
     }
 
     public abstract void testUnmarshallTopLevelEventFilledProperties() throws Exception;
@@ -118,74 +150,71 @@ public abstract class CatchingIntermediateEventTest<T extends BaseCatchingInterm
 
     abstract Class<T> getCatchingIntermediateEventType();
 
-    abstract String getFilledTopLevelEventId();
+    abstract String[] getFilledTopLevelEventIds();
 
     abstract String getEmptyTopLevelEventId();
 
-    abstract String getFilledSubprocessLevelEventId();
+    abstract String[] getFilledSubprocessLevelEventIds();
 
     abstract String getEmptySubprocessLevelEventId();
 
-    abstract String getFilledTopLevelEventWithEdgesId();
+    abstract String[] getFilledTopLevelEventWithEdgesIds();
 
     abstract String getEmptyTopLevelEventWithEdgesId();
 
-    abstract String getFilledSubprocessLevelEventWithEdgesId();
+    abstract String[] getFilledSubprocessLevelEventWithEdgesIds();
 
     abstract String getEmptySubprocessLevelEventWithEdgesId();
+
+    @SuppressWarnings("unchecked")
+    T getCatchingIntermediateNodeById(Diagram<Graph, Metadata> diagram, String id, boolean hasIncomeEdge, int outgoingEdges) {
+        Node<? extends Definition, ?> node = diagram.getGraph().getNode(id);
+        assertThat(node).isNotNull();
+
+        int incomeEdges = hasIncomeEdge ? getDefaultAmountOfIncomeEdges() + 1 : getDefaultAmountOfIncomeEdges();
+        assertThat(node.getInEdges().size()).isEqualTo(incomeEdges);
+
+        assertThat(node.getOutEdges().size()).isEqualTo(outgoingEdges);
+        return getCatchingIntermediateEventType().cast(node.getContent().getDefinition());
+    }
+
+    @SuppressWarnings("unchecked")
+    void checkEventMarshalling(String nodeID, boolean hasIncomeEdge, int outgoingEdges) {
+        Diagram<Graph, Metadata> initialDiagram = getDiagram();
+        final int amountOfNodesInDiagram = getNodes(initialDiagram).size();
+
+        Diagram<Graph, Metadata> marshalledDiagram = getRoundTripDiagram();
+        assertDiagram(marshalledDiagram, amountOfNodesInDiagram);
+
+        assertNodesEqualsAfterMarshalling(initialDiagram, marshalledDiagram, nodeID, hasIncomeEdge, outgoingEdges);
+    }
 
     private void assertNodesEqualsAfterMarshalling(Diagram<Graph, Metadata> before,
                                                    Diagram<Graph, Metadata> after,
                                                    String nodeId,
                                                    boolean hasIncomeEdge,
-                                                   boolean hasOutgoingEdge) {
-        T nodeBeforeMarshalling = getCatchingIntermediateNodeById(before, nodeId, hasIncomeEdge, hasOutgoingEdge);
-        T nodeAfterMarshalling = getCatchingIntermediateNodeById(after, nodeId, hasIncomeEdge, hasOutgoingEdge);
-        assertEquals(nodeBeforeMarshalling, nodeAfterMarshalling);
-    }
-
-    @SuppressWarnings("unchecked")
-    T getCatchingIntermediateNodeById(Diagram<Graph, Metadata> diagram, String id, boolean hasIncomeEdge, boolean hasOutgoingEdge) {
-        Node<? extends Definition, ?> node = diagram.getGraph().getNode(id);
-        assertNotNull(node);
-
-        int incomeEdges = hasIncomeEdge ? getDefaultAmountOfIncomdeEdges() + 1 : getDefaultAmountOfIncomdeEdges();
-        assertEquals(incomeEdges, node.getInEdges().size());
-
-        int outgoingEdges = hasOutgoingEdge ? 1 : 0;
-
-        assertEquals(outgoingEdges, node.getOutEdges().size());
-        return getCatchingIntermediateEventType().cast(node.getContent().getDefinition());
-    }
-
-    @SuppressWarnings("unchecked")
-    void checkEventMarshalling(String nodeID, boolean hasIncomeEdge, boolean hasOutgoingEdge) throws Exception {
-        Diagram<Graph, Metadata> initialDiagram = unmarshall(marshaller, getBpmnCatchingIntermediateEventFilePath());
-        final int AMOUNT_OF_NODES_IN_DIAGRAM = getNodes(initialDiagram).size();
-        String resultXml = marshaller.marshall(initialDiagram);
-
-        Diagram<Graph, Metadata> marshalledDiagram = unmarshall(marshaller, getStream(resultXml));
-        assertDiagram(marshalledDiagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        assertNodesEqualsAfterMarshalling(initialDiagram, marshalledDiagram, nodeID, hasIncomeEdge, hasOutgoingEdge);
+                                                   int outgoingEdges) {
+        T nodeBeforeMarshalling = getCatchingIntermediateNodeById(before, nodeId, hasIncomeEdge, outgoingEdges);
+        T nodeAfterMarshalling = getCatchingIntermediateNodeById(after, nodeId, hasIncomeEdge, outgoingEdges);
+        assertThat(nodeAfterMarshalling).isEqualTo(nodeBeforeMarshalling);
     }
 
     void assertGeneralSet(BPMNGeneralSet generalSet, String nodeName, String documentation) {
-        assertNotNull(generalSet);
-        assertNotNull(generalSet.getName());
-        assertNotNull(generalSet.getDocumentation());
-        assertEquals(nodeName, generalSet.getName().getValue());
-        assertEquals(documentation, generalSet.getDocumentation().getValue());
+        assertThat(generalSet).isNotNull();
+        assertThat(generalSet.getName()).isNotNull();
+        assertThat(generalSet.getDocumentation()).isNotNull();
+        assertThat(generalSet.getName().getValue()).isEqualTo(nodeName);
+        assertThat(generalSet.getDocumentation().getValue()).isEqualTo(documentation);
     }
 
     void assertDataIOSet(DataIOSet dataIOSet, String value) {
-        assertNotNull(dataIOSet);
+        assertThat(dataIOSet).isNotNull();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
-        assertNotNull(assignmentsInfo);
-        assertEquals(value, assignmentsInfo.getValue());
+        assertThat(assignmentsInfo).isNotNull();
+        assertThat(assignmentsInfo.getValue()).isEqualTo(value);
     }
 
-    protected int getDefaultAmountOfIncomdeEdges() {
+    protected int getDefaultAmountOfIncomeEdges() {
         return DEFAULT_AMOUNT_OF_INCOME_EDGES;
     }
 }

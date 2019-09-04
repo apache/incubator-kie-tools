@@ -86,6 +86,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -110,6 +111,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Reusable process01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Reusable process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -175,6 +177,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process";
 
@@ -201,6 +204,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -225,6 +229,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Reusable process03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Reusable process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -290,6 +295,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process";
 

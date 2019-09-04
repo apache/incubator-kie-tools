@@ -60,6 +60,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -77,6 +78,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -98,6 +100,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Event Sub-process";
 
@@ -117,6 +120,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -134,6 +138,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process02 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -155,6 +160,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Event Sub-process";
 

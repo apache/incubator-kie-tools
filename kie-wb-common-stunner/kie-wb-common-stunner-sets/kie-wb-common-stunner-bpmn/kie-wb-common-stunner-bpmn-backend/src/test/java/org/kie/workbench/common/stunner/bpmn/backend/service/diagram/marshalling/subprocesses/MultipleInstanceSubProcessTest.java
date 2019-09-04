@@ -84,6 +84,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -110,6 +111,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Multiple Instance sub-process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Multiple Instance sub-process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -187,6 +189,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Multiple Instance Sub-process07";
 
@@ -215,6 +218,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -241,6 +245,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Multiple Instance sub-process04 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Multiple Instance sub-process04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -318,6 +323,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     }
 
     @Test
+    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Multiple Instance Sub-process08";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class BoundaryCatchingIntermediateEventTest<T extends BaseCatchingIntermediateEvent> extends CatchingIntermediateEventTest<T> {
 
     private static final int DEFAULT_AMOUNT_OF_INCOME_EDGES = 2;
+
+    BoundaryCatchingIntermediateEventTest() throws Exception {
+    }
 
     @Test
     public void testDockerInfo() throws Exception {
@@ -80,54 +83,34 @@ public abstract class BoundaryCatchingIntermediateEventTest<T extends BaseCatchi
 
     @Test
     @Override
-    public void testMarshallTopLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledTopLevelEventId(), HAS_NO_INCOME_EDGE, HAS_NO_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventWithEdgesFilledProperties() {
+        for (String eventId : getFilledTopLevelEventWithEdgesIds()) {
+            checkEventMarshalling(eventId, HAS_NO_INCOME_EDGE, TWO_OUTGOING_EDGES);
+        }
     }
 
     @Test
     @Override
-    public void testMarshallTopLevelEventEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptyTopLevelEventId(), HAS_NO_INCOME_EDGE, HAS_NO_OUTGOING_EDGE);
+    public void testMarshallTopLevelEventWithEdgesEmptyProperties() {
+        checkEventMarshalling(getEmptyTopLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, TWO_OUTGOING_EDGES);
     }
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledSubprocessLevelEventId(), HAS_NO_INCOME_EDGE, HAS_NO_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventWithEdgesFilledProperties() {
+        for (String eventId : getFilledSubprocessLevelEventWithEdgesIds()) {
+            checkEventMarshalling(eventId, HAS_NO_INCOME_EDGE, TWO_OUTGOING_EDGES);
+        }
     }
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptySubprocessLevelEventId(), HAS_NO_INCOME_EDGE, HAS_NO_OUTGOING_EDGE);
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledTopLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelEventWithEdgesEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptyTopLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-    }
-
-    @Test
-    @Override
-    public void testMarshallSubprocessLevelEventWithEdgesFilledProperties() throws Exception {
-        checkEventMarshalling(getFilledSubprocessLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-    }
-
-    @Test
-    @Override
-    public void testMarshallSubprocessLevelEventWithEdgesEmptyProperties() throws Exception {
-        checkEventMarshalling(getEmptySubprocessLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    public void testMarshallSubprocessLevelEventWithEdgesEmptyProperties() {
+        checkEventMarshalling(getEmptySubprocessLevelEventWithEdgesId(), HAS_NO_INCOME_EDGE, TWO_OUTGOING_EDGES);
     }
 
     @Override
-    protected int getDefaultAmountOfIncomdeEdges() {
+    protected int getDefaultAmountOfIncomeEdges() {
         return DEFAULT_AMOUNT_OF_INCOME_EDGES;
     }
 }
