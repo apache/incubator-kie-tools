@@ -47,10 +47,12 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorModelEnricher;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -58,19 +60,22 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
+import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
+
 @ApplicationScoped
 public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorModelEnricher<DecisionTable> {
 
     private SessionManager sessionManager;
     private DMNGraphUtils dmnGraphUtils;
+    private ItemDefinitionUtils itemDefinitionUtils;
 
-    private static class InputClauseRequirement {
+    static class InputClauseRequirement {
 
-        private String text;
-        private QName typeRef;
+        String text;
+        QName typeRef;
 
-        public InputClauseRequirement(final String text,
-                                      final QName typeRef) {
+        InputClauseRequirement(final String text,
+                               final QName typeRef) {
             this.text = text;
             this.typeRef = typeRef;
         }
@@ -82,9 +87,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
     @Inject
     public DecisionTableEditorDefinitionEnricher(final SessionManager sessionManager,
-                                                 final DMNGraphUtils dmnGraphUtils) {
+                                                 final DMNGraphUtils dmnGraphUtils,
+                                                 final ItemDefinitionUtils itemDefinitionUtils) {
         this.sessionManager = sessionManager;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.itemDefinitionUtils = itemDefinitionUtils;
     }
 
     @Override
@@ -217,18 +224,32 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 .ifPresent(itemDefinition -> addInputClauseRequirement(itemDefinition, inputClauseRequirements, text));
     }
 
-    private void addInputClauseRequirement(final ItemDefinition itemDefinition,
-                                           final List<InputClauseRequirement> inputClauseRequirements,
-                                           final String text) {
+    void addInputClauseRequirement(final ItemDefinition itemDefinition,
+                                   final List<InputClauseRequirement> inputClauseRequirements,
+                                   final String text) {
         if (itemDefinition.getItemComponent().size() == 0) {
             inputClauseRequirements.add(new InputClauseRequirement(text,
-                                                                   itemDefinition.getTypeRef()));
+                                                                   getQName(itemDefinition)));
         } else {
             itemDefinition.getItemComponent()
                     .forEach(itemComponent -> addInputClauseRequirement(itemComponent,
                                                                         inputClauseRequirements,
                                                                         text + "." + itemComponent.getName().getValue()));
         }
+    }
+
+    private QName getQName(final ItemDefinition itemDefinition) {
+        return Optional
+                .ofNullable(itemDefinition.getTypeRef())
+                .orElse(getQNameFromItemDefinitionName(itemDefinition));
+    }
+
+    private QName getQNameFromItemDefinitionName(final ItemDefinition itemDefinition) {
+
+        final Name name = itemDefinition.getName();
+        final QName typeRef = new QName(NULL_NS_URI, name.getValue());
+
+        return itemDefinitionUtils.normaliseTypeRef(typeRef);
     }
 
     void enrichOutputClauses(final DecisionTable dtable) {

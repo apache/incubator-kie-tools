@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -48,7 +51,14 @@ import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.NUMBER;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTableEditorDefinitionTest {
@@ -59,9 +69,9 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     private static final String INPUT_DATA_NAME_2 = "a-inputData2";
 
-    private static final QName INPUT_DATA_QNAME_1 = BuiltInType.STRING.asQName();
+    private static final QName INPUT_DATA_QNAME_1 = STRING.asQName();
 
-    private static final QName INPUT_DATA_QNAME_2 = BuiltInType.NUMBER.asQName();
+    private static final QName INPUT_DATA_QNAME_2 = NUMBER.asQName();
 
     private static final QName OUTPUT_DATA_QNAME = BuiltInType.DATE.asQName();
 
@@ -263,7 +273,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final String tSmurf = "tSmurf";
         final String tSmurfAddress = "tSmurfAddress";
         final QName dateBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
-        final QName stringBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
+        final QName stringBuiltInType = new QName(QName.NULL_NS_URI, STRING.getName());
 
         final ItemDefinition tSmurfAddressCustomDataType = new ItemDefinition();
         tSmurfAddressCustomDataType.setName(new Name(tSmurfAddress));
@@ -326,8 +336,8 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final Node<Definition, Edge> targetNode = new NodeImpl<>(NODE_UUID);
         inputData1.getName().setValue(INPUT_DATA_NAME_1);
         inputData2.getName().setValue(INPUT_DATA_NAME_2);
-        final QName inputData1QName = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
-        final QName inputData2QName = new QName(QName.NULL_NS_URI, BuiltInType.NUMBER.getName());
+        final QName inputData1QName = new QName(QName.NULL_NS_URI, STRING.getName());
+        final QName inputData2QName = new QName(QName.NULL_NS_URI, NUMBER.getName());
         inputData1.getVariable().setTypeRef(inputData1QName);
         inputData2.getVariable().setTypeRef(inputData2QName);
 
@@ -507,5 +517,69 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         assertStandardDecisionRuleEnrichment(model, 1, 1);
         assertParentHierarchyEnrichment(model, 1, 1);
+    }
+
+    @Test
+    public void testAddInputClauseRequirement() {
+
+        final ItemDefinition tPerson = mock(ItemDefinition.class);
+        final ItemDefinition name = mock(ItemDefinition.class);
+        final ItemDefinition age = mock(ItemDefinition.class);
+        final List<DecisionTableEditorDefinitionEnricher.InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final String inputData = "InputData";
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
+
+        /* === ItemDefinition ===
+         * - tPerson (Structure)
+         *   - name  (String)
+         *   - age   (Number)
+         * ======================
+         */
+
+        when(name.getName()).thenReturn(new Name("name"));
+        when(name.getTypeRef()).thenReturn(STRING.asQName());
+        when(name.getItemComponent()).thenReturn(emptyList());
+
+        when(age.getName()).thenReturn(new Name("age"));
+        when(age.getTypeRef()).thenReturn(NUMBER.asQName());
+        when(age.getItemComponent()).thenReturn(emptyList());
+
+        when(tPerson.getName()).thenReturn(new Name("tPerson"));
+        when(tPerson.getTypeRef()).thenReturn(null);
+        when(tPerson.getItemComponent()).thenReturn(asList(name, age));
+
+        enricher.addInputClauseRequirement(tPerson, inputClauseRequirements, inputData);
+
+        assertEquals(2, inputClauseRequirements.size());
+
+        final DecisionTableEditorDefinitionEnricher.InputClauseRequirement inputClause1 = inputClauseRequirements.get(0);
+        final DecisionTableEditorDefinitionEnricher.InputClauseRequirement inputClause2 = inputClauseRequirements.get(1);
+
+        assertEquals("InputData.name", inputClause1.text);
+        assertEquals(STRING.getName(), inputClause1.typeRef.getLocalPart());
+
+        assertEquals("InputData.age", inputClause2.text);
+        assertEquals(NUMBER.getName(), inputClause2.typeRef.getLocalPart());
+    }
+
+    @Test
+    public void testAddInputClauseRequirementWhenDataTypeIsStructureAndDontHaveFields() {
+
+        final ItemDefinition tPerson = mock(ItemDefinition.class);
+        final String inputData = "InputData";
+        final List<DecisionTableEditorDefinitionEnricher.InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final ItemDefinitionUtils itemDefinitionUtils = new ItemDefinitionUtils(mock(DMNGraphUtils.class));
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
+
+        when(tPerson.getName()).thenReturn(new Name("tPerson"));
+        when(tPerson.getTypeRef()).thenReturn(null);
+        when(tPerson.getItemComponent()).thenReturn(emptyList());
+
+        enricher.addInputClauseRequirement(tPerson, inputClauseRequirements, inputData);
+
+        assertEquals(1, inputClauseRequirements.size());
+
+        assertEquals("InputData", inputClauseRequirements.get(0).text);
+        assertEquals("tPerson", inputClauseRequirements.get(0).typeRef.getLocalPart());
     }
 }

@@ -64,6 +64,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -197,6 +198,9 @@ public class DecisionTableGridTest {
 
     @Mock
     private SessionManager sessionManager;
+
+    @Mock
+    private ItemDefinitionUtils itemDefinitionUtils;
 
     @Mock
     private DMNDiagramUtils dmnDiagramUtils;
@@ -333,7 +337,8 @@ public class DecisionTableGridTest {
                                                             hitPolicyEditor,
                                                             headerEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager, dmnDiagramUtils)));
+                                                                                                      new DMNGraphUtils(sessionManager, dmnDiagramUtils),
+                                                                                                      itemDefinitionUtils));
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -118,6 +119,9 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
+    protected ItemDefinitionUtils itemDefinitionUtils;
+
+    @Mock
     protected GridCellTuple parent;
 
     protected Decision decision = new Decision();
@@ -149,7 +153,8 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
                                                             hitPolicyEditor,
                                                             headerEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager, new DMNDiagramUtils())));
+                                                                                                      new DMNGraphUtils(sessionManager,new DMNDiagramUtils()),
+                                                                                                      itemDefinitionUtils));
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
