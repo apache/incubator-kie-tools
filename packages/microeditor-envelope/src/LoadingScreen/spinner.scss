@@ -4,11 +4,12 @@
   --pf-c-spinner--AnimationDuration: 1.5s;
   --pf-c-spinner--AnimationTimingFunction: cubic-bezier(.77, .005, .315, 1);
 
-  // This conceptual variable is used to set other values all based on the diameter of the spinner
+  // This conceptual variable is used to set other values all based on the diameter of the spinner.
+  // The default is the -xl modifier size.
   --pf-c-spinner--diameter: var(--pf-global--icon--FontSize--xl);
 
   // These conceptual variables are used to size the stroke width, which is accomplished using various properties in the clipper:after and the ball animations
-  --pf-c-spinner--stroke-width-multiplier: .14;
+  --pf-c-spinner--stroke-width-multiplier: .1;
   --pf-c-spinner--stroke-width: calc(var(--pf-c-spinner--diameter) * var(--pf-c-spinner--stroke-width-multiplier));
 
   // Set the overall width and height of the spinner to be consistent with the icon size
@@ -36,12 +37,12 @@
   --pf-c-spinner__clipper--after--Height: var(--pf-c-spinner--diameter);
 
   // This creates the stroke and needs to match the spinner__ball:after Height and Width
-  --pf-c-spinner__clipper--after--BoxShadowSize: var(--pf-c-spinner--stroke-width);
+  --pf-c-spinner__clipper--after--BoxShadowSpreadRadius: var(--pf-c-spinner--stroke-width);
 
   // Lead ball variables
   --pf-c-spinner__lead-ball--after--BackgroundColor: var(--pf-c-spinner--Color);
 
-  // These sizes need to match the stroke width, i.e. clipper:after BoxShadowSize
+  // These sizes need to match the stroke width, i.e. clipper:after BoxShadowSpreadRadius
   --pf-c-spinner__ball--after--Width: var(--pf-c-spinner--stroke-width);
   --pf-c-spinner__ball--after--Height: var(--pf-c-spinner--stroke-width);
 
@@ -96,16 +97,8 @@
   position: absolute;
   width: var(--pf-c-spinner__clipper--Width);
   height: var(--pf-c-spinner__clipper--Height);
-  clip:
-    rect(
-      0,
-      var(--pf-c-spinner__clipper--Width),
-      calc(var(--pf-c-spinner__clipper--Height) / 2),
-      calc(var(--pf-c-spinner__clipper--Width) / 2)
-    );
-  animation:
-    pf-animation-spinner__clipper var(--pf-c-spinner--AnimationDuration) linear
-    infinite;
+  clip-path: inset(0 0 50% 50%);
+  animation: pf-animation-spinner__clipper var(--pf-c-spinner--AnimationDuration) linear infinite;
 }
 
 @keyframes pf-animation-spinner__clipper {
@@ -123,16 +116,10 @@
   position: absolute;
   width: var(--pf-c-spinner__clipper--after--Width);
   height: var(--pf-c-spinner__clipper--after--Height);
-  clip:
-    rect(
-      0,
-      var(--pf-c-spinner__clipper--after--Width),
-      var(--pf-c-spinner__clipper--after--Height),
-      calc(var(--pf-c-spinner__clipper--after--Width) / 2)
-    );
+  clip-path: inset(0 0 0 50%);
   content: "";
   border-radius: 50%;
-  box-shadow: inset 0 0 0 var(--pf-c-spinner__clipper--after--BoxShadowSize) var(--pf-c-spinner__clipper--after--BoxShadowColor);
+  box-shadow: inset 0 0 0 var(--pf-c-spinner__clipper--after--BoxShadowSpreadRadius) var(--pf-c-spinner__clipper--after--BoxShadowColor);
   animation: pf-animation-spinner__clipper-after var(--pf-c-spinner--AnimationDuration) linear infinite;
 }
 
