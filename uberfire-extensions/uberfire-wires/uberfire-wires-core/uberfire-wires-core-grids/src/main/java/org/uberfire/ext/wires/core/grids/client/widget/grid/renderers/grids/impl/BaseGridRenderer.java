@@ -29,6 +29,7 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
@@ -55,6 +56,10 @@ public class BaseGridRenderer implements GridRenderer {
     private static final double LINK_FONT_SIZE = 10.0;
 
     private static final String LINK_ICON = "\ue144";
+
+    private Integer highlightCellColumnIndex;
+
+    private Integer highlightCellRowIndex;
 
     protected GridRendererTheme theme;
 
@@ -400,7 +405,22 @@ public class BaseGridRenderer implements GridRenderer {
             }
         }
 
+        addRenderHighlightedCellsCommand(model, context, rendererHelper, renderingInformation, commands);
+
         return commands;
+    }
+
+    void addRenderHighlightedCellsCommand(final GridData model,
+                                          final GridBodyRenderContext context,
+                                          final BaseGridRendererHelper rendererHelper,
+                                          final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                          final List<RendererCommand> commands) {
+        if (!Objects.isNull(getHighlightCellColumnIndex()) && !Objects.isNull(getHighlightCellRowIndex())) {
+            commands.add(renderHighlightedCells(model,
+                                                context,
+                                                rendererHelper,
+                                                renderingInformation));
+        }
     }
 
     @Override
@@ -438,5 +458,131 @@ public class BaseGridRenderer implements GridRenderer {
     @Override
     public void setColumnRenderConstraint(final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
         this.columnRenderingConstraint = columnRenderingConstraint;
+    }
+
+    public void clearCellHighlight() {
+        highlightCellColumnIndex = null;
+        highlightCellRowIndex = null;
+    }
+
+    public void highlightCell(final int column, final int row) {
+        highlightCellColumnIndex = column;
+        highlightCellRowIndex = row;
+    }
+
+    public Integer getHighlightCellColumnIndex() {
+        return highlightCellColumnIndex;
+    }
+
+    public Integer getHighlightCellRowIndex() {
+        return highlightCellRowIndex;
+    }
+
+    RendererCommand renderHighlightedCells(final GridData model,
+                                           final GridBodyRenderContext context,
+                                           final BaseGridRendererHelper rendererHelper,
+                                           final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+
+        final GridColumn<?> column = model.getColumns().get(getHighlightCellColumnIndex());
+
+        final int visibleRowIndex = getHighlightCellRowIndex() - renderingInformation.getMinVisibleRowIndex();
+
+        final RendererCommand renderCommand = getRendererCommand(model, context, rendererHelper, column, visibleRowIndex);
+
+        return renderCommand;
+    }
+
+    RendererCommand getRendererCommand(final GridData model,
+                                       final GridBodyRenderContext context,
+                                       final BaseGridRendererHelper rendererHelper,
+                                       final GridColumn<?> column,
+                                       final int visibleRowIndex) {
+        return (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                if (model.getColumns().size() >= 1) {
+
+                    rc.getGroup().add(makeCellHighlight(getHighlightCellRowIndex(),
+                                                        visibleRowIndex,
+                                                        model,
+                                                        rendererHelper,
+                                                        column,
+                                                        context));
+                }
+            }
+        };
+    }
+
+    Rectangle makeCellHighlight(final int rowIndex,
+                                final int visibleRowIndex,
+                                final GridData model,
+                                final BaseGridRendererHelper rendererHelper,
+                                final GridColumn<?> column,
+                                final GridBodyRenderContext context) {
+
+        final Rectangle r = getTheme().getHighlightedCellBackground().setListening(false);
+        setCellHighlightX(r, context, rendererHelper);
+        setCellHighlightY(r, rendererHelper, visibleRowIndex, model);
+        setCellHighlightSize(r, model, column, rowIndex);
+        return r;
+    }
+
+    void setCellHighlightY(final Rectangle r,
+                           final BaseGridRendererHelper rendererHelper,
+                           final int visibleRowIndex,
+                           final GridData model) {
+
+        final GridCell<?> cell = model.getCell(getHighlightCellRowIndex(), getHighlightCellColumnIndex());
+
+        if (!cell.isMerged()) {
+            r.setY(rendererHelper.getRowOffset(visibleRowIndex));
+        } else {
+            int firstRowOfMergedBlock = getFirstRowIndexOfMergedBlock(model, visibleRowIndex);
+            r.setY(rendererHelper.getRowOffset(firstRowOfMergedBlock));
+        }
+    }
+
+    int getFirstRowIndexOfMergedBlock(final GridData model, final int rowIndex) {
+
+        int currentIndex = rowIndex;
+        GridCell<?> cell = model.getCell(rowIndex, getHighlightCellColumnIndex());
+        while (cell.getMergedCellCount() == 0 && currentIndex >= 0) {
+            currentIndex--;
+            cell = model.getCell(currentIndex, getHighlightCellColumnIndex());
+        }
+
+        return currentIndex;
+    }
+
+    void setCellHighlightX(final Rectangle r,
+                           final GridBodyRenderContext context,
+                           final BaseGridRendererHelper rendererHelper) {
+
+        double columnOffsetX = context.getAbsoluteColumnOffsetX();
+        double x = rendererHelper.getColumnOffset(getHighlightCellColumnIndex()) - columnOffsetX;
+        r.setX(x);
+    }
+
+    void setCellHighlightSize(final Rectangle rectangle,
+                              final GridData model,
+                              final GridColumn<?> column,
+                              final int rowIndex) {
+
+        final double width = column.getWidth();
+        rectangle.setWidth(width);
+
+        final int mergedCellsCount = getMergedCellsCount(model, rowIndex);
+        rectangle.setHeight(model.getRow(rowIndex).getHeight() * mergedCellsCount);
+    }
+
+    int getMergedCellsCount(final GridData model, final int rowIndex) {
+
+        int currentIndex = rowIndex;
+        GridCell<?> cell = model.getCell(rowIndex, getHighlightCellColumnIndex());
+        while (cell.getMergedCellCount() == 0 && currentIndex >= 0) {
+            currentIndex--;
+            cell = model.getCell(currentIndex, getHighlightCellColumnIndex());
+        }
+
+        return cell.getMergedCellCount();
     }
 }

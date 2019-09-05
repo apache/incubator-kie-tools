@@ -20,6 +20,8 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
@@ -49,7 +51,7 @@ public class GridHighlightHelper {
         final double columnOffset = calculateColumnOffset(column);
         final double y = applyPinnedGridConstraints(rowOffset);
         final double x = applyPinnedGridConstraints(columnOffset);
-
+        highlightCell(row, column);
         select(row, column);
         moveCanvasTo(x, y);
     }
@@ -57,9 +59,19 @@ public class GridHighlightHelper {
     public void clearSelections() {
 
         final GridWidget gridWidget = getGridWidget();
-
         gridWidget.getModel().clearSelections();
         gridWidget.draw();
+    }
+
+    public void clearHighlight() {
+
+        final GridWidget gridWidget = getGridWidget();
+        final GridRenderer renderer = gridWidget.getRenderer();
+        if (renderer instanceof BaseGridRenderer) {
+            final BaseGridRenderer bgr = (BaseGridRenderer) renderer;
+            bgr.clearCellHighlight();
+            gridWidget.draw();
+        }
     }
 
     public GridHighlightHelper withPaddingX(final double paddingX) {
@@ -81,6 +93,14 @@ public class GridHighlightHelper {
                         final int column) {
         gridWidget.selectCell(row, column, false, false);
         gridWidget.draw();
+    }
+
+    void highlightCell(final int row,
+                       final int column) {
+        final GridRenderer renderer = gridWidget.getRenderer();
+        if (renderer instanceof BaseGridRenderer) {
+            ((BaseGridRenderer) renderer).highlightCell(column, row);
+        }
     }
 
     void moveCanvasTo(final double x,

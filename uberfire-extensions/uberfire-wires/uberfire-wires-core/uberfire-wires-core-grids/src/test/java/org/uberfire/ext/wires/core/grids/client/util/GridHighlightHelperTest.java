@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
@@ -128,6 +129,7 @@ public class GridHighlightHelperTest {
     public void testHighlight() {
 
         doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
+        doNothing().when(highlightHelper).highlightCell(row, column);
 
         highlightHelper.highlight(row, column);
 
@@ -261,5 +263,28 @@ public class GridHighlightHelperTest {
         final double actual = highlightHelper.calculateColumnOffset(column);
 
         assertEquals(expected, actual, 0.01d);
+    }
+
+    @Test
+    public void testClearHighlight() {
+
+        final BaseGridRenderer renderer = mock(BaseGridRenderer.class);
+        when(gridWidget.getRenderer()).thenReturn(renderer);
+
+        highlightHelper.clearHighlight();
+
+        verify(renderer).clearCellHighlight();
+        verify(gridWidget).draw();
+    }
+
+    @Test
+    public void testHighlightCell() {
+
+        final BaseGridRenderer renderer = mock(BaseGridRenderer.class);
+        when(gridWidget.getRenderer()).thenReturn(renderer);
+
+        highlightHelper.highlightCell(row, column);
+
+        verify(renderer).highlightCell(column, row);
     }
 }

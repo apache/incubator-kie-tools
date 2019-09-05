@@ -26,6 +26,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEStyles;
 
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours.HIGHLIGHTED_CELL_BACKGROUND;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours.HIGHLIGHTED_CELL_STROKE;
+
 /**
  * Definition of themes used by a render for the pluggable rendering mechanism.
  */
@@ -128,5 +131,19 @@ public interface GridRendererTheme {
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
                 .setTextAlign(TextAlign.CENTER);
+    }
+
+    /**
+     * Delegates the highlighted cell background Rectangle to sub-classes.
+     * @return A {@link Rectangle} for the cell's highlight background.
+     */
+    default Rectangle getHighlightedCellBackground() {
+        final Rectangle r = new Rectangle(0, 0);
+        r.setFillColor(HIGHLIGHTED_CELL_BACKGROUND);
+        r.setStrokeWidth(1.0);
+        // We need some alpha because the highlight is draw over the cell content.
+        r.setAlpha(0.3);
+        r.setStrokeColor(HIGHLIGHTED_CELL_STROKE);
+        return r;
     }
 }
