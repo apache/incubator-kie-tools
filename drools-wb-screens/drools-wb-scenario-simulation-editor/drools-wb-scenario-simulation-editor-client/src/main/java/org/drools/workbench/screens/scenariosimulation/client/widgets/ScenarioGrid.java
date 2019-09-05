@@ -73,6 +73,8 @@ public class ScenarioGrid extends BaseGridWidget {
         ((ScenarioGridModel) model).bindContent(simulation);
         setHeaderColumns(simulation);
         appendRows(simulation);
+        ((ScenarioGridModel) model).loadFactMappingsWidth();
+        ((ScenarioGridModel) model).forceRefreshWidth();
     }
 
     public EventBus getEventBus() {

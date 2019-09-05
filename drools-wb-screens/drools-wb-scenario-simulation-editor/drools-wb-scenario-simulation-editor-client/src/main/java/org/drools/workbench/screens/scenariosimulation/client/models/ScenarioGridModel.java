@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -318,6 +319,7 @@ public class ScenarioGridModel extends BaseGridData {
         String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
         ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
         commonAddColumn(columnIndex, column, ei);
+        /* Restoring the expected columns dimension, overriding the automatic resizing */
         IntStream.range(0, widthsToRestore.size())
                 .forEach(index -> getColumns().get(index).setWidth(widthsToRestore.get(index)));
     }
@@ -513,6 +515,46 @@ public class ScenarioGridModel extends BaseGridData {
     public void clearSelections() {
         super.clearSelections();
         selectedColumn = null;
+    }
+
+    /**
+     * It forces a <code>internalRefreshWidth</code> refresh
+     */
+    public boolean forceRefreshWidth() {
+        return internalRefreshWidth(true, OptionalDouble.empty());
+    }
+
+    /**
+     * It synchronizes all columns related <code>factMapping</code> columnnWidths
+     */
+    public void synchronizeFactMappingsWidths() {
+        getColumns().forEach(column -> synchronizeFactMappingWidth(column));
+    }
+
+    /**
+     * It updates a column related <code>factMapping</code> columnWidth
+     * @param column
+     */
+    public void synchronizeFactMappingWidth(final GridColumn<?> column) {
+        if (!column.isVisible()) {
+            return;
+        }
+        final int columnIndex = getColumns().indexOf(column);
+        final FactMapping factMapping = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+        factMapping.setColumnWidth(column.getWidth());
+    }
+
+    /**
+     * It retrieves the stored columnWidths and assigns them to every grid column.
+     */
+    public void loadFactMappingsWidth() {
+        for (final GridColumn<?> column : getColumns()) {
+            final int columnIndex = getColumns().indexOf(column);
+            final FactMapping factMapping = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+            if (factMapping.getColumnWidth() != null) {
+                column.setWidth(factMapping.getColumnWidth());
+            }
+        }
     }
 
     /**

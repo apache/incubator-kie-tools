@@ -620,4 +620,42 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         verify(scenarioGridModel, times(1)).refreshErrors();
     }
 
+    @Test
+    public void synchronizeFactMappingsWidths() {
+        scenarioGridModel.synchronizeFactMappingsWidths();
+        verify(scenarioGridModel, times(gridColumns.size())).synchronizeFactMappingWidth(isA(GridColumn.class));
+    }
+
+    @Test
+    public void synchronizeFactMappingWidth() {
+        when(gridColumnMock.isVisible()).thenReturn(true);
+        scenarioGridModel.synchronizeFactMappingWidth(gridColumnMock);
+        verify(factMappingMock, times(1)).setColumnWidth(eq(gridColumnMock.getWidth()));
+    }
+
+    @Test
+    public void synchronizeFactMappingWidth_NotVisibleColumn() {
+        when(gridColumnMock.isVisible()).thenReturn(false);
+        scenarioGridModel.synchronizeFactMappingWidth(gridColumnMock);
+        verify(factMappingMock, never()).setColumnWidth(any());
+    }
+
+    @Test
+    public void loadFactMappingsWidth_FactMappingWithoutWidth() {
+        when(factMappingMock.getColumnWidth()).thenReturn(null);
+        gridColumns.clear();
+        gridColumns.add(gridColumnMock);
+        scenarioGridModel.loadFactMappingsWidth();
+        verify(gridColumnMock, never()).setWidth(anyDouble());
+    }
+
+    @Test
+    public void loadFactMappingsWidth_FactMappingWithWidth() {
+        when(factMappingMock.getColumnWidth()).thenReturn(54.32);
+        gridColumns.clear();
+        gridColumns.add(gridColumnMock);
+        scenarioGridModel.loadFactMappingsWidth();
+        verify(factMappingMock, never()).setColumnWidth(anyDouble());
+        verify(gridColumnMock, times(1)).setWidth(eq(factMappingMock.getColumnWidth()));
+    }
 }
