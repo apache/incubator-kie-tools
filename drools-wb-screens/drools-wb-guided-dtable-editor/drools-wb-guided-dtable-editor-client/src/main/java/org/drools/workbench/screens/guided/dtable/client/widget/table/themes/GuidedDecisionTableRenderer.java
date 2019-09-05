@@ -72,6 +72,7 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
                                                 rendererHelper,
                                                 renderingInformation));
         }
+
         return commands;
     }
 

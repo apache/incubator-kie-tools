@@ -75,6 +75,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -102,6 +103,8 @@ import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.wires.core.grids.client.util.GridHighlightHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
@@ -144,6 +147,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     private LoadGraphLatch loadGraphLatch = null;
     private SaveGraphLatch saveGraphLatch = null;
     private NewGuidedDecisionTableWizardHelper helper;
+    private final Event<SearchPerformedEvent> searchPerformedEvent;
 
     @Inject
     public GuidedDecisionTableGraphEditorPresenter(final View view,
@@ -173,7 +177,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final DownloadMenuItemBuilder downloadMenuItem,
                                                    final GuidedDecisionTableEditorSearchIndex editorSearchIndex,
                                                    final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent,
-                                                   final SearchableElementFactory searchableElementFactory) {
+                                                   final SearchableElementFactory searchableElementFactory,
+                                                   final Event<SearchPerformedEvent> searchPerformedEvent) {
         super(view,
               service,
               docks,
@@ -202,6 +207,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.searchableElementFactory = searchableElementFactory;
+        this.searchPerformedEvent = searchPerformedEvent;
     }
 
     @PostConstruct
@@ -225,11 +231,27 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         registeredDocumentsMenuBuilder.setNewDocumentCommand(this::onNewDocument);
         editorSearchIndex.setCurrentAssetHashcodeSupplier(getCurrentHashCodeSupplier());
         editorSearchIndex.setNoResultsFoundCallback(getNoResultsFoundCallback());
+        editorSearchIndex.setSearchClosedCallback(getSearchClosedCallback());
         editorSearchIndex.setClearCurrentResultsCallback(getClearCurrentResultsCallback());
+        editorSearchIndex.setSearchPerformedCallback(getSearchPerformedCallback());
         editorSearchIndex.registerSubIndex(this);
         searchBarComponent.init(editorSearchIndex);
 
         setupSearchComponent();
+    }
+
+    private Command getSearchPerformedCallback() {
+        return () -> {
+            final Optional<GuidedDecisionTableSearchableElement> current = editorSearchIndex.getCurrentResult();
+
+            GuidedDecisionTableSearchableElement value = null;
+            if (current.isPresent()) {
+                value = current.get();
+            }
+
+            final SearchPerformedEvent event = new SearchPerformedEvent(value);
+            searchPerformedEvent.fire(event);
+        };
     }
 
     Supplier<Integer> getCurrentHashCodeSupplier() {
@@ -267,8 +289,28 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         getKieEditorWrapperMultiPage().addTabBarWidget(getWidget(element));
     }
 
+    Command getSearchClosedCallback() {
+        return () -> clearAllHighlights();
+    }
+
     Command getNoResultsFoundCallback() {
-        return () -> highlightHelper().clearSelections();
+        return () -> {
+            highlightHelper().clearSelections();
+            highlightHelper().clearHighlight();
+        };
+    }
+
+    void clearAllHighlights() {
+        final GuidedDecisionTableModellerView view = modeller.getView();
+        final Set<GridWidget> widgets = view.getGridWidgets();
+        for (GridWidget gridWidget : widgets) {
+            final GridRenderer renderer = gridWidget.getRenderer();
+            if (renderer instanceof BaseGridRenderer) {
+                ((BaseGridRenderer) renderer).clearCellHighlight();
+            }
+        }
+
+        view.getGridLayerView().draw();
     }
 
     private GridHighlightHelper highlightHelper() {
@@ -293,7 +335,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 for (int line = 0; line < data.get(row).size(); line++) {
 
                     final DTCellValue52 cellValue52 = data.get(row).get(line);
-                    final GuidedDecisionTableSearchableElement searchableElement = makeSearchable(row, line, cellValue52, widget);
+                    final GuidedDecisionTableSearchableElement searchableElement = searchableElementFactory.makeSearchableElement(row, line, cellValue52, widget, model, modeller);
 
                     searchableElement.setWidget(widget);
                     searchableElements.add(searchableElement);
@@ -313,13 +355,6 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 .filter(w -> Objects.equals(w.getPresenter().getModel(), model))
                 .findFirst()
                 .get();
-    }
-
-    private GuidedDecisionTableSearchableElement makeSearchable(final int row,
-                                                                final int column,
-                                                                final DTCellValue52 cellValue52,
-                                                                final GuidedDecisionTableView widget) {
-        return searchableElementFactory.makeSearchableElement(row, column, cellValue52, widget, modeller);
     }
 
     void onNewDocument() {

@@ -103,7 +103,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       downloadMenuItemBuilder,
                                                       editorSearchIndex,
                                                       searchBarComponent,
-                                                      searchableElementFactory) {
+                                                      searchableElementFactory,
+                                                      null) {
             {
                 promises = BaseGuidedDecisionTableEditorPresenterTest.this.promises;
                 projectController = BaseGuidedDecisionTableEditorPresenterTest.this.projectController;

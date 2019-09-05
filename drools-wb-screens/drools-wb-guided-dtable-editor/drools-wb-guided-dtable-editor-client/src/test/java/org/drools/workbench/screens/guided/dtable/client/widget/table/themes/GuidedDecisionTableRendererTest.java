@@ -49,7 +49,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingBlockInformation;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GuidedDecisionTableRendererTest {
@@ -64,13 +67,13 @@ public class GuidedDecisionTableRendererTest {
     private BaseGridRendererHelper rendererHelper;
 
     @Mock
-    private BaseGridRendererHelper.RenderingInformation renderingInformation;
+    private RenderingInformation renderingInformation;
 
     @Mock
-    private BaseGridRendererHelper.RenderingBlockInformation bodyBlockInformation;
+    private RenderingBlockInformation bodyBlockInformation;
 
     @Mock
-    private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
+    private RenderingBlockInformation floatingBlockInformation;
 
     @Mock
     private Group parent;
@@ -89,8 +92,8 @@ public class GuidedDecisionTableRendererTest {
         this.uiModel.appendColumn(uiColumn);
         this.uiModel.appendRow(new BaseGridRow());
 
-        this.renderer = new GuidedDecisionTableRenderer(uiModel,
-                                                        new GuidedDecisionTable52());
+        this.renderer = spy(new GuidedDecisionTableRenderer(uiModel,
+                                                            new GuidedDecisionTable52()));
 
         doReturn(new ArrayList<Double>() {{
             add(20.0);

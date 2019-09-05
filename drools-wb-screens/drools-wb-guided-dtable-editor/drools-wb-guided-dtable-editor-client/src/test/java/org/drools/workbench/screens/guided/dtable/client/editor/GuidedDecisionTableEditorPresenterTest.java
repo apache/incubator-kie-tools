@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -50,6 +51,7 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -74,14 +76,20 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableEditorPresenter> {
 
-    @Mock
-    protected AuthoringWorkbenchDocks docks;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
+
     @Mock
     private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
+    @Mock
+    protected AuthoringWorkbenchDocks docks;
+
+    @Mock
+    private EventSourceMock<SearchPerformedEvent> searchPerformedEvent;
+
     @Override
     protected GuidedDecisionTableEditorPresenter getPresenter() {
+
         return new GuidedDecisionTableEditorPresenter(view,
                                                       dtServiceCaller,
                                                       docks,
@@ -103,7 +111,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       downloadMenuItemBuilder,
                                                       editorSearchIndex,
                                                       searchBarComponent,
-                                                      searchableElementFactory) {
+                                                      searchableElementFactory,
+                                                      searchPerformedEvent) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
@@ -164,6 +173,21 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
         verify(gridData).clearSelections();
         verify(gridWidget).draw();
+    }
+
+    @Test
+    public void testGetSearchPerformedCallback() {
+
+        final ArgumentCaptor<SearchPerformedEvent> captor = ArgumentCaptor.forClass(SearchPerformedEvent.class);
+        final GuidedDecisionTableSearchableElement currentResult = mock(GuidedDecisionTableSearchableElement.class);
+        when(editorSearchIndex.getCurrentResult()).thenReturn(Optional.of(currentResult));
+
+        presenter.getSearchPerformedCallback().execute();
+
+        verify(searchPerformedEvent).fire(captor.capture());
+
+        final SearchPerformedEvent value = captor.getValue();
+        assertEquals(value.getCurrentElement(), currentResult);
     }
 
     @Test

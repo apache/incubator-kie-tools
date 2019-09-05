@@ -45,6 +45,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
@@ -65,6 +66,7 @@ import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.verifier.reporting.client.panel.IssueSelectedEvent;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -1691,6 +1693,33 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.refreshMenus();
 
         verify(refreshMenusEvent).fire(any(RefreshMenusEvent.class));
+    }
+
+    @Test
+    public void testOnSearchPerformed() {
+        final GuidedDecisionTableSearchableElement element = mock(GuidedDecisionTableSearchableElement.class);
+        when(element.getModel()).thenReturn(model);
+        final SearchPerformedEvent event = new SearchPerformedEvent(element);
+
+        dtPresenter.onSearchPerformed(event);
+
+        verify(renderer, never()).clearCellHighlight();
+        verify(view).draw();
+    }
+
+    @Test
+    public void testOnSearchPerformedModelNotFromThisTable() {
+        // This test is for GDT Graphs
+        final GuidedDecisionTableSearchableElement element = mock(GuidedDecisionTableSearchableElement.class);
+        final GuidedDecisionTable52 anotherModel = mock(GuidedDecisionTable52.class);
+        when(element.getModel()).thenReturn(anotherModel);
+        when(element.getColumn()).thenReturn(0);
+        when(element.getRow()).thenReturn(0);
+        final SearchPerformedEvent event = new SearchPerformedEvent(element);
+
+        dtPresenter.onSearchPerformed(event);
+
+        verify(renderer).clearCellHighlight();
     }
 
     /*

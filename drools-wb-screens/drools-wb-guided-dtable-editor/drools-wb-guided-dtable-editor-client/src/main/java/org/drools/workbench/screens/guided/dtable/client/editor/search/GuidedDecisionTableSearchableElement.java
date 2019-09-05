@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.search;
 
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.kie.workbench.common.widgets.client.search.common.Searchable;
@@ -32,7 +33,10 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
     private GuidedDecisionTableModellerView.Presenter modeller;
 
     private GuidedDecisionTableGridHighlightHelper highlightHelper;
+
     private GuidedDecisionTableView widget;
+
+    private GuidedDecisionTable52 model;
 
     @Override
     public boolean matches(final String text) {
@@ -113,6 +117,14 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
 
     public GuidedDecisionTableModellerView.Presenter getModeller() {
         return modeller;
+    }
+
+    public GuidedDecisionTable52 getModel() {
+        return model;
+    }
+
+    public void setModel(final GuidedDecisionTable52 model) {
+        this.model = model;
     }
 
     public void setWidget(final GuidedDecisionTableView widget) {

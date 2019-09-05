@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -61,6 +62,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -102,8 +104,12 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     private final GuidedDecisionTableEditorSearchIndex editorSearchIndex;
 
     private final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
+
     private final SearchableElementFactory searchableElementFactory;
+
     private MenuItem convertMenuItem = null;
+
+    private final Event<SearchPerformedEvent> searchPerformedEvent;
 
     @Inject
     public GuidedDecisionTableEditorPresenter(final View view,
@@ -127,7 +133,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final DownloadMenuItemBuilder downloadMenuItemBuilder,
                                               final GuidedDecisionTableEditorSearchIndex editorSearchIndex,
                                               final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent,
-                                              final SearchableElementFactory searchableElementFactory) {
+                                              final SearchableElementFactory searchableElementFactory,
+                                              final Event<SearchPerformedEvent> searchPerformedEvent) {
         super(view,
               service,
               docks,
@@ -151,6 +158,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.searchableElementFactory = searchableElementFactory;
+        this.searchPerformedEvent = searchPerformedEvent;
     }
 
     @Override
@@ -159,6 +167,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         super.init();
         editorSearchIndex.setCurrentAssetHashcodeSupplier(getCurrentHashCodeSupplier());
         editorSearchIndex.setNoResultsFoundCallback(getNoResultsFoundCallback());
+        editorSearchIndex.setSearchPerformedCallback(getSearchPerformedCallback());
+        editorSearchIndex.setSearchClosedCallback(getSearchClosedCallback());
         editorSearchIndex.registerSubIndex(this);
 
         setupSearchComponent();
@@ -175,8 +185,29 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         getKieEditorWrapperMultiPage().addTabBarWidget(getWidget(element));
     }
 
+    Command getSearchPerformedCallback() {
+        return () -> {
+            final Optional<GuidedDecisionTableSearchableElement> current = editorSearchIndex.getCurrentResult();
+
+            GuidedDecisionTableSearchableElement value = null;
+            if (current.isPresent()) {
+                value = current.get();
+            }
+
+            final SearchPerformedEvent event = new SearchPerformedEvent(value);
+            searchPerformedEvent.fire(event);
+        };
+    }
+
+    Command getSearchClosedCallback() {
+        return () -> highlightHelper().clearHighlight();
+    }
+
     Command getNoResultsFoundCallback() {
-        return () -> highlightHelper().clearSelections();
+        return () -> {
+            highlightHelper().clearSelections();
+            highlightHelper().clearHighlight();
+        };
     }
 
     private GridHighlightHelper highlightHelper() {
@@ -222,7 +253,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
         for (int row = 0, dataSize = data.size(); row < dataSize; row++) {
             for (int column = 0; column < data.get(row).size(); column++) {
-                searchableElements.add(makeSearchableElement(data, row, column));
+                searchableElements.add(makeSearchableElement(data, row, column, model));
             }
         }
 
@@ -231,9 +262,10 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
     private GuidedDecisionTableSearchableElement makeSearchableElement(final List<List<DTCellValue52>> data,
                                                                        final int row,
-                                                                       final int column) {
+                                                                       final int column,
+                                                                       final GuidedDecisionTable52 model) {
         final DTCellValue52 cellValue52 = data.get(row).get(column);
-        return searchableElementFactory.makeSearchableElement(row, column, cellValue52, modeller);
+        return searchableElementFactory.makeSearchableElement(row, column, cellValue52, null, model, modeller);
     }
 
     protected RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback(final ObservablePath path,

@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.search;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
@@ -40,13 +41,6 @@ public class SearchableElementFactory {
         CellUtilities.injectDateConvertor(getDateConverter());
     }
 
-    public GuidedDecisionTableSearchableElement makeSearchableElement(final Integer row,
-                                                                      final Integer column,
-                                                                      final DTCellValue52 cellValue52,
-                                                                      final GuidedDecisionTableModellerView.Presenter modeller) {
-        return makeSearchableElement(row, column, cellValue52, null, modeller);
-    }
-
     private DateConverter getDateConverter() {
         return GWTDateConverter.getInstance();
     }
@@ -55,6 +49,7 @@ public class SearchableElementFactory {
                                                                       final int column,
                                                                       final DTCellValue52 cellValue52,
                                                                       final GuidedDecisionTableView widget,
+                                                                      final GuidedDecisionTable52 model,
                                                                       final GuidedDecisionTableModellerView.Presenter modeller) {
 
         final GuidedDecisionTableSearchableElement searchableElement = new GuidedDecisionTableSearchableElement();
@@ -65,6 +60,7 @@ public class SearchableElementFactory {
         searchableElement.setRow(row);
         searchableElement.setColumn(column);
         searchableElement.setWidget(widget);
+        searchableElement.setModel(model);
 
         return searchableElement;
     }

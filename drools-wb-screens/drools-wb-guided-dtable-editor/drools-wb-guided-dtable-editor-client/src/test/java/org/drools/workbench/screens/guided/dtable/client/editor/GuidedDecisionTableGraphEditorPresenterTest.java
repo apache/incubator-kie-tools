@@ -55,6 +55,7 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -182,6 +183,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Mock
     protected AuthoringWorkbenchDocks docks;
 
+    @Mock
+    private EventSourceMock<SearchPerformedEvent> searchPerformed;
+
     private Event<SaveInProgressEvent> saveInProgressEvent = spy(new EventSourceMock<SaveInProgressEvent>() {
         @Override
         public void fire(final SaveInProgressEvent event) {
@@ -234,7 +238,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            downloadMenuItemBuilder,
                                                            editorSearchIndex,
                                                            searchBarComponent,
-                                                           searchableElementFactory) {
+                                                           searchableElementFactory,
+                                                           searchPerformed) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
@@ -1701,7 +1706,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            downloadMenuItemBuilder,
                                                            editorSearchIndex,
                                                            searchBarComponent,
-                                                           searchableElementFactory);
+                                                           searchableElementFactory,
+                                                           searchPerformed);
     }
 
     private static class OnSaveSetupDataHolder {

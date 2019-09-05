@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -57,6 +58,7 @@ import org.drools.workbench.models.guided.dtable.shared.validation.HitPolicyVali
 import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
@@ -101,6 +103,8 @@ import org.kie.workbench.common.services.verifier.reporting.client.panel.IssueSe
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
+import org.kie.workbench.common.widgets.client.search.common.Searchable;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
@@ -616,6 +620,19 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         if (!isReadOnly()) {
             lockManager.acquireLock();
         }
+    }
+
+    void onSearchPerformed(final @Observes SearchPerformedEvent event) {
+        if (event.hasElement()) {
+            final Searchable element = event.getCurrentElement();
+            if (element instanceof GuidedDecisionTableSearchableElement) {
+                final GuidedDecisionTableSearchableElement gdtElement = ((GuidedDecisionTableSearchableElement) element);
+                if (!Objects.equals(model, gdtElement.getModel())) {
+                    renderer.clearCellHighlight();
+                }
+            }
+        }
+        getView().draw();
     }
 
     void onUpdatedLockStatusEvent(final @Observes UpdatedLockStatusEvent event) {

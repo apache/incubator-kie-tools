@@ -410,7 +410,8 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   downloadMenuItem,
                                                                                                   editorSearchIndex,
                                                                                                   searchBarComponent,
-                                                                                                  searchableElementFactory) {
+                                                                                                  searchableElementFactory,
+                                                                                                  null) {
             {
                 promises = GuidedDecisionTableEditorMenusTest.this.promises;
             }
