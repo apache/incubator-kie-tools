@@ -37,13 +37,20 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
 
     private Integer currentAssetHash = null;
 
+    private Command searchPerformedCallback = () -> {/* Nothing */};
+
     private Command noResultsFoundCallback = () -> {/* Nothing */};
 
     private Command clearCurrentResultsCallback = () -> {/* Nothing */};
 
+    private Command searchClosedCallback = () -> {/* Nothing */};
+
     private Supplier<Integer> currentAssetHashcodeSupplier;
 
-    private Command searchClosedCallback = () -> {/* Nothing */};
+    @Override
+    public void setSearchPerformedCallback(final Command searchPerformedCallback) {
+        this.searchPerformedCallback = searchPerformedCallback;
+    }
 
     @Override
     public List<HasSearchableElements<T>> getSubIndexes() {
@@ -73,6 +80,7 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         currentTerm = term;
 
         triggerOnFoundCommand();
+        triggerOnSearchPerformedCommand();
     }
 
     @Override
@@ -89,6 +97,8 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     public void close() {
         results = new ArrayList<>();
         currentTerm = "";
+        currentResult = null;
+        triggerOnSearchPerformedCommand();
         triggerSearchClosedCommand();
     }
 
@@ -117,6 +127,7 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         final Optional<T> result = findNextElement();
         currentResult = result.orElse(null);
         triggerOnFoundCommand();
+        triggerOnSearchPerformedCommand();
     }
 
     @Override
@@ -124,6 +135,7 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         final Optional<T> result = findPreviousElement();
         currentResult = result.orElse(null);
         triggerOnFoundCommand();
+        triggerOnSearchPerformedCommand();
     }
 
     @Override
@@ -220,16 +232,22 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         noResultsFoundCallback.execute();
     }
 
+    void triggerOnSearchPerformedCommand() {
+        if (!Objects.isNull(searchPerformedCallback)) {
+            searchPerformedCallback.execute();
+        }
+    }
+
+    @Override
+    public Optional<T> getCurrentResult() {
+        return Optional.ofNullable(currentResult);
+    }
+
     private void triggerClearCurrentResultsCallback() {
         clearCurrentResultsCallback.execute();
     }
-
     private void triggerSearchClosedCommand() {
         searchClosedCallback.execute();
-    }
-
-    private Optional<T> getCurrentResult() {
-        return Optional.ofNullable(currentResult);
     }
 
     protected abstract List<T> getSearchableElements();

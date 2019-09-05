@@ -25,6 +25,10 @@ public class DMNSearchableElement implements Searchable {
 
     private String text;
 
+    private int row;
+
+    private int column;
+
     @Override
     public boolean matches(final String text) {
         return this.text.toUpperCase().contains(text.toUpperCase());
@@ -45,5 +49,21 @@ public class DMNSearchableElement implements Searchable {
 
     public String getText() {
         return text;
+    }
+
+    public void setRow(final int row) {
+        this.row = row;
+    }
+
+    public void setColumn(final int column) {
+        this.column = column;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
     }
 }

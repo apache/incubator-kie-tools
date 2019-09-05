@@ -79,6 +79,10 @@ public class DMNGridHelper {
         getGridWidgets().forEach(gridWidget -> highlightHelper(gridWidget).clearSelections());
     }
 
+    public void clearCellHighlights() {
+        getGridWidgets().forEach(gridWidget -> highlightHelper(gridWidget).clearHighlight());
+    }
+
     public Set<GridWidget> getGridWidgets() {
         return getDefaultGridLayer()
                 .getGridWidgets()

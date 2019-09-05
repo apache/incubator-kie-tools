@@ -50,6 +50,9 @@ public class BaseEditorSearchIndexTest {
     private Command noResultsFoundCallback;
 
     @Mock
+    private Command searchPerformedCallback;
+
+    @Mock
     private Command searchClosedCallback;
 
     private Supplier<Integer> currentAssetHashcodeSupplier;
@@ -78,6 +81,7 @@ public class BaseEditorSearchIndexTest {
 
         index = new FakeEditorSearchIndex(searchableElements);
         index.setNoResultsFoundCallback(noResultsFoundCallback);
+        index.setSearchPerformedCallback(searchPerformedCallback);
         index.setSearchClosedCallback(searchClosedCallback);
         index.setCurrentAssetHashcodeSupplier(currentAssetHashcodeSupplier);
     }
@@ -92,6 +96,8 @@ public class BaseEditorSearchIndexTest {
         verify(searchable3, never()).onFound();
         verify(searchable4, never()).onFound();
         verify(noResultsFoundCallback, never()).execute();
+
+        verify(searchPerformedCallback).execute();
     }
 
     @Test
@@ -104,6 +110,7 @@ public class BaseEditorSearchIndexTest {
         verify(searchable3, never()).onFound();
         verify(searchable4, never()).onFound();
         verify(noResultsFoundCallback).execute();
+        verify(searchPerformedCallback).execute();
     }
 
     @Test
@@ -198,6 +205,9 @@ public class BaseEditorSearchIndexTest {
         inOrder.verify(searchable1).onFound();
         inOrder.verifyNoMoreInteractions();
         verify(noResultsFoundCallback, never()).execute();
+
+        // 1 for search + 4 for each "nextResult()" call
+        verify(searchPerformedCallback, Mockito.times(5)).execute();
     }
 
     @Test
@@ -216,18 +226,23 @@ public class BaseEditorSearchIndexTest {
         inOrder.verify(searchable1).onFound();
         inOrder.verifyNoMoreInteractions();
         verify(noResultsFoundCallback, never()).execute();
+
+        // 1 for search + 4 for each "previsousResult()" call
+        verify(searchPerformedCallback, Mockito.times(5)).execute();
     }
 
     @Test
     public void testNextResultWhenSearchHasNoResult() {
         index.nextResult();
         verify(noResultsFoundCallback).execute();
+        verify(searchPerformedCallback).execute();
     }
 
     @Test
     public void testPreviousResultWhenSearchHasNoResult() {
         index.previousResult();
         verify(noResultsFoundCallback).execute();
+        verify(searchPerformedCallback).execute();
     }
 
     @Test
@@ -253,6 +268,9 @@ public class BaseEditorSearchIndexTest {
         assertEquals(0, index.getCurrentResultNumber());
         assertEquals("", index.getCurrentTerm());
         assertEquals(0, index.getResults().size());
+
+        // 1 for search, 1 for reset
+        verify(searchPerformedCallback, Mockito.times(2)).execute();
         verify(searchClosedCallback).execute();
     }
 

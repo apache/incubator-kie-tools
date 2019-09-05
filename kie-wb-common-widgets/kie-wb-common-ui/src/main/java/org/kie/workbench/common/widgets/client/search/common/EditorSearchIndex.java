@@ -17,6 +17,8 @@
 package org.kie.workbench.common.widgets.client.search.common;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.uberfire.mvp.Command;
 
@@ -31,6 +33,12 @@ import org.uberfire.mvp.Command;
  * @param <T> represents the type of {@link Searchable} element.
  */
 public interface EditorSearchIndex<T extends Searchable> {
+
+    /**
+     * Returns the current result.
+     * @return The current result.
+     */
+    Optional<T> getCurrentResult();
 
     /**
      * Returns the list of sub-indexes.
@@ -58,6 +66,12 @@ public interface EditorSearchIndex<T extends Searchable> {
     void setNoResultsFoundCallback(final Command callback);
 
     void setSearchClosedCallback(final Command callback);
+
+    /**
+     * Sets the callback that will be triggered when search is performed.
+     * @param callback the callback that will be triggered
+     */
+    void setSearchPerformedCallback(final Command callback);
 
     /**
      * Sets the callback that will be triggered when the current search results needs to be cleared.

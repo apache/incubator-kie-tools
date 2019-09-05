@@ -64,7 +64,7 @@ public class DMNEditorSearchIndexTest {
 
     @Before
     public void setup() {
-        searchIndex = spy(new DMNEditorSearchIndex(graphSubIndex, gridSubIndex, dataTypesSubIndex, sessionManager));
+        searchIndex = spy(new DMNEditorSearchIndex(graphSubIndex, gridSubIndex, dataTypesSubIndex, sessionManager, null));
 
         when(sessionManager.getCurrentSession()).thenReturn(dmnSession);
         when(dmnSession.getExpressionEditor()).thenReturn(expressionEditor);

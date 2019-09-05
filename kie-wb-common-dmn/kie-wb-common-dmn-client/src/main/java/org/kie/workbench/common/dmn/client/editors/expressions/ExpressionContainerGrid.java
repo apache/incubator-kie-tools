@@ -194,6 +194,24 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         return existingWidth;
     }
 
+    Optional<BaseExpressionGrid> getExistingEditor() {
+
+        Optional<BaseExpressionGrid> beg = Optional.empty();
+        final GridCell<?> cell = model.getRow(0).getCells().get(0);
+        if (cell != null) {
+            final GridCellValue<?> value = cell.getValue();
+            if (value instanceof ExpressionCellValue) {
+                final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
+                if (editor.isPresent()) {
+                    beg = Optional.of(editor.get());
+                }
+            }
+        }
+
+        return beg;
+    }
+
     /**
      * Proxy {@link HasExpression} to be able intercept interactions with the original
      * to update the expression label in {@link ExpressionEditorView} when the {@link Expression} changes.
