@@ -287,7 +287,7 @@ public class LockManagerTest {
                                                                "",
                                                                new SessionInfoImpl(new UserImpl("differentUser"))));
 
-        assertEquals(1,
+        assertEquals(0,
                      reloads);
     }
 
