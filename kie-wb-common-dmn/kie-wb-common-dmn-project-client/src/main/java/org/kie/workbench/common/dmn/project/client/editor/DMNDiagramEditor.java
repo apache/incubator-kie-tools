@@ -240,7 +240,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     public void onMultiPageEditorSelectedPageEvent(final @Observes MultiPageEditorSelectedPageEvent event) {
-        searchBarComponent.disableSearch();
+        if (isSameSession()) {
+            searchBarComponent.disableSearch();
+        }
     }
 
     public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
@@ -425,5 +427,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     ElementWrapperWidget<?> getWidget(final HTMLElement element) {
         return ElementWrapperWidget.getWidget(element);
+    }
+
+    private boolean isSameSession() {
+        return isSameSession(sessionManager.getCurrentSession());
     }
 }
