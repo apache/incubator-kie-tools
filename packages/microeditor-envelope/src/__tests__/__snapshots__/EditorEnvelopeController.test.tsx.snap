@@ -210,6 +210,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
   >
     <div>
       Here's the dummy content: 
+      test content
     </div>
   </DummyEditorComponent>
 </EditorEnvelopeView>
