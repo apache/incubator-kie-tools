@@ -25,14 +25,11 @@ kogito-data-index:
 # Build and test all images
 .PHONY: test
 test:
-	cekit -v build --overrides-file kogito-quarkus-ubi8-overrides.yaml --overrides 'name: kogito-quarkus-ubi8-candidate' docker --no-squash
-	modules/kogito-quarkus-ubi8/test/run
-	cekit -v build --overrides-file kogito-quarkus-ubi8-s2i-overrides.yaml --overrides 'name: kogito-quarkus-ubi8-s2i-candidate' docker --no-squash
-	modules/kogito-quarkus-ubi8-s2i/test/run
-	cekit -v build --overrides-file kogito-springboot-ubi8-overrides.yaml --overrides 'name: kogito-springboot-ubi8-candidate' docker --no-squash
-	modules/kogito-springboot-ubi8/test/run
-	cekit -v build --overrides-file kogito-springboot-ubi8-s2i-overrides.yaml --overrides 'name: kogito-springboot-ubi8-s2i-candidate' docker --no-squash
-	modules/kogito-springboot-ubi8-s2i-/test/run
+	cekit -v test --overrides-file kogito-quarkus-ubi8-overrides.yaml behave
+	cekit -v test --overrides-file kogito-quarkus-ubi8-s2i-overrides.yaml behave
+	cekit -v test --overrides-file kogito-springboot-ubi8-overrides.yaml behave
+	cekit -v test --overrides-file kogito-springboot-ubi8-s2i-overrides.yaml behave
+	cekit -v test --overrides-file kogito-data-index-overrides.yaml behave
 
 
 # push images to quay.io, this requires permissions under kiegroup organization

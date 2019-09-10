@@ -3,8 +3,8 @@
 function set_infinispan_props() {
     local infinispan_props=""
 
-    if [[ "${INFINISPAN_USEAUTH}" == "true" &&  -z "${INFINISPAN_USERNAME}" ]]; then
-        echo "[ERROR] Flag INFINISPAN_USEAUTH set to true, but no username informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
+    if [[ "${INFINISPAN_USEAUTH}" == "true" ]] && [[ -z "${INFINISPAN_USERNAME}"  || -z "${INFINISPAN_PASSWORD}" ]]; then
+        echo "[ERROR] Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
         exit 1
     fi
 
@@ -24,9 +24,18 @@ function set_infinispan_props() {
 }
 
 function start() {
+
+    if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+        set -x
+        SHOW_JVM_SETTINGS="-XshowSettings:properties"
+        echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+        echo "JVM settings debug is enabled."
+    fi
+
+
     local infinispan_props=$(set_infinispan_props)
 
-    java -Djava.library.path=$KOGITO_HOME/lib \
+    java ${SHOW_JVM_SETTINGS} -Djava.library.path=$KOGITO_HOME/lib \
         -Dquarkus.http.host=0.0.0.0 \
         ${infinispan_props} \
         ${JAVA_OPTS} \
