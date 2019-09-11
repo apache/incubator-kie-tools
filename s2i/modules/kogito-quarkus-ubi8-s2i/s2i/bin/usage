@@ -16,6 +16,9 @@ Sample invocation:
 
 s2i build -c /Development/project/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i application --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8
 
+For non native build, just set the NATIVE environment variable to false and use the quay.io/kiegroup/kogito-quarkus-jvm-ubi8
+image as runtime-image, in that way a *runner.jar will be produced and copied to the runtime image.
+
 You can then run the resulting image via:
 docker run <application image>
 EOF

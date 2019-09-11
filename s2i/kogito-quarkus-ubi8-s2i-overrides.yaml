@@ -11,6 +11,11 @@ labels:
 - name: "io.openshift.tags"
   value: "builder,kogito,quarkus"
 
+envs:
+- name: NATIVE
+  example: false
+  description: If set to false, perform a non native build.
+
 modules:
   install:
   - name: install-rpm-dependencies

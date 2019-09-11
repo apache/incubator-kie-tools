@@ -24,7 +24,7 @@ modules:
     version: "1.8.0"
   - name: kogito-springboot-ubi8
 
-# s2i build . quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.3.0 kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-springboot-ubi8:0.3.0
+# s2i build . quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
 run:
   workdir: "/home/kogito"
 

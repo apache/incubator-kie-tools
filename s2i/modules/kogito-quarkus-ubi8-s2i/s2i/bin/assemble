@@ -16,7 +16,7 @@ CONFIGURE_SCRIPTS=(
 source ${KOGITO_HOME}/.m2/configure.sh
 #############################################
 
-# If the 'kaas-quarkus-ubi8-s2i' assemble script is executed with the '-h' flag, print the usage.
+# If the 'kogito-quarkus-ubi8-s2i' assemble script is executed with the '-h' flag, print the usage.
 if [[ "$1" == "-h" ]]; then
     exec /usr/libexec/s2i/usage
 fi
@@ -30,8 +30,14 @@ echo "---> Installing application source..."
 cd /tmp/src/
 
 if [ -f "pom.xml" ]; then
+
+    nativeBuild="-Pnative"
+    if [ "${NATIVE^^}" == "FALSE" ]; then
+        nativeBuild=""
+    fi
+
     echo "---> Building application from source..."
-    $MAVEN_HOME/bin/mvn clean package -Pnative -s $KOGITO_HOME/.m2/settings.xml \
+    $MAVEN_HOME/bin/mvn clean package ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
         -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
         -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 else
@@ -55,15 +61,23 @@ else
     mv project/* .
 
     echo "---> Building application from source..."
-    $MAVEN_HOME/bin/mvn clean package -Pnative -s $KOGITO_HOME/.m2/settings.xml \
+    $MAVEN_HOME/bin/mvn clean package ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
         -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
         -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 
 fi
 
-echo "---> Installing application binaries"
-cp -v target/*-runner $KOGITO_HOME/bin
-chmod +x $KOGITO_HOME/bin/*-runner
+if [ "${NATIVE^^}" == "FALSE" ]; then
+    cp -v target/*-runner.jar $KOGITO_HOME/bin
+    cp -r target/lib/ $KOGITO_HOME/bin/
+else
+    echo "---> Installing application binaries"
+    cp -v target/*-runner $KOGITO_HOME/bin
+    chmod +x $KOGITO_HOME/bin/*-runner
+    echo "---> Copy native java libraries for ssl handling..."
+    cp -v $GRAALVM_HOME/jre/lib/amd64/libsunec.so $KOGITO_HOME/bin
+fi
+
 
 echo "---> Copy image metadata file..."
 if [ -e /tmp/src/target/image_metadata.json ]; then
@@ -74,6 +88,4 @@ else
     echo "-----> Failed to copy metadata file, /tmp/src/target/image_metadata.json not found."
 fi
 
-echo "---> Copy native java libraries for ssl handling..."
-cp -v $GRAALVM_HOME/jre/lib/amd64/libsunec.so $KOGITO_HOME/bin
 
