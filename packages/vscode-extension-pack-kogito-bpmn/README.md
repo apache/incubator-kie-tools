@@ -19,4 +19,5 @@ BPMN Editor
 - [KOGITO-157](https://issues.jboss.org/browse/KOGITO-157) Copy/paste between different BPMN diagram. 
 - [KOGITO-224](https://issues.jboss.org/browse/KOGITO-224) An error message is displayed if you try to create a new type by pressing `Enter`. 
 - [KOGITO-225](https://issues.jboss.org/browse/KOGITO-225) Custom type definitions aren’t re-used within the diagram. 
-- [KOGITO-226](https://issues.jboss.org/browse/KOGITO-226) Not all BPMN constructs (elements) are supported. If a non-supported construct is used, an error message will be displayed. 
+- [KOGITO-226](https://issues.jboss.org/browse/KOGITO-226) Not all BPMN constructs (elements) are supported. If a non-supported construct is used, an error message will be displayed.
+- [KOGITO-272](https://issues.jboss.org/browse/KOGITO-272) Editor doesn't close when file is deleted. 
