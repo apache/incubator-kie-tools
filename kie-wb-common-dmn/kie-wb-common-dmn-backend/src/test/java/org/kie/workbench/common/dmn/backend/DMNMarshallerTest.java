@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2084,6 +2085,81 @@ public class DMNMarshallerTest {
         assertTrue(targetConnection.getMagnetIndex().isPresent());
         assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt());
         assertFalse(targetConnection.isAuto());
+    }
+
+    @Test
+    public void testRemoveDrgElementsWithoutShape() {
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+        final DRGElement e1 = createDRGElement(id1);
+        final DRGElement e2 = createDRGElement(id2);
+        final DRGElement e3 = createDRGElement(id3);
+        final List<org.kie.dmn.model.api.DRGElement> drgElements = new ArrayList<>(Arrays.asList(e1, e2, e3));
+        final DMNShape s1 = createDMNShape(id1);
+        final DMNShape s3 = createDMNShape(id3);
+        final List<DMNShape> dmnShapes = new ArrayList<>(Arrays.asList(s1, s3));
+
+        getDMNMarshaller().removeDrgElementsWithoutShape(drgElements, dmnShapes);
+
+        assertEquals(2, drgElements.size());
+        assertEquals(e1, drgElements.get(0));
+        assertEquals(e3, drgElements.get(1));
+    }
+
+    @Test
+    public void testRemoveDrgElementsWithoutShapeWhenAllElementsHaveShape() {
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+        final DRGElement e1 = createDRGElement(id1);
+        final DRGElement e2 = createDRGElement(id2);
+        final DRGElement e3 = createDRGElement(id3);
+        final List<org.kie.dmn.model.api.DRGElement> drgElements = new ArrayList<>(Arrays.asList(e1, e2, e3));
+        final DMNShape s1 = createDMNShape(id1);
+        final DMNShape s2 = createDMNShape(id2);
+        final DMNShape s3 = createDMNShape(id3);
+        final List<DMNShape> dmnShapes = new ArrayList<>(Arrays.asList(s1, s2, s3));
+
+        getDMNMarshaller().removeDrgElementsWithoutShape(drgElements, dmnShapes);
+
+        assertEquals(3, drgElements.size());
+        assertEquals(e1, drgElements.get(0));
+        assertEquals(e2, drgElements.get(1));
+        assertEquals(e3, drgElements.get(2));
+    }
+
+    @Test
+    public void testRemoveDrgElementsWithoutShapeFromDMN11() {
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+        final DRGElement e1 = createDRGElement(id1);
+        final DRGElement e2 = createDRGElement(id2);
+        final DRGElement e3 = createDRGElement(id3);
+        final List<org.kie.dmn.model.api.DRGElement> drgElements = new ArrayList<>(Arrays.asList(e1, e2, e3));
+        final List<DMNShape> dmnShapes = new ArrayList<>();
+
+        getDMNMarshaller().removeDrgElementsWithoutShape(drgElements, dmnShapes);
+
+        assertEquals(3, drgElements.size());
+        assertEquals(e1, drgElements.get(0));
+        assertEquals(e2, drgElements.get(1));
+        assertEquals(e3, drgElements.get(2));
+    }
+
+    private DMNShape createDMNShape(final String refId) {
+        final DMNShape shape = mock(DMNShape.class);
+        final QName ref = mock(QName.class);
+        when(shape.getDmnElementRef()).thenReturn(ref);
+        when(ref.getLocalPart()).thenReturn(refId);
+        return shape;
+    }
+
+    private DRGElement createDRGElement(final String id) {
+        final DRGElement element = mock(DRGElement.class);
+        when(element.getId()).thenReturn(id);
+        return element;
     }
 
     @Test
