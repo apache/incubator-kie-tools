@@ -37,7 +37,7 @@ if [ -f "pom.xml" ]; then
 else
     echo "---> Generating project structure..."
 
-    $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kaas-quarkus-archetype \
+    $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
 	-DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
 
     # copy resources into the generated project
