@@ -1,5 +1,5 @@
 {
-  "name": "appformer-js-microeditor-envelope",
+  "name": "@kogito-tooling/microeditor-envelope",
   "version": "0.1.0",
   "description": "",
   "license": "Apache-2.0",
@@ -13,8 +13,8 @@
     "@patternfly/patternfly": "1.0.227",
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.2",
-    "appformer-js-core": "0.1.0",
-    "appformer-js-microeditor-envelope-protocol": "0.1.0",
+    "@kogito-tooling/core-api": "0.1.0",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.1.0",
     "react": "16.8.0",
     "react-dom": "16.8.4"
   },

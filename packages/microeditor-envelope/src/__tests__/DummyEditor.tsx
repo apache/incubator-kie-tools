@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
+import * as AppFormer from "@kogito-tooling/core-api";
 import * as React from "react";
 
 export class DummyEditor extends AppFormer.Editor {

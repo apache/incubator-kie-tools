@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
+import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { SimpleReactEditorsFactory } from "./SimpleReactEditorsFactory";
 
 declare global {

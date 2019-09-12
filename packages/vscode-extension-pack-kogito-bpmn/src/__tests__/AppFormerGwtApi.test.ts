@@ -16,7 +16,7 @@
 
 import { AppFormerGwtApi } from '../webview/gwt/AppFormerGwtApi';
 import { DummyEditor } from './DummyEditor';
-import * as AppFormer from "appformer-js-core";
+import * as AppFormer from "@kogito-tooling/core-api";
 import { GwtEditor } from '../webview/gwt/GwtEditor';
 
 class DummyGwtEditor {

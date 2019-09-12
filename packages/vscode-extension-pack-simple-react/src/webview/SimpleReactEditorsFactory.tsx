@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "appformer-js-core";
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
-import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
+import * as AppFormer from "@kogito-tooling/core-api";
+import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
 
 export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFactory<SimpleReactEditorsLanguageData> {
