@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-gofmt -s -l -w cmd/ pkg/ version/
-
-if [[ -n ${CI} ]]; then
-    git diff --exit-code
+if ! hash addlicense 2>/dev/null; then
+  go get -u github.com/google/addlicense
 fi
+
+addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg test version tools.go
