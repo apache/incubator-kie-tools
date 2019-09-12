@@ -127,7 +127,7 @@ public class ScenarioContextMenuRegistry {
                                     final Integer uiRowIndex,
                                     final Integer uiColumnIndex,
                                     final boolean isHeader) {
-
+        scenarioGrid.clearSelections();
         ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
         if (scenarioGridColumn == null) {
             return false;
@@ -184,7 +184,6 @@ public class ScenarioContextMenuRegistry {
                                                  final int top,
                                                  final int uiRowIndex,
                                                  final int uiColumnIndex) {
-        scenarioGrid.deselect();
         ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
         if (scenarioGridColumn == null) {
             return false;
@@ -198,6 +197,7 @@ public class ScenarioContextMenuRegistry {
             default:
                 unmodifiableColumnGridContextMenu.show(left, top, uiRowIndex);
         }
+        scenarioGrid.setSelectedCell(uiRowIndex, uiColumnIndex);
         return true;
     }
 
@@ -228,34 +228,34 @@ public class ScenarioContextMenuRegistry {
             return false;
         }
         boolean showDuplicateInstance = scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.RULE);
-        String group = ScenarioSimulationUtils.getOriginalColumnGroup(columnMetadata.getColumnGroup());
+            String group = ScenarioSimulationUtils.getOriginalColumnGroup(columnMetadata.getColumnGroup());
         /* The first case managed, empty string, is related to clicking on the first header row, the one containing
            GIVEN or EXPECT labels. In this case, the menu to show depends on columnMetadata.getTitle() value.
            All other cases, "GIVEN" and "EXPECT" groups names, manage the other headers rows.
          */
-        switch (group) {
-            case "":
-                switch (columnMetadata.getTitle()) {
+            switch (group) {
+                case "":
+                    switch (columnMetadata.getTitle()) {
                     case "GIVEN":
-                        headerGivenContextMenu.show(left, top);
-                        break;
+                            headerGivenContextMenu.show(left, top);
+                            break;
                     case "EXPECT":
-                        headerExpectedContextMenu.show(left, top);
-                        break;
-                    default:
-                        otherContextMenu.show(left, top);
-                }
-                break;
+                            headerExpectedContextMenu.show(left, top);
+                            break;
+                        default:
+                            otherContextMenu.show(left, top);
+                    }
+                    break;
             case "GIVEN":
-                givenContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
-                break;
+                    givenContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
+                    break;
             case "EXPECT":
-                expectedContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
-                break;
-            default:
-                otherContextMenu.show(left, top);
-        }
-        scenarioGrid.setSelectedColumnAndHeader(uiHeaderRowIndex, uiColumnIndex);
+                    expectedContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
+                    break;
+                default:
+                    otherContextMenu.show(left, top);
+            }
+            scenarioGrid.setSelectedColumnAndHeader(uiHeaderRowIndex, uiColumnIndex);
         return true;
     }
 

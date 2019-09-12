@@ -97,6 +97,7 @@ public class ScenarioGrid extends BaseGridWidget {
      */
     public void clearSelections() {
         model.clearSelections();
+        getLayer().batch();
     }
 
     /**
@@ -106,6 +107,16 @@ public class ScenarioGrid extends BaseGridWidget {
     public void setSelectedColumnAndHeader(int headerRowIndex, int columnIndex) {
         ((ScenarioGridModel) model).selectColumn(columnIndex);
         model.selectHeaderCell(headerRowIndex, columnIndex);
+        getLayer().batch();
+    }
+
+    /**
+     * Select body cell on the model
+     * @param columnIndex
+     */
+    public void setSelectedCell(int rowIndex, int columnIndex) {
+        selectCell(rowIndex, columnIndex, false, false);
+        getLayer().batch();
     }
 
     @Override
@@ -309,9 +320,9 @@ public class ScenarioGrid extends BaseGridWidget {
                                                            int uiColumnIndex,
                                                            String group) {
         return ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGrid,
-                                                                      scenarioGridColumn,
-                                                                      scenarioHeaderMetaData,
-                                                                      uiColumnIndex,
-                                                                      group);
+                                                                             scenarioGridColumn,
+                                                                             scenarioHeaderMetaData,
+                                                                             uiColumnIndex,
+                                                                             group);
     }
 }

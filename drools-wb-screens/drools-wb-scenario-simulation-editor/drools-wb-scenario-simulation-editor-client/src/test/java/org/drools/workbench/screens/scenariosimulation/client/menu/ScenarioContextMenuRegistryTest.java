@@ -39,8 +39,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -98,12 +100,13 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
         assertThat(scenarioContextMenuRegistry.manageRightClick(scenarioGridMock, contextMenuEventMock))
                 .as("Click to [0,0] header cell")
                 .isTrue();
-
+        verify(scenarioGridMock, times(1)).clearSelections();
         verify(expectedContextMenuMock).show(clickPointX,
                                              clickPointy,
                                              0,
                                              COLUMN_GROUP, false,
                                              simulationDescriptorMock.getType().equals(ScenarioSimulationModel.Type.RULE));
+        verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
         verifyZeroInteractions(headerExpectedContextMenuMock);
     }
 
@@ -153,10 +156,11 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
         assertThat(scenarioContextMenuRegistry.manageRightClick(scenarioGridMock, contextMenuEventMock))
                 .as("Click to expect/given body cell")
                 .isTrue();
-
+        verify(scenarioGridMock, times(1)).clearSelections();
         verify(gridContextMenuMock).show(clickPointX,
                                          clickPointY,
                                          0);
+        verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
     }
 
     @Test
