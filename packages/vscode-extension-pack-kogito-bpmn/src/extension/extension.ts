@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.@kogito-tooling/vscode-extension-pack-kogito-bpmn",
+    extensionName: "kiegroup.vscode-extension-pack-kogito-bpmn",
     webviewLocation: "dist/webview/index.js",
     context: context,
     router: new KogitoRouter(context)

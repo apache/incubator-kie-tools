@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/vscode-extension-pack-kogito-bpmn",
+  "name": "vscode-extension-pack-kogito-bpmn",
   "displayName": "BPMN Editor",
   "description": "",
   "version": "0.1.0",

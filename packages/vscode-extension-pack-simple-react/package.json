@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/vscode-extension-pack-simple-react",
+  "name": "vscode-extension-pack-simple-react",
   "displayName": "KIE :: Kogito Simple React Editor",
   "description": "",
   "version": "0.1.0",

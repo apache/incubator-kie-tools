@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.@kogito-tooling/vscode-extension-pack-simple-react",
+    extensionName: "kiegroup.vscode-extension-pack-simple-react",
     webviewLocation: "dist/webview/index.js",
     context: context,
     router: new SimpleReactEditorsRouter(context)
