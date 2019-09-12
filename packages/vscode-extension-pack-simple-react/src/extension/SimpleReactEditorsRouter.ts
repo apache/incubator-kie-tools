@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 import * as vscode from "vscode";
 import * as __path from "path";
 import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";

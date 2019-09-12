@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusApi, EnvelopeBusMessage, EnvelopeBusMessageType } from "appformer-js-microeditor-envelope-protocol";
-import { LanguageData } from "appformer-js-core";
+import { EnvelopeBusApi, EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { LanguageData } from "@kogito-tooling/core-api";
 
 export interface Impl {
   receive_contentResponse(content: string): void;

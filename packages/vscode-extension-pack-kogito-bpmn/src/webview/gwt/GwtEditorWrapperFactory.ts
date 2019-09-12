@@ -15,11 +15,11 @@
  */
 
 import { AppFormerGwtApi } from "./AppFormerGwtApi";
-import * as AppFormer from "appformer-js-core";
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
+import * as AppFormer from "@kogito-tooling/core-api";
+import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { Resource, KogitoLanguageData } from "../../common/KogitoLanguageData";
-import {EnvelopeBusInnerMessageHandler} from "appformer-js-microeditor-envelope";
+import {EnvelopeBusInnerMessageHandler} from "@kogito-tooling/microeditor-envelope";
 
 export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<KogitoLanguageData> {
   private readonly appFormerGwtApi: AppFormerGwtApi;
