@@ -37,21 +37,39 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        context.getModel().deleteColumn(status.getColumnIndex());
+        int newColumnPosition = -1;
+        if (status.isAsProperty()) {
+            context.getModel().deleteColumn(status.getColumnIndex());
+            newColumnPosition = status.getColumnIndex();
+        } else {
+            newColumnPosition = context.getModel().getInstanceLimits(status.getColumnIndex()).getMinRowIndex();
+            context.getModel().deleteInstance(status.getColumnIndex());
+        }
+        createColumnIfEmptyGroup(context, status, newColumnPosition);
+        new ReloadTestToolsCommand().execute(context);
+    }
+
+    /**
+     * Creates a new column in the group if there is none.
+     *
+     * @param context
+     * @param status
+     * @param newColumnPosition
+     */
+    protected void createColumnIfEmptyGroup(ScenarioSimulationContext context, ScenarioSimulationContext.Status status, int newColumnPosition) {
         if (context.getModel().getGroupSize(status.getColumnGroup()) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
             Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
             String instanceTitle = validPlaceholders.getKey();
             String propertyTitle = validPlaceholders.getValue();
-            context.getModel().insertColumn(status.getColumnIndex(), getScenarioGridColumnLocal(instanceTitle,
-                                                                                                propertyTitle,
-                                                                                                String.valueOf(new Date().getTime()),
-                                                                                                status.getColumnGroup(),
-                                                                                                factMappingType,
-                                                                                                context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
-                                                                                                context.getScenarioCellTextAreaSingletonDOMElementFactory(),
-                                                                                                ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+            context.getModel().insertColumn(newColumnPosition, getScenarioGridColumnLocal(instanceTitle,
+                                                                                          propertyTitle,
+                                                                                          String.valueOf(new Date().getTime()),
+                                                                                          status.getColumnGroup(),
+                                                                                          factMappingType,
+                                                                                          context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
+                                                                                          context.getScenarioCellTextAreaSingletonDOMElementFactory(),
+                                                                                          ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
-        new ReloadTestToolsCommand().execute(context);
     }
 }

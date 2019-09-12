@@ -270,6 +270,18 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
+     * This method <i>delete</i> the <b>whole instance</b> of the column at the given index from both the grid <b>and</b> the underlying model
+     * @param columnIndex
+     */
+    public void deleteInstance(int columnIndex) {
+        checkSimulation();
+        Range instanceRange = getInstanceLimits(columnIndex);
+        IntStream.iterate(instanceRange.getMaxRowIndex(), i -> i - 1)
+                .limit(instanceRange.getMaxRowIndex() - instanceRange.getMinRowIndex() + 1L)
+                .forEach(this::deleteColumn);
+    }
+
+    /**
      * This method update the instance mapped inside a given column
      * @param columnIndex
      * @param column
@@ -408,16 +420,27 @@ public class ScenarioGridModel extends BaseGridData {
      * This methods returns the <code>List&lt;ScenarioGridColumn&gt;</code> of a <b>single</b> block of columns of the same instance/data object.
      * A <code>single</code> block contains the selected column and all the columns immediately to the left and right of it with the same "label".
      * If there is another column with the same "label" but separated by a different column, it is not part of the group.
-     * @param selectedColumn
+     * @param columnIndex
      * @return
      */
-    public List<ScenarioGridColumn> getInstanceScenarioGridColumns(ScenarioGridColumn selectedColumn) {
-        int columnIndex = columns.indexOf(selectedColumn);
+    public List<ScenarioGridColumn> getInstanceScenarioGridColumns(int columnIndex) {
         Range instanceRange = getInstanceLimits(columnIndex);
         return columns.subList(instanceRange.getMinRowIndex(), instanceRange.getMaxRowIndex() + 1)
                 .stream()
                 .map(gridColumn -> (ScenarioGridColumn) gridColumn)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * This methods returns the <code>List&lt;ScenarioGridColumn&gt;</code> of a <b>single</b> block of columns of the same instance/data object.
+     * A <code>single</code> block contains the selected column and all the columns immediately to the left and right of it with the same "label".
+     * If there is another column with the same "label" but separated by a different column, it is not part of the group.
+     * @param selectedColumn
+     * @return
+     */
+    public List<ScenarioGridColumn> getInstanceScenarioGridColumns(ScenarioGridColumn selectedColumn) {
+        int columnIndex = columns.indexOf(selectedColumn);
+        return getInstanceScenarioGridColumns(columnIndex);
     }
 
     /**
@@ -713,7 +736,7 @@ public class ScenarioGridModel extends BaseGridData {
         return selectedColumn == null || isSameInstanceType(getColumns().indexOf(selectedColumn), className);
     }
 
-     /**
+    /**
      * Check if given <b>headerName</b> is the same as the <b>Fact</b> mapped to the
      * column at given index
      * @param columnIndex
@@ -724,7 +747,6 @@ public class ScenarioGridModel extends BaseGridData {
         if (!isSameInstanceType(columnIndex, headerName)) {
             throw new Exception(headerName + " is not the class of the current column.");
         }
-
     }
 
     /**

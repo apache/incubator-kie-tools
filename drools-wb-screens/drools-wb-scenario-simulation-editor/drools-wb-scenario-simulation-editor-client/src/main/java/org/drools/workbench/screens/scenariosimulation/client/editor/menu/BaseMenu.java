@@ -151,4 +151,9 @@ public abstract class BaseMenu implements IsWidget,
     protected RootPanel getRootPanel() {
         return RootPanel.get();
     }
+
+    protected void updateMenuItemAttributes(LIElement toUpdate, String id, String label, String i18n) {
+        toUpdate.setId(id);
+        toUpdate.getElementsByTagName("span").getItem(0).setInnerHTML(label);
+    }
 }

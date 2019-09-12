@@ -27,10 +27,11 @@ import javax.enterprise.context.Dependent;
 public class ExpectedContextMenu extends AbstractColumnMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String EXPECTCONTEXTMENU_EXPECT = "expectcontextmenu-expect";
-    private final String EXPECTCONTEXTMENU_INSERT_COLUMN_LEFT = "expectcontextmenu-insert-column-left";
-    private final String EXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT = "expectcontextmenu-insert-column-right";
-    private final String EXPECTCONTEXTMENU_DELETE_COLUMN = "expectcontextmenu-delete-column";
+    protected static final String EXPECTCONTEXTMENU_EXPECT = "expectcontextmenu-expect";
+    protected static final String EXPECTCONTEXTMENU_INSERT_COLUMN_LEFT = "expectcontextmenu-insert-column-left";
+    protected static final String EXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT = "expectcontextmenu-insert-column-right";
+    protected static final String EXPECTCONTEXTMENU_DELETE_COLUMN = "expectcontextmenu-delete-column";
+    protected static final String EXPECTCONTEXTMENU_DELETE_INSTANCE = "expectcontextmenu-delete-instance";
 
     @PostConstruct
     @Override
@@ -40,6 +41,7 @@ public class ExpectedContextMenu extends AbstractColumnMenuPresenter {
         COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT = EXPECTCONTEXTMENU_INSERT_COLUMN_LEFT;
         COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT = EXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT;
         COLUMNCONTEXTMENU_DELETE_COLUMN = EXPECTCONTEXTMENU_DELETE_COLUMN;
+        COLUMNCONTEXTMENU_DELETE_INSTANCE = EXPECTCONTEXTMENU_DELETE_INSTANCE;
         COLUMNCONTEXTMENU_LABEL = constants.expect().toUpperCase();
         COLUMNCONTEXTMENU_I18N = "expect";
         // SCENARIO MENU

@@ -21,7 +21,8 @@ import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateIn
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertColumnEvent;
 
 /**
- * This class is meant to provide common methods to <b>column-specific</b> menus {@link ExpectedContextMenu} and {@link GivenContextMenu}
+ * This class is meant to provide common methods to <b>column-specific</b> menus {@link ExpectedContextMenu} and {@link GivenContextMenu},
+ * both <b>instance</b> and <b>property</b> header.
  * It is provided to avoid code duplication in concrete implementations
  */
 public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPresenter {
@@ -30,14 +31,15 @@ public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPres
     protected String COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT;
     protected String COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT;
     protected String COLUMNCONTEXTMENU_DELETE_COLUMN;
+    protected String COLUMNCONTEXTMENU_DELETE_INSTANCE;
     protected String COLUMNCONTEXTMENU_DUPLICATE_INSTANCE;
     protected String COLUMNCONTEXTMENU_LABEL;
     protected String COLUMNCONTEXTMENU_I18N;
 
-    private LIElement insertColumnLeftLIElement;
-    private LIElement insertColumnRightLIElement;
-    private LIElement deleteColumnLIElement;
-    private LIElement duplicateInstanceLIElement;
+    protected LIElement insertColumnLeftLIElement;
+    protected LIElement insertColumnRightLIElement;
+    protected LIElement deleteColumnInstanceLIElement;
+    protected LIElement duplicateInstanceLIElement;
     protected LIElement columnContextLIElement;
 
     /**
@@ -47,7 +49,7 @@ public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPres
         columnContextLIElement = addMenuItem(COLUMNCONTEXTMENU_COLUMN, COLUMNCONTEXTMENU_LABEL, COLUMNCONTEXTMENU_I18N);
         insertColumnLeftLIElement = addExecutableMenuItem(COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT, constants.insertColumnLeft(), "insertColumnLeft");
         insertColumnRightLIElement = addExecutableMenuItem(COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT, constants.insertColumnRight(), "insertColumnRight");
-        deleteColumnLIElement = addExecutableMenuItem(COLUMNCONTEXTMENU_DELETE_COLUMN, constants.deleteColumn(), "deleteColumn");
+        deleteColumnInstanceLIElement = addExecutableMenuItem(COLUMNCONTEXTMENU_DELETE_COLUMN, constants.deleteColumn(), "deleteColumn");
         duplicateInstanceLIElement = addExecutableMenuItem(COLUMNCONTEXTMENU_DUPLICATE_INSTANCE, constants.duplicateInstance(), "duplicateInstance");
         super.initMenu();
     }
@@ -57,12 +59,23 @@ public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPres
             removeMenuItem(duplicateInstanceLIElement);
             duplicateInstanceLIElement = null;
         }
-        super.show(mx, my);
         mapEvent(insertColumnLeftLIElement, new InsertColumnEvent(columnIndex, false, asProperty));
         mapEvent(insertColumnRightLIElement, new InsertColumnEvent(columnIndex, true, asProperty));
-        mapEvent(deleteColumnLIElement, new DeleteColumnEvent(columnIndex, group));
+        if (asProperty) {
+            updateMenuItemAttributes(deleteColumnInstanceLIElement, COLUMNCONTEXTMENU_DELETE_COLUMN, constants.deleteColumn(), "deleteColumn");
+            mapEvent(deleteColumnInstanceLIElement, new DeleteColumnEvent(columnIndex, group, true));
+        } else {
+            updateMenuItemAttributes(deleteColumnInstanceLIElement, COLUMNCONTEXTMENU_DELETE_INSTANCE, constants.deleteInstance(), "deleteInstance");
+            mapEvent(deleteColumnInstanceLIElement, new DeleteColumnEvent(columnIndex, group, false));
+        }
         if (duplicateInstanceLIElement != null) {
             mapEvent(duplicateInstanceLIElement, new DuplicateInstanceEvent(columnIndex));
         }
+        callSuperShow(mx, my);
     }
+
+    protected void callSuperShow(final int mx, final int my) {
+        super.show(mx, my);
+    }
+
 }

@@ -248,7 +248,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
 
     @Test
     public void onDeleteColumnEvent() {
-        DeleteColumnEvent event = new DeleteColumnEvent(COLUMN_INDEX, COLUMN_GROUP);
+        DeleteColumnEvent event = new DeleteColumnEvent(COLUMN_INDEX, COLUMN_GROUP, false);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),

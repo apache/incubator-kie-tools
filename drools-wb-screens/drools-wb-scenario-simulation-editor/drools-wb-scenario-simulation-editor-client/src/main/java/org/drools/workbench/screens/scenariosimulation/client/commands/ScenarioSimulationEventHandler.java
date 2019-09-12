@@ -225,6 +225,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         context.getStatus().setColumnGroup(event.getColumnGroup());
         context.getStatus().setDisable(true);
         context.getStatus().setOpenDock(false);
+        context.getStatus().setAsProperty(event.isAsProperty());
         commonExecution(context,
                         new DeleteColumnCommand(),
                         true);
