@@ -69,7 +69,7 @@ export class KogitoEditorsExtension {
           return;
         }
 
-        const path = textEditor.document.uri.path;
+        const path = textEditor.document.uri.fsPath;
         const openKogitoEditor = this.editorStore.get(path);
 
         if (!openKogitoEditor) {

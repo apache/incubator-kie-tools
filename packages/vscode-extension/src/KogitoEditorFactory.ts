@@ -15,6 +15,7 @@
  */
 
 import * as vscode from "vscode";
+import * as path_ from "path";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
 import { Router } from "@kogito-tooling/core-api";
@@ -47,7 +48,7 @@ export class KogitoEditorFactory {
   }
 
   private openNewPanel(path: string) {
-    const panelTitle = path.split("/").pop()!;
+    const panelTitle = path.split(path_.sep).pop()!;
 
     //this will open a panel on vscode's UI.
     return vscode.window.createWebviewPanel(
