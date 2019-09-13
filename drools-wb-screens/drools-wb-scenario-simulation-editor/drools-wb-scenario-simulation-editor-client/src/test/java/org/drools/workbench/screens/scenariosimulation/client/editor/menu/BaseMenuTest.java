@@ -25,7 +25,6 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.web.bindery.event.shared.Event;
-import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.junit.Before;
 import org.junit.Test;
@@ -123,12 +122,6 @@ public class BaseMenuTest {
         LIElement toRemoveMock = mock(LIElement.class);
         baseMenu.removeMenuItem(toRemoveMock);
         verify(contextMenuDropdownMock, times(1)).removeChild(eq(toRemoveMock));
-    }
-
-    @Test
-    public void onRefreshMenusEvent() {
-        baseMenu.onRefreshMenusEvent(mock(RefreshMenusEvent.class));
-        verify(baseMenu, times(1)).initialise();
     }
 
     @Test

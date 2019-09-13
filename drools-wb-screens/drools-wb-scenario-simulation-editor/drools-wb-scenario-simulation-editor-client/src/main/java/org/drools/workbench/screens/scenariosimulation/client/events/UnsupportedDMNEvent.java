@@ -23,7 +23,8 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.Unsupport
  */
 public class UnsupportedDMNEvent extends GwtEvent<UnsupportedDMNEventHandler> {
 
-    public static Type<UnsupportedDMNEventHandler> TYPE = new Type<>();
+    public static final Type<UnsupportedDMNEventHandler> TYPE = new Type<>();
+
     private final String message;
 
     public UnsupportedDMNEvent(String message) {

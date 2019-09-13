@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteRow
  */
 public class DeleteRowEvent extends GwtEvent<DeleteRowEventHandler> {
 
-    public static Type<DeleteRowEventHandler> TYPE = new Type<>();
+    public static final Type<DeleteRowEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
 

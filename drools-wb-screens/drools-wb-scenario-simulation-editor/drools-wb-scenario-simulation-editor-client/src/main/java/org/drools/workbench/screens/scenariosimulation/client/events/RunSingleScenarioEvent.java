@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.RunSingle
  */
 public class RunSingleScenarioEvent extends GwtEvent<RunSingleScenarioEventHandler> {
 
-    public static Type<RunSingleScenarioEventHandler> TYPE = new Type<>();
+    public static final Type<RunSingleScenarioEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
 

@@ -23,11 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEvent
  */
 public class RedoEvent extends GwtEvent<RedoEventHandler> {
 
-    public static Type<RedoEventHandler> TYPE = new Type<>();
-
-
-    public RedoEvent() {
-    }
+    public static final Type<RedoEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<RedoEventHandler> getAssociatedType() {

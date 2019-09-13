@@ -23,11 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendRow
  */
 public class AppendRowEvent extends GwtEvent<AppendRowEventHandler> {
 
-    public static Type<AppendRowEventHandler> TYPE = new Type<>();
-
-
-    public AppendRowEvent() {
-    }
+    public static final Type<AppendRowEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<AppendRowEventHandler> getAssociatedType() {

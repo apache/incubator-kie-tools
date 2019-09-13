@@ -21,7 +21,6 @@ import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.web.bindery.event.shared.Event;
-import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.uberfire.client.mvp.UberView;
 
 /**
@@ -77,8 +76,6 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
          * @param toBeMapped
          */
         void mapEvent(LIElement executableMenuItem, Event toBeMapped);
-
-        void onRefreshMenusEvent(final RefreshMenusEvent event);
 
         void show(final int mx,
                   final int my);

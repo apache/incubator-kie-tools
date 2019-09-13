@@ -23,8 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioG
  */
 public class ScenarioGridReloadEvent extends GwtEvent<ScenarioGridReloadEventHandler> {
 
-    public static Type<ScenarioGridReloadEventHandler> TYPE = new Type<>();
-
+    public static final Type<ScenarioGridReloadEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<ScenarioGridReloadEventHandler> getAssociatedType() {

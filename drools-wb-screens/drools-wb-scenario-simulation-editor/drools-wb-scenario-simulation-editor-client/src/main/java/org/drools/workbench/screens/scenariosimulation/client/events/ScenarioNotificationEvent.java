@@ -17,20 +17,21 @@ package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioNotificationEventHandler;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * <code>GwtEvent</code> to show a notification
  */
 public class ScenarioNotificationEvent extends GwtEvent<ScenarioNotificationEventHandler> {
 
-    public static Type<ScenarioNotificationEventHandler> TYPE = new Type<>();
+    public static final Type<ScenarioNotificationEventHandler> TYPE = new Type<>();
+
     private final String message;
-    private final org.uberfire.workbench.events.NotificationEvent.NotificationType type;
+    private final org.uberfire.workbench.events.NotificationEvent.NotificationType notificationType;
 
-    public ScenarioNotificationEvent(String message, org.uberfire.workbench.events.NotificationEvent.NotificationType type) {
-
+    public ScenarioNotificationEvent(String message, NotificationEvent.NotificationType type) {
         this.message = message;
-        this.type = type;
+        this.notificationType = type;
     }
 
     @Override
@@ -42,8 +43,8 @@ public class ScenarioNotificationEvent extends GwtEvent<ScenarioNotificationEven
         return message;
     }
 
-    public org.uberfire.workbench.events.NotificationEvent.NotificationType getType() {
-        return type;
+    public NotificationEvent.NotificationType getNotificationType() {
+        return notificationType;
     }
 
     @Override

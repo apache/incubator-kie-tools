@@ -23,11 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEvent
  */
 public class UndoEvent extends GwtEvent<UndoEventHandler> {
 
-    public static Type<UndoEventHandler> TYPE = new Type<>();
-
-
-    public UndoEvent() {
-    }
+    public static final Type<UndoEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<UndoEventHandler> getAssociatedType() {
@@ -38,6 +34,4 @@ public class UndoEvent extends GwtEvent<UndoEventHandler> {
     protected void dispatch(UndoEventHandler handler) {
         handler.onEvent(this);
     }
-
-
 }

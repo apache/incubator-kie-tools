@@ -23,11 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ImportEve
  */
 public class ImportEvent extends GwtEvent<ImportEventHandler> {
 
-    public static Type<ImportEventHandler> TYPE = new Type<>();
-
-
-    public ImportEvent() {
-    }
+    public static final Type<ImportEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<ImportEventHandler> getAssociatedType() {

@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteCol
  */
 public class DeleteColumnEvent extends GwtEvent<DeleteColumnEventHandler> {
 
-    public static Type<DeleteColumnEventHandler> TYPE = new Type<>();
+    public static final Type<DeleteColumnEventHandler> TYPE = new Type<>();
 
     private int columnIndex;
     private String columnGroup;

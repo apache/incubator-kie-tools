@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.Event;
-import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 
 /**
@@ -84,11 +83,6 @@ public abstract class BaseMenu implements IsWidget,
     @Override
     public void mapEvent(LIElement executableMenuItem, Event toBeMapped) {
         executableMenuItemPresenter.mapEvent(executableMenuItem, toBeMapped);
-    }
-
-    @Override
-    public void onRefreshMenusEvent(final RefreshMenusEvent event) {
-        initialise();
     }
 
     @Override

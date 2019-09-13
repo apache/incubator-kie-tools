@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.Duplicate
  */
 public class DuplicateRowEvent extends GwtEvent<DuplicateRowEventHandler> {
 
-    public static Type<DuplicateRowEventHandler> TYPE = new Type<>();
+    public static final Type<DuplicateRowEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
 

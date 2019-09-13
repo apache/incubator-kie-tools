@@ -34,7 +34,7 @@ import org.drools.scenariosimulation.api.model.Simulation;
 
 public class ScenarioCsvImportExport {
 
-    public static int HEADER_SIZE = 3;
+    public static final int HEADER_SIZE = 3;
 
     public String exportData(Simulation simulation) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();

@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetGridCe
  */
 public class SetGridCellValueEvent extends GwtEvent<SetGridCellValueEventHandler> {
 
-    public static Type<SetGridCellValueEventHandler> TYPE = new Type<>();
+    public static final Type<SetGridCellValueEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
     private int columnIndex;

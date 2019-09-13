@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependCo
  */
 public class PrependColumnEvent extends GwtEvent<PrependColumnEventHandler> {
 
-    public static Type<PrependColumnEventHandler> TYPE = new Type<>();
+    public static final Type<PrependColumnEventHandler> TYPE = new Type<>();
 
     private String columnGroup;
 

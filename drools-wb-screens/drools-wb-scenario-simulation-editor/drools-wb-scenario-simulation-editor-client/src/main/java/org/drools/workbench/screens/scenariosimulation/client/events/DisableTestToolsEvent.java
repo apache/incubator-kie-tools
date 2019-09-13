@@ -23,10 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableTe
  */
 public class DisableTestToolsEvent extends GwtEvent<DisableTestToolsEventHandler> {
 
-    public static Type<DisableTestToolsEventHandler> TYPE = new Type<>();
-
-    public DisableTestToolsEvent() {
-    }
+    public static final Type<DisableTestToolsEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<DisableTestToolsEventHandler> getAssociatedType() {

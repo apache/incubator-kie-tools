@@ -25,7 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetProper
  */
 public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandler> {
 
-    public static Type<SetPropertyHeaderEventHandler> TYPE = new Type<>();
+    public static final Type<SetPropertyHeaderEventHandler> TYPE = new Type<>();
 
     private String fullPackage;
     private List<String> propertyNameElements;

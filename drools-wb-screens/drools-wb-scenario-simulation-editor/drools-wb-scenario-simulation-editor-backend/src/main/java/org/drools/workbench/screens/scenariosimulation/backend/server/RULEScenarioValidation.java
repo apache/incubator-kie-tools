@@ -38,7 +38,7 @@ import static org.drools.workbench.screens.scenariosimulation.model.FactMappingV
 
 public class RULEScenarioValidation extends AbstractScenarioValidation {
 
-    public static RULEScenarioValidation INSTANCE = new RULEScenarioValidation();
+    public static final RULEScenarioValidation INSTANCE = new RULEScenarioValidation();
 
     /**
      * Validate structure of a RULE test scenario.

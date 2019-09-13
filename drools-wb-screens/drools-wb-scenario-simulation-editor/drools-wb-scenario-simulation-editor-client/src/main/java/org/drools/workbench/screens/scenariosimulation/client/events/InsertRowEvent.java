@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertRow
  */
 public class InsertRowEvent extends GwtEvent<InsertRowEventHandler> {
 
-    public static Type<InsertRowEventHandler> TYPE = new Type<>();
+    public static final Type<InsertRowEventHandler> TYPE = new Type<>();
 
     private final int rowIndex;
 

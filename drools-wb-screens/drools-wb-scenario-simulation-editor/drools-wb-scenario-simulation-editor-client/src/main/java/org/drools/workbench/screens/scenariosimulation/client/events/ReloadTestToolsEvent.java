@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadTes
  */
 public class ReloadTestToolsEvent extends GwtEvent<ReloadTestToolsEventHandler> {
 
-    public static Type<ReloadTestToolsEventHandler> TYPE = new Type<>();
+    public static final Type<ReloadTestToolsEventHandler> TYPE = new Type<>();
 
     private final boolean disable;
 

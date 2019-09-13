@@ -25,7 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableTes
  */
 public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> {
 
-    public static Type<EnableTestToolsEventHandler> TYPE = new Type<>();
+    public static final Type<EnableTestToolsEventHandler> TYPE = new Type<>();
 
     /**
      * The string to use for filtering in test tools panel

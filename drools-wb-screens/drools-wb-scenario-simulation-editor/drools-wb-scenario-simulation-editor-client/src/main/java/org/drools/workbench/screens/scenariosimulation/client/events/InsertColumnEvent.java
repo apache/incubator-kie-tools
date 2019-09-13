@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertCol
  */
 public class InsertColumnEvent extends GwtEvent<InsertColumnEventHandler> {
 
-    public static Type<InsertColumnEventHandler> TYPE = new Type<>();
+    public static final Type<InsertColumnEventHandler> TYPE = new Type<>();
 
     private int columnIndex;
     private boolean isRight;

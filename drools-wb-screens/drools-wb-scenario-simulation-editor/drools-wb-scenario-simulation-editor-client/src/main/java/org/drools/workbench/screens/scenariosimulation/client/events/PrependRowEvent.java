@@ -23,11 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependRo
  */
 public class PrependRowEvent extends GwtEvent<PrependRowEventHandler> {
 
-    public static Type<PrependRowEventHandler> TYPE = new Type<>();
-
-
-    public PrependRowEvent() {
-    }
+    public static final Type<PrependRowEventHandler> TYPE = new Type<>();
 
     @Override
     public Type<PrependRowEventHandler> getAssociatedType() {
@@ -38,6 +34,4 @@ public class PrependRowEvent extends GwtEvent<PrependRowEventHandler> {
     protected void dispatch(PrependRowEventHandler handler) {
         handler.onEvent(this);
     }
-
-
 }

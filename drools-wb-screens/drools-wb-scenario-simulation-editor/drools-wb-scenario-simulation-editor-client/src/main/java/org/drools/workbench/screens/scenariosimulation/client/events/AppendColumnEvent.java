@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendCol
  */
 public class AppendColumnEvent extends GwtEvent<AppendColumnEventHandler> {
 
-    public static Type<AppendColumnEventHandler> TYPE = new Type<>();
+    public static final Type<AppendColumnEventHandler> TYPE = new Type<>();
 
     private String columnGroup;
 

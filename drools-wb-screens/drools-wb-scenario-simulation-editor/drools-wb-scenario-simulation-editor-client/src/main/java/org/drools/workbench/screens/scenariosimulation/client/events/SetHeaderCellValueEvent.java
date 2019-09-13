@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetHeader
  */
 public class SetHeaderCellValueEvent extends GwtEvent<SetHeaderCellValueEventHandler> {
 
-    public static Type<SetHeaderCellValueEventHandler> TYPE = new Type<>();
+    public static final Type<SetHeaderCellValueEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
     private int columnIndex;

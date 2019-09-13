@@ -41,7 +41,7 @@ import static org.kie.dmn.feel.lang.types.BuiltInType.UNKNOWN;
 
 public class DMNScenarioValidation extends AbstractScenarioValidation {
 
-    public static DMNScenarioValidation INSTANCE = new DMNScenarioValidation();
+    public static final DMNScenarioValidation INSTANCE = new DMNScenarioValidation();
 
     /**
      * Validate structure of a DMN test scenario.

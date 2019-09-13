@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetInstan
  */
 public class SetInstanceHeaderEvent extends GwtEvent<SetInstanceHeaderEventHandler> {
 
-    public static Type<SetInstanceHeaderEventHandler> TYPE = new Type<>();
+    public static final Type<SetInstanceHeaderEventHandler> TYPE = new Type<>();
 
     private String fullPackage;
     private String className;
