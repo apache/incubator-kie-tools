@@ -20,6 +20,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.model.Credentials;
+import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -31,7 +33,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -87,6 +88,21 @@ public class ImportRepositoryPopUpPresenterTest {
         verify(view).hideBusyIndicator();
         verify(view).hide();
         verify(libraryPlaces).goToExternalImportPresenter(any());
+    }
+
+    @Test
+    public void importRepositoryWhenUrlNeedsTrimTest() {
+        ExampleRepository repository = new ExampleRepository("repoUrl",
+                                                             new Credentials("username",
+                                                                             "password"));
+
+        doReturn("     repoUrl     ").when(view).getRepositoryURL();
+        doReturn("username").when(view).getUserName();
+        doReturn("password").when(view).getPassword();
+
+        presenter.importRepository();
+
+        verify(libraryService).getProjects(repository);
     }
 
     @Test

@@ -99,7 +99,7 @@ public class ImportRepositoryPopUpPresenter {
                                view.hideBusyIndicator();
                                view.showError(view.getNoProjectsToImportMessage());
                                return false;
-                           }).getProjects(new ExampleRepository(repositoryUrl,
+                           }).getProjects(new ExampleRepository(repositoryUrl.trim(),
                                                                 new Credentials(
                                                                         view.getUserName(),
                                                                         view.getPassword())));
