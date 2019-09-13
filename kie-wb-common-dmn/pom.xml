@@ -46,4 +46,13 @@
     <module>kie-wb-common-dmn-webapp</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <!-- To avoid failing the build with Sonar analysis due to insufficient coverage.-->
+        <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+      </properties>
+    </profile>
+  </profiles>
 </project>

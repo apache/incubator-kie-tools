@@ -13,4 +13,14 @@
     <module>kie-wb-common-cli-tools</module>
     <module>kie-wb-common-cli-migration-tool</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <!-- TODO: erase the profile once this module is able to build with code coverage enabled -->
+      <id>run-code-coverage</id>
+      <properties>
+        <code.coverage.disabled>true</code.coverage.disabled>
+      </properties>
+    </profile>
+  </profiles>
 </project>

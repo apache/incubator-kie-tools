@@ -232,4 +232,72 @@
 
   </build>
 
+  <profiles>
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <jacoco.excludes>*Lexer</jacoco.excludes>
+        <code.coverage.disabled>false</code.coverage.disabled>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.jacoco</groupId>
+          <artifactId>org.jacoco.agent</artifactId>
+          <classifier>runtime</classifier>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${version.jacoco.plugin}</version>
+              <configuration>
+                <append>true</append>
+                <destFile>${jacoco.exec.file}</destFile>
+                <excludes>
+                  <exclude>${jacoco.excludes}</exclude>
+                </excludes>
+              </configuration>
+              <executions>
+                <execution>
+                  <id>default-instrument</id>
+                  <goals>
+                    <goal>instrument</goal>
+                  </goals>
+                </execution>
+                <execution>
+                  <id>default-restore-instrumented-classes</id>
+                  <goals>
+                    <goal>restore-instrumented-classes</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <systemPropertyVariables>
+                  <jacoco-agent.destfile>${jacoco.exec.file}</jacoco-agent.destfile>
+                </systemPropertyVariables>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <skip>${code.coverage.disabled}</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
