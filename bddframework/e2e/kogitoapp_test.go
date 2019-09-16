@@ -29,7 +29,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis"
-	v1alpha1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	appsv1 "github.com/openshift/api/apps/v1"
 	framework "github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
@@ -106,7 +106,6 @@ func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *fram
 			Deployments: v1alpha1.Deployments{},
 		},
 		Spec: v1alpha1.KogitoAppSpec{
-			Name: appName,
 			Build: &v1alpha1.KogitoAppBuildObject{
 				GitSource: &v1alpha1.GitSource{
 					URI:        &gitProjectURI,
