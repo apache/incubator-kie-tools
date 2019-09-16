@@ -4,7 +4,7 @@ This S2I is considered image builder that is equipped with build tools
 
 - GraalVM
 - Apache Maven
-- JRE
+- JDK
 
 To perform non native builds set the env **NATIVE** to **false**.
 

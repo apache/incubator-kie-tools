@@ -21,7 +21,7 @@ modules:
   - name: install-rpm-dependencies
   - name: add-kogito-user
   - name: java-openjdk
-    version: "1.8.0"
+    version: "1.8.0-headless"
   - name: kogito-springboot-ubi8
 
 # s2i build . quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest

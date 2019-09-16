@@ -21,7 +21,7 @@ modules:
   - name: install-rpm-dependencies
   - name: add-kogito-user
   - name: java-openjdk
-    version: "1.8.0"
+    version: "1.8.0-headless"
   - name: kogito-quarkus-jvm-ubi8
 
 
