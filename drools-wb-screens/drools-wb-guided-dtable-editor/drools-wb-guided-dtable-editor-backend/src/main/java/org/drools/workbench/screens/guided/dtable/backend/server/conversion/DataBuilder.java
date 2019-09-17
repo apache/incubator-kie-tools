@@ -24,26 +24,34 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.drools.core.util.DateUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.util.ColumnUtilitiesBase;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
+import static org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint.TYPE_PREDICATE;
+import static org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint.TYPE_RET_VALUE;
+
 public class DataBuilder {
 
     private final static int FIRST_DATA_ROW = 9;
-    private final static String DROOLS_DATE_TIME_FORMAT_KEY = "drools.dateformat";
-    private final static String DEFAULT_DATE_TIME_FORMAT = "dd-MMM-yyyy";
 
     private final Sheet sheet;
     private final GuidedDecisionTable52 dtable;
     private final ColumnUtilitiesBase utilsWithRespectForLists;
     private final ColumnUtilitiesBase utilsWithNoRespectForLists;
+
     private int rowCount = FIRST_DATA_ROW;
 
     public DataBuilder(final Sheet sheet,
@@ -72,6 +80,7 @@ public class DataBuilder {
         private final Row xlsRow = sheet.createRow(rowCount);
         private final Set<String> addedInserts = new HashSet<>();
         private final List<DTCellValue52> row;
+
         private int sourceColumnIndex = 0;
         private int targetColumnIndex = -1;
 
@@ -88,36 +97,59 @@ public class DataBuilder {
                             .setCellValue(cell.getStringValue());
                 } else if (sourceColumnIndex > 1) {
 
-                    if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ActionInsertFactCol52) {
-                        final ActionInsertFactCol52 column = (ActionInsertFactCol52) dtable.getExpandedColumns().get(sourceColumnIndex);
+                    final BaseColumn baseColumn = dtable.getExpandedColumns().get(sourceColumnIndex);
 
-                        if (!addedInserts.contains(column.getBoundName())) {
+                    if (baseColumn instanceof ActionInsertFactCol52) {
 
-                            addedInserts.add(column.getBoundName());
-
-                            xlsRow.createCell(targetColumnIndex)
-                                    .setCellValue("X");
-
-                            targetColumnIndex++;
-                        }
+                        addActionInsertFirstColumn();
                     }
 
-                    if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ActionRetractFactCol52) {
-                        if (cell.getStringValue() != null && !cell.getStringValue().trim().isEmpty()) {
+                    if (isOperator("== null") || isOperator("!= null")) {
+
+                        xlsRow.createCell(targetColumnIndex)
+                                .setCellValue("null");
+                    } else if (isWorkItemColumn()) {
+
+                        if (cell.getBooleanValue() != null
+                                && cell.getBooleanValue()) {
+                            xlsRow.createCell(targetColumnIndex)
+                                    .setCellValue("X");
+                        }
+                    } else if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ActionRetractFactCol52) {
+
+                        if (!StringUtils.isEmpty(cell.getStringValue())) {
                             xlsRow.createCell(targetColumnIndex)
                                     .setCellValue(cell.getStringValue());
                         }
                     } else {
 
-                        final DataType.DataTypes dataType = getColumnDataType(sourceColumnIndex);
-
-                        setValue(cell, dataType);
+                        setValue(cell, getColumnDataType(sourceColumnIndex));
                     }
                 }
                 sourceColumnIndex++;
                 targetColumnIndex++;
             }
             rowCount++;
+        }
+
+        private boolean isWorkItemColumn() {
+            final BaseColumn column = dtable.getExpandedColumns().get(sourceColumnIndex);
+            return column instanceof ActionWorkItemCol52
+                    || column instanceof ActionWorkItemSetFieldCol52;
+        }
+
+        private void addActionInsertFirstColumn() {
+            final ActionInsertFactCol52 column = (ActionInsertFactCol52) dtable.getExpandedColumns().get(sourceColumnIndex);
+
+            if (!addedInserts.contains(column.getBoundName())) {
+
+                addedInserts.add(column.getBoundName());
+
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue("X");
+
+                targetColumnIndex++;
+            }
         }
 
         private void setValue(final DTCellValue52 cell,
@@ -177,9 +209,15 @@ public class DataBuilder {
             if (isTheRealCellValueString(sourceColumnIndex) && cell.getStringValue() != null) {
 
                 if (cell.getStringValue() != null && !cell.getStringValue().isEmpty()) {
+                    if (isOperator("in")) {
 
-                    xlsRow.createCell(targetColumnIndex)
-                            .setCellValue(String.format("\"%s\"", fixStringValue(cell)));
+                        xlsRow.createCell(targetColumnIndex)
+                                .setCellValue(String.format("(%s)", fixStringValue(cell)));
+                    } else {
+
+                        xlsRow.createCell(targetColumnIndex)
+                                .setCellValue(String.format("\"%s\"", fixStringValue(cell)));
+                    }
                 }
             } else {
                 /*
@@ -198,6 +236,18 @@ public class DataBuilder {
             }
         }
 
+        private boolean isOperator(final String operator) {
+
+            if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ConditionCol52) {
+
+                final ConditionCol52 column = (ConditionCol52) dtable.getExpandedColumns().get(sourceColumnIndex);
+                return Objects.equals(column.getOperator(), operator);
+            } else {
+
+                return false;
+            }
+        }
+
         private String fixStringValue(final DTCellValue52 cell) {
             if (cell.getStringValue().length() > 2 && cell.getStringValue().startsWith("\"") && cell.getStringValue().endsWith("\"")) {
                 return cell.getStringValue().substring(1, cell.getStringValue().length() - 1);
@@ -208,7 +258,23 @@ public class DataBuilder {
 
         private boolean isTheRealCellValueString(final int sourceColumnIndex) {
             return !(dtable.getExpandedColumns().get(sourceColumnIndex) instanceof AttributeCol52)
+                    && !(dtable.getExpandedColumns().get(sourceColumnIndex) instanceof MetadataCol52)
+                    && !isFormula(sourceColumnIndex)
                     && Objects.equals(DataType.DataTypes.STRING, utilsWithNoRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(sourceColumnIndex)));
+        }
+
+        private boolean isFormula(final int sourceColumnIndex) {
+
+            if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ConditionCol52) {
+
+                final int constraintValueType = ((ConditionCol52) dtable.getExpandedColumns().get(sourceColumnIndex)).getConstraintValueType();
+
+                if (constraintValueType == TYPE_RET_VALUE || constraintValueType == TYPE_PREDICATE) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private DataType.DataTypes getColumnDataType(final int columnIndex) {

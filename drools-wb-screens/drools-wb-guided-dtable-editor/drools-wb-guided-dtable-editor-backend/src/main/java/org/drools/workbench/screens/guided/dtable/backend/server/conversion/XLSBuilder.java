@@ -53,9 +53,12 @@ public class XLSBuilder {
             makeImports();
 
             makeTable();
-        } catch (final Exception e) {
+        } catch (final UnsupportedOperationException e) {
             return new BuildResult(workbook,
                                    new XLSConversionResult(e.getMessage()));
+        } catch (final Exception e) {
+            return new BuildResult(workbook,
+                                   new XLSConversionResult(e.toString() + " : " + e.getMessage()));
         }
         return new BuildResult(workbook,
                                new XLSConversionResult());
@@ -98,7 +101,7 @@ public class XLSBuilder {
     }
 
     private void makeTableSubHeader() {
-        new SubHeaderBuilder(sheet, dtable).build();
+        new SubHeaderBuilder(sheet, dtable, dmo).build();
     }
 
     private void makePatternRow() {

@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
@@ -55,7 +56,7 @@ public class PatternRowBuilder {
 
         for (int sourceIndex = 0; sourceIndex < expandedColumns.size(); sourceIndex++) {
 
-            BaseColumn baseColumn = expandedColumns.get(sourceIndex);
+            final BaseColumn baseColumn = expandedColumns.get(sourceIndex);
 
             if (baseColumn instanceof BRLConditionVariableColumn
                     || baseColumn instanceof BRLConditionColumn
@@ -66,14 +67,25 @@ public class PatternRowBuilder {
 
                 final ConditionCol52 col = (ConditionCol52) baseColumn;
                 final Pattern52 pattern = dtable.getPattern(col);
-                int columnWidth = dtable.getConditionPattern(pattern.getBoundName()).getChildColumns().size();
+                final int columnWidth = getColumnWidth(pattern);
 
                 final int endIndex = columnIndex + columnWidth - 1;
 
                 for (int i = columnIndex; i <= endIndex; i++) {
-                    patternRow.createCell(i).setCellValue(String.format("%s : %s",
-                                                                        pattern.getBoundName(),
-                                                                        pattern.getFactType()));
+
+                    if (hasEntryPoint(pattern)) {
+
+                        throw new UnsupportedOperationException("Conversion of the entry points are not supported.");
+                    } else if (pattern.isNegated()) {
+
+                        patternRow.createCell(i).setCellValue(String.format("not %s",
+                                                                            pattern.getFactType()));
+                    } else {
+
+                        patternRow.createCell(i).setCellValue(String.format("%s : %s",
+                                                                            pattern.getBoundName(),
+                                                                            pattern.getFactType()));
+                    }
                 }
 
                 if (columnWidth > 1) {
@@ -87,6 +99,18 @@ public class PatternRowBuilder {
                 continue;
             }
             columnIndex++;
+        }
+    }
+
+    private boolean hasEntryPoint(final Pattern52 pattern) {
+        return !StringUtils.isEmpty(pattern.getEntryPointName());
+    }
+
+    private int getColumnWidth(final Pattern52 pattern) {
+        if (StringUtils.isEmpty(pattern.getBoundName())) {
+            return 1;
+        } else {
+            return pattern.getChildColumns().size();
         }
     }
 }
