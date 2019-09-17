@@ -62,6 +62,8 @@ public class SaveAndRenameCommandBuilder<T, M> {
     };
     private Command onError = () -> {
     };
+    private Command beforeSaveAndRenameCommand = () -> {
+    };
 
     @Inject
     public SaveAndRenameCommandBuilder(final RenamePopUpPresenter renamePopUpPresenter,
@@ -120,6 +122,11 @@ public class SaveAndRenameCommandBuilder<T, M> {
         return this;
     }
 
+    public SaveAndRenameCommandBuilder<T, M> addBeforeSaveAndRenameCommand(final Command beforeSaveAndRenameCommand) {
+        this.beforeSaveAndRenameCommand = beforeSaveAndRenameCommand;
+        return this;
+    }
+
     public Command build() {
 
         checkNotNull("pathSupplier", pathSupplier);
@@ -140,24 +147,26 @@ public class SaveAndRenameCommandBuilder<T, M> {
         };
     }
 
-    CommandWithFileNameAndCommitMessage makeSaveAndRenameCommand() {
+    protected CommandWithFileNameAndCommitMessage makeSaveAndRenameCommand() {
         return (details) -> {
             showBusyIndicator();
             callSaveAndRename(details);
         };
     }
 
-    CommandWithFileNameAndCommitMessage makeRenameCommand() {
+    protected CommandWithFileNameAndCommitMessage makeRenameCommand() {
         return (details) -> {
             showBusyIndicator();
             callRename(details);
         };
     }
 
-    void callSaveAndRename(final FileNameAndCommitMessage details) {
+    protected void callSaveAndRename(final FileNameAndCommitMessage details) {
 
         final String newFileName = details.getNewFileName();
         final String commitMessage = details.getCommitMessage();
+
+        beforeSaveAndRenameCommand.execute();
 
         renameCaller.call(onSuccess(), onError()).saveAndRename(getPath(),
                                                                 newFileName,
@@ -166,7 +175,7 @@ public class SaveAndRenameCommandBuilder<T, M> {
                                                                 commitMessage);
     }
 
-    void callRename(final FileNameAndCommitMessage details) {
+    protected void callRename(final FileNameAndCommitMessage details) {
 
         final String newFileName = details.getNewFileName();
         final String commitMessage = details.getCommitMessage();

@@ -56,6 +56,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -251,6 +252,7 @@ public class PerspectiveEditorPresenterTest {
         when(saveAndRenameCommandBuilder.addContentSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.addIsDirtySupplier(any())).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.addSuccessCallback(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addBeforeSaveAndRenameCommand(isA(Command.class))).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.build()).thenReturn(() -> {
         });
     }

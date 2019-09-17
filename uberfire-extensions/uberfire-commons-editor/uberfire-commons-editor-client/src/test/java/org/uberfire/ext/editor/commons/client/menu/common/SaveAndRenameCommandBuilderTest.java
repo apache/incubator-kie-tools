@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,11 +47,14 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -93,6 +97,9 @@ public class SaveAndRenameCommandBuilderTest {
     @Mock
     private EventSourceMock<RenameInProgressEvent> renameInProgressEvent;
 
+    @Mock
+    private Command beforeSaveAndRenameCommand;
+
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> builder;
 
     private Caller<SupportsSaveAndRename<String, DefaultMetadata>> renameCaller;
@@ -112,7 +119,7 @@ public class SaveAndRenameCommandBuilderTest {
     @Before
     public void setup() {
         builder = spy(new SaveAndRenameCommandBuilder<>(renamePopUpPresenter, busyIndicatorView, notification, renameInProgressEvent));
-        renameCaller = new CallerMock<>(service);
+        renameCaller = spy(new CallerMock<>(service));
 
         doReturn(renamePopUpPresenterView).when(renamePopUpPresenter).getView();
         doReturn(notificationEvent).when(builder).makeItemRenamedSuccessfullyEvent();
@@ -216,6 +223,31 @@ public class SaveAndRenameCommandBuilderTest {
         inOrder.verify(builder).hideRenamePopup();
         inOrder.verify(builder).hideBusyIndicator();
         inOrder.verify(builder).notifyItemRenamedSuccessfully();
+    }
+
+    @Test
+    public void callSaveAndRename() {
+        final String newFileName = "newFileName";
+        final String commitMessage = "commitMessage";
+        final FileNameAndCommitMessage message = new FileNameAndCommitMessage(newFileName, commitMessage);
+
+        builder
+                .addRenameService(renameCaller)
+                .addPathSupplier(pathSupplierFake)
+                .addMetadataSupplier(metadataSupplierFake)
+                .addContentSupplier(contentSupplierFake)
+                .addSuccessCallback(onSuccess)
+                .addBeforeSaveAndRenameCommand(beforeSaveAndRenameCommand)
+                .callSaveAndRename(message);
+
+        verify(beforeSaveAndRenameCommand, only()).execute();
+        verify(renameCaller, only()).call(isA(RemoteCallback.class),
+                                          isA(SaveAndRenameCommandBuilder.SaveAndRenameErrorCallback.class));
+        verify(service, only()).saveAndRename(eq(path),
+                                              eq(newFileName),
+                                              eq(metadata),
+                                              eq(content),
+                                              eq(commitMessage));
     }
 
     @Test

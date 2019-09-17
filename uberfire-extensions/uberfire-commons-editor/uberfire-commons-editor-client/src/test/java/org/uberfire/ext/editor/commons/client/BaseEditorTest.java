@@ -111,6 +111,8 @@ public class BaseEditorTest {
         final Supplier isDirtySupplier = mock(Supplier.class);
         final ParameterizedCommand parameterizedCommand = mock(ParameterizedCommand.class);
         final Command command = mock(Command.class);
+        final Command beforeSaveCommand = mock(Command.class);
+
 
         doReturn(pathSupplier).when(editor).getPathSupplier();
         doReturn(renameValidator).when(editor).getRenameValidator();
@@ -120,6 +122,7 @@ public class BaseEditorTest {
         doReturn(contentSupplier).when(editor).getContentSupplier();
         doReturn(isDirtySupplier).when(editor).isDirtySupplier();
         doReturn(parameterizedCommand).when(editor).onSuccess();
+        doReturn(beforeSaveCommand).when(editor).getBeforeSaveAndRenameCommand();
         doReturn(command).when(builder).build();
 
         final Command saveAndRenameCommand = editor.getSaveAndRename();
@@ -134,6 +137,7 @@ public class BaseEditorTest {
         verify(builder).addContentSupplier(contentSupplier);
         verify(builder).addIsDirtySupplier(isDirtySupplier);
         verify(builder).addSuccessCallback(parameterizedCommand);
+        verify(builder).addBeforeSaveAndRenameCommand(beforeSaveCommand);
     }
 
     @Test
