@@ -19,20 +19,22 @@ package e2e
 import (
 	goctx "context"
 	"fmt"
-	"log"
 	"testing"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/builder"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	appsv1 "github.com/openshift/api/apps/v1"
 	framework "github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
+
+	v1 "github.com/openshift/api/build/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -40,10 +42,10 @@ import (
 
 var (
 	retryInterval             = time.Second * 5
-	timeout                   = time.Second * 60
-	cleanupRetryInterval      = time.Second * 1
-	cleanupTimeout            = time.Second * 5
+	cleanupRetryInterval      = time.Second * 3
+	cleanupTimeout            = time.Second * 10
 	waitForDeploymentInterval = time.Minute * 1
+	log                       = logger.GetLogger("kogito_operator_e2e")
 )
 
 func TestKogitoApp(t *testing.T) {
@@ -64,31 +66,31 @@ func KogitoAppCluster(t *testing.T) {
 	ctx := framework.NewTestCtx(t)
 	defer ctx.Cleanup()
 	// initialize cluster resources
-	err := ctx.InitializeClusterResources(&framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
+	err := ctx.InitializeClusterResources(&framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: retryInterval})
 	if err != nil {
-		t.Fatalf("failed to initialize cluster resources: %v", err)
+		log.Fatalf("failed to initialize cluster resources: %v", err)
 	}
-	t.Log("Initialized cluster resources")
+	log.Info("Initialized cluster resources")
 	// get our namespace
 	namespace, err := ctx.GetNamespace()
 	if err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
 	// get global framework variables
 	f := framework.Global
 	// wait for kogito-operator to be ready
-	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-cloud-operator", 1, time.Second*5, time.Second*30)
+	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-cloud-operator", 1, time.Second*20, time.Second*40)
 	if err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
 
 	// Run our tests
-	if err = kogitoOperatorHappyPathTest(t, f, ctx); err != nil {
-		t.Fatal(err)
+	if err = deployKogitoQuarkusExample(t, f, ctx); err != nil {
+		log.Fatal(err)
 	}
 }
 
-func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
+func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
 	gitProjectURI := "https://github.com/kiegroup/kogito-examples"
 	contextDir := "drools-quarkus-example"
 	appName := "example-quarkus"
@@ -96,7 +98,7 @@ func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *fram
 	if err != nil {
 		return fmt.Errorf("could not get namespace: %v", err)
 	}
-	exampleKogitoOperator := &v1alpha1.KogitoApp{
+	kogitoService := &v1alpha1.KogitoApp{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      appName,
 			Namespace: namespace,
@@ -115,31 +117,60 @@ func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *fram
 		},
 	}
 
-	err = f.Client.Create(goctx.TODO(), exampleKogitoOperator, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
+	// clean up
+	defer func() error {
+		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: kogitoService.Name, Namespace: namespace}, kogitoService); err == nil {
+			f.Client.Delete(goctx.TODO(), kogitoService)
+		} else if !errors.IsNotFound(err) {
+			return err
+		}
+		return nil
+	}()
+
+	tag := util.GetEnv("KOGITO_IMAGE_TAG", builder.ImageStreamTag)
+	log.Infof("Using image tag %s", tag)
+
+	// set tags (used in devel for non-released versions)
+	kogitoService.Spec.Build.ImageRuntime.ImageStreamTag = tag
+	kogitoService.Spec.Build.ImageS2I.ImageStreamTag = tag
+
+	err = f.Client.Create(goctx.TODO(), kogitoService, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil {
 		return err
 	}
 
-	bc, _ := builder.NewBuildConfigS2I(exampleKogitoOperator)
-	err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: bc.Name, Namespace: namespace}, &bc)
-	if err != nil {
-		log.Fatalf("Impossible to find bc '%s' in namespace '%s'", bc.Name, namespace)
-		return err
+	bc := v1.BuildConfig{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s%s", kogitoService.Name, builder.BuildS2INameSuffix),
+			Namespace: namespace,
+		},
 	}
+
+	for i := 1; i <= 60; i++ {
+		err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: bc.Name, Namespace: namespace}, &bc)
+		if errors.IsNotFound(err) {
+			log.Infof("Waiting for BuildConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval*time.Second)
+			time.Sleep(waitForDeploymentInterval)
+		} else if err != nil {
+			log.Fatalf("Impossible to find bc '%s' in namespace '%s'. Error: %s", bc.Name, namespace, err)
+			return err
+		}
+	}
+
+	assert.NotNil(t, bc)
 
 	dc := appsv1.DeploymentConfig{}
-	meta.SetGroupVersionKind(&dc.TypeMeta, meta.KindDeploymentConfig)
 
 	//wait for the build to finish
 	for i := 1; i <= 60; i++ {
 		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: appName, Namespace: namespace}, &dc); err != nil && errors.IsNotFound(err) {
-			log.Printf("Waiting for DeploymentConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval)
+			log.Infof("Waiting for DeploymentConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval)
 			time.Sleep(waitForDeploymentInterval)
 		} else if err != nil {
 			log.Fatalf("Error while fetching DC '%s' in namespace '%s'", appName, namespace)
 			return err
 		} else {
-			log.Printf("DeploymentConfig '%s' is available", appName)
+			log.Infof("DeploymentConfig '%s' is available", appName)
 			break
 		}
 	}
