@@ -360,6 +360,11 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         return Arrays.asList(indices).stream().filter(index -> !index.startsWith(".")).collect(Collectors.toList());
     }
 
+    @Override
+    public void observerInitialization(Runnable runnable) {
+        // Do nothing
+    }
+
     public void putMapping(String index,
                            String type,
                            MetaObject metaObject) {

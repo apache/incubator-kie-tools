@@ -231,6 +231,11 @@ public class InfinispanIndexProvider implements IndexProvider {
         return this.infinispanContext.getIndices();
     }
 
+    @Override
+    public void observerInitialization(Runnable runnable) {
+        this.infinispanContext.observeInitialization(runnable);
+    }
+
     protected QueryFactory getQueryFactory(String index) {
         return Search
                 .getQueryFactory(this.infinispanContext.getCache(index.toLowerCase()));

@@ -78,6 +78,7 @@ public class InfinispanContext implements Disposable {
     private InfinispanConfiguration infinispanConfiguration;
 
     private Logger logger = LoggerFactory.getLogger(InfinispanContext.class);
+    private Optional<Runnable> initializationObserver = Optional.empty();
 
     private static final class LazyHolder {
 
@@ -112,20 +113,13 @@ public class InfinispanContext implements Disposable {
     }
 
     private InfinispanContext(Map<String, String> properties) {
+
         this.infinispanConfiguration = new InfinispanConfiguration();
         schemaGenerator = new SchemaGenerator();
 
         cacheManager = this.createRemoteCache(properties);
 
-        if (!this.getIndices().contains(TYPES_CACHE)) {
-            cacheManager.administration().createCache(getTypesCacheName(),
-                                                      this.infinispanConfiguration.getConfiguration(getTypesCacheName()));
-        }
-
-        if (!this.getIndices().contains(SCHEMAS_CACHE)) {
-            cacheManager.administration().createCache(getSchemaCacheName(),
-                                                      this.infinispanConfiguration.getConfiguration(getSchemaCacheName()));
-        }
+        createBaseIndex();
 
         marshaller.registerMarshaller(new KieProtostreamMarshaller.KieMarshallerSupplier<KObject>() {
             @Override
@@ -151,6 +145,15 @@ public class InfinispanContext implements Disposable {
                          Schema.class);
 
         retrieveProbufSchemas();
+    }
+
+    private void createBaseIndex() {
+        if (!this.getIndices().contains(SCHEMAS_CACHE)) {
+            this.initializationObserver.orElse(() -> {
+            }).run();
+            cacheManager.administration().createCache(getSchemaCacheName(),
+                                                      this.infinispanConfiguration.getConfiguration(getSchemaCacheName()));
+        }
     }
 
     public void retrieveProbufSchemas() {
@@ -351,13 +354,22 @@ public class InfinispanContext implements Disposable {
     }
 
     public Optional<Schema> getSchema(String clusterId) {
-        Schema schema = (Schema) this.cacheManager.getCache(getSchemaCacheName()).get(clusterId.toLowerCase());
+        Schema schema = (Schema) getSchemaCache().get(clusterId.toLowerCase());
         return Optional.ofNullable(schema);
     }
 
     public void addSchema(Schema schema) {
-        this.cacheManager.getCache(getSchemaCacheName()).put(AttributesUtil.toProtobufFormat(schema.getName()).toLowerCase(),
-                                                             schema);
+        getSchemaCache().put(AttributesUtil.toProtobufFormat(schema.getName()).toLowerCase(),
+                             schema);
+    }
+
+    private RemoteCache<Object, Object> getSchemaCache() {
+        this.createBaseIndex();
+        return this.cacheManager.getCache(getSchemaCacheName());
+    }
+
+    public void observeInitialization(Runnable runnable) {
+        this.initializationObserver = Optional.of(runnable);
     }
 }
 

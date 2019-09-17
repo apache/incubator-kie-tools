@@ -48,10 +48,10 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 public class MetadataIndexEngine implements MetaIndexEngine {
 
+    private Map<KCluster, MultiIndexerLock> batchLocks = new ConcurrentHashMap<>();
     private final MetaModelBuilder metaModelBuilder;
     private final Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
     private final IndexProvider provider;
-    private final Map<KCluster, MultiIndexerLock> batchLocks = new ConcurrentHashMap<>();
     private final ThreadLocal<Map<KCluster, List<IndexEvent>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
     private final Collection<Runnable> beforeDispose = new ArrayList<>();
     private final Supplier<MultiIndexerLock> lockSupplier;
@@ -63,6 +63,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         this.metaModelBuilder = new MetaModelBuilder(metaModelStore);
         this.lockSupplier = lockSupplier;
         PriorityDisposableRegistry.register(this);
+        this.provider.observerInitialization(this::cleanBatchLocks);
     }
 
     public MetadataIndexEngine(IndexProvider provider,
@@ -291,5 +292,9 @@ public class MetadataIndexEngine implements MetaIndexEngine {
                 activeDispose.run();
             }
         }
+    }
+
+    public void cleanBatchLocks() {
+        this.batchLocks = new ConcurrentHashMap<>();
     }
 }

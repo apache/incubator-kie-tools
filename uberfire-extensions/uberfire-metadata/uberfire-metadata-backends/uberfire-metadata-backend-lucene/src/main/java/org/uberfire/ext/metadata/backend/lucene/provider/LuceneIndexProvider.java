@@ -204,6 +204,11 @@ public class LuceneIndexProvider implements IndexProvider {
         return this.indexManager.getIndices();
     }
 
+    @Override
+    public void observerInitialization(Runnable runnable) {
+        // Do nothing
+    }
+
     public ScoreDoc[] findRawByQuery(List<String> indices,
                                      Query query,
                                      Sort sort,

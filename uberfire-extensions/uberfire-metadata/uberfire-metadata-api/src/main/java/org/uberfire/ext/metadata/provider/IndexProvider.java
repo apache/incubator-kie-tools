@@ -63,4 +63,6 @@ public interface IndexProvider extends Disposable {
                          Query query);
 
     List<String> getIndices();
+
+    void observerInitialization(Runnable runnable);
 }
