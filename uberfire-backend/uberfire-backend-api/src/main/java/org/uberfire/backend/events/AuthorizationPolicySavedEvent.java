@@ -18,6 +18,7 @@ package org.uberfire.backend.events;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
+import org.uberfire.commons.clusterapi.Clustered;
 import org.uberfire.security.authz.AuthorizationPolicy;
 
 /**
@@ -25,6 +26,7 @@ import org.uberfire.security.authz.AuthorizationPolicy;
  * {@link AuthorizationPolicyStorage#savePolicy(AuthorizationPolicy)}
  */
 @Portable
+@Clustered
 public class AuthorizationPolicySavedEvent {
 
     private AuthorizationPolicy policy;
