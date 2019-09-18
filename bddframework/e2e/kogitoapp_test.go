@@ -19,6 +19,8 @@ package e2e
 import (
 	goctx "context"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"testing"
 	"time"
 
@@ -44,7 +46,7 @@ var (
 	retryInterval             = time.Second * 5
 	cleanupRetryInterval      = time.Second * 3
 	cleanupTimeout            = time.Second * 10
-	waitForDeploymentInterval = time.Minute * 1
+	waitForDeploymentInterval = time.Minute * 2
 	log                       = logger.GetLogger("kogito_operator_e2e")
 )
 
@@ -109,23 +111,18 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 		},
 		Spec: v1alpha1.KogitoAppSpec{
 			Build: &v1alpha1.KogitoAppBuildObject{
+				Env: []v1alpha1.Env{ v1alpha1.Env{
+					Name:  "MAVEN_MIRROR_URL",
+					Value: util.GetEnv("MAVEN_MIRROR_URL", ""),
+				} },
 				GitSource: &v1alpha1.GitSource{
 					URI:        &gitProjectURI,
 					ContextDir: contextDir,
 				},
+				Native: util.GetBoolEnv("NATIVE"),
 			},
 		},
 	}
-
-	// clean up
-	defer func() error {
-		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: kogitoService.Name, Namespace: namespace}, kogitoService); err == nil {
-			f.Client.Delete(goctx.TODO(), kogitoService)
-		} else if !errors.IsNotFound(err) {
-			return err
-		}
-		return nil
-	}()
 
 	tag := util.GetEnv("KOGITO_IMAGE_TAG", builder.ImageStreamTag)
 	log.Infof("Using image tag %s", tag)
@@ -146,10 +143,11 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 		},
 	}
 
+	// wait for the buildconfig to be available
 	for i := 1; i <= 60; i++ {
 		err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: bc.Name, Namespace: namespace}, &bc)
 		if errors.IsNotFound(err) {
-			log.Infof("Waiting for BuildConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval*time.Second)
+			log.Infof("Waiting for BuildConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval/time.Minute)
 			time.Sleep(waitForDeploymentInterval)
 		} else if err != nil {
 			log.Fatalf("Impossible to find bc '%s' in namespace '%s'. Error: %s", bc.Name, namespace, err)
@@ -164,7 +162,7 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 	//wait for the build to finish
 	for i := 1; i <= 60; i++ {
 		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: appName, Namespace: namespace}, &dc); err != nil && errors.IsNotFound(err) {
-			log.Infof("Waiting for DeploymentConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval)
+			log.Infof("Waiting for DeploymentConfig to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval/time.Minute)
 			time.Sleep(waitForDeploymentInterval)
 		} else if err != nil {
 			log.Fatalf("Error while fetching DC '%s' in namespace '%s'", appName, namespace)
@@ -175,8 +173,43 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 		}
 	}
 
+	//wait for the app to be deployed
+	for i := 1; i <= 60; i++ {
+		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: appName, Namespace: namespace}, &dc); err != nil {
+			return err
+		}
+
+		if dc.Status.AvailableReplicas > 0 {
+			break
+		} else {
+			log.Infof("Waiting for replica pods to become available, Time elapsed: %d minutes", time.Duration(i)*waitForDeploymentInterval/time.Minute)
+			time.Sleep(waitForDeploymentInterval)
+		}
+	}
+
 	assert.NotNil(t, dc)
 	assert.Len(t, dc.Spec.Template.Spec.Containers, 1)
+
+	f.Client.Get(goctx.TODO(), types.NamespacedName{Name: kogitoService.Name, Namespace: namespace}, kogitoService)
+	assert.NotEmpty(t, kogitoService.Status.Route)
+
+	resp, err := http.Get(kogitoService.Status.Route + "/hello")
+	if err != nil {
+		log.Fatalf("Error while trying to get the application endpoint: %s", err)
+		return err
+	}
+	assert.Equal(t, 200, resp.StatusCode)
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Error while trying to read application response body: %s", err)
+		return err
+	}
+	assert.NotNil(t, body)
+	assert.NotEmpty(t, body)
+	assert.Contains(t, string(body), "older")
 
 	return nil
 }
