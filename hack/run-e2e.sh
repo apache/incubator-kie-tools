@@ -17,10 +17,18 @@
 # runs end-2-end tests for the operator into a given namespace
 namespace=$1
 tag=$2
+native=$3
+maven_mirror=$4
 
 # creates the namespace
 oc create namespace ${namespace}
+# gives permissions
+oc create -f deploy/role.yaml
+oc create -f deploy/service_account.yaml
+oc create -f deploy/role_binding.yaml
+
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} operator-sdk test local ./test/e2e --namespace ${namespace} --up-local --debug
+DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e --namespace ${namespace} --up-local --debug --go-test-flags "-timeout 30m"
+
 # clean up
 oc delete namespace ${namespace}
