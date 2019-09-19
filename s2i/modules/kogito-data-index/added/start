@@ -36,7 +36,7 @@ function start() {
     local infinispan_props=$(set_infinispan_props)
 
     java ${SHOW_JVM_SETTINGS} -Djava.library.path=$KOGITO_HOME/lib \
-        -Dquarkus.http.host=0.0.0.0 \
+        -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 \
         ${infinispan_props} \
         ${JAVA_OPTS} \
         -jar $KOGITO_HOME/bin/*-runner.jar

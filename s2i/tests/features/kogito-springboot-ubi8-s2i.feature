@@ -4,7 +4,13 @@ Feature: kogito-springboot-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected
     Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
-    Then file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    Then check that page is served
+      | property             | value     |
+      | port                 | 8080      |
+      | path                 | /orders/1 |
+      | wait                 | 80        |
+      | expected_status_code | 204       |
+    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
 
   Scenario: verify if all labels are correctly set.
     Given image is built

@@ -3,14 +3,48 @@
 Feature: kogito-quarkus-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
-    Then file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner should exist
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner should exist
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:0.4.0
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
       | NATIVE   | false |
-    Then file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+
+  Scenario: Verify if the s2i build is finished as expected performing a non native build  and if it is listening on the expected port
+    Given s2i build https://github.com/kiegroup/kogito-cloud.git from s2i/tests/test-apps/drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+      | variable | value |
+      | NATIVE   | false |
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+
+  Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port
+    Given s2i build https://github.com/kiegroup/kogito-cloud.git from s2i/tests/test-apps/drools-quarkus-example using master and runtime-image  quay.io/kiegroup/kogito-quarkus-ubi8:latest
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner should exist
 
   Scenario: verify if all labels are correctly set.
     Given image is built

@@ -6,5 +6,5 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-exec java -jar $KOGITO_HOME/bin/*runner.jar -Dquarkus.http.host=0.0.0.0
+exec java -jar -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 $KOGITO_HOME/bin/*runner.jar
 

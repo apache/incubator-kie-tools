@@ -6,4 +6,4 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-exec $KOGITO_HOME/bin/*-runner -Dquarkus.http.host=0.0.0.0
+exec $KOGITO_HOME/bin/*-runner -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
