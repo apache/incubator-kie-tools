@@ -73,6 +73,8 @@ public class Container implements LayoutEditorElement {
     private DnDManager dndManager;
     private boolean selectable = false;
     private boolean selected = false;
+    
+    LayoutEditorFocusController layoutEditorFocusController;
 
     @Inject
     public Container(final View view,
@@ -82,7 +84,8 @@ public class Container implements LayoutEditorElement {
                      Event<ComponentDropEvent> componentDropEvent,
                      Event<LayoutEditorElementSelectEvent> containerSelectEvent,
                      Event<LayoutEditorElementUnselectEvent> containerUnselectEvent,
-                     DnDManager dndManager) {
+                     DnDManager dndManager,
+                     LayoutEditorFocusController layoutEditorFocusController) {
         this.layoutCssHelper = layoutCssHelper;
         this.rowInstance = rowInstance;
         this.emptyDropRowInstance = emptyDropRowInstance;
@@ -91,6 +94,7 @@ public class Container implements LayoutEditorElement {
         this.containerSelectEvent = containerSelectEvent;
         this.containerUnselectEvent = containerUnselectEvent;
         this.dndManager = dndManager;
+        this.layoutEditorFocusController = layoutEditorFocusController;
         this.id = idGenerator.createContainerID();
     }
 
@@ -199,6 +203,7 @@ public class Container implements LayoutEditorElement {
         }
         setupResizeRows();
         setupCssProperties();
+        layoutEditorFocusController.setTargetContainerView(view);
     }
 
     public void reset() {
@@ -525,6 +530,7 @@ public class Container implements LayoutEditorElement {
     }
 
     void updateView() {
+        layoutEditorFocusController.recordFocus();
         cleanupEmptyRows();
         setupPageStyle();
         setupResizeRows();
@@ -686,7 +692,7 @@ public class Container implements LayoutEditorElement {
             }
         }
     }
-
+    
     public List<Row> getChildElements() {
         return rows;
     }
@@ -707,4 +713,5 @@ public class Container implements LayoutEditorElement {
 
         void applyCssValues(List<CssValue> cssValues);
     }
+
 }

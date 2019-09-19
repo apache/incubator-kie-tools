@@ -99,6 +99,8 @@ public abstract class AbstractLayoutEditorTest {
     protected EventSourceMock<LayoutEditorElementSelectEvent> columnSelectedEvent;
     @Mock
     protected EventSourceMock<LayoutEditorElementUnselectEvent> columnUnselectedEvent;
+    @Mock
+    protected LayoutEditorFocusController layoutEditorFocusController;
 
     protected EmptyDropRow emptyDropRow = new EmptyDropRow(mock(EmptyDropRow.View.class),
             dragHelper);
@@ -116,7 +118,8 @@ public abstract class AbstractLayoutEditorTest {
                              componentDropEventMock,
                              layoutElementSelectEventMock,
                              layoutElementUnselectEventMock,
-                             dnDManager) {
+                             dnDManager,
+                             layoutEditorFocusController) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override
@@ -150,7 +153,8 @@ public abstract class AbstractLayoutEditorTest {
                        componentRemoveEventMock,
                        null,
                        rowSelectedEvent,
-                       rowUnselectedEvent) {
+                       rowUnselectedEvent,
+                       layoutEditorFocusController) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override

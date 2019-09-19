@@ -89,6 +89,8 @@ public class Row implements LayoutEditorElement {
     private Integer height;
     private boolean canResizeUp;
     private boolean canResizeDown;
+    
+    LayoutEditorFocusController layoutEditorFocusController;
 
     @Inject
     public Row(View view,
@@ -101,7 +103,8 @@ public class Row implements LayoutEditorElement {
                Event<ComponentRemovedEvent> componentRemovedEvent,
                Event<RowResizeEvent> rowResizeEvent,
                Event<LayoutEditorElementSelectEvent> rowSelectEvent,
-               Event<LayoutEditorElementUnselectEvent> rowUnselectEvent) {
+               Event<LayoutEditorElementUnselectEvent> rowUnselectEvent,
+               LayoutEditorFocusController layoutEditorFocusController) {
 
         this.view = view;
         this.columnInstance = columnInstance;
@@ -114,6 +117,7 @@ public class Row implements LayoutEditorElement {
         this.rowResizeEvent = rowResizeEvent;
         this.rowSelectEvent = rowSelectEvent;
         this.rowUnselectEvent = rowUnselectEvent;
+        this.layoutEditorFocusController = layoutEditorFocusController;
     }
 
     public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
@@ -851,6 +855,7 @@ public class Row implements LayoutEditorElement {
     }
 
     public void updateView() {
+        layoutEditorFocusController.recordFocus();
         view.clear();
         setupColumnResizeActions();
         for (Column column : columns) {
@@ -1104,4 +1109,5 @@ public class Row implements LayoutEditorElement {
 
         void applyCssValues(List<CssValue> cssValues);
     }
+
 }
