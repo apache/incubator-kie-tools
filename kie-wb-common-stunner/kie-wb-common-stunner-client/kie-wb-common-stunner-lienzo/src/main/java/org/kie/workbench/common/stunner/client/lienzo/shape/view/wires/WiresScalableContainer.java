@@ -26,8 +26,9 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresLayoutContainerNoTextBoundingBox;
 
-public class WiresScalableContainer extends WiresLayoutContainer {
+public class WiresScalableContainer extends WiresLayoutContainerNoTextBoundingBox {
 
     private final NFastArrayList<IPrimitive<?>> scalableChildren = new NFastArrayList<>();
     private Group transformableContainer;

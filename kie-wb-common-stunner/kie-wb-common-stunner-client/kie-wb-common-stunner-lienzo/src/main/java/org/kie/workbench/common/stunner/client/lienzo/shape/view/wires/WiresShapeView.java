@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
-import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
@@ -35,6 +34,7 @@ import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresLayoutContainerNoTextBoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeViewUserDataEncoder;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
@@ -57,7 +57,7 @@ public class WiresShapeView<T>
     public WiresShapeView(final MultiPath path,
                           final LayoutContainer layoutContainer) {
         super(path,
-              null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
+              null != layoutContainer ? layoutContainer : new WiresLayoutContainerNoTextBoundingBox());
         setListening(false);
     }
 

@@ -16,14 +16,17 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -91,6 +94,22 @@ public class WiresShapeViewExtTest extends AbstractWiresShapeViewText {
     @Test
     public void testSetTextWrapperTruncateWithLineBreak() {
         testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
+    }
+
+    @Test
+    public void testTextNotIncludedInBoundBox() {
+        tested.addChild(new Circle(43));
+
+        final BoundingBox startingBB = tested.getBoundingBox();
+        //Adding a Tittle will add a label, but will not be included in bounding box
+        tested.setTitle("Some Title");
+        final BoundingBox endingBB = tested.getBoundingBox();
+
+        assertTrue(startingBB.getMinX() == endingBB.getMinX());
+        assertTrue(startingBB.getMinY() == endingBB.getMinY());
+
+        assertTrue(startingBB.getMaxX() == endingBB.getMaxX());
+        assertTrue(startingBB.getMaxY() == endingBB.getMaxY());
     }
 
     private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {

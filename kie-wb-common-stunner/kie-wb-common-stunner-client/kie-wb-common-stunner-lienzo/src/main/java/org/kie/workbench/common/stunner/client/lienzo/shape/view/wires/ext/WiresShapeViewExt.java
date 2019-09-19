@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
 import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
@@ -70,7 +69,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
                              final MultiPath path) {
         this(path,
-             new WiresLayoutContainer());
+             new WiresLayoutContainerNoTextBoundingBox());
         setEventHandlerManager(new ViewEventHandlerManager(getGroup(),
                                                            path,
                                                            supportedEventTypes));
