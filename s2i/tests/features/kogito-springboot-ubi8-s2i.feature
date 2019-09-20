@@ -12,6 +12,22 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | expected_status_code | 204       |
     And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
 
+  Scenario: Scenario: Perform a incremental s2i build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using master
+    Then check that page is served
+      | property             | value     |
+      | port                 | 8080      |
+      | path                 | /orders/1 |
+      | wait                 | 80        |
+      | expected_status_code | 204       |
+    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+
+  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
+  Scenario: Perform a second incremental s2i build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using master
+    Then s2i build log should contain Expanding artifacts from incremental build...
+
+
   Scenario: verify if all labels are correctly set.
     Given image is built
     Then the image should contain label maintainer with value kogito <kogito@kiegroup.com>

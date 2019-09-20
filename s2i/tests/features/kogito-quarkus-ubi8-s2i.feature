@@ -46,6 +46,20 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner should exist
 
+  Scenario: Perform a incremental s2i build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using master
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+
+  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
+  Scenario: Perform a second incremental s2i build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using master
+    Then s2i build log should contain Expanding artifacts from incremental build...
+
   Scenario: verify if all labels are correctly set.
     Given image is built
     Then the image should contain label maintainer with value kogito <kogito@kiegroup.com>

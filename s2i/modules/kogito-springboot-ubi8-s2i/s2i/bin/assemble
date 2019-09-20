@@ -21,10 +21,10 @@ if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
 fi
 
-if [ "$(ls /tmp/artifacts/.m2 2>/dev/null)" ]; then
-    echo "---> Restore build artifacts"
-    mv /tmp/artifacts/.m2 $HOME
-fi
+######################
+# incremental builds
+# import ${KOGITO_HOME}/.m2/configure-maven.sh
+manage_incremental_build
 
 echo "---> Installing application source..."
 cd /tmp/src/

@@ -70,3 +70,16 @@ function configure_mirrors() {
     sed -i "s|<!-- ### configured mirrors ### -->|$xml|" $HOME/.m2/settings.xml
   fi
 }
+
+function manage_incremental_build() {
+    if [ -d /tmp/artifacts ]; then
+        echo "Expanding artifacts from incremental build..."
+        ( cd /tmp/artifacts && tar cf - . ) | ( cd ${HOME} && tar xvf - )
+        rm -rf /tmp/artifacts
+    fi
+}
+
+function s2i_save_build_artifacts() {
+    cd ${HOME}
+    tar cf - .m2
+}
