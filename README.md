@@ -40,6 +40,12 @@ This module contains a number of examples that you can take a look at and try ou
 - Drools + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/drools-quarkus-example/README.md)
 - Drools + Quarkus with Unit: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/drools-quarkus-unit-example/README.md)
 
+Releases
+--------------------
+[Kogito Tooling Releases Page](https://github.com/kiegroup/kogito-tooling/releases)
+
+In kogito tooling releases page you will find extensions and released tooling packages.
+
 Building from source
 --------------------
 
