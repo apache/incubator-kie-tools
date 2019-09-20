@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="library">
+    <div class="change-request-review-container">
+        <div class="page-content-kie">
+            <div class="toolbar-pf">
+                <div class="toolbar-pf-actions">
+                    <div class="toolbar-data-title-kie" data-field="title"></div>
+                    <div class="btn-group toolbar-btn-group-kie">
+                        <button class="btn btn-default" data-field="cancel-button" data-i18n-key="Cancel"></button>
+                        <button class="btn btn-default" data-field="close-button" data-i18n-key="Close"></button>
+                        <button class="btn btn-default" data-field="reject-button" data-i18n-key="Reject"></button>
+                        <button class="btn btn-primary" data-field="reopen-button" data-i18n-key="Reopen"></button>
+                        <button class="btn btn-primary" data-field="accept-button" data-i18n-key="Accept"></button>
+                        <button class="btn btn-primary" data-field="revert-button" data-i18n-key="Revert"></button>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-tabs nav-tabs-library nav-tabs-pf">
+                <li class="active" data-field="overview-tab">
+                    <a data-field="overview-tab-link">
+                        <span data-i18n-key="Overview"></span>
+                    </a>
+                </li>
+                <li data-field="changed-files-tab">
+                    <a data-field="changed-files-tab-link">
+                        <span data-i18n-key="ChangedFiles"></span>
+                        <span class="badge" data-field="changed-files-count-badge"></span>
+                    </a>
+                </li>
+            </ul>
+            <div class="main-container col-md-12 col-lg-12" data-field="main-container"></div>
+        </div>
+    </div>
+</div>

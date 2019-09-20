@@ -17,10 +17,12 @@ package org.kie.workbench.common.screens.library.client.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -64,6 +66,7 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
+import org.kie.workbench.common.screens.library.client.screens.project.changerequest.ChangeRequestUtils;
 import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.breadcrumb.LibraryBreadcrumbs;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -111,6 +114,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String ALERTS = MessageConsoleScreen.ALERTS;
     public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
     public static final String ADD_ASSET_SCREEN = "AddAssetsScreen";
+    public static final String SUBMIT_CHANGE_REQUEST = "SubmitChangeRequestScreen";
+    public static final String CHANGE_REQUEST_REVIEW = "ChangeRequestReviewScreen";
 
     public static final List<String> LIBRARY_PLACES = Arrays.asList(
             LIBRARY_SCREEN,
@@ -121,6 +126,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             ORGANIZATIONAL_UNITS_SCREEN,
             PROJECT_SETTINGS,
             ADD_ASSET_SCREEN,
+            SUBMIT_CHANGE_REQUEST,
+            CHANGE_REQUEST_REVIEW,
             IMPORT_PROJECTS_SCREEN,
             IMPORT_SAMPLE_PROJECTS_SCREEN,
             PreferencesRootScreen.IDENTIFIER
@@ -175,6 +182,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     private Logger logger;
 
     private boolean closingLibraryPlaces = false;
+
+    private PlaceRequest changeRequestReviewScreen = null;
 
     public LibraryPlaces() {
     }
@@ -266,7 +275,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             canCreateSpace: @org.kie.workbench.common.screens.library.client.util.LibraryPlaces::nativeUserCanCreateOrganizationalUnit()
         }
     }-*/;
-
 
     public static boolean nativeUserCanCreateOrganizationalUnit() {
         return self.userCanCreateOrganizationalUnit();
@@ -541,6 +549,31 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                           libraryPerspective.getRootPanel());
     }
 
+    public void goToSubmitChangeRequestScreen() {
+        final PlaceRequest submitChangeRequestScreen = new DefaultPlaceRequest(LibraryPlaces.SUBMIT_CHANGE_REQUEST);
+        final PartDefinitionImpl part = new PartDefinitionImpl(submitChangeRequestScreen);
+        part.setSelectable(false);
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
+        libraryBreadcrumbs.setupForSubmitChangeRequest(getActiveWorkspace());
+    }
+
+    public void goToChangeRequestReviewScreen(final long changeRequestId) {
+        this.closeChangeRequestReviewScreen();
+
+        changeRequestReviewScreen =
+                new DefaultPlaceRequest(LibraryPlaces.CHANGE_REQUEST_REVIEW,
+                                        Collections.singletonMap(ChangeRequestUtils.CHANGE_REQUEST_ID_KEY,
+                                                                 String.valueOf(changeRequestId)));
+
+        final PartDefinitionImpl part = new PartDefinitionImpl(changeRequestReviewScreen);
+        part.setSelectable(false);
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
+        libraryBreadcrumbs.setupForChangeRequestReview(getActiveWorkspace(),
+                                                       changeRequestId);
+    }
+
     public void goToTrySamples() {
         closeAllPlacesOrNothing(() -> {
             final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN);
@@ -629,6 +662,12 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                                                          uncloseablePlaces,
                                                          newSuccessCallback,
                                                          () -> placeManager.goTo(uncloseablePlaces.get(0)));
+        }
+    }
+
+    public void closeChangeRequestReviewScreen() {
+        if (changeRequestReviewScreen != null) {
+            placeManager.closePlace(changeRequestReviewScreen);
         }
     }
 

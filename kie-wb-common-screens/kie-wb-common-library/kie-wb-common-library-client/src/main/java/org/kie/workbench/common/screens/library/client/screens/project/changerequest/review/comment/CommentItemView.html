@@ -1,0 +1,50 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div class="comment-container" data-field="container">
+    <div class="list-group-item">
+        <div class="list-view-pf-main-info">
+            <div class="list-view-pf-left">
+                <div class="fa fa-user list-view-pf-icon-sm"></div>
+            </div>
+            <div class="list-view-pf-body">
+                <div class="list-view-pf-description">
+                    <div class="comment-info">
+                        <div>
+                            <span class="author" data-field="comment-author"></span>
+                            <div class="comment-actions pull-right">
+                                <span data-field="comment-date"></span>
+                                <div class="dropdown pull-right dropdown-kebab-pf" data-field="kebab-actions">
+                                    <button aria-expanded="true"
+                                            aria-haspopup="true"
+                                            class="btn btn-link dropdown-toggle"
+                                            data-toggle="dropdown"
+                                            id="dropdownKebabRight"
+                                            type="button">
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </button>
+                                    <ul aria-labelledby="dropdownKebabRight" class="dropdown-menu dropdown-menu-right">
+                                        <li><a data-field="delete" data-i18n-key="Delete" href="#"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <pre data-field="comment-text"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

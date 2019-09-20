@@ -1,0 +1,120 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div class="overview-container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-warning" data-field="conflict-warning">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <span data-i18n-key="ConflictWarningCannotBeIntegrated"></span>
+            </div>
+            <div>
+                <h3 class="editable-field-title" data-i18n-key="Summary"></h3>
+                <a class="fa fa-pencil" data-field="edit-summary"></a>
+            </div>
+            <span class="wrap-text" data-field="summary"></span>
+            <div class="edit-group-textbox" data-field="summary-edit-group">
+                <div class="form-control-pf-textbox">
+                    <input autocomplete="off" class="form-control" data-field="summary-edit-input" type="text"/>
+                    <button class="form-control-pf-empty" data-field="clear-summary-button" type="button">
+                        <span class="fa fa-times-circle fa-lg"></span>
+                    </button>
+                </div>
+                <button aria-label="Save" class="btn btn-primary form-control-pf-save" data-field="summary-edit-save">
+                    <em class="glyphicon glyphicon-ok"></em>
+                </button>
+                <button aria-label="Cancel" class="btn btn-default form-control-pf-cancel"
+                        data-field="summary-edit-cancel">
+                    <em class="glyphicon glyphicon-remove"></em>
+                </button>
+            </div>
+
+            <div>
+                <h3 class="editable-field-title" data-i18n-key="Description"></h3>
+                <a class="fa fa-pencil" data-field="edit-description"></a>
+            </div>
+            <pre data-field="description"></pre>
+            <div class="edit-group-textarea" data-field="description-edit-group">
+                <textarea class="form-control" data-field="description-edit-input" rows="8"></textarea>
+                <div class="edit-buttons">
+                    <button aria-label="Save" class="btn btn-primary form-control-pf-save"
+                            data-field="description-edit-save">
+                        <em class="glyphicon glyphicon-ok"></em>
+                    </button>
+                    <button aria-label="Cancel" class="btn btn-default form-control-pf-cancel"
+                            data-field="description-edit-cancel">
+                        <em class="glyphicon glyphicon-remove"></em>
+                    </button>
+                </div>
+            </div>
+
+            <h3 data-i18n-key="Status"></h3>
+            <span data-field="status"></span>
+            <a href="#" data-toggle="tooltip" data-delay="0">
+                <span data-field="revert-failed-tooltip" class="fa fa-info-circle"></span>
+            </a>
+
+            <h3 data-i18n-key="Author"></h3>
+            <span data-field="author"></span>
+
+            <h3 data-i18n-key="CreatedDate"></h3>
+            <span data-field="created-date"></span>
+
+            <h3 data-i18n-key="SourceBranch"></h3>
+            <span class="wrap-text" data-field="source-branch"></span>
+
+            <h3 data-i18n-key="TargetBranch"></h3>
+            <span class="wrap-text" data-field="target-branch"></span>
+        </div>
+        <div class="col-xs-12">
+            <div class="comments-container">
+                <h3 data-field="comments-header"></h3>
+
+                <div class="toolbar-pf" data-field="comments-toolbar">
+                    <div class="form-group right-toolbar">
+                        <label class="nowrap" data-field="comment-page-indicator"></label>
+                        <a data-field="comment-prev-page" href="#"><span class="i fa fa-angle-left"></span></a>
+                        <input class="page-number" data-field="comment-current-page" type="text">
+                        <a data-field="comment-next-page" href="#"><span class="i fa fa-angle-right"></span></a>
+                        <span class="nowrap" data-field="comment-total-pages"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="list-group list-view-pf list-view-pf-view" data-field="comment-list"></div>
+
+            <div class="list-group-item">
+                <div class="list-view-pf-main-info">
+                    <div class="list-view-pf-left">
+                        <div class="fa fa-user list-view-pf-icon-sm"></div>
+                    </div>
+                    <div class="list-view-pf-body">
+                        <div class="list-view-pf-description">
+                            <div class="comment-input-button">
+                                <div class="comment-input" data-field="comment-input-group">
+                                    <textarea class="form-control comment-input input-lg" data-field="comment-input"
+                                              rows="2"></textarea>
+                                    <div class="help-block" data-field="comment-input-help-inline"></div>
+                                </div>
+                                <button class="btn btn-default" data-field="add-comment-button"
+                                        data-i18n-key="AddComment"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

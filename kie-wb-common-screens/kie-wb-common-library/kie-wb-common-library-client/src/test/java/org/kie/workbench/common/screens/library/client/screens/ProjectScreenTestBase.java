@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.spaces.Space;
 
 import static org.mockito.Mockito.*;
 
@@ -94,10 +95,12 @@ public class ProjectScreenTestBase {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repository = mock(Repository.class);
         final Path repositoryRootPath = mock(Path.class);
+        final Space space = mock(Space.class);
 
         doReturn(Optional.of(new Branch("master",
                                         repositoryRootPath))).when(repository).getDefaultBranch();
         doReturn("rootpath").when(repositoryRootPath).toURI();
+        doReturn(space).when(repository).getSpace();
 
         return new WorkspaceProject(organizationalUnit,
                                     repository,

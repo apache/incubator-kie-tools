@@ -48,6 +48,9 @@ public class LibraryConstants {
     public static final String Created = "Created";
 
     @TranslationKey(defaultValue = "")
+    public static final String Submitted = "Submitted";
+
+    @TranslationKey(defaultValue = "")
     public static final String DefaultProject = "DefaultProject";
 
     @TranslationKey(defaultValue = "")
@@ -76,6 +79,21 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String Cancel = "Cancel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Submit = "Submit";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Description = "Description";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Summary = "Summary";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddComment = "AddComment";
+
+    @TranslationKey(defaultValue = "")
+    public static final String LeaveAComment = "LeaveAComment";
 
     @TranslationKey(defaultValue = "")
     public static final String DeleteOrganizationalUnitSuccess = "DeleteOrganizationalUnitSuccess";
@@ -121,6 +139,9 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NoFilesWhereFoundWithTheGivenSearchCriteria = "NoFilesWhereFoundWithTheGivenSearchCriteria";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoChangeRequestsFound = "NoChangeRequestsFound";
 
     @TranslationKey(defaultValue = "")
     public static final String EndOfFileList = "EndOfFileList";
@@ -327,7 +348,130 @@ public class LibraryConstants {
     public static final String ALL = "ALL";
 
     @TranslationKey(defaultValue = "")
+    public static final String Open = "Open";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Closed = "Closed";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Added = "Added";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Deleted = "Deleted";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Updated = "Updated";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Renamed = "Renamed";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Copied = "Copied";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchesAreEven = "BranchesAreEven";
+
+    @TranslationKey(defaultValue = "")
+    public static final String OpenStatus = "OpenStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RejectedStatus = "RejectedStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RevertFailedStatus = "RevertFailedStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RevertedStatus = "RevertedStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AcceptedStatus = "AcceptedStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RevertFailedTooltip = "RevertFailedTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClosedStatus = "ClosedStatus";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Comments = "Comments";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoComments = "NoComments";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFile = "ChangeRequestFilesSummaryOneFile";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFiles = "ChangeRequestFilesSummaryManyFiles";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileOneAddition = "ChangeRequestFilesSummaryOneFileOneAddition";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileOneDeletion = "ChangeRequestFilesSummaryOneFileOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileManyAdditions = "ChangeRequestFilesSummaryOneFileManyAdditions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileManyDeletions = "ChangeRequestFilesSummaryOneFileManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileOneAdditionOneDeletion = "ChangeRequestFilesSummaryOneFileOneAdditionOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileOneAdditionManyDeletions = "ChangeRequestFilesSummaryOneFileOneAdditionManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileManyAdditionsOneDeletion = "ChangeRequestFilesSummaryOneFileManyAdditionsOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryOneFileManyAdditionsManyDeletions = "ChangeRequestFilesSummaryOneFileManyAdditionsManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesOneAddition = "ChangeRequestFilesSummaryManyFilesOneAddition";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesManyAdditions = "ChangeRequestFilesSummaryManyFilesManyAdditions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesOneDeletion = "ChangeRequestFilesSummaryManyFilesOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesManyDeletions = "ChangeRequestFilesSummaryManyFilesManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesOneAdditionOneDeletion = "ChangeRequestFilesSummaryManyFilesOneAdditionOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesOneAdditionManyDeletions = "ChangeRequestFilesSummaryManyFilesOneAdditionManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesManyAdditionsOneDeletion = "ChangeRequestFilesSummaryManyFilesManyAdditionsOneDeletion";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestFilesSummaryManyFilesManyAdditionsManyDeletions = "ChangeRequestFilesSummaryManyFilesManyAdditionsManyDeletions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String MissingSummaryForChangeRequestHelp = "MissingSummaryForChangeRequestHelp";
+
+    @TranslationKey(defaultValue = "")
+    public static final String MissingDescriptionForChangeRequestHelp = "MissingDescriptionForChangeRequestHelp";
+
+    @TranslationKey(defaultValue = "")
+    public static final String MissingCommentText = "MissingCommentText";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SearchByIdOrSummary = "SearchByIdOrSummary";
+
+    @TranslationKey(defaultValue = "")
     public static final String Of = "Of";
+
+    @TranslationKey(defaultValue = "")
+    public static final String OfN = "OfN";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ItemCountIndicatorText = "ItemCountIndicatorText";
 
     @TranslationKey(defaultValue = "")
     public static final String AllPackagesIncluded = "AllPackagesIncluded";
@@ -493,6 +637,45 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DeleteBranch = "DeleteBranch";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SubmitChangeRequest = "SubmitChangeRequest";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestSubmitMessage = "ChangeRequestSubmitMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestAcceptMessage = "ChangeRequestAcceptMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestRejectMessage = "ChangeRequestRejectMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestRevertMessage = "ChangeRequestRevertMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestCloseMessage = "ChangeRequestCloseMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestReopenMessage = "ChangeRequestReopenMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestRevertFailMessage = "ChangeRequestRevertFailMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestAlreadyOpenMessage = "ChangeRequestAlreadyOpenMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NothingToMergeMessage = "NothingToMergeMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestUpdatedMessage = "ChangeRequestUpdatedMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequest = "ChangeRequest";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ChangeRequestAndId = "ChangeRequestAndId";
 
     @TranslationKey(defaultValue = "")
     public static final String BranchDeleted = "BranchDeleted";

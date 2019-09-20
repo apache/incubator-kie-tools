@@ -28,7 +28,6 @@ import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
-import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.screens.library.client.util.LibraryPlaces.LIBRARY_PERSPECTIVE;
 
@@ -111,5 +110,22 @@ public class LibraryBreadcrumbs {
         breadcrumbs.addBreadCrumb(LIBRARY_PERSPECTIVE,
                                   resourceUtils.getBaseFileName(path),
                                   () -> libraryPlaces.goToAsset(path));
+    }
+
+    // Spaces -> {spaceName} -> {projectName} -> {branchName} -> Submit Change Request
+    public void setupForSubmitChangeRequest(final WorkspaceProject project) {
+        setupForProject(project);
+        breadcrumbs.addBreadCrumb(LIBRARY_PERSPECTIVE,
+                                  ts.getTranslation(LibraryConstants.SubmitChangeRequest),
+                                  () -> libraryPlaces.goToSubmitChangeRequestScreen());
+    }
+
+    // Spaces -> {spaceName} -> {projectName} -> {branchName} -> Change Request ({#id})
+    public void setupForChangeRequestReview(final WorkspaceProject project,
+                                            final long changeRequestId) {
+        setupForProject(project);
+        breadcrumbs.addBreadCrumb(LIBRARY_PERSPECTIVE,
+                                  ts.format(LibraryConstants.ChangeRequestAndId, changeRequestId),
+                                  () -> libraryPlaces.goToChangeRequestReviewScreen(changeRequestId));
     }
 }

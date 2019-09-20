@@ -60,6 +60,14 @@ public class ProjectView implements ProjectScreen.View,
     private HTMLLIElement assetsTabItem;
 
     @Inject
+    @DataField("change-requests-link")
+    private HTMLAnchorElement changeRequestsTabLink;
+
+    @Inject
+    @DataField("change-requests-tab")
+    private HTMLLIElement changeRequestsTabItem;
+
+    @Inject
     @DataField("contributors-link")
     private HTMLAnchorElement contributorsTabLink;
 
@@ -94,6 +102,11 @@ public class ProjectView implements ProjectScreen.View,
 
     @Inject
     @Named("span")
+    @DataField("change-requests-count")
+    private HTMLElement changeRequestsCount;
+
+    @Inject
+    @Named("span")
     @DataField("actions-dropdown")
     private HTMLElement actionsDropdown;
 
@@ -109,6 +122,10 @@ public class ProjectView implements ProjectScreen.View,
     @Inject
     @DataField("delete-branch")
     private HTMLAnchorElement deleteBranch;
+
+    @Inject
+    @DataField("submit-change-request")
+    private HTMLAnchorElement submitChangeRequest;
 
     @Inject
     @DataField("import-asset-action")
@@ -137,6 +154,11 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public void setAssetsCount(int count) {
         assetsCount.textContent = String.valueOf(count);
+    }
+
+    @Override
+    public void setChangeRequestsCount(int count) {
+        changeRequestsCount.textContent = String.valueOf(count);
     }
 
     @Override
@@ -186,6 +208,11 @@ public class ProjectView implements ProjectScreen.View,
     }
 
     @Override
+    public void setSubmitChangeRequestVisible(boolean visible) {
+        this.submitChangeRequest.hidden = !visible;
+    }
+
+    @Override
     public void setActionsVisible(boolean visible) {
         this.actionsDropdown.hidden = !visible;
     }
@@ -223,6 +250,13 @@ public class ProjectView implements ProjectScreen.View,
         this.presenter.showAssets();
     }
 
+    @EventHandler("change-requests-link")
+    public void clickChangeRequestsTab(final ClickEvent clickEvent) {
+        this.deactivateAllTabs();
+        this.activate(this.changeRequestsTabItem);
+        this.presenter.showChangeRequests();
+    }
+
     @EventHandler("contributors-link")
     public void clickContributorsTab(final ClickEvent clickEvent) {
         this.deactivateAllTabs();
@@ -252,6 +286,11 @@ public class ProjectView implements ProjectScreen.View,
     @EventHandler("delete-branch")
     public void deleteBranch(final ClickEvent event) {
         presenter.deleteBranch();
+    }
+
+    @EventHandler("submit-change-request")
+    public void submitChangeRequest(final ClickEvent event) {
+        presenter.submitChangeRequest();
     }
 
     @EventHandler("import-asset-action")
@@ -289,6 +328,7 @@ public class ProjectView implements ProjectScreen.View,
 
     private void deactivateAllTabs() {
         this.deactivate(this.assetsTabItem);
+        this.deactivate(this.changeRequestsTabItem);
         this.deactivate(this.contributorsTabItem);
         this.deactivate(this.metricsTabItem);
         this.deactivate(this.settingsTabItem);

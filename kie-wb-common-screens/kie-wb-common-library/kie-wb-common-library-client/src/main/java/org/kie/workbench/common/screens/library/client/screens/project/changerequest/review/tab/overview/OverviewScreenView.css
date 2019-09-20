@@ -1,0 +1,146 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.overview-container .list-view-pf-view {
+    background-color: transparent;
+    border-top: 1px solid #d1d1d1;
+}
+
+.overview-container .list-group-item {
+    background-color: transparent;
+}
+
+.overview-container pre {
+    border: 0;
+    padding: 0;
+    font-family: tahoma, arial, helvetica, sans-serif;
+    background-color: transparent;
+    font-size: 12px;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    text-align: justify;
+    overflow: hidden;
+}
+
+.overview-container textarea {
+    resize: vertical;
+}
+
+.overview-container .list-view-pf-main-info {
+    align-items: start;
+}
+
+.editable-field-title {
+    display: inline-flex;
+    margin-right: 5px;
+}
+
+.edit-group-textbox {
+    width: 100%;
+    display: flex;
+}
+
+.edit-group-textarea {
+    width: 100%;
+    display: block;
+}
+
+.edit-group-textarea .edit-buttons {
+    float: right;
+    margin-top: 5px;
+}
+
+.edit-group-textarea textarea {
+    min-height: 166px;
+}
+
+.form-control-pf-empty {
+    background: 0 0;
+    border: none;
+    color: #bbb;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.form-control-pf-textbox {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    margin-right: 5px;
+}
+
+.form-control-pf-textbox > input {
+    padding-right: 26px;
+}
+
+.edit-group-textbox .form-control-pf-save {
+    margin-right: 3px;
+}
+
+.form-control-pf-save, .form-control-pf-cancel {
+    display: inline-block;
+}
+
+.edit-controls {
+    float: right;
+}
+
+.add-comment {
+    background-color: transparent;
+}
+
+.comments-container {
+    display: flex;
+}
+
+.comments-container > h3 {
+    width: 100%;
+}
+
+.comments-container .right-toolbar {
+    align-items: center;
+}
+
+.comments-container .toolbar-pf {
+    background-color: transparent;
+    margin-top: 10px;
+}
+
+.comment-input {
+    width: 100%;
+}
+
+.comment-input > textarea {
+    min-height: 50px;
+}
+
+.comment-input-button {
+    display: block;
+    width: 100%;
+}
+
+.comment-input-button > button {
+    float: right;
+}
+
+.wrap-text {
+    overflow-wrap: break-word;
+}

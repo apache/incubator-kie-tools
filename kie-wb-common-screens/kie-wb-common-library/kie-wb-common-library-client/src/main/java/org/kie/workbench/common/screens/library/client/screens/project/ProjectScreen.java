@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens.project;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -30,6 +31,9 @@ import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestListUpdatedEvent;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatusUpdatedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -42,6 +46,7 @@ import org.kie.workbench.common.screens.library.client.screens.organizationaluni
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ProjectContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.project.actions.ProjectMainActions;
 import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
+import org.kie.workbench.common.screens.library.client.screens.project.changerequest.list.ChangeRequestListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
@@ -72,6 +77,8 @@ public class ProjectScreen {
 
         void setAssetsCount(int count);
 
+        void setChangeRequestsCount(int count);
+
         void setContributorsCount(int count);
 
         void setContent(HTMLElement content);
@@ -89,6 +96,8 @@ public class ProjectScreen {
         void setDeleteProjectVisible(boolean visible);
 
         void setDeleteBranchVisible(boolean visible);
+
+        void setSubmitChangeRequestVisible(boolean visible);
 
         void setActionsVisible(boolean visible);
 
@@ -108,6 +117,7 @@ public class ProjectScreen {
     private final LibraryPlaces libraryPlaces;
 
     private AssetsScreen assetsScreen;
+    private ChangeRequestListPresenter changeRequestsScreen;
     private ContributorsListPresenter contributorsListScreen;
     private ProjectMetricsScreen projectMetricsScreen;
     private ProjectController projectController;
@@ -131,6 +141,7 @@ public class ProjectScreen {
     public ProjectScreen(final View view,
                          final LibraryPlaces libraryPlaces,
                          final AssetsScreen assetsScreen,
+                         final ChangeRequestListPresenter changeRequestsScreen,
                          final ContributorsListPresenter contributorsListScreen,
                          final ProjectMetricsScreen projectMetricsScreen,
                          final ProjectController projectController,
@@ -151,6 +162,7 @@ public class ProjectScreen {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.assetsScreen = assetsScreen;
+        this.changeRequestsScreen = changeRequestsScreen;
         this.contributorsListScreen = contributorsListScreen;
         this.projectMetricsScreen = projectMetricsScreen;
         this.projectController = projectController;
@@ -182,6 +194,7 @@ public class ProjectScreen {
 
         projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
             this.view.setAddAssetVisible(userCanUpdateProject);
+            this.view.setSubmitChangeRequestVisible(userCanUpdateProject);
             this.view.setImportAssetVisible(userCanUpdateProject);
             this.view.setReimportVisible(userCanUpdateProject);
 
@@ -211,6 +224,11 @@ public class ProjectScreen {
             return promises.resolve();
         });
 
+        projectController.canSubmitChangeRequest(workspaceProject).then(userCanSubmitChangeRequest -> {
+            this.view.setSubmitChangeRequestVisible(userCanSubmitChangeRequest);
+            return promises.resolve();
+        });
+
         setupMainActions();
 
         final List<Promise<Boolean>> permissionPromises = Arrays.asList(projectController.canUpdateProject(workspaceProject),
@@ -221,6 +239,8 @@ public class ProjectScreen {
             this.view.setActionsVisible(thereAreActionsToDisplay);
             return promises.resolve();
         });
+
+        this.setupChangeRequestList();
 
         contributorsListScreen.setup(projectContributorsListService,
                                      contributorCount -> this.view.setContributorsCount(contributorCount));
@@ -249,8 +269,30 @@ public class ProjectScreen {
         this.view.setAssetsCount(assetsCount);
     }
 
+    public void setChangeRequestsCount(final Integer openChangeRequestsCount) {
+        this.view.setChangeRequestsCount(openChangeRequestsCount);
+    }
+
     public void onAddAsset(@Observes NewResourceSuccessEvent event) {
         resolveAssetsCount();
+    }
+
+    public void onChangeRequestListUpdated(@Observes final ChangeRequestListUpdatedEvent event) {
+        if (event.getRepositoryId().equals(workspaceProject.getRepository().getIdentifier())) {
+            this.setupChangeRequestList();
+        }
+    }
+
+    public void onChangeRequestStatusUpdated(@Observes final ChangeRequestStatusUpdatedEvent event) {
+        if (event.getRepositoryId().equals(workspaceProject.getRepository().getIdentifier()) &&
+                (event.getOldStatus() == ChangeRequestStatus.OPEN ||
+                        event.getNewStatus() == ChangeRequestStatus.OPEN)) {
+            this.setupChangeRequestList();
+        }
+    }
+
+    private void setupChangeRequestList() {
+        this.changeRequestsScreen.setupList(this::setChangeRequestsCount);
     }
 
     public void onAssetsUpdated(@Observes UpdatedAssetsEvent event) {
@@ -280,6 +322,10 @@ public class ProjectScreen {
         this.view.setContent(this.assetsScreen.getView().getElement());
     }
 
+    public void showChangeRequests() {
+        this.view.setContent(this.changeRequestsScreen.getView().getElement());
+    }
+
     public void showMetrics() {
         this.projectMetricsScreen.onStartup(workspaceProject);
         this.view.setContent(elemental2DomUtil.asHTMLElement(this.projectMetricsScreen.getView().getElement()));
@@ -306,6 +352,16 @@ public class ProjectScreen {
             if (userCanDeleteBranch) {
                 final DeleteBranchPopUpScreen popUp = deleteBranchPopUpScreen.get();
                 popUp.show(this.libraryPlaces.getActiveWorkspace().getBranch());
+            }
+
+            return promises.resolve();
+        });
+    }
+
+    public void submitChangeRequest() {
+        projectController.canSubmitChangeRequest(workspaceProject).then(userCanSubmitChangeRequest -> {
+            if (Boolean.TRUE.equals(userCanSubmitChangeRequest)) {
+                this.libraryPlaces.goToSubmitChangeRequestScreen();
             }
 
             return promises.resolve();

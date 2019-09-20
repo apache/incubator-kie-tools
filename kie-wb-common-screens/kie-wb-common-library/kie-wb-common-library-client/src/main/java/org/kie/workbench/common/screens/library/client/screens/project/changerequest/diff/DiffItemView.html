@@ -1,0 +1,45 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div>
+                <div class="panel-title">
+                    <a data-field="collapse-link" data-toggle="collapse">
+                        <span class="change-type" data-field="change-type"></span>
+                        <span class="filename" data-field="filename"></span>
+                        <span class="pficon pficon-warning-triangle-o conflict" data-field="conflict-label"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div aria-expanded="true" class="panel-collapse collapse in" data-field="collapse-container">
+            <div class="panel-body textual-diff-container" data-field="textual-diff-container">
+                <div class="textual-diff-info" data-field="unmodified-file">
+                    <span data-i18n-key="FileWithoutChanges"></span>
+                </div>
+                <div class="textual-diff-info" data-field="binary-file">
+                    <span data-i18n-key="BinaryFilesDiffer"></span>
+                </div>
+            </div>
+            <div class="panel-body custom-diff-container" data-field="custom-diff-container">
+                <div class="half-container" data-field="left-container"></div>
+                <div class="half-container" data-field="right-container"></div>
+            </div>
+        </div>
+    </div>
+</div>

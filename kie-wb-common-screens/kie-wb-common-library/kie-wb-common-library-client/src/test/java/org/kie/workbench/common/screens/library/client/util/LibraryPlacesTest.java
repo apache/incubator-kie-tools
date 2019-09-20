@@ -56,6 +56,7 @@ import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.project.changerequest.ChangeRequestUtils;
 import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.breadcrumb.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.breadcrumb.ProjectBranchBreadcrumb;
@@ -499,6 +500,35 @@ public class LibraryPlacesTest {
         assertEquals(activeModule,
                      value.getModule());
         assertNull(value.getPackage());
+    }
+
+    @Test
+    public void goToSubmitChangeRequestScreenTest() {
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.SUBMIT_CHANGE_REQUEST);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        final LibraryPerspective libraryPerspective = mock(LibraryPerspective.class);
+
+        libraryPlaces.goToSubmitChangeRequestScreen();
+
+        verify(placeManager).goTo(part, libraryPerspective.getRootPanel());
+        verify(libraryBreadcrumbs).setupForSubmitChangeRequest(activeProject);
+    }
+
+    @Test
+    public void goToChangeRequestReviewScreenTest() {
+        final long changeRequestId = 1L;
+
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.CHANGE_REQUEST_REVIEW);
+        placeRequest.addParameter(ChangeRequestUtils.CHANGE_REQUEST_ID_KEY,
+                                  String.valueOf(changeRequestId));
+
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        final LibraryPerspective libraryPerspective = mock(LibraryPerspective.class);
+
+        libraryPlaces.goToChangeRequestReviewScreen(changeRequestId);
+
+        verify(placeManager).goTo(part, libraryPerspective.getRootPanel());
+        verify(libraryBreadcrumbs).setupForChangeRequestReview(activeProject, changeRequestId);
     }
 
     @Test
