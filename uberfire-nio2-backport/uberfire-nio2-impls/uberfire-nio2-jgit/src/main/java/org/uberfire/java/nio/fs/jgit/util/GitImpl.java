@@ -16,11 +16,13 @@
 
 package org.uberfire.java.nio.fs.jgit.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jgit.api.AddCommand;
@@ -52,17 +54,21 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileDiff;
+import org.uberfire.java.nio.base.TextualDiff;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.BlobAsInputStream;
 import org.uberfire.java.nio.fs.jgit.util.commands.CherryPick;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
+import org.uberfire.java.nio.fs.jgit.util.commands.ConflictBranchesChecker;
 import org.uberfire.java.nio.fs.jgit.util.commands.ConvertRefTree;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateBranch;
 import org.uberfire.java.nio.fs.jgit.util.commands.DeleteBranch;
 import org.uberfire.java.nio.fs.jgit.util.commands.DiffBranches;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fetch;
 import org.uberfire.java.nio.fs.jgit.util.commands.GarbageCollector;
+import org.uberfire.java.nio.fs.jgit.util.commands.GetCommit;
+import org.uberfire.java.nio.fs.jgit.util.commands.GetCommonAncestorCommit;
 import org.uberfire.java.nio.fs.jgit.util.commands.GetFirstCommit;
 import org.uberfire.java.nio.fs.jgit.util.commands.GetLastCommit;
 import org.uberfire.java.nio.fs.jgit.util.commands.GetPathInfo;
@@ -72,14 +78,17 @@ import org.uberfire.java.nio.fs.jgit.util.commands.ListCommits;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListPathContent;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
+import org.uberfire.java.nio.fs.jgit.util.commands.MapDiffContent;
 import org.uberfire.java.nio.fs.jgit.util.commands.Merge;
 import org.uberfire.java.nio.fs.jgit.util.commands.Push;
 import org.uberfire.java.nio.fs.jgit.util.commands.RefTreeUpdateCommand;
 import org.uberfire.java.nio.fs.jgit.util.commands.ResolveObjectIds;
 import org.uberfire.java.nio.fs.jgit.util.commands.ResolveRevCommit;
+import org.uberfire.java.nio.fs.jgit.util.commands.RevertMerge;
 import org.uberfire.java.nio.fs.jgit.util.commands.SimpleRefUpdateCommand;
 import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.fs.jgit.util.commands.SyncRemote;
+import org.uberfire.java.nio.fs.jgit.util.commands.TextualDiffBranches;
 import org.uberfire.java.nio.fs.jgit.util.commands.UpdateRemoteConfig;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitHistory;
@@ -175,6 +184,12 @@ public class GitImpl implements Git {
     }
 
     @Override
+    public RevCommit getCommit(final String commitId) {
+        return new GetCommit(this,
+                             commitId).execute();
+    }
+
+    @Override
     public RevCommit getLastCommit(final String refName) {
         return retryIfNeeded(RuntimeException.class,
                              () -> new GetLastCommit(this,
@@ -188,11 +203,26 @@ public class GitImpl implements Git {
     }
 
     @Override
+    public RevCommit getCommonAncestorCommit(final String branchA,
+                                             final String branchB) {
+        return new GetCommonAncestorCommit(this,
+                                           getLastCommit(branchA),
+                                           getLastCommit(branchB)).execute();
+    }
+
+    @Override
     public CommitHistory listCommits(final Ref ref,
                                      final String path) throws IOException, GitAPIException {
         return new ListCommits(this,
                                ref,
                                path).execute();
+    }
+
+    @Override
+    public List<RevCommit> listCommits(final String startCommitId,
+                                       final String endCommitId) {
+        return listCommits(new GetCommit(this, startCommitId).execute(),
+                           new GetCommit(this, endCommitId).execute());
     }
 
     @Override
@@ -265,6 +295,28 @@ public class GitImpl implements Git {
     }
 
     @Override
+    public List<String> merge(final String source,
+                              final String target,
+                              final boolean noFastForward) {
+        return new Merge(this,
+                         source,
+                         target,
+                         noFastForward).execute();
+    }
+
+    @Override
+    public boolean revertMerge(final String source,
+                               final String target,
+                               final String commonAncestorCommitId,
+                               final String mergeCommitId) {
+        return new RevertMerge(this,
+                               source,
+                               target,
+                               commonAncestorCommitId,
+                               mergeCommitId).execute();
+    }
+
+    @Override
     public void cherryPick(final JGitPathImpl target,
                            final String... commits) {
         new CherryPick(this,
@@ -297,6 +349,34 @@ public class GitImpl implements Git {
     }
 
     @Override
+    public List<TextualDiff> textualDiffRefs(final String branchA,
+                                             final String branchB) {
+        return new TextualDiffBranches(this,
+                                       branchA,
+                                       branchB).execute();
+    }
+
+    @Override
+    public List<TextualDiff> textualDiffRefs(final String branchA,
+                                             final String branchB,
+                                             final String commitIdBranchA,
+                                             final String commitIdBranchB) {
+        return new TextualDiffBranches(this,
+                                       branchA,
+                                       branchB,
+                                       commitIdBranchA,
+                                       commitIdBranchB).execute();
+    }
+
+    @Override
+    public List<String> conflictBranchesChecker(final String branchA,
+                                                final String branchB) {
+        return new ConflictBranchesChecker(this,
+                                           branchA,
+                                           branchB).execute();
+    }
+
+    @Override
     public void squash(final String branch,
                        final String startCommit,
                        final String commitMessage) {
@@ -320,8 +400,15 @@ public class GitImpl implements Git {
                           branchName,
                           commitInfo,
                           amend,
-                          null,
+                          originId,
                           content).execute();
+    }
+
+    @Override
+    public List<DiffEntry> listDiffs(final String startCommitId,
+                                     final String endCommitId) {
+        return listDiffs(getCommit(startCommitId).getTree(),
+                         getCommit(endCommitId).getTree());
     }
 
     @Override
@@ -330,6 +417,16 @@ public class GitImpl implements Git {
         return new ListDiffs(this,
                              refA,
                              refB).execute();
+    }
+
+    @Override
+    public Map<String, File> mapDiffContent(final String branch,
+                                            final String startCommitId,
+                                            final String endCommitId) {
+        return new MapDiffContent(this,
+                                  branch,
+                                  startCommitId,
+                                  endCommitId).execute();
     }
 
     @Override

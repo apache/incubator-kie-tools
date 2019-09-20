@@ -21,8 +21,14 @@ import java.util.List;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 public class BranchUtil {
+
+    private BranchUtil() {
+
+    }
 
     public static void deleteUnfilteredBranches(final Repository repository,
                                                 final List<String> branchesToKeep) throws GitAPIException {
@@ -42,5 +48,13 @@ public class BranchUtil {
                 .setBranchNames(toDelete)
                 .setForce(true)
                 .call();
+    }
+
+    public static void existsBranch(final Git git,
+                                    final String branch) {
+        if (git.getRef(branch) == null) {
+            throw new GitException(String.format("Branch <<%s>> does not exist",
+                                                 branch));
+        }
     }
 }

@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -37,6 +38,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileDiff;
+import org.uberfire.java.nio.base.TextualDiff;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
@@ -217,12 +219,20 @@ public interface Git {
 
     void gc();
 
+    RevCommit getCommit(final String commitId);
+
     RevCommit getLastCommit(final String refName);
 
     RevCommit getLastCommit(final Ref ref) throws IOException;
 
+    RevCommit getCommonAncestorCommit(final String branchA,
+                                      final String branchB);
+
     CommitHistory listCommits(final Ref ref,
                               final String path) throws IOException, GitAPIException;
+
+    List<RevCommit> listCommits(final String startCommitId,
+                                final String endCommitId);
 
     List<RevCommit> listCommits(final ObjectId startRange,
                                 final ObjectId endRange);
@@ -240,6 +250,15 @@ public interface Git {
     List<String> merge(final String source,
                        final String target);
 
+    List<String> merge(final String source,
+                       final String target,
+                       final boolean noFastForward);
+
+    boolean revertMerge(final String source,
+                        final String target,
+                        final String commonAncestorCommitId,
+                        final String mergeCommitId);
+
     void cherryPick(final JGitPathImpl target,
                     final String... commits);
 
@@ -252,6 +271,17 @@ public interface Git {
     List<FileDiff> diffRefs(final String branchA,
                             final String branchB);
 
+    List<TextualDiff> textualDiffRefs(final String branchA,
+                                      final String branchB);
+
+    List<TextualDiff> textualDiffRefs(final String branchA,
+                                      final String branchB,
+                                      final String commitIdBranchA,
+                                      final String commitIdBranchB);
+
+    List<String> conflictBranchesChecker(final String branchA,
+                                         final String branchB);
+
     void squash(final String branch,
                 final String startCommit,
                 final String commitMessage);
@@ -262,8 +292,15 @@ public interface Git {
                    final ObjectId originId,
                    final CommitContent content);
 
+    List<DiffEntry> listDiffs(final String startCommitId,
+                              final String endCommitId);
+
     List<DiffEntry> listDiffs(final ObjectId refA,
                               final ObjectId refB);
+
+    Map<String, File> mapDiffContent(final String branch,
+                                     final String startCommitId,
+                                     final String endCommitId);
 
     InputStream blobAsInputStream(final String treeRef,
                                   final String path);

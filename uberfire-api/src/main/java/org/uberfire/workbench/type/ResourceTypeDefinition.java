@@ -19,8 +19,8 @@ package org.uberfire.workbench.type;
 import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.category.Category;
-import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.category.Undefined;
+import org.uberfire.workbench.diff.DiffMode;
 
 /**
  * Definition of a Resource Type
@@ -77,4 +77,12 @@ public interface ResourceTypeDefinition {
      * @return the resource category
      */
     Category getCategory();
+
+    /**
+     * Defines how the diff of this resource type should be presented.
+     * @return the resource diff mode
+     */
+    default DiffMode getDiffMode() {
+        return DiffMode.TEXTUAL;
+    }
 }

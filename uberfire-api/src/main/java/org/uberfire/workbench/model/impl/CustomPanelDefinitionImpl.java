@@ -25,6 +25,7 @@ public class CustomPanelDefinitionImpl extends PanelDefinitionImpl implements Cu
 
     private HTMLElement htmlElementContainer;
     private HasWidgets hasWidgetsContainer;
+    private elemental2.dom.HTMLElement elemental2HtmlElementContainer;
 
     public CustomPanelDefinitionImpl(String panelType,
                                      HasWidgets hasWidgetsContainer) {
@@ -39,6 +40,12 @@ public class CustomPanelDefinitionImpl extends PanelDefinitionImpl implements Cu
         this.htmlElementContainer = htmlElementContainer;
     }
 
+    public CustomPanelDefinitionImpl(String panelType,
+                                     elemental2.dom.HTMLElement htmlElementContainer){
+        super(panelType);
+        this.elemental2HtmlElementContainer = htmlElementContainer;
+    }
+
     @Override
     public Optional<HTMLElement> getHtmlElementContainer() {
         return Optional.ofNullable(htmlElementContainer);
@@ -47,5 +54,10 @@ public class CustomPanelDefinitionImpl extends PanelDefinitionImpl implements Cu
     @Override
     public Optional<HasWidgets> getHasWidgetsContainer() {
         return Optional.ofNullable(hasWidgetsContainer);
+    }
+
+    @Override
+    public Optional<elemental2.dom.HTMLElement> getElemental2HtmlElementContainer() {
+        return Optional.ofNullable(elemental2HtmlElementContainer);
     }
 }

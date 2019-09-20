@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -20,7 +19,6 @@ import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorage
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageBatch;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
@@ -206,6 +204,10 @@ public class FileSystemDeleteWorker {
         try {
             Path path = getPath(repo);
             ioService.deleteIfExists(path);
+
+            SpaceConfigStorageImpl configStorage = (SpaceConfigStorageImpl) this.registry.get(repo.getSpace().getName());
+            configStorage.deleteRepository(repo.getAlias());
+
             if (!ioService.exists(path)) {
                 this.removeRepositoryFromSpaceInfo(repo);
             }

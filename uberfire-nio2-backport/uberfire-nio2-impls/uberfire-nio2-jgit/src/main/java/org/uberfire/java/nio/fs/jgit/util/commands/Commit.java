@@ -35,6 +35,7 @@ import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.CopyCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.model.MergeCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.RevertCommitContent;
 
@@ -136,13 +137,17 @@ public class Commit {
                 commit.setEncoding(Constants.CHARACTER_ENCODING);
                 commit.setMessage(commitInfo.getMessage());
                 if (headId != null) {
-                    if (amend) {
-                        final RevCommit previousCommit = git.resolveRevCommit(headId);
-                        final List<RevCommit> p = Arrays.asList(previousCommit.getParents());
-                        reverse(p);
-                        commit.setParentIds(p);
+                    if (content instanceof MergeCommitContent) {
+                        commit.setParentIds(((MergeCommitContent) content).getParents());
                     } else {
-                        commit.setParentId(headId);
+                        if (amend) {
+                            final RevCommit previousCommit = git.resolveRevCommit(headId);
+                            final List<RevCommit> p = Arrays.asList(previousCommit.getParents());
+                            reverse(p);
+                            commit.setParentIds(p);
+                        } else {
+                            commit.setParentId(headId);
+                        }
                     }
                 }
                 commit.setTreeId(tree.get());

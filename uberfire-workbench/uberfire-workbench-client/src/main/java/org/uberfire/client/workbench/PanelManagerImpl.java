@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -87,6 +88,12 @@ public class PanelManagerImpl implements PanelManager {
      * are closed/removed.
      */
     protected final Map<PanelDefinition, HTMLElement> customPanelsInsideHTMLElements = new HashMap<>();
+    /**
+     * Remembers which Elemental2 HTMLElements contain each existing custom panel. Items are removed from this map when the panels
+     * are closed/removed.
+     */
+    protected final Map<PanelDefinition, elemental2.dom.HTMLElement> customPanelsInsideElemental2HTMLElements = new HashMap<>();
+
     protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
     protected Event<PlaceLostFocusEvent> placeLostFocusEvent;
     protected Event<PanelFocusEvent> panelFocusEvent;
@@ -105,6 +112,7 @@ public class PanelManagerImpl implements PanelManager {
     protected PartDefinition activePart = null;
     LayoutSelection layoutSelection;
     private BeanFactory beanFactory;
+    private Elemental2DomUtil elemental2DomUtil;
     /**
      * Registration for the native preview handler that watches for ^M events and maximizes/restores the current panel.
      */
@@ -127,7 +135,8 @@ public class PanelManagerImpl implements PanelManager {
             SyncBeanManager iocManager,
             Instance<PlaceManager> placeManager,
             LayoutSelection layoutSelection,
-            BeanFactory beanFactory) {
+            BeanFactory beanFactory,
+            Elemental2DomUtil elemental2DomUtil) {
         this.placeGainFocusEvent = placeGainFocusEvent;
         this.placeLostFocusEvent = placeLostFocusEvent;
         this.panelFocusEvent = panelFocusEvent;
@@ -139,6 +148,7 @@ public class PanelManagerImpl implements PanelManager {
         this.placeManager = placeManager;
         this.layoutSelection = layoutSelection;
         this.beanFactory = beanFactory;
+        this.elemental2DomUtil = elemental2DomUtil;
     }
 
     @PostConstruct
@@ -315,13 +325,20 @@ public class PanelManagerImpl implements PanelManager {
             if (customHTMLElementContainer != null) {
                 DOMUtil.removeFromParent(presenterToRemove.getPanelView().asWidget());
             } else {
-                final PanelDefinition parentDef = toRemove.getParent();
-                final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get(parentDef);
-                if (parentPresenter == null) {
-                    throw new IllegalArgumentException("The given panel's parent could not be found");
-                }
+                elemental2.dom.HTMLElement customElemental2HtmlElement = customPanelsInsideElemental2HTMLElements.remove(toRemove);
+                if (customElemental2HtmlElement != null) {
+                    final elemental2.dom.HTMLElement element =
+                            elemental2DomUtil.asHTMLElement(presenterToRemove.getPanelView().asWidget().getElement());
+                    elemental2DomUtil.removeAllElementChildren(element);
+                } else {
+                    final PanelDefinition parentDef = toRemove.getParent();
+                    final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get(parentDef);
+                    if (parentPresenter == null) {
+                        throw new IllegalArgumentException("The given panel's parent could not be found");
+                    }
 
-                parentPresenter.removePanel(presenterToRemove);
+                    parentPresenter.removePanel(presenterToRemove);
+                }
             }
         }
     }
@@ -509,7 +526,8 @@ public class PanelManagerImpl implements PanelManager {
                                                 final String panelType) {
         return addCustomPanelOnContainer(container,
                                          new CustomPanelDefinitionImpl(panelType,
-                                                                       container));
+                                                                       container),
+                                         false);
     }
 
     @Override
@@ -517,11 +535,22 @@ public class PanelManagerImpl implements PanelManager {
                                                 final String panelType) {
         return addCustomPanelOnContainer(container,
                                          new CustomPanelDefinitionImpl(panelType,
-                                                                       container));
+                                                                       container),
+                                         false);
+    }
+
+    @Override
+    public CustomPanelDefinition addCustomPanel(final elemental2.dom.HTMLElement container,
+                                                final String panelType) {
+        return addCustomPanelOnContainer(container,
+                                         new CustomPanelDefinitionImpl(panelType,
+                                                                       container),
+                                         true);
     }
 
     private CustomPanelDefinition addCustomPanelOnContainer(final Object container,
-                                                            CustomPanelDefinitionImpl panelDef) {
+                                                            CustomPanelDefinitionImpl panelDef,
+                                                            final boolean isElemental2) {
         final WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel(panelDef);
         Widget panelViewWidget = panelPresenter.getPanelView().asWidget();
         panelViewWidget.addAttachHandler(new CustomPanelCleanupHandler(panelPresenter));
@@ -532,11 +561,20 @@ public class PanelManagerImpl implements PanelManager {
             customPanels.put(panelDef,
                              widgetContainer);
         } else {
-            HTMLElement htmlContainer = (HTMLElement) container;
-            appendWidgetToElement(htmlContainer,
-                                  panelViewWidget);
-            customPanelsInsideHTMLElements.put(panelDef,
-                                               htmlContainer);
+            // Cannot do instanceof against native JsType interface
+            if (isElemental2) {
+                elemental2.dom.HTMLElement htmlContainer = (elemental2.dom.HTMLElement) container;
+                appendWidgetToElement(htmlContainer,
+                                      panelViewWidget);
+                customPanelsInsideElemental2HTMLElements.put(panelDef,
+                                                             htmlContainer);
+            } else {
+                HTMLElement htmlContainer = (HTMLElement) container;
+                appendWidgetToElement(htmlContainer,
+                                      panelViewWidget);
+                customPanelsInsideHTMLElements.put(panelDef,
+                                                   htmlContainer);
+            }
         }
 
         mapPanelDefinitionToPresenter.put(panelDef,
@@ -549,6 +587,12 @@ public class PanelManagerImpl implements PanelManager {
                                final Widget panelViewWidget) {
         DOMUtil.appendWidgetToElement(container,
                                       panelViewWidget.asWidget());
+    }
+
+    void appendWidgetToElement(final elemental2.dom.HTMLElement container,
+                               final Widget panelViewWidget) {
+        elemental2DomUtil.appendWidgetToElement(container,
+                                                panelViewWidget.asWidget());
     }
 
     /**

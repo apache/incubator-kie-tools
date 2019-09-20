@@ -42,4 +42,10 @@ public interface CustomPanelDefinition extends PanelDefinition {
      */
     @JsIgnore
     Optional<HasWidgets> getHasWidgetsContainer();
+
+    /**
+     * Returns the elemental2.dom.HTMLElement container associated with the custom panel.
+     */
+    @JsIgnore
+    Optional<elemental2.dom.HTMLElement> getElemental2HtmlElementContainer();
 }

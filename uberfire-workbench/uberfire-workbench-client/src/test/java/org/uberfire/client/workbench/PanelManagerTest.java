@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench;
 
 import java.lang.annotation.Annotation;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -24,6 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,11 +60,22 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PanelManagerTest {
@@ -87,6 +100,8 @@ public class PanelManagerTest {
     SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     LayoutSelection layoutSelection;
+    @Mock
+    Elemental2DomUtil elemental2DomUtil;
 
     private PanelManagerImpl panelManager;
 
@@ -148,7 +163,8 @@ public class PanelManagerTest {
                                                 null,
                                                 null,
                                                 layoutSelection,
-                                                beanFactory));
+                                                beanFactory,
+                                                elemental2DomUtil));
         panelManager.setRoot(testPerspectiveActivity,
                              testPerspectiveDef.getRoot());
 
@@ -337,6 +353,16 @@ public class PanelManagerTest {
     @Test
     public void explicitlyRemovedCustomPanelsInsideHTMLElementsShouldBeForgotten() throws Exception {
         HTMLElement container = mock(HTMLElement.class);
+        PanelDefinition customPanel = panelManager.addCustomPanel(container,
+                                                                  StaticWorkbenchPanelPresenter.class.getName());
+        panelManager.removeWorkbenchPanel(customPanel);
+
+        assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
+    }
+
+    @Test
+    public void explicitlyRemovedCustomPanelsInsideElemental2HTMLElementsShouldBeForgotten() {
+        elemental2.dom.HTMLElement container = mock(elemental2.dom.HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
                                                                   StaticWorkbenchPanelPresenter.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);

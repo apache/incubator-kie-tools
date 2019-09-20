@@ -72,12 +72,6 @@ public class JGitHistoryTest extends AbstractTestInfra {
         git.commit("master", new CommitInfo(null, "name", "name@example.com", message, null, null), false, null, new MoveCommitContent(moves));
     }
 
-    private static String multiline(String... lines) {
-        return Arrays.stream(lines)
-                     .reduce((s1, s2) -> s1 + "\n" + s2)
-                     .orElse("");
-    }
-
     @Test
     public void listCommitsForUnmovedFile() throws Exception {
         final CommitHistory history = new ListCommits(git, git.getRef("master"), "non-moving.txt").execute();

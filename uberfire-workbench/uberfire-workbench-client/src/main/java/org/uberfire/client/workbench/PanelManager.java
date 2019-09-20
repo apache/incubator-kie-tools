@@ -137,6 +137,22 @@ public interface PanelManager {
                                          String panelType);
 
     /**
+     * Creates an UberFire panel and installs its view in the given html element container.
+     * <p>
+     * <h3>Custom Panel Lifecycle</h3>
+     * <p>
+     * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
+     * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
+     * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
+     * the associated panel is disposed.
+     * @param container the html element container to install the new panel in. The new panel will fill the container.
+     * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
+     * its parent will be null; {@code isRoot()} will return false.
+     */
+    CustomPanelDefinition addCustomPanel(elemental2.dom.HTMLElement container,
+                                         String panelType);
+
+    /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the
      * workbench, and freeing any resources associated with them. The panel must have no parts and no child panels.
      * @param toRemove the panel to remove from the workbench layout. Must not be null.

@@ -1,11 +1,11 @@
 /*
- * 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package org.guvnor.structure.repositories;
+package org.guvnor.structure.repositories.changerequest.portable;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Represents pull request status.
- * OPEN: when the PR is created.
- * MERGED: when the merge process ends.
- * REJECTED: when
+ * Represents change request status.
+ * OPEN: when the CR is created.
+ * ACCEPTED: when the changes are accepted and merged.
+ * REJECTED: when reviewers have rejected the changes.
+ * REVERTED: when the CR was accepted and then reverted.
+ * REVERT_FAILED: when an attempt to revert the CR has failed.
+ * CLOSED: when an open CR is closed.
  */
 @Portable
-public enum PullRequestStatus {
-    MERGED,
-    CLOSED,
+public enum ChangeRequestStatus {
+    ACCEPTED,
     REJECTED,
-    OPEN
+    OPEN,
+    REVERTED,
+    REVERT_FAILED,
+    CLOSED
 }

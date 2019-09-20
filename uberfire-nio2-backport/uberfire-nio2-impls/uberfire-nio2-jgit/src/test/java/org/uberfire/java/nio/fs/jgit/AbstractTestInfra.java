@@ -63,7 +63,7 @@ import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 
 import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractTestInfra {
 
@@ -347,5 +347,12 @@ public abstract class AbstractTestInfra {
 
     protected List<Ref> listRefs(final Git cloned) {
         return new ListRefs(cloned.getRepository()).execute();
+    }
+
+    protected static String multiline(String prefix, String... lines) {
+        return Arrays.stream(lines)
+                .map(s -> prefix + s)
+                .reduce((s1, s2) -> s1 + "\n" + s2)
+                .orElse("");
     }
 }

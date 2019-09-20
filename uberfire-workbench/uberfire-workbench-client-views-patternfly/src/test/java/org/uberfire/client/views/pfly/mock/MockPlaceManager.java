@@ -109,6 +109,12 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public void goTo(PlaceRequest place,
+                     elemental2.dom.HTMLElement addTo) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
     public Activity getActivity(PlaceRequest place) {
         throw new UnsupportedOperationException("Not implemented.");
     }

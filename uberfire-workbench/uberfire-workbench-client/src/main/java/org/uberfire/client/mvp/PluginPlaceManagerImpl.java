@@ -144,6 +144,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public void goTo(PlaceRequest place,
+                     elemental2.dom.HTMLElement addTo) {
+        fail();
+    }
+
+    @Override
     public void goTo(final PartDefinition part,
                      final PanelDefinition panel) {
         fail();

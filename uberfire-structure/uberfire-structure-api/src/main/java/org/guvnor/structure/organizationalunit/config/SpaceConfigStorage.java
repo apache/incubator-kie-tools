@@ -16,6 +16,11 @@
 
 package org.guvnor.structure.organizationalunit.config;
 
+import java.util.List;
+
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestComment;
+
 public interface SpaceConfigStorage {
 
     void setup(final String spaceName);
@@ -41,5 +46,44 @@ public interface SpaceConfigStorage {
     void endBatch();
 
     void close();
+
+    void deleteRepository(final String repositoryAlias);
+
+    List<ChangeRequest> loadChangeRequests(final String repositoryAlias);
+
+    ChangeRequest loadChangeRequest(final String repositoryAlias,
+                                    final Long changeRequestId);
+
+    void saveChangeRequest(final String repositoryAlias,
+                           final ChangeRequest changeRequest);
+
+    void deleteAllChangeRequests(final String repositoryAlias);
+
+    void deleteChangeRequest(final String repositoryAlias,
+                             final Long changeRequestId);
+
+    List<Long> getChangeRequestIds(final String repositoryAlias);
+
+    List<ChangeRequestComment> loadChangeRequestComments(final String repositoryAlias,
+                                                         final Long changeRequestId);
+
+    ChangeRequestComment loadChangeRequestComment(final String repositoryAlias,
+                                                  final Long changeRequestId,
+                                                  final Long changeRequestCommentId);
+
+    void saveChangeRequestComment(final String repositoryAlias,
+                                  final Long changeRequestId,
+                                  final ChangeRequestComment changeRequestComment);
+
+    void deleteAllChangeRequestComments(final String repositoryAlias,
+                                        final Long changeRequestId);
+
+    void deleteChangeRequestComment(final String repositoryAlias,
+                                    final Long changeRequestId,
+                                    final Long changeRequestCommentId);
+
+    List<Long> getChangeRequestCommentIds(final String repositoryAlias,
+                                          final Long changeRequestId);
+
 
 }

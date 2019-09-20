@@ -115,6 +115,10 @@ public interface PlaceManager {
     void goTo(final PlaceRequest place,
               final HTMLElement addTo);
 
+    @JsIgnore
+    void goTo(final PlaceRequest place,
+              final elemental2.dom.HTMLElement addTo);
+
     /**
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
      * by path, but see {@link ActivityManagerImpl#resolveExistingParts(PlaceRequest)} for a variant that does.

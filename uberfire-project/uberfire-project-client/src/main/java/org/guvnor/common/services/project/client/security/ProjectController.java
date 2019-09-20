@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -41,8 +42,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class ProjectController {
@@ -174,6 +173,11 @@ public class ProjectController {
                                project.getBranch().getName());
     }
 
+    public Promise<Boolean> canSubmitChangeRequest(final WorkspaceProject project) {
+        return canSubmitChangeRequest(project,
+                                      project.getBranch().getName());
+    }
+
     public Promise<Boolean> canDeleteBranch(final WorkspaceProject project,
                                             final String branch) {
         if (project.getBranch().getName().equals("master")) {
@@ -189,6 +193,23 @@ public class ProjectController {
         return checkBranchPermission(project,
                                      branch,
                                      RolePermissions::canDelete);
+    }
+
+    public Promise<Boolean> canSubmitChangeRequest(final WorkspaceProject project,
+                                                   final String branch) {
+        if (project.getBranch().getName().equals("master")) {
+            return promises.resolve(false);
+        }
+
+        if (authorizationManager.authorize(project.getRepository(),
+                                           RepositoryAction.UPDATE,
+                                           user)) {
+            return promises.resolve(true);
+        }
+
+        return checkBranchPermission(project,
+                                     branch,
+                                     RolePermissions::canRead);
     }
 
     boolean userIsAtLeast(final ContributorType type,
@@ -234,6 +255,20 @@ public class ProjectController {
         }
 
         return Optional.empty();
+    }
+
+    public Promise<List<Branch>> getReadableBranches(final WorkspaceProject project) {
+        if (project.getMainModule() == null) {
+            return promises.resolve(Collections.emptyList());
+        }
+
+        if (authorizationManager.authorize(project.getRepository(),
+                                           RepositoryAction.READ,
+                                           user)) {
+            return promises.resolve(new ArrayList<>(project.getRepository().getBranches()));
+        }
+
+        return getBranchesWithPermission(project, RolePermissions::canRead);
     }
 
     public Promise<List<Branch>> getUpdatableBranches(final WorkspaceProject project) {

@@ -240,6 +240,16 @@ public class PlaceManagerImpl implements PlaceManager {
                                                     UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
     }
 
+    @Override
+    public void goTo(final PlaceRequest place,
+                     final elemental2.dom.HTMLElement addTo) {
+        closeOpenPlacesAt(panelsOfThisHTMLElement(addTo));
+
+        goToTargetPanel(place,
+                        panelManager.addCustomPanel(addTo,
+                                                    UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
+    }
+
     private void closeOpenPlacesAt(Predicate<CustomPanelDefinition> filterPanels) {
         new HashSet<>(customPanels.values()).stream()
                 .filter(filterPanels)
@@ -253,6 +263,10 @@ public class PlaceManagerImpl implements PlaceManager {
 
     private Predicate<CustomPanelDefinition> panelsOfThisHasWidgets(HasWidgets addTo) {
         return p -> p.getHasWidgetsContainer().isPresent() && p.getHasWidgetsContainer().get().equals(addTo);
+    }
+
+    private Predicate<CustomPanelDefinition> panelsOfThisHTMLElement(elemental2.dom.HTMLElement addTo) {
+        return p -> p.getElemental2HtmlElementContainer().isPresent() && p.getElemental2HtmlElementContainer().get().equals(addTo);
     }
 
     private void goToTargetPanel(final PlaceRequest place,
