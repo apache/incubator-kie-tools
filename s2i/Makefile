@@ -30,6 +30,7 @@ kogito-data-index:
 test:
 	cekit -v test --overrides-file kogito-quarkus-ubi8-overrides.yaml behave
 	cekit -v test --overrides-file kogito-quarkus-jvm-ubi8-overrides.yaml behave
+	cd tests/test-apps && sh clone-repo.sh
 	cekit -v test --overrides-file kogito-quarkus-ubi8-s2i-overrides.yaml behave
 	cekit -v test --overrides-file kogito-springboot-ubi8-overrides.yaml behave
 	cekit -v test --overrides-file kogito-springboot-ubi8-s2i-overrides.yaml behave
@@ -58,20 +59,20 @@ _push:
 .PHONY: push-staging
 push-staging: build _push-staging
 _push-staging:
-	docker tag quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-quarkus-ubi8:${IMAGE_VERSION}-rc1
 
-	docker tag quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-quarkus-jvm-ubi8:${IMAGE_VERSION}-rc1
 
-	docker tag quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION} quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-quarkus-ubi8-s2i:${IMAGE_VERSION}-rc1
 
-	docker tag quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION} quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-springboot-ubi8:${IMAGE_VERSION}-rc1
 
-	docker tag quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION} quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION} quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc1
 
-	docker tag quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION} quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc3
-	docker push quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc3
+	docker tag quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION} quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc1
