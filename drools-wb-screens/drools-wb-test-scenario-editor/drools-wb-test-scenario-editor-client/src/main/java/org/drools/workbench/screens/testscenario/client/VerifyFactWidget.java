@@ -51,7 +51,6 @@ import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
-import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -197,11 +196,7 @@ public class VerifyFactWidget extends Composite {
                            2,
                            opr);
             Widget cellEditor = new VerifyFieldConstraintEditor(type,
-                                                                new ValueChanged() {
-                                                                    public void valueChanged(String newValue) {
-                                                                        fld.setExpected(newValue);
-                                                                    }
-                                                                },
+                                                                newValue -> fld.setExpected(newValue),
                                                                 fld,
                                                                 oracle,
                                                                 this.scenario,

@@ -44,17 +44,16 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
-import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 /**
@@ -67,11 +66,11 @@ public class VerifyFieldConstraintEditor extends Composite {
     private final Panel panel;
     private Scenario scenario;
     private AsyncPackageDataModelOracle oracle;
-    private ValueChanged callback;
+    private Callback<String> callback;
     private ExecutionTrace executionTrace;
 
     public VerifyFieldConstraintEditor(final String factType,
-                                       final ValueChanged callback,
+                                       final Callback<String> callback,
                                        final VerifyField field,
                                        final AsyncPackageDataModelOracle oracle,
                                        final Scenario scenario,
@@ -98,7 +97,7 @@ public class VerifyFieldConstraintEditor extends Composite {
                                        new DropDownValueChanged() {
                                            public void valueChanged(String newText,
                                                                     String newValue) {
-                                               callback.valueChanged(newValue);
+                                               callback.callback(newValue);
                                            }
                                        },
                                        DropDownData.create(c),
@@ -136,7 +135,7 @@ public class VerifyFieldConstraintEditor extends Composite {
                                            new DropDownValueChanged() {
                                                public void valueChanged(String newText,
                                                                         String newValue) {
-                                                   callback.valueChanged(newValue);
+                                                   callback.callback(newValue);
                                                }
                                            },
                                            dropDownData,
@@ -209,22 +208,14 @@ public class VerifyFieldConstraintEditor extends Composite {
         return box;
     }
 
-    private static TextBox editableTextBox(final ValueChanged changed,
-                                           final String dataType,
-                                           final String fieldName,
-                                           final String initialValue) {
-        final TextBox tb = TextBoxFactory.getTextBox(dataType);
-        tb.setText(initialValue);
-        String m = TestScenarioConstants.INSTANCE.ValueFor0(fieldName);
-        tb.setTitle(m);
-        tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(final ValueChangeEvent<String> event) {
-                changed.valueChanged(event.getValue());
-            }
-        });
-
-        return tb;
+    private static Widget editableTextBox(final Callback<String> changed,
+                                          final String dataType,
+                                          final String fieldName,
+                                          final String initialValue) {
+        return new EditableTextBox(changed,
+                                   TextBoxFactory.getTextBox(dataType),
+                                   fieldName,
+                                   initialValue).asWidget();
     }
 
     private void showTypeChoice(Widget w,
