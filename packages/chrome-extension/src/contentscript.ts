@@ -42,7 +42,7 @@ function extractOpenFileExtension(url: string) {
 
 async function init() {
   const githubDomElements = new GitHubDomElementsFactory().create();
-  if (!githubDomElements.githubEditor()) {
+  if (!githubDomElements.githubTextEditor()) {
     console.info(`[Kogito] Not GitHub edit page.`);
     return;
   }
@@ -70,7 +70,7 @@ async function init() {
     router: router
   });
 
-  ReactDOM.render(app, githubDomElements.main());
+  ReactDOM.render(app, githubDomElements.mainContainer());
 }
 
 init();

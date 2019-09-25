@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { GitHubCodeMirrorEditor } from "./GitHubCodeMirrorEditor";
-
 export class GitHubDomElements {
-  public toolbar() {
+  public toolbarContainer() {
     return document.querySelector(".breadcrumb.d-flex.flex-items-center")!;
   }
 
@@ -25,11 +23,11 @@ export class GitHubDomElements {
     return document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement;
   }
 
-  public githubEditor() {
+  public githubTextEditor() {
     return document.querySelector(".js-code-editor")! as HTMLElement;
   }
 
-  public iframe() {
+  public iframeContainer() {
     const element = () => document.getElementById("kogito-iframe-container")!;
     if (!element()) {
       document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
@@ -37,7 +35,7 @@ export class GitHubDomElements {
     return element();
   }
 
-  public main() {
+  public mainContainer() {
     const element = () => document.getElementById("kogito-container")!;
     if (!element()) {
       document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
@@ -51,10 +49,6 @@ export class GitHubDomElements {
       document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     }
     return element();
-  }
-
-  public githubEditorCodeMirror() {
-    return document.querySelector(".file-editor-textarea + .CodeMirror")! as HTMLElement & GitHubCodeMirrorEditor;
   }
 
   public allFound() {

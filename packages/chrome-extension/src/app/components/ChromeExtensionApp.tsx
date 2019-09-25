@@ -45,11 +45,11 @@ export function ChromeExtensionApp(props: {
   useEffect(
     () => {
       if (globalState.textMode) {
-        props.githubDomElements.githubEditor().classList.remove("hidden");
-        props.githubDomElements.iframe().classList.add("hidden");
+        props.githubDomElements.githubTextEditor().classList.remove("hidden");
+        props.githubDomElements.iframeContainer().classList.add("hidden");
       } else {
-        props.githubDomElements.githubEditor().classList.add("hidden");
-        props.githubDomElements.iframe().classList.remove("hidden");
+        props.githubDomElements.githubTextEditor().classList.add("hidden");
+        props.githubDomElements.iframeContainer().classList.remove("hidden");
       }
     },
     [globalState]
@@ -57,7 +57,7 @@ export function ChromeExtensionApp(props: {
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbar())}
+      {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbarContainer())}
       {globalState.fullscreen &&
         ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreen())}
       {ReactDOM.createPortal(
@@ -66,7 +66,7 @@ export function ChromeExtensionApp(props: {
           router={props.router}
           githubDomElements={props.githubDomElements}
         />,
-        globalState.fullscreen ? props.githubDomElements.iframeFullscreen() : props.githubDomElements.iframe()
+        globalState.fullscreen ? props.githubDomElements.iframeFullscreen() : props.githubDomElements.iframeContainer()
       )}
     </GlobalContext.Provider>
   );
