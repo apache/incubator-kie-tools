@@ -64,7 +64,7 @@ export function ChromeExtensionApp(props: {
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
           router={props.router}
-          githubEditorCodeMirror={props.githubDomElements.githubEditorCodeMirror()}
+          githubDomElements={props.githubDomElements}
         />,
         globalState.fullscreen ? props.githubDomElements.iframeFullscreen() : props.githubDomElements.iframe()
       )}

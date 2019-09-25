@@ -20,7 +20,6 @@ import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
 import { GwtEditorRoutes } from "appformer-js-gwt-editors";
 import { GitHubDomElementsFactory } from "./GitHubDomElementsFactory";
-import * as CodeMirror from "codemirror";
 
 function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
@@ -43,7 +42,7 @@ function extractOpenFileExtension(url: string) {
 
 async function init() {
   const githubDomElements = new GitHubDomElementsFactory().create();
-  if (!githubDomElements.githubEditor) {
+  if (!githubDomElements.githubEditor()) {
     console.info(`[Kogito] Not GitHub edit page.`);
     return;
   }
@@ -64,9 +63,6 @@ async function init() {
     console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
     return;
   }
-
-  CodeMirror(document.body);
-  CodeMirror.fromTextArea(githubDomElements.githubEditorCodeMirrorTarget());
 
   const app = React.createElement(ChromeExtensionApp, {
     githubDomElements: githubDomElements,

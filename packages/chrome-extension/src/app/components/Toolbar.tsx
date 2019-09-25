@@ -14,45 +14,45 @@
  * limitations under the License.
  */
 
-import {useContext} from "react";
-import {GlobalContext} from "./GlobalContext";
 import * as React from "react";
+import { useContext } from "react";
+import { GlobalContext } from "./GlobalContext";
 
 export function Toolbar() {
-    const [globalState, setGlobalState] = useContext(GlobalContext);
+  const [globalState, setGlobalState] = useContext(GlobalContext);
 
-    const goFullScreen = (e: any) => {
-        e.preventDefault();
-        setGlobalState({ ...globalState, fullscreen: true });
-    };
+  const goFullScreen = (e: any) => {
+    e.preventDefault();
+    setGlobalState({ ...globalState, fullscreen: true });
+  };
 
-    const seeAsText = (e: any) => {
-        e.preventDefault();
-        setGlobalState({ ...globalState, textMode: true });
-    };
+  const seeAsText = (e: any) => {
+    e.preventDefault();
+    setGlobalState({ ...globalState, textMode: true });
+  };
 
-    const seeAsKogito = (e: any) => {
-        e.preventDefault();
-        setGlobalState({ ...globalState, textMode: false });
-    };
+  const seeAsKogito = (e: any) => {
+    e.preventDefault();
+    setGlobalState({ ...globalState, textMode: false });
+  };
 
-    return (
-        <>
-            {!globalState.textMode && (
-                <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-                    Full Screen
-                </button>
-            )}
-            {!globalState.textMode && (
-                <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsText}>
-                    See as text
-                </button>
-            )}
-            {globalState.textMode && (
-                <button className={"btn btn-sm kogito-button"} onClick={seeAsKogito}>
-                    See as custom editor
-                </button>
-            )}
-        </>
-    );
+  return (
+    <>
+      {!globalState.textMode && (
+        <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsText}>
+          See as source
+        </button>
+      )}
+      {globalState.textMode && (
+        <button className={"btn btn-sm kogito-button"} onClick={seeAsKogito}>
+          See as diagram
+        </button>
+      )}
+      {!globalState.textMode && (
+        <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+          Full screen
+        </button>
+      )}
+    </>
+  );
 }

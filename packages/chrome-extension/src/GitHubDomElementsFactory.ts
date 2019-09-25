@@ -21,7 +21,7 @@ export class GitHubDomElements {
     return document.querySelector(".breadcrumb.d-flex.flex-items-center")!;
   }
 
-  public githubEditorCodeMirrorTarget() {
+  public githubContentTextArea() {
     return document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement;
   }
 

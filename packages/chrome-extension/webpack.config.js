@@ -27,7 +27,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
+    filename: "[name].js"
   },
   externals: {},
   plugins: [
@@ -35,8 +35,7 @@ module.exports = {
       { from: "./static/manifest.json" },
       { from: "./static/newtab", to: "./newtab" },
       { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" },
-      { from: "../../node_modules/codemirror/lib/codemirror.js", to: "./resources" }
+      { from: "./static/envelope", to: "./envelope" }
     ]),
     new CopyPlugin([
       { from: "../unpacked-gwt-editors/dmn", to: "./editors/dmn" },

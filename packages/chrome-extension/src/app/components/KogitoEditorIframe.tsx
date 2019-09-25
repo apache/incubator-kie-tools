@@ -19,16 +19,18 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
-import { GitHubCodeMirrorEditor } from "../../GitHubCodeMirrorEditor";
+import { GitHubDomElements } from "../../GitHubDomElementsFactory";
 
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
-  githubEditorCodeMirror: HTMLElement & GitHubCodeMirrorEditor;
+  githubDomElements: GitHubDomElements;
   router: Router;
 }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const [globalState, setGlobalState] = useContext(GlobalContext);
+
+  let polling: any;
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
     {
@@ -46,12 +48,15 @@ export function KogitoEditorIframe(props: {
         self.respond_languageRequest(props.router.getLanguageData(props.openFileExtension));
       },
       receive_contentResponse(content: string) {
-        // enableCommitButton();
-        props.githubEditorCodeMirror.CodeMirror.setValue(content);
+        const scriptTag = document.createElement("script");
+        scriptTag.setAttribute("type", "text/javascript");
+        scriptTag.innerText = `document.querySelector(".file-editor-textarea + .CodeMirror").CodeMirror.setValue('${content}')`;
+        document.body.appendChild(scriptTag);
+        scriptTag.remove();
       },
       receive_contentRequest() {
-        const githubEditorCodeMirrorContent = props.githubEditorCodeMirror.CodeMirror.getValue() || "";
-        self.respond_contentRequest(githubEditorCodeMirrorContent);
+        self.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
+        startPollingForChangesOnDiagram();
       },
       receive_setContentError() {
         //FIXME: Display a nice message with explanation why "setContent" failed
@@ -66,6 +71,35 @@ export function KogitoEditorIframe(props: {
         setGlobalState({ ...globalState, textModeEnabled: true });
       }
     })
+  );
+
+  function startPollingForChangesOnDiagram() {
+    if (polling) {
+      return;
+    }
+
+    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 20000);
+  }
+
+  function stopPolling() {
+    clearInterval(polling);
+    polling = undefined;
+  }
+
+  useEffect(
+    () => {
+      if (globalState.textMode) {
+        stopPolling();
+        envelopeBusOuterMessageHandler.request_contentResponse();
+        //FIXME: Here we should trigger a "click" event of something that makes the editor "update"
+      } else {
+        envelopeBusOuterMessageHandler.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
+        startPollingForChangesOnDiagram();
+      }
+
+      return stopPolling;
+    },
+    [globalState]
   );
 
   useEffect(() => {
