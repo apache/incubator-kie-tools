@@ -80,7 +80,7 @@ export function KogitoEditorIframe(props: {
     polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 1000);
   }
 
-  function stopPolling() {
+  function stopPollingForChangesOnDiagram() {
     clearInterval(polling);
     polling = undefined;
   }
@@ -88,7 +88,7 @@ export function KogitoEditorIframe(props: {
   useEffect(
     () => {
       if (globalState.textMode) {
-        stopPolling();
+        stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
         //FIXME: Here we should trigger a "click" event of something that makes the editor "update"
       } else {
@@ -96,7 +96,7 @@ export function KogitoEditorIframe(props: {
         startPollingForChangesOnDiagram();
       }
 
-      return stopPolling;
+      return stopPollingForChangesOnDiagram;
     },
     [globalState]
   );
