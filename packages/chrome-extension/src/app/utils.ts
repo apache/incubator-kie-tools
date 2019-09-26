@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-export function getGitHubEditor() {
-  const realEditor = document.querySelector(".file-editor-textarea + .CodeMirror") as any;
-  if (!realEditor) {
-    throw new Error("GitHub editor was not found. GitHub must've change its DOM structure.");
-  }
-  return realEditor;
+export function runScriptOnPage(scriptString: string) {
+  const scriptTag = document.createElement("script");
+  scriptTag.setAttribute("type", "text/javascript");
+  scriptTag.innerText = scriptString;
+  document.body.appendChild(scriptTag);
+  scriptTag.remove();
 }

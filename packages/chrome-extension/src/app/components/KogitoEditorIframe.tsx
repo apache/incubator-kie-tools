@@ -20,6 +20,7 @@ import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GitHubDomElements } from "../../GitHubDomElementsFactory";
+import { runScriptOnPage } from "../utils";
 
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
@@ -48,11 +49,9 @@ export function KogitoEditorIframe(props: {
         self.respond_languageRequest(props.router.getLanguageData(props.openFileExtension));
       },
       receive_contentResponse(content: string) {
-        const scriptTag = document.createElement("script");
-        scriptTag.setAttribute("type", "text/javascript");
-        scriptTag.innerText = `document.querySelector(".file-editor-textarea + .CodeMirror").CodeMirror.setValue('${content}')`;
-        document.body.appendChild(scriptTag);
-        scriptTag.remove();
+        runScriptOnPage(
+          `document.querySelector(".file-editor-textarea + .CodeMirror").CodeMirror.setValue('${content}')`
+        );
       },
       receive_contentRequest() {
         self.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
@@ -78,7 +77,7 @@ export function KogitoEditorIframe(props: {
       return;
     }
 
-    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 20000);
+    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 1000);
   }
 
   function stopPolling() {
