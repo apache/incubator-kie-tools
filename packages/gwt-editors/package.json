@@ -1,5 +1,5 @@
 {
-  "name": "appformer-js-gwt-editors",
+  "name": "@kogito-tooling/gwt-editors",
   "version": "0.1.0",
   "description": "",
   "license": "Apache-2.0",
@@ -10,8 +10,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "appformer-js-core": "0.1.0",
-    "appformer-js-microeditor-envelope": "0.1.0"
+    "@kogito-tooling/core-api": "0.1.0",
+    "@kogito-tooling/microeditor-envelope": "0.1.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

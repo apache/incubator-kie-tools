@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "appformer-js-core";
+import { Router, Routes } from "@kogito-tooling/core-api";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 export const editors = {

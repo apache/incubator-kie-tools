@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
-import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
+import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GitHubDomElements } from "../../GitHubDomElementsFactory";
 
 export function KogitoEditorIframe(props: {

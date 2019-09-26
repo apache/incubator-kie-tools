@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "appformer-js-gwt-editors";
-import { EnvelopeBusMessage } from "appformer-js-microeditor-envelope-protocol";
+import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
+import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const gwtAppFormerApi = new GwtAppFormerApi();
 gwtAppFormerApi.setClientSideOnly(true);

@@ -18,7 +18,7 @@ import { ChromeRouter } from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
-import { GwtEditorRoutes } from "appformer-js-gwt-editors";
+import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 import { GitHubDomElementsFactory } from "./GitHubDomElementsFactory";
 
 function extractOpenFileExtension(url: string) {

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import {useContext} from "react";
-import {GlobalContext} from "./GlobalContext";
 import * as React from "react";
+import { useContext } from "react";
+import { GlobalContext } from "./GlobalContext";
 
 export function FullScreenToolbar() {
-    const [globalState, setGlobalState] = useContext(GlobalContext);
+  const [globalState, setGlobalState] = useContext(GlobalContext);
 
-    const exitFullScreen = () => {
-        setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });
-    };
+  const exitFullScreen = () => {
+    setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });
+  };
 
-    return (
-        <div id={"kogito-iframe-fullscreen-toolbar"}>
-            <a href={"#"} onClick={exitFullScreen}>
-                Exit full screen
-            </a>
-        </div>
-    );
+  return (
+    <div id={"kogito-iframe-fullscreen-toolbar"}>
+      <a href={"#"} onClick={exitFullScreen}>
+        Exit full screen
+      </a>
+    </div>
+  );
 }

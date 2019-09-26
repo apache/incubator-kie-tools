@@ -18,7 +18,7 @@ import { GitHubDomElements } from "../../GitHubDomElementsFactory";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { FullScreenToolbar } from "./FullScreenToolbar";

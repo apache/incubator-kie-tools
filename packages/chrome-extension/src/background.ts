@@ -46,7 +46,6 @@ chrome.webRequest.onHeadersReceived.addListener(
   ["blocking", "responseHeaders"]
 );
 
-
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
     removeHeader(details.responseHeaders!, "content-security-policy");

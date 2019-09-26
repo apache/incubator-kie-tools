@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "appformer-js-gwt-editors";
+import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 
 declare global {
