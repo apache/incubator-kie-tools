@@ -26,12 +26,12 @@ export function Toolbar() {
     setGlobalState({ ...globalState, fullscreen: true });
   };
 
-  const seeAsText = (e: any) => {
+  const seeAsSource = (e: any) => {
     e.preventDefault();
     setGlobalState({ ...globalState, textMode: true });
   };
 
-  const seeAsKogito = (e: any) => {
+  const seeAsDiagram = (e: any) => {
     e.preventDefault();
     setGlobalState({ ...globalState, textMode: false });
   };
@@ -39,12 +39,12 @@ export function Toolbar() {
   return (
     <>
       {!globalState.textMode && (
-        <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsText}>
+        <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
           See as source
         </button>
       )}
       {globalState.textMode && (
-        <button className={"btn btn-sm kogito-button"} onClick={seeAsKogito}>
+        <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
           See as diagram
         </button>
       )}
