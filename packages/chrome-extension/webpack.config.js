@@ -33,7 +33,6 @@ module.exports = {
   plugins: [
     new CopyPlugin([
       { from: "./static/manifest.json" },
-      { from: "./static/newtab", to: "./newtab" },
       { from: "./static/resources", to: "./resources" },
       { from: "./static/envelope", to: "./envelope" }
     ]),

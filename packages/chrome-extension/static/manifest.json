@@ -1,11 +1,8 @@
 {
-  "name": "Kogito Tooling",
+  "name": "Kogito Tooling :: Chrome Extension :: BPMN Editor",
   "version": "0.1.0",
   "manifest_version": 2,
-  "description": "Kogito Tooling",
-  "chrome_url_overrides": {
-    "newtab": "newtab/home.html"
-  },
+  "description": "Kogito Tooling :: Chrome Extension",
   "content_scripts": [
     {
       "run_at": "document_idle",
@@ -15,6 +12,10 @@
       "all_frames": true
     }
   ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
   "web_accessible_resources": ["envelope/*", "editors/*", "resources/*"],
   "permissions": [
     "webRequestBlocking",
@@ -25,9 +26,5 @@
     "declarativeContent",
     "background"
   ],
-  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": true
-  }
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'"
 }
