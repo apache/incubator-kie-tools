@@ -43,7 +43,7 @@ export class GitHubDomElements {
     return element();
   }
 
-  public iframeFullscreen() {
+  public iframeFullscreenContainer() {
     const element = () => document.getElementById("kogito-iframe-fullscreen-container")!;
     if (!element()) {
       document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);

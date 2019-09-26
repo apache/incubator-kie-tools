@@ -34,9 +34,9 @@ export function ChromeExtensionApp(props: {
   useLayoutEffect(
     () => {
       if (!globalState.fullscreen) {
-        props.githubDomElements.iframeFullscreen().classList.add("hidden");
+        props.githubDomElements.iframeFullscreenContainer().classList.add("hidden");
       } else {
-        props.githubDomElements.iframeFullscreen().classList.remove("hidden");
+        props.githubDomElements.iframeFullscreenContainer().classList.remove("hidden");
       }
     },
     [globalState]
@@ -58,15 +58,19 @@ export function ChromeExtensionApp(props: {
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
       {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbarContainer())}
+
       {globalState.fullscreen &&
-        ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreen())}
+        ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreenContainer())}
+
       {ReactDOM.createPortal(
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
           router={props.router}
           githubDomElements={props.githubDomElements}
         />,
-        globalState.fullscreen ? props.githubDomElements.iframeFullscreen() : props.githubDomElements.iframeContainer()
+        globalState.fullscreen
+          ? props.githubDomElements.iframeFullscreenContainer()
+          : props.githubDomElements.iframeContainer()
       )}
     </GlobalContext.Provider>
   );
