@@ -22,16 +22,17 @@ import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-enve
 import { GitHubDomElements } from "../../GitHubDomElementsFactory";
 import { runScriptOnPage } from "../utils";
 
+const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
+
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
   githubDomElements: GitHubDomElements;
   router: Router;
 }) {
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  let polling: any;
 
   const [globalState, setGlobalState] = useContext(GlobalContext);
-
-  let polling: any;
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
     {
@@ -50,7 +51,7 @@ export function KogitoEditorIframe(props: {
       },
       receive_contentResponse(content: string) {
         runScriptOnPage(
-          `document.querySelector(".file-editor-textarea + .CodeMirror").CodeMirror.setValue('${content}')`
+          `document.querySelector("${githubCodeMirrorEditorSelector}").CodeMirror.setValue('${content}')`
         );
       },
       receive_contentRequest() {
