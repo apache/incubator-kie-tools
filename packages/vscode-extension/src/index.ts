@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorsExtension } from "./KogitoEditorsExtension";
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 
 /**
  * Starts a Kogito extension.

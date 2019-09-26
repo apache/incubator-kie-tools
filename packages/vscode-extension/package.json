@@ -1,5 +1,5 @@
 {
-  "name": "appformer-js-vscode-extension",
+  "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
   "version": "0.1.0",
@@ -47,8 +47,8 @@
     "webpack-node-externals": "1.7.2"
   },
   "dependencies": {
-    "appformer-js-core": "0.1.0",
-    "appformer-js-microeditor-envelope": "0.1.0",
-    "appformer-js-microeditor-envelope-protocol": "0.1.0"
+    "@kogito-tooling/core-api": "0.1.0",
+    "@kogito-tooling/microeditor-envelope": "0.1.0",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.1.0"
   }
 }

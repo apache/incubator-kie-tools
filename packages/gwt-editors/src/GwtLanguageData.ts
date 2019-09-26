@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "appformer-js-core";
+import { LanguageData } from "@kogito-tooling/core-api";
 
 export interface GwtLanguageData extends LanguageData {
   type: string;

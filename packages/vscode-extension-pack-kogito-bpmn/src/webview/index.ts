@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
 import { GwtAppFormerApi, GwtEditorWrapperFactory } from "appformer-js-gwt-editors";
+import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 
 declare global {
   export const acquireVsCodeApi: any;

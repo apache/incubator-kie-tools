@@ -1,5 +1,5 @@
 {
-  "name": "appformer-js-vscode-extension-pack-kogito-bpmn",
+  "name": "vscode-extension-pack-kogito-bpmn",
   "displayName": "BPMN Editor",
   "description": "",
   "version": "0.1.0",
@@ -71,11 +71,11 @@
     "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "appformer-js-core": "0.1.0",
-    "appformer-js-gwt-editors": "0.1.0",
-    "appformer-js-microeditor-envelope": "0.1.0",
-    "appformer-js-microeditor-envelope-protocol": "0.1.0",
-    "appformer-js-vscode-extension": "0.1.0",
-    "appformer-js-unpacked-gwt-editors": "0.1.0"
+    "@kogito-tooling/core-api": "0.1.0",
+    "@kogito-tooling/gwt-editors": "0.1.0",
+    "@kogito-tooling/microeditor-envelope": "0.1.0",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.1.0",
+    "@kogito-tooling/vscode-extension": "0.1.0",
+    "@kogito-tooling/unpacked-gwt-editors": "0.1.0"
   }
 }

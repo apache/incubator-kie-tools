@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "appformer-js-core";
+import * as AppFormer from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
-import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
+import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 

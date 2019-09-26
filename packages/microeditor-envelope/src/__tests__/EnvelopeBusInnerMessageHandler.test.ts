@@ -15,8 +15,8 @@
  */
 
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
-import { EnvelopeBusMessageType } from "appformer-js-microeditor-envelope-protocol";
-import { LanguageData } from "appformer-js-core";
+import { EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { LanguageData } from "@kogito-tooling/core-api";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];

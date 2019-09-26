@@ -17,7 +17,7 @@
 import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;

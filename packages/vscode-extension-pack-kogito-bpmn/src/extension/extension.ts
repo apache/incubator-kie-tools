@@ -16,14 +16,14 @@
 
 import * as vscode from "vscode";
 import { VsCodeKogitoRouter } from "./VsCodeKogitoRouter";
-import * as KogitoVsCode from "appformer-js-vscode-extension";
 import { GwtEditorRoutes } from "appformer-js-gwt-editors";
+import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito-bpmn",
+    extensionName: "kiegroup.vscode-extension-pack-kogito-bpmn",
     webviewLocation: "dist/webview/index.js",
     context: context,
     router: new VsCodeKogitoRouter(context, new GwtEditorRoutes({ bpmnPath: "dist/webview/editors/bpmn" }))

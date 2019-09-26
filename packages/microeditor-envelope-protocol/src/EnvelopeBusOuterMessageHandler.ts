@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "appformer-js-core";
+import { LanguageData } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";

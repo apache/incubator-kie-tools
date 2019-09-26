@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "appformer-js-core";
-import { LanguageData } from "appformer-js-core";
+import * as AppFormer from "@kogito-tooling/core-api";
+import { LanguageData } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
-import { EnvelopeBusApi } from "appformer-js-microeditor-envelope-protocol";
+import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";

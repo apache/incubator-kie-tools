@@ -16,9 +16,9 @@
 
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
+import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { Router } from "appformer-js-core";
+import { Router } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
