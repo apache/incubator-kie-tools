@@ -47,6 +47,10 @@
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-core-ace</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
