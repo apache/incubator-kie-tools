@@ -8,13 +8,54 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       id="loading-screen"
     >
       <div
-        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 0; transition: opacity 400ms;"
+        class="kogito-tooling--loading-screen"
+        style="opacity: 0; transition: opacity 400ms;"
       >
-        <span
-          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        <div
+          class="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            class="pf-c-page__main"
+            role="main"
+            tabindex="-1"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                class="pf-c-empty-state styles.modifiers.lg"
+              >
+                <div
+                  class="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    class="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      class="pf-c-spinner__clipper"
+                    />
+                    <div
+                      class="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      class="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  class="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  class="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   }
@@ -25,13 +66,54 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
         id="loading-screen"
       >
         <div
-          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 0; transition: opacity 400ms;"
+          class="kogito-tooling--loading-screen"
+          style="opacity: 0; transition: opacity 400ms;"
         >
-          <span
-            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          <div
+            class="pf-c-page"
           >
-            Loading...
-          </span>
+            <main
+              class="pf-c-page__main"
+              role="main"
+              tabindex="-1"
+            >
+              <div
+                class="pf-l-bullseye"
+              >
+                <div
+                  class="pf-c-empty-state styles.modifiers.lg"
+                >
+                  <div
+                    class="pf-u-mb-lg"
+                  >
+                    <div
+                      aria-valuetext="Loading..."
+                      class="pf-c-spinner"
+                      role="progressbar"
+                    >
+                      <div
+                        class="pf-c-spinner__clipper"
+                      />
+                      <div
+                        class="pf-c-spinner__lead-ball"
+                      />
+                      <div
+                        class="pf-c-spinner__tail-ball"
+                      />
+                    </div>
+                  </div>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                  >
+                    Loading...
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  />
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     }
@@ -40,30 +122,86 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       visible={false}
     >
       <div
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
-            "backgroundColor": "#1e1e1e",
-            "height": "100vh",
             "opacity": 0,
-            "padding": "40px 0 0 0",
-            "textAlign": "center",
             "transition": "opacity 400ms",
-            "width": "100vw",
           }
         }
       >
-        <span
-          style={
-            Object {
-              "color": "white",
-              "fontFamily": "Helvetica",
-              "fontSize": "12pt",
-            }
-          }
+        <Page
+          breadcrumb={null}
+          className=""
+          defaultManagedSidebarIsOpen={true}
+          header={null}
+          isManagedSidebar={false}
+          mainContainerId={null}
+          onPageResize={[Function]}
+          sidebar={null}
+          skipToContent={null}
         >
-          Loading...
-        </span>
+          <div
+            className="pf-c-page"
+          >
+            <main
+              className="pf-c-page__main"
+              id={null}
+              role="main"
+              tabIndex={-1}
+            >
+              <Bullseye>
+                <div
+                  className="pf-l-bullseye"
+                >
+                  <EmptyState
+                    variant="large"
+                  >
+                    <div
+                      className="pf-c-empty-state styles.modifiers.lg"
+                    >
+                      <div
+                        className="pf-u-mb-lg"
+                      >
+                        <div
+                          aria-valuetext="Loading..."
+                          className="pf-c-spinner"
+                          role="progressbar"
+                        >
+                          <div
+                            className="pf-c-spinner__clipper"
+                          />
+                          <div
+                            className="pf-c-spinner__lead-ball"
+                          />
+                          <div
+                            className="pf-c-spinner__tail-ball"
+                          />
+                        </div>
+                      </div>
+                      <Title
+                        headingLevel="h5"
+                        size="lg"
+                      >
+                        <h5
+                          className="pf-c-title pf-m-lg"
+                        >
+                          Loading...
+                        </h5>
+                      </Title>
+                      <EmptyStateBody>
+                        <div
+                          className="pf-c-empty-state__body"
+                        />
+                      </EmptyStateBody>
+                    </div>
+                  </EmptyState>
+                </div>
+              </Bullseye>
+            </main>
+          </div>
+        </Page>
       </div>
     </LoadingScreen>
   </Portal>
@@ -72,7 +210,6 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
   >
     <div>
       Here's the dummy content: 
-      test content
     </div>
   </DummyEditorComponent>
 </EditorEnvelopeView>
@@ -86,13 +223,54 @@ exports[`EditorEnvelopeController opens 1`] = `
       id="loading-screen"
     >
       <div
-        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        class="kogito-tooling--loading-screen"
+        style="opacity: 1;"
       >
-        <span
-          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        <div
+          class="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            class="pf-c-page__main"
+            role="main"
+            tabindex="-1"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                class="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  class="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    class="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      class="pf-c-spinner__clipper"
+                    />
+                    <div
+                      class="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      class="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  class="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  class="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   }
@@ -103,13 +281,54 @@ exports[`EditorEnvelopeController opens 1`] = `
         id="loading-screen"
       >
         <div
-          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+          class="kogito-tooling--loading-screen"
+          style="opacity: 1;"
         >
-          <span
-            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          <div
+            class="pf-c-page"
           >
-            Loading...
-          </span>
+            <main
+              class="pf-c-page__main"
+              role="main"
+              tabindex="-1"
+            >
+              <div
+                class="pf-l-bullseye"
+              >
+                <div
+                  class="pf-c-empty-state pf-m-lg"
+                >
+                  <div
+                    class="pf-u-mb-lg"
+                  >
+                    <div
+                      aria-valuetext="Loading..."
+                      class="pf-c-spinner"
+                      role="progressbar"
+                    >
+                      <div
+                        class="pf-c-spinner__clipper"
+                      />
+                      <div
+                        class="pf-c-spinner__lead-ball"
+                      />
+                      <div
+                        class="pf-c-spinner__tail-ball"
+                      />
+                    </div>
+                  </div>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                  >
+                    Loading...
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  />
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     }
@@ -118,29 +337,59 @@ exports[`EditorEnvelopeController opens 1`] = `
       visible={true}
     >
       <div
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
-            "backgroundColor": "#1e1e1e",
-            "height": "100vh",
             "opacity": 1,
-            "padding": "40px 0 0 0",
-            "textAlign": "center",
-            "width": "100vw",
           }
         }
       >
-        <span
-          style={
-            Object {
-              "color": "white",
-              "fontFamily": "Helvetica",
-              "fontSize": "12pt",
-            }
-          }
+        <div
+          className="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            className="pf-c-page__main"
+            role="main"
+            tabIndex={-1}
+          >
+            <div
+              className="pf-l-bullseye"
+            >
+              <div
+                className="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  className="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    className="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      className="pf-c-spinner__clipper"
+                    />
+                    <div
+                      className="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      className="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  className="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  className="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </LoadingScreen>
   </Portal>
@@ -155,13 +404,54 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       id="loading-screen"
     >
       <div
-        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        class="kogito-tooling--loading-screen"
+        style="opacity: 1;"
       >
-        <span
-          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        <div
+          class="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            class="pf-c-page__main"
+            role="main"
+            tabindex="-1"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                class="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  class="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    class="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      class="pf-c-spinner__clipper"
+                    />
+                    <div
+                      class="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      class="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  class="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  class="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   }
@@ -172,13 +462,54 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         id="loading-screen"
       >
         <div
-          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+          class="kogito-tooling--loading-screen"
+          style="opacity: 1;"
         >
-          <span
-            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          <div
+            class="pf-c-page"
           >
-            Loading...
-          </span>
+            <main
+              class="pf-c-page__main"
+              role="main"
+              tabindex="-1"
+            >
+              <div
+                class="pf-l-bullseye"
+              >
+                <div
+                  class="pf-c-empty-state pf-m-lg"
+                >
+                  <div
+                    class="pf-u-mb-lg"
+                  >
+                    <div
+                      aria-valuetext="Loading..."
+                      class="pf-c-spinner"
+                      role="progressbar"
+                    >
+                      <div
+                        class="pf-c-spinner__clipper"
+                      />
+                      <div
+                        class="pf-c-spinner__lead-ball"
+                      />
+                      <div
+                        class="pf-c-spinner__tail-ball"
+                      />
+                    </div>
+                  </div>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                  >
+                    Loading...
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  />
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     }
@@ -187,29 +518,59 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       visible={true}
     >
       <div
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
-            "backgroundColor": "#1e1e1e",
-            "height": "100vh",
             "opacity": 1,
-            "padding": "40px 0 0 0",
-            "textAlign": "center",
-            "width": "100vw",
           }
         }
       >
-        <span
-          style={
-            Object {
-              "color": "white",
-              "fontFamily": "Helvetica",
-              "fontSize": "12pt",
-            }
-          }
+        <div
+          className="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            className="pf-c-page__main"
+            role="main"
+            tabIndex={-1}
+          >
+            <div
+              className="pf-l-bullseye"
+            >
+              <div
+                className="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  className="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    className="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      className="pf-c-spinner__clipper"
+                    />
+                    <div
+                      className="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      className="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  className="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  className="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </LoadingScreen>
   </Portal>
@@ -224,13 +585,54 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       id="loading-screen"
     >
       <div
-        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        class="kogito-tooling--loading-screen"
+        style="opacity: 1;"
       >
-        <span
-          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        <div
+          class="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            class="pf-c-page__main"
+            role="main"
+            tabindex="-1"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                class="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  class="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    class="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      class="pf-c-spinner__clipper"
+                    />
+                    <div
+                      class="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      class="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  class="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  class="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   }
@@ -241,13 +643,54 @@ exports[`EditorEnvelopeController right after received content 1`] = `
         id="loading-screen"
       >
         <div
-          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+          class="kogito-tooling--loading-screen"
+          style="opacity: 1;"
         >
-          <span
-            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          <div
+            class="pf-c-page"
           >
-            Loading...
-          </span>
+            <main
+              class="pf-c-page__main"
+              role="main"
+              tabindex="-1"
+            >
+              <div
+                class="pf-l-bullseye"
+              >
+                <div
+                  class="pf-c-empty-state pf-m-lg"
+                >
+                  <div
+                    class="pf-u-mb-lg"
+                  >
+                    <div
+                      aria-valuetext="Loading..."
+                      class="pf-c-spinner"
+                      role="progressbar"
+                    >
+                      <div
+                        class="pf-c-spinner__clipper"
+                      />
+                      <div
+                        class="pf-c-spinner__lead-ball"
+                      />
+                      <div
+                        class="pf-c-spinner__tail-ball"
+                      />
+                    </div>
+                  </div>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                  >
+                    Loading...
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  />
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     }
@@ -256,29 +699,59 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       visible={true}
     >
       <div
+        className="kogito-tooling--loading-screen"
         onTransitionEnd={[Function]}
         style={
           Object {
-            "backgroundColor": "#1e1e1e",
-            "height": "100vh",
             "opacity": 1,
-            "padding": "40px 0 0 0",
-            "textAlign": "center",
-            "width": "100vw",
           }
         }
       >
-        <span
-          style={
-            Object {
-              "color": "white",
-              "fontFamily": "Helvetica",
-              "fontSize": "12pt",
-            }
-          }
+        <div
+          className="pf-c-page"
         >
-          Loading...
-        </span>
+          <main
+            className="pf-c-page__main"
+            role="main"
+            tabIndex={-1}
+          >
+            <div
+              className="pf-l-bullseye"
+            >
+              <div
+                className="pf-c-empty-state pf-m-lg"
+              >
+                <div
+                  className="pf-u-mb-lg"
+                >
+                  <div
+                    aria-valuetext="Loading..."
+                    className="pf-c-spinner"
+                    role="progressbar"
+                  >
+                    <div
+                      className="pf-c-spinner__clipper"
+                    />
+                    <div
+                      className="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      className="pf-c-spinner__tail-ball"
+                    />
+                  </div>
+                </div>
+                <h5
+                  className="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  className="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </LoadingScreen>
   </Portal>
