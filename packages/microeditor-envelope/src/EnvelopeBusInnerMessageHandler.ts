@@ -80,6 +80,10 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: isDirty });
   }
 
+  public notify_ready() {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
+  }
+
   private receive_initRequest(targetOrigin: string) {
     if (this.capturedInitRequestYet) {
       return;

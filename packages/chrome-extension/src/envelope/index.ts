@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-
-declare global {
-  export const acquireVsCodeApi: any;
-}
+import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
+import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const gwtAppFormerApi = new GwtAppFormerApi();
 gwtAppFormerApi.setClientSideOnly(true);
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
+  busApi: {
+    postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any) {
+      window.parent.postMessage(message, targetOrigin!, _);
+    }
+  },
   editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
 });

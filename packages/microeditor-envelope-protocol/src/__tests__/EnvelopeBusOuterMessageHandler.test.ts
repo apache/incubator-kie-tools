@@ -36,13 +36,13 @@ beforeEach(() => {
       pollInit: () => {
         initPollCount++;
       },
-      receive_languageRequest: () => {
+      receive_languageRequest() {
         receivedMessages.push("languageRequest");
       },
-      receive_contentRequest: () => {
+      receive_contentRequest() {
         receivedMessages.push("contentRequest");
       },
-      receive_contentResponse: (content: string) => {
+      receive_contentResponse(content: string) {
         receivedMessages.push("contentResponse_" + content);
       },
       receive_setContentError: (errorMessage: string) => {
@@ -50,6 +50,9 @@ beforeEach(() => {
       },
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
+      },
+      receive_ready() {
+        receivedMessages.push("ready");
       }
     })
   );
@@ -125,6 +128,11 @@ describe("receive", () => {
     handler.receive({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true });
     expect(receivedMessages).toEqual(["dirtyIndicatorChange_true"]);
   });
+
+  test("ready notification", () => {
+    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
+    expect(receivedMessages).toEqual(["ready"]);
+  });
 });
 
 describe("send", () => {
@@ -139,7 +147,7 @@ describe("send", () => {
   });
 
   test("respond languageRequest", () => {
-    const languageData = { type: "dummy", editorId: "id", gwtModuleName: "name", erraiDomain: "domain", resources: [] };
+    const languageData = { type: "dummy", editorId: "id", gwtModuleName: "name", resources: [] };
     handler.respond_languageRequest(languageData);
     expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData }]);
   });

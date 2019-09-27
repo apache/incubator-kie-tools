@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapper } from "../webview/gwt/GwtEditorWrapper";
+import { GwtEditorWrapper } from "../GwtEditorWrapper";
 
 const MockEditor = jest.fn(() => ({
   getContent: jest.fn(),

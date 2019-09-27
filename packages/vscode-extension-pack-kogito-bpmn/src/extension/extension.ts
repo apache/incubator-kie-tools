@@ -15,7 +15,8 @@
  */
 
 import * as vscode from "vscode";
-import { KogitoRouter } from "./KogitoRouter";
+import { VsCodeKogitoRouter } from "./VsCodeKogitoRouter";
+import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -25,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.vscode-extension-pack-kogito-bpmn",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    router: new KogitoRouter(context)
+    router: new VsCodeKogitoRouter(context, new GwtEditorRoutes({ bpmnPath: "dist/webview/editors/bpmn" }))
   });
 
   console.info("Extension is successfully setup.");

@@ -1,0 +1,30 @@
+{
+  "name": "BPMN Editor :: GitHub Extension",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "description": "KIE Group :: GitHub Extension",
+  "content_scripts": [
+    {
+      "run_at": "document_idle",
+      "css": ["resources/style.css"],
+      "js": ["contentscript.js"],
+      "matches": ["https://github.com/*"],
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "web_accessible_resources": ["resources/*"],
+  "permissions": [
+    "webRequestBlocking",
+    "webRequest",
+    "https://*/*",
+    "http://*/*",
+    "tabs",
+    "declarativeContent",
+    "background"
+  ],
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'"
+}

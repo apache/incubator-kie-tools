@@ -26,10 +26,7 @@ declare global {
   }
 }
 
-export class AppFormerGwtApi {
-  public setErraiDomain(backendDomain: string): void {
-    window.erraiBusApplicationRoot = backendDomain;
-  }
+export class GwtAppFormerApi {
 
   public onFinishedLoading(callback: () => Promise<any>) {
     window.appFormerGwtFinishedLoading = callback;

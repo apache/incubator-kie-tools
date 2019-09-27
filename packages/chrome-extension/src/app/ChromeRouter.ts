@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { Router, Routes } from "@kogito-tooling/core-api";
 
-declare global {
-  export const acquireVsCodeApi: any;
+export class ChromeRouter extends Router {
+  constructor(...routesArray: Routes[]) {
+    super(...routesArray);
+  }
+
+  public getRelativePathTo(uri: string): string {
+    return `${this.getTargetOrigin()}/kiegroup/kogito-online/chrome-extension-resources/${uri}`;
+  }
+
+  public getLanguageData(fileExtension: string) {
+    return this.getLanguageDataByFileExtension().get(fileExtension);
+  }
+
+  public getTargetOrigin() {
+    return "https://raw.githubusercontent.com";
+  }
 }
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
-});

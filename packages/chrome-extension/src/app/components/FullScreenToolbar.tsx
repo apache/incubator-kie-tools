@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "@kogito-tooling/core-api";
+import * as React from "react";
+import { useContext } from "react";
+import { GlobalContext } from "./GlobalContext";
 
-export interface KogitoLanguageData extends LanguageData {
-  type: string;
-  editorId: string;
-  gwtModuleName: string;
-  erraiDomain: string;
-  resources: Resource[];
-}
+export function FullScreenToolbar() {
+  const [globalState, setGlobalState] = useContext(GlobalContext);
 
-export interface Resource {
-  type: "css" | "js";
-  paths: string[];
+  const exitFullScreen = () => {
+    setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });
+  };
+
+  return (
+    <div id={"kogito-iframe-fullscreen-toolbar"}>
+      <a href={"#"} onClick={exitFullScreen}>
+        Exit full screen
+      </a>
+    </div>
+  );
 }

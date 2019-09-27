@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./core";
-export * from "./appformer";
-export * from "./router";
+export * from "./GwtAppFormerApi";
+export * from "./GwtEditor";
+export * from "./GwtEditorWrapper";
+export * from "./GwtEditorWrapperFactory";
+export * from "./GwtLanguageData";
+export * from "./GwtEditorRoutes";

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +15,27 @@
  */
 
 const path = require("path");
-const nodeExternals = require("webpack-node-externals");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    index: "./src/index.ts"
+    contentscript: "./src/contentscript.ts",
+    background: "./src/background.ts",
+    "envelope/index": "./src/envelope/index.ts"
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
-    libraryTarget: "umd",
-    globalObject: "this"
+    filename: "[name].js"
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  externals: {},
   plugins: [
-    new CircularDependencyPlugin({
-      exclude: /node_modules/, // exclude detection of files based on a RegExp
-      failOnError: false, // add errors to webpack instead of warnings
-      cwd: process.cwd() // set the current working directory for displaying module paths
-    })
+    new CopyPlugin([
+      { from: "./static/manifest.json" },
+      { from: "./static/resources", to: "./resources" },
+      { from: "./static/envelope", to: "./envelope" },
+    ]),
   ],
   module: {
     rules: [

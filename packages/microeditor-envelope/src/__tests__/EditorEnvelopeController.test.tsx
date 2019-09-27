@@ -40,7 +40,6 @@ const delay = (ms: number) => {
 const languageData = {
   editorId: "test-editor-id",
   gwtModuleName: "none",
-  erraiDomain: "-",
   resources: []
 };
 
