@@ -2,7 +2,7 @@
   "name": "vscode-extension-pack-kogito-bpmn",
   "displayName": "BPMN Editor",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.33.0"
@@ -71,11 +71,11 @@
     "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.1.0",
-    "@kogito-tooling/gwt-editors": "0.1.0",
-    "@kogito-tooling/microeditor-envelope": "0.1.0",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.1.0",
-    "@kogito-tooling/vscode-extension": "0.1.0",
-    "@kogito-tooling/unpacked-gwt-editors": "0.1.0"
+    "@kogito-tooling/core-api": "0.1.1",
+    "@kogito-tooling/gwt-editors": "0.1.1",
+    "@kogito-tooling/microeditor-envelope": "0.1.1",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.1.1",
+    "@kogito-tooling/unpacked-gwt-editors": "0.1.1",
+    "@kogito-tooling/vscode-extension": "0.1.1"
   }
 }

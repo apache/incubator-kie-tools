@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/microeditor-envelope-protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,7 +10,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.1.0"
+    "@kogito-tooling/core-api": "0.1.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
