@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -27,7 +29,11 @@ import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -39,6 +45,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * This test case uses a valid graph structure with different nodes and connectors
@@ -176,5 +183,48 @@ public class SafeDeleteNodeCommandTest {
         verify(callback, times(1)).deleteNode(eq(graphHolder.intermNode));
         verify(callback, never()).deleteConnector(eq(graphHolder.edge1));
         verify(callback, never()).deleteConnector(eq(graphHolder.edge2));
+    }
+
+    @Test
+    public void testGetSafeDeleteCallback() {
+
+        final Node node = mock(Node.class);
+        when(node.getUUID()).thenReturn("uuid");
+        final SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback callback = mock(SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback.class);
+        final SafeDeleteNodeCommand command = new SafeDeleteNodeCommand(node,
+                                                                        callback,
+                                                                        SafeDeleteNodeCommand.Options.defaults());
+
+        final Optional<SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback> actual = command.getSafeDeleteCallback();
+
+        assertTrue(actual.isPresent());
+        assertEquals(callback, actual.get());
+    }
+
+    @Test
+    public void testCreateChangeParentCommands() {
+
+        final Node node = mock(Node.class);
+        final SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback callback = mock(SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback.class);
+        final Element<?> canvas = mock(Element.class);
+        final Node canvasNode = mock(Node.class);
+        final Node<?, Edge> candidate = mock(Node.class);
+        final List<Edge> outEdges = new ArrayList<>();
+        final Edge e1 = mock(Edge.class);
+        final Child child = mock(Child.class);
+        final Node targetNode = mock(Node.class);
+        when(node.getUUID()).thenReturn("uuid");
+        when(canvas.asNode()).thenReturn(canvasNode);
+        when(e1.getContent()).thenReturn(child);
+        when(e1.getTargetNode()).thenReturn(targetNode);
+        when(candidate.getOutEdges()).thenReturn(outEdges);
+        outEdges.add(e1);
+
+        final SafeDeleteNodeCommand command = new SafeDeleteNodeCommand(node,
+                                                                        callback,
+                                                                        SafeDeleteNodeCommand.Options.defaults());
+        command.createChangeParentCommands(canvas, candidate);
+
+        verify(callback).moveChildToCanvasRoot(canvasNode, targetNode);
     }
 }

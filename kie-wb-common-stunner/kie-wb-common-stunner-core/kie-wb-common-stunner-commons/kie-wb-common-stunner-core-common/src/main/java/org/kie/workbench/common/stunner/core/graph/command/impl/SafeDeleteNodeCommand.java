@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
 
 /**
@@ -121,107 +122,138 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         this.safeDeleteCallback = Optional.ofNullable(safeDeleteCallback);
     }
 
+    public Optional<SafeDeleteNodeCommandCallback> getSafeDeleteCallback() {
+        return safeDeleteCallback;
+    }
+
+    public boolean shouldKeepChildren(final Node<Definition<?>, Edge> candidate) {
+        return false;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected SafeDeleteNodeCommand initialize(final GraphCommandExecutionContext context) {
         super.initialize(context);
         final Graph<?, Node> graph = getGraph(context);
         final Node<Definition<?>, Edge> candidate = (Node<Definition<?>, Edge>) getCandidate(context);
-        new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
-                                    graph,
-                                    candidate)
-                .run(new SafeDeleteNodeProcessor.Callback() {
 
-                    private final Set<String> processedConnectors = new HashSet<String>();
-
-                    @Override
-                    public void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge) {
-                        if (!processedConnectors.contains(edge.getUUID())) {
-                            processCandidateConnectors();
-                        }
-                    }
-
-                    @Override
-                    public boolean deleteConnector(final Edge<? extends View<?>, Node> edge) {
-                        return doDeleteConnector(edge);
-                    }
-
-                    @Override
-                    public void removeChild(final Element<?> parent,
-                                            final Node<?, Edge> candidate) {
-                        addCommand(createRemoveChildCommand(parent, candidate));
-                        safeDeleteCallback.ifPresent(c -> c.removeChild(parent,
-                                                                        candidate));
-                    }
-
-                    @Override
-                    public void removeDock(final Node<?, Edge> parent,
-                                           final Node<?, Edge> candidate) {
-                        addCommand(new UnDockNodeCommand(parent,
-                                                         candidate));
-                        safeDeleteCallback.ifPresent(c -> c.removeDock(parent,
-                                                                       candidate));
-                    }
-
-                    @Override
-                    public void deleteCandidateNode(final Node<?, Edge> node) {
-                        deleteNode(node);
-                    }
-
-                    @Override
-                    public boolean deleteNode(final Node<?, Edge> node) {
-                        if (!isElementExcluded(node)) {
-                            addCommand(new DeregisterNodeCommand(node));
-                            safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    private void processCandidateConnectors() {
-                        if (options.isShortcutCandidateConnectors() &&
-                                hasSingleIncomingEdge()
-                                        .and(hasSingleOutgoingEdge())
-                                        .test(candidate)) {
-                            final Edge<? extends ViewConnector<?>, Node> in = getViewConnector().apply(candidate.getInEdges());
-                            final Edge<? extends ViewConnector<?>, Node> out = getViewConnector().apply(candidate.getOutEdges());
-                            shortcut(in,
-                                     out);
-                        } else {
-                            Stream.concat(candidate.getInEdges().stream(),
-                                          candidate.getOutEdges().stream())
-                                    .filter(e -> e.getContent() instanceof ViewConnector)
-                                    .forEach(this::deleteConnector);
-                        }
-                    }
-
-                    private void shortcut(final Edge<? extends ViewConnector<?>, Node> in,
-                                          final Edge<? extends ViewConnector<?>, Node> out) {
-                        final ViewConnector<?> outContent = out.getContent();
-                        final Node targetNode = out.getTargetNode();
-                        addCommand(new DeleteConnectorCommand(out));
-                        safeDeleteCallback.ifPresent(c -> c.deleteCandidateConnector(out));
-                        addCommand(new SetConnectionTargetNodeCommand(targetNode,
-                                                                      in,
-                                                                      outContent.getTargetConnection().orElse(null)));
-                        safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
-                                                                              in));
-                        processedConnectors.add(in.getUUID());
-                        processedConnectors.add(out.getUUID());
-                    }
-
-                    private boolean doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
-                        if (!isElementExcluded(edge) && !processedConnectors.contains(edge.getUUID())) {
-                            addCommand(new DeleteConnectorCommand(edge));
-                            safeDeleteCallback.ifPresent(c -> c.deleteConnector(edge));
-                            processedConnectors.add(edge.getUUID());
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+        deleteNode(graph, candidate);
 
         return this;
+    }
+
+    private void deleteNode(final Graph<?, Node> graph,
+                            final Node<Definition<?>, Edge> candidate) {
+        new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                    graph,
+                                    candidate,
+                                    shouldKeepChildren(candidate))
+                .run(createDeleteNodeAndChildrenCallback(candidate));
+    }
+
+    private SafeDeleteNodeProcessor.Callback createDeleteNodeAndChildrenCallback(final Node<Definition<?>, Edge> candidate) {
+        return new SafeDeleteNodeProcessor.Callback() {
+
+            private final Set<String> processedConnectors = new HashSet<>();
+
+            @Override
+            public void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge) {
+                if (!processedConnectors.contains(edge.getUUID())) {
+                    processCandidateConnectors();
+                }
+            }
+
+            @Override
+            public boolean deleteConnector(final Edge<? extends View<?>, Node> edge) {
+                return doDeleteConnector(edge);
+            }
+
+            @Override
+            public void removeChild(final Element<?> parent,
+                                    final Node<?, Edge> candidate) {
+                if (shouldKeepChildren((Node<Definition<?>, Edge>) candidate)) {
+                    createChangeParentCommands(parent, candidate);
+                }
+
+                addCommand(createRemoveChildCommand(parent, candidate));
+                safeDeleteCallback.ifPresent(c -> c.removeChild(parent,
+                                                                candidate));
+            }
+
+            @Override
+            public void removeDock(final Node<?, Edge> parent,
+                                   final Node<?, Edge> candidate) {
+                addCommand(new UnDockNodeCommand(parent,
+                                                 candidate));
+                safeDeleteCallback.ifPresent(c -> c.removeDock(parent,
+                                                               candidate));
+            }
+
+            @Override
+            public void deleteCandidateNode(final Node<?, Edge> node) {
+                deleteNode(node);
+            }
+
+            @Override
+            public boolean deleteNode(final Node<?, Edge> node) {
+                if (!isElementExcluded(node)) {
+                    addCommand(new DeregisterNodeCommand(node));
+                    safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
+                    return true;
+                }
+                return false;
+            }
+
+            private void processCandidateConnectors() {
+                if (options.isShortcutCandidateConnectors() &&
+                        hasSingleIncomingEdge()
+                                .and(hasSingleOutgoingEdge())
+                                .test(candidate)) {
+                    final Edge<? extends ViewConnector<?>, Node> in = getViewConnector().apply(candidate.getInEdges());
+                    final Edge<? extends ViewConnector<?>, Node> out = getViewConnector().apply(candidate.getOutEdges());
+                    shortcut(in,
+                             out);
+                } else {
+                    Stream.concat(candidate.getInEdges().stream(),
+                                  candidate.getOutEdges().stream())
+                            .filter(e -> e.getContent() instanceof ViewConnector)
+                            .forEach(this::deleteConnector);
+                }
+            }
+
+            private void shortcut(final Edge<? extends ViewConnector<?>, Node> in,
+                                  final Edge<? extends ViewConnector<?>, Node> out) {
+                final ViewConnector<?> outContent = out.getContent();
+                final Node targetNode = out.getTargetNode();
+                addCommand(new DeleteConnectorCommand(out));
+                safeDeleteCallback.ifPresent(c -> c.deleteCandidateConnector(out));
+                addCommand(new SetConnectionTargetNodeCommand(targetNode,
+                                                              in,
+                                                              outContent.getTargetConnection().orElse(null)));
+                safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
+                                                                      in));
+                processedConnectors.add(in.getUUID());
+                processedConnectors.add(out.getUUID());
+            }
+
+            private boolean doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
+                if (!isElementExcluded(edge) && !processedConnectors.contains(edge.getUUID())) {
+                    addCommand(new DeleteConnectorCommand(edge));
+                    safeDeleteCallback.ifPresent(c -> c.deleteConnector(edge));
+                    processedConnectors.add(edge.getUUID());
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
+
+    void createChangeParentCommands(final Element<?> canvas,
+                                    final Node<?, Edge> candidate) {
+        final List<Node> childNodes = GraphUtils.getChildNodes(candidate);
+        for (final Node n : childNodes) {
+            safeDeleteCallback.ifPresent(c -> c.moveChildToCanvasRoot(canvas.asNode(), n));
+        }
     }
 
     protected AbstractGraphCommand createRemoveChildCommand(final Element<?> parent,

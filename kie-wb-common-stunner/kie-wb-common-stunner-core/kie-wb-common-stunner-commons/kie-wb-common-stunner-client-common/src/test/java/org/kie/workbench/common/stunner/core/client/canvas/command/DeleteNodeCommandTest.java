@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,15 +31,29 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,6 +69,9 @@ public class DeleteNodeCommandTest {
     private Diagram diagram;
     @Mock
     private Metadata metadata;
+
+    @Captor
+    private ArgumentCaptor<AbstractCanvasGraphCommand> commandsCaptor;
 
     private TestingGraphInstanceBuilder.TestGraph4 graphHolder;
     private DeleteNodeCommand tested;
@@ -182,5 +200,85 @@ public class DeleteNodeCommandTest {
         assertEquals(graphHolder.intermNode, c4.getChildren().iterator().next());
         assertEquals(graphHolder.edge1, c5.getCandidate());
         assertEquals(graphHolder.intermNode, c6.getCandidate());
+    }
+
+    @Test
+    public void testGetChildPosition() {
+        final double parentX = 10;
+        final double parentY = 5;
+        final double nodeX = 7;
+        final double nodeY = 22;
+        final double expectedX = parentX + nodeX;
+        final double expectedY = parentY + nodeY;
+
+        final DeleteNodeCommand.CanvasDeleteProcessor processor = mock(DeleteNodeCommand.CanvasDeleteProcessor.class);
+
+        final Node node = mock(Node.class);
+        final Element parent = mock(Element.class);
+        final View parentContent = mock(View.class);
+        final View nodeContent = mock(View.class);
+
+        final Bounds parentBounds = mock(Bounds.class);
+        final Bound upParent = new Bound(parentX, parentY);
+        final Bounds nodeBounds = mock(Bounds.class);
+        final Bound upNode = new Bound(nodeX, nodeY);
+
+        when(parentBounds.getUpperLeft()).thenReturn(upParent);
+        when(parentContent.getBounds()).thenReturn(parentBounds);
+        when(parent.getContent()).thenReturn(parentContent);
+        when(nodeBounds.getUpperLeft()).thenReturn(upNode);
+        when(nodeContent.getBounds()).thenReturn(nodeBounds);
+        when(node.getContent()).thenReturn(nodeContent);
+        when(processor.getChildPosition(node, parent)).thenCallRealMethod();
+
+        final Point2D actualPosition = processor.getChildPosition(node, parent);
+
+        assertEquals(expectedX, actualPosition.getX(), 0.01);
+        assertEquals(expectedY, actualPosition.getY(), 0.01);
+    }
+
+    @Test
+    public void testMoveChildToCanvasRoot() {
+        final DeleteNodeCommand.CanvasDeleteProcessor processor = mock(DeleteNodeCommand.CanvasDeleteProcessor.class);
+        final Node node = mock(Node.class);
+        final Element elementCanvas = mock(Element.class);
+        final Node canvasNode = mock(Node.class);
+        final Element parentElement = mock(Element.class);
+        final Node nodeParent = mock(Node.class);
+        final Point2D newPosition = new Point2D(1, 2);
+        final CompositeCommand command = mock(CompositeCommand.class);
+
+        when(elementCanvas.asNode()).thenReturn(canvasNode);
+        doCallRealMethod().when(processor).moveChildToCanvasRoot(elementCanvas, node);
+        when(parentElement.asNode()).thenReturn(nodeParent);
+        when(processor.getParent(node)).thenReturn(parentElement);
+        when(processor.getCommand()).thenReturn(command);
+        when(processor.getChildPosition(node, parentElement)).thenReturn(newPosition);
+
+        processor.moveChildToCanvasRoot(elementCanvas, node);
+
+        verify(command, times(3)).addCommand(commandsCaptor.capture());
+
+        final List<AbstractCanvasGraphCommand> values = commandsCaptor.getAllValues();
+
+        final AbstractCanvasGraphCommand removeChildrenCmd = values.get(0);
+        final AbstractCanvasGraphCommand setChildrenCmd = values.get(1);
+        final AbstractCanvasGraphCommand updatePosition = values.get(2);
+
+        assertTrue(removeChildrenCmd instanceof RemoveChildrenCommand);
+        assertTrue(setChildrenCmd instanceof SetChildrenCommand);
+        assertTrue(updatePosition instanceof UpdateElementPositionCommand);
+
+        assertEquals(nodeParent, ((RemoveChildrenCommand) removeChildrenCmd).getParent());
+        assertEquals(canvasNode, ((SetChildrenCommand) setChildrenCmd).getParent());
+        assertEquals(node, ((UpdateElementPositionCommand) updatePosition).getElement());
+
+        assertEquals(node, getNode(((RemoveChildrenCommand) removeChildrenCmd).getChildren()));
+        assertEquals(node, getNode(((SetChildrenCommand) setChildrenCmd).getCandidates()));
+        assertEquals(newPosition, ((UpdateElementPositionCommand) updatePosition).getLocation());
+    }
+
+    private Node getNode(final Collection<Node<?, Edge>> collection) {
+        return collection.stream().findFirst().get();
     }
 }

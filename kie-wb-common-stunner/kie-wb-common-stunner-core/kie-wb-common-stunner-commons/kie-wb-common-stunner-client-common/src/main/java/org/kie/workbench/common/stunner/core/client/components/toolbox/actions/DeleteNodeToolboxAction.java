@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
  * A toolbox action/operation for deleting an Element.
  */
 @Dependent
+@Default
 public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
     private final ClientTranslationService translationService;

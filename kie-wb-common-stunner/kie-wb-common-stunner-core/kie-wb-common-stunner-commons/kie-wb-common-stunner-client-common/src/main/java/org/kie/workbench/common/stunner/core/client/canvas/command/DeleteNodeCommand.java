@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Collections;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -25,8 +27,10 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
@@ -58,6 +62,10 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         return candidate;
     }
 
+    public SafeDeleteNodeCommand.Options getOptions() {
+        return options;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
@@ -81,6 +89,10 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
                 " [candidate=" + toUUID(getCandidate()) + "]";
     }
 
+    public CanvasDeleteProcessor getDeleteProcessor() {
+        return deleteProcessor;
+    }
+
     public static class CanvasDeleteProcessor implements SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback {
 
         private transient CompositeCommand<AbstractCanvasHandler, CanvasViolation> command;
@@ -91,6 +103,31 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
             this.command = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                     .reverse()
                     .build();
+        }
+
+        @Override
+        public void moveChildToCanvasRoot(final Element<?> canvas,
+                                          final Node<?, Edge> node) {
+
+            final Element<?> parent = getParent(node);
+            final Point2D newPosition = getChildPosition(node, parent);
+
+            getCommand().addCommand(new RemoveChildrenCommand(parent.asNode(), Collections.singleton(node)));
+            getCommand().addCommand(new SetChildrenCommand(canvas.asNode(), Collections.singleton(node)));
+            getCommand().addCommand(new UpdateElementPositionCommand((Node<View<?>, Edge>) node, newPosition));
+        }
+
+        Point2D getChildPosition(final Node<?, Edge> node,
+                                 final Element<?> parent) {
+            final Point2D parentPosition = GraphUtils.getPosition((View) parent.getContent());
+            final Point2D rel = GraphUtils.getPosition((View) node.getContent());
+
+            return new Point2D(parentPosition.getX() + rel.getX(),
+                               parentPosition.getY() + rel.getY());
+        }
+
+        Element<?> getParent(final Node<?, Edge> node) {
+            return GraphUtils.getParent(node);
         }
 
         @Override

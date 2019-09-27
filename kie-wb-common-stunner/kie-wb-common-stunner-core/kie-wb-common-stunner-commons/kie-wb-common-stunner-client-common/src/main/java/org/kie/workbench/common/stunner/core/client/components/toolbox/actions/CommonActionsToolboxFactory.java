@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -54,7 +55,7 @@ public class CommonActionsToolboxFactory
     @Inject
     public CommonActionsToolboxFactory(final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                                        final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                       final @Any ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
+                                       final @Default ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
                                        final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(commandManager,
              commandFactory,
@@ -107,8 +108,8 @@ public class CommonActionsToolboxFactory
                                                      (Node) element);
     }
 
-    private boolean isAllowed(final AbstractCanvasHandler canvasHandler,
-                              final Node node) {
+    protected boolean isAllowed(final AbstractCanvasHandler canvasHandler,
+                                final Node node) {
         return !CommandUtils.isError(commandManager.allow(canvasHandler,
                                                           commandFactory.deleteNode(node)));
     }

@@ -28,31 +28,38 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractActionsToolboxFactory;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CommonActionsToolbox;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CommonActionsToolboxFactory;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.DeleteNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 @Dependent
 @DMNCommonActionsToolbox
 public class DMNCommonActionsToolboxFactory
-        extends AbstractActionsToolboxFactory {
+        extends CommonActionsToolboxFactory {
 
-    private final ActionsToolboxFactory commonActionsToolboxFactory;
     private final ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions;
     private final ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions;
     private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
-    public DMNCommonActionsToolboxFactory(final @CommonActionsToolbox ActionsToolboxFactory commonActionsToolboxFactory,
-                                          final @Any ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
+    public DMNCommonActionsToolboxFactory(final @Any ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
                                           final @Any ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
-                                          final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this.commonActionsToolboxFactory = commonActionsToolboxFactory;
+                                          final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views,
+                                          final CanvasCommandManager<AbstractCanvasHandler> commandManager,
+                                          final @Any @DMNEditor DefaultCanvasCommandFactory commandFactory,
+                                          final @Any @DMNEditor ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions) {
+        super(commandManager, commandFactory, deleteNodeActions, views);
+
         this.editDecisionToolboxActions = editDecisionToolboxActions;
         this.editBusinessKnowledgeModelToolboxActions = editBusinessKnowledgeModelToolboxActions;
         this.views = views;
@@ -67,10 +74,11 @@ public class DMNCommonActionsToolboxFactory
     @SuppressWarnings("unchecked")
     public Collection<ToolboxAction<AbstractCanvasHandler>> getActions(final AbstractCanvasHandler canvasHandler,
                                                                        final Element<?> element) {
+
         // Obtain default common toolbox actions.
         final List<ToolboxAction<AbstractCanvasHandler>> actions =
-                new ArrayList<>(commonActionsToolboxFactory.getActions(canvasHandler,
-                                                                       element));
+                new ArrayList<>(superGetActions(canvasHandler,
+                                                element));
 
         // Add specific additional toolbox actions for different DMN node-types.
         if (isDecision(element)) {
@@ -79,6 +87,12 @@ public class DMNCommonActionsToolboxFactory
             actions.add(editBusinessKnowledgeModelToolboxActions.get());
         }
         return actions;
+    }
+
+    Collection<ToolboxAction<AbstractCanvasHandler>> superGetActions(final AbstractCanvasHandler canvasHandler,
+                                                                     final Element<?> element) {
+        return super.getActions(canvasHandler,
+                                element);
     }
 
     @PreDestroy
@@ -98,5 +112,23 @@ public class DMNCommonActionsToolboxFactory
         return null != element.asNode()
                 && element.getContent() instanceof Definition
                 && ((Definition) element.getContent()).getDefinition() instanceof BusinessKnowledgeModel;
+    }
+
+    @Override
+    protected boolean isAllowed(final AbstractCanvasHandler canvasHandler,
+                                final Node node) {
+        final Object content = node.getContent();
+        if (content instanceof Definition) {
+            final Object definition = ((Definition) content).getDefinition();
+            if (definition instanceof DecisionService) {
+                return true;
+            }
+        }
+        return superIsAllowed(canvasHandler, node);
+    }
+
+    protected boolean superIsAllowed(final AbstractCanvasHandler canvasHandler,
+                                     final Node node){
+        return super.isAllowed(canvasHandler, node);
     }
 }

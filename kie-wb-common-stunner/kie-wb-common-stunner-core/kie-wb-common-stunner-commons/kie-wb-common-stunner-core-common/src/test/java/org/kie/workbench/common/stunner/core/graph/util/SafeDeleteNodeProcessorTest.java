@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.ArrayDeque;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
@@ -31,8 +34,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -214,5 +221,40 @@ public class SafeDeleteNodeProcessorTest {
         verify(callback, never()).deleteCandidateConnector(any(Edge.class));
         verify(callback, times(1)).removeDock(graphHolderDocked.intermNode, graphHolderDocked.dockedNode);
         verify(callback, times(1)).deleteCandidateNode(graphHolderDocked.dockedNode);
+    }
+
+    @Test
+    public void testRun() {
+        final Graph graph = mock(Graph.class);
+        final Node node = mock(Node.class);
+        this.tested = spy(new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                                      graph,
+                                                      node));
+        final ArrayDeque nodes = mock(ArrayDeque.class);
+        doReturn(nodes).when(tested).createNodesDequeue();
+        doNothing().when(tested).deleteChildren(callback, nodes);
+        doNothing().when(tested).processNode(node, callback, true);
+
+        tested.run(callback);
+
+        verify(tested).deleteChildren(callback, nodes);
+    }
+
+    @Test
+    public void testRunKeepChildren() {
+        final Graph graph = mock(Graph.class);
+        final Node node = mock(Node.class);
+        this.tested = spy(new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                                      graph,
+                                                      node,
+                                                      true));
+        final ArrayDeque nodes = mock(ArrayDeque.class);
+        doReturn(nodes).when(tested).createNodesDequeue();
+        doNothing().when(tested).deleteChildren(callback, nodes);
+        doNothing().when(tested).processNode(node, callback, true);
+
+        tested.run(callback);
+
+        verify(tested, never()).deleteChildren(callback, nodes);
     }
 }

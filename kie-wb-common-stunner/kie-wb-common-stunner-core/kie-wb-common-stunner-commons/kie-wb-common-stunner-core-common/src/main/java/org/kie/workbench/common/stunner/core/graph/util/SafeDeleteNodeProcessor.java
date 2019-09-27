@@ -54,25 +54,55 @@ public class SafeDeleteNodeProcessor {
         void deleteCandidateNode(final Node<?, Edge> node);
 
         boolean deleteNode(final Node<?, Edge> node);
+
+        default void moveChildToCanvasRoot(final Element<?> canvas, final Node<?, Edge> node) {
+            // Nothing
+        }
     }
 
     private final Set<String> processedConnectors = new HashSet<>();
     private final Node<Definition<?>, Edge> candidate;
     private final Graph graph;
     private final ChildrenTraverseProcessor childrenTraverseProcessor;
+    private final boolean keepChildren;
 
     public SafeDeleteNodeProcessor(final ChildrenTraverseProcessor childrenTraverseProcessor,
                                    final Graph graph,
                                    final Node<Definition<?>, Edge> candidate) {
+        this(childrenTraverseProcessor, graph, candidate, false);
+    }
+
+    public SafeDeleteNodeProcessor(final ChildrenTraverseProcessor childrenTraverseProcessor,
+                                   final Graph graph,
+                                   final Node<Definition<?>, Edge> candidate,
+                                   final boolean keepChildren) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.graph = graph;
         this.candidate = candidate;
+        this.keepChildren = keepChildren;
     }
 
     @SuppressWarnings("unchecked")
     public void run(final Callback callback) {
-        final Deque<Node<View, Edge>> nodes = new ArrayDeque();
+        final Deque<Node<View, Edge>> nodes = createNodesDequeue();
         processedConnectors.clear();
+
+        if (!keepChildren) {
+            deleteChildren(callback, nodes);
+        }
+
+        // Process candidate's delete.
+        processNode(candidate,
+                    callback,
+                    true);
+    }
+
+    Deque<Node<View, Edge>> createNodesDequeue() {
+        return new ArrayDeque();
+    }
+
+    protected void deleteChildren(final Callback callback,
+                                  final Deque<Node<View, Edge>> nodes) {
         childrenTraverseProcessor
                 .setRootUUID(candidate.getUUID())
                 .traverse(graph,
@@ -106,17 +136,12 @@ public class SafeDeleteNodeProcessor {
         nodes.descendingIterator().forEachRemaining(node -> processNode(node,
                                                                         callback,
                                                                         false));
-
-        // Process candidate's delete.
-        processNode(candidate,
-                    callback,
-                    true);
     }
 
     @SuppressWarnings("unchecked")
-    private void processNode(final Node<?, Edge> node,
-                             final Callback callback,
-                             final boolean isTheCandidate) {
+    void processNode(final Node<?, Edge> node,
+                     final Callback callback,
+                     final boolean isTheCandidate) {
         //processing recursively docked nodes relative to the current node
         getDockedNodes(node).forEach(docked -> processNode(docked, callback, false));
 

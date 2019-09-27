@@ -22,16 +22,19 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.DeleteNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
@@ -40,6 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -51,6 +55,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,9 +67,6 @@ import static org.mockito.Mockito.when;
 public class DMNCommonActionsToolboxFactoryTest {
 
     private static final String E_UUID = "e1";
-
-    @Mock
-    private ActionsToolboxFactory commonActionsToolboxFactory;
 
     @Mock
     private DeleteNodeToolboxAction deleteNodeAction;
@@ -84,22 +89,34 @@ public class DMNCommonActionsToolboxFactoryTest {
     @Mock
     private Node element;
 
+    @Mock
+    private CanvasCommandManager<AbstractCanvasHandler> commandManager;
+
+    @Mock
+    private DefaultCanvasCommandFactory commandFactory;
+
+    @Mock
+    private ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions;
+
     private DMNCommonActionsToolboxFactory tested;
 
     @Before
     public void setup() throws Exception {
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
-        when(commonActionsToolboxFactory.getActions(eq(canvasHandler),
-                                                    any(Element.class)))
-                .thenReturn(Collections.singleton(deleteNodeAction));
         editDecisionToolboxAction = new ManagedInstanceStub<>(editDecisionToolboxActionInstance);
         editBusinessKnowledgeModelToolboxAction = new ManagedInstanceStub<>(editBusinessKnowledgeModelToolboxActionInstance);
         view = new ManagedInstanceStub<>(viewInstance);
-        this.tested = new DMNCommonActionsToolboxFactory(commonActionsToolboxFactory,
-                                                         editDecisionToolboxAction,
-                                                         editBusinessKnowledgeModelToolboxAction,
-                                                         view);
+        this.tested = spy(new DMNCommonActionsToolboxFactory(editDecisionToolboxAction,
+                                                             editBusinessKnowledgeModelToolboxAction,
+                                                             view,
+                                                             commandManager,
+                                                             commandFactory,
+                                                             deleteNodeActions));
+
+        doReturn(Collections.singleton(deleteNodeAction)).
+                when(tested).superGetActions(eq(canvasHandler),
+                                             any(Element.class));
     }
 
     @Test
@@ -192,5 +209,35 @@ public class DMNCommonActionsToolboxFactoryTest {
                times(2)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));
+    }
+
+    @Test
+    public void testIsAllowed() {
+
+        final Node node = mock(Node.class);
+        final Definition content = mock(Definition.class);
+        final DecisionService decisionService = mock(DecisionService.class);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(decisionService);
+
+        final boolean actual = tested.isAllowed(canvasHandler, node);
+
+        assertTrue(actual);
+        verify(tested, never()).superIsAllowed(canvasHandler, node);
+    }
+
+    @Test
+    public void testIsAllowedWhenIsNotDecisionService() {
+
+        final Node node = mock(Node.class);
+        final Definition content = mock(Definition.class);
+        final Object def = mock(Object.class);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(def);
+        doReturn(false).when(tested).superIsAllowed(canvasHandler, node);
+
+        final boolean actual = tested.isAllowed(canvasHandler, node);
+
+        assertFalse(actual);
     }
 }
