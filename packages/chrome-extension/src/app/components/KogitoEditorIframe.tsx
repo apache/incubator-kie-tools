@@ -24,13 +24,14 @@ import { runScriptOnPage } from "../utils";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
 
+let prevGlobalState: any;
+let polling: any;
+
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
   githubDomElements: GitHubDomElements;
   router: Router;
 }) {
-  let polling: any;
-
   const [globalState, setGlobalState] = useContext(GlobalContext);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -78,7 +79,7 @@ export function KogitoEditorIframe(props: {
       return;
     }
 
-    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 1000);
+    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 1500);
   }
 
   function stopPollingForChangesOnDiagram() {
@@ -91,13 +92,12 @@ export function KogitoEditorIframe(props: {
       if (globalState.textMode) {
         stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
-        //FIXME: Here we should trigger a "click" event of something that makes the editor "update"
-      } else {
+      } else if (prevGlobalState && prevGlobalState.textMode !== globalState.textMode) {
         envelopeBusOuterMessageHandler.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
         startPollingForChangesOnDiagram();
       }
 
-      return stopPollingForChangesOnDiagram;
+      prevGlobalState = globalState;
     },
     [globalState]
   );
@@ -110,6 +110,7 @@ export function KogitoEditorIframe(props: {
     return () => {
       envelopeBusOuterMessageHandler.stopInitPolling();
       window.removeEventListener("message", listener);
+      stopPollingForChangesOnDiagram();
     };
   }, []);
 
