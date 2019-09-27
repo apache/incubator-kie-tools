@@ -1,8 +1,8 @@
 {
-  "name": "Kogito Tooling :: Chrome Extension :: BPMN Editor",
+  "name": "BPMN Editor :: GitHub Extension",
   "version": "0.1.0",
   "manifest_version": 2,
-  "description": "Kogito Tooling :: Chrome Extension",
+  "description": "KIE Group :: GitHub Extension",
   "content_scripts": [
     {
       "run_at": "document_idle",
@@ -16,7 +16,7 @@
     "scripts": ["background.js"],
     "persistent": true
   },
-  "web_accessible_resources": ["envelope/*", "editors/*", "resources/*"],
+  "web_accessible_resources": ["resources/*"],
   "permissions": [
     "webRequestBlocking",
     "webRequest",
