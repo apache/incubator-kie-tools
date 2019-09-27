@@ -14,4 +14,12 @@
 # limitations under the License.
 
 
+if ! hash packr2 2>/dev/null; then
+  go get -u github.com/gobuffalo/packr/v2/packr2
+fi
+
+packr2 -v
+
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
+
+packr2 clean -v
