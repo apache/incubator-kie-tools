@@ -111,10 +111,10 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 		},
 		Spec: v1alpha1.KogitoAppSpec{
 			Build: &v1alpha1.KogitoAppBuildObject{
-				Env: []v1alpha1.Env{ v1alpha1.Env{
+				Env: []v1alpha1.Env{v1alpha1.Env{
 					Name:  "MAVEN_MIRROR_URL",
 					Value: util.GetEnv("MAVEN_MIRROR_URL", ""),
-				} },
+				}},
 				GitSource: &v1alpha1.GitSource{
 					URI:        &gitProjectURI,
 					ContextDir: contextDir,
