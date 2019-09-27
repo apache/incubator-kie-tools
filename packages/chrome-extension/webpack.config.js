@@ -34,6 +34,7 @@ module.exports = {
     new CopyPlugin([
       { from: "./static/manifest.json" },
       { from: "./static/resources", to: "./resources" },
+      { from: "./static/envelope", to: "./envelope" },
     ]),
   ],
   module: {
