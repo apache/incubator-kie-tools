@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/microeditor-envelope",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,11 +10,11 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/core-api": "0.1.1",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.1.1",
     "@patternfly/patternfly": "1.0.227",
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.2",
-    "@kogito-tooling/core-api": "0.1.0",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.1.0",
     "react": "16.8.0",
     "react-dom": "16.8.4"
   },
