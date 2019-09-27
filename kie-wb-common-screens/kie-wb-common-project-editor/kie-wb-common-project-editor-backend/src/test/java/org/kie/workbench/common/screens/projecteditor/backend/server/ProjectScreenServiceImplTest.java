@@ -21,8 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.WorkspaceProjectServiceImpl;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
@@ -143,6 +146,9 @@ public class ProjectScreenServiceImplTest {
     @Mock
     private WorkspaceProjectServiceImpl projectService;
 
+    @Mock
+    private Event<NewProjectEvent> newProjectEvent;
+
     private ProjectScreenService service;
     private ProjectScreenModelLoader loader;
     private ProjectScreenModelSaver saver;
@@ -202,7 +208,8 @@ public class ProjectScreenServiceImplTest {
                                                saver,
                                                repositoryCopier,
                                                pomService,
-                                               metadataService);
+                                               metadataService,
+                                               newProjectEvent);
 
         when(module.getKModuleXMLPath()).thenReturn(pathToKieModule);
         when(module.getImportsPath()).thenReturn(pathToModuleImports);
@@ -816,6 +823,8 @@ public class ProjectScreenServiceImplTest {
                      updatedPom.getName());
         assertEquals("newName",
                      updatedPom.getGav().getArtifactId());
+
+        verify(newProjectEvent).fire(any());
     }
 
     @Test
@@ -854,6 +863,8 @@ public class ProjectScreenServiceImplTest {
                              any(Metadata.class),
                              anyString(),
                              anyBoolean());
+
+        verify(newProjectEvent, never()).fire(any());
     }
 
     @Test

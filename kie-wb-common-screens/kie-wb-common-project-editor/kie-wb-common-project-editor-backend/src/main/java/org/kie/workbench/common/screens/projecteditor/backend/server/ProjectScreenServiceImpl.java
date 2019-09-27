@@ -16,8 +16,10 @@
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
@@ -47,6 +49,7 @@ public class ProjectScreenServiceImpl
     private RepositoryCopier repositoryCopier;
     private POMService pomService;
     private MetadataService metadataService;
+    private Event<NewProjectEvent> newProjectEvent;
 
     public ProjectScreenServiceImpl() {
         //WELD proxy
@@ -60,7 +63,8 @@ public class ProjectScreenServiceImpl
                                     final ProjectScreenModelSaver saver,
                                     final RepositoryCopier repositoryCopier,
                                     final POMService pomService,
-                                    final MetadataService metadataService) {
+                                    final MetadataService metadataService,
+                                    final Event<NewProjectEvent> newProjectEvent) {
         this.projectService = projectService;
         this.repositoryService = repositoryService;
         this.moduleService = moduleService;
@@ -69,6 +73,7 @@ public class ProjectScreenServiceImpl
         this.repositoryCopier = repositoryCopier;
         this.pomService = pomService;
         this.metadataService = metadataService;
+        this.newProjectEvent = newProjectEvent;
     }
 
     @Override
@@ -131,6 +136,10 @@ public class ProjectScreenServiceImpl
                             metadataService.getMetadata(newPomPath),
                             "Renaming the project.",
                             true);
+
+            WorkspaceProject newProject = projectService.resolveProject(copy);
+
+            newProjectEvent.fire(new NewProjectEvent(newProject));
         }
     }
 
