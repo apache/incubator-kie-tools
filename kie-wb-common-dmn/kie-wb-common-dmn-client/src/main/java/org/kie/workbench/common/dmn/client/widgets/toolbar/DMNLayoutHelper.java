@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.graph.processing.layout;
+package org.kie.workbench.common.dmn.client.widgets.toolbar;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.OrientedEdge;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 
-public interface ReorderedGraph {
+@DMNEditor
+public class DMNLayoutHelper extends LayoutHelper {
 
-    List<OrientedEdge> getEdges();
-
-    int getVertexHeight(final String vertexId);
-
-    int getVertexWidth(final String vertexId);
-
-    void setVertexSize(final String vertexId, final int width, final int height);
+    @Inject
+    public DMNLayoutHelper(final @DMNEditor DMNSugiyamaLayoutService layoutService) {
+        super(layoutService);
+    }
 }

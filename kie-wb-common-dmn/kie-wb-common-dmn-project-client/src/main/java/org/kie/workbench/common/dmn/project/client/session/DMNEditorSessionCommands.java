@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
@@ -67,10 +68,10 @@ public class DMNEditorSessionCommands extends EditorSessionCommands {
                 .register(PasteSelectionSessionCommand.class)
                 .register(CutSelectionSessionCommand.class)
                 .register(SaveDiagramSessionCommand.class)
-                .register(PerformAutomaticLayoutCommand.class);
+                .register(DMNPerformAutomaticLayoutCommand.class);
     }
 
-    public PerformAutomaticLayoutCommand getPerformAutomaticLayoutCommand(){
+    public PerformAutomaticLayoutCommand getPerformAutomaticLayoutCommand() {
         return getCommands().get(16);
     }
 }

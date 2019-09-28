@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.graph.processing.layout;
+package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama;
 
-import java.util.List;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.GraphProcessor;
 
-import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.OrientedEdge;
+public class GraphProcessorImpl implements GraphProcessor {
 
-public interface ReorderedGraph {
-
-    List<OrientedEdge> getEdges();
-
-    int getVertexHeight(final String vertexId);
-
-    int getVertexWidth(final String vertexId);
-
-    void setVertexSize(final String vertexId, final int width, final int height);
+    public Iterable<? extends Node> getNodes(final Graph<?, ?> graph) {
+        return graph.nodes();
+    }
 }

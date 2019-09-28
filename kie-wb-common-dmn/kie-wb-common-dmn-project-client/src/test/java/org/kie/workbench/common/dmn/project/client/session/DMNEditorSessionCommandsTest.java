@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.project.client.session;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.PerformAutomaticLayoutCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -72,6 +72,6 @@ public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
         inOrder.verify(commands).register(PasteSelectionSessionCommand.class);
         inOrder.verify(commands).register(CutSelectionSessionCommand.class);
         inOrder.verify(commands).register(SaveDiagramSessionCommand.class);
-        inOrder.verify(commands).register(PerformAutomaticLayoutCommand.class);
+        inOrder.verify(commands).register(DMNPerformAutomaticLayoutCommand.class);
     }
 }

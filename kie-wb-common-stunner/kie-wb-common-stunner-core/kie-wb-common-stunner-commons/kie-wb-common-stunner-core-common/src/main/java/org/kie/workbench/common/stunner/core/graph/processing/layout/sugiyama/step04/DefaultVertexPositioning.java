@@ -39,12 +39,12 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.Or
  * 3. The space between layers is the same
  */
 @Default
-public final class DefaultVertexPositioning implements VertexPositioning {
+public class DefaultVertexPositioning implements VertexPositioning {
 
-    private static final int DEFAULT_VERTEX_SPACE = 75;
+    static final int DEFAULT_VERTEX_SPACE = 75;
     private static final int DEFAULT_LAYER_SPACE = 125;
-    private static final int DEFAULT_LAYER_HORIZONTAL_PADDING = 50;
-    private static final int DEFAULT_LAYER_VERTICAL_PADDING = 50;
+    static final int DEFAULT_LAYER_HORIZONTAL_PADDING = 50;
+    static final int DEFAULT_LAYER_VERTICAL_PADDING = 50;
 
     /*
      * Pre:
@@ -55,25 +55,76 @@ public final class DefaultVertexPositioning implements VertexPositioning {
     public void calculateVerticesPositions(final ReorderedGraph graph,
                                            final LayerArrangement arrangement) {
         final LayeredGraph layered = (LayeredGraph) graph;
+        deReverseEdges(graph);
+
+        final Set<Vertex> vertices = getVertices(layered);
+
+        removeVirtualVertices(graph.getEdges(), vertices);
+        removeVirtualVerticesFromLayers(layered.getLayers(), vertices);
+        arrangeVertices(layered.getLayers(), arrangement, graph);
+    }
+
+    Set<Vertex> getVertices(final LayeredGraph layered) {
+        return layered.getLayers().stream()
+                .flatMap(l -> l.getVertices().stream()).collect(Collectors.toSet());
+    }
+
+    void deReverseEdges(final ReorderedGraph graph) {
         for (final OrientedEdge edge : graph.getEdges()) {
             if (edge.isReversed()) {
                 edge.reverse();
             }
         }
-
-        final Set<Vertex> vertices = layered.getLayers().stream()
-                .flatMap(l -> l.getVertices().stream()).collect(Collectors.toSet());
-
-        removeVirtualVertices(graph.getEdges(), vertices);
-        removeVirtualVerticesFromLayers(layered.getLayers(), vertices);
-        calculateVerticesPosition(layered.getLayers(), arrangement);
     }
 
-    private void calculateVerticesPosition(final List<GraphLayer> layers,
-                                           final LayerArrangement arrangement) {
+    void arrangeVertices(final List<GraphLayer> layers,
+                         final LayerArrangement arrangement,
+                         final ReorderedGraph graph) {
 
-        final HashMap<Integer, Integer> layersWidth = new HashMap<>();
+        final HashMap<Integer, Integer> layersWidth = createHashForLayersWidth();
 
+        int largestWidth = calculateLayersWidth(layers, layersWidth);
+
+        // center everything based on largest width
+        final HashMap<Integer, Integer> layersStartX = getLayersStartX(layers.size(), layersWidth, largestWidth);
+
+        int y = DEFAULT_LAYER_VERTICAL_PADDING;
+        switch (arrangement) {
+            case TopDown:
+                for (int i = 0; i < layers.size(); i++) {
+                    y = distributeVertices(layers, layersStartX, y, i, graph);
+                }
+                break;
+
+            case BottomUp:
+                for (int i = layers.size() - 1; i >= 0; i--) {
+                    y = distributeVertices(layers, layersStartX, y, i, graph);
+                }
+                break;
+        }
+    }
+
+    HashMap<Integer, Integer> createHashForLayersWidth() {
+        return new HashMap<>();
+    }
+
+    HashMap<Integer, Integer> getLayersStartX(final int layersCount,
+                                              final HashMap<Integer, Integer> layersWidth,
+                                              final int largestWidth) {
+        final HashMap<Integer, Integer> layersStartX = new HashMap<>();
+        for (int i = 0; i < layersCount; i++) {
+            final int middle = largestWidth / 2;
+            final int layerWidth = layersWidth.get(i);
+            final int firstHalf = layerWidth / 2;
+            int startPoint = middle - firstHalf;
+            startPoint += DEFAULT_LAYER_HORIZONTAL_PADDING;
+            layersStartX.put(i, startPoint);
+        }
+        return layersStartX;
+    }
+
+    int calculateLayersWidth(final List<GraphLayer> layers,
+                             final HashMap<Integer, Integer> layersWidth) {
         int largestWidth = 0;
         for (int i = 0; i < layers.size(); i++) {
             final GraphLayer layer = layers.get(i);
@@ -82,41 +133,19 @@ public final class DefaultVertexPositioning implements VertexPositioning {
             layersWidth.put(i, currentWidth);
             largestWidth = Math.max(largestWidth, currentWidth);
         }
-
-        // center everything based on largest width
-        final HashMap<Integer, Integer> layersStartX = new HashMap<>();
-        for (int i = 0; i < layers.size(); i++) {
-            final int middle = largestWidth / 2;
-            final int layerWidth = layersWidth.get(i);
-            final int firstHalf = layerWidth / 2;
-            int startPoint = middle - firstHalf;
-            startPoint += DEFAULT_LAYER_HORIZONTAL_PADDING;
-            layersStartX.put(i, startPoint);
-        }
-
-        int y = DEFAULT_LAYER_VERTICAL_PADDING;
-        switch (arrangement) {
-            case TopDown:
-                for (int i = 0; i < layers.size(); i++) {
-                    y = distributeVertices(layers, layersStartX, y, i);
-                }
-                break;
-
-            case BottomUp:
-                for (int i = layers.size() - 1; i >= 0; i--) {
-                    y = distributeVertices(layers, layersStartX, y, i);
-                }
-                break;
-        }
+        return largestWidth;
     }
 
-    private int distributeVertices(final List<GraphLayer> layers,
-                                   final HashMap<Integer, Integer> layersStartX,
-                                   final int y,
-                                   final int i) {
+    int distributeVertices(final List<GraphLayer> layers,
+                           final HashMap<Integer, Integer> layersStartX,
+                           final int y,
+                           final int i,
+                           final ReorderedGraph graph) {
 
         final GraphLayer layer = layers.get(i);
         int x = layersStartX.get(i);
+
+        int highestY = 0;
 
         for (final Vertex v : layer.getVertices()) {
 
@@ -124,14 +153,15 @@ public final class DefaultVertexPositioning implements VertexPositioning {
             v.setY(y);
 
             x += DEFAULT_VERTEX_SPACE;
-            x += DEFAULT_VERTEX_WIDTH;
+            x += graph.getVertexWidth(v.getId());
+            highestY = Math.max(highestY, graph.getVertexHeight(v.getId()));
         }
 
-        return y + DEFAULT_LAYER_SPACE;
+        return y + highestY + DEFAULT_LAYER_SPACE;
     }
 
-    private void removeVirtualVerticesFromLayers(final List<GraphLayer> layers,
-                                                 final Set<Vertex> vertices) {
+    void removeVirtualVerticesFromLayers(final List<GraphLayer> layers,
+                                         final Set<Vertex> vertices) {
         final Set<String> ids = vertices.stream().map(Vertex::getId).collect(Collectors.toSet());
         for (final GraphLayer layer : layers) {
             for (int i = 0; i < layer.getVertices().size(); i++) {

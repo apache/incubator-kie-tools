@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout;
 
 import java.util.Objects;
 
-public final class Vertex implements Comparable<Vertex> {
+public class Vertex implements Comparable<Vertex> {
 
     private final String id;
     private double median;

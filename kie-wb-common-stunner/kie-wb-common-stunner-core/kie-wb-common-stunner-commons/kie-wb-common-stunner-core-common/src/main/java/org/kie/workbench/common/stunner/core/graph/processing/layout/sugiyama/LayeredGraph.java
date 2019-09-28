@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,11 +30,15 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.ReorderedGr
  * A graph that can be reordered in order to reduce edge crossing.
  * @see LayoutService
  */
-public final class LayeredGraph implements ReorderedGraph {
+public class LayeredGraph implements ReorderedGraph {
 
     private final List<String> vertices;
     private final List<OrientedEdge> edges;
     private final List<GraphLayer> layers;
+    private final HashMap<String, Integer> verticesWidth;
+    private final HashMap<String, Integer> verticesHeight;
+    int DEFAULT_VERTEX_WIDTH = 100;
+    int DEFAULT_VERTEX_HEIGHT = 50;
 
     /**
      * Default constructor.
@@ -42,6 +47,8 @@ public final class LayeredGraph implements ReorderedGraph {
         this.vertices = new ArrayList<>();
         this.edges = new ArrayList<>();
         this.layers = new ArrayList<>();
+        this.verticesWidth = new HashMap<>();
+        this.verticesHeight = new HashMap<>();
     }
 
     /**
@@ -85,6 +92,24 @@ public final class LayeredGraph implements ReorderedGraph {
     @Override
     public List<OrientedEdge> getEdges() {
         return this.edges;
+    }
+
+    @Override
+    public int getVertexHeight(final String vertexId) {
+        final int height = verticesHeight.getOrDefault(vertexId, DEFAULT_VERTEX_HEIGHT);
+        return height;
+    }
+
+    @Override
+    public int getVertexWidth(final String vertexId) {
+        final int width = verticesWidth.getOrDefault(vertexId, DEFAULT_VERTEX_WIDTH);
+        return width;
+    }
+
+    @Override
+    public void setVertexSize(final String vertexId, final int width, final int height) {
+        verticesWidth.put(vertexId, width);
+        verticesHeight.put(vertexId, height);
     }
 
     public boolean isAcyclic() {
