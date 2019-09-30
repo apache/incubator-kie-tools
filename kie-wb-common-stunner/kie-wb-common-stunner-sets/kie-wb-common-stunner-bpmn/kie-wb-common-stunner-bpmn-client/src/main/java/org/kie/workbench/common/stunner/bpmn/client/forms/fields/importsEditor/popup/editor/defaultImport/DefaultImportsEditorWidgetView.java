@@ -62,7 +62,7 @@ public class DefaultImportsEditorWidgetView extends Composite implements Imports
     public void init(final Presenter presenter) {
         this.presenter = presenter;
 
-        tableTitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Default_Imports_Title());
+        tableTitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Imports_Title());
 
         addImportButton.setText(StunnerFormsClientFieldsConstants.INSTANCE.Add());
         addImportButton.setIcon(IconType.PLUS);

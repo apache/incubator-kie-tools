@@ -111,11 +111,11 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
 
     private String buildDefaultImportsCountString(final int defaultImportsCount) {
         if (defaultImportsCount == 0) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.No_Default_Import();
+            return StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Type_Import();
         } else if (defaultImportsCount == 1) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.Default_Import();
+            return StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Import();
         } else {
-            return defaultImportsCount + " " + StunnerFormsClientFieldsConstants.INSTANCE.Default_Imports();
+            return defaultImportsCount + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Imports();
         }
     }
 
