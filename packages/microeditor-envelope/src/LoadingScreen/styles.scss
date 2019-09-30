@@ -1,0 +1,18 @@
+@import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
+@import "../../../../node_modules/@patternfly/patternfly/variables";
+@import "../../../../node_modules/@patternfly/patternfly/_themes.scss";
+
+// Toggle dark theme
+:not(.vscode-dark) {
+  .pf-c-page {
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--100);
+  }
+}
+.vscode-dark {
+  @extend .pf-t-dark;
+}
+
+.kogito-tooling--loading-screen {
+  width: 100vw;
+  height: 100vh;
+}
