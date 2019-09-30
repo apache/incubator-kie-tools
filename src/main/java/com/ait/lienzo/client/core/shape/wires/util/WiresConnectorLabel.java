@@ -60,6 +60,11 @@ public class WiresConnectorLabel implements IDestroyable
         return this;
     }
 
+    public Text getText()
+    {
+        return text;
+    }
+
     public boolean isVisible()
     {
         return text.getAlpha() > 0;
