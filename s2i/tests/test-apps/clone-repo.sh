@@ -10,6 +10,8 @@ cd /tmp
 rm -rf kogito-examples/
 git clone https://github.com/kiegroup/kogito-examples.git
 cd kogito-examples/drools-quarkus-example
+git fetch origin --tags
+git checkout 0.4.0
 cp ${CURRENT_DIR}/application.properties src/main/resources/META-INF/
 git add --all
 git commit -am "test"
