@@ -23,7 +23,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
               class="pf-l-bullseye"
             >
               <div
-                class="pf-c-empty-state styles.modifiers.lg"
+                class="pf-c-empty-state pf-m-lg"
               >
                 <div
                   class="pf-u-mb-lg"
@@ -81,7 +81,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
                 class="pf-l-bullseye"
               >
                 <div
-                  class="pf-c-empty-state styles.modifiers.lg"
+                  class="pf-c-empty-state pf-m-lg"
                 >
                   <div
                     class="pf-u-mb-lg"
@@ -131,77 +131,51 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
           }
         }
       >
-        <Page
-          breadcrumb={null}
-          className=""
-          defaultManagedSidebarIsOpen={true}
-          header={null}
-          isManagedSidebar={false}
-          mainContainerId={null}
-          onPageResize={[Function]}
-          sidebar={null}
-          skipToContent={null}
+        <div
+          className="pf-c-page"
         >
-          <div
-            className="pf-c-page"
+          <main
+            className="pf-c-page__main"
+            role="main"
+            tabIndex={-1}
           >
-            <main
-              className="pf-c-page__main"
-              id={null}
-              role="main"
-              tabIndex={-1}
+            <div
+              className="pf-l-bullseye"
             >
-              <Bullseye>
+              <div
+                className="pf-c-empty-state pf-m-lg"
+              >
                 <div
-                  className="pf-l-bullseye"
+                  className="pf-u-mb-lg"
                 >
-                  <EmptyState
-                    variant="large"
+                  <div
+                    aria-valuetext="Loading..."
+                    className="pf-c-spinner"
+                    role="progressbar"
                   >
                     <div
-                      className="pf-c-empty-state styles.modifiers.lg"
-                    >
-                      <div
-                        className="pf-u-mb-lg"
-                      >
-                        <div
-                          aria-valuetext="Loading..."
-                          className="pf-c-spinner"
-                          role="progressbar"
-                        >
-                          <div
-                            className="pf-c-spinner__clipper"
-                          />
-                          <div
-                            className="pf-c-spinner__lead-ball"
-                          />
-                          <div
-                            className="pf-c-spinner__tail-ball"
-                          />
-                        </div>
-                      </div>
-                      <Title
-                        headingLevel="h5"
-                        size="lg"
-                      >
-                        <h5
-                          className="pf-c-title pf-m-lg"
-                        >
-                          Loading...
-                        </h5>
-                      </Title>
-                      <EmptyStateBody>
-                        <div
-                          className="pf-c-empty-state__body"
-                        />
-                      </EmptyStateBody>
-                    </div>
-                  </EmptyState>
+                      className="pf-c-spinner__clipper"
+                    />
+                    <div
+                      className="pf-c-spinner__lead-ball"
+                    />
+                    <div
+                      className="pf-c-spinner__tail-ball"
+                    />
+                  </div>
                 </div>
-              </Bullseye>
-            </main>
-          </div>
-        </Page>
+                <h5
+                  className="pf-c-title pf-m-lg"
+                >
+                  Loading...
+                </h5>
+                <div
+                  className="pf-c-empty-state__body"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </LoadingScreen>
   </Portal>
@@ -210,6 +184,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
   >
     <div>
       Here's the dummy content: 
+      test content
     </div>
   </DummyEditorComponent>
 </EditorEnvelopeView>
