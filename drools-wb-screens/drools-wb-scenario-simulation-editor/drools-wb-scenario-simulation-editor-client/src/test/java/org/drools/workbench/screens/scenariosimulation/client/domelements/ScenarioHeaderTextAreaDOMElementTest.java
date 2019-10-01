@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -29,6 +30,7 @@ import org.mockito.Mock;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
@@ -70,6 +72,27 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
         scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
         scenarioHeaderTextAreaDOMElement.flush(MULTIPART_VALUE);
         verify(scenarioHeaderTextAreaDOMElement, times(1)).internalFlush(eq(MULTIPART_VALUE));
+    }
+
+    @Test
+    public void flushNullString() {
+        scenarioHeaderTextAreaDOMElement.flush(null);
+        verify(eventBusMock, times(1)).fireEvent(isA(ScenarioNotificationEvent.class));
+        verify(scenarioHeaderTextAreaDOMElement, never()).internalFlush(any());
+    }
+
+    @Test
+    public void flushEmptyString() {
+        scenarioHeaderTextAreaDOMElement.flush("");
+        verify(eventBusMock, times(1)).fireEvent(isA(ScenarioNotificationEvent.class));
+        verify(scenarioHeaderTextAreaDOMElement, never()).internalFlush(any());
+    }
+
+    @Test
+    public void flushEmptyStringMultipleSpaces() {
+        scenarioHeaderTextAreaDOMElement.flush("            ");
+        verify(eventBusMock, times(1)).fireEvent(isA(ScenarioNotificationEvent.class));
+        verify(scenarioHeaderTextAreaDOMElement, never()).internalFlush(any());
     }
 
     @Test
