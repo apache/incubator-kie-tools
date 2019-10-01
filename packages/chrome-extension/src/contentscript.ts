@@ -19,7 +19,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
-import { GitHubDomElementsFactory } from "./GitHubDomElementsFactory";
+import { GitHubDomElementsFactory } from "./github/GitHubDomElementsFactory";
+import { GitHubPageType } from "./github/GitHubPageType";
+import { everyFunctionReturnsNonNull } from "./github/GitHubDomElements";
 
 function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
@@ -40,10 +42,27 @@ function extractOpenFileExtension(url: string) {
   return openFileExtension;
 }
 
+function uriMatches(uriPart: string) {
+  const regexp = new RegExp(`http[s]:\/\/github.com\/.*\/.*\/${uriPart}\/.*/`);
+  return !!window.location.href.match(regexp);
+}
+
+function discoverCurrentGitHubPage() {
+  if (uriMatches("edit")) {
+    return GitHubPageType.EDIT;
+  }
+
+  if (uriMatches("blob")) {
+    return GitHubPageType.VIEW;
+  }
+
+  return GitHubPageType.ANY;
+}
+
 async function init() {
-  const githubDomElements = new GitHubDomElementsFactory().create();
-  if (!githubDomElements.githubTextEditor()) {
-    console.info(`[Kogito] Not GitHub edit page.`);
+  const pageType = discoverCurrentGitHubPage();
+  if (pageType === GitHubPageType.ANY) {
+    console.info(`[Kogito] Not GitHub edit or view pages.`);
     return;
   }
 
@@ -59,7 +78,8 @@ async function init() {
     return;
   }
 
-  if (!githubDomElements.allFound()) {
+  const githubDomElements = new GitHubDomElementsFactory().create(pageType);
+  if (!everyFunctionReturnsNonNull(githubDomElements)) {
     console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
     return;
   }
@@ -67,7 +87,8 @@ async function init() {
   const app = React.createElement(ChromeExtensionApp, {
     githubDomElements: githubDomElements,
     openFileExtension: openFileExtension,
-    router: router
+    router: router,
+    readonly: pageType !== GitHubPageType.EDIT
   });
 
   ReactDOM.render(app, githubDomElements.mainContainer());

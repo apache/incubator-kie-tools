@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "../../GitHubDomElementsFactory";
+import { GitHubDomElements } from "../../github/GitHubDomElements";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -28,6 +28,7 @@ export function ChromeExtensionApp(props: {
   githubDomElements: GitHubDomElements;
   openFileExtension: string;
   router: Router;
+  readonly: boolean;
 }) {
   const [globalState, setGlobalState] = useState({ fullscreen: false, textMode: false, textModeEnabled: false });
 
@@ -57,7 +58,7 @@ export function ChromeExtensionApp(props: {
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<Toolbar />, props.githubDomElements.toolbarContainer())}
+      {ReactDOM.createPortal(<Toolbar readonly={props.readonly} />, props.githubDomElements.toolbarContainer())}
 
       {globalState.fullscreen &&
         ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreenContainer())}
@@ -67,6 +68,7 @@ export function ChromeExtensionApp(props: {
           openFileExtension={props.openFileExtension}
           router={props.router}
           githubDomElements={props.githubDomElements}
+          readonly={props.readonly}
         />,
         globalState.fullscreen
           ? props.githubDomElements.iframeFullscreenContainer()

@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
-
-export class ChromeRouter extends Router {
-  constructor(...routesArray: Routes[]) {
-    super(...routesArray);
-  }
-
-  public getRelativePathTo(uri: string): string {
-    return `${this.getTargetOrigin()}/tiagobento/kogito-online/chrome-extension-resources/${uri}`;
-  }
-
-  public getLanguageData(fileExtension: string) {
-    return this.getLanguageDataByFileExtension().get(fileExtension);
-  }
-
-  public getTargetOrigin() {
-    return "https://raw.githubusercontent.com";
-  }
+export enum GitHubPageType {
+  VIEW,
+  EDIT,
+  ANY
 }

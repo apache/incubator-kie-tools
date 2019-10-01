@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-export class GitHubDomElements {
+import { GitHubDomElements } from "./GitHubDomElements";
+
+export class GitHubDomElementsEdit implements GitHubDomElements {
   public toolbarContainer() {
     return document.querySelector(".breadcrumb.d-flex.flex-items-center")!;
   }
 
-  public githubContentTextArea() {
-    return document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement;
+  public getFileContents() {
+    return Promise.resolve((document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement).value);
   }
 
   public githubTextEditor() {
@@ -30,7 +32,9 @@ export class GitHubDomElements {
   public iframeContainer() {
     const element = () => document.getElementById("kogito-iframe-container")!;
     if (!element()) {
-      document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
+      document
+        .querySelector(".file")!
+        .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="edit"></div>`);
     }
     return element();
   }
@@ -49,15 +53,5 @@ export class GitHubDomElements {
       document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     }
     return element();
-  }
-
-  public allFound() {
-    return Object.keys(this).reduce((p, k) => p && (!!(this as any)[k] || !!(this as any)[k]()), true);
-  }
-}
-
-export class GitHubDomElementsFactory {
-  public create() {
-    return new GitHubDomElements();
   }
 }

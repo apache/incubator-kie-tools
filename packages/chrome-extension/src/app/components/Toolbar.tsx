@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext } from "react";
 import { GlobalContext } from "./GlobalContext";
 
-export function Toolbar() {
+export function Toolbar(props: { readonly: boolean }) {
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
   const goFullScreen = (e: any) => {
@@ -38,20 +38,28 @@ export function Toolbar() {
 
   return (
     <>
-      {!globalState.textMode && (
-        <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
-          See as source
-        </button>
-      )}
-      {globalState.textMode && (
-        <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-          See as diagram
-        </button>
-      )}
-      {!globalState.textMode && (
-        <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-          Full screen
-        </button>
+      <div>
+        {!globalState.textMode && (
+          <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
+            See as source
+          </button>
+        )}
+        {globalState.textMode && (
+          <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+            See as diagram
+          </button>
+        )}
+        {!globalState.textMode && (
+          <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+            Full screen
+          </button>
+        )}
+      </div>
+      {props.readonly && (
+        <>
+          {/* TODO: Add "info" icon with hint explaining how to edit the file */}
+          <h3>This is a readonly visualization</h3>
+        </>
       )}
     </>
   );

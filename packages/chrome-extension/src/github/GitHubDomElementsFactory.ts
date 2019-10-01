@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
+import { GitHubDomElementsView } from "./GitHubDomElementsView";
+import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
+import { GitHubPageType } from "./GitHubPageType";
 
-export class ChromeRouter extends Router {
-  constructor(...routesArray: Routes[]) {
-    super(...routesArray);
-  }
+export class GitHubDomElementsFactory {
+  public create(pageType: GitHubPageType) {
+    if (pageType === GitHubPageType.EDIT) {
+      return new GitHubDomElementsEdit();
+    }
 
-  public getRelativePathTo(uri: string): string {
-    return `${this.getTargetOrigin()}/tiagobento/kogito-online/chrome-extension-resources/${uri}`;
-  }
+    if (pageType === GitHubPageType.VIEW) {
+      return new GitHubDomElementsView();
+    }
 
-  public getLanguageData(fileExtension: string) {
-    return this.getLanguageDataByFileExtension().get(fileExtension);
-  }
-
-  public getTargetOrigin() {
-    return "https://raw.githubusercontent.com";
+    throw new Error("Cannot determine GitHubElements for type ANY");
   }
 }

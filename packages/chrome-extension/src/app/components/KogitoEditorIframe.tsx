@@ -19,7 +19,7 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { GitHubDomElements } from "../../GitHubDomElementsFactory";
+import { GitHubDomElements } from "../../github/GitHubDomElements";
 import { runScriptOnPage } from "../utils";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
@@ -31,6 +31,7 @@ export function KogitoEditorIframe(props: {
   openFileExtension: string;
   githubDomElements: GitHubDomElements;
   router: Router;
+  readonly: boolean;
 }) {
   const [globalState, setGlobalState] = useContext(GlobalContext);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -51,13 +52,18 @@ export function KogitoEditorIframe(props: {
         self.respond_languageRequest(props.router.getLanguageData(props.openFileExtension));
       },
       receive_contentResponse(content: string) {
+        if (props.readonly) {
+          return;
+        }
         runScriptOnPage(
           `document.querySelector("${githubCodeMirrorEditorSelector}").CodeMirror.setValue('${content}')`
         );
       },
       receive_contentRequest() {
-        self.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
-        startPollingForChangesOnDiagram();
+        props.githubDomElements
+          .getFileContents()
+          .then(c => self.respond_contentRequest(c))
+          .then(() => startPollingForChangesOnDiagram());
       },
       receive_setContentError() {
         //TODO: Display a nice message with explanation why "setContent" failed
@@ -75,6 +81,9 @@ export function KogitoEditorIframe(props: {
   );
 
   function startPollingForChangesOnDiagram() {
+    if (props.readonly) {
+      return;
+    }
     if (polling) {
       return;
     }
@@ -83,6 +92,9 @@ export function KogitoEditorIframe(props: {
   }
 
   function stopPollingForChangesOnDiagram() {
+    if (props.readonly) {
+      return;
+    }
     clearInterval(polling);
     polling = undefined;
   }
@@ -93,8 +105,10 @@ export function KogitoEditorIframe(props: {
         stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
       } else if (prevGlobalState && prevGlobalState.textMode !== globalState.textMode) {
-        envelopeBusOuterMessageHandler.respond_contentRequest(props.githubDomElements.githubContentTextArea().value);
-        startPollingForChangesOnDiagram();
+        props.githubDomElements
+          .getFileContents()
+          .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c))
+          .then(() => startPollingForChangesOnDiagram());
       }
 
       prevGlobalState = globalState;
