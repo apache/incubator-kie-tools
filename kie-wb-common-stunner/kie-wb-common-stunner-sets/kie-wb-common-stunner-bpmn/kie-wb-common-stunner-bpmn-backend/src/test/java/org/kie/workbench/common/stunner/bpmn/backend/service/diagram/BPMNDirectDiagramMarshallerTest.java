@@ -282,7 +282,7 @@ public class BPMNDirectDiagramMarshallerTest {
         final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
         assertDiagram(diagram, 4);
         assertTrue(element.getContent().getDefinition() instanceof NoneTask);
-        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"manual\">\n".replace("$uuid", uuid)));
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"manual\">".replace("$uuid", uuid)));
     }
 
     @Test
@@ -293,7 +293,7 @@ public class BPMNDirectDiagramMarshallerTest {
         final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
         assertDiagram(diagram, 4);
         assertTrue(element.getContent().getDefinition() instanceof NoneTask);
-        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"send\">\n".replace("$uuid", uuid)));
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"send\">".replace("$uuid", uuid)));
     }
 
     @Test
@@ -304,7 +304,7 @@ public class BPMNDirectDiagramMarshallerTest {
         final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
         assertDiagram(diagram, 4);
         assertTrue(element.getContent().getDefinition() instanceof NoneTask);
-        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"received\">\n".replace("$uuid", uuid)));
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"received\">".replace("$uuid", uuid)));
     }
 
     @Test
