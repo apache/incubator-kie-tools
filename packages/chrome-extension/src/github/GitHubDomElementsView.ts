@@ -30,14 +30,12 @@ export class GitHubDomElementsView implements GitHubDomElements {
     return element();
   }
 
-  public async getFileContents() {
-    // FIXME: fetch raw file from github api
-    //   const res = await fetch((document.getElementById("raw-url") as HTMLAnchorElement)!.href);
-    //   return res.body;
-    return Promise.resolve("");
+  public getFileContents() {
+    const rawUrl = (document.getElementById("raw-url") as HTMLAnchorElement)!.href;
+    return fetch(rawUrl).then(res => res.text());
   }
 
-  public githubTextEditor() {
+  public githubTextEditorToReplace() {
     return document.querySelector(".Box-body.p-0.blob-wrapper.data.type-xml")! as HTMLElement;
   }
 
@@ -47,14 +45,6 @@ export class GitHubDomElementsView implements GitHubDomElements {
       document
         .querySelector(".Box.mt-3.position-relative")!
         .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="view"></div>`);
-    }
-    return element();
-  }
-
-  public mainContainer() {
-    const element = () => document.getElementById("kogito-container")!;
-    if (!element()) {
-      document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
     }
     return element();
   }

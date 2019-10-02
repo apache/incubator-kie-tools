@@ -19,11 +19,9 @@ export interface GitHubDomElements {
 
   getFileContents(): Promise<string>;
 
-  githubTextEditor(): HTMLElement;
+  githubTextEditorToReplace(): HTMLElement;
 
   iframeContainer(): HTMLElement;
-
-  mainContainer(): HTMLElement;
 
   iframeFullscreenContainer(): HTMLElement;
 }
@@ -37,7 +35,7 @@ export function everyFunctionReturnsNonNull(obj: any) {
         true
       );
   } catch (e) {
-    console.info("[Kogito] Exception while checking if every function returns non null.");
+    console.info("[Kogito] Exception while checking if every function returns non null.", e);
     return false;
   }
 }

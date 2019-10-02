@@ -22,6 +22,7 @@ import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 import { GitHubDomElementsFactory } from "./github/GitHubDomElementsFactory";
 import { GitHubPageType } from "./github/GitHubPageType";
 import { everyFunctionReturnsNonNull } from "./github/GitHubDomElements";
+import { runScriptOnPage } from "./app/utils";
 
 function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
@@ -59,7 +60,32 @@ function discoverCurrentGitHubPage() {
   return GitHubPageType.ANY;
 }
 
+function mainContainer() {
+  return document.getElementById("kogito-container");
+}
+
+function createAndGetMainContainer() {
+  if (!mainContainer()) {
+    document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
+  }
+  return mainContainer()!;
+}
+
+function unmountPreviouslyRenderedFeatures() {
+  try {
+    if (mainContainer()) {
+      ReactDOM.unmountComponentAtNode(mainContainer()!);
+    }
+  } catch (e) {
+    console.info("[Kogito] Ignoring exception while unmounting features.");
+  }
+}
+
 async function init() {
+  console.info(`[Kogito] Starting GitHub extension.`);
+
+  unmountPreviouslyRenderedFeatures();
+
   const pageType = discoverCurrentGitHubPage();
   if (pageType === GitHubPageType.ANY) {
     console.info(`[Kogito] Not GitHub edit or view pages.`);
@@ -91,7 +117,22 @@ async function init() {
     readonly: pageType !== GitHubPageType.EDIT
   });
 
-  ReactDOM.render(app, githubDomElements.mainContainer());
+  ReactDOM.render(app, createAndGetMainContainer());
 }
+
+runScriptOnPage(`
+var _wr = function(type) {
+    var orig = history[type];
+    return function() {
+        var rv = orig.apply(this, arguments);
+        var e = new Event(type);
+        e.arguments = arguments;
+        window.dispatchEvent(e);
+        return rv;
+    };
+};
+history.pushState = _wr('pushState');
+history.replaceState = _wr('replaceState');`);
+window.addEventListener("replaceState", () => setImmediate(init));
 
 init();

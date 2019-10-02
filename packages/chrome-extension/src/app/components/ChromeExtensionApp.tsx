@@ -46,10 +46,10 @@ export function ChromeExtensionApp(props: {
   useEffect(
     () => {
       if (globalState.textMode) {
-        props.githubDomElements.githubTextEditor().classList.remove("hidden");
+        props.githubDomElements.githubTextEditorToReplace().classList.remove("hidden");
         props.githubDomElements.iframeContainer().classList.add("hidden");
       } else {
-        props.githubDomElements.githubTextEditor().classList.add("hidden");
+        props.githubDomElements.githubTextEditorToReplace().classList.add("hidden");
         props.githubDomElements.iframeContainer().classList.remove("hidden");
       }
     },

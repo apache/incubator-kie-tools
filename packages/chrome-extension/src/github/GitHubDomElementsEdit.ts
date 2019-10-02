@@ -25,7 +25,7 @@ export class GitHubDomElementsEdit implements GitHubDomElements {
     return Promise.resolve((document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement).value);
   }
 
-  public githubTextEditor() {
+  public githubTextEditorToReplace() {
     return document.querySelector(".js-code-editor")! as HTMLElement;
   }
 
@@ -35,14 +35,6 @@ export class GitHubDomElementsEdit implements GitHubDomElements {
       document
         .querySelector(".file")!
         .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="edit"></div>`);
-    }
-    return element();
-  }
-
-  public mainContainer() {
-    const element = () => document.getElementById("kogito-container")!;
-    if (!element()) {
-      document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
     }
     return element();
   }

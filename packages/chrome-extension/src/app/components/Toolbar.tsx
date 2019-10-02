@@ -55,12 +55,13 @@ export function Toolbar(props: { readonly: boolean }) {
           </button>
         )}
       </div>
-      {props.readonly && (
-        <>
-          {/* TODO: Add "info" icon with hint explaining how to edit the file */}
-          <h3>This is a readonly visualization</h3>
-        </>
-      )}
+      {props.readonly &&
+        !globalState.textMode && (
+          <>
+            {/* TODO: Add "info" icon with hint explaining how to edit the file */}
+            <h4>🔸️ This is a readonly visualization</h4>
+          </>
+        )}
     </>
   );
 }
