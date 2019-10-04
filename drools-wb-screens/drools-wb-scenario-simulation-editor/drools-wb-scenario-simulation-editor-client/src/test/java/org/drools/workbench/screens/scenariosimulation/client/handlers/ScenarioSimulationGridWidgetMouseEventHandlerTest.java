@@ -118,6 +118,11 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
     }
 
     @Test
+    public void handleHeaderCell_NonSelectedCells() {
+        commonHandleHeaderCell(false, false, 0, false, true);
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void handleHeaderCell_EditableColumn_NotStartEdit() {
         commonHandleHeaderCell(true, false, 1, true, false);
@@ -131,8 +136,8 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
 
     @Test
     @SuppressWarnings("unchecked")
-    public void handleHeaderCell_EditableColumn_WrongSelectedSize() {
-        commonHandleHeaderCell(true, true, 3, false, true);
+    public void handleHeaderCell_EditableColumn_MultiSelectedSize() {
+        commonHandleHeaderCell(true, true, 3, true, true);
     }
 
     @Test
@@ -206,11 +211,11 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
                                                  uiHeaderColumnIndex,
                                                  clickEvent));
         }
+        int columnPosition = columnsMock.indexOf(gridColumnMock);
         if (startEditLocalCalled) {
-            verify(handler, times(1)).startEditLocal(eq(scenarioGridMock), eq(uiHeaderColumnIndex), eq(gridColumnMock), eq(uiHeaderRowIndex), eq(false));
+            verify(handler, times(1)).startEditLocal(eq(scenarioGridMock), eq(columnPosition), eq(gridColumnMock), eq(uiHeaderRowIndex), eq(false));
         } else {
-            verify(handler, never()).startEditLocal(eq(scenarioGridMock), eq(uiHeaderColumnIndex), eq(gridColumnMock), eq(uiHeaderRowIndex), eq(false));
+            verify(handler, never()).startEditLocal(eq(scenarioGridMock), eq(columnPosition), eq(gridColumnMock), eq(uiHeaderRowIndex), eq(false));
         }
     }
-
 }

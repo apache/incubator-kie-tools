@@ -37,8 +37,8 @@ import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
 
 @Dependent
-public class ScenarioSimulationGridPanelClickHandler extends AbstractScenarioSimulationGridPanelHandler implements ClickHandler,
-                                                                ContextMenuHandler {
+public class ScenarioSimulationGridPanelClickHandler extends AbstractScenarioSimulationGridPanelHandler
+        implements ClickHandler, ContextMenuHandler {
 
     protected ScenarioContextMenuRegistry scenarioContextMenuRegistry;
     protected EventBus eventBus;
@@ -66,7 +66,6 @@ public class ScenarioSimulationGridPanelClickHandler extends AbstractScenarioSim
         final int canvasY = getRelativeYOfEvent(event);
         scenarioContextMenuRegistry.hideMenus();
         scenarioContextMenuRegistry.hideErrorReportPopover();
-        scenarioGrid.clearSelections();
         if (!manageCoordinates(canvasX, canvasY)) { // It was not a grid click
             eventBus.fireEvent(new DisableTestToolsEvent());
         }
@@ -100,8 +99,7 @@ public class ScenarioSimulationGridPanelClickHandler extends AbstractScenarioSim
                                                          ScenarioGridColumn scenarioGridColumn,
                                                          String group,
                                                          Integer uiColumnIndex) {
-        scenarioGrid.setSelectedColumnAndHeader(scenarioGridColumn.getHeaderMetaData().indexOf(clickedScenarioHeaderMetadata), uiColumnIndex);
-
+        scenarioGrid.setSelectedColumn(uiColumnIndex);
         if (scenarioGridColumn.isInstanceAssigned() && clickedScenarioHeaderMetadata.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
             eventBus.fireEvent(new ReloadTestToolsEvent(true, true));
             return true;

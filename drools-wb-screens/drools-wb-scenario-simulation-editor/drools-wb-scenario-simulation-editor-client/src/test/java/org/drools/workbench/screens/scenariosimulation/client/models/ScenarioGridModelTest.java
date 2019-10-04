@@ -302,6 +302,24 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
     }
 
     @Test
+    public void setSelectedColumn() {
+        scenarioGridModel.selectColumn(COLUMN_INDEX);
+        assertEquals(gridColumnMock, scenarioGridModel.getSelectedColumn());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setSelectedColumn_NegativeIndex() {
+        int columnIndex = -1;
+        scenarioGridModel.selectColumn(columnIndex);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setSelectedColumn_OverflowIndex() {
+        int columnIndex = 7;
+        scenarioGridModel.selectColumn(columnIndex);
+    }
+
+    @Test
     public void getInstancesCount() {
         long count = scenarioGridModel.getInstancesCount(FULL_CLASS_NAME);
         assertEquals(1, count);

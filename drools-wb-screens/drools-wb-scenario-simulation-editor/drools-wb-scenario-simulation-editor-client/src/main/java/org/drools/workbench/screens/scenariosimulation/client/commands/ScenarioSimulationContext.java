@@ -144,7 +144,7 @@ public class ScenarioSimulationContext {
      */
     public void setStatusSimulationIfEmpty() {
         if (status.getSimulation() == null) {
-            status.setSimulation(model.getSimulation().get());
+            status.setSimulation(model.getSimulation().orElseThrow(IllegalStateException::new));
         }
     }
 

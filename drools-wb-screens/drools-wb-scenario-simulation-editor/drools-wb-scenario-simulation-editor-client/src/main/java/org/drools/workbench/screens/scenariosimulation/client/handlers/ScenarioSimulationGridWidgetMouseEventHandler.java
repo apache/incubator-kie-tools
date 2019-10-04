@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -48,8 +49,13 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         }
         final ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
         final GridData gridData = gridWidget.getModel();
-        if (gridData.getSelectedHeaderCells().size() == 1 && editSupportedLocal(headerMetaData.getSupportedEditAction(), event)) {
-            return startEditLocal((ScenarioGrid) gridWidget, uiHeaderColumnIndex, (ScenarioGridColumn) column, uiHeaderRowIndex, true);
+        if (!gridData.getSelectedHeaderCells().isEmpty() && editSupportedLocal(headerMetaData.getSupportedEditAction(), event)) {
+            final GridData.SelectedCell firstSelectedHeaderCell = gridData.getSelectedHeaderCells().get(0);
+            final Optional<GridColumn<?>> firstSelectedColumnOptional = gridData.getColumns().stream()
+                    .filter(col -> col.getIndex() == firstSelectedHeaderCell.getColumnIndex())
+                    .findFirst();
+            final int firstSelectedColumnPosition = gridData.getColumns().indexOf(firstSelectedColumnOptional.orElseThrow(IllegalStateException::new));
+            return startEditLocal((ScenarioGrid) gridWidget, firstSelectedColumnPosition, (ScenarioGridColumn) column, uiHeaderRowIndex, true);
         }
         return true;
     }

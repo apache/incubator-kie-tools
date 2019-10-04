@@ -581,17 +581,12 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
-     * Select all the cells of the given column
+     * It puts the column present in the given columnIndex as the current selected one.
      * @param columnIndex
      */
     public void selectColumn(int columnIndex) {
-        if (columnIndex > getColumnCount() - 1) {
-            return;
-        }
-        if (!selectedHeaderCells.isEmpty()) {
-            final SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
-            selectedHeaderCells.clear();
-            selectHeaderCell(selectedHeaderCell.getRowIndex(), columnIndex);
+        if (columnIndex > getColumnCount() - 1 || columnIndex < 0) {
+            throw new IllegalArgumentException("Wrong column index: " + columnIndex);
         }
         selectedColumn = getColumns().get(columnIndex);
     }
