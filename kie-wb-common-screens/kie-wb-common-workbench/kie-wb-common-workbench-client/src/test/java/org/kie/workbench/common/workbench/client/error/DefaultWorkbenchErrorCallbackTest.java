@@ -29,10 +29,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isInvalidBusContentException;
+import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isServerOfflineException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerForbiddenException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerUnauthorizedException;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.eq;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultWorkbenchErrorCallbackTest {
@@ -42,7 +45,7 @@ public class DefaultWorkbenchErrorCallbackTest {
 
     @InjectMocks
     private DefaultWorkbenchErrorCallback callback;
-    
+
     @Test
     public void testForbiddenException() {
         assertTrue(isKieServerForbiddenException(new KieServicesHttpException(null,
@@ -84,16 +87,50 @@ public class DefaultWorkbenchErrorCallbackTest {
     @Test
     public void testInvalidBusContentException() {
         assertTrue(isInvalidBusContentException(new InvalidBusContentException("text/html", "content")));
-
         assertFalse(isInvalidBusContentException(new RuntimeException()));
     }
-    
+
     @Test
-    public void testGenericPopup(){
-        callback.error(new RuntimeException("ex"));
+    public void testIsServerOfflineException() {
+        assertTrue(isServerOfflineException(new Exception("Script error. (:0)")));
+        assertTrue(isServerOfflineException(new Exception("Error parsing JSON: SyntaxError: Unexpected token � in JSON at position 1")));
+        assertTrue(isServerOfflineException(new Exception("Error parsing JSON: SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data")));
+        assertFalse(isServerOfflineException(new Exception("test")));
+        assertFalse(isServerOfflineException(new Exception("")));
+    }
+
+    @Test
+    public void testGenericPopup() {
+        callback.queue(new RuntimeException("ex"));
+        callback.processQueue();
 
         InOrder inOrder = inOrder(genericErrorPopup);
         inOrder.verify(genericErrorPopup).show();
-        inOrder.verify(genericErrorPopup).setup(any());
+        inOrder.verify(genericErrorPopup).setup(any(), any());
+    }
+
+    @Test
+    public void testQueue() {
+        callback.queue(new Exception("a"));
+        callback.queue(new Exception("b"));
+        callback.queue(new Exception("c"));
+
+        callback.processQueue();
+
+        InOrder inOrder = inOrder(genericErrorPopup);
+        inOrder.verify(genericErrorPopup, times(1)).show();
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: a"), any());
+
+        callback.dequeue();
+        callback.processQueue();
+
+        inOrder.verify(genericErrorPopup, times(1)).show();
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: b"), any());
+
+        callback.dequeue();
+        callback.processQueue();
+
+        inOrder.verify(genericErrorPopup, times(1)).show();
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: c"), any());
     }
 }

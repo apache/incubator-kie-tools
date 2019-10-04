@@ -33,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.util.Clipboard;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static elemental2.dom.DomGlobal.console;
@@ -69,8 +70,9 @@ public class GenericErrorPopup extends Elemental2Modal<GenericErrorPopup> implem
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
-    
+
     private final Clipboard clipboard;
+    private Command onClose = () -> {};
 
     @Inject
     public GenericErrorPopup(final GenericErrorPopup view,
@@ -90,18 +92,31 @@ public class GenericErrorPopup extends Elemental2Modal<GenericErrorPopup> implem
     }
 
     public void setup(final String details) {
+        setup(details,
+              () -> {});
+    }
+
+    public void setup(final String details,
+                      final Command onClose) {
         if (isShowing()) {
             //If multiple errors occur, we want to know the details of each one of them. In order.
             errorDetails.textContent += " | " + details;
         } else {
             errorDetails.textContent = details;
         }
+
+        this.onClose = onClose;
+    }
+    
+    public void close() {
+        hide();
+        this.onClose.execute();
     }
 
     @EventHandler("ignore-button")
     private void onIgnoreButtonClicked(final @ForEvent("click") elemental2.dom.Event e) {
         console.error(errorDetails.textContent);
-        hide();
+        close();
     }
 
     @EventHandler("copy-details-button")
