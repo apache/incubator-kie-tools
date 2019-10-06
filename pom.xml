@@ -32,6 +32,8 @@
   </modules>
 
   <properties>
+      <!-- Version 2.0.1.Final which is coming from kie-parent is not compatible with appformer validation components -->
+    <version.javax.validation>1.0.0.GA</version.javax.validation>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
@@ -55,6 +57,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
