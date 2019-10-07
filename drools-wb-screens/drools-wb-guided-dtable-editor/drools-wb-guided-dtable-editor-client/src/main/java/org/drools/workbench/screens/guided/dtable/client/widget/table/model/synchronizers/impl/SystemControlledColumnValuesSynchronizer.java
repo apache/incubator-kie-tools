@@ -16,7 +16,9 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.List;
+import java.util.Objects;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -26,7 +28,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 
 public class SystemControlledColumnValuesSynchronizer {
 
@@ -78,7 +79,7 @@ public class SystemControlledColumnValuesSynchronizer {
                                             postSyncOperation);
             } else if (column instanceof AttributeCol52) {
                 final AttributeCol52 attrCol = (AttributeCol52) column;
-                if (attrCol.getAttribute().equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+                if (Objects.equals(attrCol.getAttribute(), Attribute.SALIENCE.getAttributeName())) {
                     salienceSynchronizer.updateSalienceColumnValues(attrCol);
                 }
             }

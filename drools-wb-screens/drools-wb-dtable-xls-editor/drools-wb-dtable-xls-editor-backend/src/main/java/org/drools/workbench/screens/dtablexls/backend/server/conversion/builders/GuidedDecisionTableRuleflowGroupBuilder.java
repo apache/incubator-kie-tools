@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
 import org.drools.decisiontable.parser.ActionType;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -39,7 +40,7 @@ public class GuidedDecisionTableRuleflowGroupBuilder extends AbstractGuidedDecis
     public void populateDecisionTable( final GuidedDecisionTable52 dtable,
                                        final int maxRowCount ) {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( GuidedDecisionTable52.RULEFLOW_GROUP_ATTR );
+        column.setAttribute(Attribute.RULEFLOW_GROUP.getAttributeName() );
         dtable.getAttributeCols().add( column );
 
         if ( this.values.size() < maxRowCount ) {

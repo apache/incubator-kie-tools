@@ -278,7 +278,8 @@ public class AuditLogEntryCellHelper {
 
     private void buildColumnDetailsInsert( final AttributeColumnDetails details,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogInsertAttribute0( details.getAttribute() ) ) );
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE
+                                                   .DecisionTableAuditLogInsertAttribute0( details.getAttribute() ) ) );
     }
 
     private void buildColumnDetailsInsert( final MetadataColumnDetails details,

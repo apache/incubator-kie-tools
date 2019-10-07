@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
@@ -93,7 +94,7 @@ public class DecisionTableGuidedToDecisionTableXLSConverterTest {
         final Path path = PathFactory.newPath("file.gdst", "file:///contextpath/file.gdst");
         final GuidedDecisionTable52 table52 = new GuidedDecisionTable52();
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute("negate");
+        attributeCol52.setAttribute(Attribute.NEGATE_RULE.getAttributeName());
         table52.getAttributeCols().add(attributeCol52);
 
         doReturn(mock(PackageDataModelOracle.class)).when(dataModelService).getDataModel(any());

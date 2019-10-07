@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -54,23 +56,6 @@ import org.uberfire.ext.widgets.common.client.common.SmallLabel;
  */
 public class RuleAttributeWidget extends Composite {
 
-    /**
-     * These are the names of all of the rule attributes for this widget
-     */
-    public static final String SALIENCE_ATTR = "salience";         // needs to be public
-    public static final String ENABLED_ATTR = "enabled";
-    public static final String DATE_EFFECTIVE_ATTR = "date-effective";
-    public static final String DATE_EXPIRES_ATTR = "date-expires";
-    public static final String NO_LOOP_ATTR = "no-loop";
-    public static final String AGENDA_GROUP_ATTR = "agenda-group";
-    public static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String DURATION_ATTR = "duration";
-    public static final String TIMER_ATTR = "timer";
-    public static final String CALENDARS_ATTR = "calendars";
-    public static final String AUTO_FOCUS_ATTR = "auto-focus";
-    public static final String LOCK_ON_ACTIVE_ATTR = "lock-on-active";
-    public static final String RULEFLOW_GROUP_ATTR = "ruleflow-group";
-    public static final String DIALECT_ATTR = "dialect";
     public static final String LOCK_LHS = "freeze_conditions";
     public static final String LOCK_RHS = "freeze_actions";
 
@@ -128,21 +113,11 @@ public class RuleAttributeWidget extends Composite {
      * @return
      */
     public static String[] getAttributesList() {
-        return new String[]{GuidedRuleEditorResources.CONSTANTS.Choose(),
-                SALIENCE_ATTR,
-                ENABLED_ATTR,
-                DATE_EFFECTIVE_ATTR,
-                DATE_EXPIRES_ATTR,
-                NO_LOOP_ATTR,
-                AGENDA_GROUP_ATTR,
-                ACTIVATION_GROUP_ATTR,
-                DURATION_ATTR,
-                TIMER_ATTR,
-                CALENDARS_ATTR,
-                AUTO_FOCUS_ATTR,
-                LOCK_ON_ACTIVE_ATTR,
-                RULEFLOW_GROUP_ATTR,
-                DIALECT_ATTR};
+        final String[] chooseOption = {GuidedRuleEditorResources.CONSTANTS.Choose()};
+        return Stream
+                .concat(Stream.of(chooseOption),
+                        Stream.of(Attribute.values()).map(attribute -> attribute.getAttributeName()))
+                .toArray(String[]::new);
     }
 
     private Widget getEditorWidget(final RuleAttribute at,
@@ -152,30 +127,7 @@ public class RuleAttributeWidget extends Composite {
         final EditAttributeWidgetFactory editAttributeWidgetFactory = new EditAttributeWidgetFactory(isReadOnly);
 
         final String attributeName = at.getAttributeName();
-        if (attributeName.equals(RULEFLOW_GROUP_ATTR)
-                || attributeName.equals(AGENDA_GROUP_ATTR)
-                || attributeName.equals(ACTIVATION_GROUP_ATTR)
-                || attributeName.equals(TIMER_ATTR)
-                || attributeName.equals(CALENDARS_ATTR)) {
-            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
-        } else if (attributeName.equals(SALIENCE_ATTR)) {
-            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_INTEGER);
-        } else if (attributeName.equals(DURATION_ATTR)) {
-            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_LONG);
-        } else if (attributeName.equals(NO_LOOP_ATTR)
-                || attributeName.equals(LOCK_ON_ACTIVE_ATTR)
-                || attributeName.equals(AUTO_FOCUS_ATTR)
-                || attributeName.equals(ENABLED_ATTR)) {
-            editor = checkBoxEditor(at,
-                                    isReadOnly);
-        } else if (attributeName.equals(DATE_EFFECTIVE_ATTR)
-                || attributeName.equals(DATE_EXPIRES_ATTR)) {
-            if (isReadOnly) {
-                editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
-            } else {
-                editor = editAttributeWidgetFactory.datePicker(at, false);
-            }
-        } else if (attributeName.equals(DIALECT_ATTR)) {
+        if (attributeName.equals(Attribute.DIALECT.getAttributeName())) {
             final ListBox lb = new ListBox();
             lb.addItem(DIALECTS[0]);
             lb.addItem(DIALECTS[1]);
@@ -204,6 +156,20 @@ public class RuleAttributeWidget extends Composite {
                 at.setValue(DIALECTS[1]);
             }
             editor = lb;
+        } else if (Objects.equals(DataType.TYPE_STRING, Attribute.getAttributeDataType(attributeName))) {
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
+        } else if (Objects.equals(DataType.TYPE_NUMERIC_INTEGER, Attribute.getAttributeDataType(attributeName))) {
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_INTEGER);
+        } else if (Objects.equals(DataType.TYPE_NUMERIC_LONG, Attribute.getAttributeDataType(attributeName))) {
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_LONG);
+        } else if (Objects.equals(DataType.TYPE_BOOLEAN, Attribute.getAttributeDataType(attributeName))) {
+            editor = checkBoxEditor(at, isReadOnly);
+        } else if (Objects.equals(DataType.TYPE_DATE, Attribute.getAttributeDataType(attributeName))) {
+            if (isReadOnly) {
+                editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
+            } else {
+                editor = editAttributeWidgetFactory.datePicker(at, false);
+            }
         }
 
         DirtyableHorizontalPane horiz = GWT.create(DirtyableHorizontalPane.class);

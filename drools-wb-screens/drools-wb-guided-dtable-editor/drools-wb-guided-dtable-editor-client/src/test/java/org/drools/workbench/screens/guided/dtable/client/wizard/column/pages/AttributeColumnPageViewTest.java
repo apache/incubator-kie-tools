@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.jboss.errai.common.client.dom.Div;
 import org.junit.Before;
@@ -35,12 +36,14 @@ public class AttributeColumnPageViewTest {
 
     @Mock
     private AttributeColumnPage page;
+    @Mock
+    private ListBox attributeListBox;
 
     private AttributeColumnPageView view;
 
     @Before
     public void setUp() throws Exception {
-        view  = spy(new AttributeColumnPageView(mock(ListBox.class), mock(Div.class)));
+        view  = spy(new AttributeColumnPageView(attributeListBox, mock(Div.class)));
         view.init(page);
     }
 
@@ -51,6 +54,8 @@ public class AttributeColumnPageViewTest {
 
     @Test
     public void testAttributeSelectedFirstTime() throws Exception {
+        final String selectedAttribute = Attribute.NO_LOOP.getAttributeName();
+        when(attributeListBox.getSelectedItemText()).thenReturn(selectedAttribute);
         when(view.isAttributeDescriptionHidden()).thenReturn(true);
         view.onSelectAttribute(null);
 
@@ -59,6 +64,8 @@ public class AttributeColumnPageViewTest {
 
     @Test
     public void testAttributeSelectedNotFirstTime() throws Exception {
+        final String selectedAttribute = Attribute.NO_LOOP.getAttributeName();
+        when(attributeListBox.getSelectedItemText()).thenReturn(selectedAttribute);
         when(view.isAttributeDescriptionHidden()).thenReturn(false);
         view.onSelectAttribute(null);
 

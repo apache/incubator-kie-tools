@@ -830,7 +830,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     private Set<String> getExistingAttributeNames() {
-        final Set<String> existingAttributeNames = new HashSet<String>();
+        final Set<String> existingAttributeNames = new HashSet<>();
         for (AttributeCol52 attributeCol : model.getAttributeCols()) {
             existingAttributeNames.add(attributeCol.getAttribute());
         }

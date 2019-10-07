@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.plugin.client.testutil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -64,9 +65,9 @@ public class AbstractDecisionTableBuilder {
         return table;
     }
 
-    protected Object withAttributeColumn(final String attribute) {
+    protected Object withAttributeColumn(final Attribute attribute) {
         final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute(attribute);
+        attributeCol52.setAttribute(attribute.getAttributeName());
         table.getAttributeCols().add(attributeCol52);
         return this;
     }

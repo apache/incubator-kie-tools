@@ -21,12 +21,12 @@ import java.util.Optional;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.DefaultValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +88,7 @@ public class AttributeColumnConfigRowTest {
         columnConfigRow = new AttributeColumnConfigRow();
         columnConfigRow.view = view;
 
-        when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
+        when(attributeColumn.getAttribute()).thenReturn(Attribute.SALIENCE.getAttributeName());
         when(attributeColumn.cloneColumn()).thenReturn(editedAttributeColumn);
         when(presenter.isActiveDecisionTableEditable()).thenReturn(true);
         when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(decisionTable));

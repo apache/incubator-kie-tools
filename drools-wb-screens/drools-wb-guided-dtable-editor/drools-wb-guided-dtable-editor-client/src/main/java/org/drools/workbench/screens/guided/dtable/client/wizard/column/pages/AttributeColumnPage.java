@@ -23,7 +23,6 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.AttributeColumnPlugin;
@@ -78,7 +77,6 @@ public class AttributeColumnPage extends BaseDecisionTableColumnPage<AttributeCo
     private List<String> rawAttributes() {
         return new ArrayList<String>() {{
             addAll(attributesWithoutChooseAttribute());
-            add(GuidedDecisionTable52.NEGATE_RULE_ATTR);
         }};
     }
 

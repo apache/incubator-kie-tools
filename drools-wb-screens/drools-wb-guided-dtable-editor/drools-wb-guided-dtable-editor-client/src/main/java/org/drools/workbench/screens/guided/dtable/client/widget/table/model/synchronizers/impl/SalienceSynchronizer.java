@@ -52,11 +52,9 @@ public class SalienceSynchronizer {
      * Update Salience column definition and values
      */
     public void updateSalienceColumnValues( final AttributeCol52 modelColumn ) {
-        final int iModelColumn = model.getExpandedColumns()
-                .indexOf( modelColumn );
+        final int iModelColumn = model.getExpandedColumns().indexOf( modelColumn );
 
-        final GridColumn<?> uiColumn = uiModel.getColumns()
-                .get( iModelColumn );
+        final GridColumn<?> uiColumn = uiModel.getColumns().get( iModelColumn );
 
         if ( uiColumn instanceof SalienceUiColumn ) {
             ( (SalienceUiColumn) uiColumn ).setUseRowNumber( modelColumn.isUseRowNumber() );
@@ -73,12 +71,9 @@ public class SalienceSynchronizer {
     private void setSalienceByRowNumbers( final AttributeCol52 modelColumn,
                                           final int iModelColumn ) {
         //If Salience values are reverse order derive them and update column
-        int salience = ( modelColumn.isReverseOrder() ? model.getData()
-                .size() : 1 );
-        for ( int rowNumber = 0; rowNumber < model.getData()
-                .size(); rowNumber++ ) {
-            final List<DTCellValue52> modelRow = model.getData()
-                    .get( rowNumber );
+        int salience = modelColumn.isReverseOrder() ? model.getData().size() : 1;
+        for (int rowNumber = 0; rowNumber < model.getData().size(); rowNumber++) {
+            final List<DTCellValue52> modelRow = model.getData().get( rowNumber );
             final DTCellValue52 modelCell = modelRow.get( iModelColumn );
             modelCell.setNumericValue( salience );
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -48,9 +49,6 @@ public class SubHeaderBuilder {
     private static final int COLUMN_TYPE_ROW = 5;
     private static final int FIELD_ROW = 7;
     private static final int HEADER_TITLE_ROW = 8;
-
-    private final static String NEGATE_ATTRIBUTE = "negate";
-    private final static String SALIENCE_ATTRIBUTE = "salience";
 
     private final GuidedDecisionTable52 dtable;
     private final String ACTION = "ACTION";
@@ -284,7 +282,7 @@ public class SubHeaderBuilder {
     }
 
     private void makeAttribute(final AttributeCol52 column) {
-        if (Objects.equals(NEGATE_ATTRIBUTE, column.getAttribute().toLowerCase())) {
+        if (Objects.equals(Attribute.NEGATE_RULE.getAttributeName(), column.getAttribute())) {
             throw new UnsupportedOperationException("Conversion of the negate attribute is not supported.");
         } else {
             headerRow.createCell(targetColumnIndex)
@@ -293,7 +291,8 @@ public class SubHeaderBuilder {
     }
 
     private String getAttribute(final AttributeCol52 column) {
-        if (Objects.equals(SALIENCE_ATTRIBUTE, column.getAttribute())) {
+
+        if (Objects.equals(Attribute.SALIENCE.getAttributeName(), column.getAttribute())) {
             return "PRIORITY";
         } else {
             return column.getAttribute().toUpperCase();

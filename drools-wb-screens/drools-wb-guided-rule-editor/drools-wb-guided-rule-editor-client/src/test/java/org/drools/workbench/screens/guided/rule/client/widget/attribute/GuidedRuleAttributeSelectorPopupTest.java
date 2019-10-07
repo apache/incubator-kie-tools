@@ -20,6 +20,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -61,18 +62,18 @@ public class GuidedRuleAttributeSelectorPopupTest {
 
     @Test
     public void testHandleAttributeAddition_Calendars() {
-        popup.handleAttributeAddition(RuleAttributeWidget.CALENDARS_ATTR);
+        popup.handleAttributeAddition(Attribute.CALENDARS.getAttributeName());
 
-        assertThat(model.attributes).containsExactly(new RuleAttribute(RuleAttributeWidget.CALENDARS_ATTR, ""));
+        assertThat(model.attributes).containsExactly(new RuleAttribute(Attribute.CALENDARS.getAttributeName(), ""));
         assertThat(model.metadataList).isEmpty();
         verify(refreshCommand).execute();
     }
 
     @Test
     public void testHandleAttributeAddition_Timer() {
-        popup.handleAttributeAddition(RuleAttributeWidget.TIMER_ATTR);
+        popup.handleAttributeAddition(Attribute.TIMER.getAttributeName());
 
-        assertThat(model.attributes).containsExactly(new RuleAttribute(RuleAttributeWidget.TIMER_ATTR, ""));
+        assertThat(model.attributes).containsExactly(new RuleAttribute(Attribute.TIMER.getAttributeName(), ""));
         assertThat(model.metadataList).isEmpty();
         verify(refreshCommand).execute();
     }

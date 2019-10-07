@@ -34,6 +34,7 @@ import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
@@ -179,45 +180,45 @@ public class GuidedDecisionTableGeneratorListenerTest {
 
         //Check individual attributes
         AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
-        assertEquals(GuidedDecisionTable52.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
         assertFalse(attrCol2.isReverseOrder());
 
         AttributeCol52 attrCol3 = ((AttributeCol52) columns.get(3));
-        assertEquals(GuidedDecisionTable52.ACTIVATION_GROUP_ATTR,
+        assertEquals(Attribute.ACTIVATION_GROUP.getAttributeName(),
                      attrCol3.getAttribute());
 
         AttributeCol52 attrCol4 = ((AttributeCol52) columns.get(4));
-        assertEquals(GuidedDecisionTable52.DURATION_ATTR,
+        assertEquals(Attribute.DURATION.getAttributeName(),
                      attrCol4.getAttribute());
 
         AttributeCol52 attrCol5 = ((AttributeCol52) columns.get(5));
-        assertEquals(GuidedDecisionTable52.TIMER_ATTR,
+        assertEquals(Attribute.TIMER.getAttributeName(),
                      attrCol5.getAttribute());
 
         AttributeCol52 attrCol6 = ((AttributeCol52) columns.get(6));
-        assertEquals(GuidedDecisionTable52.CALENDARS_ATTR,
+        assertEquals(Attribute.CALENDARS.getAttributeName(),
                      attrCol6.getAttribute());
 
         AttributeCol52 attrCol7 = ((AttributeCol52) columns.get(7));
-        assertEquals(GuidedDecisionTable52.NO_LOOP_ATTR,
+        assertEquals(Attribute.NO_LOOP.getAttributeName(),
                      attrCol7.getAttribute());
 
         AttributeCol52 attrCol8 = ((AttributeCol52) columns.get(8));
-        assertEquals(GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR,
+        assertEquals(Attribute.LOCK_ON_ACTIVE.getAttributeName(),
                      attrCol8.getAttribute());
 
         AttributeCol52 attrCol9 = ((AttributeCol52) columns.get(9));
-        assertEquals(GuidedDecisionTable52.AUTO_FOCUS_ATTR,
+        assertEquals(Attribute.AUTO_FOCUS.getAttributeName(),
                      attrCol9.getAttribute());
 
         AttributeCol52 attrCol10 = ((AttributeCol52) columns.get(10));
-        assertEquals(GuidedDecisionTable52.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      attrCol10.getAttribute());
 
         AttributeCol52 attrCol11 = ((AttributeCol52) columns.get(11));
-        assertEquals(GuidedDecisionTable52.RULEFLOW_GROUP_ATTR,
+        assertEquals(Attribute.RULEFLOW_GROUP.getAttributeName(),
                      attrCol11.getAttribute());
 
         //Check data
@@ -280,7 +281,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
 
         //Check attribute column
         AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
-        assertEquals(GuidedDecisionTable52.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertTrue(attrCol2.isUseRowNumber());
         assertTrue(attrCol2.isReverseOrder());
@@ -351,7 +352,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
 
         //Check attribute column
         AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
-        assertEquals(GuidedDecisionTable52.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
         assertFalse(attrCol2.isReverseOrder());
@@ -422,7 +423,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
 
         //Check attribute column
         AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
-        assertEquals(GuidedDecisionTable52.DURATION_ATTR,
+        assertEquals(Attribute.DURATION.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
         assertFalse(attrCol2.isReverseOrder());
@@ -1070,7 +1071,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         assertTrue(columns0.get(4) instanceof BRLActionVariableColumn);
 
         AttributeCol52 attrCol0_2 = ((AttributeCol52) columns0.get(2));
-        assertEquals(GuidedDecisionTable52.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      attrCol0_2.getAttribute());
 
         //Check individual condition columns

@@ -19,12 +19,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
@@ -441,7 +441,7 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void checkBooleanDefaultValueTrue() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        column.setAttribute(Attribute.ENABLED.getAttributeName());
         column.setDefaultValue(new DTCellValue52(true));
 
         modelSynchronizer.appendColumn(column);
@@ -456,7 +456,7 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void checkBooleanDefaultValueFalse() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        column.setAttribute(Attribute.ENABLED.getAttributeName());
         column.setDefaultValue(new DTCellValue52(false));
 
         modelSynchronizer.appendColumn(column);
@@ -471,7 +471,7 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void checkBooleanDefaultValueNotSet() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        column.setAttribute(Attribute.ENABLED.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 

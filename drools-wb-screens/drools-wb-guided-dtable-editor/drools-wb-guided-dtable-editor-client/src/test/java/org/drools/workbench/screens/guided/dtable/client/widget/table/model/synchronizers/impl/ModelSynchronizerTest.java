@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -102,7 +102,7 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
 
     private void setupBooleanColumn(final ParameterizedCommand<AttributeCol52> cmdInit) throws VetoException {
         final AttributeCol52 booleanColumn = new AttributeCol52();
-        booleanColumn.setAttribute(GuidedDecisionTable52.ENABLED_ATTR);
+        booleanColumn.setAttribute(Attribute.ENABLED.getAttributeName());
         cmdInit.execute(booleanColumn);
         modelSynchronizer.appendColumn(booleanColumn);
     }

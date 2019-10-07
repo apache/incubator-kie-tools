@@ -34,6 +34,7 @@ import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -57,7 +58,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -796,7 +796,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Test
     public void hasColumnDefinitionsWithAttributeColumn() {
         final AttributeCol52 attribute = new AttributeCol52();
-        attribute.setAttribute("attribute");
+        attribute.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         dtPresenter.getModel().getAttributeCols().add(attribute);
 
@@ -900,7 +900,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Test
     public void getValueListLookups() {
         final AttributeCol52 attribute = new AttributeCol52();
-        attribute.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        attribute.setAttribute(Attribute.ENABLED.getAttributeName());
 
         final Map<String, String> valueList = dtPresenter.getValueListLookups(attribute);
 
@@ -1139,7 +1139,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Test
     public void deleteAttributeColumn() throws Exception {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute("salience");
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
         dtPresenter.appendColumn(column);
         reset(modellerPresenter);
 
@@ -1337,7 +1337,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         final AttributeCol52 column = new AttributeCol52() {
 
             {
-                setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+                setAttribute(Attribute.ENABLED.getAttributeName());
             }
         };
         dtPresenter.appendColumn(column);
@@ -1359,7 +1359,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         final AttributeCol52 column = new AttributeCol52() {
 
             {
-                setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+                setAttribute(Attribute.ENABLED.getAttributeName());
             }
         };
         dtPresenter.appendColumn(column);
@@ -1412,7 +1412,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         final AttributeCol52 column = new AttributeCol52() {
 
             {
-                setAttribute("attribute1");
+                setAttribute(Attribute.SALIENCE.getAttributeName());
             }
         };
         dtPresenter.appendColumn(column);

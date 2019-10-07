@@ -20,12 +20,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +76,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest extends BaseG
         reset(modellerPresenter);
 
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
+        column.setAttribute(Attribute.AUTO_FOCUS.getAttributeName());
 
         dtPresenter.appendColumn(column);
 
@@ -108,7 +108,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest extends BaseG
     @Test
     public void deleteAttributeColumn() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
+        column.setAttribute(Attribute.AUTO_FOCUS.getAttributeName());
         dtPresenter.appendColumn(column);
         reset(modellerPresenter);
 
@@ -138,12 +138,12 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest extends BaseG
     @Test
     public void updateAttributeColumn() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
+        column.setAttribute(Attribute.AUTO_FOCUS.getAttributeName());
         dtPresenter.appendColumn(column);
         reset(modellerPresenter);
 
         final AttributeCol52 update = new AttributeCol52();
-        update.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        update.setAttribute(Attribute.ENABLED.getAttributeName());
 
         dtPresenter.updateColumn(column,
                                  update);

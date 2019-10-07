@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
@@ -23,11 +24,11 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.html.Span;
 
@@ -51,7 +52,7 @@ public class AttributeColumnConfigRow {
 
         final AttributeCol52 originalColumn = attributeColumn;
 
-        if (attributeColumn.getAttribute().equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+        if (Objects.equals(attributeColumn.getAttribute(), Attribute.SALIENCE.getAttributeName())) {
             useRowNumberCheckBox = view.addUseRowNumberCheckBox(attributeColumn,
                                                                 presenter.isActiveDecisionTableEditable(),
                                                                 (event) -> {

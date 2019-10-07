@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -292,7 +293,7 @@ public class GuidedDecisionTableTest {
                      r[2]);
 
         AttributeCol52 at = new AttributeCol52();
-        at.setAttribute("no-loop");
+        at.setAttribute(Attribute.NO_LOOP.getAttributeName());
         model.getAttributeCols().add(at);
 
         r = utils.getValueList(at);
@@ -303,11 +304,11 @@ public class GuidedDecisionTableTest {
         assertEquals("false",
                      r[1]);
 
-        at.setAttribute("enabled");
+        at.setAttribute(Attribute.ENABLED.getAttributeName());
         assertEquals(2,
                      utils.getValueList(at).length);
 
-        at.setAttribute("salience");
+        at.setAttribute(Attribute.SALIENCE.getAttributeName());
         assertEquals(0,
                      utils.getValueList(at).length);
     }
@@ -345,9 +346,9 @@ public class GuidedDecisionTableTest {
                                                           oracle);
 
         final AttributeCol52 at = new AttributeCol52();
-        at.setAttribute("salience");
+        at.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 at_ = new AttributeCol52();
-        at_.setAttribute("enabled");
+        at_.setAttribute(Attribute.ENABLED.getAttributeName());
 
         model.getAttributeCols().add(at);
         model.getAttributeCols().add(at_);
@@ -470,9 +471,9 @@ public class GuidedDecisionTableTest {
                                                           oracle);
 
         final AttributeCol52 salienceAttribute = new AttributeCol52();
-        salienceAttribute.setAttribute("salience");
+        salienceAttribute.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 enabledAttribute = new AttributeCol52();
-        enabledAttribute.setAttribute("enabled");
+        enabledAttribute.setAttribute(Attribute.ENABLED.getAttributeName());
 
         model.getAttributeCols().add(salienceAttribute);
         model.getAttributeCols().add(enabledAttribute);
@@ -642,7 +643,7 @@ public class GuidedDecisionTableTest {
         mdc.setMetadata("cheese");
 
         final AttributeCol52 ac = new AttributeCol52();
-        ac.setAttribute("salience");
+        ac.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         final ActionSetFieldCol52 asfc = new ActionSetFieldCol52();
         asfc.setBoundName("d1");

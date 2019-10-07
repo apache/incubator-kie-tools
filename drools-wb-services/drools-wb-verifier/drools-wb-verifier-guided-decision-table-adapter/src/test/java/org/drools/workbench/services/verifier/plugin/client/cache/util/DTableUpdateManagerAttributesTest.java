@@ -22,6 +22,7 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.core.main.Analyzer;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
@@ -54,8 +55,8 @@ public class DTableUpdateManagerAttributesTest {
         analyzerProvider = new AnalyzerProvider();
 
         table52 = analyzerProvider.makeAnalyser()
-                .withAttributeColumn("date-effective")
-                .withAttributeColumn("date-expires")
+                .withAttributeColumn(Attribute.DATE_EFFECTIVE)
+                .withAttributeColumn(Attribute.DATE_EXPIRES)
                 .withPersonAgeColumn("==")
                 .withPersonApprovedActionSetField()
                 .withData(DataBuilderProvider

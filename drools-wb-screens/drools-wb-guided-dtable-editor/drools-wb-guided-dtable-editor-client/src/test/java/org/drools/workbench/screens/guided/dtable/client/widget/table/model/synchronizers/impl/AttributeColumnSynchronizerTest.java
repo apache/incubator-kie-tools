@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseSingletonDOMElementUiColumn;
@@ -30,7 +31,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Sa
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseSynchronizer.MoveColumnToMetaData;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -48,19 +48,19 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testAppend() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
                      ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
@@ -69,13 +69,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate1() throws VetoException {
         final AttributeCol52 column = spy(new AttributeCol52());
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 
         final AttributeCol52 edited = new AttributeCol52();
         edited.setWidth(column.getWidth());
-        edited.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+        edited.setAttribute(Attribute.ENABLED.getAttributeName());
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(column,
                                                                          edited);
@@ -85,26 +85,26 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(RuleAttributeWidget.ENABLED_ATTR,
+        assertEquals(Attribute.ENABLED.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof BooleanUiColumn);
-        assertEquals(RuleAttributeWidget.ENABLED_ATTR,
+        assertEquals(Attribute.ENABLED.getAttributeName(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
     }
 
     @Test
     public void testUpdate2() throws VetoException {
         final AttributeCol52 column = spy(new AttributeCol52());
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 
         final AttributeCol52 edited = new AttributeCol52();
         edited.setWidth(column.getWidth());
-        edited.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        edited.setAttribute(Attribute.SALIENCE.getAttributeName());
         edited.setHideColumn(true);
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(column,
@@ -115,13 +115,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
                      uiModel.getColumns().get(2).isVisible());
@@ -133,12 +133,12 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
 
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 
         final AttributeCol52 edited1 = new AttributeCol52();
-        edited1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        edited1.setAttribute(Attribute.SALIENCE.getAttributeName());
         edited1.setUseRowNumber(true);
 
         modelSynchronizer.updateColumn(column,
@@ -146,7 +146,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
         assertEquals(1,
                      model.getData().get(0).get(2).getNumericValue());
@@ -156,7 +156,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof SalienceUiColumn);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
                      ((SalienceUiColumn) uiModel.getColumns().get(2)).isUseRowNumber());
@@ -166,7 +166,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getRow(1).getCells().get(2).getValue().getValue());
 
         final AttributeCol52 edited2 = new AttributeCol52();
-        edited2.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        edited2.setAttribute(Attribute.SALIENCE.getAttributeName());
         edited2.setUseRowNumber(true);
         edited2.setReverseOrder(true);
 
@@ -175,7 +175,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
         assertEquals(2,
                      model.getData().get(0).get(2).getNumericValue());
@@ -185,7 +185,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof SalienceUiColumn);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
                      ((SalienceUiColumn) uiModel.getColumns().get(2)).isUseRowNumber());
@@ -198,7 +198,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testDelete() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         modelSynchronizer.appendColumn(column);
 
@@ -217,9 +217,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testMoveColumnTo_MoveLeft() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
-        column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column1.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 column2 = new AttributeCol52();
-        column2.setAttribute(RuleAttributeWidget.AGENDA_GROUP_ATTR);
+        column2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
 
         modelSynchronizer.appendColumn(column1);
         modelSynchronizer.appendColumn(column2);
@@ -247,9 +247,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
@@ -280,9 +280,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
@@ -299,9 +299,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testMoveColumnTo_MoveRight() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
-        column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column1.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 column2 = new AttributeCol52();
-        column2.setAttribute(RuleAttributeWidget.AGENDA_GROUP_ATTR);
+        column2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
 
         modelSynchronizer.appendColumn(column1);
         modelSynchronizer.appendColumn(column2);
@@ -329,9 +329,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
@@ -362,9 +362,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
@@ -381,9 +381,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
-        column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column1.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 column2 = new AttributeCol52();
-        column2.setAttribute(RuleAttributeWidget.AGENDA_GROUP_ATTR);
+        column2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
 
         modelSynchronizer.appendColumn(column1);
         modelSynchronizer.appendColumn(column2);
@@ -411,9 +411,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
@@ -444,9 +444,9 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
@@ -463,11 +463,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testMoveColumnsTo_MoveLeft() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
-        column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column1.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 column2 = new AttributeCol52();
-        column2.setAttribute(RuleAttributeWidget.AGENDA_GROUP_ATTR);
+        column2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
         final AttributeCol52 column3 = new AttributeCol52();
-        column3.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
+        column3.setAttribute(Attribute.AUTO_FOCUS.getAttributeName());
 
         modelSynchronizer.appendColumn(column1);
         modelSynchronizer.appendColumn(column2);
@@ -517,11 +517,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testMoveColumnsTo_MoveRight() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
-        column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column1.setAttribute(Attribute.SALIENCE.getAttributeName());
         final AttributeCol52 column2 = new AttributeCol52();
-        column2.setAttribute(RuleAttributeWidget.AGENDA_GROUP_ATTR);
+        column2.setAttribute(Attribute.AGENDA_GROUP.getAttributeName());
         final AttributeCol52 column3 = new AttributeCol52();
-        column3.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
+        column3.setAttribute(Attribute.AUTO_FOCUS.getAttributeName());
 
         modelSynchronizer.appendColumn(column1);
         modelSynchronizer.appendColumn(column2);
@@ -618,11 +618,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(5,
                      uiModel.getColumns().size());
-        assertEquals(RuleAttributeWidget.SALIENCE_ATTR,
+        assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AGENDA_GROUP_ATTR,
+        assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2.getHeaderMetaData().get(0).getTitle());
-        assertEquals(RuleAttributeWidget.AUTO_FOCUS_ATTR,
+        assertEquals(Attribute.AUTO_FOCUS.getAttributeName(),
                      uiModelColumn3.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2 instanceof StringUiColumn);

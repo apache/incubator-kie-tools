@@ -23,9 +23,9 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class AttributeColumnConfigRowViewTest {
     public void setUp() throws Exception {
         view = spy(new AttributeColumnConfigRowView(deleteWidget));
 
-        when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
+        when(attributeColumn.getAttribute()).thenReturn(Attribute.SALIENCE.getAttributeName());
         when(attributeColumn.getDefaultValue()).thenReturn(defaultValue);
 
         Map<String, String> preferences = new HashMap<>();

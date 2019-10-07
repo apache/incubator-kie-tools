@@ -21,6 +21,7 @@ import java.util.Date;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Severity;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.services.verifier.plugin.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,8 +93,8 @@ public class DecisionTableAnalyzerUpdateTest
     public void testUpdateDateEffective() throws Exception {
 
         table52 = analyzerProvider.makeAnalyser()
-                .withAttributeColumn("date-effective")
-                .withAttributeColumn("date-expires")
+                .withAttributeColumn(Attribute.DATE_EFFECTIVE)
+                .withAttributeColumn(Attribute.DATE_EXPIRES)
                 .withPersonAgeColumn("==")
                 .withPersonApprovedActionSetField()
                 .withData(DataBuilderProvider
@@ -120,8 +121,8 @@ public class DecisionTableAnalyzerUpdateTest
     public void testUpdateDateExpires() throws Exception {
 
         table52 = analyzerProvider.makeAnalyser()
-                .withAttributeColumn("date-effective")
-                .withAttributeColumn("date-expires")
+                .withAttributeColumn(Attribute.DATE_EFFECTIVE)
+                .withAttributeColumn(Attribute.DATE_EXPIRES)
                 .withPersonAgeColumn("==")
                 .withPersonApprovedActionSetField()
                 .withData(DataBuilderProvider

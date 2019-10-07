@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -102,65 +103,65 @@ public class RuleAttributeWidgetTest {
 
     @Test
     public void testCalendarAttribute() {
-        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.CALENDARS_ATTR, ""));
+        ruleModel.addAttribute(new RuleAttribute(Attribute.CALENDARS.getAttributeName(), ""));
 
         ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
                                                       ruleModel,
                                                       isReadOnly);
 
-        verify(layout).addAttribute(eq(RuleAttributeWidget.CALENDARS_ATTR),
+        verify(layout).addAttribute(eq(Attribute.CALENDARS.getAttributeName()),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(LiteralTextBox.class));
     }
 
     @Test
     public void testTimerAttribute() {
-        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.TIMER_ATTR, ""));
+        ruleModel.addAttribute(new RuleAttribute(Attribute.TIMER.getAttributeName(), ""));
 
         ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
                                                       ruleModel,
                                                       isReadOnly);
 
-        verify(layout).addAttribute(eq(RuleAttributeWidget.TIMER_ATTR),
+        verify(layout).addAttribute(eq(Attribute.TIMER.getAttributeName()),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(LiteralTextBox.class));
     }
 
     @Test
     public void testSalienceAttribute() {
-        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.SALIENCE_ATTR, ""));
+        ruleModel.addAttribute(new RuleAttribute(Attribute.SALIENCE.getAttributeName(), ""));
 
         ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
                                                       ruleModel,
                                                       isReadOnly);
 
-        verify(layout).addAttribute(eq(RuleAttributeWidget.SALIENCE_ATTR),
+        verify(layout).addAttribute(eq(Attribute.SALIENCE.getAttributeName()),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(NumericIntegerTextBox.class));
     }
 
     @Test
     public void testDateEffectiveAttribute() {
-        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.DATE_EFFECTIVE_ATTR, ""));
+        ruleModel.addAttribute(new RuleAttribute(Attribute.DATE_EFFECTIVE.getAttributeName(), ""));
 
         ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
                                                       ruleModel,
                                                       isReadOnly);
 
-        verify(layout).addAttribute(eq(RuleAttributeWidget.DATE_EFFECTIVE_ATTR),
+        verify(layout).addAttribute(eq(Attribute.DATE_EFFECTIVE.getAttributeName()),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(DatePicker.class));
     }
 
     @Test
     public void testDateExpiresAttribute() {
-        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.DATE_EXPIRES_ATTR, ""));
+        ruleModel.addAttribute(new RuleAttribute(Attribute.DATE_EXPIRES.getAttributeName(), ""));
 
         ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
                                                       ruleModel,
                                                       isReadOnly);
 
-        verify(layout).addAttribute(eq(RuleAttributeWidget.DATE_EXPIRES_ATTR),
+        verify(layout).addAttribute(eq(Attribute.DATE_EXPIRES.getAttributeName()),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(DatePicker.class));
     }

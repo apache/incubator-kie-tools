@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.plugin.client.testutil;
 import java.util.ArrayList;
 
 import org.drools.verifier.core.main.Analyzer;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
@@ -150,7 +151,7 @@ public class AnalyzerBuilder
         return (AnalyzerBuilder) super.withData(data);
     }
 
-    public AnalyzerBuilder withAttributeColumn(final String attribute) {
+    public AnalyzerBuilder withAttributeColumn(final Attribute attribute) {
         return (AnalyzerBuilder)super.withAttributeColumn(attribute);
     }
 

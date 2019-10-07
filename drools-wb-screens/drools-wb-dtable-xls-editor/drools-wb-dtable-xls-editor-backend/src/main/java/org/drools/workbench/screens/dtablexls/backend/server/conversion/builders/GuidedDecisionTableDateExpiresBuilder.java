@@ -18,6 +18,7 @@ package org.drools.workbench.screens.dtablexls.backend.server.conversion.builder
 
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -42,7 +43,7 @@ public class GuidedDecisionTableDateExpiresBuilder extends AbstractGuidedDecisio
     public void populateDecisionTable( final GuidedDecisionTable52 dtable,
                                        final int maxRowCount ) {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( GuidedDecisionTable52.DATE_EXPIRES_ATTR );
+        column.setAttribute(Attribute.DATE_EXPIRES.getAttributeName());
         dtable.getAttributeCols().add( column );
 
         if ( this.values.size() < maxRowCount ) {

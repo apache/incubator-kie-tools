@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 import java.util.ArrayList;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -38,7 +39,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Ba
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -168,7 +168,7 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
     @Test
     public void columnResizingListenerSetup_AttributeColumn() {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        column.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         final GridColumn<?> uiColumn = factory.convertColumn(column,
                                                              access,

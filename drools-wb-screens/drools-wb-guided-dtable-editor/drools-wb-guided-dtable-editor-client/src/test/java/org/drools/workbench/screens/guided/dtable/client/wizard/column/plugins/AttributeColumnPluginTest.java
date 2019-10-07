@@ -16,11 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AttributeColumnPage;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,10 +78,10 @@ public class AttributeColumnPluginTest {
 
     @Test
     public void testGenerateColumn() throws Exception {
-        final String attributeName = RuleAttributeWidget.DIALECT_ATTR;
+        final String attributeName = Attribute.DIALECT.getAttributeName();
         final ArgumentCaptor<AttributeCol52> colCaptor = ArgumentCaptor.forClass(AttributeCol52.class);
 
-        plugin.setAttribute(attributeName);
+        plugin.setAttribute(Attribute.DIALECT.getAttributeName());
 
         final Boolean success = plugin.generateColumn();
 
@@ -94,7 +94,7 @@ public class AttributeColumnPluginTest {
 
     @Test
     public void testSetAttribute() throws Exception {
-        final String attribute = RuleAttributeWidget.DIALECT_ATTR;
+        final String attribute = Attribute.DIALECT.getAttributeName();
 
         plugin.setAttribute(attribute);
 

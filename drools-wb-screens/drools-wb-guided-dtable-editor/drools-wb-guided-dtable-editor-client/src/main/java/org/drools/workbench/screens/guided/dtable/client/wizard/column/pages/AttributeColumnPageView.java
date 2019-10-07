@@ -17,12 +17,15 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -59,7 +62,12 @@ public class AttributeColumnPageView implements IsElement,
 
     @EventHandler("attributeList")
     public void onSelectAttribute(ChangeEvent event) {
-        page.selectItem(attributeList.getSelectedItemText());
+        page.selectItem(Stream.of(Attribute.values())
+                                .filter(attribute -> Objects.equals(attribute.getAttributeName(),
+                                                                    attributeList.getSelectedItemText()))
+                                .findFirst()
+                                .map(attribute -> attribute.getAttributeName())
+                                .get());
 
         attributeDescription.setAttribute("data-enabled",
                                           attributeList.getSelectedValue());

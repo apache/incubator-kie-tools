@@ -19,11 +19,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
     @Before
     public void setUp() throws Exception {
         salienceAttribute = new AttributeCol52();
-        salienceAttribute.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
+        salienceAttribute.setAttribute(Attribute.SALIENCE.getAttributeName());
 
         resolvedHitMetadata = new MetadataCol52();
         resolvedHitMetadata.setMetadata(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME);

@@ -17,9 +17,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.models.datamodel.rule.Attribute;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -30,7 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Di
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxStringSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxIntegerSingletonDOMElementFactory;
-import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
@@ -47,8 +49,8 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                         final GuidedDecisionTablePresenter.Access access,
                                         final GuidedDecisionTableView gridWidget ) {
         final AttributeCol52 attributeColumn = (AttributeCol52) column;
-        final String attributeName = attributeColumn.getAttribute();
-        if ( attributeName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+        final String attribute = ((AttributeCol52) column).getAttribute();
+        if ( Objects.equals(attribute, Attribute.SALIENCE.getAttributeName()) ) {
             return newSalienceColumn( makeSalienceHeaderMetaData( column ),
                                       Math.max( column.getWidth(),
                                                 DEFAULT_COLUMN_WIDTH + 30 ),
@@ -58,88 +60,7 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                       attributeColumn.isUseRowNumber(),
                                       gridWidget );
 
-        } else if ( attributeName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
-            return newBooleanColumn( makeHeaderMetaData( column ),
-                                     Math.max( column.getWidth(),
-                                               DEFAULT_COLUMN_WIDTH ),
-                                     true,
-                                     !column.isHideColumn(),
-                                     access,
-                                     gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
-            return newBooleanColumn( makeHeaderMetaData( column ),
-                                     Math.max( column.getWidth(),
-                                               DEFAULT_COLUMN_WIDTH ),
-                                     true,
-                                     !column.isHideColumn(),
-                                     access,
-                                     gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-            return newLongColumn( makeHeaderMetaData( column ),
-                                  Math.max( column.getWidth(),
-                                            DEFAULT_COLUMN_WIDTH ),
-                                  true,
-                                  !column.isHideColumn(),
-                                  access,
-                                  gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
-            return newStringColumn( makeHeaderMetaData( column ),
-                                    Math.max( column.getWidth(),
-                                              DEFAULT_COLUMN_WIDTH ),
-                                    true,
-                                    !column.isHideColumn(),
-                                    access,
-                                    gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
-            return newStringColumn( makeHeaderMetaData( column ),
-                                    Math.max( column.getWidth(),
-                                              DEFAULT_COLUMN_WIDTH ),
-                                    true,
-                                    !column.isHideColumn(),
-                                    access,
-                                    gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
-            return newBooleanColumn( makeHeaderMetaData( column ),
-                                     Math.max( column.getWidth(),
-                                               DEFAULT_COLUMN_WIDTH ),
-                                     true,
-                                     !column.isHideColumn(),
-                                     access,
-                                     gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
-            return newBooleanColumn( makeHeaderMetaData( column ),
-                                     Math.max( column.getWidth(),
-                                               DEFAULT_COLUMN_WIDTH ),
-                                     true,
-                                     !column.isHideColumn(),
-                                     access,
-                                     gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.DATE_EFFECTIVE_ATTR ) ) {
-            return newDateColumn( makeHeaderMetaData( column ),
-                                  Math.max( column.getWidth(),
-                                            DEFAULT_COLUMN_WIDTH ),
-                                  true,
-                                  !column.isHideColumn(),
-                                  access,
-                                  gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.DATE_EXPIRES_ATTR ) ) {
-            return newDateColumn( makeHeaderMetaData( column ),
-                                  Math.max( column.getWidth(),
-                                            DEFAULT_COLUMN_WIDTH ),
-                                  true,
-                                  !column.isHideColumn(),
-                                  access,
-                                  gridWidget );
-
-        } else if ( attributeName.equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
+        } else if ( Objects.equals(attribute, Attribute.DIALECT.getAttributeName()) ) {
             return newDialectColumn( makeHeaderMetaData( column ),
                                      Math.max( column.getWidth(),
                                                DEFAULT_COLUMN_WIDTH ),
@@ -148,7 +69,16 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                      access,
                                      gridWidget );
 
-        } else if ( attributeName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
+        } else if ( Objects.equals(attribute, Attribute.DURATION.getAttributeName()) ) {
+            return newLongColumn( makeHeaderMetaData( column ),
+                                  Math.max( column.getWidth(),
+                                            DEFAULT_COLUMN_WIDTH ),
+                                  true,
+                                  !column.isHideColumn(),
+                                  access,
+                                  gridWidget );
+
+        } else if ( needBooleanColumn(attribute) ) {
             return newBooleanColumn( makeHeaderMetaData( column ),
                                      Math.max( column.getWidth(),
                                                DEFAULT_COLUMN_WIDTH ),
@@ -156,6 +86,16 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                      !column.isHideColumn(),
                                      access,
                                      gridWidget );
+
+        } else if ( needDateColumn(attribute) ) {
+            return newDateColumn( makeHeaderMetaData( column ),
+                                  Math.max( column.getWidth(),
+                                            DEFAULT_COLUMN_WIDTH ),
+                                  true,
+                                  !column.isHideColumn(),
+                                  access,
+                                  gridWidget );
+
         }
         return newStringColumn( makeHeaderMetaData( column ),
                                 Math.max( column.getWidth(),
@@ -166,11 +106,18 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                 gridWidget );
     }
 
+    private boolean needBooleanColumn(final String attribute) {
+        return Objects.equals(Attribute.getAttributeDataType(attribute), DataType.TYPE_BOOLEAN);
+    }
+
+    private boolean needDateColumn(final String attribute) {
+        return Objects.equals(Attribute.getAttributeDataType(attribute), DataType.TYPE_DATE);
+    }
+
     private List<GridColumn.HeaderMetaData> makeSalienceHeaderMetaData( final BaseColumn column ) {
         final List<GridColumn.HeaderMetaData> headerMetaData;
 
-        if ( model.getHitPolicy()
-                .equals( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT ) ) {
+        if ( model.getHitPolicy().equals(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT) ) {
             headerMetaData = new ArrayList<GridColumn.HeaderMetaData>() {{
                 add( new BaseHeaderMetaData( GuidedDecisionTableConstants.INSTANCE.HasPriorityOverRow(),
                                              AttributeCol52.class.getName() ) );
