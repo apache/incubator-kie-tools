@@ -231,6 +231,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public boolean canCloseAllPlaces() {
+        fail();
+        return false;
+    }
+
+    @Override
     public List<PlaceRequest> getUncloseablePlaces() {
         fail();
         return null;

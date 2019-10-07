@@ -182,6 +182,11 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public boolean canCloseAllPlaces() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
     public List<PlaceRequest> getUncloseablePlaces() {
         throw new UnsupportedOperationException("Not implemented.");
     }

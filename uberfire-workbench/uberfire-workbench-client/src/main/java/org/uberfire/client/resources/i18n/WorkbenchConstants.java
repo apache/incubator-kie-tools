@@ -55,4 +55,6 @@ public interface WorkbenchConstants
     String switchToDefaultView();
 
     String switchToCompactView();
+
+    String closingWindowMessage();
 }

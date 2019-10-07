@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -46,6 +47,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -232,7 +234,18 @@ public class Workbench {
         }
 
         // Ensure orderly shutdown when Window is closed (eg. saves workbench state)
-        Window.addWindowClosingHandler(event -> workbenchCloseHandler.onWindowClose(workbenchCloseCommand));
+        Window.addCloseHandler(event -> workbenchCloseHandler.onWindowClose(workbenchCloseCommand));
+
+        Window.addWindowClosingHandler(event -> {
+            if (!placeManager.canCloseAllPlaces()) {
+                // Setting a non-null message will make the browser to present a confirmation dialog that asks the user
+                // whether or not they wish to navigate away from the page. The message in the dialog, however,
+                // is not customizable anymore mainly due to scammers using such a message to trick people.
+                // Thus, each browser shows its own message. If the user has an outdated browser, then our custom
+                // message might be shown.
+                event.setMessage(WorkbenchConstants.INSTANCE.closingWindowMessage());
+            }
+        });
 
         // Resizing the Window should resize everything
         Window.addResizeHandler(event -> layout.resizeTo(event.getWidth(),
