@@ -19,13 +19,9 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.KeyCodes;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationInvokeContextMenuForSelectedCell extends BaseKeyboardOperation {
