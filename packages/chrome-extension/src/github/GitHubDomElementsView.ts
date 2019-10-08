@@ -24,7 +24,7 @@ export class GitHubDomElementsView implements GitHubDomElements {
         .querySelector(".Box.mt-3.position-relative")!
         .insertAdjacentHTML(
           "beforebegin",
-          `<div id="kogito-toolbar-container" class="d-flex flex-column flex-items-start flex-md-row"></div>`
+          `<div id="kogito-toolbar-container" class="view d-flex flex-column flex-items-start flex-md-row"></div>`
         );
     }
     return element();

@@ -15,9 +15,8 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { GlobalContext } from "./GlobalContext";
-import {useEffect} from "react";
 
 export function Toolbar(props: { readonly: boolean }) {
   const [globalState, setGlobalState] = useContext(GlobalContext);

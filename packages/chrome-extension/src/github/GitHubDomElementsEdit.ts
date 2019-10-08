@@ -18,7 +18,16 @@ import { GitHubDomElements } from "./GitHubDomElements";
 
 export class GitHubDomElementsEdit implements GitHubDomElements {
   public toolbarContainer() {
-    return document.querySelector(".breadcrumb.d-flex.flex-items-center")!;
+    const element = () => document.getElementById("kogito-toolbar-container")!;
+    if (!element()) {
+      document
+        .querySelector(".breadcrumb.d-flex.flex-items-center")!
+        .insertAdjacentHTML(
+          "beforeend",
+          `<div id="kogito-toolbar-container" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`
+        );
+    }
+    return element();
   }
 
   public getFileContents() {
