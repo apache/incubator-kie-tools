@@ -15,6 +15,9 @@ envs:
 - name: NATIVE
   example: false
   description: If set to false, perform a non native build.
+- name: JAVA_OPTIONS
+  example: "-Dquarkus.log.level=DEBUG"
+  description: JVM options passed to the Java command.
 
 modules:
   install:

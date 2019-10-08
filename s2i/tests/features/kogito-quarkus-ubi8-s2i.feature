@@ -14,8 +14,9 @@ Feature: kogito-quarkus-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.4.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
-      | variable | value |
-      | NATIVE   | false |
+      | variable            | value                     |
+      | NATIVE              | false                     |
+      | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
     Then check that page is served
       | property        | value                    |
       | port            | 8080                     |
@@ -23,6 +24,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.4.0-runner.jar should exist
+    And container log should contain DEBUG [io.qua.
+    And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Dquarkus.log.level=DEBUG
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build  and if it is listening on the expected port
     Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.4.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
