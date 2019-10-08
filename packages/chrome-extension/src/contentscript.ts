@@ -19,11 +19,12 @@ import { GitHubPageType } from "./github/GitHubPageType";
 import { mainContainer, runAfterPagePushState } from "./app/utils";
 import { renderSingleEditorApp } from "./app/singleEditor";
 import { renderPrEditorsApp } from "./app/prEditors";
+import { ChromeRouter } from "./app/ChromeRouter";
+import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 
 const GITHUB_COM = "http[s]://github.com";
 
 function init() {
-
   console.info(`[Kogito] ---`);
   console.info(`[Kogito] Starting GitHub extension.`);
 
@@ -35,13 +36,15 @@ function init() {
     return;
   }
 
+  const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
+
   if (pageType === GitHubPageType.EDIT || pageType === GitHubPageType.VIEW) {
-    renderSingleEditorApp(pageType);
+    renderSingleEditorApp({ router: router, pageType: pageType });
     return;
   }
 
   if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp();
+    renderPrEditorsApp({ router: router });
     return;
   }
 

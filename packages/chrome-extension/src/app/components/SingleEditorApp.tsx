@@ -29,8 +29,14 @@ export function SingleEditorApp(props: {
   openFileExtension: string;
   router: Router;
   readonly: boolean;
+  textModeAsDefault: boolean;
+  keepRenderedEditorInTextMode: boolean;
 }) {
-  const [globalState, setGlobalState] = useState({ fullscreen: false, textMode: false, textModeEnabled: false });
+  const [globalState, setGlobalState] = useState({
+    fullscreen: false,
+    textMode: props.textModeAsDefault,
+    textModeEnabled: false
+  });
 
   useLayoutEffect(
     () => {
@@ -56,11 +62,7 @@ export function SingleEditorApp(props: {
     [globalState]
   );
 
-  useEffect(() => {
-    return () => {
-      console.info("UNMOUNTED!");
-    };
-  }, []);
+  const shouldRenderIframe = (props.keepRenderedEditorInTextMode && globalState.textMode) || !globalState.textMode;
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
@@ -69,17 +71,18 @@ export function SingleEditorApp(props: {
       {globalState.fullscreen &&
         ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreenContainer())}
 
-      {ReactDOM.createPortal(
-        <KogitoEditorIframe
-          openFileExtension={props.openFileExtension}
-          router={props.router}
-          githubDomElements={props.githubDomElements}
-          readonly={props.readonly}
-        />,
-        globalState.fullscreen
-          ? props.githubDomElements.iframeFullscreenContainer()
-          : props.githubDomElements.iframeContainer()
-      )}
+      {shouldRenderIframe &&
+        ReactDOM.createPortal(
+          <KogitoEditorIframe
+            openFileExtension={props.openFileExtension}
+            router={props.router}
+            getFileContents={props.githubDomElements.getFileContents}
+            readonly={props.readonly}
+          />,
+          globalState.fullscreen
+            ? props.githubDomElements.iframeFullscreenContainer()
+            : props.githubDomElements.iframeContainer()
+        )}
     </GlobalContext.Provider>
   );
 }

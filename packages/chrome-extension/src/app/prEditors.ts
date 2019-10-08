@@ -18,7 +18,11 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./components/PrEditorsApp";
 import { createAndGetMainContainer } from "./utils";
+import { Router } from "@kogito-tooling/core-api";
 
-export function renderPrEditorsApp() {
-  ReactDOM.render(React.createElement(PrEditorsApp), createAndGetMainContainer());
+export function renderPrEditorsApp(args: { router: Router }) {
+  //FIXME: Use DOM mutation observers to know when to start
+  setTimeout(() => {
+    ReactDOM.render(React.createElement(PrEditorsApp, { router: args.router }), createAndGetMainContainer());
+  }, 2000);
 }

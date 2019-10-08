@@ -17,27 +17,25 @@
 import { GitHubDomElements } from "../github/GitHubDomElements";
 import { createAndGetMainContainer, removeAllChildren } from "./utils";
 import { GitHubPageType } from "../github/GitHubPageType";
-import { ChromeRouter } from "./ChromeRouter";
-import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 import { GitHubDomElementsFactory } from "../github/GitHubDomElementsFactory";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { SingleEditorApp } from "./components/SingleEditorApp";
+import { Router } from "@kogito-tooling/core-api";
 
-export function renderSingleEditorApp(pageType: GitHubPageType) {
+export function renderSingleEditorApp(args: { pageType: GitHubPageType; router: Router }) {
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
     console.info(`[Kogito] Unable to determine file extension from URL`);
     return;
   }
 
-  const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
-  if (!router.getLanguageData(openFileExtension)) {
+  if (!args.router.getLanguageData(openFileExtension)) {
     console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
 
-  const githubDomElements = new GitHubDomElementsFactory().create(pageType);
+  const githubDomElements = new GitHubDomElementsFactory().create(args.pageType);
   if (!githubPageLooksReady(githubDomElements)) {
     console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
     return;
@@ -51,8 +49,10 @@ export function renderSingleEditorApp(pageType: GitHubPageType) {
     React.createElement(SingleEditorApp, {
       githubDomElements: githubDomElements,
       openFileExtension: openFileExtension,
-      router: router,
-      readonly: pageType === GitHubPageType.VIEW
+      router: args.router,
+      readonly: args.pageType === GitHubPageType.VIEW,
+      textModeAsDefault: false,
+      keepRenderedEditorInTextMode: true
     }),
     createAndGetMainContainer()
   );

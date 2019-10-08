@@ -19,7 +19,6 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { GitHubDomElements } from "../../github/GitHubDomElements";
 import { runScriptOnPage } from "../utils";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
@@ -29,7 +28,7 @@ let polling: any;
 
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
-  githubDomElements: GitHubDomElements;
+  getFileContents: () => Promise<string>;
   router: Router;
   readonly: boolean;
 }) {
@@ -60,7 +59,7 @@ export function KogitoEditorIframe(props: {
         );
       },
       receive_contentRequest() {
-        props.githubDomElements
+        props
           .getFileContents()
           .then(c => self.respond_contentRequest(c))
           .then(() => startPollingForChangesOnDiagram());
@@ -105,7 +104,7 @@ export function KogitoEditorIframe(props: {
         stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
       } else if (prevGlobalState && prevGlobalState.textMode !== globalState.textMode) {
-        props.githubDomElements
+        props
           .getFileContents()
           .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c))
           .then(() => startPollingForChangesOnDiagram());

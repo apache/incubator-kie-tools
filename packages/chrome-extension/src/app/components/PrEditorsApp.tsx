@@ -15,7 +15,80 @@
  */
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Router } from "@kogito-tooling/core-api";
+import { SingleEditorApp } from "./SingleEditorApp";
 
-export function PrEditorsApp() {
-  return <>Test</>;
+function getFilePath(prFileElement: HTMLElement) {
+  return (prFileElement.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement).title;
+}
+
+function getFileExtension(prFileElement: HTMLElement) {
+  return getFilePath(prFileElement)
+    .split(".")
+    .pop()!;
+}
+
+function createEditorContainer(e: HTMLElement) {
+  e.insertAdjacentHTML("beforeend", '<div class="kogito-iframe-container-pr"></div>');
+  return e.lastChild as HTMLElement;
+}
+
+function getGithubDomElementsPr(e: HTMLElement) {
+  const infos = document.querySelector(".gh-header-meta")!.querySelectorAll(".css-truncate-target");
+
+  const organization = infos[4].textContent;
+  const repository = window.location.pathname.split("/")[2];
+  const gitReference = infos[5].textContent;
+  const filePath = getFilePath(e);
+
+  return {
+    getFileContents(): Promise<string> {
+      const rawUrl = `https://raw.githubusercontent.com/${organization}/${repository}/${gitReference}/${filePath}`;
+      return fetch(rawUrl).then(res => res.text());
+    },
+    githubTextEditorToReplace(): HTMLElement {
+      return e.querySelector(".js-file-content") as HTMLElement;
+    },
+    iframeContainer(): HTMLElement {
+      return e.querySelector(".kogito-iframe-container-pr") as HTMLElement;
+    },
+    iframeFullscreenContainer(): HTMLElement {
+      //FIXME: Make some outer component manage fullscreen state
+      // document.body.insertAdjacentHTML("beforeend", `\<div id="kogito-iframe-fullscreen-container"></div>`);
+      // return document.body.querySelector("#kogito-iframe-fullscreen-container") as HTMLElement;
+      return document.body.lastChild as HTMLElement;
+    },
+    toolbarContainer(): Element {
+      const newVar = e.querySelector(".file-info")!;
+      newVar.insertAdjacentHTML("afterend", `\<div class="kogito-toolbar-container-pr"></div>`);
+      return e.querySelector(".kogito-toolbar-container-pr")!;
+    }
+  };
+}
+
+export function PrEditorsApp(props: { router: Router }) {
+  const prFileElements = document.querySelectorAll(".file.js-file.js-details-container");
+
+  const supportedFileElements = Array.from(prFileElements).filter(prFileElement =>
+    props.router.getLanguageData(getFileExtension(prFileElement as HTMLElement))
+  );
+
+  return (
+    <>
+      {supportedFileElements.map(e => {
+        return ReactDOM.createPortal(
+          <SingleEditorApp
+            openFileExtension={getFileExtension(e as HTMLElement)}
+            githubDomElements={getGithubDomElementsPr(e as HTMLElement)}
+            router={props.router}
+            readonly={true}
+            textModeAsDefault={true}
+            keepRenderedEditorInTextMode={false}
+          />,
+          createEditorContainer(e as HTMLElement)
+        );
+      })}
+    </>
+  );
 }
