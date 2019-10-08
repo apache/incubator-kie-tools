@@ -1,6 +1,6 @@
 schema_version: 1
 name: kogito-data-index
-version: "0.4.0"
+version: "0.5.0"
 
 artifacts:
 - name: data-index-service-0.4.0-runner.jar

@@ -79,6 +79,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.6.0
     And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/share/graalvm
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
-    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.1.1
+    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.2.0.1
 
 

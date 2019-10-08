@@ -24,7 +24,7 @@ modules:
   - name: install-rpm-dependencies
   - name: add-kogito-user
   - name: graalvm
-    version: "19.1.1"
+    version: "19.2.0.1"
   - name: maven
     version: "3.6.0"
   - name: kogito-quarkus-ubi8-s2i

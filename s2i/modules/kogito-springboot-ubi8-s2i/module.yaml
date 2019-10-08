@@ -1,5 +1,5 @@
 schema_version: 1
-version: "0.4.0"
+version: "0.5.0"
 name: kogito-springboot-ubi8-s2i
 execute:
   - script: configure
