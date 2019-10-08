@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-export interface GitHubDomElements {
-  toolbarContainer(): Element;
+import * as ReactDOM from "react-dom";
+import * as React from "react";
+import { PrEditorsApp } from "./components/PrEditorsApp";
+import { createAndGetMainContainer } from "./utils";
 
-  getFileContents(): Promise<string>;
-
-  githubTextEditorToReplace(): HTMLElement;
-
-  iframeContainer(): HTMLElement;
-
-  iframeFullscreenContainer(): HTMLElement;
+export function renderPrEditorsApp() {
+  ReactDOM.render(React.createElement(PrEditorsApp), createAndGetMainContainer());
 }

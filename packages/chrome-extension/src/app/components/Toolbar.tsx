@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { GlobalContext } from "./GlobalContext";
+import {useEffect} from "react";
 
 export function Toolbar(props: { readonly: boolean }) {
   const [globalState, setGlobalState] = useContext(GlobalContext);
@@ -35,6 +36,12 @@ export function Toolbar(props: { readonly: boolean }) {
     e.preventDefault();
     setGlobalState({ ...globalState, textMode: false });
   };
+
+  useEffect(() => {
+    return () => {
+      console.info("UNMOUNTED2!");
+    };
+  }, []);
 
   return (
     <>

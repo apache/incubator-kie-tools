@@ -17,5 +17,6 @@
 export enum GitHubPageType {
   VIEW,
   EDIT,
+  PR,
   ANY
 }

@@ -24,7 +24,7 @@ import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { Toolbar } from "./Toolbar";
 
-export function ChromeExtensionApp(props: {
+export function SingleEditorApp(props: {
   githubDomElements: GitHubDomElements;
   openFileExtension: string;
   router: Router;
@@ -55,6 +55,12 @@ export function ChromeExtensionApp(props: {
     },
     [globalState]
   );
+
+  useEffect(() => {
+    return () => {
+      console.info("UNMOUNTED!");
+    };
+  }, []);
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
