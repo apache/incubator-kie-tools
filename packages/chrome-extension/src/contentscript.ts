@@ -23,13 +23,15 @@ import { renderPrEditorsApp } from "./app/prEditors";
 const GITHUB_COM = "http[s]://github.com";
 
 function init() {
+
+  console.info(`[Kogito] ---`);
   console.info(`[Kogito] Starting GitHub extension.`);
 
   unmountPreviouslyRenderedFeatures();
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
-    console.info(`[Kogito] Not GitHub edit or view pages.`);
+    console.info(`[Kogito] This GitHub page is not supported.`);
     return;
   }
 
@@ -73,7 +75,7 @@ function unmountPreviouslyRenderedFeatures() {
   try {
     if (mainContainer()) {
       ReactDOM.unmountComponentAtNode(mainContainer()!);
-      console.info("[Kogito] Unmounted features.");
+      console.info("[Kogito] Unmounted previous features.");
     }
   } catch (e) {
     console.info("[Kogito] Ignoring exception while unmounting features.");
