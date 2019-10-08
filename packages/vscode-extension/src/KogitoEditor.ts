@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { Router } from "@kogito-tooling/core-api";
+import { Router, ResourceContentService, ResourceContent } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -30,6 +30,7 @@ export class KogitoEditor {
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
+  private readonly resourceContentService: ResourceContentService;
 
   public constructor(
     path: string,
@@ -37,7 +38,8 @@ export class KogitoEditor {
     context: vscode.ExtensionContext,
     router: Router,
     webviewLocation: string,
-    editorStore: KogitoEditorStore
+    editorStore: KogitoEditorStore,
+    resourceContentService: ResourceContentService
   ) {
     this.path = path;
     this.panel = panel;
@@ -45,13 +47,14 @@ export class KogitoEditor {
     this.router = router;
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
+    this.resourceContentService = resourceContentService;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
       {
         postMessage: msg => {
           this.panel.webview.postMessage(msg);
         }
       },
-      self => ({
+      (self: EnvelopeBusOuterMessageHandler) => ({
         pollInit: () => {
           self.request_initResponse("vscode");
         },
@@ -71,6 +74,12 @@ export class KogitoEditor {
         },
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
+        },
+        receive_resourceContentRequest: (uri: string) => {
+          this.resourceContentService.read(uri).then((v: ResourceContent) => self.respond_resourceContent(v));
+        },
+        receive_resourceListRequest: (pattern: string) => {
+          this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
           /**/

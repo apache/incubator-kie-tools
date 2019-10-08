@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
@@ -26,6 +26,8 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_contentResponse(content: string): void;
   receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
+  receive_resourceContentRequest(uri: string): void;
+  receive_resourceListRequest(pattern: string): void;
   receive_ready(): void;
 }
 
@@ -85,6 +87,14 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ busId: this.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
   }
 
+  public respond_resourceContent(content: ResourceContent) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT, data: content });
+  }
+
+  public respond_resourceList(resourcesList: ResourcesList) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
+  }
+
   public receive(message: EnvelopeBusMessage<any>) {
     if (message.busId !== this.busId) {
       return;
@@ -111,6 +121,12 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_READY:
         this.impl.receive_ready();
+        break;
+      case EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
+        this.impl.receive_resourceContentRequest(message.data as string);
+        break;
+      case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
+        this.impl.receive_resourceListRequest(message.data as string);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

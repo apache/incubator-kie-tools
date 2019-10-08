@@ -20,6 +20,7 @@ import { mount } from "enzyme";
 import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { LanguageData } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
+import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
 
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
@@ -67,7 +68,8 @@ beforeEach(() => {
         mockComponent = mount(element);
         callback();
       }
-    }
+    },
+    new ResourceContentEditorCoordinator()
   );
 });
 

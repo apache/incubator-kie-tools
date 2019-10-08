@@ -16,19 +16,21 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { LanguageData } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
+import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
 
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
+  private resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
 
   private editorEnvelopeView?: EditorEnvelopeView;
@@ -38,11 +40,13 @@ export class EditorEnvelopeController {
     busApi: EnvelopeBusApi,
     editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
-    renderer: Renderer
+    renderer: Renderer,
+    resourceContentEditorCoordinator: ResourceContentEditorCoordinator
   ) {
     this.renderer = renderer;
     this.editorFactory = editorFactory;
     this.specialDomElements = specialDomElements;
+    this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (content: string) => {
         const editor = this.getEditor();
@@ -65,6 +69,12 @@ export class EditorEnvelopeController {
           .createEditor(languageData, this.envelopeBusInnerMessageHandler)
           .then(editor => this.open(editor))
           .then(() => self.request_contentResponse());
+      },
+      receive_resourceContentResponse: (resourceContent: ResourceContent) => {
+        this.resourceContentEditorCoordinator.resolvePending(resourceContent);
+      },
+      receive_resourceContentList: (resourcesList: ResourcesList) => {
+        this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       }
     }));
   }
@@ -106,13 +116,15 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(container: HTMLElement): Promise<void> {
+  public start(container: HTMLElement): Promise<EnvelopeBusInnerMessageHandler> {
     return this.render(container).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
+      return this.envelopeBusInnerMessageHandler;
     });
   }
 
   public stop() {
     this.envelopeBusInnerMessageHandler.stopListening();
   }
+
 }

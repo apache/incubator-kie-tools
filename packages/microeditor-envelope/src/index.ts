@@ -21,9 +21,19 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
+import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
+import { ResourceContentEditorService } from "./ResourceContentEditorService";
 
 export * from "./EditorFactory";
 export * from "./EnvelopeBusInnerMessageHandler";
+
+declare global {
+  interface Window {
+    envelope: {
+      resourceContentEditorService: ResourceContentEditorService;
+    }
+  }
+}
 
 class ReactDomRenderer implements Renderer {
   public render(element: ReactElement, container: HTMLElement, callback: () => void) {
@@ -41,13 +51,20 @@ class ReactDomRenderer implements Renderer {
  */
 export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; editorFactory: EditorFactory<any> }) {
   const specialDomElements = new SpecialDomElements();
+
   const renderer = new ReactDomRenderer();
+  const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
-    renderer
-  );
+    renderer,
+    resourceContentEditorCoordinator);
 
-  return editorEnvelopeController.start(args.container);
+  return editorEnvelopeController.start(args.container).then(messageBus => {
+    window.envelope = {
+      resourceContentEditorService: resourceContentEditorCoordinator.exposed(messageBus)
+    }
+  });
+
 }

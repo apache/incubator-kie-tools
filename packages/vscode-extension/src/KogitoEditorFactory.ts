@@ -18,24 +18,27 @@ import * as vscode from "vscode";
 import * as path_ from "path";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { Router } from "@kogito-tooling/core-api";
+import { Router, ResourceContentService } from "@kogito-tooling/core-api";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
   private readonly webviewLocation: string;
   private readonly router: Router;
+  private readonly resourceContentService: ResourceContentService;
 
   constructor(
     context: vscode.ExtensionContext,
     router: Router,
     webviewLocation: string,
-    editorStore: KogitoEditorStore
+    editorStore: KogitoEditorStore,
+    resourceContentService: ResourceContentService
   ) {
     this.context = context;
     this.editorStore = editorStore;
     this.router = router;
     this.webviewLocation = webviewLocation;
+    this.resourceContentService = resourceContentService;
   }
 
   public openNew(path: string) {
@@ -44,7 +47,7 @@ export class KogitoEditorFactory {
     }
 
     const panel = this.openNewPanel(path);
-    const editor = new KogitoEditor(path, panel, this.context, this.router, this.webviewLocation, this.editorStore);
+    const editor = new KogitoEditor(path, panel, this.context, this.router, this.webviewLocation, this.editorStore, this.resourceContentService);
     this.editorStore.addAsActive(editor);
     editor.setupEnvelopeBus();
     editor.setupPanelActiveStatusChange();

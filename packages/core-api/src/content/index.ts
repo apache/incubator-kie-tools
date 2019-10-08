@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./core";
-export * from "./appformer";
-export * from "./router";
-export * from "./content";
+export * from "./ResourceContentService";
+export * from "./ResourceContent";
+export * from "./ResourcesList";
