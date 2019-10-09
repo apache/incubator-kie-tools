@@ -58,9 +58,10 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
   return (
     <IsolatedEditorContext.Provider value={{ textMode: textMode, fullscreen: false }}>
-
       {ReactDOM.createPortal(
-        <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>View original file</a>,
+        <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
+          View original file
+        </a>,
         githubDomElements.viewOriginalFileLinkContainer()
       )}
 

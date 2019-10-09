@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusApi, EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  EnvelopeBusApi,
+  EnvelopeBusMessage,
+  EnvelopeBusMessageType
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { LanguageData } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -29,6 +33,7 @@ export class EnvelopeBusInnerMessageHandler {
 
   public capturedInitRequestYet = false;
   public targetOrigin: string;
+  public id: string;
   public eventListener?: any;
 
   constructor(busApi: EnvelopeBusApi, impl: (_this: EnvelopeBusInnerMessageHandler) => Impl) {
@@ -53,7 +58,7 @@ export class EnvelopeBusInnerMessageHandler {
     if (!this.targetOrigin) {
       throw new Error("Tried to send message without targetOrigin set");
     }
-    this.envelopeBusApi.postMessage(message, this.targetOrigin);
+    this.envelopeBusApi.postMessage({ ...message, busId: this.id }, this.targetOrigin);
   }
 
   public respond_initRequest() {
@@ -84,13 +89,14 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
   }
 
-  private receive_initRequest(targetOrigin: string) {
+  private receive_initRequest(init: { origin: string; busId: string }) {
     if (this.capturedInitRequestYet) {
       return;
     }
 
     this.capturedInitRequestYet = true;
-    this.targetOrigin = targetOrigin;
+    this.targetOrigin = init.origin;
+    this.id = init.busId;
 
     this.respond_initRequest();
     this.request_languageResponse();
@@ -99,7 +105,7 @@ export class EnvelopeBusInnerMessageHandler {
   public receive(message: EnvelopeBusMessage<any>) {
     switch (message.type) {
       case EnvelopeBusMessageType.REQUEST_INIT:
-        this.receive_initRequest(message.data as string);
+        this.receive_initRequest({ origin: message.data as string, busId: message.busId as string });
         break;
       case EnvelopeBusMessageType.RETURN_LANGUAGE:
         this.impl.receive_languageResponse(message.data as LanguageData);

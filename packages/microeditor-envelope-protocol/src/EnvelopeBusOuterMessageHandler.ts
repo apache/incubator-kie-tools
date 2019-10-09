@@ -37,11 +37,13 @@ export class EnvelopeBusOuterMessageHandler {
   public initPollingTimeout: any | false;
   public impl: EnvelopeBusOuterMessageHandlerImpl;
   public busApi: EnvelopeBusApi;
+  public busId: string;
 
   public constructor(
     busApi: EnvelopeBusApi,
     impl: (self: EnvelopeBusOuterMessageHandler) => EnvelopeBusOuterMessageHandlerImpl
   ) {
+    this.busId = EnvelopeBusOuterMessageHandler.generateRandomBusId();
     this.busApi = busApi;
     this.impl = impl(this);
     this.initPolling = false;
@@ -80,10 +82,14 @@ export class EnvelopeBusOuterMessageHandler {
   }
 
   public request_initResponse(origin: string) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
+    this.busApi.postMessage({ busId: this.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
+    if (message.busId !== this.busId) {
+      return;
+    }
+
     switch (message.type) {
       case EnvelopeBusMessageType.RETURN_INIT:
         this.stopInitPolling();
@@ -110,5 +116,14 @@ export class EnvelopeBusOuterMessageHandler {
         console.info(`Unknown message type received: ${message.type}"`);
         break;
     }
+  }
+
+  private static generateRandomBusId() {
+    return (
+      "_" +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
+    );
   }
 }
