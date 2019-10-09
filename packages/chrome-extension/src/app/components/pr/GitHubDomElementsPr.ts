@@ -48,19 +48,21 @@ export class GitHubDomElementsPr implements GitHubDomElements {
   }
 
   public getFileContents(): Promise<string> {
-    return fetch(
-      `https://raw.githubusercontent.com/${this.info.organization}/${this.info.repository}/${this.info.gitReference}/${
-        this.info.filePath
-      }`
-    ).then(res => res.text());
+    const org = this.info.organization;
+    const repo = this.info.repository;
+    const branch = this.info.gitReference;
+    const path = this.info.filePath;
+
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => res.text());
   }
 
   public getOriginalFileContents() {
-    return fetch(
-      `https://raw.githubusercontent.com/${this.info.targetOrganization}/${this.info.repository}/${
-        this.info.targetGitReference
-      }/${this.info.filePath}`
-    ).then(res => res.text());
+    const org = this.info.targetOrganization;
+    const repo = this.info.repository;
+    const branch = this.info.targetGitReference;
+    const path = this.info.filePath;
+
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => res.text());
   }
 
   public githubTextEditorToReplace(): HTMLElement {
@@ -81,6 +83,25 @@ export class GitHubDomElementsPr implements GitHubDomElements {
       this.container
         .querySelector(".file-info")!
         .insertAdjacentHTML("afterend", `<div class="kogito-toolbar-container-pr"></div>`);
+    }
+    return element()!;
+  }
+
+  public viewOriginalFileHref() {
+    const org = this.info.targetOrganization;
+    const repo = this.info.repository;
+    const branch = this.info.targetGitReference;
+    const path = this.info.filePath;
+
+    return `https://github.com/${org}/${repo}/blob/${branch}/${path}`;
+  }
+
+  public viewOriginalFileLinkContainer() {
+    const element = () => this.container.querySelector(".kogito-view-original-link-container-pr");
+    if (!element()) {
+      this.container
+        .querySelectorAll("details-menu a")[0]!
+        .insertAdjacentHTML("afterend", `<div class="kogito-view-original-link-container-pr"></div>`);
     }
     return element()!;
   }

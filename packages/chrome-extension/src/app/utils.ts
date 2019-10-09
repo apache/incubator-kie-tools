@@ -71,7 +71,7 @@ export function iframeFullscreenContainer() {
   return element();
 }
 
-export function loopUntil(halt: () => boolean, times: { interval: number; timeout: number }) {
+export function waitUntil(halt: () => boolean, times: { interval: number; timeout: number }) {
   return new Promise((res, rej) => {
     asyncLoop(halt, times.interval, times.timeout, new Date().getTime(), res, rej);
   });
@@ -82,21 +82,21 @@ function asyncLoop(
   interval: number,
   timeout: number,
   start: number,
-  success: () => void,
-  timeoutCallback: (...args: any[]) => void
+  onHalt: () => void,
+  onTimeout: (...args: any[]) => void
 ) {
   //timeout check
   if (new Date().getTime() - start >= timeout) {
-    timeoutCallback("async loop timeout");
+    onTimeout("async loop timeout");
     return;
   }
 
   //check condition
   if (halt()) {
-    success();
+    onHalt();
     return;
   }
 
   //loop
-  setTimeout(() => asyncLoop(halt, interval, timeout, start, success, timeoutCallback), interval);
+  setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
 }

@@ -17,7 +17,7 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import {createAndGetMainContainer, loopUntil, removeAllChildren} from "../../utils";
+import { createAndGetMainContainer, removeAllChildren, waitUntil } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
 import { Main } from "../common/Main";
 
@@ -26,7 +26,7 @@ export function renderPrEditorsApp(args: { router: Router }) {
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanupComponentContainers();
 
-  loopUntil(githubPageLooksReady, { interval: 100, timeout: 5000 }).then(() => {
+  waitUntil(githubPageLooksReady, { interval: 100, timeout: 5000 }).then(() => {
     ReactDOM.render(
       <Main router={args.router}>
         <PrEditorsApp />
@@ -42,6 +42,10 @@ function githubPageLooksReady() {
 
 function cleanupComponentContainers() {
   Array.from(document.querySelectorAll(".kogito-iframe-container-pr")).forEach(e => {
+    removeAllChildren(e);
+  });
+
+  Array.from(document.querySelectorAll(".kogito-view-original-link-container-pr")).forEach(e => {
     removeAllChildren(e);
   });
 
