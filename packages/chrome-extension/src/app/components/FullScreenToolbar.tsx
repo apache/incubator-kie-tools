@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { GlobalContext } from "./GlobalContext";
+import { IsolatedEditorContext } from "./IsolatedEditorContext";
 
 export function FullScreenToolbar() {
-  const [globalState, setGlobalState] = useContext(GlobalContext);
+  const [globalState, setGlobalState] = useContext(IsolatedEditorContext);
 
   const exitFullScreen = () => {
     setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });

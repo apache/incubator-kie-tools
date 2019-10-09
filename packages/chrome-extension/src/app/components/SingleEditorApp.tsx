@@ -17,22 +17,22 @@
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Router } from "@kogito-tooling/core-api";
-import { GlobalContext } from "./GlobalContext";
+import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { FullScreenToolbar } from "./FullScreenToolbar";
-import { Toolbar } from "./Toolbar";
 
 export function SingleEditorApp(props: {
   githubDomElements: GitHubDomElements;
   openFileExtension: string;
   router: Router;
+  toolbar: () => React.FunctionComponentElement<any>;
   readonly: boolean;
   textModeAsDefault: boolean;
   keepRenderedEditorInTextMode: boolean;
 }) {
-  const [globalState, setGlobalState] = useState({
+  const [state, setState] = useState({
     fullscreen: false,
     textMode: props.textModeAsDefault,
     textModeEnabled: false
@@ -40,18 +40,18 @@ export function SingleEditorApp(props: {
 
   useLayoutEffect(
     () => {
-      if (!globalState.fullscreen) {
+      if (!state.fullscreen) {
         props.githubDomElements.iframeFullscreenContainer().classList.add("hidden");
       } else {
         props.githubDomElements.iframeFullscreenContainer().classList.remove("hidden");
       }
     },
-    [globalState]
+    [state]
   );
 
-  useEffect(
+  useLayoutEffect(
     () => {
-      if (globalState.textMode) {
+      if (state.textMode) {
         props.githubDomElements.githubTextEditorToReplace().classList.remove("hidden");
         props.githubDomElements.iframeContainer().classList.add("hidden");
       } else {
@@ -59,16 +59,16 @@ export function SingleEditorApp(props: {
         props.githubDomElements.iframeContainer().classList.remove("hidden");
       }
     },
-    [globalState]
+    [state]
   );
 
-  const shouldRenderIframe = (props.keepRenderedEditorInTextMode && globalState.textMode) || !globalState.textMode;
+  const shouldRenderIframe = (props.keepRenderedEditorInTextMode && state.textMode) || !state.textMode;
 
   return (
-    <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<Toolbar readonly={props.readonly} />, props.githubDomElements.toolbarContainer())}
+    <IsolatedEditorContext.Provider value={[state, setState]}>
+      {ReactDOM.createPortal(props.toolbar(), props.githubDomElements.toolbarContainer())}
 
-      {globalState.fullscreen &&
+      {state.fullscreen &&
         ReactDOM.createPortal(<FullScreenToolbar />, props.githubDomElements.iframeFullscreenContainer())}
 
       {shouldRenderIframe &&
@@ -79,10 +79,10 @@ export function SingleEditorApp(props: {
             getFileContents={props.githubDomElements.getFileContents}
             readonly={props.readonly}
           />,
-          globalState.fullscreen
+          state.fullscreen
             ? props.githubDomElements.iframeFullscreenContainer()
             : props.githubDomElements.iframeContainer()
         )}
-    </GlobalContext.Provider>
+    </IsolatedEditorContext.Provider>
   );
 }

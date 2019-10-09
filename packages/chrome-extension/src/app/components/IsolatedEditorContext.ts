@@ -22,7 +22,7 @@ export interface GlobalContextType {
   textModeEnabled: boolean;
 }
 
-export const GlobalContext = React.createContext<
+export const IsolatedEditorContext = React.createContext<
   [GlobalContextType, <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => void]
 >([
   {

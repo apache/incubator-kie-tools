@@ -22,6 +22,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { SingleEditorApp } from "./components/SingleEditorApp";
 import { Router } from "@kogito-tooling/core-api";
+import { ToolbarSingleEditor } from "./components/ToolbarSingleEditor";
 
 export function renderSingleEditorApp(args: { pageType: GitHubPageType; router: Router }) {
   const openFileExtension = extractOpenFileExtension(window.location.href);
@@ -45,12 +46,14 @@ export function renderSingleEditorApp(args: { pageType: GitHubPageType; router: 
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanupComponentContainers(githubDomElements);
 
+  const readonly = args.pageType === GitHubPageType.VIEW;
   ReactDOM.render(
     React.createElement(SingleEditorApp, {
       githubDomElements: githubDomElements,
       openFileExtension: openFileExtension,
       router: args.router,
-      readonly: args.pageType === GitHubPageType.VIEW,
+      toolbar: () => React.createElement(ToolbarSingleEditor, { readonly: readonly }),
+      readonly: readonly,
       textModeAsDefault: false,
       keepRenderedEditorInTextMode: true
     }),

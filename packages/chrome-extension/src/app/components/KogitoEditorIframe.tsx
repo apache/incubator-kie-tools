@@ -17,13 +17,13 @@
 import { Router } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
-import { GlobalContext } from "./GlobalContext";
+import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../utils";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
 
-let prevGlobalState: any;
+let prevIsolatedEditorState: any;
 let polling: any;
 
 export function KogitoEditorIframe(props: {
@@ -32,7 +32,7 @@ export function KogitoEditorIframe(props: {
   router: Router;
   readonly: boolean;
 }) {
-  const [globalState, setGlobalState] = useContext(GlobalContext);
+  const [isolatedEditorState, setGlobalState] = useContext(IsolatedEditorContext);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
@@ -74,7 +74,7 @@ export function KogitoEditorIframe(props: {
       },
       receive_ready() {
         console.info(`Editor is ready`);
-        setGlobalState({ ...globalState, textModeEnabled: true });
+        setGlobalState({ ...isolatedEditorState, textModeEnabled: true });
       }
     })
   );
@@ -100,19 +100,19 @@ export function KogitoEditorIframe(props: {
 
   useEffect(
     () => {
-      if (globalState.textMode) {
+      if (isolatedEditorState.textMode) {
         stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
-      } else if (prevGlobalState && prevGlobalState.textMode !== globalState.textMode) {
+      } else if (prevIsolatedEditorState && prevIsolatedEditorState.textMode !== isolatedEditorState.textMode) {
         props
           .getFileContents()
           .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c))
           .then(() => startPollingForChangesOnDiagram());
       }
 
-      prevGlobalState = globalState;
+      prevIsolatedEditorState = isolatedEditorState;
     },
-    [globalState]
+    [isolatedEditorState]
   );
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export function KogitoEditorIframe(props: {
     <iframe
       ref={iframeRef}
       id={"kogito-iframe"}
-      className={globalState.fullscreen ? "fullscreen" : "not-fullscreen"}
+      className={isolatedEditorState.fullscreen ? "fullscreen" : "not-fullscreen"}
       src={props.router.getRelativePathTo("envelope/index.html")}
     />
   );
