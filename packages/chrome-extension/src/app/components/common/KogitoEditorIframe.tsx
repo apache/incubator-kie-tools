@@ -19,9 +19,10 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { runScriptOnPage } from "../utils";
+import { runScriptOnPage } from "../../utils";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
+const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
 let prevIsolatedEditorState: any;
 let polling: any;
@@ -32,7 +33,7 @@ export function KogitoEditorIframe(props: {
   router: Router;
   readonly: boolean;
 }) {
-  const [isolatedEditorState, setGlobalState] = useContext(IsolatedEditorContext);
+  const isolatedEditorState = useContext(IsolatedEditorContext);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
@@ -74,7 +75,9 @@ export function KogitoEditorIframe(props: {
       },
       receive_ready() {
         console.info(`Editor is ready`);
-        setGlobalState({ ...isolatedEditorState, textModeEnabled: true });
+        if (isolatedEditorState.onEditorReady) {
+          isolatedEditorState.onEditorReady();
+        }
       }
     })
   );
@@ -87,7 +90,10 @@ export function KogitoEditorIframe(props: {
       return;
     }
 
-    polling = setInterval(() => envelopeBusOuterMessageHandler.request_contentResponse(), 1500);
+    polling = setInterval(
+      () => envelopeBusOuterMessageHandler.request_contentResponse(),
+      GITHUB_EDITOR_SYNC_POLLING_INTERVAL
+    );
   }
 
   function stopPollingForChangesOnDiagram() {
@@ -107,7 +113,7 @@ export function KogitoEditorIframe(props: {
         props
           .getFileContents()
           .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c))
-          .then(() => startPollingForChangesOnDiagram());
+          .then(startPollingForChangesOnDiagram);
       }
 
       prevIsolatedEditorState = isolatedEditorState;

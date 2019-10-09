@@ -44,10 +44,6 @@ export function runAfterPagePushState(callback: () => void) {
     console.debug("[Kogito] popstate event happened");
     callback();
   });
-  // window.addEventListener("pushState", () => {
-  //   console.debug("[Kogito] pushState event happened");
-  //   callback();
-  // });
 }
 
 export function removeAllChildren(node: Node) {
@@ -65,4 +61,12 @@ export function createAndGetMainContainer() {
     document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
   }
   return mainContainer()!;
+}
+
+export function iframeFullscreenContainer() {
+  const element = () => document.getElementById("kogito-iframe-fullscreen-container")!;
+  if (!element()) {
+    document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
+  }
+  return element();
 }

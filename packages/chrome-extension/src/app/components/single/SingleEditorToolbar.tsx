@@ -15,55 +15,56 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
-import { IsolatedEditorContext } from "./IsolatedEditorContext";
 
-export function ToolbarPr() {
-  const [isolatedEditorState, setIsolatedEditorState] = useContext(IsolatedEditorContext);
-
+export function SingleEditorToolbar(props: {
+  readonly: boolean;
+  textMode: boolean;
+  textModeEnabled: boolean;
+  onFullScreen: () => void;
+  onSeeAsSource: () => void;
+  onSeeAsDiagram: () => void;
+}) {
   const goFullScreen = (e: any) => {
     e.preventDefault();
-    setIsolatedEditorState({ ...isolatedEditorState, fullscreen: true });
+    props.onFullScreen();
   };
 
   const seeAsSource = (e: any) => {
     e.preventDefault();
-    setIsolatedEditorState({ ...isolatedEditorState, textMode: true });
+    props.onSeeAsSource();
   };
 
   const seeAsDiagram = (e: any) => {
     e.preventDefault();
-    setIsolatedEditorState({ ...isolatedEditorState, textMode: false });
-  };
-
-  const seeOriginal = (e: any) => {
-    e.preventDefault();
+    props.onSeeAsDiagram();
   };
 
   return (
     <>
       <div>
-        {!isolatedEditorState.textMode && (
-          <button disabled={!isolatedEditorState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
+        {!props.textMode && (
+          <button disabled={!props.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
             See as source
           </button>
         )}
-        {isolatedEditorState.textMode && (
+        {props.textMode && (
           <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
             See as diagram
           </button>
         )}
-        {!isolatedEditorState.textMode && (
-          <button className={"btn btn-sm kogito-button"} onClick={seeOriginal}>
-            See original as diagram
-          </button>
-        )}
-        {!isolatedEditorState.textMode && (
+        {!props.textMode && (
           <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-            Compare diagram changes
+            Full screen
           </button>
         )}
       </div>
+      {props.readonly &&
+        !props.textMode && (
+          <>
+            {/* TODO: Add "info" icon with hint explaining how to edit the file */}
+            <h4>🔸️ This is a readonly visualization</h4>
+          </>
+        )}
     </>
   );
 }

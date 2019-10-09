@@ -16,21 +16,12 @@
 
 import * as React from "react";
 
-export interface GlobalContextType {
-  fullscreen: boolean;
-  textMode: boolean;
-  textModeEnabled: boolean;
+export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
+  return (
+    <div id={"kogito-iframe-fullscreen-toolbar"}>
+      <a href={"#"} onClick={props.onExitFullScreen}>
+        Exit full screen
+      </a>
+    </div>
+  );
 }
-
-export const IsolatedEditorContext = React.createContext<
-  [GlobalContextType, <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => void]
->([
-  {
-    fullscreen: false,
-    textMode: false,
-    textModeEnabled: false
-  },
-  <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => {
-    /**/
-  }
-]);

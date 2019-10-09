@@ -22,6 +22,4 @@ export interface GitHubDomElements {
   githubTextEditorToReplace(): HTMLElement;
 
   iframeContainer(): HTMLElement;
-
-  iframeFullscreenContainer(): HTMLElement;
 }

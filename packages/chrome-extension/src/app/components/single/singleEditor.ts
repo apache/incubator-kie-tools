@@ -14,54 +14,63 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "../github/GitHubDomElements";
-import { createAndGetMainContainer, removeAllChildren } from "./utils";
-import { GitHubPageType } from "../github/GitHubPageType";
-import { GitHubDomElementsFactory } from "../github/GitHubDomElementsFactory";
-import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { SingleEditorApp } from "./components/SingleEditorApp";
+import * as ReactDOM from "react-dom";
+import { createAndGetMainContainer, iframeFullscreenContainer, removeAllChildren } from "../../utils";
+import { SingleEditorApp } from "./SingleEditorApp";
 import { Router } from "@kogito-tooling/core-api";
-import { ToolbarSingleEditor } from "./components/ToolbarSingleEditor";
+import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
+import { GitHubDomElementsView } from "./GitHubDomElementsView";
+import { GitHubDomElements } from "../../github/GitHubDomElements";
 
-export function renderSingleEditorApp(args: { pageType: GitHubPageType; router: Router }) {
+export function renderSingleEditorApp(args: { router: Router }) {
+  render({
+    router: args.router,
+    readonly: false,
+    githubDomElements: new GitHubDomElementsEdit()
+  });
+}
+
+export function renderSingleEditorReadonlyApp(args: { router: Router }) {
+  render({
+    router: args.router,
+    readonly: true,
+    githubDomElements: new GitHubDomElementsView()
+  });
+}
+
+function render(args: { router: Router; readonly: boolean; githubDomElements: GitHubDomElements }) {
   const openFileExtension = extractOpenFileExtension(window.location.href);
+
   if (!openFileExtension) {
     console.info(`[Kogito] Unable to determine file extension from URL`);
-    return;
+    return false;
   }
 
   if (!args.router.getLanguageData(openFileExtension)) {
     console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
-    return;
+    return false;
   }
 
-  const githubDomElements = new GitHubDomElementsFactory().create(args.pageType);
-  if (!githubPageLooksReady(githubDomElements)) {
+  if (!githubPageLooksReady(args.githubDomElements)) {
     console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
-    return;
+    return false;
   }
 
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanupComponentContainers(githubDomElements);
+  cleanupComponentContainers(args.githubDomElements);
 
-  const readonly = args.pageType === GitHubPageType.VIEW;
   ReactDOM.render(
     React.createElement(SingleEditorApp, {
-      githubDomElements: githubDomElements,
-      openFileExtension: openFileExtension,
       router: args.router,
-      toolbar: () => React.createElement(ToolbarSingleEditor, { readonly: readonly }),
-      readonly: readonly,
-      textModeAsDefault: false,
-      keepRenderedEditorInTextMode: true
+      openFileExtension: openFileExtension!,
+      githubDomElements: args.githubDomElements,
+      readonly: args.readonly
     }),
     createAndGetMainContainer()
   );
 }
 
-function extractOpenFileExtension(url: string) {
+export function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
   if (!splitLocationHref) {
     return undefined;
@@ -80,15 +89,23 @@ function extractOpenFileExtension(url: string) {
   return openFileExtension;
 }
 
-function cleanupComponentContainers(githubDomElements: GitHubDomElements) {
+export function cleanupComponentContainers(githubDomElements: GitHubDomElements) {
+  /*
+     * Necessary because GitHub apparently "caches" DOM structures between changes on History.
+     * Without this method you can observe duplicated elements when using back/forward browser buttons.
+     */
+
   removeAllChildren(githubDomElements.iframeContainer());
   removeAllChildren(githubDomElements.toolbarContainer());
-  removeAllChildren(githubDomElements.iframeFullscreenContainer());
+  removeAllChildren(iframeFullscreenContainer());
   removeAllChildren(createAndGetMainContainer());
 }
 
 function githubPageLooksReady(githubDomElements: GitHubDomElements) {
-  // Checking whether this text editor exists is a good way to determine if the page is "ready",
-  // because that would mean that the user could see the default GitHub page.
+  /*
+     * Checking whether this text editor exists is a good way to determine if the page is "ready",
+     * because that would mean that the user could see the default GitHub page.
+     */
+
   return !!githubDomElements.githubTextEditorToReplace();
 }

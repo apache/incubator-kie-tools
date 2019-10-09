@@ -15,10 +15,10 @@
  */
 
 import * as ReactDOM from "react-dom";
-import { GitHubPageType } from "./github/GitHubPageType";
+import { GitHubPageType } from "./app/github/GitHubPageType";
 import { mainContainer, runAfterPagePushState } from "./app/utils";
-import { renderSingleEditorApp } from "./app/singleEditor";
-import { renderPrEditorsApp } from "./app/prEditors";
+import { renderSingleEditorApp, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditor";
+import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { ChromeRouter } from "./app/ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 
@@ -38,8 +38,13 @@ function init() {
 
   const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
 
-  if (pageType === GitHubPageType.EDIT || pageType === GitHubPageType.VIEW) {
-    renderSingleEditorApp({ router: router, pageType: pageType });
+  if (pageType === GitHubPageType.EDIT) {
+    renderSingleEditorApp({ router: router });
+    return;
+  }
+
+  if (pageType === GitHubPageType.VIEW) {
+    renderSingleEditorReadonlyApp({ router: router });
     return;
   }
 

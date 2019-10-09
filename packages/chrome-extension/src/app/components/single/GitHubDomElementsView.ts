@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "./GitHubDomElements";
+import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export class GitHubDomElementsView implements GitHubDomElements {
   public toolbarContainer() {
@@ -45,14 +45,6 @@ export class GitHubDomElementsView implements GitHubDomElements {
       document
         .querySelector(".Box.mt-3.position-relative")!
         .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="view"></div>`);
-    }
-    return element();
-  }
-
-  public iframeFullscreenContainer() {
-    const element = () => document.getElementById("kogito-iframe-fullscreen-container")!;
-    if (!element()) {
-      document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     }
     return element();
   }

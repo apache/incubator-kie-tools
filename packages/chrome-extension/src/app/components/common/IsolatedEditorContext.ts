@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-import { GitHubDomElementsView } from "./GitHubDomElementsView";
-import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
-import { GitHubPageType } from "./GitHubPageType";
+import * as React from "react";
 
-export class GitHubDomElementsFactory {
-  public create(pageType: GitHubPageType) {
-    if (pageType === GitHubPageType.EDIT) {
-      return new GitHubDomElementsEdit();
-    }
-
-    if (pageType === GitHubPageType.VIEW) {
-      return new GitHubDomElementsView();
-    }
-
-    throw new Error("Cannot determine GitHubElements for type ANY");
-  }
+export interface IsolatedEditorContextType {
+  textMode: boolean;
+  fullscreen: boolean;
+  onEditorReady?: () => void;
 }
+
+export const IsolatedEditorContext = React.createContext<IsolatedEditorContextType>({
+  textMode: false,
+  fullscreen: false,
+  onEditorReady: () => {
+    /**/
+  }
+});

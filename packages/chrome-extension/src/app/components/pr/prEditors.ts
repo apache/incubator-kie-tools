@@ -16,13 +16,25 @@
 
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { PrEditorsApp } from "./components/PrEditorsApp";
-import { createAndGetMainContainer } from "./utils";
+import { PrEditorsApp } from "./PrEditorsApp";
+import { createAndGetMainContainer, removeAllChildren } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
 
 export function renderPrEditorsApp(args: { router: Router }) {
+  cleanupComponentContainers();
+
   //FIXME: Use DOM mutation observers to know when to start
   setTimeout(() => {
     ReactDOM.render(React.createElement(PrEditorsApp, { router: args.router }), createAndGetMainContainer());
   }, 2000);
+}
+
+function cleanupComponentContainers() {
+  Array.from(document.querySelectorAll(".kogito-iframe-container-pr")).forEach(e => {
+    removeAllChildren(e);
+  });
+
+  Array.from(document.querySelectorAll(".kogito-toolbar-container-pr")).forEach(e => {
+    removeAllChildren(e);
+  });
 }
