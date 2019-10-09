@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { Router } from "@kogito-tooling/core-api";
 import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { getFilePath, getPrFileElements, GitHubDomElementsPr } from "./GitHubDomElementsPr";
+import { GlobalContext } from "../common/GlobalContext";
 
 function getFileExtension(prFileElement: HTMLElement) {
   return getFilePath(prFileElement)
@@ -29,21 +29,22 @@ function getFileExtension(prFileElement: HTMLElement) {
     .pop()!;
 }
 
-export function PrEditorsApp(props: { router: Router }) {
+export function PrEditorsApp() {
+  const globalContext = useContext(GlobalContext);
   const supportedPrFileElements = Array.from(getPrFileElements()).filter(prFileElement => {
-    return props.router.getLanguageData(getFileExtension(prFileElement as HTMLElement));
+    return globalContext.router.getLanguageData(getFileExtension(prFileElement as HTMLElement));
   });
 
   return (
     <>
       {supportedPrFileElements.map(e => (
-        <IsolatedPrEditor key={getFilePath(e as HTMLElement)} router={props.router} container={e as HTMLElement} />
+        <IsolatedPrEditor key={getFilePath(e as HTMLElement)} container={e as HTMLElement} />
       ))}
     </>
   );
 }
 
-function IsolatedPrEditor(props: { router: Router; container: HTMLElement }) {
+function IsolatedPrEditor(props: { container: HTMLElement }) {
   const githubDomElements = new GitHubDomElementsPr(props.container as HTMLElement);
 
   const [original, setOriginal] = useState(false);
@@ -74,7 +75,6 @@ function IsolatedPrEditor(props: { router: Router; container: HTMLElement }) {
           key={`${original}`}
           getFileContents={getFileContents}
           openFileExtension={getFileExtension(props.container)}
-          router={props.router}
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,

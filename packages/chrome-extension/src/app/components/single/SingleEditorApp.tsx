@@ -21,7 +21,6 @@ import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
 import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
-import { Router } from "@kogito-tooling/core-api";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
 
@@ -41,7 +40,6 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
 export function SingleEditorApp(props: {
   githubDomElements: GitHubDomElements;
   openFileExtension: string;
-  router: Router;
   readonly: boolean;
 }) {
   const [textMode, setTextMode] = useState(false);
@@ -54,42 +52,43 @@ export function SingleEditorApp(props: {
   const isolatedEditorContainer = fullscreen ? iframeFullscreenContainer() : props.githubDomElements.iframeContainer();
 
   return (
-    <IsolatedEditorContext.Provider
-      value={{
-        onEditorReady: () => setTextModeEnabled(true),
-        fullscreen: fullscreen,
-        textMode: textMode
-      }}
-    >
-      {ReactDOM.createPortal(
-        <SingleEditorToolbar
-          textMode={textMode}
-          textModeEnabled={textModeEnabled}
-          onSeeAsDiagram={() => setTextMode(false)}
-          onSeeAsSource={() => setTextMode(true)}
-          onFullScreen={() => setFullscreen(true)}
-          readonly={props.readonly}
-        />,
-        props.githubDomElements.toolbarContainer()
-      )}
-
-      {fullscreen &&
-        ReactDOM.createPortal(
-          <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
-          iframeFullscreenContainer()
+    <>
+      <IsolatedEditorContext.Provider
+        value={{
+          onEditorReady: () => setTextModeEnabled(true),
+          fullscreen: fullscreen,
+          textMode: textMode
+        }}
+      >
+        {ReactDOM.createPortal(
+          <SingleEditorToolbar
+            textMode={textMode}
+            textModeEnabled={textModeEnabled}
+            onSeeAsDiagram={() => setTextMode(false)}
+            onSeeAsSource={() => setTextMode(true)}
+            onFullScreen={() => setFullscreen(true)}
+            readonly={props.readonly}
+          />,
+          props.githubDomElements.toolbarContainer()
         )}
 
-      {ReactDOM.createPortal(
-        <IsolatedEditor
-          getFileContents={props.githubDomElements.getFileContents}
-          openFileExtension={props.openFileExtension}
-          router={props.router}
-          textMode={textMode}
-          readonly={props.readonly}
-          keepRenderedEditorInTextMode={true}
-        />,
-        isolatedEditorContainer
-      )}
-    </IsolatedEditorContext.Provider>
+        {fullscreen &&
+          ReactDOM.createPortal(
+            <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
+            iframeFullscreenContainer()
+          )}
+
+        {ReactDOM.createPortal(
+          <IsolatedEditor
+            getFileContents={props.githubDomElements.getFileContents}
+            openFileExtension={props.openFileExtension}
+            textMode={textMode}
+            readonly={props.readonly}
+            keepRenderedEditorInTextMode={true}
+          />,
+          isolatedEditorContainer
+        )}
+      </IsolatedEditorContext.Provider>
+    </>
   );
 }

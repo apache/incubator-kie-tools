@@ -16,14 +16,12 @@
 
 import * as React from "react";
 import { useLayoutEffect } from "react";
-import { Router } from "@kogito-tooling/core-api";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export function IsolatedEditor(props: {
   getFileContents: () => Promise<string>;
   openFileExtension: string;
-  router: Router;
   readonly: boolean;
   textMode: boolean;
   keepRenderedEditorInTextMode: boolean;
@@ -35,7 +33,6 @@ export function IsolatedEditor(props: {
       {shouldRenderIframe && (
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
-          router={props.router}
           getFileContents={props.getFileContents}
           readonly={props.readonly}
         />

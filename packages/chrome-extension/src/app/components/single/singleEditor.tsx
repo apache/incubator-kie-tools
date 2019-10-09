@@ -18,6 +18,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createAndGetMainContainer, iframeFullscreenContainer, removeAllChildren } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
+import { Main } from "../common/Main";
 import { Router } from "@kogito-tooling/core-api";
 import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
 import { GitHubDomElementsView } from "./GitHubDomElementsView";
@@ -57,15 +58,18 @@ function render(args: { router: Router; readonly: boolean; githubDomElements: Gi
     return false;
   }
 
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanupComponentContainers(args.githubDomElements);
 
   ReactDOM.render(
-    React.createElement(SingleEditorApp, {
-      router: args.router,
-      openFileExtension: openFileExtension!,
-      githubDomElements: args.githubDomElements,
-      readonly: args.readonly
-    }),
+    <Main router={args.router}>
+      <SingleEditorApp
+        openFileExtension={openFileExtension!}
+        githubDomElements={args.githubDomElements}
+        readonly={args.readonly}
+      />
+    </Main>,
     createAndGetMainContainer()
   );
 }
@@ -90,11 +94,6 @@ export function extractOpenFileExtension(url: string) {
 }
 
 export function cleanupComponentContainers(githubDomElements: GitHubDomElements) {
-  /*
-     * Necessary because GitHub apparently "caches" DOM structures between changes on History.
-     * Without this method you can observe duplicated elements when using back/forward browser buttons.
-     */
-
   removeAllChildren(githubDomElements.iframeContainer());
   removeAllChildren(githubDomElements.toolbarContainer());
   removeAllChildren(iframeFullscreenContainer());
@@ -103,9 +102,9 @@ export function cleanupComponentContainers(githubDomElements: GitHubDomElements)
 
 function githubPageLooksReady(githubDomElements: GitHubDomElements) {
   /*
-     * Checking whether this text editor exists is a good way to determine if the page is "ready",
-     * because that would mean that the user could see the default GitHub page.
-     */
+   * Checking whether this text editor exists is a good way to determine if the page is "ready",
+   * because that would mean that the user could see the default GitHub page.
+   */
 
   return !!githubDomElements.githubTextEditorToReplace();
 }

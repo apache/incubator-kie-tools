@@ -17,16 +17,27 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, removeAllChildren } from "../../utils";
+import {createAndGetMainContainer, loopUntil, removeAllChildren} from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
+import { Main } from "../common/Main";
 
 export function renderPrEditorsApp(args: { router: Router }) {
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanupComponentContainers();
 
-  //FIXME: Use DOM mutation observers to know when to start
-  setTimeout(() => {
-    ReactDOM.render(React.createElement(PrEditorsApp, { router: args.router }), createAndGetMainContainer());
-  }, 2000);
+  loopUntil(githubPageLooksReady, { interval: 100, timeout: 5000 }).then(() => {
+    ReactDOM.render(
+      <Main router={args.router}>
+        <PrEditorsApp />
+      </Main>,
+      createAndGetMainContainer()
+    );
+  });
+}
+
+function githubPageLooksReady() {
+  return document.querySelectorAll(".js-file-content").length > 0;
 }
 
 function cleanupComponentContainers() {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Router } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../../utils";
+import { GlobalContext } from "./GlobalContext";
 
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -30,17 +30,17 @@ let polling: any;
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
   getFileContents: () => Promise<string>;
-  router: Router;
   readonly: boolean;
 }) {
   const isolatedEditorState = useContext(IsolatedEditorContext);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const globalContext = useContext(GlobalContext);
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
     {
       postMessage: msg => {
         if (iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(msg, props.router.getTargetOrigin());
+          iframeRef.current.contentWindow.postMessage(msg, globalContext.router.getTargetOrigin());
         }
       }
     },
@@ -49,7 +49,7 @@ export function KogitoEditorIframe(props: {
         self.request_initResponse(window.location.origin);
       },
       receive_languageRequest() {
-        self.respond_languageRequest(props.router.getLanguageData(props.openFileExtension));
+        self.respond_languageRequest(globalContext.router.getLanguageData(props.openFileExtension));
       },
       receive_contentResponse(content: string) {
         if (props.readonly) {
@@ -86,6 +86,7 @@ export function KogitoEditorIframe(props: {
     if (props.readonly) {
       return;
     }
+
     if (polling) {
       return;
     }
@@ -100,6 +101,7 @@ export function KogitoEditorIframe(props: {
     if (props.readonly) {
       return;
     }
+
     clearInterval(polling);
     polling = undefined;
   }
@@ -138,7 +140,7 @@ export function KogitoEditorIframe(props: {
       ref={iframeRef}
       id={"kogito-iframe"}
       className={isolatedEditorState.fullscreen ? "fullscreen" : "not-fullscreen"}
-      src={props.router.getRelativePathTo("envelope/index.html")}
+      src={globalContext.router.getRelativePathTo("envelope/index.html")}
     />
   );
 }
