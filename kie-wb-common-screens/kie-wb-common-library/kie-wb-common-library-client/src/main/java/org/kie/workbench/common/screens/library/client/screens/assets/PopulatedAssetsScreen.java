@@ -336,7 +336,7 @@ public class PopulatedAssetsScreen {
 
     protected int totalPages(int elements,
                              int size) {
-        return Integer.valueOf((int) Math.ceil(elements / size)) + 1;
+        return Integer.valueOf((int) Math.ceil((double) elements / size));
     }
 
     protected void update() {

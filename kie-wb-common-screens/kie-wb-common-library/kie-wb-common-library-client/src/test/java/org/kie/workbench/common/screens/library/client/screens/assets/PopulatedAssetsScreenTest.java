@@ -167,10 +167,20 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         }
 
         {
+            int pages = this.populatedAssetsScreen.totalPages(15, 15);
+            assertEquals(1, pages);
+        }
+
+        {
             int pages = this.populatedAssetsScreen.totalPages(16,
                                                               15);
             assertEquals(2,
                          pages);
+        }
+
+        {
+            int pages = this.populatedAssetsScreen.totalPages(30, 15);
+            assertEquals(2, pages);
         }
     }
 
