@@ -44,6 +44,19 @@ pipeline {
                     maven.runMavenWithSubmarineSettings('clean install', false)
                 }
             }
+
+        }
+        stage('Build kogito-cloud-s2i') {
+            steps {
+                script {
+                     build job: 'KIE/master/kogito-deploy/kogito-cloud-s2i-images-master',
+                        propagate: true,
+                        parameters: [
+                            string(name: 'mainBranch', value: "$CHANGE_BRANCH"),
+                            string(name: 'ghOrgUnit', value: "$CHANGE_AUTHOR")
+                        ]
+                }
+            }
         }
     }
     post {
