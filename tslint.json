@@ -1,21 +1,33 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
   "jsRules": {},
   "rules": {
     "object-literal-shorthand": false,
     "jsx-no-multiline-js": false,
-    "ordered-imports": true,
+    "ordered-imports": false,
     "object-literal-sort-keys": false,
-    "jsx-boolean-value": false,
     "no-console": false,
-    "interface-name": [true, "never-prefix"],
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
     "max-classes-per-file": false,
     "jsx-no-lambda": false,
     "member-ordering": [
       true,
       {
-        "order": ["static-field", "instance-field", "constructor", "instance-method", "static-method"]
+        "order": [
+          "static-field",
+          "instance-field",
+          "constructor",
+          "instance-method",
+          "static-method"
+        ]
       }
     ],
     "variable-name": [

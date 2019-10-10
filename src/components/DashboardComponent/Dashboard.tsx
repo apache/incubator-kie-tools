@@ -27,10 +27,15 @@ class Dashboard extends React.Component<IOwnProps, IStateProps> {
 
     return (
       <React.Fragment>
-        <Page header={<HeaderComponent />} skipToContent={PageSkipToContent} mainContainerId={pageId} className="page">
-          {/* <Route exact path="/instanceDetail/:processInstanceID" component={InstanceDetailComponent} />
+        <Page
+          header={<HeaderComponent />}
+          skipToContent={PageSkipToContent}
+          mainContainerId={pageId}
+          className="page"
+        ></Page>
+        {/* <Route exact path="/instanceDetail/:processInstanceID" component={InstanceDetailComponent} />
           <Route exact path="/" component={DataListComponent} /> */}
-        </Page>
+
         {/* The below code is to be removed in future */}
         {/* <Page
           header={<HeaderComponent />}

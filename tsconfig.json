@@ -1,18 +1,19 @@
 {
-  "exclude": ["./**/node_modules"],
-  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "./**/node_modules"
+  ],
   "compilerOptions": {
-    "lib": ["es6", "dom", "es2018.promise"],
-    "baseUrl": "./",
+    "lib": [
+      "es6",
+      "dom",
+      "es2018.promise"
+    ],
     "target": "es5",
     "declaration": true,
     "sourceMap": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "module": "commonjs",
     "jsx": "react"
   }
 }

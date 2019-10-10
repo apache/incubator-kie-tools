@@ -2,11 +2,10 @@ import * as React from 'react';
 import LoginPage from '../LoginComponent/LoginPage';
 import Dashboard from '../DashboardComponent/Dashboard';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 export interface IOwnProps {}
-
 interface IStateProps {}
-
-export default class BaseLayout extends React.Component<IOwnProps, IStateProps> {
+class BaseLayout extends React.Component<IOwnProps, IStateProps> {
   render() {
     return (
       <div>
@@ -21,3 +20,4 @@ export default class BaseLayout extends React.Component<IOwnProps, IStateProps> 
     );
   }
 }
+export default BaseLayout;

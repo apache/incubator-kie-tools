@@ -1,7 +1,0 @@
-:root {
-  --login-background-Color: rgba(3, 3, 3, 0);
-  --login-button-Color: #608a9c;
-}
-.pf-c-login {
-  --pf-global--BackgroundColor--dark-transparent-200: var(--login-background-Color);
-}

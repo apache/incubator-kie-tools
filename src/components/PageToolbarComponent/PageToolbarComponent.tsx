@@ -14,14 +14,14 @@ import {
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 import { BellIcon, CogIcon } from '@patternfly/react-icons';
-import AboutModalBox from '../AboutModalComponent/AboutModal';
 import spacingStyles from '@patternfly/react-styles/css/utilities/Spacing/spacing';
+
 export interface IOwnProps {}
 export interface IStateProps {
   isKebabDropdownOpen: boolean;
   isDropdownOpen: boolean;
 }
-export default class PageToolbarComponent extends React.Component<IOwnProps, IStateProps> {
+class PageToolbarComponent extends React.Component<IOwnProps, IStateProps> {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,6 +29,7 @@ export default class PageToolbarComponent extends React.Component<IOwnProps, ISt
       isDropdownOpen: false
     };
   }
+
   onDropdownToggle = isDropdownOpen => {
     this.setState({
       isDropdownOpen
@@ -40,16 +41,19 @@ export default class PageToolbarComponent extends React.Component<IOwnProps, ISt
       isDropdownOpen: !this.state.isDropdownOpen
     });
   };
+
   onKebabDropdownSelect = event => {
     this.setState({
       isKebabDropdownOpen: !this.state.isKebabDropdownOpen
     });
   };
+
   onKebabDropdownToggle = isKebabDropdownOpen => {
     this.setState({
       isKebabDropdownOpen
     });
   };
+
   render() {
     const { isDropdownOpen, isKebabDropdownOpen } = this.state;
     const kebabDropdownItems = [
@@ -67,6 +71,7 @@ export default class PageToolbarComponent extends React.Component<IOwnProps, ISt
       //<DropdownItem component="button">Log out</DropdownItem>
       <DropdownItem key={3}>Log out</DropdownItem>
     ];
+
     return (
       <Toolbar>
         <ToolbarGroup className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnLg)}>
@@ -108,3 +113,5 @@ export default class PageToolbarComponent extends React.Component<IOwnProps, ISt
     );
   }
 }
+
+export default PageToolbarComponent;

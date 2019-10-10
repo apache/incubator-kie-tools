@@ -2,10 +2,13 @@ import React from 'react';
 import { Brand } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
+
 type combinedProps = RouteComponentProps & IOwnProps;
 export interface IOwnProps {}
 export interface IStateProps {}
+
 const logo = require('../../static/kogito_logo_rgb.png');
+
 class BrandComponent extends React.Component<combinedProps, IStateProps> {
   constructor(props: combinedProps) {
     super(props);

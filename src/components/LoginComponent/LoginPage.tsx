@@ -6,7 +6,6 @@ const backgroundImage = require('../../static/black_background.png');
 import './LoginPage.css';
 
 export interface IOwnProps {}
-
 export interface IStateprops {
   showHelperText: boolean;
   usernameValue: string;
@@ -16,6 +15,7 @@ export interface IStateprops {
   isRememberMeChecked: boolean;
   isAuthenticated: boolean;
 }
+
 const images = {
   [BackgroundImageSrc.lg]: backgroundImage,
   [BackgroundImageSrc.sm]: backgroundImage,
@@ -24,6 +24,7 @@ const images = {
   [BackgroundImageSrc.xs2x]: backgroundImage,
   [BackgroundImageSrc.filter]: '/assets/images/background-filter.svg#image_overlay'
 };
+
 class Login extends React.Component<IOwnProps, IStateprops> {
   constructor(props: IOwnProps) {
     super(props);
@@ -102,6 +103,7 @@ class Login extends React.Component<IOwnProps, IStateprops> {
     if (this.state.isAuthenticated) {
       return this.props.children;
     }
+
     return (
       <LoginPage
         className="pf-login"
