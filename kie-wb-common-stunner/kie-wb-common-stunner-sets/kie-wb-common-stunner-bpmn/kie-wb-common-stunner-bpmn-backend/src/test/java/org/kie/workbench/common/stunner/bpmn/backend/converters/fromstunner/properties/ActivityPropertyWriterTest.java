@@ -23,13 +23,53 @@ import org.eclipse.bpmn2.Task;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class ActivityPropertyWriterTest {
 
     @Test
-    public void shouldCreateOneInputSet() {
+    public void testEmptyInputOutputSet() {
+        Task task = bpmn2.createTask();
+        ActivityPropertyWriter activityPropertyWriter =
+                new ActivityPropertyWriter(task, new FlatVariableScope());
+        activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
+                "||||"
+        ));
+        assertNull(task.getIoSpecification());
+    }
+
+    @Test
+    public void testNotEmptyInputSet() {
+        Task task = bpmn2.createTask();
+        ActivityPropertyWriter activityPropertyWriter =
+                new ActivityPropertyWriter(task, new FlatVariableScope());
+        activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
+                "|A:String|||"
+        ));
+        assertNotNull(task.getIoSpecification());
+        assertTrue(task.getIoSpecification().getOutputSets().isEmpty());
+        assertEquals(1, task.getIoSpecification().getInputSets().size());
+    }
+
+    @Test
+    public void testNotEmptyOutputSet() {
+        Task task = bpmn2.createTask();
+        ActivityPropertyWriter activityPropertyWriter =
+                new ActivityPropertyWriter(task, new FlatVariableScope());
+        activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
+                "||A:String||"
+        ));
+        assertNotNull(task.getIoSpecification());
+        assertTrue(task.getIoSpecification().getInputSets().isEmpty());
+        assertEquals(1, task.getIoSpecification().getOutputSets().size());
+    }
+
+    @Test
+    public void testItShouldCreateOneInputSet() {
         Task task = bpmn2.createTask();
         ActivityPropertyWriter activityPropertyWriter =
                 new ActivityPropertyWriter(task, new FlatVariableScope());
