@@ -31,7 +31,8 @@ export function renderPrEditorsApp(args: { router: Router }) {
       <Main router={args.router}>
         <PrEditorsApp />
       </Main>,
-      createAndGetMainContainer()
+      createAndGetMainContainer(),
+      () => console.info("[Kogito] Mounted.")
     );
   });
 }

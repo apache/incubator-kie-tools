@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-export interface GitHubDomElements {
-  toolbarContainer(): Element;
-
-  getFileContents(): Promise<string | undefined>;
-
-  githubTextEditorToReplace(): HTMLElement;
-
-  iframeContainer(): HTMLElement;
+export enum FileStatusOnPr {
+  UNKNOWN,
+  ADDED,
+  DELETED,
+  CHANGED
 }

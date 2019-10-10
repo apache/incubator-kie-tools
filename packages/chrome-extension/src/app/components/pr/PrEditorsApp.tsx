@@ -15,33 +15,81 @@
  */
 
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
-import { getFilePath, getPrFileElements, GitHubDomElementsPr } from "./GitHubDomElementsPr";
+import {
+  getOriginalFilePath,
+  getPrFileElements,
+  getUnprocessedFilePath,
+  GitHubDomElementsPr
+} from "./GitHubDomElementsPr";
 import { GlobalContext } from "../common/GlobalContext";
+import { FileStatusOnPr } from "./FileStatusOnPr";
+import { useInitialAsyncCallEffect } from "../../utils";
 
 function getFileExtension(prFileElement: HTMLElement) {
-  return getFilePath(prFileElement)
+  return getOriginalFilePath(prFileElement)
     .split(".")
     .pop()!;
 }
 
 export function PrEditorsApp() {
   const globalContext = useContext(GlobalContext);
-  const supportedPrFileElements = Array.from(getPrFileElements()).filter(prFileElement => {
-    return globalContext.router.getLanguageData(getFileExtension(prFileElement as HTMLElement));
+  const supportedPrFileElements = () =>
+    Array.from(getPrFileElements()).filter(prFileElement => {
+      return globalContext.router.getLanguageData(getFileExtension(prFileElement as HTMLElement));
+    }) as HTMLElement[];
+
+  const [elements, setElements] = useState(supportedPrFileElements());
+
+  const observer = new MutationObserver(mutations => {
+    const a = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []).filter(n => {
+      return n instanceof HTMLElement && n.className.includes("js-file");
+    });
+
+    console.info(a.length);
+    
+    if (a.length > 0) {
+      setElements(supportedPrFileElements());
+    }
   });
+
+  useEffect(() => {
+    observer.observe(document.getElementById("files")!, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
-      {supportedPrFileElements.map(e => (
-        <IsolatedPrEditor key={getFilePath(e as HTMLElement)} container={e as HTMLElement} />
+      {elements.map(e => (
+        <IsolatedPrEditor key={getUnprocessedFilePath(e)} container={e} />
       ))}
     </>
   );
+}
+
+async function discoverFileStatusOnPr(githubDomElements: GitHubDomElementsPr) {
+  const hasOriginal = await githubDomElements.getOriginalFileContents();
+  const hasModified = await githubDomElements.getFileContents();
+
+  if (hasOriginal && hasModified) {
+    return FileStatusOnPr.CHANGED;
+  }
+
+  if (hasOriginal) {
+    return FileStatusOnPr.DELETED;
+  }
+
+  if (hasModified) {
+    return FileStatusOnPr.ADDED;
+  }
+
+  throw new Error("Impossible status for file on PR");
 }
 
 function IsolatedPrEditor(props: { container: HTMLElement }) {
@@ -49,12 +97,15 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
   const [original, setOriginal] = useState(false);
   const [textMode, setTextMode] = useState(true);
+  const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
   useIsolatedEditorTogglingEffect(textMode, githubDomElements);
+  useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
 
-  const getFileContents = original
-    ? () => githubDomElements.getOriginalFileContents()
-    : () => githubDomElements.getFileContents();
+  const getFileContents =
+    original || fileStatusOnPr === FileStatusOnPr.DELETED
+      ? () => githubDomElements.getOriginalFileContents()
+      : () => githubDomElements.getFileContents();
 
   return (
     <IsolatedEditorContext.Provider value={{ textMode: textMode, fullscreen: false }}>
@@ -67,11 +118,12 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
       {ReactDOM.createPortal(
         <PrToolbar
-          textMode={textMode}
-          originalDiagram={original}
-          toggleOriginal={() => setOriginal(prev => !prev)}
-          onSeeAsSource={() => setTextMode(true)}
-          onSeeAsDiagram={() => setTextMode(false)}
+            fileStatusOnPr={fileStatusOnPr}
+            textMode={textMode}
+            originalDiagram={original}
+            toggleOriginal={() => setOriginal(prev => !prev)}
+            closeDiagram={() => setTextMode(true)}
+            onSeeAsDiagram={() => setTextMode(false)}
         />,
         githubDomElements.toolbarContainer()
       )}

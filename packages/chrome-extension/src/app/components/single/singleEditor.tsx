@@ -70,7 +70,8 @@ function render(args: { router: Router; readonly: boolean; githubDomElements: Gi
         readonly={args.readonly}
       />
     </Main>,
-    createAndGetMainContainer()
+    createAndGetMainContainer(),
+    () => console.info("[Kogito] Mounted.")
   );
 }
 

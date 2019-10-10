@@ -20,7 +20,7 @@ import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export function IsolatedEditor(props: {
-  getFileContents: () => Promise<string>;
+  getFileContents: () => Promise<string | undefined>;
   openFileExtension: string;
   readonly: boolean;
   textMode: boolean;

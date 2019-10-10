@@ -29,7 +29,7 @@ let polling: any;
 
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
-  getFileContents: () => Promise<string>;
+  getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
 }) {
   const isolatedEditorState = useContext(IsolatedEditorContext);
@@ -62,7 +62,7 @@ export function KogitoEditorIframe(props: {
       receive_contentRequest() {
         props
           .getFileContents()
-          .then(c => self.respond_contentRequest(c))
+          .then(c => self.respond_contentRequest(c || ""))
           .then(() => startPollingForChangesOnDiagram());
       },
       receive_setContentError() {
@@ -114,7 +114,7 @@ export function KogitoEditorIframe(props: {
       } else if (prevIsolatedEditorState && prevIsolatedEditorState.textMode !== isolatedEditorState.textMode) {
         props
           .getFileContents()
-          .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c))
+          .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
           .then(startPollingForChangesOnDiagram);
       }
 

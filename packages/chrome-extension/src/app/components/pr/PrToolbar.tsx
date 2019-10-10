@@ -15,17 +15,19 @@
  */
 
 import * as React from "react";
+import { FileStatusOnPr } from "./FileStatusOnPr";
 
 export function PrToolbar(props: {
   onSeeAsDiagram: () => void;
   toggleOriginal: () => void;
-  onSeeAsSource: () => void;
+  closeDiagram: () => void;
   textMode: boolean;
   originalDiagram: boolean;
+  fileStatusOnPr: FileStatusOnPr;
 }) {
-  const seeAsSource = (e: any) => {
+  const closeDiagram = (e: any) => {
     e.preventDefault();
-    props.onSeeAsSource();
+    props.closeDiagram();
   };
 
   const seeAsDiagram = (e: any) => {
@@ -41,8 +43,8 @@ export function PrToolbar(props: {
   return (
     <>
       {!props.textMode && (
-        <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
-          See as source
+        <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
+          Close diagram
         </button>
       )}
 
@@ -52,26 +54,27 @@ export function PrToolbar(props: {
         </button>
       )}
 
-      {!props.textMode && (
-        <div className="BtnGroup mr-1">
-          <button
-            disabled={props.originalDiagram}
-            className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
-            type={"button"}
-            onClick={toggleOriginal}
-          >
-            Original
-          </button>
-          <button
-            disabled={!props.originalDiagram}
-            className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
-            type={"button"}
-            onClick={toggleOriginal}
-          >
-            Changes
-          </button>
-        </div>
-      )}
+      {!props.textMode &&
+        props.fileStatusOnPr === FileStatusOnPr.CHANGED && (
+          <div className="BtnGroup mr-1">
+            <button
+              disabled={props.originalDiagram}
+              className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
+              type={"button"}
+              onClick={toggleOriginal}
+            >
+              Original
+            </button>
+            <button
+              disabled={!props.originalDiagram}
+              className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
+              type={"button"}
+              onClick={toggleOriginal}
+            >
+              Changes
+            </button>
+          </div>
+        )}
     </>
   );
 }

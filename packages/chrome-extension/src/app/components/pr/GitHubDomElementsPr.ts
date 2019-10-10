@@ -16,9 +16,28 @@
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 
-export function getFilePath(prFileElement: HTMLElement) {
-  return (prFileElement.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement).title;
+export function getUnprocessedFilePath(container: HTMLElement) {
+  return (container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement).title;
 }
+
+export function getOriginalFilePath(container: HTMLElement) {
+  const path = getUnprocessedFilePath(container);
+  if (path.includes("→")) {
+    return path.split(" → ")[0];
+  } else {
+    return path;
+  }
+}
+
+export function getModifiedFilePath(container: HTMLElement) {
+  const path = getUnprocessedFilePath(container);
+  if (path.includes("→")) {
+    return path.split(" → ")[1];
+  } else {
+    return path;
+  }
+}
+
 export function getPrFileElements() {
   return document.querySelectorAll(".file.js-file.js-details-container");
 }
@@ -31,38 +50,64 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     targetGitReference: string;
     organization: string;
     gitReference: string;
-    filePath: string;
+    originalFilePath: string;
+    modifiedFilePath: string;
   };
 
   constructor(container: HTMLElement) {
-    const metaInfos = document.querySelector(".gh-header-meta")!.querySelectorAll(".css-truncate-target");
     this.container = container;
-    this.info = {
-      repository: window.location.pathname.split("/")[2],
-      targetOrganization: metaInfos[1].textContent!,
-      targetGitReference: metaInfos[2].textContent!,
-      organization: metaInfos[4].textContent!,
-      gitReference: metaInfos[5].textContent!,
-      filePath: getFilePath(container)
-    };
+
+    const metaInfos = document.querySelector(".gh-header-meta")!.querySelectorAll(".css-truncate-target");
+    const targetOrganization = window.location.pathname.split("/")[1];
+    const repository = window.location.pathname.split("/")[2];
+
+    // PR is within the same organization
+    if (metaInfos.length < 6) {
+      this.info = {
+        repository: repository,
+        targetOrganization: targetOrganization,
+        targetGitReference: metaInfos[1].textContent!,
+        organization: targetOrganization,
+        gitReference: metaInfos[3].textContent!,
+        originalFilePath: getOriginalFilePath(container),
+        modifiedFilePath: getModifiedFilePath(container)
+      };
+    }
+
+    // PR is from a fork to an upstream
+    else {
+      this.info = {
+        repository: repository,
+        targetOrganization: targetOrganization,
+        targetGitReference: metaInfos[2].textContent!,
+        organization: metaInfos[4].textContent!,
+        gitReference: metaInfos[5].textContent!,
+        originalFilePath: getOriginalFilePath(container),
+        modifiedFilePath: getModifiedFilePath(container)
+      };
+    }
   }
 
-  public getFileContents(): Promise<string> {
+  public getFileContents() {
     const org = this.info.organization;
     const repo = this.info.repository;
     const branch = this.info.gitReference;
-    const path = this.info.filePath;
+    const path = this.info.modifiedFilePath;
 
-    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => res.text());
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
+      return res.ok ? res.text() : Promise.resolve(undefined);
+    });
   }
 
   public getOriginalFileContents() {
     const org = this.info.targetOrganization;
     const repo = this.info.repository;
     const branch = this.info.targetGitReference;
-    const path = this.info.filePath;
+    const path = this.info.originalFilePath;
 
-    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => res.text());
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
+      return res.ok ? res.text() : Promise.resolve(undefined);
+    });
   }
 
   public githubTextEditorToReplace(): HTMLElement {
@@ -91,7 +136,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const org = this.info.targetOrganization;
     const repo = this.info.repository;
     const branch = this.info.targetGitReference;
-    const path = this.info.filePath;
+    const path = this.info.originalFilePath;
 
     return `https://github.com/${org}/${repo}/blob/${branch}/${path}`;
   }

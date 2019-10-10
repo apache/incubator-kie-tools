@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { useEffect } from "react";
+
 export function runScriptOnPage(scriptString: string) {
   const scriptTag = document.createElement("script");
   scriptTag.setAttribute("type", "text/javascript");
@@ -22,7 +24,21 @@ export function runScriptOnPage(scriptString: string) {
   scriptTag.remove();
 }
 
-export function runAfterPagePushState(callback: () => void) {
+let lastUri = window.location.pathname;
+
+export function runAfterUriChange(callback: () => void) {
+  const checkUriThenCallback = () => {
+    const currentUri = window.location.pathname;
+
+    if (lastUri === currentUri) {
+      return;
+    }
+
+    console.debug(`[Kogito] URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    lastUri = currentUri;
+    callback();
+  };
+
   runScriptOnPage(`
   var _wr = function(type) {
       var orig = history[type];
@@ -38,11 +54,11 @@ export function runAfterPagePushState(callback: () => void) {
 
   window.addEventListener("replaceState", () => {
     console.debug("[Kogito] replaceState event happened");
-    callback();
+    checkUriThenCallback();
   });
   window.addEventListener("popstate", () => {
     console.debug("[Kogito] popstate event happened");
-    callback();
+    checkUriThenCallback();
   });
 }
 
@@ -99,4 +115,21 @@ function asyncLoop(
 
   //loop
   setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
+}
+
+export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
+  useEffect(() => {
+    let canceled = false;
+    promise().then(arg => {
+      if (canceled) {
+        return;
+      }
+
+      callback(arg);
+    });
+
+    return () => {
+      canceled = true;
+    };
+  }, []);
 }

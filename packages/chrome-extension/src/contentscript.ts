@@ -16,7 +16,7 @@
 
 import * as ReactDOM from "react-dom";
 import { GitHubPageType } from "./app/github/GitHubPageType";
-import { mainContainer, runAfterPagePushState } from "./app/utils";
+import { mainContainer, runAfterUriChange } from "./app/utils";
 import { renderSingleEditorApp, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditor";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { ChromeRouter } from "./app/ChromeRouter";
@@ -56,7 +56,7 @@ function init() {
   throw new Error(`Unknown GitHubPageType ${pageType}`);
 }
 
-runAfterPagePushState(() => setImmediate(init));
+runAfterUriChange(() => setImmediate(init));
 setImmediate(() => init());
 
 function uriMatches(regex: string) {
@@ -73,6 +73,10 @@ function discoverCurrentGitHubPageType() {
   }
 
   if (uriMatches(`${GITHUB_COM}/.*/.*/pull/[0-9]+/files.*`)) {
+    return GitHubPageType.PR;
+  }
+
+  if (uriMatches(`${GITHUB_COM}/.*/.*/pull/[0-9]+/commits.*`)) {
     return GitHubPageType.PR;
   }
 
