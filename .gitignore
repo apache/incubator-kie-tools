@@ -24,3 +24,5 @@ uberfire-docs/src/main/asciidoc/*.html
 **/node_modules
 **/package-lock.json
 **/dist
+
+**/yarn.lock
