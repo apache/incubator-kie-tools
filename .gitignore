@@ -24,3 +24,4 @@ target/
 /org.kie.workbench.widgets
 /org.kie.workbench.forms
 
+**/yarn.lock
