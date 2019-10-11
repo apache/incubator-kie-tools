@@ -15,34 +15,17 @@
  */
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
-
-export function getUnprocessedFilePath(container: HTMLElement) {
-  return (container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement).title;
-}
-
-export function getOriginalFilePath(container: HTMLElement) {
-  const path = getUnprocessedFilePath(container);
-  if (path.includes("→")) {
-    return path.split(" → ")[0];
-  } else {
-    return path;
-  }
-}
-
-export function getModifiedFilePath(container: HTMLElement) {
-  const path = getUnprocessedFilePath(container);
-  if (path.includes("→")) {
-    return path.split(" → ")[1];
-  } else {
-    return path;
-  }
-}
-
-export function getPrFileElements() {
-  return document.querySelectorAll(".file.js-file.js-details-container");
-}
+import { Router } from "@kogito-tooling/core-api";
+import {
+  GITHUB_RENAMED_FILE_ARROW,
+  KOGITO_IFRAME_CONTAINER_PR_CLASS,
+  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
+  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
+} from "../../constants";
+import * as dependencies from "../../dependencies";
 
 export class GitHubDomElementsPr implements GitHubDomElements {
+  private readonly router: Router;
   private readonly container: HTMLElement;
   private readonly info: {
     repository: string;
@@ -54,21 +37,22 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     modifiedFilePath: string;
   };
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, router: Router) {
+    this.router = router;
     this.container = container;
 
-    const metaInfos = document.querySelector(".gh-header-meta")!.querySelectorAll(".css-truncate-target");
+    const metaInfo = getMetaInfo();
     const targetOrganization = window.location.pathname.split("/")[1];
     const repository = window.location.pathname.split("/")[2];
 
     // PR is within the same organization
-    if (metaInfos.length < 6) {
+    if (metaInfo.length < 6) {
       this.info = {
         repository: repository,
         targetOrganization: targetOrganization,
-        targetGitReference: metaInfos[1].textContent!,
+        targetGitReference: metaInfo[1],
         organization: targetOrganization,
-        gitReference: metaInfos[3].textContent!,
+        gitReference: metaInfo[3],
         originalFilePath: getOriginalFilePath(container),
         modifiedFilePath: getModifiedFilePath(container)
       };
@@ -79,9 +63,9 @@ export class GitHubDomElementsPr implements GitHubDomElements {
       this.info = {
         repository: repository,
         targetOrganization: targetOrganization,
-        targetGitReference: metaInfos[2].textContent!,
-        organization: metaInfos[4].textContent!,
-        gitReference: metaInfos[5].textContent!,
+        targetGitReference: metaInfo[2],
+        organization: metaInfo[4],
+        gitReference: metaInfo[5],
         originalFilePath: getOriginalFilePath(container),
         modifiedFilePath: getModifiedFilePath(container)
       };
@@ -94,7 +78,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const branch = this.info.gitReference;
     const path = this.info.modifiedFilePath;
 
-    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
+    return fetch(`${this.router.getTargetOrigin()}/${org}/${repo}/${branch}/${path}`).then(res => {
       return res.ok ? res.text() : Promise.resolve(undefined);
     });
   }
@@ -105,30 +89,34 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const branch = this.info.targetGitReference;
     const path = this.info.originalFilePath;
 
-    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
+    return fetch(`${this.router.getTargetOrigin()}/${org}/${repo}/${branch}/${path}`).then(res => {
       return res.ok ? res.text() : Promise.resolve(undefined);
     });
   }
 
-  public githubTextEditorToReplace(): HTMLElement {
-    return this.container.querySelector(".js-file-content") as HTMLElement;
+  public githubTextEditorToReplace() {
+    return dependencies.prView.githubTextEditorToReplace(this.container) as HTMLElement;
   }
 
-  public iframeContainer(): HTMLElement {
-    const element = () => this.container.querySelector(".kogito-iframe-container-pr");
+  public iframeContainer() {
+    const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
+    const element = () => this.container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
+
     if (!element()!) {
-      this.container.insertAdjacentHTML("beforeend", '<div class="kogito-iframe-container-pr"></div>');
+      this.container.insertAdjacentHTML("beforeend", div);
     }
+
     return element() as HTMLElement;
   }
 
-  public toolbarContainer(): Element {
-    const element = () => this.container.querySelector(".kogito-toolbar-container-pr");
+  public toolbarContainer() {
+    const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
+    const element = () => this.container.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
+
     if (!element()) {
-      this.container
-        .querySelector(".file-info")!
-        .insertAdjacentHTML("afterend", `<div class="kogito-toolbar-container-pr"></div>`);
+      dependencies.prView.toolbarContainer(this.container)!.insertAdjacentHTML("afterend", div);
     }
+
     return element()!;
   }
 
@@ -138,16 +126,43 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const branch = this.info.targetGitReference;
     const path = this.info.originalFilePath;
 
-    return `https://github.com/${org}/${repo}/blob/${branch}/${path}`;
+    return `/${org}/${repo}/blob/${branch}/${path}`;
   }
 
   public viewOriginalFileLinkContainer() {
-    const element = () => this.container.querySelector(".kogito-view-original-link-container-pr");
+    const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
+    const element = () => this.container.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
+
     if (!element()) {
-      this.container
-        .querySelectorAll("details-menu a")[0]!
-        .insertAdjacentHTML("afterend", `<div class="kogito-view-original-link-container-pr"></div>`);
+      dependencies.prView.viewOriginalFileLinkContainer(this.container).insertAdjacentHTML("afterend", div);
     }
+
     return element()!;
+  }
+}
+
+export function getUnprocessedFilePath(container: HTMLElement) {
+  return dependencies.prView.unprocessedFilePath(container).title;
+}
+
+function getMetaInfo() {
+  return dependencies.prView.getMetaInfo()!.map(e => e.textContent!);
+}
+
+export function getOriginalFilePath(container: HTMLElement) {
+  const path = getUnprocessedFilePath(container);
+  if (path.includes(GITHUB_RENAMED_FILE_ARROW)) {
+    return path.split(` ${GITHUB_RENAMED_FILE_ARROW} `)[0];
+  } else {
+    return path;
+  }
+}
+
+export function getModifiedFilePath(container: HTMLElement) {
+  const path = getUnprocessedFilePath(container);
+  if (path.includes(GITHUB_RENAMED_FILE_ARROW)) {
+    return path.split(` ${GITHUB_RENAMED_FILE_ARROW} `)[1];
+  } else {
+    return path;
   }
 }

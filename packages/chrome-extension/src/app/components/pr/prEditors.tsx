@@ -17,40 +17,39 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, removeAllChildren, waitUntil } from "../../utils";
+import { createAndGetMainContainer, removeAllChildren } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
 import { Main } from "../common/Main";
+import {
+  KOGITO_IFRAME_CONTAINER_PR_CLASS,
+  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
+  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
+} from "../../constants";
 
-export function renderPrEditorsApp(args: { router: Router }) {
+export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanupComponentContainers();
 
-  waitUntil(githubPageLooksReady, { interval: 100, timeout: 5000 }).then(() => {
-    ReactDOM.render(
-      <Main router={args.router}>
-        <PrEditorsApp />
-      </Main>,
-      createAndGetMainContainer(),
-      () => console.info("[Kogito] Mounted.")
-    );
-  });
-}
-
-function githubPageLooksReady() {
-  return document.querySelectorAll(".js-file-content").length > 0;
+  ReactDOM.render(
+    <Main router={args.router} editorIndexPath={args.editorIndexPath}>
+      <PrEditorsApp />
+    </Main>,
+    createAndGetMainContainer(),
+    () => console.info("[Kogito] Mounted.")
+  );
 }
 
 function cleanupComponentContainers() {
-  Array.from(document.querySelectorAll(".kogito-iframe-container-pr")).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(".kogito-view-original-link-container-pr")).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(".kogito-toolbar-container-pr")).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`)).forEach(e => {
     removeAllChildren(e);
   });
 }

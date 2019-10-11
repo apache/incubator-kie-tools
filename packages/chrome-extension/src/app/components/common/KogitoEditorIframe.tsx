@@ -138,9 +138,8 @@ export function KogitoEditorIframe(props: {
   return (
     <iframe
       ref={iframeRef}
-      id={"kogito-iframe"}
-      className={isolatedEditorState.fullscreen ? "fullscreen" : "not-fullscreen"}
-      src={globalContext.router.getRelativePathTo("envelope/index.html")}
+      className={`kogito-iframe ${isolatedEditorState.fullscreen ? "fullscreen" : "not-fullscreen"}`}
+      src={globalContext.router.getRelativePathTo(globalContext.editorIndexPath)}
     />
   );
 }

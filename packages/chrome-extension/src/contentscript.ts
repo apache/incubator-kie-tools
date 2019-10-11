@@ -22,8 +22,6 @@ import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { ChromeRouter } from "./app/ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
 
-const GITHUB_COM = "http[s]://github.com";
-
 function init() {
   console.info(`[Kogito] ---`);
   console.info(`[Kogito] Starting GitHub extension.`);
@@ -37,19 +35,20 @@ function init() {
   }
 
   const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
+  const editorIndexPath = "envelope/index.html";
 
   if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({ router: router });
+    renderSingleEditorApp({ router: router, editorIndexPath: editorIndexPath });
     return;
   }
 
   if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ router: router });
+    renderSingleEditorReadonlyApp({ router: router, editorIndexPath: editorIndexPath });
     return;
   }
 
   if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({ router: router });
+    renderPrEditorsApp({ router: router, editorIndexPath: editorIndexPath });
     return;
   }
 
@@ -60,23 +59,23 @@ runAfterUriChange(() => setImmediate(init));
 setImmediate(() => init());
 
 function uriMatches(regex: string) {
-  return !!window.location.href.match(new RegExp(regex));
+  return !!window.location.pathname.match(new RegExp(regex));
 }
 
 function discoverCurrentGitHubPageType() {
-  if (uriMatches(`${GITHUB_COM}/.*/.*/edit/.*`)) {
+  if (uriMatches(`.*/.*/edit/.*`)) {
     return GitHubPageType.EDIT;
   }
 
-  if (uriMatches(`${GITHUB_COM}/.*/.*/blob/.*`)) {
+  if (uriMatches(`.*/.*/blob/.*`)) {
     return GitHubPageType.VIEW;
   }
 
-  if (uriMatches(`${GITHUB_COM}/.*/.*/pull/[0-9]+/files.*`)) {
+  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
     return GitHubPageType.PR;
   }
 
-  if (uriMatches(`${GITHUB_COM}/.*/.*/pull/[0-9]+/commits.*`)) {
+  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
     return GitHubPageType.PR;
   }
 

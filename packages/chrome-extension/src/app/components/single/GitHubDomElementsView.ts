@@ -15,37 +15,37 @@
  */
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
+import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
+import * as dependencies from "../../dependencies";
 
 export class GitHubDomElementsView implements GitHubDomElements {
   public toolbarContainer() {
-    const element = () => document.getElementById("kogito-toolbar-container")!;
+    const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="view d-flex flex-column flex-items-start flex-md-row"></div>`;
+    const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+
     if (!element()) {
-      document
-        .querySelector(".Box.mt-3.position-relative")!
-        .insertAdjacentHTML(
-          "beforebegin",
-          `<div id="kogito-toolbar-container" class="view d-flex flex-column flex-items-start flex-md-row"></div>`
-        );
+      dependencies.singleView.toolbarContainer()!.insertAdjacentHTML("beforebegin", div);
     }
+
     return element();
   }
 
   public getFileContents() {
-    const rawUrl = (document.getElementById("raw-url") as HTMLAnchorElement)!.href;
-    return fetch(rawUrl).then(res => res.text());
+    return fetch(dependencies.singleView.rawUrlLink()!.href).then(res => res.text());
   }
 
   public githubTextEditorToReplace() {
-    return document.querySelector(".Box-body.p-0.blob-wrapper.data.type-xml")! as HTMLElement;
+    return dependencies.singleView.githubTextEditorToReplace()!;
   }
 
   public iframeContainer() {
-    const element = () => document.getElementById("kogito-iframe-container")!;
+    const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
+    const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+
     if (!element()) {
-      document
-        .querySelector(".Box.mt-3.position-relative")!
-        .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="view"></div>`);
+      dependencies.singleView.iframeContainer()!.insertAdjacentHTML("afterend", div);
     }
+
     return element();
   }
 }

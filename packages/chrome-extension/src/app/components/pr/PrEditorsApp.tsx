@@ -20,78 +20,36 @@ import * as ReactDOM from "react-dom";
 import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
-import {
-  getOriginalFilePath,
-  getPrFileElements,
-  getUnprocessedFilePath,
-  GitHubDomElementsPr
-} from "./GitHubDomElementsPr";
+import { getOriginalFilePath, getUnprocessedFilePath, GitHubDomElementsPr } from "./GitHubDomElementsPr";
 import { GlobalContext } from "../common/GlobalContext";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import { useInitialAsyncCallEffect } from "../../utils";
-
-function getFileExtension(prFileElement: HTMLElement) {
-  return getOriginalFilePath(prFileElement)
-    .split(".")
-    .pop()!;
-}
+import { Router } from "@kogito-tooling/core-api";
+import * as dependencies from "../../dependencies";
 
 export function PrEditorsApp() {
   const globalContext = useContext(GlobalContext);
-  const supportedPrFileElements = () =>
-    Array.from(getPrFileElements()).filter(prFileElement => {
-      return globalContext.router.getLanguageData(getFileExtension(prFileElement as HTMLElement));
-    }) as HTMLElement[];
+  const [containers, setContainers] = useState(supportedPrFileElements(globalContext.router));
 
-  const [elements, setElements] = useState(supportedPrFileElements());
-
-  const observer = new MutationObserver(mutations => {
-    const newFiles = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []).filter(n => {
-      return n instanceof HTMLElement && n.className.includes("js-file");
-    });
-
-    if (newFiles.length > 0) {
-      setElements(supportedPrFileElements());
-    }
+  const mutationObserver = newPrFileContainersMutationObserver(containers, setContainers, globalContext.router);
+  const target = dependencies.prView.mutationObserverTarget()!;
+  useMutationObserverEffect(mutationObserver, target, {
+    childList: true,
+    subtree: true
   });
-
-  useEffect(() => {
-    observer.observe(document.getElementById("files")!, { childList: true, subtree: true });
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   return (
     <>
-      {elements.map(e => (
+      {containers.map(e => (
         <IsolatedPrEditor key={getUnprocessedFilePath(e)} container={e} />
       ))}
     </>
   );
 }
 
-async function discoverFileStatusOnPr(githubDomElements: GitHubDomElementsPr) {
-  const hasOriginal = await githubDomElements.getOriginalFileContents();
-  const hasModified = await githubDomElements.getFileContents();
-
-  if (hasOriginal && hasModified) {
-    return FileStatusOnPr.CHANGED;
-  }
-
-  if (hasOriginal) {
-    return FileStatusOnPr.DELETED;
-  }
-
-  if (hasModified) {
-    return FileStatusOnPr.ADDED;
-  }
-
-  throw new Error("Impossible status for file on PR");
-}
-
 function IsolatedPrEditor(props: { container: HTMLElement }) {
-  const githubDomElements = new GitHubDomElementsPr(props.container as HTMLElement);
+  const globalContext = useContext(GlobalContext);
+  const githubDomElements = new GitHubDomElementsPr(props.container as HTMLElement, globalContext.router);
 
   const [showOriginal, setShowOriginal] = useState(false);
   const [isTextMode, setTextMode] = useState(true);
@@ -143,4 +101,63 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
       )}
     </IsolatedEditorContext.Provider>
   );
+}
+
+async function discoverFileStatusOnPr(githubDomElements: GitHubDomElementsPr) {
+  const hasOriginal = await githubDomElements.getOriginalFileContents();
+  const hasModified = await githubDomElements.getFileContents();
+
+  if (hasOriginal && hasModified) {
+    return FileStatusOnPr.CHANGED;
+  }
+
+  if (hasOriginal) {
+    return FileStatusOnPr.DELETED;
+  }
+
+  if (hasModified) {
+    return FileStatusOnPr.ADDED;
+  }
+
+  throw new Error("Impossible status for file on PR");
+}
+
+function getFileExtension(container: HTMLElement) {
+  return getOriginalFilePath(container)
+    .split(".")
+    .pop()!;
+}
+
+function newPrFileContainersMutationObserver(
+  containers: HTMLElement[],
+  setContainers: (e: HTMLElement[]) => void,
+  router: Router
+) {
+  return new MutationObserver(mutations => {
+    const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
+
+    if (addedNodes.length <= 0) {
+      return;
+    }
+
+    const newContainers = supportedPrFileElements(router);
+    if (newContainers.length !== containers.length) {
+      setContainers(newContainers);
+    }
+  });
+}
+
+function supportedPrFileElements(router: Router) {
+  return dependencies.prView
+    .supportedPrFileElements()
+    .filter(container => router.getLanguageData(getFileExtension(container)));
+}
+
+function useMutationObserverEffect(observer: MutationObserver, target: HTMLElement, options: MutationObserverInit) {
+  useEffect(() => {
+    observer.observe(target, options);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 }

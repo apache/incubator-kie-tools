@@ -15,6 +15,7 @@
  */
 
 import { useEffect } from "react";
+import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
 
 export function runScriptOnPage(scriptString: string) {
   const scriptTag = document.createElement("script");
@@ -69,20 +70,20 @@ export function removeAllChildren(node: Node) {
 }
 
 export function mainContainer() {
-  return document.getElementById("kogito-container");
+  return document.getElementById(KOGITO_MAIN_CONTAINER_ID);
 }
 
 export function createAndGetMainContainer() {
   if (!mainContainer()) {
-    document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
+    document.body.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
   }
   return mainContainer()!;
 }
 
 export function iframeFullscreenContainer() {
-  const element = () => document.getElementById("kogito-iframe-fullscreen-container")!;
+  const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
   if (!element()) {
-    document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
+    document.body.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}"></div>`);
   }
   return element();
 }

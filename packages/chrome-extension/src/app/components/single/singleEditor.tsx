@@ -24,23 +24,30 @@ import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
 import { GitHubDomElementsView } from "./GitHubDomElementsView";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 
-export function renderSingleEditorApp(args: { router: Router }) {
+export function renderSingleEditorApp(args: { editorIndexPath: string; router: Router }) {
   render({
+    editorIndexPath: args.editorIndexPath,
     router: args.router,
     readonly: false,
     githubDomElements: new GitHubDomElementsEdit()
   });
 }
 
-export function renderSingleEditorReadonlyApp(args: { router: Router }) {
+export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; router: Router }) {
   render({
+    editorIndexPath: args.editorIndexPath,
     router: args.router,
     readonly: true,
     githubDomElements: new GitHubDomElementsView()
   });
 }
 
-function render(args: { router: Router; readonly: boolean; githubDomElements: GitHubDomElements }) {
+function render(args: {
+  editorIndexPath: string;
+  router: Router;
+  readonly: boolean;
+  githubDomElements: GitHubDomElements;
+}) {
   const openFileExtension = extractOpenFileExtension(window.location.href);
 
   if (!openFileExtension) {
@@ -63,9 +70,9 @@ function render(args: { router: Router; readonly: boolean; githubDomElements: Gi
   cleanupComponentContainers(args.githubDomElements);
 
   ReactDOM.render(
-    <Main router={args.router}>
+    <Main router={args.router} editorIndexPath={args.editorIndexPath}>
       <SingleEditorApp
-        openFileExtension={openFileExtension!}
+        openFileExtension={openFileExtension}
         githubDomElements={args.githubDomElements}
         readonly={args.readonly}
       />

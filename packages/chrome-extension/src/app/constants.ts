@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { GlobalContext } from "./GlobalContext";
+export const GITHUB_RENAMED_FILE_ARROW = "→";
 
-interface Props {
-  router: Router;
-  editorIndexPath: string;
-}
-
-export class Main extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-  }
-
-  public render() {
-    return (
-      <GlobalContext.Provider value={{ router: this.props.router, editorIndexPath: this.props.editorIndexPath }}>
-        {this.props.children}
-      </GlobalContext.Provider>
-    );
-  }
-}
+export const KOGITO_MAIN_CONTAINER_ID = "kogito-container";
+export const KOGITO_TOOLBAR_CONTAINER_ID = "kogito-toolbar-container";
+export const KOGITO_IFRAME_CONTAINER_ID = "kogito-iframe-container";
+export const KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID = "kogito-iframe-fullscreen-container";
+export const KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS = "kogito-view-original-link-container-pr";
+export const KOGITO_TOOLBAR_CONTAINER_PR_CLASS = "kogito-toolbar-container-pr";
+export const KOGITO_IFRAME_CONTAINER_PR_CLASS = "kogito-iframe-container-pr";

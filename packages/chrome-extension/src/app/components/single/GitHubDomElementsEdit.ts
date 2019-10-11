@@ -15,36 +15,37 @@
  */
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
+import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
+import * as dependencies from "../../dependencies";
 
 export class GitHubDomElementsEdit implements GitHubDomElements {
   public toolbarContainer() {
-    const element = () => document.getElementById("kogito-toolbar-container")!;
+    const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`;
+    const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+
     if (!element()) {
-      document
-        .querySelector(".breadcrumb.d-flex.flex-items-center")!
-        .insertAdjacentHTML(
-          "beforeend",
-          `<div id="kogito-toolbar-container" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`
-        );
+      dependencies.singleEdit.toolbarContainer()!.insertAdjacentHTML("beforeend", div);
     }
+
     return element();
   }
 
   public getFileContents() {
-    return Promise.resolve((document.querySelector(".file-editor-textarea")! as HTMLTextAreaElement).value);
+    return Promise.resolve(dependencies.singleEdit.githubTextAreaWithFileContents()!.value);
   }
 
   public githubTextEditorToReplace() {
-    return document.querySelector(".js-code-editor")! as HTMLElement;
+    return dependencies.singleEdit.githubTextEditorToReplace()!;
   }
 
   public iframeContainer() {
-    const element = () => document.getElementById("kogito-iframe-container")!;
+    const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
+    const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+
     if (!element()) {
-      document
-        .querySelector(".file")!
-        .insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" class="edit"></div>`);
+      dependencies.singleEdit.iframeContainer()!.insertAdjacentHTML("afterend", div);
     }
+
     return element();
   }
 }

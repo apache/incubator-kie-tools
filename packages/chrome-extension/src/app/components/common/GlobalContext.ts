@@ -19,8 +19,10 @@ import { Router } from "@kogito-tooling/core-api";
 
 export interface GlobalContextType {
   router: Router;
+  editorIndexPath: string;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({
-  router: undefined as any
+  router: undefined as any,
+  editorIndexPath: "envelope/index.html"
 });
