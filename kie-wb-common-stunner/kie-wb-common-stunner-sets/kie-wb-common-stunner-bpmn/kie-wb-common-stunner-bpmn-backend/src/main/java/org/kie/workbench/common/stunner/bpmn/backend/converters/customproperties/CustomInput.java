@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 
@@ -91,6 +92,10 @@ public class CustomInput<T> {
         List<InputSet> inputSets = ioSpecification.getInputSets();
         if (inputSets.isEmpty()) {
             inputSets.add(bpmn2.createInputSet());
+        }
+        List<OutputSet> outputSets = ioSpecification.getOutputSets();
+        if (outputSets.isEmpty()) {
+            outputSets.add(bpmn2.createOutputSet());
         }
         return ioSpecification;
     }

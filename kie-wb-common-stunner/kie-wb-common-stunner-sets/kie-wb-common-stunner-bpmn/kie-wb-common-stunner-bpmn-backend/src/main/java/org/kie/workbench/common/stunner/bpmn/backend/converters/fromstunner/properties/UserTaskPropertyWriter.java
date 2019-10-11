@@ -133,7 +133,7 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
     public void setActors(Actors actors) {
         for (String actor : fromActorString(actors.getValue())) {
             PotentialOwner potentialOwner = bpmn2.createPotentialOwner();
-            potentialOwner.setId(UUID.randomUUID().toString());
+            potentialOwner.setId("_"+UUID.randomUUID().toString());
 
             FormalExpression formalExpression = bpmn2.createFormalExpression();
             formalExpression.setBody(actor);
