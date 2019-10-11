@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+coverage=$1
 
 . ./hack/go-mod-env.sh
 
@@ -23,4 +24,10 @@ if [[ -z ${CI} ]]; then
     ./hack/addheaders.sh
 fi
 setGoModEnv
-go test -mod=vendor ./pkg/... ./cmd/... -count=1
+
+if [[ "${coverage}" == "true" ]]; then
+  go test -coverprofile cp.out -mod=vendor ./pkg/... ./cmd/... -count=1
+  go tool cover -html=cp.out
+else
+  go test -mod=vendor ./pkg/... ./cmd/... -count=1
+fi
