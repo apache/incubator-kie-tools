@@ -46,13 +46,11 @@ export function PrEditorsApp() {
   const [elements, setElements] = useState(supportedPrFileElements());
 
   const observer = new MutationObserver(mutations => {
-    const a = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []).filter(n => {
+    const newFiles = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []).filter(n => {
       return n instanceof HTMLElement && n.className.includes("js-file");
     });
 
-    console.info(a.length);
-    
-    if (a.length > 0) {
+    if (newFiles.length > 0) {
       setElements(supportedPrFileElements());
     }
   });
@@ -107,23 +105,27 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
       ? () => githubDomElements.getOriginalFileContents()
       : () => githubDomElements.getFileContents();
 
+  const shouldAddLinkToOriginalFile =
+    fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+
   return (
     <IsolatedEditorContext.Provider value={{ textMode: textMode, fullscreen: false }}>
-      {ReactDOM.createPortal(
-        <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
-          View original file
-        </a>,
-        githubDomElements.viewOriginalFileLinkContainer()
-      )}
+      {shouldAddLinkToOriginalFile &&
+        ReactDOM.createPortal(
+          <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
+            View original file
+          </a>,
+          githubDomElements.viewOriginalFileLinkContainer()
+        )}
 
       {ReactDOM.createPortal(
         <PrToolbar
-            fileStatusOnPr={fileStatusOnPr}
-            textMode={textMode}
-            originalDiagram={original}
-            toggleOriginal={() => setOriginal(prev => !prev)}
-            closeDiagram={() => setTextMode(true)}
-            onSeeAsDiagram={() => setTextMode(false)}
+          fileStatusOnPr={fileStatusOnPr}
+          textMode={textMode}
+          originalDiagram={original}
+          toggleOriginal={() => setOriginal(prev => !prev)}
+          closeDiagram={() => setTextMode(true)}
+          onSeeAsDiagram={() => setTextMode(false)}
         />,
         githubDomElements.toolbarContainer()
       )}
