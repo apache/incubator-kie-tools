@@ -93,15 +93,15 @@ async function discoverFileStatusOnPr(githubDomElements: GitHubDomElementsPr) {
 function IsolatedPrEditor(props: { container: HTMLElement }) {
   const githubDomElements = new GitHubDomElementsPr(props.container as HTMLElement);
 
-  const [original, setOriginal] = useState(false);
-  const [textMode, setTextMode] = useState(true);
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [isTextMode, setTextMode] = useState(true);
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
-  useIsolatedEditorTogglingEffect(textMode, githubDomElements);
+  useIsolatedEditorTogglingEffect(isTextMode, githubDomElements);
   useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
 
   const getFileContents =
-    original || fileStatusOnPr === FileStatusOnPr.DELETED
+    showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => githubDomElements.getOriginalFileContents()
       : () => githubDomElements.getFileContents();
 
@@ -109,7 +109,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
 
   return (
-    <IsolatedEditorContext.Provider value={{ textMode: textMode, fullscreen: false }}>
+    <IsolatedEditorContext.Provider value={{ textMode: isTextMode, fullscreen: false }}>
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
@@ -121,9 +121,9 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
       {ReactDOM.createPortal(
         <PrToolbar
           fileStatusOnPr={fileStatusOnPr}
-          textMode={textMode}
-          originalDiagram={original}
-          toggleOriginal={() => setOriginal(prev => !prev)}
+          textMode={isTextMode}
+          originalDiagram={showOriginal}
+          toggleOriginal={() => setShowOriginal(prev => !prev)}
           closeDiagram={() => setTextMode(true)}
           onSeeAsDiagram={() => setTextMode(false)}
         />,
@@ -132,8 +132,8 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
       {ReactDOM.createPortal(
         <IsolatedEditor
-          textMode={textMode}
-          key={`${original}`}
+          textMode={isTextMode}
+          key={`${showOriginal}`}
           getFileContents={getFileContents}
           openFileExtension={getFileExtension(props.container)}
           readonly={true}
