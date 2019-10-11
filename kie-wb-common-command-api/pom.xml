@@ -20,7 +20,7 @@
   <parent>
     <artifactId>kie-wb-common</artifactId>
     <groupId>org.kie.workbench</groupId>
-    <version>7.28.0-SNAPSHOT</version>
+    <version>7.29.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
