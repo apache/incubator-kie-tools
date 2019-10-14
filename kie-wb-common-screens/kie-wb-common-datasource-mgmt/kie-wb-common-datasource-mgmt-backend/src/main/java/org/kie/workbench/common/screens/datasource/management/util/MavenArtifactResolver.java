@@ -51,7 +51,7 @@ public class MavenArtifactResolver {
     public URI resolve(final String groupId,
                        final String artifactId,
                        final String version) throws Exception {
-        return internalResolver(MavenProjectLoader.IS_FORCE_OFFLINE,
+        return internalResolver(MavenProjectLoader.isOffline(),
                                 groupId,
                                 artifactId,
                                 version);
