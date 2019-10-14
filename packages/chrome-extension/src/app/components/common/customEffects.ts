@@ -95,3 +95,20 @@ export function useIsolatedEditorTogglingEffect(
     [textMode]
   );
 }
+
+export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
+  useEffect(() => {
+    let canceled = false;
+    promise().then(arg => {
+      if (canceled) {
+        return;
+      }
+
+      callback(arg);
+    });
+
+    return () => {
+      canceled = true;
+    };
+  }, []);
+}

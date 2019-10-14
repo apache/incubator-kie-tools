@@ -23,14 +23,14 @@ import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { getOriginalFilePath, getUnprocessedFilePath, GitHubDomElementsPr } from "./GitHubDomElementsPr";
 import { GlobalContext } from "../common/GlobalContext";
 import { FileStatusOnPr } from "./FileStatusOnPr";
-import { useInitialAsyncCallEffect } from "../../utils";
-import { Router } from "@kogito-tooling/core-api";
-import * as dependencies__ from "../../dependencies";
 import {
   useEffectAfterFirstRender,
   useEffectWithDependencies,
+  useInitialAsyncCallEffect,
   useIsolatedEditorTogglingEffect
 } from "../common/customEffects";
+import { Router } from "@kogito-tooling/core-api";
+import * as dependencies__ from "../../dependencies";
 import { Feature } from "../common/Feature";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 

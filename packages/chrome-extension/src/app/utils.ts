@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useEffect } from "react";
 import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
 
 export function runScriptOnPage(scriptString: string) {
@@ -116,21 +115,4 @@ function asyncLoop(
 
   //loop
   setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
-}
-
-export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
-  useEffect(() => {
-    let canceled = false;
-    promise().then(arg => {
-      if (canceled) {
-        return;
-      }
-
-      callback(arg);
-    });
-
-    return () => {
-      canceled = true;
-    };
-  }, []);
 }
