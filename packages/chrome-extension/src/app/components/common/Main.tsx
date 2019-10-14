@@ -17,9 +17,12 @@
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
+import * as dependencies from "../../dependencies";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 interface Props {
   router: Router;
+  pageType: GitHubPageType;
   editorIndexPath: string;
 }
 
@@ -28,9 +31,33 @@ export class Main extends React.Component<Props, {}> {
     super(props);
   }
 
+  private getSingleDependencyType() {
+    if (this.props.pageType === GitHubPageType.EDIT) {
+      return dependencies.singleEdit;
+    }
+
+    if (this.props.pageType === GitHubPageType.VIEW) {
+      return dependencies.singleView;
+    }
+
+    if (this.props.pageType === GitHubPageType.PR) {
+      return dependencies.prView;
+    }
+
+    return undefined as any;
+  }
+
   public render() {
+    const common = this.getSingleDependencyType();
+
     return (
-      <GlobalContext.Provider value={{ router: this.props.router, editorIndexPath: this.props.editorIndexPath }}>
+      <GlobalContext.Provider
+        value={{
+          dependencies: { common: {...common, ...dependencies.common}, prView: dependencies.prView },
+          router: this.props.router,
+          editorIndexPath: this.props.editorIndexPath
+        }}
+      >
         {this.props.children}
       </GlobalContext.Provider>
     );

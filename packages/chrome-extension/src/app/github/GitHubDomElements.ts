@@ -15,11 +15,11 @@
  */
 
 export interface GitHubDomElements {
-  toolbarContainer(): Element;
+  toolbarContainer(container: HTMLElement): Element;
 
   getFileContents(): Promise<string | undefined>;
 
   githubTextEditorToReplace(): HTMLElement;
 
-  iframeContainer(): HTMLElement;
+  iframeContainer(container: HTMLElement): HTMLElement;
 }

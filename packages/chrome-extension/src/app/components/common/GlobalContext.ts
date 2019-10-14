@@ -16,13 +16,16 @@
 
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
+import { GlobalDomDependencies } from "../../dependencies";
 
 export interface GlobalContextType {
   router: Router;
   editorIndexPath: string;
+  dependencies: GlobalDomDependencies;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({
   router: undefined as any,
-  editorIndexPath: "envelope/index.html"
+  editorIndexPath: "envelope/index.html",
+  dependencies: {} as any
 });

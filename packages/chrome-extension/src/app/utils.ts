@@ -73,17 +73,17 @@ export function mainContainer() {
   return document.getElementById(KOGITO_MAIN_CONTAINER_ID);
 }
 
-export function createAndGetMainContainer() {
+export function createAndGetMainContainer(container: HTMLElement) {
   if (!mainContainer()) {
-    document.body.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+    container.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
   }
   return mainContainer()!;
 }
 
-export function iframeFullscreenContainer() {
+export function iframeFullscreenContainer(container: HTMLElement) {
   const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
   if (!element()) {
-    document.body.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}"></div>`);
+    container.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}"></div>`);
   }
   return element();
 }

@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useLayoutEffect } from "react";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
+import { useLayoutEffectWithDependencies } from "./useEffectWithDependencies";
 
 export function IsolatedEditor(props: {
   getFileContents: () => Promise<string | undefined>;
@@ -41,15 +41,20 @@ export function IsolatedEditor(props: {
   );
 }
 
-export function useIsolatedEditorTogglingEffect(textMode: boolean, githubDomElements: GitHubDomElements) {
-  useLayoutEffect(
-    () => {
+export function useIsolatedEditorTogglingEffect(textMode: boolean, githubDomElements: GitHubDomElements, container?: HTMLElement) {
+  useLayoutEffectWithDependencies(
+    "Editor toggling effect",
+    dependencies => ({
+      iframeContainer: () => dependencies.common.iframeContainer(),
+      githubTextEditorToReplaceElement: () => dependencies.common.githubTextEditorToReplaceElement(container)
+    }),
+    resolvedDependencies => {
       if (textMode) {
-        githubDomElements.githubTextEditorToReplace().classList.remove("hidden");
-        githubDomElements.iframeContainer().classList.add("hidden");
+        resolvedDependencies.githubTextEditorToReplaceElement()!.classList.remove("hidden");
+        githubDomElements.iframeContainer(resolvedDependencies.iframeContainer()!).classList.add("hidden");
       } else {
-        githubDomElements.githubTextEditorToReplace().classList.add("hidden");
-        githubDomElements.iframeContainer().classList.remove("hidden");
+        resolvedDependencies.githubTextEditorToReplaceElement()!.classList.add("hidden");
+        githubDomElements.iframeContainer(resolvedDependencies.iframeContainer()!).classList.remove("hidden");
       }
     },
     [textMode]

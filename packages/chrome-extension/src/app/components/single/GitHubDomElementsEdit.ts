@@ -19,7 +19,7 @@ import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../c
 import * as dependencies from "../../dependencies";
 
 export class GitHubDomElementsEdit implements GitHubDomElements {
-  public toolbarContainer() {
+  public toolbarContainer(container: HTMLElement) {
     const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`;
     const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
 
@@ -35,15 +35,15 @@ export class GitHubDomElementsEdit implements GitHubDomElements {
   }
 
   public githubTextEditorToReplace() {
-    return dependencies.singleEdit.githubTextEditorToReplace()!;
+    return dependencies.singleEdit.githubTextEditorToReplaceElement()!;
   }
 
-  public iframeContainer() {
+  public iframeContainer(container: HTMLElement) {
     const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
     const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
 
     if (!element()) {
-      dependencies.singleEdit.iframeContainer()!.insertAdjacentHTML("afterend", div);
+      container.insertAdjacentHTML("afterend", div);
     }
 
     return element();

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
 import { PrToolbar } from "./PrToolbar";
@@ -25,15 +25,14 @@ import { GlobalContext } from "../common/GlobalContext";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import { useInitialAsyncCallEffect } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
-import * as dependencies from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
+import { useEffectWithDependencies } from "../common/useEffectWithDependencies";
 
 export function PrEditorsApp() {
   const globalContext = useContext(GlobalContext);
   const [containers, setContainers] = useState(supportedPrFileElements(globalContext.router));
 
-  const mutationObserver = newPrFileContainersMutationObserver(containers, setContainers, globalContext.router);
-  const target = dependencies.prView.mutationObserverTarget()!;
-  useMutationObserverEffect(mutationObserver, target, {
+  useMutationObserverEffect(newPrFileContainersMutationObserver(containers, setContainers, globalContext.router), {
     childList: true,
     subtree: true
   });
@@ -55,7 +54,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
   const [isTextMode, setTextMode] = useState(true);
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
-  useIsolatedEditorTogglingEffect(isTextMode, githubDomElements);
+  useIsolatedEditorTogglingEffect(isTextMode, githubDomElements, props.container);
   useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
 
   const getFileContents =
@@ -148,16 +147,22 @@ function newPrFileContainersMutationObserver(
 }
 
 function supportedPrFileElements(router: Router) {
-  return dependencies.prView
-    .supportedPrFileElements()
+  return dependencies__.prView
+    .supportedPrFileContainers()
     .filter(container => router.getLanguageData(getFileExtension(container)));
 }
 
-function useMutationObserverEffect(observer: MutationObserver, target: HTMLElement, options: MutationObserverInit) {
-  useEffect(() => {
-    observer.observe(target, options);
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
+
+  useEffectWithDependencies(
+    "Mutation observer",
+    dependencies => ({ target: () => dependencies.prView.mutationObserverTarget() }),
+    resolvedDependencies => {
+      observer.observe(resolvedDependencies.target()!, options);
+      return () => {
+        observer.disconnect();
+      };
+    },
+    []
+  );
 }

@@ -23,22 +23,60 @@ import { Router } from "@kogito-tooling/core-api";
 import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
 import { GitHubDomElementsView } from "./GitHubDomElementsView";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
+import * as dependencies from "../../dependencies";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderSingleEditorApp(args: { editorIndexPath: string; router: Router }) {
+  const githubDomElements = new GitHubDomElementsEdit();
+
+  // Checking whether this text editor exists is a good way to determine if the page is "ready",
+  // because that would mean that the user could see the default GitHub page.
+  if (!dependencies.singleEdit.githubTextEditorToReplaceElement()) {
+    console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
+    return false;
+  }
+
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  //FIXME: Unchecked dependency use
+  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleEdit.iframeContainer()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleEdit.toolbarContainer()!));
+  removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
+
   render({
+    pageType: GitHubPageType.EDIT,
     editorIndexPath: args.editorIndexPath,
     router: args.router,
     readonly: false,
-    githubDomElements: new GitHubDomElementsEdit()
+    githubDomElements: githubDomElements
   });
 }
 
 export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; router: Router }) {
+  const githubDomElements = new GitHubDomElementsView();
+
+  // Checking whether this text editor exists is a good way to determine if the page is "ready",
+  // because that would mean that the user could see the default GitHub page.
+  if (!dependencies.singleView.githubTextEditorToReplaceElement()) {
+    console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
+    return false;
+  }
+
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  //FIXME: Unchecked dependency use
+  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleView.iframeContainer()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleView.toolbarContainer()!));
+  removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
+
   render({
+    pageType: GitHubPageType.VIEW,
     editorIndexPath: args.editorIndexPath,
     router: args.router,
     readonly: true,
-    githubDomElements: new GitHubDomElementsView()
+    githubDomElements: githubDomElements
   });
 }
 
@@ -46,6 +84,7 @@ function render(args: {
   editorIndexPath: string;
   router: Router;
   readonly: boolean;
+  pageType: GitHubPageType;
   githubDomElements: GitHubDomElements;
 }) {
   const openFileExtension = extractOpenFileExtension(window.location.href);
@@ -60,24 +99,15 @@ function render(args: {
     return false;
   }
 
-  if (!githubPageLooksReady(args.githubDomElements)) {
-    console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
-    return false;
-  }
-
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanupComponentContainers(args.githubDomElements);
-
   ReactDOM.render(
-    <Main router={args.router} editorIndexPath={args.editorIndexPath}>
+    <Main router={args.router} editorIndexPath={args.editorIndexPath} pageType={args.pageType}>
       <SingleEditorApp
         openFileExtension={openFileExtension}
         githubDomElements={args.githubDomElements}
         readonly={args.readonly}
       />
     </Main>,
-    createAndGetMainContainer(),
+    createAndGetMainContainer(dependencies.common.body()),
     () => console.info("[Kogito] Mounted.")
   );
 }
@@ -99,20 +129,4 @@ export function extractOpenFileExtension(url: string) {
   }
 
   return openFileExtension;
-}
-
-export function cleanupComponentContainers(githubDomElements: GitHubDomElements) {
-  removeAllChildren(githubDomElements.iframeContainer());
-  removeAllChildren(githubDomElements.toolbarContainer());
-  removeAllChildren(iframeFullscreenContainer());
-  removeAllChildren(createAndGetMainContainer());
-}
-
-function githubPageLooksReady(githubDomElements: GitHubDomElements) {
-  /*
-   * Checking whether this text editor exists is a good way to determine if the page is "ready",
-   * because that would mean that the user could see the default GitHub page.
-   */
-
-  return !!githubDomElements.githubTextEditorToReplace();
 }

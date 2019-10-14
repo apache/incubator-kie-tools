@@ -95,7 +95,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
   }
 
   public githubTextEditorToReplace() {
-    return dependencies.prView.githubTextEditorToReplace(this.container) as HTMLElement;
+    return dependencies.prView.githubTextEditorToReplaceElement(this.container) as HTMLElement;
   }
 
   public iframeContainer() {
@@ -142,11 +142,11 @@ export class GitHubDomElementsPr implements GitHubDomElements {
 }
 
 export function getUnprocessedFilePath(container: HTMLElement) {
-  return dependencies.prView.unprocessedFilePath(container).title;
+  return dependencies.prView.unprocessedFilePathElement(container).title;
 }
 
 function getMetaInfo() {
-  return dependencies.prView.getMetaInfo()!.map(e => e.textContent!);
+  return dependencies.prView.getMetaInfoElement()!.map(e => e.textContent!);
 }
 
 export function getOriginalFilePath(container: HTMLElement) {

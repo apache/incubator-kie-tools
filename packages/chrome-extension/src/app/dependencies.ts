@@ -14,33 +14,58 @@
  * limitations under the License.
  */
 
+export type DomDependency = (...args: any[]) => HTMLElement | null;
+
+// tslint:disable-next-line
+export type DomDependencyMap = { [k: string]: DomDependency };
+
+export interface GlobalDomDependencies {
+  prView: typeof prView;
+  common: {
+    body: DomDependency;
+    iframeContainer: DomDependency;
+    toolbarContainer: DomDependency;
+    githubTextEditorToReplaceElement: DomDependency;
+  };
+}
+
 export const singleEdit = {
-  iframeContainer: () => document.querySelector(".file"),
-  toolbarContainer: () => document.querySelector(".breadcrumb.d-flex.flex-items-center"),
-  githubTextEditorToReplace: () => document.querySelector(".js-code-editor") as HTMLElement,
+  iframeContainer: () => document.querySelector(".file") as HTMLElement | null,
+  toolbarContainer: () => document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null,
+  githubTextEditorToReplaceElement: () => document.querySelector(".js-code-editor") as HTMLElement,
+
   githubTextAreaWithFileContents: () => document.querySelector(".file-editor-textarea") as HTMLTextAreaElement
 };
 
 export const singleView = {
-  rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement,
-  iframeContainer: () => document.querySelector(".Box.mt-3.position-relative"),
-  toolbarContainer: () => document.querySelector(".Box.mt-3.position-relative"),
-  githubTextEditorToReplace: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement
+  iframeContainer: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
+  toolbarContainer: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
+  githubTextEditorToReplaceElement: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement,
+
+  rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement
 };
 
 export const prView = {
-  mutationObserverTarget: () => document.getElementById("files"),
-  toolbarContainer: (container: HTMLElement) => container.querySelector(".file-info"),
-  viewOriginalFileLinkContainer: (container: HTMLElement) => container.querySelectorAll("details-menu a")[0],
-  githubTextEditorToReplace: (container: HTMLElement) => container.querySelector(".js-file-content"),
-  supportedPrFileElements: () => {
+  iframeContainer: (container: HTMLElement) => container as HTMLElement | null,
+  toolbarContainer: (container: HTMLElement) => container.querySelector(".file-info") as HTMLElement | null,
+  githubTextEditorToReplaceElement: (container: HTMLElement) => container.querySelector(".js-file-content"),
+
+  mutationObserverTarget: () => document.getElementById("files") as HTMLElement | null,
+  viewOriginalFileLinkContainer: (container: HTMLElement) => {
+    return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement;
+  },
+  supportedPrFileContainers: () => {
     return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
   },
-  unprocessedFilePath: (container: HTMLElement) => {
+  unprocessedFilePathElement: (container: HTMLElement) => {
     return container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement;
   },
-  getMetaInfo: () => {
+  getMetaInfoElement: () => {
     const querySelector = document.querySelector(".gh-header-meta");
     return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
   }
+};
+
+export const common = {
+  body: () => document.body
 };
