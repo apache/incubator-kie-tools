@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -45,6 +46,10 @@ public class AddProjectButtonView implements AddProjectButtonPresenter.View,
     @DataField("other-projects-container")
     UnorderedList otherProjectsContainer;
 
+    @Inject
+    @DataField("other-projects-header")
+    ListItem otherProjectsHeader;
+
     @Override
     public void init(final AddProjectButtonPresenter presenter) {
         this.presenter = presenter;
@@ -56,6 +61,12 @@ public class AddProjectButtonView implements AddProjectButtonPresenter.View,
     public void addOtherProject(final MenuResourceHandlerWidget menuResourceHandlerWidget) {
         otherProjectsContainer.appendChild(menuResourceHandlerWidget.getElement());
     }
+
+    @Override
+    public void addNewMenuItem(final MenuResourceHandlerWidget menuResourceHandlerWidget) {
+        otherProjectsContainer.insertBefore(menuResourceHandlerWidget.getElement(), otherProjectsHeader);
+    }
+
 
     @Override
     public void hideOtherProjects() {

@@ -114,6 +114,8 @@ public class PopulatedLibraryScreen {
     public void setup() {
         view.init(this);
         if (userCanCreateProjects()) {
+            addProjectButtonPresenter.enableTrySamples();
+            addProjectButtonPresenter.enableImportProject();
             view.addAction(addProjectButtonPresenter.getView().getElement());
         }
 

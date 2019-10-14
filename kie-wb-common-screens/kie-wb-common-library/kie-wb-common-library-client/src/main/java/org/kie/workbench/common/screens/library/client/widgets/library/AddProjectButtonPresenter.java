@@ -21,12 +21,14 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
-import org.kie.workbench.common.widgets.client.handlers.NewWorkspaceProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewWorkspaceProjectHandler;
 import org.uberfire.client.mvp.UberElement;
 
 public class AddProjectButtonPresenter {
@@ -36,6 +38,8 @@ public class AddProjectButtonPresenter {
         void addOtherProject(MenuResourceHandlerWidget menuResourceHandlerWidget);
 
         void hideOtherProjects();
+
+        void addNewMenuItem(final MenuResourceHandlerWidget menuResourceHandlerWidget);
     }
 
     private View view;
@@ -52,6 +56,8 @@ public class AddProjectButtonPresenter {
 
     private LibraryPlaces libraryPlaces;
 
+    TranslationService translationService;
+
     @Inject
     public AddProjectButtonPresenter(final View view,
                                      final ManagedInstance<AddProjectPopUpPresenter> addProjectPopUpPresenters,
@@ -59,6 +65,7 @@ public class AddProjectButtonPresenter {
                                      final ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers,
                                      final NewResourcePresenter newResourcePresenter,
                                      final ProjectController projectController,
+                                     final TranslationService translationService,
                                      final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.addProjectPopUpPresenters = addProjectPopUpPresenters;
@@ -66,6 +73,7 @@ public class AddProjectButtonPresenter {
         this.newProjectHandlers = newProjectHandlers;
         this.newResourcePresenter = newResourcePresenter;
         this.projectController = projectController;
+        this.translationService = translationService;
         this.libraryPlaces = libraryPlaces;
     }
 
@@ -113,6 +121,22 @@ public class AddProjectButtonPresenter {
             final AddProjectPopUpPresenter addProjectPopUpPresenter = addProjectPopUpPresenters.get();
             addProjectPopUpPresenter.show();
         }
+    }
+
+    public void enableTrySamples(){
+        final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
+        menuResourceHandlerWidget.init(this.translationService.getTranslation(LibraryConstants.TrySamples),
+                                       () -> libraryPlaces.closeAllPlacesOrNothing(() -> {
+                                               libraryPlaces.goToLibrary();
+                                               libraryPlaces.goToTrySamples();
+                                           }));
+        view.addNewMenuItem(menuResourceHandlerWidget);
+    }
+    public void enableImportProject() {
+        final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
+        menuResourceHandlerWidget.init(this.translationService.getTranslation(LibraryConstants.ImportProject),
+                                       () -> libraryPlaces.goToImportRepositoryPopUp());
+        view.addNewMenuItem(menuResourceHandlerWidget);
     }
 
     public boolean userCanCreateProjects() {

@@ -43,18 +43,6 @@ public class LibraryView implements LibraryScreen.View,
     Div title;
 
     @Inject
-    @DataField("actions")
-    Div actions;
-
-    @Inject
-    @DataField("try-samples")
-    Anchor trySamples;
-
-    @Inject
-    @DataField("import-project")
-    Anchor importProject;
-
-    @Inject
     @DataField("delete-project")
     Anchor deleteProject;
 
@@ -101,21 +89,7 @@ public class LibraryView implements LibraryScreen.View,
         final boolean userCanCreateProjects = presenter.userCanCreateProjects();
         final boolean userCanDeleteOrganizationalUnit = presenter.userCanDeleteOrganizationalUnit();
 
-        trySamples.setHidden(!userCanCreateProjects);
-        importProject.setHidden(!userCanCreateProjects);
         deleteProject.setHidden(!userCanDeleteOrganizationalUnit);
-
-        actions.setHidden(!userCanCreateProjects && !userCanDeleteOrganizationalUnit);
-    }
-
-    @EventHandler("try-samples")
-    public void trySamples(final ClickEvent event) {
-        presenter.trySamples();
-    }
-
-    @EventHandler("import-project")
-    public void importProject(final ClickEvent event) {
-        presenter.importProject();
     }
 
     @EventHandler("delete-project")

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,7 @@ public class AddProjectButtonPresenterTest {
                                                       newProjectHandlers,
                                                       newResourcePresenter,
                                                       projectController,
+                                                      mock(TranslationService.class),
                                                       libraryPlaces));
     }
 
