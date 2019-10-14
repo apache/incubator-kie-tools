@@ -15,9 +15,10 @@
  */
 
 import { DomDependencyMap, GlobalDomDependencies } from "../../dependencies";
-import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect } from "react";
+import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { dependenciesAllSatisfied } from "./Feature";
 import { GlobalContext } from "./GlobalContext";
+import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export function useEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
@@ -35,6 +36,18 @@ export function useLayoutEffectWithDependencies<T extends DomDependencyMap>(
   effectDependencies: DependencyList
 ) {
   use(useLayoutEffect, dependenciesProducer, effect, name, effectDependencies);
+}
+
+export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (!firstRender.current) {
+      func();
+    } else {
+      firstRender.current = false;
+    }
+  }, deps);
 }
 
 function use<T extends DomDependencyMap>(
@@ -57,4 +70,28 @@ function use<T extends DomDependencyMap>(
       };
     }
   }, effectDependencies);
+}
+
+export function useIsolatedEditorTogglingEffect(
+  textMode: boolean,
+  githubDomElements: GitHubDomElements,
+  container?: HTMLElement
+) {
+  useLayoutEffectWithDependencies(
+    "Editor toggling effect",
+    deps => ({
+      iframeContainer: () => deps.common.iframeContainerTarget(container),
+      githubTextEditorToReplaceElement: () => deps.common.githubTextEditorToReplaceElement(container)
+    }),
+    deps => {
+      if (textMode) {
+        deps.githubTextEditorToReplaceElement()!.classList.remove("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.add("hidden");
+      } else {
+        deps.githubTextEditorToReplaceElement()!.classList.add("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.remove("hidden");
+      }
+    },
+    [textMode]
+  );
 }

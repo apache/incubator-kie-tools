@@ -16,22 +16,24 @@
 
 import * as React from "react";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
-import { GitHubDomElements } from "../../github/GitHubDomElements";
-import { useLayoutEffectWithDependencies } from "./useEffectWithDependencies";
+import { IsolatedEditorRef } from "./IsolatedEditorRef";
 
-export function IsolatedEditor(props: {
+interface Props {
   getFileContents: () => Promise<string | undefined>;
   openFileExtension: string;
   readonly: boolean;
   textMode: boolean;
   keepRenderedEditorInTextMode: boolean;
-}) {
+}
+
+const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
   const shouldRenderIframe = (props.keepRenderedEditorInTextMode && props.textMode) || !props.textMode;
 
   return (
     <>
       {shouldRenderIframe && (
         <KogitoEditorIframe
+          ref={forwardedRef}
           openFileExtension={props.openFileExtension}
           getFileContents={props.getFileContents}
           readonly={props.readonly}
@@ -39,28 +41,6 @@ export function IsolatedEditor(props: {
       )}
     </>
   );
-}
+};
 
-export function useIsolatedEditorTogglingEffect(
-  textMode: boolean,
-  githubDomElements: GitHubDomElements,
-  container?: HTMLElement
-) {
-  useLayoutEffectWithDependencies(
-    "Editor toggling effect",
-    deps => ({
-      iframeContainer: () => deps.common.iframeContainerTarget(container),
-      githubTextEditorToReplaceElement: () => deps.common.githubTextEditorToReplaceElement(container)
-    }),
-    deps => {
-      if (textMode) {
-        deps.githubTextEditorToReplaceElement()!.classList.remove("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.add("hidden");
-      } else {
-        deps.githubTextEditorToReplaceElement()!.classList.add("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.remove("hidden");
-      }
-    },
-    [textMode]
-  );
-}
+export const IsolatedEditor = React.forwardRef(RefForwardingIsolatedEditor);

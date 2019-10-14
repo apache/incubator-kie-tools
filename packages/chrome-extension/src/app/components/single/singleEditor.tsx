@@ -23,7 +23,7 @@ import { Router } from "@kogito-tooling/core-api";
 import { GitHubDomElementsEdit } from "./GitHubDomElementsEdit";
 import { GitHubDomElementsView } from "./GitHubDomElementsView";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
-import * as dependencies from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
 import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderSingleEditorApp(args: { editorIndexPath: string; router: Router }) {
@@ -31,7 +31,7 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
 
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
-  if (!dependencies.singleEdit.githubTextEditorToReplaceElement()) {
+  if (!dependencies__.singleEdit.githubTextEditorToReplaceElement()) {
     console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
     return false;
   }
@@ -39,10 +39,10 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleEdit.iframeContainerTarget()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleEdit.toolbarContainerTarget()!));
-  removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
-  removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
+  removeAllChildren(githubDomElements.iframeContainer(dependencies__.singleEdit.iframeContainerTarget()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies__.singleEdit.toolbarContainerTarget()!));
+  removeAllChildren(iframeFullscreenContainer(dependencies__.common.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies__.common.body()));
 
   render({
     pageType: GitHubPageType.EDIT,
@@ -58,7 +58,7 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
 
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
-  if (!dependencies.singleView.githubTextEditorToReplaceElement()) {
+  if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
     console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
     return false;
   }
@@ -66,10 +66,10 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleView.iframeContainerTarget()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleView.toolbarContainerTarget()!));
-  removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
-  removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
+  removeAllChildren(githubDomElements.iframeContainer(dependencies__.singleView.iframeContainerTarget()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies__.singleView.toolbarContainerTarget()!));
+  removeAllChildren(iframeFullscreenContainer(dependencies__.common.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies__.common.body()));
 
   render({
     pageType: GitHubPageType.VIEW,
@@ -107,7 +107,7 @@ function render(args: {
         readonly={args.readonly}
       />
     </Main>,
-    createAndGetMainContainer(dependencies.common.body()),
+    createAndGetMainContainer(dependencies__.common.body()),
     () => console.info("[Kogito] Mounted.")
   );
 }

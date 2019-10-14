@@ -16,16 +16,15 @@
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
-import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
+import { useIsolatedEditorTogglingEffect, useLayoutEffectWithDependencies } from "../common/customEffects";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
-import { GlobalContext } from "../common/GlobalContext";
-import { useLayoutEffectWithDependencies } from "../common/useEffectWithDependencies";
 import { Feature } from "../common/Feature";
+import { IsolatedEditor } from "../common/IsolatedEditor";
 
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   useLayoutEffectWithDependencies(
@@ -47,7 +46,6 @@ export function SingleEditorApp(props: {
   openFileExtension: string;
   readonly: boolean;
 }) {
-  const globalContext = useContext(GlobalContext);
   const [textMode, setTextMode] = useState(false);
   const [textModeEnabled, setTextModeEnabled] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -122,10 +120,7 @@ export function SingleEditorApp(props: {
             name={"Editor"}
             dependencies={deps => ({ container: deps.common.iframeContainerTarget })}
             component={deps =>
-              ReactDOM.createPortal(
-                IsolatedEditorComponent,
-                props.githubDomElements.iframeContainer(deps.container()!)
-              )
+              ReactDOM.createPortal(IsolatedEditorComponent, props.githubDomElements.iframeContainer(deps.container()!))
             }
           />
         )}

@@ -15,26 +15,33 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../../utils";
 import { GlobalContext } from "./GlobalContext";
+import { IsolatedEditorRef } from "./IsolatedEditorRef";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
-export function KogitoEditorIframe(props: {
+interface Props {
   openFileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
-}) {
+}
+
+const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
+  props,
+  forwardedRef
+) => {
+  const ref = useRef<HTMLIFrameElement>(null);
+
   const { router, editorIndexPath } = useContext(GlobalContext);
   const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
-  const ref = useRef<HTMLIFrameElement | null>(null);
   const envelopeBusOuterMessageHandler = useMemo(
-    () =>
-      new EnvelopeBusOuterMessageHandler(
+    () => {
+      return new EnvelopeBusOuterMessageHandler(
         {
           postMessage: msg => {
             if (ref.current && ref.current.contentWindow) {
@@ -75,7 +82,8 @@ export function KogitoEditorIframe(props: {
             }
           }
         })
-      ),
+      );
+    },
     [ref, router, onEditorReady]
   );
 
@@ -96,7 +104,7 @@ export function KogitoEditorIframe(props: {
         .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
         .then(() => {
           task = window.setInterval(
-              () => envelopeBusOuterMessageHandler.request_contentResponse(),
+            () => envelopeBusOuterMessageHandler.request_contentResponse(),
             GITHUB_EDITOR_SYNC_POLLING_INTERVAL
           );
         });
@@ -117,6 +125,23 @@ export function KogitoEditorIframe(props: {
     };
   }, []);
 
+  useImperativeHandle(
+    forwardedRef,
+    () => {
+      if (!ref.current) {
+        return null;
+      }
+
+      return {
+        setContent: (content: string) => {
+          envelopeBusOuterMessageHandler.respond_contentRequest(content);
+          return Promise.resolve();
+        }
+      };
+    },
+    [ref]
+  );
+
   return (
     <iframe
       ref={ref}
@@ -124,4 +149,6 @@ export function KogitoEditorIframe(props: {
       src={router.getRelativePathTo(editorIndexPath)}
     />
   );
-}
+};
+
+export const KogitoEditorIframe = React.forwardRef(RefForwardingKogitoEditorIframe);

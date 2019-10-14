@@ -16,17 +16,17 @@
 
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import {PrEditorsApp} from "./PrEditorsApp";
-import {createAndGetMainContainer, removeAllChildren} from "../../utils";
-import {Router} from "@kogito-tooling/core-api";
-import {Main} from "../common/Main";
+import { PrEditorsApp } from "./PrEditorsApp";
+import { createAndGetMainContainer, removeAllChildren } from "../../utils";
+import { Router } from "@kogito-tooling/core-api";
+import { Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
-import * as dependencies from "../../dependencies";
-import {GitHubPageType} from "../../github/GitHubPageType";
+import * as dependencies__ from "../../dependencies";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -37,7 +37,7 @@ export function renderPrEditorsApp(args: { editorIndexPath: string; router: Rout
     <Main router={args.router} editorIndexPath={args.editorIndexPath} pageType={GitHubPageType.PR}>
       <PrEditorsApp />
     </Main>,
-    createAndGetMainContainer(dependencies.common.body()),
+    createAndGetMainContainer(dependencies__.common.body()),
     () => console.info("[Kogito] Mounted.")
   );
 }

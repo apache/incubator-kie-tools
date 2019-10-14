@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { IsolatedEditor, useIsolatedEditorTogglingEffect } from "../common/IsolatedEditor";
+import { IsolatedEditor } from "../common/IsolatedEditor";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { getOriginalFilePath, getUnprocessedFilePath, GitHubDomElementsPr } from "./GitHubDomElementsPr";
@@ -26,8 +26,13 @@ import { FileStatusOnPr } from "./FileStatusOnPr";
 import { useInitialAsyncCallEffect } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
-import { useEffectWithDependencies } from "../common/useEffectWithDependencies";
+import {
+  useEffectAfterFirstRender,
+  useEffectWithDependencies,
+  useIsolatedEditorTogglingEffect
+} from "../common/customEffects";
 import { Feature } from "../common/Feature";
+import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 
 export function PrEditorsApp() {
   const globalContext = useContext(GlobalContext);
@@ -57,6 +62,16 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
   useIsolatedEditorTogglingEffect(isTextMode, githubDomElements, props.container);
   useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
+  useEffectAfterFirstRender(
+    () => {
+      getFileContents().then(c => {
+        if (ref.current) {
+          ref.current.setContent(c || "");
+        }
+      });
+    },
+    [showOriginal]
+  );
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
@@ -65,6 +80,8 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+
+  const ref = useRef<IsolatedEditorRef>(null);
 
   return (
     <IsolatedEditorContext.Provider value={{ textMode: isTextMode, fullscreen: false }}>
@@ -103,8 +120,8 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
       {ReactDOM.createPortal(
         <IsolatedEditor
+          ref={ref}
           textMode={isTextMode}
-          key={`${showOriginal}`}
           getFileContents={getFileContents}
           openFileExtension={getFileExtension(props.container)}
           readonly={true}
