@@ -125,12 +125,12 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     return `/${org}/${repo}/blob/${branch}/${path}`;
   }
 
-  public viewOriginalFileLinkContainer() {
+  public viewOriginalFileLinkContainer(container: HTMLElement) {
     const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      dependencies.prView.viewOriginalFileLinkContainer(this.container).insertAdjacentHTML("afterend", div);
+      container.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;

@@ -68,13 +68,20 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
   return (
     <IsolatedEditorContext.Provider value={{ textMode: isTextMode, fullscreen: false }}>
-      {shouldAddLinkToOriginalFile &&
-        ReactDOM.createPortal(
-          <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
-            View original file
-          </a>,
-          githubDomElements.viewOriginalFileLinkContainer()
-        )}
+      {shouldAddLinkToOriginalFile && (
+        <Feature
+          name={"Link to original file"}
+          dependencies={deps => ({ container: () => deps.prView.viewOriginalFileLinkContainer(props.container) })}
+          component={deps =>
+            ReactDOM.createPortal(
+              <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
+                View original file
+              </a>,
+              githubDomElements.viewOriginalFileLinkContainer(deps.container()!)
+            )
+          }
+        />
+      )}
 
       <Feature
         name={"Toolbar"}

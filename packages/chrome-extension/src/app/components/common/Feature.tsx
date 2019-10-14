@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {DomDependencyMap, GlobalDomDependencies} from "../../dependencies";
+import { DomDependencyMap, GlobalDomDependencies } from "../../dependencies";
 import * as React from "react";
-import {useContext, useEffect} from "react";
-import {GlobalContext} from "./GlobalContext";
+import { useContext, useEffect } from "react";
+import { GlobalContext } from "./GlobalContext";
 
 export function dependenciesAllSatisfied(dependencies: any) {
   return (
@@ -39,7 +39,7 @@ export function Feature<T extends DomDependencyMap>(props: {
 
   useEffect(() => {
     if (!shouldRender) {
-      console.debug(`[Kogito] Feature "${props.name}" could not be rendered.`);
+      console.debug(`[Kogito] Could not render feature "${props.name}" because its dependencies were not satisfied.`);
     }
   }, []);
 

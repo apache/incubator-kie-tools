@@ -51,7 +51,7 @@ function use<T extends DomDependencyMap>(
     if (dependenciesAllSatisfied(dependencies)) {
       return effect(dependencies);
     } else {
-      console.debug(`Could not use effect '${name}' because one of its dependencies was not satisfied.`);
+      console.debug(`Could not use effect '${name}' because because its dependencies were not satisfied.`);
       return () => {
         /**/
       };
