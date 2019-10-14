@@ -25,7 +25,7 @@ not carry on any of the build tools or artefacts (like local maven repository).
 
 Image location: quay.io/kiegroup/kogito-quarkus-ubi8:latest
 
-For more details have a look at [README.md](kogito-quarkus-ubi8/README.md)
+For more details have a look at [README.md](modules/kogito-quarkus-ubi8/README.md)
 
 ## SpringBoot
 
@@ -36,7 +36,7 @@ with Apache Maven and generate fat jar.
 
 Image location: quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest
 
-For more details have a look at [README.md](kogito-springboot-ubi8-s2i/README.md)
+For more details have a look at [README.md](modules/kogito-springboot-ubi8-s2i/README.md)
 
 ### kogito-springboot-ubi8
 
@@ -47,7 +47,7 @@ not carry on any of the build tools or artefacts (like local maven repository).
 
 Image location: quay.io/kiegroup/kogito-springboot-ubi8:latest
 
-For more details have a look at [README.md](kogito-springboot-ubi8/README.md)
+For more details have a look at [README.md](modules/kogito-springboot-ubi8/README.md)
 
 ## Data Index Service
 
