@@ -94,12 +94,12 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     });
   }
 
-  public iframeContainer() {
+  public iframeContainer(container: HTMLElement) {
     const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
 
     if (!element()!) {
-      this.container.insertAdjacentHTML("beforeend", div);
+      container.insertAdjacentHTML("beforeend", div);
     }
 
     return element() as HTMLElement;

@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useRef } from "react";
-import { IsolatedEditorContext } from "./IsolatedEditorContext";
+import { useContext, useEffect, useRef, useState } from "react";
+import { IsolatedEditorContext, IsolatedEditorContextType } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../../utils";
 import { GlobalContext } from "./GlobalContext";
@@ -24,23 +24,22 @@ import { GlobalContext } from "./GlobalContext";
 const githubCodeMirrorEditorSelector = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
-let prevIsolatedEditorState: any;
-let polling: any;
-
 export function KogitoEditorIframe(props: {
   openFileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
 }) {
-  const isolatedEditorState = useContext(IsolatedEditorContext);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const globalContext = useContext(GlobalContext);
+  const isolatedEditorContext = useContext(IsolatedEditorContext);
+  const ref = useRef<HTMLIFrameElement | null>(null);
+  const [polling, setPolling] = useState<number | undefined>();
+  const [prevIsolatedEditorContext, setPrevIsolatedEditorContext] = useState<IsolatedEditorContextType | undefined>();
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
     {
       postMessage: msg => {
-        if (iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(msg, globalContext.router.getTargetOrigin());
+        if (ref.current && ref.current.contentWindow) {
+          ref.current.contentWindow.postMessage(msg, globalContext.router.getTargetOrigin());
         }
       }
     },
@@ -75,8 +74,8 @@ export function KogitoEditorIframe(props: {
       },
       receive_ready() {
         console.info(`Editor is ready`);
-        if (isolatedEditorState.onEditorReady) {
-          isolatedEditorState.onEditorReady();
+        if (isolatedEditorContext.onEditorReady) {
+          isolatedEditorContext.onEditorReady();
         }
       }
     })
@@ -91,9 +90,11 @@ export function KogitoEditorIframe(props: {
       return;
     }
 
-    polling = setInterval(
-      () => envelopeBusOuterMessageHandler.request_contentResponse(),
-      GITHUB_EDITOR_SYNC_POLLING_INTERVAL
+    setPolling(
+      window.setInterval(
+        () => envelopeBusOuterMessageHandler.request_contentResponse(),
+        GITHUB_EDITOR_SYNC_POLLING_INTERVAL
+      )
     );
   }
 
@@ -103,24 +104,25 @@ export function KogitoEditorIframe(props: {
     }
 
     clearInterval(polling);
-    polling = undefined;
+    setPolling(undefined);
   }
 
   useEffect(
     () => {
-      if (isolatedEditorState.textMode) {
+      console.info("OI");
+      if (isolatedEditorContext.textMode) {
         stopPollingForChangesOnDiagram();
         envelopeBusOuterMessageHandler.request_contentResponse();
-      } else if (prevIsolatedEditorState && prevIsolatedEditorState.textMode !== isolatedEditorState.textMode) {
+      } else if (prevIsolatedEditorContext && prevIsolatedEditorContext.textMode !== isolatedEditorContext.textMode) {
         props
           .getFileContents()
           .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
           .then(startPollingForChangesOnDiagram);
       }
 
-      prevIsolatedEditorState = isolatedEditorState;
+      setPrevIsolatedEditorContext(isolatedEditorContext);
     },
-    [isolatedEditorState]
+    [isolatedEditorContext]
   );
 
   useEffect(() => {
@@ -137,8 +139,8 @@ export function KogitoEditorIframe(props: {
 
   return (
     <iframe
-      ref={iframeRef}
-      className={`kogito-iframe ${isolatedEditorState.fullscreen ? "fullscreen" : "not-fullscreen"}`}
+      ref={ref}
+      className={`kogito-iframe ${isolatedEditorContext.fullscreen ? "fullscreen" : "not-fullscreen"}`}
       src={globalContext.router.getRelativePathTo(globalContext.editorIndexPath)}
     />
   );

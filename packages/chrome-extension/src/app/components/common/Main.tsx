@@ -18,6 +18,7 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import * as dependencies from "../../dependencies";
+import { DomDependency } from "../../dependencies";
 import { GitHubPageType } from "../../github/GitHubPageType";
 
 interface Props {
@@ -31,7 +32,7 @@ export class Main extends React.Component<Props, {}> {
     super(props);
   }
 
-  private getSingleDependencyType() {
+  private getCommonDependency() {
     if (this.props.pageType === GitHubPageType.EDIT) {
       return dependencies.singleEdit;
     }
@@ -44,16 +45,24 @@ export class Main extends React.Component<Props, {}> {
       return dependencies.prView;
     }
 
-    return undefined as any;
+    throw new Error("");
   }
 
   public render() {
-    const common = this.getSingleDependencyType();
+    const common = this.getCommonDependency();
 
     return (
       <GlobalContext.Provider
         value={{
-          dependencies: { common: {...common, ...dependencies.common}, prView: dependencies.prView },
+          dependencies: {
+            common: {
+              body: dependencies.common.body,
+              iframeContainerTarget: common.iframeContainerTarget as DomDependency,
+              toolbarContainerTarget: common.toolbarContainerTarget as DomDependency,
+              githubTextEditorToReplaceElement: common.githubTextEditorToReplaceElement as DomDependency
+            },
+            prView: dependencies.prView
+          },
           router: this.props.router,
           editorIndexPath: this.props.editorIndexPath
         }}

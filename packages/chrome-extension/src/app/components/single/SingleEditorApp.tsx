@@ -76,7 +76,7 @@ export function SingleEditorApp(props: {
       >
         <Feature
           name={"Toolbar container"}
-          dependencies={deps => ({ toolbarContainer: () => deps.common.toolbarContainer() })}
+          dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget() })}
           component={deps => (
             <>
               {ReactDOM.createPortal(
@@ -88,7 +88,7 @@ export function SingleEditorApp(props: {
                   onFullScreen={() => setFullscreen(true)}
                   readonly={props.readonly}
                 />,
-                props.githubDomElements.toolbarContainer(deps.toolbarContainer()!)
+                props.githubDomElements.toolbarContainer(deps.container()!)
               )}
             </>
           )}
@@ -97,11 +97,11 @@ export function SingleEditorApp(props: {
         {fullscreen && (
           <Feature
             name={"Fullscreen toolbar"}
-            dependencies={dependencies => ({ container: dependencies.common.body })}
-            component={resolvedDeps =>
+            dependencies={deps => ({ container: deps.common.body })}
+            component={deps =>
               ReactDOM.createPortal(
                 <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
-                iframeFullscreenContainer(resolvedDeps.container()!)
+                iframeFullscreenContainer(deps.container()!)
               )
             }
           />
@@ -110,9 +110,9 @@ export function SingleEditorApp(props: {
         {fullscreen && (
           <Feature
             name={"Fullscreen editor"}
-            dependencies={dependencies => ({ container: dependencies.common.body })}
-            component={resolvedDeps =>
-              ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(resolvedDeps.container()!))
+            dependencies={deps => ({ container: deps.common.body })}
+            component={deps =>
+              ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(deps.container()!))
             }
           />
         )}
@@ -120,11 +120,11 @@ export function SingleEditorApp(props: {
         {!fullscreen && (
           <Feature
             name={"Editor"}
-            dependencies={dependencies => ({ container: dependencies.common.iframeContainer })}
-            component={resolvedDeps =>
+            dependencies={deps => ({ container: deps.common.iframeContainerTarget })}
+            component={deps =>
               ReactDOM.createPortal(
                 IsolatedEditorComponent,
-                props.githubDomElements.iframeContainer(resolvedDeps.container()!)
+                props.githubDomElements.iframeContainer(deps.container()!)
               )
             }
           />

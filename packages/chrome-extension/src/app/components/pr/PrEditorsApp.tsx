@@ -85,7 +85,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
 
       <Feature
         name={"Toolbar"}
-        dependencies={deps => ({ container: () => deps.common.toolbarContainer(props.container) })}
+        dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.container) })}
         component={deps =>
           ReactDOM.createPortal(
             <PrToolbar
@@ -110,7 +110,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,
-        githubDomElements.iframeContainer()
+        githubDomElements.iframeContainer(props.container)
       )}
     </IsolatedEditorContext.Provider>
   );

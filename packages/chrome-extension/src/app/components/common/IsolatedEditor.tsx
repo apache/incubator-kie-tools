@@ -41,20 +41,24 @@ export function IsolatedEditor(props: {
   );
 }
 
-export function useIsolatedEditorTogglingEffect(textMode: boolean, githubDomElements: GitHubDomElements, container?: HTMLElement) {
+export function useIsolatedEditorTogglingEffect(
+  textMode: boolean,
+  githubDomElements: GitHubDomElements,
+  container?: HTMLElement
+) {
   useLayoutEffectWithDependencies(
     "Editor toggling effect",
-    dependencies => ({
-      iframeContainer: () => dependencies.common.iframeContainer(),
-      githubTextEditorToReplaceElement: () => dependencies.common.githubTextEditorToReplaceElement(container)
+    deps => ({
+      iframeContainer: () => deps.common.iframeContainerTarget(container),
+      githubTextEditorToReplaceElement: () => deps.common.githubTextEditorToReplaceElement(container)
     }),
-    resolvedDependencies => {
+    deps => {
       if (textMode) {
-        resolvedDependencies.githubTextEditorToReplaceElement()!.classList.remove("hidden");
-        githubDomElements.iframeContainer(resolvedDependencies.iframeContainer()!).classList.add("hidden");
+        deps.githubTextEditorToReplaceElement()!.classList.remove("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.add("hidden");
       } else {
-        resolvedDependencies.githubTextEditorToReplaceElement()!.classList.add("hidden");
-        githubDomElements.iframeContainer(resolvedDependencies.iframeContainer()!).classList.remove("hidden");
+        deps.githubTextEditorToReplaceElement()!.classList.add("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.remove("hidden");
       }
     },
     [textMode]

@@ -39,8 +39,8 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleEdit.iframeContainer()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleEdit.toolbarContainer()!));
+  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleEdit.iframeContainerTarget()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleEdit.toolbarContainerTarget()!));
   removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
   removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
 
@@ -66,8 +66,8 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleView.iframeContainer()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleView.toolbarContainer()!));
+  removeAllChildren(githubDomElements.iframeContainer(dependencies.singleView.iframeContainerTarget()!));
+  removeAllChildren(githubDomElements.toolbarContainer(dependencies.singleView.toolbarContainerTarget()!));
   removeAllChildren(iframeFullscreenContainer(dependencies.common.body()));
   removeAllChildren(createAndGetMainContainer(dependencies.common.body()));
 

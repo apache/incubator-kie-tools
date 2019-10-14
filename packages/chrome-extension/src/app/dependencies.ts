@@ -23,31 +23,31 @@ export interface GlobalDomDependencies {
   prView: typeof prView;
   common: {
     body: DomDependency;
-    iframeContainer: DomDependency;
-    toolbarContainer: DomDependency;
+    iframeContainerTarget: DomDependency;
+    toolbarContainerTarget: DomDependency;
     githubTextEditorToReplaceElement: DomDependency;
   };
 }
 
 export const singleEdit = {
-  iframeContainer: () => document.querySelector(".file") as HTMLElement | null,
-  toolbarContainer: () => document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null,
+  iframeContainerTarget: () => document.querySelector(".file") as HTMLElement | null,
+  toolbarContainerTarget: () => document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null,
   githubTextEditorToReplaceElement: () => document.querySelector(".js-code-editor") as HTMLElement,
 
   githubTextAreaWithFileContents: () => document.querySelector(".file-editor-textarea") as HTMLTextAreaElement
 };
 
 export const singleView = {
-  iframeContainer: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
-  toolbarContainer: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
+  iframeContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
+  toolbarContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
   githubTextEditorToReplaceElement: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement,
 
   rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement
 };
 
 export const prView = {
-  iframeContainer: (container: HTMLElement) => container as HTMLElement | null,
-  toolbarContainer: (container: HTMLElement) => container.querySelector(".file-info") as HTMLElement | null,
+  iframeContainerTarget: (container: HTMLElement) => container as HTMLElement | null,
+  toolbarContainerTarget: (container: HTMLElement) => container.querySelector(".file-info") as HTMLElement | null,
   githubTextEditorToReplaceElement: (container: HTMLElement) => container.querySelector(".js-file-content"),
 
   mutationObserverTarget: () => document.getElementById("files") as HTMLElement | null,
