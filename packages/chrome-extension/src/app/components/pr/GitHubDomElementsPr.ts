@@ -94,10 +94,6 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     });
   }
 
-  public githubTextEditorToReplace() {
-    return dependencies.prView.githubTextEditorToReplaceElement(this.container) as HTMLElement;
-  }
-
   public iframeContainer() {
     const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);

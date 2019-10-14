@@ -34,10 +34,6 @@ export class GitHubDomElementsEdit implements GitHubDomElements {
     return Promise.resolve(dependencies.singleEdit.githubTextAreaWithFileContents()!.value);
   }
 
-  public githubTextEditorToReplace() {
-    return dependencies.singleEdit.githubTextEditorToReplaceElement()!;
-  }
-
   public iframeContainer(container: HTMLElement) {
     const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
     const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;

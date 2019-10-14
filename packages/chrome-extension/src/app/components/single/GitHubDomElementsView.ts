@@ -34,10 +34,6 @@ export class GitHubDomElementsView implements GitHubDomElements {
     return fetch(dependencies.singleView.rawUrlLink()!.href).then(res => res.text());
   }
 
-  public githubTextEditorToReplace() {
-    return dependencies.singleView.githubTextEditorToReplaceElement()!;
-  }
-
   public iframeContainer(container: HTMLElement) {
     const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
     const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;

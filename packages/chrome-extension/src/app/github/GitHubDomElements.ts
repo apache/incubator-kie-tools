@@ -19,7 +19,5 @@ export interface GitHubDomElements {
 
   getFileContents(): Promise<string | undefined>;
 
-  githubTextEditorToReplace(): HTMLElement;
-
   iframeContainer(container: HTMLElement): HTMLElement;
 }
