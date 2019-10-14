@@ -10,10 +10,12 @@
 # Configure maven - for a complete list of
 # supported values, please refer the module.yaml
 # file.
+
 CONFIGURE_SCRIPTS=(
-  ${KOGITO_HOME}/.m2/configure-maven.sh
+  ${KOGITO_HOME}/launch/configure-maven.sh
+  ${KOGITO_HOME}/launch/memory-limit.sh
 )
-source ${KOGITO_HOME}/.m2/configure.sh
+source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
 # If the 'kogito-quarkus-ubi8-s2i' assemble script is executed with the '-h' flag, print the usage.
@@ -23,7 +25,7 @@ fi
 
 ######################
 # incremental builds
-# import ${KOGITO_HOME}/.m2/configure-maven.sh
+# import ${KOGITO_HOME}/launch/configure-maven.sh
 manage_incremental_build
 
 echo "---> Installing application source..."
@@ -37,7 +39,7 @@ if [ -f "pom.xml" ]; then
     fi
 
     echo "---> Building application from source..."
-    $MAVEN_HOME/bin/mvn clean package ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
+    $MAVEN_HOME/bin/mvn clean package ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
         -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
         -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 else
@@ -61,10 +63,9 @@ else
     mv project/* .
 
     echo "---> Building application from source..."
-    $MAVEN_HOME/bin/mvn clean package ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
+    $MAVEN_HOME/bin/mvn clean package ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
         -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
         -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
-
 fi
 
 if [ "${NATIVE^^}" == "FALSE" ]; then
@@ -87,5 +88,4 @@ if [ -e /tmp/src/target/image_metadata.json ]; then
 else
     echo "-----> Failed to copy metadata file, /tmp/src/target/image_metadata.json not found."
 fi
-
 

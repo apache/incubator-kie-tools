@@ -2,8 +2,11 @@
 set -e
 
 SOURCES_DIR=/tmp/artifacts
+SCRIPT_DIR=$(dirname $0)
 
 tar xzf ${SOURCES_DIR}/graalvm-ce-linux-amd64-${GRAALVM_VERSION}.tar.gz -C /usr/share
 mv /usr/share/graalvm-ce-${GRAALVM_VERSION} /usr/share/graalvm
+
+cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/
 
 /usr/share/graalvm/bin/gu -L install ${SOURCES_DIR}/native-image-installable-svm-linux-amd64-${GRAALVM_VERSION}.jar

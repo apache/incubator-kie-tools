@@ -9,4 +9,4 @@ mv /usr/share/apache-maven-${MAVEN_VERSION} /usr/share/maven
 
 mkdir ${KOGITO_HOME}/.m2
 cp -v ${SCRIPT_DIR}/maven/* ${KOGITO_HOME}/.m2
-cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/.m2
+cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/

@@ -20,6 +20,7 @@ modules:
   install:
   - name: install-rpm-dependencies
   - name: add-kogito-user
+  - name: kogito-launch
   - name: maven
     version: "3.6.0"
   - name: java-openjdk

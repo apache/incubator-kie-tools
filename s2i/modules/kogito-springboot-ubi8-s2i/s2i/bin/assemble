@@ -11,9 +11,9 @@
 # supported values, please refer the module.yaml
 # file.
 CONFIGURE_SCRIPTS=(
-    ${KOGITO_HOME}/.m2/configure-maven.sh
+    ${KOGITO_HOME}/launch/configure-maven.sh
 )
-source ${KOGITO_HOME}/.m2/configure.sh
+source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
 # If the 'kaas-springboot-centos-s2i' assemble script is executed with the '-h' flag, print the usage.
