@@ -24,7 +24,7 @@ export class GitHubDomElementsEdit implements GitHubDomElements {
     const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
 
     if (!element()) {
-      dependencies.singleEdit.toolbarContainer()!.insertAdjacentHTML("beforeend", div);
+      container.insertAdjacentHTML("beforeend", div);
     }
 
     return element();

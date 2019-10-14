@@ -105,12 +105,12 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     return element() as HTMLElement;
   }
 
-  public toolbarContainer() {
+  public toolbarContainer(container: HTMLElement) {
     const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      dependencies.prView.toolbarContainer(this.container)!.insertAdjacentHTML("afterend", div);
+      container.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;

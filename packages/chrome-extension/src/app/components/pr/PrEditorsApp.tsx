@@ -27,6 +27,7 @@ import { useInitialAsyncCallEffect } from "../../utils";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
 import { useEffectWithDependencies } from "../common/useEffectWithDependencies";
+import { Feature } from "../common/Feature";
 
 export function PrEditorsApp() {
   const globalContext = useContext(GlobalContext);
@@ -75,17 +76,23 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
           githubDomElements.viewOriginalFileLinkContainer()
         )}
 
-      {ReactDOM.createPortal(
-        <PrToolbar
-          fileStatusOnPr={fileStatusOnPr}
-          textMode={isTextMode}
-          originalDiagram={showOriginal}
-          toggleOriginal={() => setShowOriginal(prev => !prev)}
-          closeDiagram={() => setTextMode(true)}
-          onSeeAsDiagram={() => setTextMode(false)}
-        />,
-        githubDomElements.toolbarContainer()
-      )}
+      <Feature
+        name={"Toolbar"}
+        dependencies={deps => ({ container: () => deps.common.toolbarContainer(props.container) })}
+        component={deps =>
+          ReactDOM.createPortal(
+            <PrToolbar
+              fileStatusOnPr={fileStatusOnPr}
+              textMode={isTextMode}
+              originalDiagram={showOriginal}
+              toggleOriginal={() => setShowOriginal(prev => !prev)}
+              closeDiagram={() => setTextMode(true)}
+              onSeeAsDiagram={() => setTextMode(false)}
+            />,
+            githubDomElements.toolbarContainer(deps.container()!)
+          )
+        }
+      />
 
       {ReactDOM.createPortal(
         <IsolatedEditor
@@ -153,7 +160,6 @@ function supportedPrFileElements(router: Router) {
 }
 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
-
   useEffectWithDependencies(
     "Mutation observer",
     dependencies => ({ target: () => dependencies.prView.mutationObserverTarget() }),
