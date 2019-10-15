@@ -75,7 +75,8 @@ export const prView = {
 
 export const array = {
   supportedPrFileContainers: () => {
-    return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
+    const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
+    return elements.length <= 0 ? undefined : elements;
   },
 };
 

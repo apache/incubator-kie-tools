@@ -69,7 +69,7 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
     <IsolatedEditorContext.Provider value={{ textMode: isTextMode, fullscreen: false }}>
       {shouldAddLinkToOriginalFile && (
         <Feature
-          name={"Link to original file"}
+          name={"Link to original PR file"}
           dependencies={deps => ({ container: () => deps.all.pr__viewOriginalFileLinkContainer(props.container) })}
           component={deps =>
             ReactDOM.createPortal(
@@ -83,7 +83,7 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
       )}
 
       <Feature
-        name={"Toolbar"}
+        name={"PR editor toolbar"}
         dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.container) })}
         component={deps =>
           ReactDOM.createPortal(

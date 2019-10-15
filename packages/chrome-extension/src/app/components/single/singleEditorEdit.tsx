@@ -56,7 +56,7 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
   ReactDOM.render(
     <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.singleEdit}>
       <Feature
-        name={"Editor"}
+        name={"Editable editor"}
         dependencies={deps => ({
           fileContents: () => deps.all.edit__githubTextAreaWithFileContents(),
           iframeContainerTarget: () => deps.common.iframeContainerTarget(),

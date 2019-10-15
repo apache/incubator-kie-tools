@@ -25,7 +25,7 @@ import { ResolvedDomDependency } from "../../dependencies";
 import { IsolatedPrEditor } from "./IsolatedPrEditor";
 
 export function PrEditorsApp() {
-  const prFileElements = () => dependencies__.array.supportedPrFileContainers().map(e => ({ name: "", element: e }));
+  const prFileElements = () => dependencies__.array.supportedPrFileContainers()!.map(e => ({ name: "", element: e }));
 
   const globalContext = useContext(GlobalContext);
   const [containers, setContainers] = useState(supportedPrFileElements(prFileElements, globalContext.router));

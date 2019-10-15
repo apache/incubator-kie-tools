@@ -73,25 +73,17 @@ export function SingleEditorApp(props: {
           textMode: textMode
         }}
       >
-        <Feature
-          name={"Toolbar container"}
-          dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget() })}
-          component={deps => (
-            <>
-              {ReactDOM.createPortal(
-                <SingleEditorToolbar
-                  textMode={textMode}
-                  textModeEnabled={textModeEnabled}
-                  onSeeAsDiagram={() => setTextMode(false)}
-                  onSeeAsSource={() => setTextMode(true)}
-                  onFullScreen={() => setFullscreen(true)}
-                  readonly={props.readonly}
-                />,
-                props.toolbarContainer
-              )}
-            </>
-          )}
-        />
+        {ReactDOM.createPortal(
+          <SingleEditorToolbar
+            textMode={textMode}
+            textModeEnabled={textModeEnabled}
+            onSeeAsDiagram={() => setTextMode(false)}
+            onSeeAsSource={() => setTextMode(true)}
+            onFullScreen={() => setFullscreen(true)}
+            readonly={props.readonly}
+          />,
+          props.toolbarContainer
+        )}
 
         {fullscreen && (
           <Feature

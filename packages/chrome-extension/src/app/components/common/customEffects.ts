@@ -73,7 +73,7 @@ export function use<T extends DomDependencyMap>(
 
 export function useIsolatedEditorTogglingEffect(
   textMode: boolean,
-  iframeContainer: (domDependency: ResolvedDomDependency) => HTMLElement,
+  iframeContainer: (container: ResolvedDomDependency) => HTMLElement,
   container?: ResolvedDomDependency
 ) {
   useLayoutEffectWithDependencies(

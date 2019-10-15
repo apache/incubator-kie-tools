@@ -14,83 +14,17 @@
  * limitations under the License.
  */
 
-import * as ReactDOM from "react-dom";
-import { GitHubPageType } from "./app/github/GitHubPageType";
-import { mainContainer, runAfterUriChange } from "./app/utils";
-import { renderSingleEditorApp } from "./app/components/single/singleEditorEditable";
-import { renderPrEditorsApp } from "./app/components/pr/prEditors";
+import { runAfterUriChange } from "./app/utils";
 import { ChromeRouter } from "./app/ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
-import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorReadonly";
-import * as dependencies__ from "./app/dependencies";
+import { startKogitoChromeExtension } from "./index";
 
 function init() {
-  console.info(`[Kogito] ---`);
-  console.info(`[Kogito] Starting GitHub extension.`);
-
-  unmountPreviouslyRenderedFeatures();
-
-  const pageType = discoverCurrentGitHubPageType();
-  if (pageType === GitHubPageType.ANY) {
-    console.info(`[Kogito] This GitHub page is not supported.`);
-    return;
-  }
-
-  const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
-  const editorIndexPath = "envelope/index.html";
-
-  if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({ router: router, editorIndexPath: editorIndexPath });
-    return;
-  }
-
-  if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ router: router, editorIndexPath: editorIndexPath });
-    return;
-  }
-
-  if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({ router: router, editorIndexPath: editorIndexPath });
-    return;
-  }
-
-  throw new Error(`Unknown GitHubPageType ${pageType}`);
+  startKogitoChromeExtension({
+    editorIndexPath: "envelope/index.html",
+    router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }))
+  });
 }
 
 runAfterUriChange(() => setImmediate(init));
 setImmediate(() => init());
-
-function uriMatches(regex: string) {
-  return !!window.location.pathname.match(new RegExp(regex));
-}
-
-function discoverCurrentGitHubPageType() {
-  if (uriMatches(`.*/.*/edit/.*`)) {
-    return GitHubPageType.EDIT;
-  }
-
-  if (uriMatches(`.*/.*/blob/.*`)) {
-    return GitHubPageType.VIEW;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  return GitHubPageType.ANY;
-}
-
-function unmountPreviouslyRenderedFeatures() {
-  try {
-    if (mainContainer({ name: "", element: dependencies__.all.body() })) {
-      ReactDOM.unmountComponentAtNode(mainContainer({ name: "", element: dependencies__.all.body() })!);
-      console.info("[Kogito] Unmounted previous features.");
-    }
-  } catch (e) {
-    console.info("[Kogito] Ignoring exception while unmounting features.");
-  }
-}
