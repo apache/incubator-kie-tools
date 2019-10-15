@@ -17,6 +17,8 @@
 package org.uberfire.ext.widgets.common.client.tables;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwtmockito.GwtMock;
@@ -26,9 +28,19 @@ import org.gwtbootstrap3.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
+import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
+import org.uberfire.ext.services.shared.preferences.UserPreference;
+import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
+import org.uberfire.mocks.CallerMock;
 
+import static org.jgroups.util.Util.assertFalse;
+import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.uberfire.ext.widgets.common.client.tables.PagedTable.DEFAULT_PAGE_SIZE;
 
@@ -41,6 +53,16 @@ public class PagedTableTest {
 
     @GwtMock
     Select select;
+
+    protected CallerMock<UserPreferencesService> userPreferencesService;
+
+    @Mock
+    protected UserPreferencesService userPreferencesServiceMock;
+
+    @Before
+    public void setupMocks() {
+        userPreferencesService = new CallerMock<>(userPreferencesServiceMock);
+    }
 
     @Test
     public void testSetDataProvider() throws Exception {
@@ -163,5 +185,29 @@ public class PagedTableTest {
 
         verify(columnPickerMock).setDefaultColumnWidthSize(150);
         verify(mockElement).setAttribute("style", "min-width:" + minWidth + Style.Unit.PX.getType());
+    }
+
+    @Test
+    public void testPreferencesPersistenceOnChange(){
+        PagedTable pagedTable = new PagedTable();
+        GridPreferencesStore gridPreferencesStore = new GridPreferencesStore(new GridGlobalPreferences("key", null, null));
+        pagedTable.setGridPreferencesStore(gridPreferencesStore);
+        pagedTable.setPreferencesService(userPreferencesService);
+
+        when(select.getValue()).thenReturn("20");
+
+        ArgumentCaptor<ValueChangeHandler> sizeSelectorChangeHandlerArgumentCaptor = ArgumentCaptor.forClass(ValueChangeHandler.class);
+        verify(select).addValueChangeHandler(sizeSelectorChangeHandlerArgumentCaptor.capture());
+
+        pagedTable.setPersistPreferencesOnChange(true);
+        assertTrue(pagedTable.isPersistingPreferencesOnChange());
+        sizeSelectorChangeHandlerArgumentCaptor.getValue().onValueChange(mock(ValueChangeEvent.class));
+        verify(userPreferencesServiceMock).saveUserPreferences(any(UserPreference.class));
+
+        pagedTable.setPersistPreferencesOnChange(false);
+        assertFalse(pagedTable.isPersistingPreferencesOnChange());
+        sizeSelectorChangeHandlerArgumentCaptor.getValue().onValueChange(mock(ValueChangeEvent.class));
+        pagedTable.afterColumnChangedHandler();
+        verifyNoMoreInteractions(userPreferencesServiceMock);
     }
 }

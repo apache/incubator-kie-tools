@@ -142,6 +142,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency><!-- to get CallerMock in unit test-->
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
   <build>

@@ -43,6 +43,8 @@ public class SimpleTable<T>
 
     private static Binder uiBinder = GWT.create(Binder.class);
     private GridPreferencesStore gridPreferencesStore;
+    private boolean persistPreferencesOnChange = true;
+
     @Inject
     private Caller<UserPreferencesService> preferencesService;
 
@@ -61,6 +63,14 @@ public class SimpleTable<T>
         if (gridGlobalPreferences != null) {
             this.gridPreferencesStore = new GridPreferencesStore(gridGlobalPreferences);
         }
+    }
+
+    public void setPersistPreferencesOnChange(boolean persistPreferencesOnChange) {
+        this.persistPreferencesOnChange = persistPreferencesOnChange;
+    }
+
+    public boolean isPersistingPreferencesOnChange() {
+        return persistPreferencesOnChange;
     }
 
     protected void setupColumnPicker() {
@@ -87,7 +97,9 @@ public class SimpleTable<T>
             for (GridColumnPreference gcp : columnsState) {
                 gridPreferencesStore.addGridColumnPreference(gcp);
             }
-            saveGridPreferences();
+            if (isPersistingPreferencesOnChange()) {
+                saveGridPreferences();
+            }
         }
     }
 
@@ -111,8 +123,14 @@ public class SimpleTable<T>
     }
 
     public void saveGridPreferences() {
-        if (gridPreferencesStore != null && preferencesService != null) {
+        if (gridPreferencesStore != null) {
             gridPreferencesStore.setPreferenceKey(gridPreferencesStore.getGlobalPreferences().getKey());
+            saveGridToUserPreferences();
+        }
+    }
+
+    public void saveGridToUserPreferences(){
+        if (preferencesService!=null && gridPreferencesStore != null) {
             gridPreferencesStore.setType(UserPreferencesType.GRIDPREFERENCES);
             preferencesService.call(response -> {
             }).saveUserPreferences(gridPreferencesStore);

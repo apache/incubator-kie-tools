@@ -204,7 +204,9 @@ public class PagedTable<T>
         GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
         if (gridPreferencesStore != null) {
             gridPreferencesStore.setPageSizePreferences(pageSize);
-            super.saveGridPreferences();
+            if (isPersistingPreferencesOnChange()) {
+                super.saveGridPreferences();
+            }
         }
         this.pageSize = pageSize;
     }
