@@ -138,7 +138,7 @@ export class GitHubDomElementsPr {
 }
 
 export function getUnprocessedFilePath(container: ResolvedDomDependency) {
-  return dependencies__.all.unprocessedFilePathElement(container).title;
+  return dependencies__.all.unprocessedFilePathElement(container)!.title;
 }
 
 function getMetaInfo() {

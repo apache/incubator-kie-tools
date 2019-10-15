@@ -96,7 +96,7 @@ function IsolatedPrEditor(props: { container: ResolvedDomDependency }) {
       {shouldAddLinkToOriginalFile && (
         <Feature
           name={"Link to original file"}
-          dependencies={deps => ({ container: () => dependencies__.all.viewOriginalFileLinkContainer(props.container) })}
+          dependencies={deps => ({ container: () => deps.all.viewOriginalFileLinkContainer(props.container) })}
           component={deps =>
             ReactDOM.createPortal(
               <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
@@ -193,12 +193,10 @@ function supportedPrFileElements(prFileElements: () => ResolvedDomDependency[], 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
   useEffectWithDependencies(
     "Mutation observer",
-    dependencies => ({ target: () => dependencies__.all.mutationObserverTarget() }),
-    resolvedDependencies => {
-      observer.observe(resolvedDependencies.target.element, options);
-      return () => {
-        observer.disconnect();
-      };
+    deps => ({ target: () => deps.all.mutationObserverTarget() }),
+    deps => {
+      observer.observe(deps.target.element, options);
+      return () => observer.disconnect();
     },
     []
   );
