@@ -23,12 +23,15 @@ import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
 import { ResolvedDomDependency } from "../../dependencies";
 import { IsolatedPrEditor } from "./IsolatedPrEditor";
+import { Feature } from "../common/Feature";
 
 export function PrEditorsApp() {
   const prFileElements = () => dependencies__.array.supportedPrFileContainers()!.map(e => ({ name: "", element: e }));
 
   const globalContext = useContext(GlobalContext);
-  const [containers, setContainers] = useState(supportedPrFileElements(prFileElements, globalContext.router));
+  const [prFileContainers, setPrFileContainers] = useState(
+    supportedPrFileElements(prFileElements, globalContext.router)
+  );
 
   useMutationObserverEffect(
     new MutationObserver(mutations => {
@@ -39,8 +42,8 @@ export function PrEditorsApp() {
       }
 
       const newContainers = supportedPrFileElements(prFileElements, globalContext.router);
-      if (newContainers.length !== containers.length) {
-        setContainers(newContainers);
+      if (newContainers.length !== prFileContainers.length) {
+        setPrFileContainers(newContainers);
       }
     }),
     {
@@ -51,8 +54,21 @@ export function PrEditorsApp() {
 
   return (
     <>
-      {containers.map(e => (
-        <IsolatedPrEditor key={getUnprocessedFilePath(e)} container={e} fileExtension={getFileExtension(e)} />
+      {prFileContainers.map(container => (
+        <Feature
+          name={`PR editor for ${getUnprocessedFilePath(container)}`}
+          dependencies={deps => ({
+            githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement(container)
+          })}
+          component={resolved => (
+            <IsolatedPrEditor
+                key={getUnprocessedFilePath(container)}
+                prFileContainer={container}
+                fileExtension={getFileExtension(container)}
+                githubTextEditorToReplace={resolved.githubTextEditorToReplace}
+            />
+          )}
+        />
       ))}
     </>
   );

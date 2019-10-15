@@ -142,7 +142,7 @@ export function getUnprocessedFilePath(container: ResolvedDomDependency) {
 }
 
 function getMetaInfo() {
-  return dependencies__.all.pr__getMetaInfoElement()!.map(e => e.textContent!);
+  return dependencies__.array.pr__getMetaInfoElement()!.map(e => e.textContent!);
 }
 
 export function getOriginalFilePath(container: ResolvedDomDependency) {

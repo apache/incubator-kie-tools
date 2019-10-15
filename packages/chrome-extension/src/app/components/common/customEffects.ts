@@ -73,22 +73,17 @@ export function use<T extends DomDependencyMap>(
 
 export function useIsolatedEditorTogglingEffect(
   textMode: boolean,
-  iframeContainer: (container: ResolvedDomDependency) => HTMLElement,
-  container?: ResolvedDomDependency
+  iframeContainer: HTMLElement,
+  githubTextEditorToReplace: HTMLElement,
 ) {
-  useLayoutEffectWithDependencies(
-    "Editor toggling effect",
-    deps => ({
-      iframeContainer: () => deps.common.iframeContainerTarget(container),
-      githubTextEditorToReplaceElement: () => deps.common.githubTextEditorToReplaceElement(container)
-    }),
-    deps => {
+  useLayoutEffect(
+    () => {
       if (textMode) {
-        deps.githubTextEditorToReplaceElement.element.classList.remove("hidden");
-        iframeContainer(deps.iframeContainer).classList.add("hidden");
+        githubTextEditorToReplace.classList.remove("hidden");
+        iframeContainer.classList.add("hidden");
       } else {
-        deps.githubTextEditorToReplaceElement.element.classList.add("hidden");
-        iframeContainer(deps.iframeContainer).classList.remove("hidden");
+        githubTextEditorToReplace.classList.add("hidden");
+        iframeContainer.classList.remove("hidden");
       }
     },
     [textMode]

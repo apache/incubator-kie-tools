@@ -32,15 +32,24 @@ import * as ReactDOM from "react-dom";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditor } from "../common/IsolatedEditor";
 
-export function IsolatedPrEditor(props: { container: ResolvedDomDependency; fileExtension: string }) {
+export function IsolatedPrEditor(props: {
+  prFileContainer: ResolvedDomDependency;
+  fileExtension: string;
+  githubTextEditorToReplace: ResolvedDomDependency;
+}) {
   const globalContext = useContext(GlobalContext);
-  const githubDomElements = new GitHubDomElementsPr(props.container, globalContext.router);
+  const githubDomElements = new GitHubDomElementsPr(props.prFileContainer, globalContext.router);
 
   const [showOriginal, setShowOriginal] = useState(false);
-  const [isTextMode, setTextMode] = useState(true);
+  const [textMode, setTextMode] = useState(true);
+  const [editorReady, setEditorReady] = useState(false);
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
-  useIsolatedEditorTogglingEffect(isTextMode, c => githubDomElements.iframeContainer(c), props.container);
+  useIsolatedEditorTogglingEffect(
+    textMode,
+    githubDomElements.iframeContainer(props.prFileContainer),
+    props.githubTextEditorToReplace.element
+  );
 
   useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
 
@@ -66,17 +75,21 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
   const ref = useRef<IsolatedEditorRef>(null);
 
   return (
-    <IsolatedEditorContext.Provider value={{ textMode: isTextMode, fullscreen: false }}>
+    <IsolatedEditorContext.Provider
+      value={{ textMode: textMode, fullscreen: false, onEditorReady: () => setEditorReady(true) }}
+    >
       {shouldAddLinkToOriginalFile && (
         <Feature
           name={"Link to original PR file"}
-          dependencies={deps => ({ container: () => deps.all.pr__viewOriginalFileLinkContainer(props.container) })}
-          component={deps =>
+          dependencies={deps => ({
+            container: () => deps.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)
+          })}
+          component={resolved =>
             ReactDOM.createPortal(
               <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
                 View original file
               </a>,
-              githubDomElements.viewOriginalFileLinkContainer(deps.container)
+              githubDomElements.viewOriginalFileLinkContainer(resolved.container)
             )
           }
         />
@@ -84,18 +97,19 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
 
       <Feature
         name={"PR editor toolbar"}
-        dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.container) })}
-        component={deps =>
+        dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.prFileContainer) })}
+        component={resolved =>
           ReactDOM.createPortal(
             <PrToolbar
+              showOriginalChangesToggle={editorReady}
               fileStatusOnPr={fileStatusOnPr}
-              textMode={isTextMode}
+              textMode={textMode}
               originalDiagram={showOriginal}
               toggleOriginal={() => setShowOriginal(prev => !prev)}
               closeDiagram={() => setTextMode(true)}
               onSeeAsDiagram={() => setTextMode(false)}
             />,
-            githubDomElements.toolbarContainer(deps.container)
+            githubDomElements.toolbarContainer(resolved.container)
           )
         }
       />
@@ -103,13 +117,13 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
       {ReactDOM.createPortal(
         <IsolatedEditor
           ref={ref}
-          textMode={isTextMode}
+          textMode={textMode}
           getFileContents={getFileContents}
           openFileExtension={props.fileExtension}
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,
-        githubDomElements.iframeContainer(props.container)
+        githubDomElements.iframeContainer(props.prFileContainer)
       )}
     </IsolatedEditorContext.Provider>
   );

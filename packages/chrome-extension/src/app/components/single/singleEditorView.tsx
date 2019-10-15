@@ -60,15 +60,17 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
         dependencies={deps => ({
           rawUrl: () => deps.all.view__rawUrlLink(),
           iframeContainerTarget: () => deps.common.iframeContainerTarget(),
-          toolbarContainerTarget: () => deps.common.toolbarContainerTarget()
+          toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
+          githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
         })}
-        component={deps => (
+        component={resolved => (
           <SingleEditorApp
             readonly={true}
             openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(deps.rawUrl)}
-            iframeContainer={iframeContainer(deps.iframeContainerTarget)}
-            toolbarContainer={toolbarContainer(deps.toolbarContainerTarget)}
+            getFileContents={() => getFileContents(resolved.rawUrl)}
+            iframeContainer={iframeContainer(resolved.iframeContainerTarget)}
+            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget)}
+            githubTextEditorToReplace={resolved.githubTextEditorToReplace}
           />
         )}
       />

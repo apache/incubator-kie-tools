@@ -75,9 +75,16 @@ export const prView = {
 
 export const array = {
   supportedPrFileContainers: () => {
-    const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
+    const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
+      e => e as HTMLElement
+    );
     return elements.length <= 0 ? undefined : elements;
   },
+
+  pr__getMetaInfoElement: () => {
+    const querySelector = document.querySelector(".gh-header-meta");
+    return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
+  }
 };
 
 export const all = {
@@ -98,9 +105,5 @@ export const all = {
   },
   pr__unprocessedFilePathElement: (container: ResolvedDomDependency) => {
     return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
-  },
-  pr__getMetaInfoElement: () => {
-    const querySelector = document.querySelector(".gh-header-meta");
-    return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
   }
 };

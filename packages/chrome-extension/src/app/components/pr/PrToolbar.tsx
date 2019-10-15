@@ -22,6 +22,7 @@ export function PrToolbar(props: {
   toggleOriginal: () => void;
   closeDiagram: () => void;
   textMode: boolean;
+  showOriginalChangesToggle: boolean;
   originalDiagram: boolean;
   fileStatusOnPr: FileStatusOnPr;
 }) {
@@ -55,7 +56,8 @@ export function PrToolbar(props: {
       )}
 
       {!props.textMode &&
-        props.fileStatusOnPr === FileStatusOnPr.CHANGED && (
+        props.fileStatusOnPr === FileStatusOnPr.CHANGED &&
+        props.showOriginalChangesToggle && (
           <div className="BtnGroup mr-1">
             <button
               disabled={props.originalDiagram}
