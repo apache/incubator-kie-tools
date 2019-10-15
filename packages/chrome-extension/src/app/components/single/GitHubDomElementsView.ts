@@ -16,30 +16,31 @@
 
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
-import * as dependencies from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
+import {ResolvedDomDependency} from "../../dependencies";
 
 export class GitHubDomElementsView implements GitHubDomElements {
-  public toolbarContainer(container: HTMLElement) {
+  public toolbarContainer(domDependency: ResolvedDomDependency) {
     const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="view d-flex flex-column flex-items-start flex-md-row"></div>`;
     const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
 
     if (!element()) {
-      container.insertAdjacentHTML("beforebegin", div);
+      domDependency.element.insertAdjacentHTML("beforebegin", div);
     }
 
     return element();
   }
 
   public getFileContents() {
-    return fetch(dependencies.singleView.rawUrlLink()!.href).then(res => res.text());
+    return fetch(dependencies__.singleView.rawUrlLink()!.href).then(res => res.text());
   }
 
-  public iframeContainer(container: HTMLElement) {
+  public iframeContainer(domDependency: ResolvedDomDependency) {
     const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
     const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
 
     if (!element()) {
-      container.insertAdjacentHTML("afterend", div);
+      domDependency.element.insertAdjacentHTML("afterend", div);
     }
 
     return element();

@@ -31,17 +31,23 @@ import {
 } from "../common/customEffects";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
+import { ResolvedDomDependency } from "../../dependencies";
 import { Feature } from "../common/Feature";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 
 export function PrEditorsApp() {
-  const globalContext = useContext(GlobalContext);
-  const [containers, setContainers] = useState(supportedPrFileElements(globalContext.router));
+  const prFileElements = () => dependencies__.prView.supportedPrFileContainers().map(e => ({ name: "", element: e }));
 
-  useMutationObserverEffect(newPrFileContainersMutationObserver(containers, setContainers, globalContext.router), {
-    childList: true,
-    subtree: true
-  });
+  const globalContext = useContext(GlobalContext);
+  const [containers, setContainers] = useState(supportedPrFileElements(prFileElements, globalContext.router));
+
+  useMutationObserverEffect(
+    newPrFileContainersMutationObserver(prFileElements, containers, setContainers, globalContext.router),
+    {
+      childList: true,
+      subtree: true
+    }
+  );
 
   return (
     <>
@@ -52,9 +58,9 @@ export function PrEditorsApp() {
   );
 }
 
-function IsolatedPrEditor(props: { container: HTMLElement }) {
+function IsolatedPrEditor(props: { container: ResolvedDomDependency }) {
   const globalContext = useContext(GlobalContext);
-  const githubDomElements = new GitHubDomElementsPr(props.container as HTMLElement, globalContext.router);
+  const githubDomElements = new GitHubDomElementsPr(props.container, globalContext.router);
 
   const [showOriginal, setShowOriginal] = useState(false);
   const [isTextMode, setTextMode] = useState(true);
@@ -94,7 +100,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
               <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
                 View original file
               </a>,
-              githubDomElements.viewOriginalFileLinkContainer(deps.container()!)
+              githubDomElements.viewOriginalFileLinkContainer(deps.container)
             )
           }
         />
@@ -113,7 +119,7 @@ function IsolatedPrEditor(props: { container: HTMLElement }) {
               closeDiagram={() => setTextMode(true)}
               onSeeAsDiagram={() => setTextMode(false)}
             />,
-            githubDomElements.toolbarContainer(deps.container()!)
+            githubDomElements.toolbarContainer(deps.container)
           )
         }
       />
@@ -152,15 +158,16 @@ async function discoverFileStatusOnPr(githubDomElements: GitHubDomElementsPr) {
   throw new Error("Impossible status for file on PR");
 }
 
-function getFileExtension(container: HTMLElement) {
+function getFileExtension(container: ResolvedDomDependency) {
   return getOriginalFilePath(container)
     .split(".")
     .pop()!;
 }
 
 function newPrFileContainersMutationObserver(
-  containers: HTMLElement[],
-  setContainers: (e: HTMLElement[]) => void,
+  prFileElements: () => ResolvedDomDependency[],
+  containers: ResolvedDomDependency[],
+  setContainers: (e: ResolvedDomDependency[]) => void,
   router: Router
 ) {
   return new MutationObserver(mutations => {
@@ -170,17 +177,15 @@ function newPrFileContainersMutationObserver(
       return;
     }
 
-    const newContainers = supportedPrFileElements(router);
+    const newContainers = supportedPrFileElements(prFileElements, router);
     if (newContainers.length !== containers.length) {
       setContainers(newContainers);
     }
   });
 }
 
-function supportedPrFileElements(router: Router) {
-  return dependencies__.prView
-    .supportedPrFileContainers()
-    .filter(container => router.getLanguageData(getFileExtension(container)));
+function supportedPrFileElements(prFileElements: () => ResolvedDomDependency[], router: Router) {
+  return prFileElements().filter(container => router.getLanguageData(getFileExtension(container)));
 }
 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
@@ -188,7 +193,7 @@ function useMutationObserverEffect(observer: MutationObserver, options: Mutation
     "Mutation observer",
     dependencies => ({ target: () => dependencies.prView.mutationObserverTarget() }),
     resolvedDependencies => {
-      observer.observe(resolvedDependencies.target()!, options);
+      observer.observe(resolvedDependencies.target.element, options);
       return () => {
         observer.disconnect();
       };

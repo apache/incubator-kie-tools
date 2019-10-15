@@ -16,8 +16,13 @@
 
 export type DomDependency = (...args: any[]) => HTMLElement | null;
 
+export interface ResolvedDomDependency {
+  name: string;
+  element: HTMLElement;
+}
+
 // tslint:disable-next-line
-export type DomDependencyMap = { [k: string]: DomDependency };
+export type DomDependencyMap<T = DomDependency> = { [k: string]: T };
 
 export interface GlobalDomDependencies {
   prView: typeof prView;
@@ -46,19 +51,19 @@ export const singleView = {
 };
 
 export const prView = {
-  iframeContainerTarget: (container: HTMLElement) => container as HTMLElement | null,
-  toolbarContainerTarget: (container: HTMLElement) => container.querySelector(".file-info") as HTMLElement | null,
-  githubTextEditorToReplaceElement: (container: HTMLElement) => container.querySelector(".js-file-content"),
+  iframeContainerTarget: (container: ResolvedDomDependency) => container.element as HTMLElement | null,
+  toolbarContainerTarget: (container: ResolvedDomDependency) => container.element.querySelector(".file-info") as HTMLElement | null,
+  githubTextEditorToReplaceElement: (container: ResolvedDomDependency) => container.element.querySelector(".js-file-content"),
 
   mutationObserverTarget: () => document.getElementById("files") as HTMLElement | null,
-  viewOriginalFileLinkContainer: (container: HTMLElement) => {
-    return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement;
+  viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
+    return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement;
   },
   supportedPrFileContainers: () => {
     return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
   },
-  unprocessedFilePathElement: (container: HTMLElement) => {
-    return container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement;
+  unprocessedFilePathElement: (container: ResolvedDomDependency) => {
+    return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement;
   },
   getMetaInfoElement: () => {
     const querySelector = document.querySelector(".gh-header-meta");

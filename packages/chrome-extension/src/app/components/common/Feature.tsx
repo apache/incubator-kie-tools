@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { DomDependencyMap, GlobalDomDependencies } from "../../dependencies";
+import { DomDependencyMap, GlobalDomDependencies, ResolvedDomDependency } from "../../dependencies";
 import * as React from "react";
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "./GlobalContext";
 
-export function dependenciesAllSatisfied(dependencies: any) {
+export function dependenciesAllSatisfied(dependencies: DomDependencyMap) {
   return (
     Object.keys(dependencies)
       .map(k => dependencies[k])
@@ -27,21 +27,27 @@ export function dependenciesAllSatisfied(dependencies: any) {
   );
 }
 
+export function resolve<T extends DomDependencyMap>(deps: T) {
+  return Object.keys(deps).reduce((o, key) => ({ ...o, [key]: { name: key, element: deps[key]()! } }), {}) as {
+    [J in keyof T]: ResolvedDomDependency
+  };
+}
+
 export function Feature<T extends DomDependencyMap>(props: {
   name: string;
   dependencies: (d: GlobalDomDependencies) => T;
-  component: (deps: T) => any;
+  component: (deps: { [J in keyof T]: ResolvedDomDependency }) => any;
 }) {
   const globalContext = useContext(GlobalContext);
-  const shouldRender = dependenciesAllSatisfied(props.dependencies(globalContext.dependencies));
+  const featureDependencies = props.dependencies(globalContext.dependencies);
 
-  //FIXME: Show what dependencies weren't satisfied
-
+  const shouldRender = dependenciesAllSatisfied(featureDependencies);
   useEffect(() => {
     if (!shouldRender) {
+      //FIXME: Show what dependencies weren't satisfied
       console.debug(`[Kogito] Could not render feature "${props.name}" because its dependencies were not satisfied.`);
     }
   }, []);
 
-  return <>{shouldRender && props.component(props.dependencies(globalContext.dependencies))}</>;
+  return <>{shouldRender && props.component(resolve(featureDependencies))}</>;
 }

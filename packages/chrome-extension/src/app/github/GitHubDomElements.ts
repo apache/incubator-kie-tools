@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+import { ResolvedDomDependency } from "../dependencies";
+
 export interface GitHubDomElements {
-  toolbarContainer(container: HTMLElement): Element;
+  toolbarContainer(container: ResolvedDomDependency): Element;
 
   getFileContents(): Promise<string | undefined>;
 
-  iframeContainer(container: HTMLElement): HTMLElement;
+  iframeContainer(container: ResolvedDomDependency): HTMLElement;
 }

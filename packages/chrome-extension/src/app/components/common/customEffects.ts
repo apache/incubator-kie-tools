@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import { DomDependencyMap, GlobalDomDependencies } from "../../dependencies";
+import { DomDependencyMap, GlobalDomDependencies, ResolvedDomDependency } from "../../dependencies";
 import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
-import { dependenciesAllSatisfied } from "./Feature";
+import { dependenciesAllSatisfied, resolve } from "./Feature";
 import { GlobalContext } from "./GlobalContext";
 import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export function useEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: T) => ReturnType<EffectCallback>,
+  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
-  use(useEffect, dependenciesProducer, effect, name, effectDependencies);
+  use(name, useEffect, dependenciesProducer, effect, effectDependencies);
 }
 
 export function useLayoutEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: T) => ReturnType<EffectCallback>,
+  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
-  use(useLayoutEffect, dependenciesProducer, effect, name, effectDependencies);
+  use(name, useLayoutEffect, dependenciesProducer, effect, effectDependencies);
 }
 
 export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
@@ -50,11 +50,11 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
   }, deps);
 }
 
-function use<T extends DomDependencyMap>(
+export function use<T extends DomDependencyMap>(
+  name: string,
   useEffectFunction: typeof useEffect,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: T) => ReturnType<React.EffectCallback>,
-  name: string,
+  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<React.EffectCallback>,
   effectDependencies: React.DependencyList
 ) {
   const globalContext = useContext(GlobalContext);
@@ -62,7 +62,7 @@ function use<T extends DomDependencyMap>(
 
   useEffectFunction(() => {
     if (dependenciesAllSatisfied(dependencies)) {
-      return effect(dependencies);
+      return effect(resolve(dependencies));
     } else {
       console.debug(`Could not use effect '${name}' because because its dependencies were not satisfied.`);
       return () => {
@@ -75,7 +75,7 @@ function use<T extends DomDependencyMap>(
 export function useIsolatedEditorTogglingEffect(
   textMode: boolean,
   githubDomElements: GitHubDomElements,
-  container?: HTMLElement
+  container?: ResolvedDomDependency
 ) {
   useLayoutEffectWithDependencies(
     "Editor toggling effect",
@@ -85,11 +85,11 @@ export function useIsolatedEditorTogglingEffect(
     }),
     deps => {
       if (textMode) {
-        deps.githubTextEditorToReplaceElement()!.classList.remove("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.add("hidden");
+        deps.githubTextEditorToReplaceElement.element.classList.remove("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer).classList.add("hidden");
       } else {
-        deps.githubTextEditorToReplaceElement()!.classList.add("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer()!).classList.remove("hidden");
+        deps.githubTextEditorToReplaceElement.element.classList.add("hidden");
+        githubDomElements.iframeContainer(deps.iframeContainer).classList.remove("hidden");
       }
     },
     [textMode]

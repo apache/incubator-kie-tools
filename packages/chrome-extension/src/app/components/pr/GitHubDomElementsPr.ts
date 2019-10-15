@@ -22,11 +22,12 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
-import * as dependencies from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
+import {ResolvedDomDependency} from "../../dependencies";
 
 export class GitHubDomElementsPr implements GitHubDomElements {
   private readonly router: Router;
-  private readonly container: HTMLElement;
+  private readonly container: ResolvedDomDependency;
   private readonly info: {
     repository: string;
     targetOrganization: string;
@@ -37,7 +38,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     modifiedFilePath: string;
   };
 
-  constructor(container: HTMLElement, router: Router) {
+  constructor(container: ResolvedDomDependency, router: Router) {
     this.router = router;
     this.container = container;
 
@@ -94,23 +95,23 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     });
   }
 
-  public iframeContainer(container: HTMLElement) {
+  public iframeContainer(domDependency: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
-    const element = () => this.container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
+    const element = () => this.container.element.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
 
     if (!element()!) {
-      container.insertAdjacentHTML("beforeend", div);
+      domDependency.element.insertAdjacentHTML("beforeend", div);
     }
 
     return element() as HTMLElement;
   }
 
-  public toolbarContainer(container: HTMLElement) {
+  public toolbarContainer(domDependency: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
-    const element = () => this.container.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
+    const element = () => this.container.element.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      container.insertAdjacentHTML("afterend", div);
+      domDependency.element.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;
@@ -125,27 +126,27 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     return `/${org}/${repo}/blob/${branch}/${path}`;
   }
 
-  public viewOriginalFileLinkContainer(container: HTMLElement) {
+  public viewOriginalFileLinkContainer(domDependency: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
-    const element = () => this.container.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
+    const element = () => this.container.element.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      container.insertAdjacentHTML("afterend", div);
+      domDependency.element.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;
   }
 }
 
-export function getUnprocessedFilePath(container: HTMLElement) {
-  return dependencies.prView.unprocessedFilePathElement(container).title;
+export function getUnprocessedFilePath(container: ResolvedDomDependency) {
+  return dependencies__.prView.unprocessedFilePathElement(container).title;
 }
 
 function getMetaInfo() {
-  return dependencies.prView.getMetaInfoElement()!.map(e => e.textContent!);
+  return dependencies__.prView.getMetaInfoElement()!.map(e => e.textContent!);
 }
 
-export function getOriginalFilePath(container: HTMLElement) {
+export function getOriginalFilePath(container: ResolvedDomDependency) {
   const path = getUnprocessedFilePath(container);
   if (path.includes(GITHUB_RENAMED_FILE_ARROW)) {
     return path.split(` ${GITHUB_RENAMED_FILE_ARROW} `)[0];
@@ -154,7 +155,7 @@ export function getOriginalFilePath(container: HTMLElement) {
   }
 }
 
-export function getModifiedFilePath(container: HTMLElement) {
+export function getModifiedFilePath(container: ResolvedDomDependency) {
   const path = getUnprocessedFilePath(container);
   if (path.includes(GITHUB_RENAMED_FILE_ARROW)) {
     return path.split(` ${GITHUB_RENAMED_FILE_ARROW} `)[1];

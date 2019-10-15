@@ -29,12 +29,12 @@ import { IsolatedEditor } from "../common/IsolatedEditor";
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   useLayoutEffectWithDependencies(
     "Toggle fullscreen",
-    dependencies => ({ body: () => dependencies.common.body() }),
-    resolvedDependencies => {
+    deps => ({ body: () => deps.common.body() }),
+    deps => {
       if (!fullscreen) {
-        iframeFullscreenContainer(resolvedDependencies.body()!).classList.add("hidden");
+        iframeFullscreenContainer(deps.body).classList.add("hidden");
       } else {
-        iframeFullscreenContainer(resolvedDependencies.body()!).classList.remove("hidden");
+        iframeFullscreenContainer(deps.body).classList.remove("hidden");
       }
     },
     [fullscreen]
@@ -86,7 +86,7 @@ export function SingleEditorApp(props: {
                   onFullScreen={() => setFullscreen(true)}
                   readonly={props.readonly}
                 />,
-                props.githubDomElements.toolbarContainer(deps.container()!)
+                props.githubDomElements.toolbarContainer(deps.container)
               )}
             </>
           )}
@@ -99,7 +99,7 @@ export function SingleEditorApp(props: {
             component={deps =>
               ReactDOM.createPortal(
                 <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
-                iframeFullscreenContainer(deps.container()!)
+                iframeFullscreenContainer(deps.container)
               )
             }
           />
@@ -110,7 +110,7 @@ export function SingleEditorApp(props: {
             name={"Fullscreen editor"}
             dependencies={deps => ({ container: deps.common.body })}
             component={deps =>
-              ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(deps.container()!))
+              ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(deps.container))
             }
           />
         )}
@@ -120,7 +120,7 @@ export function SingleEditorApp(props: {
             name={"Editor"}
             dependencies={deps => ({ container: deps.common.iframeContainerTarget })}
             component={deps =>
-              ReactDOM.createPortal(IsolatedEditorComponent, props.githubDomElements.iframeContainer(deps.container()!))
+              ReactDOM.createPortal(IsolatedEditorComponent, props.githubDomElements.iframeContainer(deps.container))
             }
           />
         )}

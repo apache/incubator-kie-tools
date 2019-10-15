@@ -39,9 +39,11 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies__.singleEdit.iframeContainerTarget()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies__.singleEdit.toolbarContainerTarget()!));
-  removeAllChildren(iframeFullscreenContainer(dependencies__.common.body()));
+  removeAllChildren(
+    githubDomElements.iframeContainer({ name: "", element: dependencies__.singleEdit.iframeContainerTarget()! })
+  );
+  removeAllChildren(githubDomElements.toolbarContainer({name: "", element: dependencies__.singleEdit.toolbarContainerTarget()!}));
+  removeAllChildren(iframeFullscreenContainer({name: "", element: dependencies__.common.body()}));
   removeAllChildren(createAndGetMainContainer(dependencies__.common.body()));
 
   render({
@@ -66,9 +68,11 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   //FIXME: Unchecked dependency use
-  removeAllChildren(githubDomElements.iframeContainer(dependencies__.singleView.iframeContainerTarget()!));
-  removeAllChildren(githubDomElements.toolbarContainer(dependencies__.singleView.toolbarContainerTarget()!));
-  removeAllChildren(iframeFullscreenContainer(dependencies__.common.body()));
+  removeAllChildren(
+    githubDomElements.iframeContainer({ name: "", element: dependencies__.singleView.iframeContainerTarget()! })
+  );
+  removeAllChildren(githubDomElements.toolbarContainer({name: "", element: dependencies__.singleView.toolbarContainerTarget()!}));
+  removeAllChildren(iframeFullscreenContainer({name: "", element: dependencies__.common.body()}));
   removeAllChildren(createAndGetMainContainer(dependencies__.common.body()));
 
   render({
