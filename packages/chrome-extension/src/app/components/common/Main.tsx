@@ -18,12 +18,11 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import * as dependencies__ from "../../dependencies";
-import { DomDependency } from "../../dependencies";
-import { GitHubPageType } from "../../github/GitHubPageType";
+import { GlobalCommonDomDependencies } from "../../dependencies";
 
 interface Props {
   router: Router;
-  pageType: GitHubPageType;
+  commonDependencies: GlobalCommonDomDependencies;
   editorIndexPath: string;
 }
 
@@ -32,39 +31,16 @@ export class Main extends React.Component<Props, {}> {
     super(props);
   }
 
-  private getCommonDependency() {
-    if (this.props.pageType === GitHubPageType.EDIT) {
-      return dependencies__.singleEdit;
-    }
-
-    if (this.props.pageType === GitHubPageType.VIEW) {
-      return dependencies__.singleView;
-    }
-
-    if (this.props.pageType === GitHubPageType.PR) {
-      return dependencies__.prView;
-    }
-
-    throw new Error("");
-  }
-
   public render() {
-    const common = this.getCommonDependency();
-
     return (
       <GlobalContext.Provider
         value={{
-          dependencies: {
-            common: {
-              body: dependencies__.common.body,
-              iframeContainerTarget: common.iframeContainerTarget as DomDependency,
-              toolbarContainerTarget: common.toolbarContainerTarget as DomDependency,
-              githubTextEditorToReplaceElement: common.githubTextEditorToReplaceElement as DomDependency
-            },
-            prView: dependencies__.prView
-          },
           router: this.props.router,
-          editorIndexPath: this.props.editorIndexPath
+          editorIndexPath: this.props.editorIndexPath,
+          dependencies: {
+            all: dependencies__.all,
+            common: this.props.commonDependencies
+          }
         }}
       >
         {this.props.children}

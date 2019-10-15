@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "../../github/GitHubDomElements";
 import * as React from "react";
 import { useState } from "react";
 import * as ReactDOM from "react-dom";
@@ -29,7 +28,7 @@ import { IsolatedEditor } from "../common/IsolatedEditor";
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   useLayoutEffectWithDependencies(
     "Toggle fullscreen",
-    deps => ({ body: () => deps.common.body() }),
+    deps => ({ body: () => deps.all.body() }),
     deps => {
       if (!fullscreen) {
         iframeFullscreenContainer(deps.body).classList.add("hidden");
@@ -42,20 +41,22 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
 }
 
 export function SingleEditorApp(props: {
-  githubDomElements: GitHubDomElements;
   openFileExtension: string;
   readonly: boolean;
+  getFileContents: () => Promise<string | undefined>;
+  toolbarContainer: HTMLElement;
+  iframeContainer: HTMLElement;
 }) {
   const [textMode, setTextMode] = useState(false);
   const [textModeEnabled, setTextModeEnabled] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
 
   useFullScreenEditorTogglingEffect(fullscreen);
-  useIsolatedEditorTogglingEffect(textMode, props.githubDomElements);
+  useIsolatedEditorTogglingEffect(textMode, () => props.iframeContainer);
 
   const IsolatedEditorComponent = (
     <IsolatedEditor
-      getFileContents={props.githubDomElements.getFileContents}
+      getFileContents={props.getFileContents}
       openFileExtension={props.openFileExtension}
       textMode={textMode}
       readonly={props.readonly}
@@ -86,7 +87,7 @@ export function SingleEditorApp(props: {
                   onFullScreen={() => setFullscreen(true)}
                   readonly={props.readonly}
                 />,
-                props.githubDomElements.toolbarContainer(deps.container)
+                props.toolbarContainer
               )}
             </>
           )}
@@ -95,7 +96,7 @@ export function SingleEditorApp(props: {
         {fullscreen && (
           <Feature
             name={"Fullscreen toolbar"}
-            dependencies={deps => ({ container: deps.common.body })}
+            dependencies={deps => ({ container: deps.all.body })}
             component={deps =>
               ReactDOM.createPortal(
                 <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
@@ -108,22 +109,14 @@ export function SingleEditorApp(props: {
         {fullscreen && (
           <Feature
             name={"Fullscreen editor"}
-            dependencies={deps => ({ container: deps.common.body })}
+            dependencies={deps => ({ container: deps.all.body })}
             component={deps =>
               ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(deps.container))
             }
           />
         )}
 
-        {!fullscreen && (
-          <Feature
-            name={"Editor"}
-            dependencies={deps => ({ container: deps.common.iframeContainerTarget })}
-            component={deps =>
-              ReactDOM.createPortal(IsolatedEditorComponent, props.githubDomElements.iframeContainer(deps.container))
-            }
-          />
-        )}
+        {!fullscreen && ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
       </IsolatedEditorContext.Provider>
     </>
   );

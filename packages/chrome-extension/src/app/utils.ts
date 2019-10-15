@@ -15,7 +15,7 @@
  */
 
 import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
-import {ResolvedDomDependency} from "./dependencies";
+import { ResolvedDomDependency } from "./dependencies";
 
 export function runScriptOnPage(scriptString: string) {
   const scriptTag = document.createElement("script");
@@ -69,21 +69,24 @@ export function removeAllChildren(node: Node) {
   }
 }
 
-export function mainContainer() {
-  return document.getElementById(KOGITO_MAIN_CONTAINER_ID);
+export function mainContainer(container: ResolvedDomDependency) {
+  return container.element.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
 }
 
-export function createAndGetMainContainer(container: HTMLElement) {
-  if (!mainContainer()) {
-    container.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+export function createAndGetMainContainer(container: ResolvedDomDependency) {
+  if (!mainContainer(container)) {
+    container.element.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
   }
-  return mainContainer()!;
+  return mainContainer(container)!;
 }
 
 export function iframeFullscreenContainer(container: ResolvedDomDependency) {
   const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
   if (!element()) {
-    container.element.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`);
+    container.element.insertAdjacentHTML(
+      "afterbegin",
+      `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
+    );
   }
   return element();
 }
@@ -116,4 +119,23 @@ function asyncLoop(
 
   //loop
   setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
+}
+
+export function extractOpenFileExtension(url: string) {
+  const splitLocationHref = url.split(".").pop();
+  if (!splitLocationHref) {
+    return undefined;
+  }
+
+  const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
+  if (!openFileExtensionRegex) {
+    return undefined;
+  }
+
+  const openFileExtension = openFileExtensionRegex.pop();
+  if (!openFileExtension) {
+    return undefined;
+  }
+
+  return openFileExtension;
 }

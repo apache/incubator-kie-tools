@@ -18,7 +18,6 @@ import { DomDependencyMap, GlobalDomDependencies, ResolvedDomDependency } from "
 import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { dependenciesAllSatisfied, resolve } from "./Feature";
 import { GlobalContext } from "./GlobalContext";
-import { GitHubDomElements } from "../../github/GitHubDomElements";
 
 export function useEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
@@ -74,7 +73,7 @@ export function use<T extends DomDependencyMap>(
 
 export function useIsolatedEditorTogglingEffect(
   textMode: boolean,
-  githubDomElements: GitHubDomElements,
+  iframeContainer: (domDependency: ResolvedDomDependency) => HTMLElement,
   container?: ResolvedDomDependency
 ) {
   useLayoutEffectWithDependencies(
@@ -86,10 +85,10 @@ export function useIsolatedEditorTogglingEffect(
     deps => {
       if (textMode) {
         deps.githubTextEditorToReplaceElement.element.classList.remove("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer).classList.add("hidden");
+        iframeContainer(deps.iframeContainer).classList.add("hidden");
       } else {
         deps.githubTextEditorToReplaceElement.element.classList.add("hidden");
-        githubDomElements.iframeContainer(deps.iframeContainer).classList.remove("hidden");
+        iframeContainer(deps.iframeContainer).classList.remove("hidden");
       }
     },
     [textMode]

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { GitHubDomElements } from "../../github/GitHubDomElements";
 import { Router } from "@kogito-tooling/core-api";
 import {
   GITHUB_RENAMED_FILE_ARROW,
@@ -23,9 +22,9 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import {ResolvedDomDependency} from "../../dependencies";
+import { ResolvedDomDependency } from "../../dependencies";
 
-export class GitHubDomElementsPr implements GitHubDomElements {
+export class GitHubDomElementsPr {
   private readonly router: Router;
   private readonly container: ResolvedDomDependency;
   private readonly info: {
@@ -139,11 +138,11 @@ export class GitHubDomElementsPr implements GitHubDomElements {
 }
 
 export function getUnprocessedFilePath(container: ResolvedDomDependency) {
-  return dependencies__.prView.unprocessedFilePathElement(container).title;
+  return dependencies__.all.unprocessedFilePathElement(container).title;
 }
 
 function getMetaInfo() {
-  return dependencies__.prView.getMetaInfoElement()!.map(e => e.textContent!);
+  return dependencies__.all.getMetaInfoElement()!.map(e => e.textContent!);
 }
 
 export function getOriginalFilePath(container: ResolvedDomDependency) {

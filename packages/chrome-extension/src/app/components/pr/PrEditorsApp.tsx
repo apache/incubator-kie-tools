@@ -36,7 +36,7 @@ import { Feature } from "../common/Feature";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 
 export function PrEditorsApp() {
-  const prFileElements = () => dependencies__.prView.supportedPrFileContainers().map(e => ({ name: "", element: e }));
+  const prFileElements = () => dependencies__.all.supportedPrFileContainers().map(e => ({ name: "", element: e }));
 
   const globalContext = useContext(GlobalContext);
   const [containers, setContainers] = useState(supportedPrFileElements(prFileElements, globalContext.router));
@@ -66,8 +66,10 @@ function IsolatedPrEditor(props: { container: ResolvedDomDependency }) {
   const [isTextMode, setTextMode] = useState(true);
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
-  useIsolatedEditorTogglingEffect(isTextMode, githubDomElements, props.container);
+  useIsolatedEditorTogglingEffect(isTextMode, c => githubDomElements.iframeContainer(c), props.container);
+
   useInitialAsyncCallEffect(() => discoverFileStatusOnPr(githubDomElements), setFileStatusOnPr);
+
   useEffectAfterFirstRender(
     () => {
       getFileContents().then(c => {
@@ -94,7 +96,7 @@ function IsolatedPrEditor(props: { container: ResolvedDomDependency }) {
       {shouldAddLinkToOriginalFile && (
         <Feature
           name={"Link to original file"}
-          dependencies={deps => ({ container: () => deps.prView.viewOriginalFileLinkContainer(props.container) })}
+          dependencies={deps => ({ container: () => dependencies__.all.viewOriginalFileLinkContainer(props.container) })}
           component={deps =>
             ReactDOM.createPortal(
               <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>
@@ -191,7 +193,7 @@ function supportedPrFileElements(prFileElements: () => ResolvedDomDependency[], 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
   useEffectWithDependencies(
     "Mutation observer",
-    dependencies => ({ target: () => dependencies.prView.mutationObserverTarget() }),
+    dependencies => ({ target: () => dependencies__.all.mutationObserverTarget() }),
     resolvedDependencies => {
       observer.observe(resolvedDependencies.target.element, options);
       return () => {

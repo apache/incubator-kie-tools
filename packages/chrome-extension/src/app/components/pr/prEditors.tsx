@@ -26,7 +26,6 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -34,10 +33,10 @@ export function renderPrEditorsApp(args: { editorIndexPath: string; router: Rout
   cleanupComponentContainers();
 
   ReactDOM.render(
-    <Main router={args.router} editorIndexPath={args.editorIndexPath} pageType={GitHubPageType.PR}>
+    <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.prView}>
       <PrEditorsApp />
     </Main>,
-    createAndGetMainContainer(dependencies__.common.body()),
+    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
     () => console.info("[Kogito] Mounted.")
   );
 }

@@ -17,10 +17,12 @@
 import * as ReactDOM from "react-dom";
 import { GitHubPageType } from "./app/github/GitHubPageType";
 import { mainContainer, runAfterUriChange } from "./app/utils";
-import { renderSingleEditorApp, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditor";
+import { renderSingleEditorApp } from "./app/components/single/singleEditorEditable";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { ChromeRouter } from "./app/ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
+import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorReadonly";
+import * as dependencies__ from "./app/dependencies";
 
 function init() {
   console.info(`[Kogito] ---`);
@@ -84,8 +86,8 @@ function discoverCurrentGitHubPageType() {
 
 function unmountPreviouslyRenderedFeatures() {
   try {
-    if (mainContainer()) {
-      ReactDOM.unmountComponentAtNode(mainContainer()!);
+    if (mainContainer({ name: "", element: dependencies__.all.body() })) {
+      ReactDOM.unmountComponentAtNode(mainContainer({ name: "", element: dependencies__.all.body() })!);
       console.info("[Kogito] Unmounted previous features.");
     }
   } catch (e) {

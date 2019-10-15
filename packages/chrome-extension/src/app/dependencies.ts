@@ -25,36 +25,44 @@ export interface ResolvedDomDependency {
 export type DomDependencyMap<T = DomDependency> = { [k: string]: T };
 
 export interface GlobalDomDependencies {
-  prView: typeof prView;
-  common: {
-    body: DomDependency;
-    iframeContainerTarget: DomDependency;
-    toolbarContainerTarget: DomDependency;
-    githubTextEditorToReplaceElement: DomDependency;
-  };
+  common: GlobalCommonDomDependencies;
+  all: typeof all;
+}
+
+export interface GlobalCommonDomDependencies {
+  iframeContainerTarget: DomDependency;
+  toolbarContainerTarget: DomDependency;
+  githubTextEditorToReplaceElement: DomDependency;
 }
 
 export const singleEdit = {
   iframeContainerTarget: () => document.querySelector(".file") as HTMLElement | null,
   toolbarContainerTarget: () => document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null,
-  githubTextEditorToReplaceElement: () => document.querySelector(".js-code-editor") as HTMLElement,
-
-  githubTextAreaWithFileContents: () => document.querySelector(".file-editor-textarea") as HTMLTextAreaElement
+  githubTextEditorToReplaceElement: () => document.querySelector(".js-code-editor") as HTMLElement
 };
 
 export const singleView = {
   iframeContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
   toolbarContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
-  githubTextEditorToReplaceElement: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement,
-
-  rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement
+  githubTextEditorToReplaceElement: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement
 };
 
 export const prView = {
   iframeContainerTarget: (container: ResolvedDomDependency) => container.element as HTMLElement | null,
-  toolbarContainerTarget: (container: ResolvedDomDependency) => container.element.querySelector(".file-info") as HTMLElement | null,
-  githubTextEditorToReplaceElement: (container: ResolvedDomDependency) => container.element.querySelector(".js-file-content"),
+  toolbarContainerTarget: (container: ResolvedDomDependency) => {
+    return container.element.querySelector(".file-info") as HTMLElement | null;
+  },
+  githubTextEditorToReplaceElement: (container: ResolvedDomDependency) => {
+    return container.element.querySelector(".js-file-content") as HTMLElement;
+  }
+};
 
+//
+
+export const all = {
+  body: () => document.body,
+  githubTextAreaWithFileContents: () => document.querySelector(".file-editor-textarea") as HTMLTextAreaElement,
+  rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement,
   mutationObserverTarget: () => document.getElementById("files") as HTMLElement | null,
   viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
     return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement;
@@ -69,8 +77,4 @@ export const prView = {
     const querySelector = document.querySelector(".gh-header-meta");
     return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
   }
-};
-
-export const common = {
-  body: () => document.body
 };

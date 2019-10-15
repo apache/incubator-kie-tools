@@ -38,7 +38,9 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const ref = useRef<HTMLIFrameElement>(null);
 
   const { router, editorIndexPath } = useContext(GlobalContext);
+
   const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+
   const envelopeBusOuterMessageHandler = useMemo(
     () => {
       return new EnvelopeBusOuterMessageHandler(
