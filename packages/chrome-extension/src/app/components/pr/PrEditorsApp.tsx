@@ -16,17 +16,17 @@
 
 import * as React from "react";
 import { useContext, useState } from "react";
-import { getOriginalFilePath, getUnprocessedFilePath } from "./GitHubDomElementsPr";
 import { GlobalContext } from "../common/GlobalContext";
 import { useEffectWithDependencies } from "../common/customEffects";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
 import { ResolvedDomDependency } from "../../dependencies";
-import { IsolatedPrEditor } from "./IsolatedPrEditor";
+import { getOriginalFilePath, IsolatedPrEditor, PrInformation } from "./IsolatedPrEditor";
 import { Feature } from "../common/Feature";
 
-export function PrEditorsApp() {
-  const prFileElements = () => dependencies__.array.supportedPrFileContainers()!.map(e => ({ name: "", element: e }));
+export function PrEditorsApp(props: { prInfo: PrInformation }) {
+  const prFileElements = () =>
+    dependencies__.all.array.supportedPrFileContainers()!.map(e => ({ name: "", element: e }));
 
   const globalContext = useContext(GlobalContext);
   const [prFileContainers, setPrFileContainers] = useState(
@@ -56,16 +56,19 @@ export function PrEditorsApp() {
     <>
       {prFileContainers.map(container => (
         <Feature
-          name={`PR editor for ${getUnprocessedFilePath(container)}`}
+          key={prFileContainers.indexOf(container)}
+          name={`PR editor for file #${prFileContainers.indexOf(container)}`}
           dependencies={deps => ({
-            githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement(container)
+            githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement(container),
+            unprocessedFilePath: () => deps.all.pr__unprocessedFilePathContainer(container)
           })}
           component={resolved => (
             <IsolatedPrEditor
-                key={getUnprocessedFilePath(container)}
-                prFileContainer={container}
-                fileExtension={getFileExtension(container)}
-                githubTextEditorToReplace={resolved.githubTextEditorToReplace}
+              prInfo={props.prInfo}
+              prFileContainer={container}
+              fileExtension={getFileExtension(container)}
+              unprocessedFilePath={getUnprocessedFilePath(resolved.unprocessedFilePath as ResolvedDomDependency)}
+              githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
             />
           )}
         />
@@ -83,15 +86,26 @@ function useMutationObserverEffect(observer: MutationObserver, options: Mutation
     "PR files mutation observer",
     deps => ({ target: () => deps.all.pr__mutationObserverTarget() }),
     deps => {
-      observer.observe(deps.target.element, options);
+      observer.observe((deps.target as ResolvedDomDependency).element, options);
       return () => observer.disconnect();
     },
     []
   );
 }
 
-function getFileExtension(container: ResolvedDomDependency) {
-  return getOriginalFilePath(container)
+function getFileExtension(prFileContainer: ResolvedDomDependency) {
+  const element = dependencies__.all.pr__unprocessedFilePathContainer(prFileContainer)!;
+  if (!element) {
+    console.error("Could not find file name here...", prFileContainer);
+    return "";
+  }
+
+  const unprocessedFilePath = getUnprocessedFilePath({ name: "", element: element });
+  return getOriginalFilePath(unprocessedFilePath)
     .split(".")
     .pop()!;
+}
+
+export function getUnprocessedFilePath(container: ResolvedDomDependency) {
+  return container.element.title;
 }

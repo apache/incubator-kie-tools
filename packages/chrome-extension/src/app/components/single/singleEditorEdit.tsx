@@ -67,10 +67,10 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
           <SingleEditorApp
             readonly={false}
             openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(resolved.fileContents)}
-            iframeContainer={iframeContainer(resolved.iframeContainerTarget)}
-            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget)}
-            githubTextEditorToReplace={resolved.githubTextEditorToReplace}
+            getFileContents={() => getFileContents(resolved.fileContents as ResolvedDomDependency)}
+            iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
+            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
+            githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
           />
         )}
       />

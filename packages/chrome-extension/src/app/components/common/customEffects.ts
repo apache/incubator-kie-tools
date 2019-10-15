@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-import { DomDependencyMap, GlobalDomDependencies, ResolvedDomDependency } from "../../dependencies";
+import {
+  dependenciesAllSatisfied,
+  DomDependencyMap,
+  GlobalDomDependencies,
+  ResolvedDomDependency,
+  ResolvedDomDependencyArray,
+  resolveDependencies
+} from "../../dependencies";
 import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
-import { dependenciesAllSatisfied, resolve } from "./Feature";
 import { GlobalContext } from "./GlobalContext";
 
 export function useEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<EffectCallback>,
+  effect: (
+    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
+  ) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
   use(name, useEffect, dependenciesProducer, effect, effectDependencies);
@@ -31,7 +39,9 @@ export function useEffectWithDependencies<T extends DomDependencyMap>(
 export function useLayoutEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<EffectCallback>,
+  effect: (
+    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
+  ) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
   use(name, useLayoutEffect, dependenciesProducer, effect, effectDependencies);
@@ -53,7 +63,9 @@ export function use<T extends DomDependencyMap>(
   name: string,
   useEffectFunction: typeof useEffect,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: ResolvedDomDependency }) => ReturnType<React.EffectCallback>,
+  effect: (
+    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
+  ) => ReturnType<React.EffectCallback>,
   effectDependencies: React.DependencyList
 ) {
   const globalContext = useContext(GlobalContext);
@@ -61,7 +73,7 @@ export function use<T extends DomDependencyMap>(
 
   useEffectFunction(() => {
     if (dependenciesAllSatisfied(dependencies)) {
-      return effect(resolve(dependencies));
+      return effect(resolveDependencies(dependencies));
     } else {
       console.debug(`Could not use effect '${name}' because because its dependencies were not satisfied.`);
       return () => {
@@ -74,7 +86,7 @@ export function use<T extends DomDependencyMap>(
 export function useIsolatedEditorTogglingEffect(
   textMode: boolean,
   iframeContainer: HTMLElement,
-  githubTextEditorToReplace: HTMLElement,
+  githubTextEditorToReplace: HTMLElement
 ) {
   useLayoutEffect(
     () => {

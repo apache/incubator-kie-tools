@@ -26,6 +26,9 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
+import { ResolvedDomDependencyArray } from "../../dependencies";
+import { Feature } from "../common/Feature";
+import { PrInformation } from "./IsolatedPrEditor";
 
 export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -34,11 +37,44 @@ export function renderPrEditorsApp(args: { editorIndexPath: string; router: Rout
 
   ReactDOM.render(
     <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.prView}>
-      <PrEditorsApp />
+      <Feature
+        name={"Editors directly on PR screen"}
+        dependencies={deps => ({ prInfoContainer: () => deps.all.array.pr__prInfoContainer() })}
+        component={resolved => (
+          <PrEditorsApp prInfo={parsePrInfo(resolved.prInfoContainer as ResolvedDomDependencyArray)} />
+        )}
+      />
     </Main>,
     createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
     () => console.info("[Kogito] Mounted.")
   );
+}
+
+function parsePrInfo(prInfoContainer: ResolvedDomDependencyArray): PrInformation {
+  const prInfos = prInfoContainer.element.map(e => e.textContent!);
+
+  const targetOrganization = window.location.pathname.split("/")[1];
+  const repository = window.location.pathname.split("/")[2];
+
+  // PR is within the same organization
+  if (prInfos.length < 6) {
+    return {
+      repository: repository,
+      targetOrganization: targetOrganization,
+      targetGitReference: prInfos[1],
+      organization: targetOrganization,
+      gitReference: prInfos[3]
+    };
+  }
+
+  // PR is from a fork to an upstream
+  return {
+    repository: repository,
+    targetOrganization: targetOrganization,
+    targetGitReference: prInfos[2],
+    organization: prInfos[4],
+    gitReference: prInfos[5]
+  };
 }
 
 function cleanup() {

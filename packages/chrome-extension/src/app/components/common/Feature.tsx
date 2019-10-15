@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-import { DomDependencyMap, GlobalDomDependencies, ResolvedDomDependency } from "../../dependencies";
+import {
+  dependenciesAllSatisfied,
+  DomDependencyMap,
+  GlobalDomDependencies,
+  ResolvedDomDependency,
+  ResolvedDomDependencyArray,
+  resolveDependencies
+} from "../../dependencies";
 import * as React from "react";
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "./GlobalContext";
 
-export function dependenciesAllSatisfied(dependencies: DomDependencyMap) {
-  return (
-    Object.keys(dependencies)
-      .map(k => dependencies[k])
-      .filter(d => !!d()).length > 0
-  );
-}
-
-export function resolve<T extends DomDependencyMap>(deps: T) {
-  return Object.keys(deps).reduce((o, key) => ({ ...o, [key]: { name: key, element: deps[key]()! } }), {}) as {
-    [J in keyof T]: ResolvedDomDependency
-  };
-}
-
 export function Feature<T extends DomDependencyMap>(props: {
   name: string;
   dependencies: (d: GlobalDomDependencies) => T;
-  component: (deps: { [J in keyof T]: ResolvedDomDependency }) => any;
+  component: (deps: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }) => any;
 }) {
   const globalContext = useContext(GlobalContext);
   const featureDependencies = props.dependencies(globalContext.dependencies);
@@ -49,5 +42,5 @@ export function Feature<T extends DomDependencyMap>(props: {
     }
   }, []);
 
-  return <>{shouldRender && props.component(resolve(featureDependencies))}</>;
+  return <>{shouldRender && props.component(resolveDependencies(featureDependencies))}</>;
 }

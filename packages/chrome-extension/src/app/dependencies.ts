@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-export type DomDependency = (...args: any[]) => HTMLElement | null;
+export type DomDependency = (...args: any[]) => HTMLElement | HTMLElement[] | null;
 
 export interface ResolvedDomDependency {
   name: string;
   element: HTMLElement;
 }
 
-// tslint:disable-next-line
-export type DomDependencyMap<T = DomDependency> = { [k: string]: T };
+export interface ResolvedDomDependencyArray {
+  name: string;
+  element: HTMLElement[];
+}
+
+export interface DomDependencyMap {
+  [k: string]: DomDependency;
+}
 
 export interface GlobalDomDependencies {
   common: GlobalCommonDomDependencies;
@@ -73,20 +79,6 @@ export const prView = {
 
 //
 
-export const array = {
-  supportedPrFileContainers: () => {
-    const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
-      e => e as HTMLElement
-    );
-    return elements.length <= 0 ? undefined : elements;
-  },
-
-  pr__getMetaInfoElement: () => {
-    const querySelector = document.querySelector(".gh-header-meta");
-    return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
-  }
-};
-
 export const all = {
   body: () => {
     return document.body;
@@ -103,7 +95,36 @@ export const all = {
   pr__viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
     return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
   },
-  pr__unprocessedFilePathElement: (container: ResolvedDomDependency) => {
+  pr__unprocessedFilePathContainer: (container: ResolvedDomDependency) => {
     return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
+  },
+
+  array: {
+    supportedPrFileContainers: () => {
+      const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
+        e => e as HTMLElement
+      );
+      return elements.length > 0 ? elements as HTMLElement[]: null;
+    },
+
+    pr__prInfoContainer: () => {
+      const elements = Array.from(document.querySelectorAll(".gh-header-meta .css-truncate-target"));
+      return elements.length > 0 ? elements as HTMLElement[]: null;
+    }
   }
 };
+
+
+export function dependenciesAllSatisfied(dependencies: DomDependencyMap) {
+  return (
+      Object.keys(dependencies)
+          .map(k => dependencies[k])
+          .filter(d => !!d()).length > 0
+  );
+}
+
+export function resolveDependencies<T extends DomDependencyMap>(deps: T) {
+  return Object.keys(deps).reduce((o, key) => ({ ...o, [key]: { name: key, element: deps[key]()! } }), {}) as {
+    [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray
+  };
+}

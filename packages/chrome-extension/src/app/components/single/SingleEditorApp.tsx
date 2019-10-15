@@ -32,9 +32,9 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
     deps => ({ body: () => deps.all.body() }),
     deps => {
       if (!fullscreen) {
-        iframeFullscreenContainer(deps.body).classList.add("hidden");
+        iframeFullscreenContainer(deps.body as ResolvedDomDependency).classList.add("hidden");
       } else {
-        iframeFullscreenContainer(deps.body).classList.remove("hidden");
+        iframeFullscreenContainer(deps.body as ResolvedDomDependency).classList.remove("hidden");
       }
     },
     [fullscreen]
@@ -100,9 +100,9 @@ export function SingleEditorApp(props: {
               <>
                 {ReactDOM.createPortal(
                   <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
-                  iframeFullscreenContainer(resolved.container)
+                  iframeFullscreenContainer(resolved.container as ResolvedDomDependency)
                 )}
-                {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(resolved.container))}
+                {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(resolved.container as ResolvedDomDependency))}
               </>
             )}
           />
