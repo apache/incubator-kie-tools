@@ -14,14 +14,13 @@ Feature: Kogito-quarkus-ubi8 feature.
 
   Scenario: verify if the binary index is available on /home/kogito
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-0.4.0-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-0.5.0-runner.jar
 
   Scenario: Verify data-index default configuration
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain Listening on: http://0.0.0.0:8180
-    And container log should contain infinispan_useauth = false
+    Then container log should contain infinispan_useauth = false
 
   Scenario: verify if auth is correctly set
     When container is started with env
@@ -30,8 +29,7 @@ Feature: Kogito-quarkus-ubi8 feature.
       | INFINISPAN_USEAUTH  | true        |
       | INFINISPAN_USERNAME | IamNotExist |
       | INFINISPAN_PASSWORD | hard2guess  |
-    Then container log should contain Listening on: http://0.0.0.0:8180
-    And container log should contain infinispan_useauth = true
+    Then container log should contain infinispan_useauth = true
     And container log should contain infinispan_password = hard2guess
     And container log should contain infinispan_username = IamNotExist
 
@@ -44,8 +42,7 @@ Feature: Kogito-quarkus-ubi8 feature.
       | INFINISPAN_PASSWORD      | hard2guess  |
       | INFINISPAN_AUTHREALM     | SecretRealm |
       | INFINISPAN_SASLMECHANISM | COOLGSSAPI  |
-    Then container log should contain Listening on: http://0.0.0.0:8180
-    And container log should contain infinispan_useauth = true
+    Then container log should contain infinispan_useauth = true
     And container log should contain infinispan_password = hard2guess
     And container log should contain infinispan_username = IamNotExist
     And container log should contain infinispan_authrealm = SecretRealm

@@ -3,9 +3,9 @@ name: kogito-data-index
 version: "0.5.0"
 
 artifacts:
-- name: data-index-service-0.4.0-runner.jar
-  url: https://repo.maven.apache.org/maven2/org/kie/kogito/data-index-service/0.4.0/data-index-service-0.4.0-runner.jar
-  md5: f13b55e7b9e1dc3f8ee106bf4d655e51
+- name: data-index-service-0.5.0-runner.jar
+  url: https://repo.maven.apache.org/maven2/org/kie/kogito/data-index-service/0.5.0/data-index-service-0.5.0-runner.jar
+  md5: 1e71c52ffe16ad07481c790d80609e58
 
 execute:
 - script: configure
