@@ -30,7 +30,7 @@ import * as dependencies__ from "../../dependencies";
 export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanupComponentContainers();
+  cleanup();
 
   ReactDOM.render(
     <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.prView}>
@@ -41,7 +41,7 @@ export function renderPrEditorsApp(args: { editorIndexPath: string; router: Rout
   );
 }
 
-function cleanupComponentContainers() {
+function cleanup() {
   Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`)).forEach(e => {
     removeAllChildren(e);
   });

@@ -94,23 +94,23 @@ export class GitHubDomElementsPr {
     });
   }
 
-  public iframeContainer(domDependency: ResolvedDomDependency) {
+  public iframeContainer(container: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.element.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
 
     if (!element()!) {
-      domDependency.element.insertAdjacentHTML("beforeend", div);
+      container.element.insertAdjacentHTML("beforeend", div);
     }
 
     return element() as HTMLElement;
   }
 
-  public toolbarContainer(domDependency: ResolvedDomDependency) {
+  public toolbarContainer(container: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.element.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      domDependency.element.insertAdjacentHTML("afterend", div);
+      container.element.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;
@@ -125,12 +125,12 @@ export class GitHubDomElementsPr {
     return `/${org}/${repo}/blob/${branch}/${path}`;
   }
 
-  public viewOriginalFileLinkContainer(domDependency: ResolvedDomDependency) {
+  public viewOriginalFileLinkContainer(container: ResolvedDomDependency) {
     const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
     const element = () => this.container.element.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
 
     if (!element()) {
-      domDependency.element.insertAdjacentHTML("afterend", div);
+      container.element.insertAdjacentHTML("afterend", div);
     }
 
     return element()!;

@@ -73,6 +73,12 @@ export const prView = {
 
 //
 
+export const array = {
+  supportedPrFileContainers: () => {
+    return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
+  },
+};
+
 export const all = {
   body: () => {
     return document.body;
@@ -91,9 +97,6 @@ export const all = {
   },
   unprocessedFilePathElement: (container: ResolvedDomDependency) => {
     return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
-  },
-  supportedPrFileContainers: () => {
-    return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
   },
   getMetaInfoElement: () => {
     const querySelector = document.querySelector(".gh-header-meta");
