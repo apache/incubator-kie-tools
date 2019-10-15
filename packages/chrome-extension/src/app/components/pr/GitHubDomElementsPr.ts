@@ -78,7 +78,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const branch = this.info.gitReference;
     const path = this.info.modifiedFilePath;
 
-    return fetch(`${this.router.getTargetOrigin()}/${org}/${repo}/${branch}/${path}`).then(res => {
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
       return res.ok ? res.text() : Promise.resolve(undefined);
     });
   }
@@ -89,7 +89,7 @@ export class GitHubDomElementsPr implements GitHubDomElements {
     const branch = this.info.targetGitReference;
     const path = this.info.originalFilePath;
 
-    return fetch(`${this.router.getTargetOrigin()}/${org}/${repo}/${branch}/${path}`).then(res => {
+    return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${path}`).then(res => {
       return res.ok ? res.text() : Promise.resolve(undefined);
     });
   }

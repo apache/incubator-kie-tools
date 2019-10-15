@@ -82,7 +82,7 @@ export function createAndGetMainContainer(container: HTMLElement) {
 export function iframeFullscreenContainer(container: HTMLElement) {
   const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
   if (!element()) {
-    container.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}"></div>`);
+    container.insertAdjacentHTML("afterbegin", `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`);
   }
   return element();
 }

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import "@patternfly/patternfly/patternfly-no-reset.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "./styles.scss";
@@ -33,9 +33,22 @@ export function LoadingScreen(props: { visible: boolean }) {
     cssAnimation = { opacity: 0, transition: `opacity ${FADE_OUT_DELAY}ms` };
   }
 
+  useLayoutEffect(
+    () => {
+      if (props.visible) {
+        setMustRender(true);
+      }
+    },
+    [props.visible]
+  );
+
   return (
     (mustRender && (
-      <div className="kogito-tooling--loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
+      <div
+        className="kogito-tooling--loading-screen"
+        style={{ ...cssAnimation }}
+        onTransitionEnd={() => setMustRender(false)}
+      >
         <div className="pf-c-page">
           <main role="main" className="pf-c-page__main" tabIndex={-1}>
             <div className="pf-l-bullseye">
@@ -47,9 +60,7 @@ export function LoadingScreen(props: { visible: boolean }) {
                     <div className="pf-c-spinner__tail-ball" />
                   </div>
                 </div>
-                <h5 className="pf-c-title pf-m-lg">
-                  Loading...
-                </h5>
+                <h5 className="pf-c-title pf-m-lg">Loading...</h5>
                 <div className="pf-c-empty-state__body" />
               </div>
             </div>

@@ -113,7 +113,7 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_ready();
         break;
       default:
-        console.info(`Unknown message type received: ${message.type}"`);
+        console.info(`Unknown message type received: ${message.type}`);
         break;
     }
   }
