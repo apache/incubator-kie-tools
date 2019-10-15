@@ -25,9 +25,6 @@ import { getOriginalFilePath, IsolatedPrEditor, PrInformation } from "./Isolated
 import { Feature } from "../common/Feature";
 
 export function PrEditorsApp(props: { prInfo: PrInformation }) {
-  const prFileElements = () =>
-    dependencies__.all.array.supportedPrFileContainers()!.map(e => ({ name: "", element: e }));
-
   const globalContext = useContext(GlobalContext);
   const [prFileContainers, setPrFileContainers] = useState(
     supportedPrFileElements(prFileElements, globalContext.router)
@@ -91,6 +88,15 @@ function useMutationObserverEffect(observer: MutationObserver, options: Mutation
     },
     []
   );
+}
+
+function prFileElements() {
+  const elements = dependencies__.all.array.supportedPrFileContainers();
+  if (!elements) {
+    throw new Error("Could not find file containers...");
+  }
+
+  return elements!.map(e => ({ name: "", element: e }));
 }
 
 function getFileExtension(prFileContainer: ResolvedDomDependency) {
