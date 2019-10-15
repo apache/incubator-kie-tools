@@ -65,7 +65,7 @@ function supportedPrFileElements(prFileElements: () => ResolvedDomDependency[], 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
   useEffectWithDependencies(
     "PR files mutation observer",
-    deps => ({ target: () => deps.all.mutationObserverTarget() }),
+    deps => ({ target: () => deps.all.pr__mutationObserverTarget() }),
     deps => {
       observer.observe(deps.target.element, options);
       return () => observer.disconnect();

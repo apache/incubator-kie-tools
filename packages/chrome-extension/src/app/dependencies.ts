@@ -83,22 +83,22 @@ export const all = {
   body: () => {
     return document.body;
   },
-  githubTextAreaWithFileContents: () => {
+  edit__githubTextAreaWithFileContents: () => {
     return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
   },
-  rawUrlLink: () => {
+  view__rawUrlLink: () => {
     return document.getElementById("raw-url") as HTMLAnchorElement | null;
   },
-  mutationObserverTarget: () => {
+  pr__mutationObserverTarget: () => {
     return document.getElementById("files") as HTMLElement | null;
   },
-  viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
+  pr__viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
     return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
   },
-  unprocessedFilePathElement: (container: ResolvedDomDependency) => {
+  pr__unprocessedFilePathElement: (container: ResolvedDomDependency) => {
     return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
   },
-  getMetaInfoElement: () => {
+  pr__getMetaInfoElement: () => {
     const querySelector = document.querySelector(".gh-header-meta");
     return !querySelector ? undefined : Array.from(querySelector.querySelectorAll(".css-truncate-target"));
   }

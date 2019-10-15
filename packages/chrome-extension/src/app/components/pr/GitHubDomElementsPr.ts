@@ -138,11 +138,11 @@ export class GitHubDomElementsPr {
 }
 
 export function getUnprocessedFilePath(container: ResolvedDomDependency) {
-  return dependencies__.all.unprocessedFilePathElement(container)!.title;
+  return dependencies__.all.pr__unprocessedFilePathElement(container)!.title;
 }
 
 function getMetaInfo() {
-  return dependencies__.all.getMetaInfoElement()!.map(e => e.textContent!);
+  return dependencies__.all.pr__getMetaInfoElement()!.map(e => e.textContent!);
 }
 
 export function getOriginalFilePath(container: ResolvedDomDependency) {

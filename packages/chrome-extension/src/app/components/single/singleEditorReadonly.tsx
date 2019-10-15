@@ -58,7 +58,7 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
       <Feature
         name={"Readonly editor"}
         dependencies={deps => ({
-          rawUrl: () => deps.all.rawUrlLink(),
+          rawUrl: () => deps.all.view__rawUrlLink(),
           iframeContainerTarget: () => deps.common.iframeContainerTarget(),
           toolbarContainerTarget: () => deps.common.toolbarContainerTarget()
         })}

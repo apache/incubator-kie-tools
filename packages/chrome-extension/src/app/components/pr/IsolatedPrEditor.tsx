@@ -70,7 +70,7 @@ export function IsolatedPrEditor(props: { container: ResolvedDomDependency; file
       {shouldAddLinkToOriginalFile && (
         <Feature
           name={"Link to original file"}
-          dependencies={deps => ({ container: () => deps.all.viewOriginalFileLinkContainer(props.container) })}
+          dependencies={deps => ({ container: () => deps.all.pr__viewOriginalFileLinkContainer(props.container) })}
           component={deps =>
             ReactDOM.createPortal(
               <a className={"pl-5 dropdown-item btn-link"} href={githubDomElements.viewOriginalFileHref()}>

@@ -58,7 +58,7 @@ export function renderSingleEditorApp(args: { editorIndexPath: string; router: R
       <Feature
         name={"Editor"}
         dependencies={deps => ({
-          fileContents: () => deps.all.githubTextAreaWithFileContents(),
+          fileContents: () => deps.all.edit__githubTextAreaWithFileContents(),
           iframeContainerTarget: () => deps.common.iframeContainerTarget(),
           toolbarContainerTarget: () => deps.common.toolbarContainerTarget()
         })}
