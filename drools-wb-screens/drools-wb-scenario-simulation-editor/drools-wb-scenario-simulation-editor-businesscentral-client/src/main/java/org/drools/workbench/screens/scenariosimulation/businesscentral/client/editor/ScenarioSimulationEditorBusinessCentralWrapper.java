@@ -45,6 +45,7 @@ import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -167,7 +168,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     @Override
     public void showDocks() {
         super.showDocks();
-
         final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER);
         scenarioSimulationEditorPresenter.showDocks(placeManager.getStatus(placeRequest));
         registerTestToolsCallback();
@@ -244,13 +244,32 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         placeManager.getOnOpenCallbacks(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER)).remove(scenarioSimulationEditorPresenter.getPopulateTestToolsCommand());
     }
 
+    protected void setSaveEnabled(boolean toSet) {
+        scenarioSimulationEditorPresenter.setSaveEnabled(toSet);
+    }
+
     /**
      * If you want to customize the menu override this method.
      */
     @Override
     protected Promise<Void> makeMenuBar() {
         scenarioSimulationEditorPresenter.makeMenuBar(fileMenuBuilder);
-        return super.makeMenuBar();
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    addSave(fileMenuBuilder);
+                    addCopy(fileMenuBuilder);
+                    addRename(fileMenuBuilder);
+                    addDelete(fileMenuBuilder);
+                }
+                addDownloadMenuItem(fileMenuBuilder);
+                addCommonActions(fileMenuBuilder);
+                setSaveEnabled(canUpdateProject);
+                return promises.resolve();
+            });
+        }
+        return promises.resolve();
     }
 
     @Override

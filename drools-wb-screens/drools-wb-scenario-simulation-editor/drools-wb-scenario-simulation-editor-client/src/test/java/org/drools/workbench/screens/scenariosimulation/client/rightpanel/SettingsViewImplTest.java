@@ -44,6 +44,7 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
         super.setup();
         this.settingsView = spy(new SettingsViewImpl() {
             {
+                this.kieSettingsContent = kieSettingsContentMock;
                 this.nameLabel = nameLabelMock;
                 this.fileName = fileNameMock;
                 this.typeLabel = typeLabelMock;
@@ -65,6 +66,18 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
             }
         });
         settingsView.init(settingsPresenterMock);
+    }
+
+    @Test
+    public void removeSaveButton() {
+        settingsView.removeSaveButton();
+        verify(saveButtonMock, times(1)).removeFromParent();
+    }
+
+    @Test
+    public void restoreSaveButton() {
+        settingsView.restoreSaveButton();
+        verify(kieSettingsContentMock, times(1)).appendChild(eq(saveButtonMock));
     }
 
     @Test

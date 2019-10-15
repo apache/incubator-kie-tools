@@ -22,91 +22,79 @@ import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
-import org.mockito.Mock;
-
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAME;
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAMESPACE;
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMO_SESSION;
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILE_NAME;
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCENARIO_TYPE;
-import static org.mockito.Mockito.when;
+import org.drools.workbench.screens.scenariosimulation.client.MockProducer;
 
 abstract class AbstractSettingsTest {
 
-    @Mock
+    protected DivElement kieSettingsContentMock;
+
     protected LabelElement nameLabelMock;
 
-    @Mock
     protected InputElement fileNameMock;
 
-    @Mock
     protected LabelElement typeLabelMock;
 
-    @Mock
     protected SpanElement scenarioTypeMock;
 
-    @Mock
     protected DivElement ruleSettingsMock;
 
-    @Mock
     protected Style ruleSettingsStyleMock;
 
-    @Mock
     protected InputElement dmoSessionMock;
 
-    @Mock
     protected InputElement ruleFlowGroupMock;
 
-    @Mock
     protected DivElement dmnSettingsMock;
 
-    @Mock
     protected Style dmnSettingsStyleMock;
 
-    @Mock
     protected LabelElement dmnModelLabelMock;
 
-    @Mock
     protected DivElement dmnFilePathPlaceholderMock;
 
-    @Mock
     protected SpanElement dmnFilePathErrorLabelMock;
 
-    @Mock
     protected Style dmnFilePathErrorLabelStyleMock;
 
-    @Mock
     protected LabelElement dmnNamespaceLabelMock;
 
-    @Mock
     protected InputElement dmnNamespaceMock;
 
-    @Mock
     protected LabelElement dmnNameLabelMock;
 
-    @Mock
     protected InputElement dmnNameMock;
 
-    @Mock
     protected InputElement skipFromBuildMock;
 
-    @Mock
     protected InputElement statelessMock;
 
-    @Mock
     protected ButtonElement saveButtonMock;
 
+    protected SettingsView settingsViewMock;
+
     protected void setup() {
-        when(fileNameMock.getValue()).thenReturn(FILE_NAME);
-        when(scenarioTypeMock.getInnerText()).thenReturn(SCENARIO_TYPE);
-        when(dmoSessionMock.getValue()).thenReturn(DMO_SESSION);
-        when(ruleFlowGroupMock.getValue()).thenReturn(RULE_FLOW_GROUP);
-        when(dmnFilePathPlaceholderMock.getInnerText()).thenReturn("");
-        when(dmnNamespaceMock.getValue()).thenReturn(DMN_NAMESPACE);
-        when(dmnNameMock.getValue()).thenReturn(DMN_NAME);
-        when(ruleSettingsMock.getStyle()).thenReturn(ruleSettingsStyleMock);
-        when(dmnSettingsMock.getStyle()).thenReturn(dmnSettingsStyleMock);
-        when(dmnFilePathErrorLabelMock.getStyle()).thenReturn(dmnFilePathErrorLabelStyleMock);
+        settingsViewMock = MockProducer.getSettingsViewMock();
+        kieSettingsContentMock = MockProducer.kieSettingsContentMock();
+        nameLabelMock = settingsViewMock.getNameLabel();
+        fileNameMock = settingsViewMock.getFileName();
+        typeLabelMock = settingsViewMock.getTypeLabel();
+        scenarioTypeMock = settingsViewMock.getScenarioType();
+        ruleSettingsMock = settingsViewMock.getRuleSettings();
+        ruleSettingsStyleMock = ruleSettingsMock.getStyle();
+        dmoSessionMock = settingsViewMock.getDmoSession();
+        ruleFlowGroupMock = settingsViewMock.getRuleFlowGroup();
+        dmnSettingsMock = settingsViewMock.getDmnSettings();
+        dmnSettingsStyleMock = dmnSettingsMock.getStyle();
+        dmnModelLabelMock = settingsViewMock.getDmnNameLabel();
+        dmnFilePathPlaceholderMock = settingsViewMock.getDmnFilePathPlaceholder();
+        dmnFilePathErrorLabelMock = settingsViewMock.getDmnFilePathErrorLabel();
+        dmnFilePathErrorLabelStyleMock = dmnFilePathErrorLabelMock.getStyle();
+        dmnNamespaceLabelMock = settingsViewMock.getDmnNamespaceLabel();
+        dmnNamespaceMock = settingsViewMock.getDmnNamespace();
+        dmnNameLabelMock = settingsViewMock.getDmnNameLabel();
+        dmnNameMock = settingsViewMock.getDmnName();
+        skipFromBuildMock = settingsViewMock.getSkipFromBuild();
+        statelessMock = settingsViewMock.getStateless();
+        saveButtonMock = settingsViewMock.getSaveButton();
     }
 }

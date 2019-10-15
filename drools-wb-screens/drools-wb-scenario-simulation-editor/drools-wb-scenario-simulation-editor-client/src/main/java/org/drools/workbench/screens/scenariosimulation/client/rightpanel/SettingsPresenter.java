@@ -50,6 +50,8 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
 
     protected SettingsScenarioSimulationDropdown settingsScenarioSimulationDropdown;
 
+    protected boolean saveEnabled = true;
+
     public SettingsPresenter() {
         //Zero argument constructor for CDI
         title = ScenarioSimulationEditorConstants.INSTANCE.settings();
@@ -84,6 +86,8 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
             case DMN:
                 setDMNSettings(simulationDescriptor);
                 break;
+            default:
+                // nop
         }
     }
 
@@ -93,24 +97,50 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     @Override
-    public void onSaveButton(String scenarioType) {
-        simulationDescriptor.setSkipFromBuild(view.getSkipFromBuild().isChecked());
-        switch (ScenarioSimulationModel.Type.valueOf(scenarioType)) {
-            case RULE:
-                saveRuleSettings();
-                break;
-            case DMN:
-                saveDMNSettings();
-                break;
+    public void setSaveEnabled(boolean toSet) {
+        saveEnabled = toSet;
+        if (!saveEnabled) {
+            view.removeSaveButton();
+        } else {
+            view.restoreSaveButton();
         }
-        saveCommand.execute();
+    }
+
+    @Override
+    public void onSaveButton(String scenarioType) {
+        if (saveCommand != null) {
+            simulationDescriptor.setSkipFromBuild(view.getSkipFromBuild().isChecked());
+            switch (ScenarioSimulationModel.Type.valueOf(scenarioType)) {
+                case RULE:
+                    saveRuleSettings();
+                    break;
+                case DMN:
+                    saveDMNSettings();
+                    break;
+                default:
+                    // nop
+            }
+            saveCommand.execute();
+        }
     }
 
     @Override
     public void reset() {
         view.reset();
+        if (!saveEnabled) {
+            view.removeSaveButton();
+        }
         settingsScenarioSimulationDropdown.clear();
     }
+
+    public boolean isSaveEnabled() {
+        return saveEnabled;
+    }
+
+    public SettingsView getView() {
+        return view;
+    }
+
 
     protected void setRuleSettings(SimulationDescriptor simulationDescriptor) {
         view.getDmnSettings().getStyle().setDisplay(Style.Display.NONE);

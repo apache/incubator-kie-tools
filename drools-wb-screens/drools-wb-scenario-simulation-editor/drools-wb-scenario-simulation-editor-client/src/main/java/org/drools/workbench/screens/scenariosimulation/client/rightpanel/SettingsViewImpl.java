@@ -40,6 +40,9 @@ public class SettingsViewImpl
 
     protected Presenter presenter;
 
+    @DataField("kieSettingsContent")
+    protected DivElement kieSettingsContent = Document.get().createDivElement();
+
     @DataField("nameLabel")
     protected LabelElement nameLabel = Document.get().createLabelElement();
 
@@ -223,6 +226,16 @@ public class SettingsViewImpl
     @Override
     public ButtonElement getSaveButton() {
         return saveButton;
+    }
+
+    @Override
+    public void removeSaveButton() {
+        saveButton.removeFromParent();
+    }
+
+    @Override
+    public void restoreSaveButton() {
+        kieSettingsContent.appendChild(saveButton);
     }
 
     @EventHandler("saveButton")

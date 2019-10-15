@@ -38,6 +38,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILE_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.reset;
@@ -51,9 +53,9 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
 
     private SettingsPresenter settingsPresenter;
 
-    @Mock
-    private SettingsView settingsViewMock;
-
+////    @Mock
+//    private SettingsView settingsViewMock;
+//
     @Mock
     private SimulationDescriptor simulationDescriptorMock;
 
@@ -66,24 +68,24 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Before
     public void setup() {
         super.setup();
-        when(settingsViewMock.getNameLabel()).thenReturn(nameLabelMock);
-        when(settingsViewMock.getFileName()).thenReturn(fileNameMock);
-        when(settingsViewMock.getTypeLabel()).thenReturn(typeLabelMock);
-        when(settingsViewMock.getScenarioType()).thenReturn(scenarioTypeMock);
-        when(settingsViewMock.getRuleSettings()).thenReturn(ruleSettingsMock);
-        when(settingsViewMock.getDmoSession()).thenReturn(dmoSessionMock);
-        when(settingsViewMock.getRuleFlowGroup()).thenReturn(ruleFlowGroupMock);
-        when(settingsViewMock.getDmnSettings()).thenReturn(dmnSettingsMock);
-        when(settingsViewMock.getDmnFileLabel()).thenReturn(dmnModelLabelMock);
-        when(settingsViewMock.getDmnFilePathPlaceholder()).thenReturn(dmnFilePathPlaceholderMock);
-        when(settingsViewMock.getDmnFilePathErrorLabel()).thenReturn(dmnFilePathErrorLabelMock);
-        when(settingsViewMock.getDmnNamespaceLabel()).thenReturn(dmnNamespaceLabelMock);
-        when(settingsViewMock.getDmnNamespace()).thenReturn(dmnNamespaceMock);
-        when(settingsViewMock.getDmnNameLabel()).thenReturn(dmnNameLabelMock);
-        when(settingsViewMock.getDmnName()).thenReturn(dmnNameMock);
-        when(settingsViewMock.getSkipFromBuild()).thenReturn(skipFromBuildMock);
-        when(settingsViewMock.getSaveButton()).thenReturn(saveButtonMock);
-        when(settingsViewMock.getStateless()).thenReturn(statelessMock);
+//        when(settingsViewMock.getNameLabel()).thenReturn(nameLabelMock);
+//        when(settingsViewMock.getFileName()).thenReturn(fileNameMock);
+//        when(settingsViewMock.getTypeLabel()).thenReturn(typeLabelMock);
+//        when(settingsViewMock.getScenarioType()).thenReturn(scenarioTypeMock);
+//        when(settingsViewMock.getRuleSettings()).thenReturn(ruleSettingsMock);
+//        when(settingsViewMock.getDmoSession()).thenReturn(dmoSessionMock);
+//        when(settingsViewMock.getRuleFlowGroup()).thenReturn(ruleFlowGroupMock);
+//        when(settingsViewMock.getDmnSettings()).thenReturn(dmnSettingsMock);
+//        when(settingsViewMock.getDmnFileLabel()).thenReturn(dmnModelLabelMock);
+//        when(settingsViewMock.getDmnFilePathPlaceholder()).thenReturn(dmnFilePathPlaceholderMock);
+//        when(settingsViewMock.getDmnFilePathErrorLabel()).thenReturn(dmnFilePathErrorLabelMock);
+//        when(settingsViewMock.getDmnNamespaceLabel()).thenReturn(dmnNamespaceLabelMock);
+//        when(settingsViewMock.getDmnNamespace()).thenReturn(dmnNamespaceMock);
+//        when(settingsViewMock.getDmnNameLabel()).thenReturn(dmnNameLabelMock);
+//        when(settingsViewMock.getDmnName()).thenReturn(dmnNameMock);
+//        when(settingsViewMock.getSkipFromBuild()).thenReturn(skipFromBuildMock);
+//        when(settingsViewMock.getSaveButton()).thenReturn(saveButtonMock);
+//        when(settingsViewMock.getStateless()).thenReturn(statelessMock);
 
         when(simulationDescriptorMock.getRuleFlowGroup()).thenReturn(RULE_FLOW_GROUP);
         when(simulationDescriptorMock.getDmoSession()).thenReturn(DMO_SESSION);
@@ -113,6 +115,20 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Test
     public void getTitle() {
         assertEquals(ScenarioSimulationEditorConstants.INSTANCE.settings(), settingsPresenter.getTitle());
+    }
+
+    @Test
+    public void setSaveEnabledTrue() {
+        settingsPresenter.setSaveEnabled(true);
+        assertTrue(settingsPresenter.saveEnabled);
+        verify(settingsViewMock, times(1)).restoreSaveButton();
+    }
+
+    @Test
+    public void setSaveEnabledFalse() {
+        settingsPresenter.setSaveEnabled(false);
+        assertFalse(settingsPresenter.saveEnabled);
+        verify(settingsViewMock, times(1)).removeSaveButton();
     }
 
     @Test
@@ -149,9 +165,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     public void setScenarioTypeRULESkipTrue() {
         when(simulationDescriptorMock.isSkipFromBuild()).thenReturn(true);
         settingsPresenter.setScenarioType(ScenarioSimulationModel.Type.RULE, simulationDescriptorMock, FILE_NAME);
-        verify(settingsViewMock, times(1)).getScenarioType();
         verify(scenarioTypeMock, times(1)).setInnerText(eq(ScenarioSimulationModel.Type.RULE.name()));
-        verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(true));
         verify(saveButtonMock, times(1)).setDisabled(eq(false));
@@ -162,9 +176,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     public void setScenarioTypeRULESkipFalse() {
         when(simulationDescriptorMock.isSkipFromBuild()).thenReturn(false);
         settingsPresenter.setScenarioType(ScenarioSimulationModel.Type.RULE, simulationDescriptorMock, FILE_NAME);
-        verify(settingsViewMock, times(1)).getScenarioType();
         verify(scenarioTypeMock, times(1)).setInnerText(eq(ScenarioSimulationModel.Type.RULE.name()));
-        verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(false));
         verify(saveButtonMock, times(1)).setDisabled(eq(false));
@@ -175,9 +187,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     public void setScenarioTypeDMNSkipTrue() {
         when(simulationDescriptorMock.isSkipFromBuild()).thenReturn(true);
         settingsPresenter.setScenarioType(ScenarioSimulationModel.Type.DMN, simulationDescriptorMock, FILE_NAME);
-        verify(settingsViewMock, times(1)).getScenarioType();
         verify(scenarioTypeMock, times(1)).setInnerText(eq(ScenarioSimulationModel.Type.DMN.name()));
-        verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(true));
         verify(saveButtonMock, times(1)).setDisabled(eq(false));
@@ -188,9 +198,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     public void setScenarioTypeDMNSkipFalse() {
         when(simulationDescriptorMock.isSkipFromBuild()).thenReturn(false);
         settingsPresenter.setScenarioType(ScenarioSimulationModel.Type.DMN, simulationDescriptorMock, FILE_NAME);
-        verify(settingsViewMock, times(1)).getScenarioType();
         verify(scenarioTypeMock, times(1)).setInnerText(eq(ScenarioSimulationModel.Type.DMN.name()));
-        verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(false));
         verify(saveButtonMock, times(1)).setDisabled(eq(false));
@@ -200,13 +208,9 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Test
     public void setRuleSettings() {
         settingsPresenter.setRuleSettings(simulationDescriptorMock);
-        verify(settingsViewMock, times(1)).getDmnSettings();
         verify(dmnSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
-        verify(settingsViewMock, times(1)).getRuleSettings();
         verify(ruleSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.INLINE));
-        verify(settingsViewMock, times(1)).getDmoSession();
         verify(dmoSessionMock, times(1)).setValue(eq(DMO_SESSION));
-        verify(settingsViewMock, times(1)).getRuleFlowGroup();
         verify(ruleFlowGroupMock, times(1)).setValue(eq(RULE_FLOW_GROUP));
         verify(statelessMock, times(1)).setChecked(eq(simulationDescriptorMock.isStateless()));
     }
@@ -214,15 +218,10 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Test
     public void setDMNSettings() {
         settingsPresenter.setDMNSettings(simulationDescriptorMock);
-        verify(settingsViewMock, times(1)).getRuleSettings();
         verify(ruleSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
-        verify(settingsViewMock, times(1)).getDmnSettings();
         verify(dmnSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.INLINE));
-        verify(settingsViewMock, times(1)).getDmnName();
         verify(dmnNameMock, times(1)).setValue(eq(DMN_NAME));
-        verify(settingsViewMock, times(1)).getDmnNamespace();
         verify(dmnNamespaceMock, times(1)).setValue(eq(DMN_NAMESPACE));
-        verify(settingsViewMock, times(2)).getDmnFilePathErrorLabel();
         verify(dmnFilePathErrorLabelStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(dmnFilePathErrorLabelMock, times(1)).setInnerText(eq(""));
         verify(settingsScenarioSimulationDropdownMock, times(1)).registerOnMissingValueHandler(isA(Command.class));
@@ -235,8 +234,6 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         when(skipFromBuildMock.isChecked()).thenReturn(true);
         settingsPresenter.saveRuleSettings();
         verify(simulationDescriptorMock, times(1)).setDmoSession(eq(DMO_SESSION));
-        verify(settingsViewMock, times(1)).getDmoSession();
-        verify(settingsViewMock, times(1)).getRuleFlowGroup();
         verify(simulationDescriptorMock, times(1)).setRuleFlowGroup(eq(RULE_FLOW_GROUP));
         verify(simulationDescriptorMock, times(1)).setStateless(eq(false));
     }

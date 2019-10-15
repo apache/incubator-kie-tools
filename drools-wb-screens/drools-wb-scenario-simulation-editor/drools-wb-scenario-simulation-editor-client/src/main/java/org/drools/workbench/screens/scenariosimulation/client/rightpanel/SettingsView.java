@@ -36,6 +36,8 @@ public interface SettingsView
         void onSaveButton(String type);
 
         void setSaveCommand(Command saveCommand);
+
+        void setSaveEnabled(boolean toSet);
     }
 
     void setupDropdown(Element dropdownElement);
@@ -77,4 +79,8 @@ public interface SettingsView
     InputElement getStateless();
 
     ButtonElement getSaveButton();
+
+    void removeSaveButton();
+
+    void restoreSaveButton();
 }

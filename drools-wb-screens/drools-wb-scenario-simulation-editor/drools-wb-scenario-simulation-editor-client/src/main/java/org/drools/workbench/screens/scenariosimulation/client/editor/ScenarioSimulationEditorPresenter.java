@@ -109,6 +109,7 @@ public class ScenarioSimulationEditorPresenter {
     protected TestRunnerReportingPanelWrapper testRunnerReportingPanel;
     protected SimulationRunResult lastRunResult;
     protected long scenarioPresenterId;
+    protected boolean saveEnabled = true;
     private ScenarioSimulationResourceType type;
     private ScenarioSimulationView view;
     private Command populateTestToolsCommand;
@@ -151,6 +152,11 @@ public class ScenarioSimulationEditorPresenter {
         this.scenarioSimulationEditorWrapper = scenarioSimulationEditorWrapper;
         this.path = path;
         testRunnerReportingPanel.reset();
+    }
+
+    public void setSaveEnabled(boolean toSet) {
+        saveEnabled = toSet;
+        getSettingsPresenter(getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER)).ifPresent(presenter -> presenter.setSaveEnabled(toSet));
     }
 
     public void setPackageName(String packageName) {
@@ -537,7 +543,12 @@ public class ScenarioSimulationEditorPresenter {
     protected void setSettings(SettingsView.Presenter presenter) {
         Type type = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         presenter.setScenarioType(type, model.getSimulation().getSimulationDescriptor(), path.getFileName());
-        presenter.setSaveCommand(getSaveCommand());
+        if (saveEnabled) {
+            presenter.setSaveCommand(getSaveCommand());
+            presenter.setSaveEnabled(true);
+        } else {
+            presenter.setSaveEnabled(false);
+        }
     }
 
     protected void setCoverageReport(CoverageReportView.Presenter presenter) {
@@ -545,7 +556,7 @@ public class ScenarioSimulationEditorPresenter {
         SimulationRunMetadata simulationRunMetadata = lastRunResult != null ? lastRunResult.getSimulationRunMetadata() : null;
         presenter.populateCoverageReport(type, simulationRunMetadata);
         if (simulationRunMetadata != null && simulationRunMetadata.getAuditLog() != null) {
-            presenter.setDownloadReportCommand(getDownloadReportCommand(simulationRunMetadata.getAuditLog() ));
+            presenter.setDownloadReportCommand(getDownloadReportCommand(simulationRunMetadata.getAuditLog()));
         }
     }
 

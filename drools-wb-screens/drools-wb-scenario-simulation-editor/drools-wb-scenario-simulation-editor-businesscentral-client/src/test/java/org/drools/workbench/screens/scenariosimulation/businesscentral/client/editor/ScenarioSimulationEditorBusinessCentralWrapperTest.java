@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.businesscentral.client.e
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -37,6 +38,8 @@ import org.drools.workbench.screens.scenariosimulation.service.ImportExportServi
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
 import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
+import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -74,6 +77,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -120,6 +124,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     private AssetUpdateValidator assetUpdateValidatorMock;
     @Mock
     private Supplier<ScenarioSimulationModel> contentSupplierMock;
+    @Mock
+    private ProjectController projectControllerMock;
+
 
     private CallerMock<ScenarioSimulationService> scenarioSimulationCaller;
     private CallerMock<ImportExportService> importExportCaller;
@@ -160,6 +167,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
                 this.metadata = metaDataMock;
                 this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilderMock;
                 this.assetUpdateValidator = assetUpdateValidatorMock;
+                this.projectController = projectControllerMock;
             }
         });
         when(placeRequestMock.getPath()).thenReturn(observablePathMock);
@@ -275,9 +283,34 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     }
 
     @Test
-    public void makeMenuBar() {
+    public void setSaveEnabledTrue() {
+        scenarioSimulationEditorBusinessClientWrapper.setSaveEnabled(true);
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setSaveEnabled(eq(true));
+    }
+
+    @Test
+    public void setSaveEnabledFalse() {
+        scenarioSimulationEditorBusinessClientWrapper.setSaveEnabled(false);
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setSaveEnabled(eq(false));
+    }
+
+
+    @Test
+    public void makeMenuBarCanUpdateProjectTrue() {
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContextMock).getActiveWorkspaceProject();
+        doReturn(promises.resolve(true)).when(projectControllerMock).canUpdateProject(any());
         scenarioSimulationEditorBusinessClientWrapper.makeMenuBar();
         verify(scenarioSimulationEditorPresenterMock, times(1)).makeMenuBar(same(fileMenuBuilderMock));
+        verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).setSaveEnabled(eq(true));
+    }
+
+    @Test
+    public void makeMenuBarCanUpdateProjectFalse() {
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContextMock).getActiveWorkspaceProject();
+        doReturn(promises.resolve(false)).when(projectControllerMock).canUpdateProject(any());
+        scenarioSimulationEditorBusinessClientWrapper.makeMenuBar();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).makeMenuBar(same(fileMenuBuilderMock));
+        verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).setSaveEnabled(eq(false));
     }
 
     @Test
