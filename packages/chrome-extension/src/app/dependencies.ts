@@ -36,42 +36,64 @@ export interface GlobalCommonDomDependencies {
 }
 
 export const singleEdit = {
-  iframeContainerTarget: () => document.querySelector(".file") as HTMLElement | null,
-  toolbarContainerTarget: () => document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null,
-  githubTextEditorToReplaceElement: () => document.querySelector(".js-code-editor") as HTMLElement
+  iframeContainerTarget: () => {
+    return document.querySelector(".file") as HTMLElement | null;
+  },
+  toolbarContainerTarget: () => {
+    return document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null;
+  },
+  githubTextEditorToReplaceElement: () => {
+    return document.querySelector(".js-code-editor") as HTMLElement | null;
+  }
 };
 
 export const singleView = {
-  iframeContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
-  toolbarContainerTarget: () => document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null,
-  githubTextEditorToReplaceElement: () => document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement
+  iframeContainerTarget: () => {
+    return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+  },
+  toolbarContainerTarget: () => {
+    return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+  },
+  githubTextEditorToReplaceElement: () => {
+    return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
+  }
 };
 
 export const prView = {
-  iframeContainerTarget: (container: ResolvedDomDependency) => container.element as HTMLElement | null,
+  iframeContainerTarget: (container: ResolvedDomDependency) => {
+    return container.element as HTMLElement | null;
+  },
   toolbarContainerTarget: (container: ResolvedDomDependency) => {
     return container.element.querySelector(".file-info") as HTMLElement | null;
   },
   githubTextEditorToReplaceElement: (container: ResolvedDomDependency) => {
-    return container.element.querySelector(".js-file-content") as HTMLElement;
+    return container.element.querySelector(".js-file-content") as HTMLElement | null;
   }
 };
 
 //
 
 export const all = {
-  body: () => document.body,
-  githubTextAreaWithFileContents: () => document.querySelector(".file-editor-textarea") as HTMLTextAreaElement,
-  rawUrlLink: () => document.getElementById("raw-url") as HTMLAnchorElement,
-  mutationObserverTarget: () => document.getElementById("files") as HTMLElement | null,
+  body: () => {
+    return document.body;
+  },
+  githubTextAreaWithFileContents: () => {
+    return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
+  },
+  rawUrlLink: () => {
+    return document.getElementById("raw-url") as HTMLAnchorElement | null;
+  },
+  mutationObserverTarget: () => {
+    return document.getElementById("files") as HTMLElement | null;
+  },
   viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
-    return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement;
+    return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
+  },
+  unprocessedFilePathElement: (container: ResolvedDomDependency) => {
+    return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
   },
   supportedPrFileContainers: () => {
     return Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(e => e as HTMLElement);
-  },
-  unprocessedFilePathElement: (container: ResolvedDomDependency) => {
-    return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement;
   },
   getMetaInfoElement: () => {
     const querySelector = document.querySelector(".gh-header-meta");
