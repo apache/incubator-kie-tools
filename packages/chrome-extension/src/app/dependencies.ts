@@ -26,6 +26,8 @@ export interface ResolvedDomDependencyArray {
   element: HTMLElement[];
 }
 
+export type AnyResolvedDomDependency = ResolvedDomDependency | ResolvedDomDependencyArray;
+
 export interface DomDependencyMap {
   [k: string]: DomDependency;
 }
@@ -104,27 +106,26 @@ export const all = {
       const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
         e => e as HTMLElement
       );
-      return elements.length > 0 ? elements as HTMLElement[]: null;
+      return elements.length > 0 ? (elements as HTMLElement[]) : null;
     },
 
     pr__prInfoContainer: () => {
       const elements = Array.from(document.querySelectorAll(".gh-header-meta .css-truncate-target"));
-      return elements.length > 0 ? elements as HTMLElement[]: null;
+      return elements.length > 0 ? (elements as HTMLElement[]) : null;
     }
   }
 };
 
-
 export function dependenciesAllSatisfied(dependencies: DomDependencyMap) {
   return (
-      Object.keys(dependencies)
-          .map(k => dependencies[k])
-          .filter(d => !!d()).length > 0
+    Object.keys(dependencies)
+      .map(k => dependencies[k])
+      .filter(d => !!d()).length > 0
   );
 }
 
 export function resolveDependencies<T extends DomDependencyMap>(deps: T) {
   return Object.keys(deps).reduce((o, key) => ({ ...o, [key]: { name: key, element: deps[key]()! } }), {}) as {
-    [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray
+    [J in keyof T]: AnyResolvedDomDependency
   };
 }

@@ -15,11 +15,10 @@
  */
 
 import {
+  AnyResolvedDomDependency,
   dependenciesAllSatisfied,
   DomDependencyMap,
   GlobalDomDependencies,
-  ResolvedDomDependency,
-  ResolvedDomDependencyArray,
   resolveDependencies
 } from "../../dependencies";
 import * as React from "react";
@@ -29,7 +28,7 @@ import { GlobalContext } from "./GlobalContext";
 export function Feature<T extends DomDependencyMap>(props: {
   name: string;
   dependencies: (d: GlobalDomDependencies) => T;
-  component: (deps: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }) => any;
+  component: (deps: { [J in keyof T]: AnyResolvedDomDependency }) => any;
 }) {
   const globalContext = useContext(GlobalContext);
   const featureDependencies = props.dependencies(globalContext.dependencies);

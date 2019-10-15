@@ -15,11 +15,10 @@
  */
 
 import {
+  AnyResolvedDomDependency,
   dependenciesAllSatisfied,
   DomDependencyMap,
   GlobalDomDependencies,
-  ResolvedDomDependency,
-  ResolvedDomDependencyArray,
   resolveDependencies
 } from "../../dependencies";
 import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
@@ -28,9 +27,7 @@ import { GlobalContext } from "./GlobalContext";
 export function useEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (
-    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
-  ) => ReturnType<EffectCallback>,
+  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
   use(name, useEffect, dependenciesProducer, effect, effectDependencies);
@@ -39,9 +36,7 @@ export function useEffectWithDependencies<T extends DomDependencyMap>(
 export function useLayoutEffectWithDependencies<T extends DomDependencyMap>(
   name: string,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (
-    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
-  ) => ReturnType<EffectCallback>,
+  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<EffectCallback>,
   effectDependencies: DependencyList
 ) {
   use(name, useLayoutEffect, dependenciesProducer, effect, effectDependencies);
@@ -63,9 +58,7 @@ export function use<T extends DomDependencyMap>(
   name: string,
   useEffectFunction: typeof useEffect,
   dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (
-    resolvedDependencies: { [J in keyof T]: ResolvedDomDependency | ResolvedDomDependencyArray }
-  ) => ReturnType<React.EffectCallback>,
+  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<React.EffectCallback>,
   effectDependencies: React.DependencyList
 ) {
   const globalContext = useContext(GlobalContext);
