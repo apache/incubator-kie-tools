@@ -82,6 +82,11 @@ export function IsolatedPrEditor(props: {
     [showOriginal]
   );
 
+  const closeDiagram = () => {
+    setTextMode(true);
+    setEditorReady(false);
+  };
+
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => getOriginalFileContents(props.prInfo, originalFilePath)
@@ -122,7 +127,7 @@ export function IsolatedPrEditor(props: {
               textMode={textMode}
               originalDiagram={showOriginal}
               toggleOriginal={() => setShowOriginal(prev => !prev)}
-              closeDiagram={() => setTextMode(true)}
+              closeDiagram={closeDiagram}
               onSeeAsDiagram={() => setTextMode(false)}
             />,
             toolbarContainer(props.prFileContainer, resolved.container as ResolvedDomDependency)
