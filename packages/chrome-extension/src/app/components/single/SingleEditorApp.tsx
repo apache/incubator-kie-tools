@@ -55,6 +55,10 @@ export function SingleEditorApp(props: {
 
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace.element);
+  const exitFullScreen = () => {
+      setFullscreen(false);
+      setTextModeEnabled(false);
+  }
 
   const IsolatedEditorComponent = (
     <IsolatedEditor
@@ -99,7 +103,7 @@ export function SingleEditorApp(props: {
             component={resolved => (
               <>
                 {ReactDOM.createPortal(
-                  <FullScreenToolbar onExitFullScreen={() => setFullscreen(false)} />,
+                  <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
                   iframeFullscreenContainer(resolved.container as ResolvedDomDependency)
                 )}
                 {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(resolved.container as ResolvedDomDependency))}

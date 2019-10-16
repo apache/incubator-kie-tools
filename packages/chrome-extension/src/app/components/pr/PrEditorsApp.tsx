@@ -27,7 +27,7 @@ import { Feature } from "../common/Feature";
 export function PrEditorsApp(props: { prInfo: PrInformation }) {
   const globalContext = useContext(GlobalContext);
   const [prFileContainers, setPrFileContainers] = useState(
-    supportedPrFileElements(prFileElements, globalContext.router)
+    supportedPrFileElements(globalContext.router)
   );
 
   useMutationObserverEffect(
@@ -38,7 +38,7 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
         return;
       }
 
-      const newContainers = supportedPrFileElements(prFileElements, globalContext.router);
+      const newContainers = supportedPrFileElements(globalContext.router);
       if (newContainers.length !== prFileContainers.length) {
         setPrFileContainers(newContainers);
       }
@@ -74,7 +74,7 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
   );
 }
 
-function supportedPrFileElements(prFileElements: () => ResolvedDomDependency[], router: Router) {
+function supportedPrFileElements(router: Router) {
   return prFileElements().filter(container => router.getLanguageData(getFileExtension(container)));
 }
 
