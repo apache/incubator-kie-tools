@@ -527,7 +527,7 @@
     opacity: 1;
     fill: #a30000;
 }
-#endSignalEvent #signal-catching {
+#endSignalEvent #signal-throwing {
     opacity: 1;
     fill: #a30000;
 }
@@ -540,7 +540,7 @@
     opacity: 1;
     fill: #a30000;
 }
-#endEscalationEvent #escalation-catching {
+#endEscalationEvent #escalation-throwing {
     opacity: 1;
     fill: #a30000;
 }
@@ -553,7 +553,7 @@
     opacity: 1;
     fill: #a30000;
 }
-#endCompensationEvent #compensation-catching {
+#endCompensationEvent #compensation-throwing{
     opacity: 1;
     fill: #a30000;
 }
@@ -566,7 +566,7 @@
     opacity: 1;
     fill: #a30000;
 }
-#endMessageEvent #message-catching {
+#endMessageEvent #message-throwing {
     opacity: 1;
     fill: #a30000;
 }
