@@ -42,6 +42,8 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     this.removeBusinessCentralHeaderPanel();
     if (this.editorId !== editors.dmn.id) {
       this.removeHeaderIfOnlyOneItemOnTable();
+    } else {
+      this.injectStyleToFixResponsivenessIssue_DROOLS_3995();
     }
   }
 
@@ -94,5 +96,11 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     if (headerTable && headerTable.querySelectorAll("td > ul > li").length <= 1) {
       headerTable.remove();
     }
+  }
+
+  private injectStyleToFixResponsivenessIssue_DROOLS_3995() {
+    const style = document.createElement("style");
+    style.textContent = ".list-view-pf-body { display: flex !important; }";
+    document.head.appendChild(style);
   }
 }
