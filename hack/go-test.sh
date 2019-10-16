@@ -24,10 +24,13 @@ if [[ -z ${CI} ]]; then
     ./hack/addheaders.sh
 fi
 setGoModEnv
-
+# using p flag to not run cmd tests in parallel, causing problems during config file read
 if [[ "${coverage}" == "true" ]]; then
-  go test -coverprofile cp.out -mod=vendor ./pkg/... ./cmd/... -count=1
-  go tool cover -html=cp.out
+  go test -coverprofile cp_cmd.out -mod=vendor ./cmd/... -count=1 -p=1
+  go test -coverprofile cp_pkg.out -mod=vendor ./pkg/... -count=1
+  go tool cover -html=cp_cmd.out
+  go tool cover -html=cp_pkg.out
 else
-  go test -mod=vendor ./pkg/... ./cmd/... -count=1
+  go test -mod=vendor ./cmd/... -count=1 -p=1
+  go test -mod=vendor ./pkg/... -count=1
 fi
