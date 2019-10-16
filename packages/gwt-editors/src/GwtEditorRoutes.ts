@@ -20,7 +20,7 @@ import { GwtLanguageData } from "./GwtLanguageData";
 export const editors = {
   dmn: {
     id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNShowcase"
+    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp"
   },
   bpmn: {
     id: "BPMNDiagramEditor",
@@ -30,9 +30,11 @@ export const editors = {
 
 export class GwtEditorRoutes implements Routes {
   private readonly bpmnPath: string;
+  private readonly dmnPath: string;
 
-  constructor(args: { bpmnPath: string }) {
+  constructor(args: { bpmnPath: string; dmnPath: string }) {
     this.bpmnPath = args.bpmnPath;
+    this.dmnPath = args.dmnPath;
   }
 
   public getRoutes(router: Router) {
@@ -55,7 +57,37 @@ export class GwtEditorRoutes implements Routes {
         }
       ]
     };
+    const dmnLanguageData: GwtLanguageData = {
+      type: "gwt",
+      editorId: editors.dmn.id,
+      gwtModuleName: editors.dmn.name,
+      resources: [
+        {
+          type: "css",
+          paths: [router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/css/patternfly.min.css`)]
+        },
+        {
+          type: "js",
+          paths: [
+            router.getRelativePathTo(`${this.dmnPath}/model/Jsonix-all.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/DC.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/DI.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/DMNDI12.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/DMN12.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/KIE.js`),
+            router.getRelativePathTo(`${this.dmnPath}/model/MainJs.js`),
+            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/theme-chrome.js`),
+            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`)
+          ]
+        }
+      ]
+    };
 
-    return new Map<string, GwtLanguageData>([["bpmn", bpmnLanguageData], ["bpmn2", bpmnLanguageData]]);
+    return new Map<string, GwtLanguageData>([
+      ["dmn", dmnLanguageData],
+      ["bpmn", bpmnLanguageData],
+      ["bpmn2", bpmnLanguageData]
+    ]);
   }
 }

@@ -18,27 +18,31 @@ import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
 import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import { editors } from "./GwtEditorRoutes";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export class GwtEditorWrapper extends AppFormer.Editor {
   public readonly af_componentTitle: string;
+  public readonly editorId: string;
 
   private readonly gwtEditor: GwtEditor;
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
-  constructor(gwtEditor: GwtEditor, messageBus: EnvelopeBusInnerMessageHandler) {
+  constructor(editorId: string, gwtEditor: GwtEditor, messageBus: EnvelopeBusInnerMessageHandler) {
     super("gwt-editor-wrapper");
-    this.af_componentTitle = "GwtEditorWrapper";
+    this.af_componentTitle = editorId;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
     this.messageBus = messageBus;
+    this.editorId = editorId;
   }
 
   public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
-    this.removeBusinessCentralPanelHeader();
-    this.removeHeaderIfOnlyOneItemOnTable();
+    if (this.editorId !== editors.dmn.id) {
+      this.removeHeaderIfOnlyOneItemOnTable();
+    }
   }
 
   public af_componentRoot() {
@@ -58,6 +62,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     //FIXME: Make setContent return a promise.
     try {
       this.gwtEditor.setContent(content.trim());
+      setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     } catch (e) {
       this.messageBus.notify_setContentError(
         `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
@@ -78,12 +83,10 @@ export class GwtEditorWrapper extends AppFormer.Editor {
   }
 
   private removeBusinessCentralPanelHeader() {
-    setTimeout(() => {
-      const panelHeaderSpan = document.querySelector(".panel-heading.uf-listbar-panel-header span");
-      if (panelHeaderSpan) {
-        panelHeaderSpan.textContent = "";
-      }
-    }, 100);
+    const panelHeaderSpan = document.querySelector(".panel-heading.uf-listbar-panel-header span");
+    if (panelHeaderSpan) {
+      panelHeaderSpan.textContent = "";
+    }
   }
 
   private removeHeaderIfOnlyOneItemOnTable() {

@@ -31,7 +31,7 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     const gwtFinishedLoading = new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.onFinishedLoading(() => {
-        res(new GwtEditorWrapper(this.appFormerGwtApi.getEditor(languageData.editorId), messageBus));
+        res(new GwtEditorWrapper(languageData.editorId, this.appFormerGwtApi.getEditor(languageData.editorId), messageBus));
         messageBus.notify_ready();
         return Promise.resolve();
       });

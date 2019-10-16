@@ -32,6 +32,16 @@
           "bpmn2",
           "Business Process Model and Notation"
         ]
+      },
+      {
+        "id": "dmn",
+        "extensions": [
+          ".dmn"
+        ],
+        "aliases": [
+          "dmn",
+          "Decision Model and Notation"
+        ]
       }
     ]
   },

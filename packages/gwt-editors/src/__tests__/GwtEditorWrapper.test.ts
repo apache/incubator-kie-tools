@@ -25,7 +25,7 @@ const MockEditor = jest.fn(() => ({
 const mockEditor = new MockEditor();
 const mockMessageBus = { notify_setContentError: jest.fn() };
 
-const wrapper = new GwtEditorWrapper(mockEditor, mockMessageBus as any);
+const wrapper = new GwtEditorWrapper("MockEditorId", mockEditor, mockMessageBus as any);
 
 describe("GwtEditorWrapper", () => {
   test("set content", async () => {
