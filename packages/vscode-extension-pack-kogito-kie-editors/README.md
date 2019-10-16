@@ -1,4 +1,4 @@
-BPMN Editor
+BPMN and DMN Editors
 --
 
 ## Release notes - 0.1.1 (alpha)

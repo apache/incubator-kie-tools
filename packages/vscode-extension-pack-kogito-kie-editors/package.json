@@ -1,6 +1,6 @@
 {
-  "name": "vscode-extension-pack-kogito-bpmn",
-  "displayName": "BPMN Editor",
+  "name": "vscode-extension-pack-kogito-kie-editors",
+  "displayName": "BPMN and DMN Editors",
   "description": "",
   "version": "0.1.1",
   "license": "Apache-2.0",
@@ -46,7 +46,7 @@
     ]
   },
   "scripts": {
-    "pack-extension": "vsce package --yarn -o ./dist/kiegroup_kogito_editors_bpmn_$npm_package_version.vsix",
+    "pack-extension": "vsce package --yarn -o ./dist/kiegroup_kogito_kie_editors_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
