@@ -39,7 +39,6 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin([
-      { from: "../unpacked-gwt-editors/bpmn", to: "./bpmn" },
       { from: "./static/manifest.json" },
       { from: "./static/resources", to: "./resources" },
       { from: "./static/envelope", to: "./envelope" }
