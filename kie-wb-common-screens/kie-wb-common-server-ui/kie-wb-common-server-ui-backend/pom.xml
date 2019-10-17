@@ -415,7 +415,7 @@
         <executions>
           <execution>
             <id>unpack</id>
-            <phase>process-resources</phase>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -448,6 +448,36 @@
               </artifactItems>
             </configuration>
           </execution>
+          <execution>
+            <id>copy</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie.server</groupId>
+                  <artifactId>kie-server</artifactId>
+                  <type>war</type>
+                  <classifier>ee8</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>kie-server.war</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.kie.server</groupId>
+                  <artifactId>kie-server-controller-standalone</artifactId>
+                  <type>war</type>
+                  <classifier>ee7</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>kie-server-controller.war</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <!-- other configurations here -->
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -455,7 +485,7 @@
         <executions>
           <execution>
             <id>copy-resources</id>
-            <phase>process-resources</phase>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -472,7 +502,7 @@
           </execution>
           <execution>
             <id>copy-resources-instance1</id>
-            <phase>process-resources</phase>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -489,7 +519,7 @@
           </execution>
           <execution>
             <id>copy-resources-instance2</id>
-            <phase>process-resources</phase>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -511,6 +541,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <systemPropertyVariables>
+            <project.build.directory>${project.build.directory}</project.build.directory>
             <jboss.home>${jboss.home}</jboss.home>
             <jboss.home.instance1>${jboss.home.instance1}</jboss.home.instance1>
             <jboss.home.instance2>${jboss.home.instance2}</jboss.home.instance2>

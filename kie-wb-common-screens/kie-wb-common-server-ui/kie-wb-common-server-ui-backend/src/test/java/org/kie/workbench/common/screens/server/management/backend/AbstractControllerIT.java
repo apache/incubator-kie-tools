@@ -17,6 +17,8 @@
 package org.kie.workbench.common.screens.server.management.backend;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -147,11 +149,10 @@ public abstract class AbstractControllerIT {
     }
 
     public static WebArchive createKieServerWar() {
-        try {
-            final File kieServerFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
-                    .resolve("org.kie.server:kie-server:war:ee8:?").withoutTransitivity().asSingleFile();
-
-            return ShrinkWrap.create(ZipImporter.class, "kie-server.war").importFrom(kieServerFile).as(WebArchive.class);
+        // copy resources 
+        String targetDir = System.getProperty("project.build.directory");
+        try (InputStream file = new FileInputStream(targetDir + File.separator + "kie-server.war")) {
+            return ShrinkWrap.create(ZipImporter.class, "kie-server.war").importFrom(file).as(WebArchive.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -159,11 +160,10 @@ public abstract class AbstractControllerIT {
     }
 
     public static WebArchive createKieServerControllerWar() {
-        try {
-            final File kieServerControllerFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
-                    .resolve("org.kie.server:kie-server-controller-standalone:war:ee7:?").withoutTransitivity().asSingleFile();
-
-            return ShrinkWrap.create(ZipImporter.class, "kie-server-controller.war").importFrom(kieServerControllerFile).as(WebArchive.class);
+        // copy resources 
+        String targetDir = System.getProperty("project.build.directory");
+        try (InputStream file = new FileInputStream(targetDir + File.separator + "kie-server-controller.war")) {
+            return ShrinkWrap.create(ZipImporter.class, "kie-server-controller.war").importFrom(file).as(WebArchive.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
