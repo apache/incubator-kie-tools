@@ -14,57 +14,76 @@
  * limitations under the License.
  */
 
-const fs = require("fs");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
-  entry: {
-    contentscript: "./src/contentscript.ts",
-    background: "./src/background.ts",
-    "envelope/index": "./src/envelope/index.ts"
-  },
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js"
-  },
-  externals: {},
-  devServer: {
-    contentBase: [path.join(__dirname, "..", "unpacked-gwt-editors")],
-    compress: true,
-    hot: false,
-    liveReload: false,
-    watchContentBase: true,
-    https: true,
-    port: 9000
-  },
-  plugins: [
-    new CopyPlugin([
-      { from: "./static/manifest.json" },
-      { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" }
-    ])
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
+module.exports = (env, argv) => {
+  const isProd = argv.mode === "production";
+
+  return {
+    mode: "development",
+    devtool: "inline-source-map",
+    entry: {
+      contentscript: "./src/contentscript.ts",
+      background: "./src/background.ts",
+      "envelope/index": "./src/envelope/index.ts"
+    },
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js"
+    },
+    externals: {},
+    devServer: {
+      contentBase: [path.join(__dirname, "..", "unpacked-gwt-editors")],
+      compress: true,
+      hot: false,
+      liveReload: false,
+      watchContentBase: true,
+      https: true,
+      port: 9000
+    },
+    plugins: [
+      new CopyPlugin([
+        { from: "./static/manifest.json" },
+        { from: "./static/resources", to: "./resources" },
+        { from: "./static/envelope", to: "./envelope" }
+      ])
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          options: {
+            configFile: path.resolve("./tsconfig.json")
+          }
+        },
+        {
+          test: /ChromeRouter\.ts$/,
+          loader: "string-replace-loader",
+          options: {
+            multiple: [
+              {
+                search: "$_{WEBPACK_REPLACE__targetOrigin}",
+                replace: isProd ? "https://raw.githubusercontent.com" : "https://localhost:9000"
+              },
+              {
+                search: "$_{WEBPACK_REPLACE__relativePath}",
+                replace: isProd ? "tiagobento/kogito-online/chrome-extension-resources/" : ""
+              }
+            ]
+          }
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: ["babel-loader"]
         }
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
-      }
-    ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
+      ]
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    }
+  };
 };
