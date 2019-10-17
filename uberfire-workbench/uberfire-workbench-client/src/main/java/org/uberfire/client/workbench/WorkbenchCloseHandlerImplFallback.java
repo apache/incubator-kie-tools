@@ -20,9 +20,9 @@ import com.google.gwt.user.client.Command;
 /**
  * Generic WindowCloseHandler
  */
-public class WorkbenchCloseHandlerImplIE10 implements WorkbenchCloseHandler {
+public class WorkbenchCloseHandlerImplFallback implements WorkbenchCloseHandler {
 
     public void onWindowClose(final Command command) {
-        //Do nothing, as WindowCloseEvents are raised when we don't need them by IE10
+        //Do nothing, as WindowCloseEvents are raised when we don't need them by IE10 and Firefox
     }
 }
