@@ -51,6 +51,7 @@ export class GwtEditorRoutes implements Routes {
           type: "js",
           paths: [
             router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/ace/mode-xml.js`),
             router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/ace/theme-chrome.js`),
             router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`)
           ]
@@ -77,6 +78,7 @@ export class GwtEditorRoutes implements Routes {
             router.getRelativePathTo(`${this.dmnPath}/model/KIE.js`),
             router.getRelativePathTo(`${this.dmnPath}/model/MainJs.js`),
             router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/mode-xml.js`),
             router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/theme-chrome.js`),
             router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`)
           ]
