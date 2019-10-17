@@ -39,7 +39,7 @@ public class ReassignmentRow {
 
     private ReassignmentType type = ReassignmentType.NotCompletedReassign;
 
-    private String duration = "0h";
+    private String duration = "0" + Duration.HOUR.getAlias();
 
     private List<String> users = new ArrayList<>();
 
