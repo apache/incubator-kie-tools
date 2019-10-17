@@ -387,6 +387,7 @@
 							<extraJvmArgs>-Xmx2048m -XX:CompileThreshold=7000 -Djava.io.tmpdir=${project.build.directory}
 							</extraJvmArgs>
 							<disableCastChecking>true</disableCastChecking>
+							<generateJsInteropExports>true</generateJsInteropExports>
 							<soycDetailed>false</soycDetailed>
 							<hostedWebapp>src/main/webapp</hostedWebapp>
 							<strict>true</strict>

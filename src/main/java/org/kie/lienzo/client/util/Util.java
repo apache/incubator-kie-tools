@@ -18,6 +18,29 @@ public class Util {
         return value;
     }
 
+    public static final double[] getRandomLocation(Shape shape,
+                                                   int viewWidth, int viewHeight,
+                                                   int leftPadding, int topPadding, int rightPadding, int bottomPadding) {
+        // this is needed as some shapes, like circles and multipaths, won't have same x,y result as rectangle
+        Point2DArray points = shape.getBoundingPoints().getArray();
+        double xOffset = points.get(0).getX() - shape.getX();
+        double yOffset = points.get(0).getY() - shape.getY();
+
+        double shapeWidth = points.get(1).getX() - points.get(0).getX();
+        double shapeHeight = points.get(3).getY() - points.get(0).getY();
+
+        double wRange = viewWidth - leftPadding - rightPadding - shape.getStrokeWidth() - shapeWidth;
+        double hRange = viewHeight - topPadding - bottomPadding - shape.getStrokeWidth() - shapeHeight;
+
+        double x = Math.random() * wRange;
+        double y = Math.random() * hRange;
+
+        x = x + leftPadding + shape.getStrokeWidth() - xOffset;
+        y = y + topPadding + shape.getStrokeWidth() - yOffset;
+
+        return new double[]{x, y};
+    }
+
     public static final void setLocation(Shape shape,
                                          int viewWidth, int viewHeight,
                                          int leftPadding, int topPadding, int rightPadding, int bottomPadding) {

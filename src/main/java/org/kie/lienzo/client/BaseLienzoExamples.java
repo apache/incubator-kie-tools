@@ -23,6 +23,7 @@ public class BaseLienzoExamples {
 
     public void doLoad() {
         createTests(new BasicExample("Basic"),
+                    new PerformanceTests("Performance tests"),
                     new StrokeAndFillingExample("Stroke and Filling"),
                     new GradientsAndShadowsExample("Gradients and Shadows"),
                     new ColorsAndTransparencyExample("Colors and Transparency"),

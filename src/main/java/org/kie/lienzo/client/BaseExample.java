@@ -1,14 +1,25 @@
 package org.kie.lienzo.client;
 
+import java.util.Map;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
 import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
 import org.kie.lienzo.client.util.Console;
 import org.kie.lienzo.client.util.Util;
+
+import static elemental2.dom.DomGlobal.document;
 
 public abstract class BaseExample implements Example
 {
@@ -90,4 +101,54 @@ public abstract class BaseExample implements Example
         width = panel.getWidePx();
         height = panel.getHighPx();
     }
+
+    public static HTMLDivElement createDiv() {
+        return (HTMLDivElement) DomGlobal.document.createElement("div");
+    }
+
+    public static HTMLDivElement createText(String text) {
+        HTMLDivElement div = createDiv();
+        div.textContent = text;
+        return div;
+    }
+
+    public static HTMLButtonElement createButton(String text,
+                                                 Runnable clickCallback) {
+        HTMLButtonElement button = (HTMLButtonElement) DomGlobal.document.createElement("button");
+        button.textContent = text;
+        setMargins(button);
+        button.onclick = (e) -> {
+            clickCallback.run();
+            return null;
+        };
+        return button;
+    }
+
+    public static HTMLSelectElement createSelect(Map<String, String> options,
+                                                 Consumer<String> selectCallback) {
+        HTMLSelectElement select = (HTMLSelectElement) document.createElement("select");
+        options.entrySet().forEach(entry -> addOption(select, entry.getKey(), entry.getValue()));
+        setMargins(select);
+        select.onchange = (e) -> {
+            selectCallback.accept(select.value);
+            return null;
+        };
+
+        return select;
+    }
+
+    public static void addOption(HTMLSelectElement select,
+                                 String label,
+                                 String value) {
+        HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
+        option.label = label;
+        option.value = value;
+        select.add(option);
+    }
+
+    private static void setMargins(HTMLElement e) {
+        e.style.marginLeft = CSSProperties.MarginLeftUnionType.of("5px");
+        e.style.marginRight = CSSProperties.MarginRightUnionType.of("5px");
+    }
+
 }
