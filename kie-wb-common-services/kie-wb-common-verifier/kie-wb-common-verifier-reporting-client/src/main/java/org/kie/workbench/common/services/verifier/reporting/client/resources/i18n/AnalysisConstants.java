@@ -132,4 +132,9 @@ public interface AnalysisConstants
     String ProvideAtLeastOneConditionAndOneActionForTheRule();
 
     String Analysis();
+
+    String VerifierFailedTitle();
+
+    String VerifierFailed();
+
 }

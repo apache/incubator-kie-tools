@@ -40,6 +40,11 @@ public class ExplanationProvider {
         }
 
         switch (issue.getCheckType()) {
+            case ILLEGAL_VERIFIER_STATE:
+                return new Explanation()
+                        .addParagraph(AnalysisConstants.INSTANCE.VerifierFailed())
+                        .toHTML();
+
             case CONFLICTING_ROWS:
                 return new Explanation()
                         .addParagraph(AnalysisConstants.INSTANCE.ConflictingRowsP1())
@@ -191,6 +196,8 @@ public class ExplanationProvider {
         }
 
         switch (issue.getCheckType()) {
+            case ILLEGAL_VERIFIER_STATE:
+                return AnalysisConstants.INSTANCE.VerifierFailedTitle();
             case CONFLICTING_ROWS:
                 return AnalysisConstants.INSTANCE.ConflictingRows();
             case DEFICIENT_ROW:

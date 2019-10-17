@@ -22,6 +22,7 @@ import java.util.HashSet;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.api.reporting.CheckType;
+import org.drools.verifier.api.reporting.IllegalVerifierStateIssue;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.junit.Before;
@@ -66,6 +67,21 @@ public class IssuePresenterTest {
                      safeHtmlArgumentCaptor.getValue()
                              .asString());
         verify(view).setLines("1, 2, 3");
+    }
+
+    @Test
+    public void testIllegalVerifierState() {
+
+        final Issue issue = new IllegalVerifierStateIssue();
+
+        screen.show(issue);
+
+        verify(view).setIssueTitle("VerifierFailedTitle");
+        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(view).setExplanation(safeHtmlArgumentCaptor.capture());
+        assertEquals("<p>VerifierFailed</p>",
+                     safeHtmlArgumentCaptor.getValue().asString());
+        verify(view).setLines("");
     }
 
     @Test

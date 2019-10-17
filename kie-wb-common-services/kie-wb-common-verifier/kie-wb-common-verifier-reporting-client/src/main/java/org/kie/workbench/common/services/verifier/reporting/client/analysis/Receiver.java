@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 
 import com.google.gwt.webworker.client.Worker;
 import org.drools.verifier.api.Status;
+import org.drools.verifier.api.reporting.IllegalVerifierStateIssue;
+import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Issues;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -31,6 +33,7 @@ public class Receiver {
     private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
 
     private AnalysisReporter reporter;
+    private Worker worker;
 
     public Receiver(final AnalysisReporter reporter) {
         this.reporter = PortablePreconditions.checkNotNull("reporter",
@@ -47,12 +50,13 @@ public class Receiver {
 
             LOGGER.finest("Receiving: " + json);
 
-            final Object o = MarshallingWrapper.fromJSON(json);
+            final Object o = fromJSON(json);
 
             if (o instanceof WebWorkerLogMessage) {
                 LOGGER.info("Web Worker log message: " + ((WebWorkerLogMessage) o).getMessage());
             } else if (o instanceof WebWorkerException) {
                 LOGGER.severe("Web Worker failed: " + ((WebWorkerException) o).getMessage());
+                shutdown();
             } else if (o instanceof Status) {
                 reporter.sendStatus((Status) o);
             } else if (o instanceof Issues) {
@@ -64,7 +68,23 @@ public class Receiver {
         }
     }
 
+    public Object fromJSON(String json) {
+        return MarshallingWrapper.fromJSON(json);
+    }
+
+    public void shutdown() {
+
+        if (worker != null) {
+            worker.terminate();
+        }
+
+        final HashSet<Issue> issues = new HashSet<>();
+        issues.add(new IllegalVerifierStateIssue());
+        reporter.sendReport(issues);
+    }
+
     public void setUp(final Worker worker) {
+        this.worker = worker;
         worker.setOnMessage(messageEvent -> received(messageEvent.getDataAsString()));
     }
 }
