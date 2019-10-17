@@ -24,7 +24,8 @@
     "test": "echo 'No tests to run.'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:prod": "yarn run build --mode production --devtool none",
+    "serve-envelope": "webpack-dev-server"
   },
   "babel": {
     "presets": [
@@ -52,8 +53,8 @@
     "tslint-react": "3.6.0",
     "typescript": "2.9.2",
     "watch": "1.0.2",
-    "webpack": "4.15.1",
-    "webpack-cli": "3.0.8",
+    "webpack": "4.41.2",
+    "webpack-cli": "3.3.9",
     "webpack-dev-server": "3.8.2"
   }
 }
