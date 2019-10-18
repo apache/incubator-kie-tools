@@ -508,27 +508,36 @@ public abstract class BaseEditor<T, M> {
     }
 
     protected void showConcurrentUpdatePopup() {
-        newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
-                            concurrentUpdateSessionInfo.getIdentity(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    save();
-                                }
-                            },
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    //cancel?
-                                }
-                            },
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    reload();
-                                }
-                            }
-        ).show();
+        baseView.hideBusyIndicator();
+        if (concurrentChangePopup == null) {
+            concurrentChangePopup = getConcurrentUpdatePopup();
+        }
+        concurrentChangePopup.show();
+    }
+
+    ConcurrentChangePopup getConcurrentUpdatePopup() {
+        return newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                                                    concurrentUpdateSessionInfo.getIdentity(),
+                                                    new Command() {
+                                                        @Override
+                                                        public void execute() {
+                                                            save();
+                                                            concurrentChangePopup = null;
+                                                        }
+                                                    },
+                                                    new Command() {
+                                                        @Override
+                                                        public void execute() {
+                                                            concurrentChangePopup = null;
+                                                        }
+                                                    },
+                                                    new Command() {
+                                                        @Override
+                                                        public void execute() {
+                                                            reload();
+                                                            concurrentChangePopup = null;
+                                                        }
+                                                    });
     }
 
     public RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {

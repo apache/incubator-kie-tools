@@ -42,6 +42,7 @@ import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
+import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -63,6 +64,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
@@ -588,6 +590,18 @@ public class BaseEditorTest {
         editor.enableMenuItem(SAVE);
 
         verify(menuItem).setEnabled(true);
+    }
+
+    @Test
+    public void testShowConcurrentUpdatePopupTwice() {
+        final ConcurrentChangePopup concurrentChangePopup = mock(ConcurrentChangePopup.class);
+        doReturn(concurrentChangePopup).when(editor).getConcurrentUpdatePopup();
+
+        editor.showConcurrentUpdatePopup();
+        editor.showConcurrentUpdatePopup();
+
+        verify(editor, times(1)).getConcurrentUpdatePopup();
+        verify(concurrentChangePopup, times(2)).show();
     }
 
     private DefaultMetadata fakeMetadata(final int hashCode) {
