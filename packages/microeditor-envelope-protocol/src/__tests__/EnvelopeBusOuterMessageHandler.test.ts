@@ -80,7 +80,7 @@ describe("startInitPolling", () => {
     //less than the timeout
     await delay(100);
 
-    handler.receive({ type: EnvelopeBusMessageType.RETURN_INIT, data: undefined });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_INIT, data: undefined });
 
     expect(initPollCount).toBeGreaterThan(0);
     expect(handler.initPolling).toBeFalsy();
@@ -104,33 +104,39 @@ describe("startInitPolling", () => {
 });
 
 describe("receive", () => {
+  test("any message with different id", () => {
+    handler.receive({ busId: "unknown-id", type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined });
+    handler.receive({ busId: "unknown-id", type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
+    expect(receivedMessages).toEqual([]);
+  });
+
   test("language request", () => {
-    handler.receive({ type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined });
     expect(receivedMessages).toEqual(["languageRequest"]);
   });
 
   test("content request", () => {
-    handler.receive({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
     expect(receivedMessages).toEqual(["contentRequest"]);
   });
 
   test("content response", () => {
-    handler.receive({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
     expect(receivedMessages).toEqual(["contentResponse_foo"]);
   });
 
   test("set content error notification", () => {
-    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "errorMsg" });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "errorMsg" });
     expect(receivedMessages).toEqual(["setContentError_errorMsg"]);
   });
 
   test("dirty indicator change notification", () => {
-    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true });
     expect(receivedMessages).toEqual(["dirtyIndicatorChange_true"]);
   });
 
   test("ready notification", () => {
-    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
     expect(receivedMessages).toEqual(["ready"]);
   });
 });
@@ -143,7 +149,7 @@ describe("send", () => {
 
   test("request init", () => {
     handler.request_initResponse("test-origin");
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }]);
+    expect(sentMessages).toEqual([{ busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }]);
   });
 
   test("respond languageRequest", () => {

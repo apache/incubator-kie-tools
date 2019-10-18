@@ -27,15 +27,22 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js"
+    filename: "[name].js",
+    publicPath: "/envelope"
   },
   externals: {},
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
+    https: true,
+    port: 9000
+  },
   plugins: [
     new CopyPlugin([
       { from: "./static/manifest.json" },
       { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" },
-    ]),
+      { from: "./static/envelope", to: "./envelope" }
+    ])
   ],
   module: {
     rules: [

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
+import * as React from "react";
 
-export interface EnvelopeBusMessage<T> {
-  type: EnvelopeBusMessageType;
-  busId?: string;
-  data: T;
+export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
+  return (
+    <div id={"kogito-iframe-fullscreen-toolbar"}>
+      <a href={"#"} onClick={props.onExitFullScreen}>
+        Exit full screen
+      </a>
+    </div>
+  );
 }

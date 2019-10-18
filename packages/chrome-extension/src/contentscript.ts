@@ -14,63 +14,17 @@
  * limitations under the License.
  */
 
+import { runAfterUriChange } from "./app/utils";
 import { ChromeRouter } from "./app/ChromeRouter";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
-import { GitHubDomElementsFactory } from "./GitHubDomElementsFactory";
+import { startKogitoChromeExtension } from "./index";
 
-function extractOpenFileExtension(url: string) {
-  const splitLocationHref = url.split(".").pop();
-  if (!splitLocationHref) {
-    return undefined;
-  }
-
-  const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
-  if (!openFileExtensionRegex) {
-    return undefined;
-  }
-
-  const openFileExtension = openFileExtensionRegex.pop();
-  if (!openFileExtension) {
-    return undefined;
-  }
-
-  return openFileExtension;
-}
-
-async function init() {
-  const githubDomElements = new GitHubDomElementsFactory().create();
-  if (!githubDomElements.githubTextEditor()) {
-    console.info(`[Kogito] Not GitHub edit page.`);
-    return;
-  }
-
-  const openFileExtension = extractOpenFileExtension(window.location.href);
-  if (!openFileExtension) {
-    console.info(`[Kogito] Unable to determine file extension from URL`);
-    return;
-  }
-
-  const router = new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }));
-  if (!router.getLanguageData(openFileExtension)) {
-    console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
-    return;
-  }
-
-  if (!githubDomElements.allFound()) {
-    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
-    return;
-  }
-
-  const app = React.createElement(ChromeExtensionApp, {
-    githubDomElements: githubDomElements,
-    openFileExtension: openFileExtension,
-    router: router
+function init() {
+  startKogitoChromeExtension({
+    editorIndexPath: "envelope/index.html",
+    router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }))
   });
-
-  ReactDOM.render(app, githubDomElements.mainContainer());
 }
 
-init();
+runAfterUriChange(() => setImmediate(init));
+setImmediate(() => init());

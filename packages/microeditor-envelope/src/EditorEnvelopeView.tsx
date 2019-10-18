@@ -48,6 +48,10 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return new Promise(res => this.setState({ loading: false }, res));
   }
 
+  public setLoading() {
+    return this.setState({ loading: true });
+  }
+
   private LoadingScreenPortal() {
     return ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!);
   }

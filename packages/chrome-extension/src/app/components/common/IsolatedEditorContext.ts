@@ -16,21 +16,16 @@
 
 import * as React from "react";
 
-export interface GlobalContextType {
-  fullscreen: boolean;
+export interface IsolatedEditorContextType {
   textMode: boolean;
-  textModeEnabled: boolean;
+  fullscreen: boolean;
+  onEditorReady?: () => void;
 }
 
-export const GlobalContext = React.createContext<
-  [GlobalContextType, <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => void]
->([
-  {
-    fullscreen: false,
-    textMode: false,
-    textModeEnabled: false
-  },
-  <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => {
+export const IsolatedEditorContext = React.createContext<IsolatedEditorContextType>({
+  textMode: false,
+  fullscreen: false,
+  onEditorReady: () => {
     /**/
   }
-]);
+});

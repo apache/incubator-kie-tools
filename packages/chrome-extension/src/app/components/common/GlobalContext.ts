@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
+import * as React from "react";
+import { Router } from "@kogito-tooling/core-api";
+import { GlobalDomDependencies } from "../../dependencies";
 
-export interface EnvelopeBusMessage<T> {
-  type: EnvelopeBusMessageType;
-  busId?: string;
-  data: T;
+export interface GlobalContextType {
+  router: Router;
+  editorIndexPath: string;
+  dependencies: GlobalDomDependencies;
 }
+
+export const GlobalContext = React.createContext<GlobalContextType>({
+  router: undefined as any,
+  editorIndexPath: "envelope/index.html",
+  dependencies: {} as any
+});

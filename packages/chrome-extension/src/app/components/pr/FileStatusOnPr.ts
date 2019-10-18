@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
-
-export interface EnvelopeBusMessage<T> {
-  type: EnvelopeBusMessageType;
-  busId?: string;
-  data: T;
+export enum FileStatusOnPr {
+  UNKNOWN,
+  ADDED,
+  DELETED,
+  CHANGED
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#kogito-iframe.fullscreen {
+.kogito-iframe.fullscreen {
   width: 100vw;
   height: 100vh;
   border: 0;
 }
 
-#kogito-iframe.not-fullscreen {
+.kogito-iframe.not-fullscreen {
   width: 100%;
   height: 600px;
   border: 1px solid lightgrey;
@@ -45,8 +45,23 @@
   color: #e2e2e2;
 }
 
-#kogito-iframe-container {
+#kogito-iframe-container.edit {
   margin: 16px;
+}
+
+#kogito-iframe-container.view {
+  margin: -1px 0 0 0;
+}
+
+#kogito-toolbar-container.view {
+  margin: 16px 0 16px 0;
+  flex-direction: row-reverse !important;
+  justify-content: space-between;
+}
+
+#kogito-toolbar-container.edit {
+  flex-direction: row-reverse !important;
+  justify-content: space-between;
 }
 
 #kogito-iframe-fullscreen-container {

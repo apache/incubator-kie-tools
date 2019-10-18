@@ -14,10 +14,128 @@
  * limitations under the License.
  */
 
+import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
+import { ResolvedDomDependency } from "./dependencies";
+
 export function runScriptOnPage(scriptString: string) {
   const scriptTag = document.createElement("script");
   scriptTag.setAttribute("type", "text/javascript");
   scriptTag.innerText = scriptString;
   document.body.appendChild(scriptTag);
   scriptTag.remove();
+}
+
+let lastUri = window.location.pathname;
+
+export function runAfterUriChange(callback: () => void) {
+  const checkUriThenCallback = () => {
+    const currentUri = window.location.pathname;
+
+    if (lastUri === currentUri) {
+      return;
+    }
+
+    console.debug(`[Kogito] URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    lastUri = currentUri;
+    callback();
+  };
+
+  runScriptOnPage(`
+  var _wr = function(type) {
+      var orig = history[type];
+      return function() {
+          var rv = orig.apply(this, arguments);
+          var e = new Event(type);
+          e.arguments = arguments;
+          window.dispatchEvent(e);
+          return rv;
+      };
+  };
+  history.replaceState = _wr('replaceState');`);
+
+  window.addEventListener("replaceState", () => {
+    console.debug("[Kogito] replaceState event happened");
+    checkUriThenCallback();
+  });
+  window.addEventListener("popstate", () => {
+    console.debug("[Kogito] popstate event happened");
+    checkUriThenCallback();
+  });
+}
+
+export function removeAllChildren(node: Node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
+
+export function mainContainer(container: ResolvedDomDependency) {
+  return container.element.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
+}
+
+export function createAndGetMainContainer(container: ResolvedDomDependency) {
+  if (!mainContainer(container)) {
+    container.element.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+  }
+  return mainContainer(container)!;
+}
+
+export function iframeFullscreenContainer(container: ResolvedDomDependency) {
+  const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
+  if (!element()) {
+    container.element.insertAdjacentHTML(
+      "afterbegin",
+      `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
+    );
+  }
+  return element();
+}
+
+export function waitUntil(halt: () => boolean, times: { interval: number; timeout: number }) {
+  return new Promise((res, rej) => {
+    asyncLoop(halt, times.interval, times.timeout, new Date().getTime(), res, rej);
+  });
+}
+
+function asyncLoop(
+  halt: () => boolean,
+  interval: number,
+  timeout: number,
+  start: number,
+  onHalt: () => void,
+  onTimeout: (...args: any[]) => void
+) {
+  //timeout check
+  if (new Date().getTime() - start >= timeout) {
+    onTimeout("async loop timeout");
+    return;
+  }
+
+  //check condition
+  if (halt()) {
+    onHalt();
+    return;
+  }
+
+  //loop
+  setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
+}
+
+export function extractOpenFileExtension(url: string) {
+  const splitLocationHref = url.split(".").pop();
+  if (!splitLocationHref) {
+    return undefined;
+  }
+
+  const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
+  if (!openFileExtensionRegex) {
+    return undefined;
+  }
+
+  const openFileExtension = openFileExtensionRegex.pop();
+  if (!openFileExtension) {
+    return undefined;
+  }
+
+  return openFileExtension;
 }
