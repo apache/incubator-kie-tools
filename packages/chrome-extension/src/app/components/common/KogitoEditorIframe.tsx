@@ -86,7 +86,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         })
       );
     },
-    [ref, router, onEditorReady]
+    [ref, router]
   );
 
   useEffect(
