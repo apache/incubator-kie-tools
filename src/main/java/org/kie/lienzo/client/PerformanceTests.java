@@ -13,11 +13,11 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.Color;
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import org.gwtproject.dom.style.shared.Display;
 import org.kie.lienzo.client.util.FPSCounter;
 import org.kie.lienzo.client.util.Util;
 

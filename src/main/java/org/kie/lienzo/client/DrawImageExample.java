@@ -29,14 +29,13 @@ import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
-import org.gwtproject.dom.style.shared.Display;
-import org.kie.lienzo.client.BaseExample;
 import org.kie.lienzo.client.util.Util;
 
 import static elemental2.dom.DomGlobal.document;

@@ -1,10 +1,5 @@
 package org.kie.lienzo.client;
 
-import static elemental2.dom.DomGlobal.document;
-
-import com.ait.lienzo.client.widget.panel.LienzoPanel;
-import org.gwtproject.dom.style.shared.Display;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -16,14 +11,17 @@ import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.widget.LienzoPanel2;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.HTMLBRElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLLabelElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
+
+import static elemental2.dom.DomGlobal.document;
 
 public class ArrowAttributesExample extends BaseExample implements Example {
 

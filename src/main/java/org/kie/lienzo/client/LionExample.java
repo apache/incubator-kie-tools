@@ -12,12 +12,11 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import org.gwtproject.dom.style.shared.Display;
-import org.kie.lienzo.client.BaseExample;
 
 public class LionExample extends BaseExample implements Example
 {

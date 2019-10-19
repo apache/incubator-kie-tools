@@ -23,13 +23,12 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.style.shared.Display;
-import org.kie.lienzo.client.BaseExample;
 
 import static elemental2.dom.DomGlobal.document;
 

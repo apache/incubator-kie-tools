@@ -1,11 +1,11 @@
 package org.kie.lienzo.client;
 
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element.OnclickFn;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import org.gwtproject.dom.style.shared.Display;
 
 public class ShapesExample extends BaseExample implements Example {
 

@@ -7,11 +7,10 @@ import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.Color;
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
-import org.gwtproject.dom.style.shared.Display;
-import org.kie.lienzo.client.BaseExample;
 
 import static elemental2.dom.DomGlobal.document;
 

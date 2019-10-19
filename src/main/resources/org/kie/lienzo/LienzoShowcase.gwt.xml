@@ -18,7 +18,6 @@
 <module>
 
   <inherits name='com.google.gwt.user.User' />
-  <inherits name="org.gwtproject.core.Core" />
   <inherits name="com.ait.lienzo.Lienzo" />
 
   <entry-point class="org.kie.lienzo.client.LienzoGWT2Examples" />
