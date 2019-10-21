@@ -30,17 +30,52 @@ import static org.junit.Assert.assertTrue;
 
 public class SignalRefTest {
 
-    private static final String WRONG_REF = "~`!@#$%^&*()_+=-{}|][:\"';?><,./";
-
-    private static final String VALID_REF = "validSIGNALREF0123456789_";
-
-    private static final String MVEL_EXPRESSION = "#{validSIGNALREF0123456789_mvel}";
-
     private static final String MVEL_COMPLEX_OBJECT_EXPRESSION = "#{myObj.property}";
 
     private static final String MVEL_INVALID_EXPRESSION = "#{.expression}";
 
-    private static final String MVEL_SYSTEM_PROPERTY = "#{System.getProperty(\"search.value\", \"default.value\")}";
+    private static final String MVEL_PARAM_EXPRESSION = "#{System.getProperty(\"search.value\", \"default.value\")}";
+
+    private static final String EMPTY_REF = "";
+
+    private static final String EXP_SEPARATOR = "-";
+
+    private static final String VALID_STATIC_REF = "validSIGNALREF0123456789_";
+
+    private static final String VALID_MVEL_REF_1 = "#{myObj}";
+    private static final String VALID_MVEL_REF_2 = "#{m}";
+
+    private static final String VALID_MVEL_COMPLEX_REF_1 = "#{myObj.property}";
+    private static final String VALID_MVEL_COMPLEX_REF_2 = "#{m.p}";
+
+    private static final String VALID_MVEL_COMPLEX_PARAM_REF_1 = "#{myObj.property(parameter)}";
+    private static final String VALID_MVEL_COMPLEX_PARAM_REF_2 = "#{m.p(p)}";
+
+    private static final String VALID_COMBINATION_1 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_STATIC_REF;
+    private static final String VALID_COMBINATION_2 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_MVEL_REF_1;
+    private static final String VALID_COMBINATION_3 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_MVEL_COMPLEX_REF_1;
+    private static final String VALID_COMBINATION_4 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_MVEL_COMPLEX_PARAM_REF_1;
+
+    private static final String INVALID_STATIC_REF = "~`!@#$%^&*()_+=-{}|][:\"';?><,./";
+
+    private static final String INVALID_MVEL_REF = "#{~`!@#$%^&*()_+=-{}|][:\"';?><,./}";
+
+    private static final String INVALID_MVEL_COMPLEX_REF_1 = "#{m.}";
+    private static final String INVALID_MVEL_COMPLEX_REF_2 = "#{.p}";
+    private static final String INVALID_MVEL_COMPLEX_REF_3 = "#{m.~`!@#$%^&*()_+=-{}|][:\"';?><,./}";
+    private static final String INVALID_MVEL_COMPLEX_REF_4 = "#{m.~`!@#$%^&*()_+=-{}|][:\"';?><,./}";
+
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_1 = "#{myObj.property()}";
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_2 = "#{m.p()}";
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_3 = "#{m.(parameter)}";
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_4 = "#{.p(parameter)}";
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_5 = "#{.(parameter)}";
+    private static final String INVALID_MVEL_PARAM_COMPLEX_REF_6 = "#{myObj~.property(parameter)}";
+
+    private static final String INVALID_COMBINATION_1 = INVALID_STATIC_REF + VALID_STATIC_REF;
+    private static final String INVALID_COMBINATION_2 = VALID_STATIC_REF + VALID_MVEL_REF_1;
+    private static final String INVALID_COMBINATION_3 = VALID_STATIC_REF + VALID_MVEL_COMPLEX_REF_1;
+    private static final String INVALID_COMBINATION_4 = VALID_STATIC_REF + VALID_MVEL_COMPLEX_PARAM_REF_1;
 
     private Validator validator;
 
@@ -50,65 +85,48 @@ public class SignalRefTest {
     }
 
     @Test
-    public void testSignalRefWithEmptySignal() {
-        SignalRef signalRef = new SignalRef();
+    public void testSignalRef() {
+        assertValidExpression(EMPTY_REF);
+        assertValidExpression(VALID_STATIC_REF);
+        assertValidExpression(VALID_MVEL_REF_1);
+        assertValidExpression(VALID_MVEL_REF_2);
+        assertValidExpression(VALID_MVEL_COMPLEX_REF_1);
+        assertValidExpression(VALID_MVEL_COMPLEX_REF_2);
+        assertValidExpression(VALID_MVEL_COMPLEX_PARAM_REF_1);
+        assertValidExpression(VALID_MVEL_COMPLEX_PARAM_REF_2);
+        assertValidExpression(VALID_COMBINATION_1);
+        assertValidExpression(VALID_COMBINATION_2);
+        assertValidExpression(VALID_COMBINATION_3);
+        assertValidExpression(VALID_COMBINATION_4);
 
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertTrue(validations.isEmpty());
+        assertInvalidExpression(INVALID_STATIC_REF);
+        assertInvalidExpression(INVALID_MVEL_REF);
+        assertInvalidExpression(INVALID_MVEL_COMPLEX_REF_1);
+        assertInvalidExpression(INVALID_MVEL_COMPLEX_REF_2);
+        assertInvalidExpression(INVALID_MVEL_COMPLEX_REF_3);
+        assertInvalidExpression(INVALID_MVEL_COMPLEX_REF_4);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_1);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_2);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_3);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_4);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_5);
+        assertInvalidExpression(INVALID_MVEL_PARAM_COMPLEX_REF_6);
+        assertInvalidExpression(INVALID_COMBINATION_1);
+        assertInvalidExpression(INVALID_COMBINATION_2);
+        assertInvalidExpression(INVALID_COMBINATION_3);
+        assertInvalidExpression(INVALID_COMBINATION_4);
     }
 
-    @Test
-    public void testSignalRefWithMvelExpression() {
-        SignalRef signalRef = new SignalRef(MVEL_EXPRESSION);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertTrue(validations.isEmpty());
+    private Set<ConstraintViolation<SignalRef>> validateExpression(String expression) {
+        final SignalRef signalRef = new SignalRef(expression);
+        return validator.validate(signalRef);
     }
 
-    @Test
-    public void testSignalRefWithMvelComplexObjectExpression() {
-        SignalRef signalRef = new SignalRef(MVEL_COMPLEX_OBJECT_EXPRESSION);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertTrue(validations.isEmpty());
+    private void assertValidExpression(String expression) {
+        assertTrue(validateExpression(expression).isEmpty());
     }
 
-    @Test
-    public void testSignalRefWithMvelSystemProperty() {
-        SignalRef signalRef = new SignalRef(MVEL_SYSTEM_PROPERTY);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertTrue(validations.isEmpty());
-    }
-
-    @Test
-    public void testSignalRefWithMvelInvalidExpression() {
-        SignalRef signalRef = new SignalRef(MVEL_INVALID_EXPRESSION);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertFalse(validations.isEmpty());
-    }
-
-    @Test
-    public void testSignalRefWithValidSignal() {
-        SignalRef signalRef = new SignalRef(VALID_REF);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertTrue(validations.isEmpty());
-    }
-
-    @Test
-    public void testSignalRefWithWrongSignal() {
-        SignalRef signalRef = new SignalRef(WRONG_REF);
-
-        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
-
-        assertFalse(validations.isEmpty());
+    private void assertInvalidExpression(String expression) {
+        assertFalse(validateExpression(expression).isEmpty());
     }
 }
