@@ -77,7 +77,6 @@ public class ServiceTaskShapeViewHandler
         scale(picture,
               WID_ICON_WIDTH,
               WID_ICON_HEIGHT);
-        view.refresh();
     }
 
     private static boolean hasDataChanged(final String url1,

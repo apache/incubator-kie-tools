@@ -40,6 +40,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -124,5 +125,6 @@ public class ServiceTaskShapeViewHandlerTest {
         verify(icon, times(1)).setScale(eq(0.5d), eq(0.5d));
         verify(width, times(1)).setValue(WIDTH);
         verify(height, times(1)).setValue(HEIGHT);
+        verify(view, never()).refresh();
     }
 }
