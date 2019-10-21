@@ -17,6 +17,8 @@
 package org.kie.workbench.common.services.verifier.reporting.client.panel;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.verifier.api.Status;
+import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.kie.workbench.common.services.verifier.reporting.client.resources.i18n.AnalysisConstants;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -77,27 +80,32 @@ public class AnalysisReportScreen {
     public void showReport(final AnalysisReport report) {
         LOGGER.finest("Received report for: " + report.getPlace().getPath());
 
-        if (!report.getPlace()
-                .equals(currentPlace)) {
+        if (!report.getPlace().equals(currentPlace)) {
             return;
         }
 
         view.showStatusComplete();
 
-        dataProvider.setList(getIssues(report));
+        final List<Issue> issues = getIssues(report);
+        final boolean isIllegalState = issues.stream()
+                .filter(issue -> Objects.equals(issue.getCheckType(),
+                                                CheckType.ILLEGAL_VERIFIER_STATE))
+                .count() > 0;
+        if (isIllegalState) {
+            view.hideProgressStatus();
+        }
 
-        if (dataProvider.getList()
-                .isEmpty()) {
+        dataProvider.setList(issues);
+
+        if (dataProvider.getList().isEmpty()) {
             fireIssueSelectedEvent(Issue.EMPTY);
             view.clearIssue();
         } else {
-            final Issue issue = dataProvider.getList()
-                    .get(0);
+            final Issue issue = dataProvider.getList().get(0);
             onSelect(issue);
         }
 
-        if (!report.getAnalysisData()
-                .isEmpty()) {
+        if (!report.getAnalysisData().isEmpty()) {
             LOGGER.finest("goto " + IDENTIFIER);
             placeManager.goTo(IDENTIFIER);
             LOGGER.finest("went " + IDENTIFIER);
@@ -113,7 +121,7 @@ public class AnalysisReportScreen {
         currentPlace = place;
     }
 
-    private ArrayList<Issue> getIssues(final AnalysisReport report) {
+    private List<Issue> getIssues(final AnalysisReport report) {
         return new ArrayList<>(new IssuesSet(report.getAnalysisData()));
     }
 

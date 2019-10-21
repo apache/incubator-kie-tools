@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
@@ -44,6 +45,9 @@ public class AnalysisReportScreenViewImpl
                    RequiresResize {
 
     private AnalysisReportScreen presenter;
+
+    @DataField("progressTooltip")
+    Element progressTooltip = DOM.createDiv();
 
     @DataField("progressPanel")
     Element progressPanel = DOM.createDiv();
@@ -107,6 +111,7 @@ public class AnalysisReportScreenViewImpl
 
     @Override
     public void showStatusComplete() {
+        progressTooltip.getStyle().setVisibility(Style.Visibility.VISIBLE);
         progressPanel.getStyle().setColor("WHITE");
         progressPanel.getStyle().setBackgroundColor("GREEN");
         progressPanel.setInnerHTML(AnalysisConstants.INSTANCE.AnalysisComplete());
@@ -116,12 +121,17 @@ public class AnalysisReportScreenViewImpl
     public void showStatusTitle(final int start,
                                 final int end,
                                 final int totalCheckCount) {
-
+        progressTooltip.getStyle().setVisibility(Style.Visibility.VISIBLE);
         progressPanel.getStyle().setColor("BLACK");
         progressPanel.getStyle().setBackgroundColor("#ffc");
         progressPanel.setInnerHTML(AnalysisConstants.INSTANCE.AnalysingChecks0To1Of2(start,
                                                                                      end,
                                                                                      totalCheckCount));
+    }
+
+    @Override
+    public void hideProgressStatus() {
+        progressTooltip.getStyle().setVisibility(Style.Visibility.HIDDEN);
     }
 
     @Override

@@ -36,4 +36,6 @@ public interface AnalysisReportScreenView
     void showStatusTitle(final int start,
                          final int end,
                          final int totalCheckCount);
+
+    void hideProgressStatus();
 }

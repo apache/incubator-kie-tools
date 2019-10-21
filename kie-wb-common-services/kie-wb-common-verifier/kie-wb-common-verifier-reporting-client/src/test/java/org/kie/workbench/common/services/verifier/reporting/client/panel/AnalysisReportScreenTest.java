@@ -129,6 +129,22 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
+    public void testShowReportIllegalState() {
+        final Issue illegalStateIssue = new Issue(Severity.ERROR,
+                                                  CheckType.ILLEGAL_VERIFIER_STATE,
+                                                  Collections.emptySet());
+        screen.showReport(getAnalysis(illegalStateIssue));
+
+        verify(placeManager).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
+
+        assertEquals(1,
+                     dataProvider.getList().size());
+        assertTrue(dataProvider.getList().contains(illegalStateIssue));
+
+        verify(view).hideProgressStatus();
+    }
+
+    @Test
     public void testMergeEmptyRules() throws
             Exception {
         testMerge(CheckType.EMPTY_RULE);
