@@ -19,9 +19,9 @@ package org.uberfire.ext.editor.commons.client.resources.i18n;
 import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public class Constants {
-
+    
     @TranslationKey(defaultValue = "")
-    public static final String SavePopUpView_ConfirmSave = "SavePopUpView.ConfirmSave";
+    public static final String SavePopUpView_SaveWithComments = "SavePopUpView.SaveWithComments";
 
     @TranslationKey(defaultValue = "")
     public static final String SavePopUpView_Save = "SavePopUpView.Save";
@@ -45,7 +45,7 @@ public class Constants {
     public static final String DeletePopUpView_UnexpectedError = "DeletePopUpView.UnexpectedError";
 
     @TranslationKey(defaultValue = "")
-    public static final String RestorePopUpView_ConfirmRestore = "RestorePopUpView.ConfirmRestore";
+    public static final String RestorePopUpView_RestoreWithComments = "RestorePopUpView.RestoreWithComments";
 
     @TranslationKey(defaultValue = "")
     public static final String RestorePopUpView_Restore = "RestorePopUpView.Restore";

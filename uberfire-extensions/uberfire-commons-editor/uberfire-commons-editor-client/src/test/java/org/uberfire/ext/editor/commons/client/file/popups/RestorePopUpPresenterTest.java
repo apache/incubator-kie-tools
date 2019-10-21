@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
-import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -60,9 +59,6 @@ public class RestorePopUpPresenterTest {
     @Mock
     ParameterizedCommand<String> commandMock;
 
-    @Mock
-    ToggleCommentPresenter toggleCommentPresenter;
-
     RestorePopUpPresenter presenter;
 
     @Before
@@ -71,8 +67,7 @@ public class RestorePopUpPresenterTest {
                                               busyIndicatorView,
                                               versionService,
                                               restoreEvent,
-                                              restoreUtil,
-                                              toggleCommentPresenter) {
+                                              restoreUtil) {
         };
     }
 
@@ -85,7 +80,7 @@ public class RestorePopUpPresenterTest {
 
     @Test
     public void testRestore() throws Exception {
-        when(toggleCommentPresenter.getComment()).thenReturn("test");
+        when(view.getComment()).thenReturn("test");
         presenter.command = commandMock;
 
         presenter.restore();

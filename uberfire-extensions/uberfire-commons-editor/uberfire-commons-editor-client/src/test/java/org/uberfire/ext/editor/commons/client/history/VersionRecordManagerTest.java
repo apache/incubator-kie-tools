@@ -136,7 +136,7 @@ public class VersionRecordManagerTest {
         manager.onVersionSelectedEvent(new VersionSelectedEvent(pathTo333,
                                                                 getVersionRecord("111")));
 
-        manager.restoreToCurrentVersion();
+        manager.restoreToCurrentVersion(true);
 
         verify(restorePopup).show(pathTo111,
                                   "hehe//111");

@@ -27,7 +27,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.SaveInProgressEvent;
-import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
@@ -48,16 +47,11 @@ public class SavePopUpPresenterTest {
     @Mock
     Path path;
 
-    @Mock
-    ToggleCommentPresenter toggleCommentPresenter;
-
     SavePopUpPresenter presenter;
 
     @Before
     public void init() throws Exception {
-        presenter = new SavePopUpPresenter(view,
-                                           saveInProgressEvent,
-                                           toggleCommentPresenter);
+        presenter = new SavePopUpPresenter(view, saveInProgressEvent);
     }
 
     @Test
@@ -98,7 +92,7 @@ public class SavePopUpPresenterTest {
 
     @Test
     public void testSaveWithCommand() throws Exception {
-        when(toggleCommentPresenter.getComment()).thenReturn("test");
+        when(view.getComment()).thenReturn("test");
 
         presenter.show(command);
         presenter.save();

@@ -33,6 +33,8 @@ public interface CommonConstants
 
     String Save();
 
+    String SaveWithComments();
+
     String Tags();
 
     String Cancel();
@@ -68,6 +70,8 @@ public interface CommonConstants
     String Validate();
 
     String Restore();
+
+    String RestoreWithComments();
 
     String Other();
 

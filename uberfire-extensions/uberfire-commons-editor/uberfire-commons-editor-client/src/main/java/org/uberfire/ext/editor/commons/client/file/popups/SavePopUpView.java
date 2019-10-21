@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.dom.Div;
@@ -27,7 +28,6 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
@@ -41,6 +41,10 @@ public class SavePopUpView implements SavePopUpPresenter.View,
     @Inject
     @DataField("body")
     Div body;
+    
+    @Inject
+    @DataField("commentTextBox")
+    TextBox commentTextBox;
 
     @Inject
     private TranslationService translationService;
@@ -53,11 +57,16 @@ public class SavePopUpView implements SavePopUpPresenter.View,
     public void init(SavePopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
-        setupComment();
+    }
+    
+    @Override
+    public String getComment() {
+        return commentTextBox.getValue();
     }
 
     @Override
     public void show() {
+        commentTextBox.setValue("");
         modal.show();
     }
 
@@ -68,10 +77,11 @@ public class SavePopUpView implements SavePopUpPresenter.View,
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader(translate(Constants.SavePopUpView_ConfirmSave))
+                .addHeader(translate(Constants.SavePopUpView_SaveWithComments))
                 .addBody(body)
                 .addFooter(footer())
                 .build();
+        commentTextBox.setPlaceholder(translate(Constants.ToggleCommentView_EnterComment));
     }
 
     private ModalFooter footer() {
@@ -96,13 +106,5 @@ public class SavePopUpView implements SavePopUpPresenter.View,
 
     private Command cancelCommand() {
         return () -> presenter.cancel();
-    }
-
-    private void setupComment() {
-        body.appendChild(toggleCommentPresenter().getViewElement());
-    }
-
-    private ToggleCommentPresenter toggleCommentPresenter() {
-        return presenter.getToggleCommentPresenter();
     }
 }

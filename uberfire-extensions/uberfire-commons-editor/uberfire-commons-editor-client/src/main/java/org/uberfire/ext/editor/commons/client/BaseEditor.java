@@ -77,6 +77,8 @@ public abstract class BaseEditor<T, M> {
     protected Menus menus;
 
     protected Promise<Void> makeMenuBarPromise;
+    
+    protected boolean saveWithComments = true;
 
     @Inject
     protected PlaceManager placeManager;
@@ -299,7 +301,7 @@ public abstract class BaseEditor<T, M> {
                 baseView.alertReadOnly();
                 return false;
             } else if (isReadOnly && !versionRecordManager.isCurrentLatest()) {
-                versionRecordManager.restoreToCurrentVersion();
+                versionRecordManager.restoreToCurrentVersion(saveWithComments);
                 return false;
             }
 

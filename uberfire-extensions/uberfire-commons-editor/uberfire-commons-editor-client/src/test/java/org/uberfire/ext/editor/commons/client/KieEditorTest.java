@@ -169,7 +169,7 @@ public class KieEditorTest {
 
         verify(kieEditor,
                never()).save();
-        verify(kieEditor.versionRecordManager).restoreToCurrentVersion();
+        verify(kieEditor.versionRecordManager).restoreToCurrentVersion(true);
     }
 
     @Test

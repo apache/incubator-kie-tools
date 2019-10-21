@@ -284,7 +284,7 @@ public class BaseEditorTest {
 
         final boolean success = editor.getSaveValidator().get();
 
-        verify(versionRecordManager).restoreToCurrentVersion();
+        verify(versionRecordManager).restoreToCurrentVersion(true);
         assertFalse(success);
     }
 

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.uberfire.backend.vfs.PathSupport.isVersioned;
@@ -36,13 +35,11 @@ public class SavePopUpPresenter {
     private ParameterizedCommand<String> command;
     private View view;
     private Event<SaveInProgressEvent> saveInProgressEvent;
-    private ToggleCommentPresenter toggleCommentPresenter;
 
     @Inject
     public SavePopUpPresenter(View view,
-                              Event<SaveInProgressEvent> saveInProgressEvent,
-                              ToggleCommentPresenter toggleCommentPresenter) {
-        this.toggleCommentPresenter = toggleCommentPresenter;
+                              Event<SaveInProgressEvent> saveInProgressEvent) {
+
         this.saveInProgressEvent = saveInProgressEvent;
         this.view = view;
     }
@@ -76,7 +73,7 @@ public class SavePopUpPresenter {
     public void save() {
         checkNotNull("command",
                      command);
-        command.execute(toggleCommentPresenter.getComment());
+        command.execute(view.getComment());
         view.hide();
     }
 
@@ -94,14 +91,9 @@ public class SavePopUpPresenter {
         };
     }
 
-    public ToggleCommentPresenter getToggleCommentPresenter() {
-        return toggleCommentPresenter;
-    }
-
     public interface View extends UberElement<SavePopUpPresenter> {
-
+        String getComment();
         void show();
-
         void hide();
     }
 }

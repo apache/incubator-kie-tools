@@ -35,6 +35,7 @@ import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 public class VersionRecordManager {
@@ -141,6 +142,11 @@ public class VersionRecordManager {
         return saveButton;
     }
 
+    public MenuItem newSaveMenuItem(final ParameterizedCommand<Boolean> command) {
+        saveButton.setCommand(command);
+        return saveButton;
+    }
+
     public boolean isLatest(final VersionRecord versionRecord) {
         return versions.get(versions.size() - 1).id().equals(versionRecord.id());
     }
@@ -217,9 +223,15 @@ public class VersionRecordManager {
         return null;
     }
 
-    public void restoreToCurrentVersion() {
-        restorePopUpPresenter.show(getCurrentPath(),
-                                   getCurrentVersionRecordUri());
+    public void restoreToCurrentVersion(boolean withComments) {
+        if (withComments)
+            restorePopUpPresenter.show(getCurrentPath(),
+                                       getCurrentVersionRecordUri());
+        else {
+            restorePopUpPresenter.restoreCommand(getCurrentPath(),
+                                                 getCurrentVersionRecordUri())
+                                 .execute("");
+        }
     }
 
     private void loadVersions(final ObservablePath path) {
