@@ -97,6 +97,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -343,6 +344,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(modeller.getView()).thenReturn(modellerView);
         when(modellerView.getGridPanel()).thenReturn(modellerGridPanel);
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
+        when(versionRecordManager.newSaveMenuItem(any(ParameterizedCommand.class))).thenReturn(saveMenuItem);
         when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
         when(editMenuBuilder.build()).thenReturn(editMenuItem);
         when(viewMenuBuilder.build()).thenReturn(viewMenuItem);

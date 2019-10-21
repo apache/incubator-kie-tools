@@ -80,7 +80,7 @@ public class GlobalsEditorPresenter
 
     public GlobalsEditorPresenter() {
     }
-
+    
     @Inject
     public GlobalsEditorPresenter(final GlobalsEditorView baseView) {
         super(baseView);
@@ -101,8 +101,12 @@ public class GlobalsEditorPresenter
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
+                    final ParameterizedCommand<Boolean> onSave = withComments -> {
+                        saveWithComments = withComments;
+                        saveAction();
+                    };
                     fileMenuBuilder
-                            .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                            .addSave(versionRecordManager.newSaveMenuItem(onSave))
                             .addCopy(versionRecordManager.getCurrentPath(),
                                      assetUpdateValidator)
                             .addRename(getSaveAndRename())
@@ -177,35 +181,44 @@ public class GlobalsEditorPresenter
 
     @Override
     protected void save() {
-        validationService.call((validationMessages) -> {
-            if (((List<ValidationMessage>) validationMessages).isEmpty()) {
-                showSavePopup();
+        ParameterizedCommand<String> doSave = (commitMessage) -> {
+            baseView.showSaving();
+            globalsEditorService
+                .call(getSaveSuccessCallback(model.hashCode()),
+                      new HasBusyIndicatorDefaultErrorCallback(view))
+                .save(versionRecordManager.getCurrentPath(),
+                      model,
+                      metadata,
+                      commitMessage);
+            concurrentUpdateSessionInfo = null;
+        };
+
+        Command showPopUp = () -> {
+            savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                    doSave);
+        };
+
+        Command command = () -> {
+            if (saveWithComments) {
+                showPopUp.execute();
             } else {
-                validationPopup.showSaveValidationMessages(() -> showSavePopup(),
-                                                           () -> {
-                                                           },
-                                                           (List<ValidationMessage>) validationMessages);
+                doSave.execute("");
+            }
+        };
+
+        validationService.call((obj) -> {
+            List<ValidationMessage> validationMessages = (List<ValidationMessage>) obj;
+            if (validationMessages.isEmpty()) {
+                command.execute();
+            } else {
+                validationPopup.showSaveValidationMessages(command,
+                                                           () -> {},
+                                                           validationMessages);
             }
         }).validateForSave(versionRecordManager.getCurrentPath(),
                            model);
 
         concurrentUpdateSessionInfo = null;
-    }
-
-    private void showSavePopup() {
-        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
-                                new ParameterizedCommand<String>() {
-                                    @Override
-                                    public void execute(final String commitMessage) {
-                                        baseView.showSaving();
-                                        globalsEditorService.call(getSaveSuccessCallback(model.hashCode()),
-                                                                  new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                                                       model,
-                                                                                                                       metadata,
-                                                                                                                       commitMessage);
-                                        concurrentUpdateSessionInfo = null;
-                                    }
-                                });
     }
 
     protected void onDelete() {

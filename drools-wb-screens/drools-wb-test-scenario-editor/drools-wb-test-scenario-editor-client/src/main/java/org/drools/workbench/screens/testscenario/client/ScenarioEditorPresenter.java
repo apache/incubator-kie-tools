@@ -59,6 +59,7 @@ import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultE
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -274,8 +275,12 @@ public class ScenarioEditorPresenter
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
+                    final ParameterizedCommand<Boolean> onSave = withComments -> {
+                        saveWithComments = withComments;
+                        saveAction();
+                    };
                     fileMenuBuilder
-                            .addSave(this::saveAction)
+                            .addSave(versionRecordManager.newSaveMenuItem(onSave))
                             .addCopy(versionRecordManager.getCurrentPath(),
                                      assetUpdateValidator)
                             .addRename(getSaveAndRename())

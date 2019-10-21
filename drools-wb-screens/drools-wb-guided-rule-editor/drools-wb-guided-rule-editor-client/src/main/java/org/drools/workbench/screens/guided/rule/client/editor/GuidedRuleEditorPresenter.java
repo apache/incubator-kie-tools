@@ -222,15 +222,16 @@ public class GuidedRuleEditorPresenter
                                                                             GuidedRuleEditorResources.CONSTANTS);
 
         if (validator.isValid()) {
-            savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                    new ParameterizedCommand<String>() {
-                                        @Override
-                                        public void execute(final String commitMessage) {
-                                            view.showSaving();
-                                            save(commitMessage);
-                                        }
-                                    });
-
+            ParameterizedCommand<String> command = (commitMessage) -> {
+                view.showSaving();
+                save(commitMessage);
+            };
+            if (saveWithComments) {
+                savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
+                                        command);
+            } else {
+                command.execute("");
+            }
             concurrentUpdateSessionInfo = null;
         } else {
             ErrorPopup.showMessage(validator.getErrors().get(0));

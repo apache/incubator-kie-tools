@@ -719,7 +719,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 view.alertReadOnly();
                 return;
             } else {
-                versionRecordManager.restoreToCurrentVersion();
+                versionRecordManager.restoreToCurrentVersion(saveWithComments);
                 return;
             }
         }
@@ -753,20 +753,27 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     void saveDocumentGraphEntries() {
         final Set<GuidedDecisionTableView.Presenter> allDecisionTables = new HashSet<>(modeller.getAvailableDecisionTables());
-        savePopUpPresenter.show(editorPath,
-                                (commitMessage) -> {
-                                    editorView.showSaving();
-                                    saveGraphLatch = new SaveGraphLatch(allDecisionTables.size(),
-                                                                        commitMessage);
-                                    if (allDecisionTables.isEmpty()) {
-                                        saveGraphLatch.saveDocumentGraph();
-                                    } else {
-                                        allDecisionTables.stream().forEach((dtPresenter) -> {
-                                            saveGraphLatch.saveDocumentGraphEntry(dtPresenter);
-                                            saveInProgressEvent.fire(new SaveInProgressEvent(dtPresenter.getLatestPath()));
-                                        });
-                                    }
-                                });
+
+        final ParameterizedCommand<String> saveCommand = (commitMessage) -> {
+            editorView.showSaving();
+            saveGraphLatch = new SaveGraphLatch(allDecisionTables.size(),
+                                                commitMessage);
+            if (allDecisionTables.isEmpty()) {
+                saveGraphLatch.saveDocumentGraph();
+            } else {
+                allDecisionTables.stream().forEach((dtPresenter) -> {
+                    saveGraphLatch.saveDocumentGraphEntry(dtPresenter);
+                    saveInProgressEvent.fire(new SaveInProgressEvent(dtPresenter.getLatestPath()));
+                });
+            }
+        };
+        
+        if (saveWithComments) {
+            savePopUpPresenter.show(editorPath,
+                                    saveCommand);
+        } else {
+            saveCommand.execute("");
+        }
     }
 
     @Override

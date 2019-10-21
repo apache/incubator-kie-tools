@@ -403,7 +403,7 @@ public class ScenarioEditorPresenterTest {
 
         editor.makeMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(Command.class));
+        verify(fileMenuBuilder).addSave(any(MenuItem.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
                                         any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
