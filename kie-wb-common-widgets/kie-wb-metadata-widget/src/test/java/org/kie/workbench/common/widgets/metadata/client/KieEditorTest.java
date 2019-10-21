@@ -58,6 +58,7 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -159,12 +160,10 @@ public class KieEditorTest {
 
     @Test
     public void testAddSave() {
-
         final MenuItem menuItem = mock(MenuItem.class);
-        final Command command = mock(Command.class);
 
-        doReturn(command).when(presenter).getSaveActionCommand();
-        doReturn(menuItem).when(versionRecordManager).newSaveMenuItem(command);
+        when(versionRecordManager.newSaveMenuItem(any(ParameterizedCommand.class)))
+                .thenReturn(menuItem);
 
         presenter.addSave(fileMenuBuilder);
 

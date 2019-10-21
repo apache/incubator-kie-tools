@@ -95,6 +95,7 @@ import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -441,7 +442,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
      */
     @Override
     protected void save() {
-        final Command continueSaveOnceValid = () -> super.save();
+        final Command continueSaveOnceValid = () -> {
+            if (saveWithComments) {
+                super.save();
+            } else {
+                save("");
+            }
+        };
         doSave(continueSaveOnceValid);
     }
 
@@ -500,8 +507,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
                 return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                     if (canUpdateProject) {
+                        final ParameterizedCommand<Boolean> onSave = withComments -> {
+                            saveWithComments = withComments;
+                            saveAction();
+                        };
                         fileMenuBuilder
-                                .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                                .addSave(versionRecordManager.newSaveMenuItem(onSave))
                                 .addCopy(versionRecordManager.getCurrentPath(),
                                          assetUpdateValidator)
                                 .addRename(getSaveAndRename())

@@ -86,6 +86,7 @@ import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -320,8 +321,12 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
+                    final ParameterizedCommand<Boolean> onSave = withComments -> {
+                        saveWithComments = withComments;
+                        saveAction();
+                    };
                     fileMenuBuilder
-                            .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
+                            .addSave(versionRecordManager.newSaveMenuItem(onSave))
                             .addCopy(this::safeCopy)
                             .addRename(this::safeRename)
                             .addDelete(this::safeDelete);

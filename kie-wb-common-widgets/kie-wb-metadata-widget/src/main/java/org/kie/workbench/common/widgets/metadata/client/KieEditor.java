@@ -64,6 +64,7 @@ import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCall
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -332,7 +333,11 @@ public abstract class KieEditor<T>
     }
 
     protected void addSave(final FileMenuBuilder fileMenuBuilder) {
-        fileMenuBuilder.addSave(versionRecordManager.newSaveMenuItem(getSaveActionCommand()));
+        final ParameterizedCommand<Boolean> onSave = withComments -> {
+            saveWithComments = withComments;
+            saveAction();
+        };
+        fileMenuBuilder.addSave(versionRecordManager.newSaveMenuItem(onSave));
     }
 
     protected void addCopy(final FileMenuBuilder fileMenuBuilder) {
@@ -467,12 +472,19 @@ public abstract class KieEditor<T>
 
     @Override
     protected void save() {
-        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
-                                (commitMessage) -> {
-                                    baseView.showSaving();
-                                    save(commitMessage);
-                                    concurrentUpdateSessionInfo = null;
-                                });
+        ParameterizedCommand<String> command = (commitMessage) -> {
+            baseView.showSaving();
+            save(commitMessage);
+            concurrentUpdateSessionInfo = null;
+        };
+        
+        if (saveWithComments) {
+            savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                    command);
+        } else {
+            command.execute("");
+        }
+       
         concurrentUpdateSessionInfo = null;
     }
 

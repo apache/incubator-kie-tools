@@ -646,7 +646,7 @@ public class KieMultipleDocumentEditorTest
         editor.getSaveMenuItem();
 
         verify(versionRecordManager,
-               times(1)).newSaveMenuItem(any(Command.class));
+               times(1)).newSaveMenuItem(any(ParameterizedCommand.class));
     }
 
     @Test
@@ -660,13 +660,13 @@ public class KieMultipleDocumentEditorTest
 
         editor.getSaveMenuItem();
 
-        final ArgumentCaptor<Command> saveCommandCaptor = ArgumentCaptor.forClass(Command.class);
+        final ArgumentCaptor<ParameterizedCommand> saveCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
         verify(versionRecordManager,
                times(1)).newSaveMenuItem(saveCommandCaptor.capture());
 
-        final Command saveCommand = saveCommandCaptor.getValue();
+        final ParameterizedCommand<Boolean> saveCommand = saveCommandCaptor.getValue();
         assertNotNull(saveCommand);
-        saveCommand.execute();
+        saveCommand.execute(true);
 
         verify(editorView,
                times(1)).showSaving();

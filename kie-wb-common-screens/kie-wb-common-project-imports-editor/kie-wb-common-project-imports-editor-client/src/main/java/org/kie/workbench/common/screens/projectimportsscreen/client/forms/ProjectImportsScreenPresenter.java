@@ -119,8 +119,12 @@ public class ProjectImportsScreenPresenter
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
+                    final ParameterizedCommand<Boolean> onSave = withComments -> {
+                        saveWithComments = withComments;
+                        saveAction();
+                    };
                     this.fileMenuBuilder
-                            .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                            .addSave(versionRecordManager.newSaveMenuItem(onSave))
                             .addCopy(versionRecordManager.getCurrentPath(), getRenameValidator())
                             .addRename(getSaveAndRename())
                             .addDelete(versionRecordManager.getPathToLatest(), getRenameValidator());
@@ -156,19 +160,23 @@ public class ProjectImportsScreenPresenter
     }
 
     protected void save() {
-        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
-                                new ParameterizedCommand<String>() {
-                                    @Override
-                                    public void execute(final String commitMessage) {
-                                        view.showSaving();
-                                        importsService.call(getSaveSuccessCallback(),
-                                                            new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                                                 model,
-                                                                                                                 metadata,
-                                                                                                                 commitMessage);
-                                    }
-                                }
-        );
+        ParameterizedCommand<String> command = (commitMessage) -> {
+            view.showSaving();
+            importsService.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view))
+                          .save(versionRecordManager.getCurrentPath(),
+                                model,
+                                metadata,
+                                commitMessage);
+        };
+
+        if (saveWithComments) {
+            savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                    command);
+
+        } else {
+            command.execute("");
+        }
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

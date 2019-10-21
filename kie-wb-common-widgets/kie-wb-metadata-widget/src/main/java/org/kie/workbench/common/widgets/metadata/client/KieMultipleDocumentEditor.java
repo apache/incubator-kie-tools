@@ -118,6 +118,8 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected D activeDocument = null;
     protected final Set<D> documents = new HashSet<>();
 
+    protected boolean saveWithComments = true;
+
     //Handler for MayClose requests
     protected interface MayCloseHandler {
 
@@ -541,7 +543,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      */
     protected MenuItem getSaveMenuItem() {
         if (saveMenuItem == null) {
-            saveMenuItem = versionRecordManager.newSaveMenuItem(this::saveAction);
+            final ParameterizedCommand<Boolean> onSave = withComments -> {
+                saveWithComments = withComments;
+                saveAction();
+            };
+            saveMenuItem = versionRecordManager.newSaveMenuItem(onSave);
         }
         return saveMenuItem;
     }
@@ -616,7 +622,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
             if (versionRecordManager.isCurrentLatest()) {
                 editorView.alertReadOnly();
             } else {
-                versionRecordManager.restoreToCurrentVersion();
+                versionRecordManager.restoreToCurrentVersion(saveWithComments);
             }
             return;
         }
@@ -653,8 +659,12 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     //Package protected to allow overriding for Unit Tests
     void doSave(final D document) {
-        savePopUpPresenter.show(document.getCurrentPath(),
-                                getSaveCommand(document));
+        if (saveWithComments) {
+            savePopUpPresenter.show(document.getCurrentPath(),
+                                    getSaveCommand(document));
+        } else {
+            getSaveCommand(document).execute("");
+        }
     }
 
     //Package protected to allow overriding for Unit Tests

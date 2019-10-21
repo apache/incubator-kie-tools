@@ -51,6 +51,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -196,6 +197,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         this.editor = spy(wrapped);
 
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
+        when(versionRecordManager.newSaveMenuItem(any(ParameterizedCommand.class))).thenReturn(saveMenuItem);
         when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
 
         // Setup defaults for nothing active in context that can be overriden in individual tests

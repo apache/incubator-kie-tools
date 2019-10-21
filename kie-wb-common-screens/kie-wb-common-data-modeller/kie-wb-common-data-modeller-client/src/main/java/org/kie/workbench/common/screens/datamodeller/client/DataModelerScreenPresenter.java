@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -525,60 +524,45 @@ public class DataModelerScreenPresenter
         }
     }
 
+    private Command getSaveFileCommand(JavaTypeInfo newTypeInfo) {
+        return () -> {
+            ObservablePath latestPath = versionRecordManager.getPathToLatest();
+            ParameterizedCommand<String> command = getSaveCommand(newTypeInfo, latestPath);
+
+            if (saveWithComments) {
+                savePopUpPresenter.show(latestPath, command);
+
+            } else {
+               command.execute("");
+            }
+        };
+    }
+
     private void saveFile(final JavaTypeInfo newTypeInfo) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName(versionRecordManager.getPathToLatest());
 
         if (hasPackageNameChanged(newTypeInfo)) {
-
             view.showYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
                                       Constants.INSTANCE.modelEditor_confirm_file_package_refactoring(newTypeInfo.getPackageName()),
-                                      new Command() {
-                                          @Override
-                                          public void execute() {
-                                              savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                                                      getSaveCommand(newTypeInfo,
-                                                                                     versionRecordManager.getPathToLatest()));
-                                          }
-                                      },
+                                      () -> getSaveFileCommand(newTypeInfo),
                                       Constants.INSTANCE.modelEditor_action_yes_refactor_directory(),
                                       ButtonType.PRIMARY,
-                                      new Command() {
-                                          @Override
-                                          public void execute() {
-                                              savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                                                      getSaveCommand(versionRecordManager.getPathToLatest()));
-                                          }
-                                      },
+                                      () -> getSaveFileCommand(null),
                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_directory(),
                                       ButtonType.DANGER);
-        } else if (hasFileNameChanged(newTypeInfo,
-                                      currentFileName)) {
 
+        } else if (hasFileNameChanged(newTypeInfo, currentFileName)) {
             view.showYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
                                       Constants.INSTANCE.modelEditor_confirm_file_name_refactoring(newTypeInfo.getName()),
-                                      new Command() {
-                                          @Override
-                                          public void execute() {
-                                              savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                                                      getSaveCommand(newTypeInfo,
-                                                                                     versionRecordManager.getPathToLatest()));
-                                          }
-                                      },
+                                      () -> getSaveFileCommand(newTypeInfo),
                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
                                       ButtonType.PRIMARY,
-                                      new Command() {
-                                          @Override
-                                          public void execute() {
-                                              savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                                                      getSaveCommand(versionRecordManager.getPathToLatest()));
-                                          }
-                                      },
+                                      () -> getSaveFileCommand(null),
                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
                                       ButtonType.DANGER);
         } else {
-            savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                    getSaveCommand(versionRecordManager.getPathToLatest()));
+            getSaveFileCommand(null).execute();
         }
     }
 
@@ -1180,51 +1164,32 @@ public class DataModelerScreenPresenter
 
     @Override
     protected Promise<Void> makeMenuBar() {
-        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
-            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
-            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
-                if (canUpdateProject) {
-                    fileMenuBuilder
-                            .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                                @Override
-                                public void execute() {
-                                    saveAction();
-                                }
-                            }))
-                            .addCopy(new Command() {
-                                @Override
-                                public void execute() {
-                                    onCopy();
-                                }
-                            })
-                            .addRename(new Command() {
-                                @Override
-                                public void execute() {
-                                    onSafeRename();
-                                }
-                            })
-                            .addDelete(new Command() {
-                                @Override
-                                public void execute() {
-                                    onSafeDelete();
-                                }
-                            });
-                }
-
-                addDownloadMenuItem(fileMenuBuilder);
-
-                fileMenuBuilder
-                        .addValidate(
-                                getValidateCommand()
-                        )
-                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
-
-                return promises.resolve();
-            });
+        if (!workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            return promises.resolve();
         }
 
-        return promises.resolve();
+        final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+
+        return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+            if (canUpdateProject) {
+                final ParameterizedCommand<Boolean> onSave = withComments -> {
+                    saveWithComments = withComments;
+                    saveAction();
+                };
+                fileMenuBuilder.addSave(versionRecordManager.newSaveMenuItem(onSave))
+                               .addCopy(() -> onCopy())
+                               .addRename(() -> onSafeRename())
+                               .addDelete(() -> onSafeDelete());
+            }
+
+            addDownloadMenuItem(fileMenuBuilder);
+
+            fileMenuBuilder.addValidate(getValidateCommand())
+                           .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                           .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+            return promises.resolve();
+        });
     }
 
     private void clearContext() {
