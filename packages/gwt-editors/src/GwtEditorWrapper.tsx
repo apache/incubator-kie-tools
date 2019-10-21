@@ -100,7 +100,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   private injectStyleToFixResponsivenessIssue_DROOLS_3995() {
     const style = document.createElement("style");
-    style.textContent = ".list-view-pf-body { display: flex !important; }";
+    style.textContent = '[data-i18n-prefix="DataTypeListItemView."] .list-view-pf-body { display: flex !important; }';
     document.head.appendChild(style);
   }
 }
