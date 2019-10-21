@@ -17,7 +17,7 @@
   <description>Kogito Cloud</description>
 
   <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom
+    <!-- Bootstrap repository to locate the parent pom when the parent pom 
       has not been build locally. -->
     <repository>
       <id>jboss-public-repository-group</id>
@@ -34,7 +34,7 @@
       </snapshots>
     </repository>
   </repositories>
-  
+
   <scm>
     <connection>scm:git:https://github.com/kiegroup/kogito-cloud.git</connection>
     <developerConnection>scm:git:git@github.com:kiegroup/kogito-cloud.git</developerConnection>
@@ -43,6 +43,25 @@
 
   <modules>
     <module>kogito-cloud-services</module>
+    <module>kogito-cloud-tests</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-deps-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

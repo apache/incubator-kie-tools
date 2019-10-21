@@ -1,6 +1,6 @@
+bin/
 /target
 /local
-target/
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
@@ -8,8 +8,7 @@ target/
 /nbproject
 /*.ipr
 /*.iws
-*/*.iml
-.idea/
+/*.iml
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
@@ -31,6 +30,3 @@ target/
 # files used for external db testing
 jdbc_driver.jar
 db-settings.xml
-
-# integration test properties file
-test.properties
