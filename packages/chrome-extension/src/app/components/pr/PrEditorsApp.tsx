@@ -26,9 +26,7 @@ import { Feature } from "../common/Feature";
 
 export function PrEditorsApp(props: { prInfo: PrInformation }) {
   const globalContext = useContext(GlobalContext);
-  const [prFileContainers, setPrFileContainers] = useState(
-    supportedPrFileElements(globalContext.router)
-  );
+  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globalContext.router));
 
   useMutationObserverEffect(
     new MutationObserver(mutations => {
@@ -40,6 +38,7 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
 
       const newContainers = supportedPrFileElements(globalContext.router);
       if (newContainers.length !== prFileContainers.length) {
+        console.debug("Found new containers...");
         setPrFileContainers(newContainers);
       }
     }),
@@ -93,7 +92,8 @@ function useMutationObserverEffect(observer: MutationObserver, options: Mutation
 function prFileElements() {
   const elements = dependencies__.all.array.supportedPrFileContainers();
   if (!elements) {
-    throw new Error("Could not find file containers...");
+    console.debug("Could not find file containers...");
+    return [];
   }
 
   return elements!.map(e => ({ name: "", element: e }));
