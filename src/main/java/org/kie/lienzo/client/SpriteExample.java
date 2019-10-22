@@ -12,7 +12,7 @@ import org.kie.lienzo.client.BaseExample;
 
 public class SpriteExample extends BaseExample implements Example
 {
-    private String imagePath = "classes/org/kie/lienzo/client/resources/images/icon_sprite.png";
+    private String imagePath = "images/icon_sprite.png";
 
     private static final String      TEXT_FONT   = "oblique normal bold";
 
