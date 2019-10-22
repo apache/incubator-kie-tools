@@ -19,7 +19,7 @@ items:
       annotations:
         description: Runtime image for Kogito based on Quarkus native image
         iconClass: icon-jbpm
-        tags: builder,runtime,kogito,quarkus
+        tags: runtime,kogito,quarkus
         supports: quarkus
         version: '0.5.0'
       referencePolicy:
@@ -40,7 +40,7 @@ items:
         annotations:
           description: Runtime image for Kogito based on Quarkus JVM image
           iconClass: icon-jbpm
-          tags: builder,runtime,kogito,quarkus,jvm
+          tags: runtime,kogito,quarkus,jvm
           supports: quarkus
           version: '0.5.0'
         referencePolicy:
@@ -74,15 +74,15 @@ items:
   metadata:
     name: kogito-springboot-ubi8
     annotations:
-      openshift.io/display-name: Runtime image for Kogito based on SpringBoot native image
+      openshift.io/display-name: Runtime image for Kogito based on SpringBoot
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
     - name: '0.5.0'
       annotations:
-        description: Platform for building Kogito based on Quarkus
+        description: Runtime image for Kogito based on SpringBoot
         iconClass: icon-jbpm
-        tags: builder,runtime,kogito,springboot
+        tags: runtime,kogito,springboot
         supports: springboot
         version: '0.5.0'
       referencePolicy:
