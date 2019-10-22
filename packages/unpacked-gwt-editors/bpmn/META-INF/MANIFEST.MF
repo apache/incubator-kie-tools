@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Implementation-Title: Kie Workbench - Common - Stunner - BPMN Definiti
+ on Set - Kogito Runtime
+Implementation-Version: 7.28.0-SNAPSHOT
+Java-Version: 1.8.0_201
+Built-By: tiagodolphine
+Scm-Connection: scm:git:https://github.com/kiegroup/droolsjbpm-build-b
+ ootstrap.git/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunne
+ r-sets/kie-wb-common-stunner-bpmn/kie-wb-common-bpmn-kogito-runtime
+Specification-Vendor: JBoss by Red Hat
+Os-Arch: amd64
+Specification-Title: Kie Workbench - Common - Stunner - BPMN Definitio
+ n Set - Kogito Runtime
+Implementation-Vendor-Id: org.kie.workbench.stunner
+Java-Vendor: Oracle Corporation
+Os-Name: Linux
+Scm-Url: https://github.com/kiegroup/droolsjbpm-build-bootstrap/kie-wb
+ -common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-commo
+ n-stunner-bpmn/kie-wb-common-bpmn-kogito-runtime
+Implementation-Vendor: JBoss by Red Hat
+Os-Version: 5.0.17-300.fc30.x86_64
+Scm-Revision: 97dad4ecaa59baa348d78aa818a30d0701591246
+Created-By: Apache Maven 3.5.4
+Build-Jdk: 1.8.0_201
+Specification-Version: 7.28
+Implementation-URL: http://www.kiegroup.org/kie-wb-common/kie-wb-commo
+ n-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-w
+ b-common-bpmn-kogito-runtime
+
