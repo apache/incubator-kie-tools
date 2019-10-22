@@ -17,6 +17,7 @@ jobs:
      - name: Fetch editors from last release
        uses: actions/checkout@v1
        with:
+         repository: kiegroup/kogito-tooling
          ref: 0.2.0
      
      - name: Upload DMN editor
