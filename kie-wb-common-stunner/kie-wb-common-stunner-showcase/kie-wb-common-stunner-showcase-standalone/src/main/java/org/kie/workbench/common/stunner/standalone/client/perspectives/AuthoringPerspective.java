@@ -13,89 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.standalone.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidgetImpl;
-import org.kie.workbench.common.stunner.client.widgets.views.LoadingBox;
-import org.kie.workbench.common.stunner.standalone.client.screens.DiagramsNavigatorScreen;
-import org.kie.workbench.common.stunner.standalone.client.screens.NotificationsScreen;
-import org.kie.workbench.common.stunner.standalone.client.screens.SessionDiagramPreviewScreen;
-import org.kie.workbench.common.stunner.standalone.client.screens.SessionPropertiesScreen;
-import org.kie.workbench.common.stunner.standalone.client.screens.SessionTreeExplorerScreen;
+import org.kie.workbench.common.stunner.standalone.client.editor.BPMNDiagramsNavigatorScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false)
+@WorkbenchPerspective(identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false, isDefault = true)
 public class AuthoringPerspective {
 
     public static final String PERSPECTIVE_ID = "AuthoringPerspective";
-    public static final int WEST_PANEL_WIDTH = BS3PaletteWidgetImpl.getDefaultWidth();
-    public static final int EAST_PANEL_WIDTH = 450;
-    public static final int EAST_PANEL_HEIGHT = 300;
-
-    PanelDefinition notificationsPanel;
-    PanelDefinition propertiesPanel;
-    PanelDefinition treeExplorerPanel;
-    PanelDefinition previewPanel;
-
-    @Inject
-    LoadingBox loadingBox;
-
-    @Inject
-    PlaceManager placeManager;
-
-    private PlaceRequest placeRequest;
-
-    @OnStartup
-    public void onStartup(final PlaceRequest placeRequest) {
-        this.placeRequest = placeRequest;
-    }
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         perspective.setName("Authoring");
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(DiagramsNavigatorScreen.SCREEN_ID)));
-        treeExplorerPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        treeExplorerPanel.setWidth(EAST_PANEL_WIDTH);
-        treeExplorerPanel.setHeight(EAST_PANEL_HEIGHT);
-        treeExplorerPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionTreeExplorerScreen.SCREEN_ID)));
-        previewPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        previewPanel.setWidth(EAST_PANEL_WIDTH);
-        previewPanel.setHeight(EAST_PANEL_HEIGHT);
-        previewPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionDiagramPreviewScreen.SCREEN_ID)));
-        propertiesPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        propertiesPanel.setWidth(EAST_PANEL_WIDTH);
-        propertiesPanel.setHeight(EAST_PANEL_HEIGHT);
-        propertiesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionPropertiesScreen.SCREEN_ID)));
-        propertiesPanel.appendChild(CompassPosition.NORTH,
-                                    previewPanel);
-        propertiesPanel.appendChild(CompassPosition.SOUTH,
-                                    treeExplorerPanel);
-        notificationsPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        notificationsPanel.setWidth(400);
-        notificationsPanel.setHeight(100);
-        notificationsPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(NotificationsScreen.SCREEN_ID)));
-        perspective.getRoot().insertChild(CompassPosition.EAST,
-                                          propertiesPanel);
-        perspective.getRoot().insertChild(CompassPosition.SOUTH,
-                                          notificationsPanel);
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(BPMNDiagramsNavigatorScreen.SCREEN_ID)));
         return perspective;
     }
 }
+

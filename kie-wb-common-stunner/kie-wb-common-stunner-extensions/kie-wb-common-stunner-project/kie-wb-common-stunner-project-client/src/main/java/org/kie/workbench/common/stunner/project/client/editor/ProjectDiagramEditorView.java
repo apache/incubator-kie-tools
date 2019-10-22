@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.kogito.client.editor.DiagramEditorCore;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
@@ -36,7 +37,7 @@ public class ProjectDiagramEditorView
     @DataField
     private ResizeFlowPanel editorPanel;
 
-    private AbstractProjectDiagramEditor presenter;
+    private DiagramEditorCore presenter;
 
     protected ProjectDiagramEditorView() {
         //CDI proxy
@@ -48,14 +49,14 @@ public class ProjectDiagramEditorView
     }
 
     @Override
-    public void init(final AbstractProjectDiagramEditor presenter) {
+    public void init(final DiagramEditorCore presenter) {
         this.presenter = presenter;
     }
 
     @Override
     protected void onAttach() {
         super.onAttach();
-        if(getElement().getParentElement() != null) {
+        if (getElement().getParentElement() != null) {
             getElement().getParentElement().getStyle().setHeight(100, Style.Unit.PCT);
             getElement().getParentElement().getStyle().setWidth(100, Style.Unit.PCT);
             getElement().getParentElement().getStyle().setDisplay(Style.Display.TABLE);

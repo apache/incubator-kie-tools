@@ -32,9 +32,9 @@ public class DurationHelper {
 
     public static String getFunctionParameter(final String rawValue) {
         return rawValue.replace(PREFIX, "")
-                   .replace(CLOSE_BRACKET, "")
-                   .replace(OPEN_BRACKET, "")
-                   .replace(" ", "")
-                   .replace(QUOTE, "");
+                .replace(CLOSE_BRACKET, "")
+                .replace(OPEN_BRACKET, "")
+                .replace(" ", "")
+                .replace(QUOTE, "");
     }
 }

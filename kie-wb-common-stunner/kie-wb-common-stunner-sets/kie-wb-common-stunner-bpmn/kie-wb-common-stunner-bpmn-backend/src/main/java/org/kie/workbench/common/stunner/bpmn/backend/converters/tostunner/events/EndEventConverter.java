@@ -115,7 +115,8 @@ public class EndEventConverter extends AbstractConverter implements NodeConverte
         ));
 
         definition.setExecutionSet(new MessageEventExecutionSet(
-                new MessageRef(EventDefinitionReader.messageRefOf(e))
+                new MessageRef(EventDefinitionReader.messageRefOf(e),
+                               EventDefinitionReader.messageRefStructureOf(e))
         ));
 
         node.getContent().setBounds(p.getBounds());

@@ -25,7 +25,7 @@ import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
+import org.kie.workbench.common.stunner.bpmn.project.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 
 @Dependent

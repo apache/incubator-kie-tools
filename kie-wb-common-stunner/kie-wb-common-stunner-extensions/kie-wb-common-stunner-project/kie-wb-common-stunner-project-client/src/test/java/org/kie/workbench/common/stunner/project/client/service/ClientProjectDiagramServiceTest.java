@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -54,8 +55,8 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
     }
 
     @Override
-    protected ProjectDiagram makeTestDiagram() {
-        return mock(ProjectDiagram.class);
+    protected ProjectDiagramImpl makeTestDiagram() {
+        return mock(ProjectDiagramImpl.class);
     }
 
     @Override

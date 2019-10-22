@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,9 +37,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.FieldMetadata;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadata;
+import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQuery;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQueryResult;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
@@ -54,6 +53,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -62,7 +62,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
-import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -72,6 +71,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditio
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.FunctionSearchServiceTest.verifyNotContains;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.VariableSearchService.unboxDefaultType;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -98,9 +98,7 @@ public class VariableSearchServiceTest {
     private static final String CASE_VARIABLE_LABEL_PREFIX = "CASE_VARIABLE_LABEL_PREFIX";
 
     @Mock
-    protected ConditionEditorService editorService;
-
-    protected Caller<ConditionEditorService> editorServiceCaller;
+    protected ConditionEditorMetadataService metadataService;
 
     @Mock
     protected ClientTranslationService translationService;
@@ -146,13 +144,12 @@ public class VariableSearchServiceTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getPath()).thenReturn(path);
         when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_ROOT_ID);
-        editorServiceCaller = new CallerMock<>(editorService);
         when(translationService.getValue("VariableSearchService.CaseVariableLabelPrefix")).thenReturn(CASE_VARIABLE_LABEL_PREFIX);
         searchService = newSearchService();
     }
 
     protected VariableSearchService newSearchService() {
-        return new VariableSearchService(editorServiceCaller, translationService);
+        return new VariableSearchService(metadataService, translationService);
     }
 
     @Test
@@ -194,6 +191,7 @@ public class VariableSearchServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSearchEntryWithResults() {
         prepareAndInitSession();
         List<Pair<String, String>> expectedVariables = buildExpectedVariableNames(MULTIPLE_INSTANCE_SUBPROCESS, 17);
@@ -205,6 +203,7 @@ public class VariableSearchServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSearchEntryWithoutResults() {
         prepareAndInitSession();
         List<String> checkedVariables = Arrays.asList("not-existing1", "not-existing2", "not-existing3", "and_so_on");
@@ -255,6 +254,7 @@ public class VariableSearchServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testClear() {
         prepareAndInitSession();
         List<Pair<String, String>> expectedVariables = buildExpectedVariableNames(MULTIPLE_INSTANCE_SUBPROCESS, 17);
@@ -274,6 +274,7 @@ public class VariableSearchServiceTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void prepareAndInitSession() {
         prepareSelectedItem();
         List<Node> nodes = mockNodes();
@@ -281,8 +282,7 @@ public class VariableSearchServiceTest {
         Set<TypeMetadata> typeMetadatas = new HashSet<>();
         typeMetadatas.add(mockBean1Metadata());
         TypeMetadataQueryResult queryResult = new TypeMetadataQueryResult(typeMetadatas, new HashSet<>());
-        when(editorService.findMetadata(any())).thenReturn(queryResult);
-
+        doReturn(PromiseMock.success(queryResult)).when(metadataService).call(any(TypeMetadataQuery.class));
         searchService.init(clientSession);
     }
 

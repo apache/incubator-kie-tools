@@ -32,7 +32,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.components.palette.BPMNCategoryDefinitionProvider;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorators;
 import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNShapeFactory;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
@@ -201,9 +200,6 @@ public class ClientBPMNDocumentationServiceTest {
 
     @Mock
     private ClientTranslationService translationService;
-
-    @Mock
-    private WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry;
 
     @Mock
     private Diagram diagram;
@@ -375,7 +371,6 @@ public class ClientBPMNDocumentationServiceTest {
         when(graph.nodes()).thenReturn(nodes);
 
         when(mustacheTemplateRenderer.render(eq(TEMPLATE), any(BPMNDocumentation.class))).thenReturn(RENDERED_DOC);
-        when(workItemDefinitionClientRegistry.getRegistry()).thenReturn(workItemDefinitionClientRegistry);
         when(decorators.getDecorator(anyString())).thenReturn(Optional.empty());
 
         //adapters mock
@@ -453,7 +448,7 @@ public class ClientBPMNDocumentationServiceTest {
                                                     categoryDefinitionProvider,
                                                     glyphRenderer,
                                                     translationService,
-                                                    workItemDefinitionClientRegistry,
+                                                    null,
                                                     decorators);
     }
 

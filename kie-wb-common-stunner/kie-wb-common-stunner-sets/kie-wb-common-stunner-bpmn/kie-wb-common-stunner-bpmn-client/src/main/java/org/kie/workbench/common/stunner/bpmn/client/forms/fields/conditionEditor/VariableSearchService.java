@@ -28,14 +28,12 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadata;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQuery;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQueryResult;
@@ -60,7 +58,7 @@ public class VariableSearchService implements LiveSearchService<String> {
 
     private static final String CASE_VARIABLE_LABEL_PREFIX = "VariableSearchService.CaseVariableLabelPrefix";
 
-    private final Caller<ConditionEditorService> service;
+    private final ConditionEditorMetadataService metadataService;
 
     private final ClientTranslationService translationService;
 
@@ -71,8 +69,9 @@ public class VariableSearchService implements LiveSearchService<String> {
     private Map<String, String> optionType = new HashMap<>();
 
     @Inject
-    public VariableSearchService(final Caller<ConditionEditorService> service, final ClientTranslationService translationService) {
-        this.service = service;
+    public VariableSearchService(final ConditionEditorMetadataService metadataService,
+                                 final ClientTranslationService translationService) {
+        this.metadataService = metadataService;
         this.translationService = translationService;
     }
 
@@ -99,7 +98,13 @@ public class VariableSearchService implements LiveSearchService<String> {
             }
             Path path = session.getCanvasHandler().getDiagram().getMetadata().getPath();
             TypeMetadataQuery query = new TypeMetadataQuery(path, collectedTypes);
-            service.call(result -> initVariables(collectedVariables.values(), ((TypeMetadataQueryResult) result))).findMetadata(query);
+            metadataService
+                    .call(query)
+                    .then(result -> {
+                        initVariables(collectedVariables.values(),
+                                      result);
+                        return null;
+                    });
         }
     }
 

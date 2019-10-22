@@ -30,10 +30,9 @@ import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDia
 import org.kie.workbench.common.stunner.cm.project.service.CaseManagementSwitchViewService;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.mockito.Mock;
 import org.uberfire.mvp.PlaceRequest;
@@ -94,22 +93,20 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
     @Override
     protected AbstractProjectDiagramEditor createDiagramEditor() {
         tested = spy(new CaseManagementDiagramEditor(view,
-                                                     documentationView,
-                                                     placeManager,
-                                                     errorPopupPresenter,
-                                                     changeTitleNotificationEvent,
-                                                     savePopUpPresenter,
-                                                     (CaseManagementDiagramResourceType) getResourceType(),
-                                                     clientProjectDiagramService,
+                                                     xmlEditorView,
                                                      sessionEditorPresenters,
                                                      sessionViewerPresenters,
-                                                     cmMenuSessionItems,
                                                      onDiagramFocusEvent,
                                                      onDiagramLostFocusEvent,
-                                                     projectMessagesListener,
+                                                     notificationEvent,
+                                                     errorPopupPresenter,
                                                      diagramClientErrorHandler,
+                                                     documentationView,
+                                                     (CaseManagementDiagramResourceType) getResourceType(),
+                                                     cmMenuSessionItems,
+                                                     projectMessagesListener,
                                                      translationService,
-                                                     xmlEditorView,
+                                                     clientProjectDiagramService,
                                                      projectDiagramResourceServiceCaller,
                                                      caseManagementSwitchViewServiceCaller) {
             {
@@ -124,7 +121,7 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
                     place = CaseManagementDiagramEditorTest.this.currentPlace;
                     kieView = CaseManagementDiagramEditorTest.this.kieView;
                     overviewWidget = CaseManagementDiagramEditorTest.this.overviewWidget;
-                    notification = CaseManagementDiagramEditorTest.this.notification;
+                    notification = CaseManagementDiagramEditorTest.this.notificationEvent;
                 }
             }
         });
@@ -136,7 +133,7 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
     }
 
     @Override
-    protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
+    protected CaseManagementProjectEditorMenuSessionItems getMenuSessionItems() {
         return cmMenuSessionItems;
     }
 

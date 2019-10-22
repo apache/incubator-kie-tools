@@ -29,18 +29,27 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
+import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNGraphUtilsTest {
+
+    private static final String NAME = "name";
 
     @Mock
     private SessionManager sessionManager;
@@ -55,15 +64,19 @@ public class DMNGraphUtilsTest {
     private CanvasHandler canvasHandler;
 
     @Mock
-    private Diagram diagram;
+    private Metadata metadata;
 
     private DMNGraphUtils utils;
 
+    private GraphImpl<DefinitionSet> graph;
+
+    private DiagramImpl diagram;
+
     @Before
     public void setup() {
-
-        utils = new DMNGraphUtils(sessionManager, dmnDiagramUtils);
-
+        this.utils = new DMNGraphUtils(sessionManager, dmnDiagramUtils);
+        this.graph = new GraphImpl<>(UUID.uuid(), new GraphNodeStoreImpl());
+        this.diagram = new DiagramImpl(NAME, graph, metadata);
         when(sessionManager.getCurrentSession()).thenReturn(clientSession);
         when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -94,6 +107,11 @@ public class DMNGraphUtilsTest {
 
         assertNotNull(actualDefinitions);
         assertEquals(expectedDefinitions, actualDefinitions);
+    }
+
+    @Test
+    public void testGetDefinitionsWithNoNodes() {
+        assertNull(utils.getDefinitions());
     }
 
     @Test

@@ -28,8 +28,8 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
-import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
-import org.kie.workbench.common.dmn.backend.common.DMNPathsHelper;
+import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandalone;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.common.IncludedModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.PMMLIncludedDocumentsFilter;
@@ -62,7 +62,7 @@ public class DMNIncludedModelsServiceImplTest {
     private PMMLIncludedDocumentsFilter includedDocumentsFilter;
 
     @Mock
-    private DMNMarshallerImportsHelper importsHelper;
+    private DMNMarshallerImportsHelperStandalone importsHelper;
 
     @Mock
     private Path dmnModelPath;

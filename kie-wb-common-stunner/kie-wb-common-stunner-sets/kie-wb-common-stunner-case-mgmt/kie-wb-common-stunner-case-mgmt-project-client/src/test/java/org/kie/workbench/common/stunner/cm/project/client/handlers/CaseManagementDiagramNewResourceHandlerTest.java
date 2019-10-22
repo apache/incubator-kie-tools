@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.project.client.handlers.util.CaseHelper;
-import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
+import org.kie.workbench.common.stunner.bpmn.project.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.project.client.editor.CaseManagementDiagramEditor;

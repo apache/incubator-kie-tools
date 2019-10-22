@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -163,17 +164,21 @@ public class FormsCanvasSessionHandler {
     void onRefreshFormPropertiesEvent(@Observes RefreshFormPropertiesEvent event) {
         checkNotNull("event", event);
 
-        if (!Objects.isNull(getCanvasHandler())) {
-            final String uuid = event.getUuid();
-            final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), uuid);
-            render(element);
+        if (checkSession(event.getSession())) {
+            if (event.hasUuid()) {
+                final String uuid = event.getUuid();
+                final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), uuid);
+                render(element);
+            } else {
+                show();
+            }
         }
     }
 
     void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
-        if (!Objects.isNull(getCanvasHandler())) {
+        if (checkCanvasHandler(event.getCanvasHandler())) {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
                 final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), uuid);
@@ -185,7 +190,7 @@ public class FormsCanvasSessionHandler {
     void onDomainObjectSelectionEvent(@Observes DomainObjectSelectionEvent event) {
         checkNotNull("event",
                      event);
-        if (!Objects.isNull(getCanvasHandler())) {
+        if (checkCanvasHandler(event.getCanvasHandler())) {
             final DomainObject domainObject = event.getDomainObject();
             render(domainObject);
         }
@@ -251,6 +256,15 @@ public class FormsCanvasSessionHandler {
                                                                   domainObject,
                                                                   callback));
         }
+    }
+
+    private boolean checkCanvasHandler(final CanvasHandler ch) {
+        AbstractCanvasHandler canvasHandler = getCanvasHandler();
+        return !Objects.isNull(canvasHandler) && canvasHandler.equals(ch);
+    }
+
+    private boolean checkSession(final ClientSession s) {
+        return checkCanvasHandler(s.getCanvasHandler());
     }
 
     /**

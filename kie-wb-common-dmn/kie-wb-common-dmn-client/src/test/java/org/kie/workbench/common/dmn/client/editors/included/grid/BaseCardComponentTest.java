@@ -21,7 +21,7 @@ import elemental2.dom.HTMLElement;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
+import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.mockito.Mock;

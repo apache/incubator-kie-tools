@@ -24,25 +24,25 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor.Sc
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.Condition;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.GenerateConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.ParseConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionEditorFieldEditorPresenter.SCRIPT_PARSING_ERROR;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionEditorFieldEditorPresenter.UNEXPECTED_SCRIPT_GENERATION_ERROR;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionEditorFieldEditorPresenter.UNEXPECTED_SCRIPT_PARSING_ERROR;
-import static org.kie.workbench.common.stunner.core.client.util.TestUtils.prepareServiceCallerError;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -81,9 +81,10 @@ public class ConditionEditorFieldEditorPresenterTest {
     private ErrorPopupPresenter errorPopup;
 
     @Mock
-    private ConditionEditorService editorService;
+    private ConditionEditorParsingService conditionEditorParsingService;
 
-    private CallerMock<ConditionEditorService> editorServiceCaller;
+    @Mock
+    private ConditionEditorGeneratorService conditionEditorGeneratorService;
 
     @Mock
     private ClientTranslationService translationService;
@@ -101,8 +102,6 @@ public class ConditionEditorFieldEditorPresenterTest {
 
     @Before
     public void setUp() {
-        editorServiceCaller = spy(new CallerMock<>(editorService));
-
         when(scriptEditor.getView()).thenReturn(scriptEditorView);
         when(scriptEditorView.getElement()).thenReturn(scriptEditorElement);
         when(simpleConditionEditor.getView()).thenReturn(simpleConditionEditorView);
@@ -112,7 +111,8 @@ public class ConditionEditorFieldEditorPresenterTest {
                                                                 simpleConditionEditor,
                                                                 scriptEditor,
                                                                 errorPopup,
-                                                                editorServiceCaller,
+                                                                conditionEditorParsingService,
+                                                                conditionEditorGeneratorService,
                                                                 translationService));
         presenter.addChangeHandler(changeHandler);
     }
@@ -175,7 +175,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         Condition condition = mock(Condition.class);
         when(result.hasError()).thenReturn(false);
         when(result.getCondition()).thenReturn(condition);
-        when(editorService.parseCondition(SCRIPT_VALUE)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
         presenter.setValue(value);
 
         verifySetValueCommonActions(value);
@@ -188,7 +190,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
         ParseConditionResult result = mock(ParseConditionResult.class);
         when(result.hasError()).thenReturn(true);
-        when(editorService.parseCondition(SCRIPT_VALUE)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
         presenter.setValue(value);
 
         verifySetValueCommonActions(value);
@@ -203,7 +207,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         Condition condition = mock(Condition.class);
         when(result.hasError()).thenReturn(false);
         when(result.getCondition()).thenReturn(condition);
-        when(editorService.parseCondition(SCRIPT_VALUE)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
 
         //at some point the script has changed
         presenter.onScriptChange(mock(ScriptTypeValue.class), value);
@@ -219,7 +225,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
         ParseConditionResult result = mock(ParseConditionResult.class);
         when(result.hasError()).thenReturn(true);
-        when(editorService.parseCondition(SCRIPT_VALUE)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
         when(translationService.getValue(SCRIPT_PARSING_ERROR)).thenReturn(TRANSLATED_MESSAGE);
 
         //at some point the script has changed
@@ -239,7 +247,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter.onScriptChange(mock(ScriptTypeValue.class), value);
         //and the user wants to go to the condition editor.
         when(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
-        prepareServiceCallerError(editorService, editorServiceCaller, new Throwable(ERROR));
+        doReturn(PromiseMock.error(new Throwable(ERROR)))
+                .when(conditionEditorParsingService)
+                .call(any());
         presenter.onSimpleConditionSelected();
 
         verify(errorPopup).showMessage(TRANSLATED_MESSAGE);
@@ -261,7 +271,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         GenerateConditionResult result = mock(GenerateConditionResult.class);
         when(result.hasError()).thenReturn(false);
         when(result.getExpression()).thenReturn(SCRIPT_VALUE);
-        when(editorService.generateCondition(newValue)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorGeneratorService)
+                .call(eq(newValue));
         when(simpleConditionEditor.isValid()).thenReturn(true);
         presenter.onSimpleConditionChange(oldValue, newValue);
         verify(view).clearError();
@@ -278,7 +290,9 @@ public class ConditionEditorFieldEditorPresenterTest {
         GenerateConditionResult result = mock(GenerateConditionResult.class);
         when(result.hasError()).thenReturn(true);
         when(result.getError()).thenReturn(ERROR);
-        when(editorService.generateCondition(newValue)).thenReturn(result);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorGeneratorService)
+                .call(eq(newValue));
         when(simpleConditionEditor.isValid()).thenReturn(true);
         presenter.onSimpleConditionChange(oldValue, newValue);
         verify(view).clearError();
@@ -289,7 +303,9 @@ public class ConditionEditorFieldEditorPresenterTest {
     @Test
     public void testOnSimpleConditionChangeWithServiceError() {
         when(translationService.getValue(UNEXPECTED_SCRIPT_GENERATION_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
-        prepareServiceCallerError(editorService, editorServiceCaller, new Throwable(ERROR));
+        doReturn(PromiseMock.error(new Throwable(ERROR)))
+                .when(conditionEditorGeneratorService)
+                .call(any());
         when(simpleConditionEditor.isValid()).thenReturn(true);
         presenter.onSimpleConditionChange(mock(Condition.class), mock(Condition.class));
         verify(errorPopup).showMessage(TRANSLATED_MESSAGE);

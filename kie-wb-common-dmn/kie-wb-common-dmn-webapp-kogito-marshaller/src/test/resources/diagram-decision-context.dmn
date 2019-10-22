@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_955FDEB2-A984-4829-BF7A-F72978D2899B" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_3BD7CE8C-A4DD-41D0-9F95-81DC223EA436" name="C946954B-A3BA-4AAC-B479-B6F2466BCBAC" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_955FDEB2-A984-4829-BF7A-F72978D2899B">
+  <dmn:extensionElements></dmn:extensionElements>
+  <dmn:decision id="_19B3BF29-AA2E-4FBE-89CC-206924219472" name="Decision-1">
+    <dmn:extensionElements></dmn:extensionElements>
+    <dmn:variable id="_8BBD7334-8813-43CE-98F6-DD762D43E3CC" name="Decision-1" typeRef="number"></dmn:variable>
+    <dmn:context id="_749CC3A4-D86F-44BB-A6DC-BB7EB0DFCE13">
+      <dmn:contextEntry>
+        <dmn:variable id="_C54FCE31-B29F-43F9-AE26-F5947896C301" name="ContextEntry-1" typeRef="number"></dmn:variable>
+        <dmn:literalExpression id="_1B1EA402-8752-4C89-8326-0D7E6EA72E64">
+          <dmn:text>1</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_B067AC38-8F85-4D4C-99FD-756494E5AF8A" name="ContextEntry-2" typeRef="number"></dmn:variable>
+        <dmn:literalExpression id="_11DEF19F-C6AD-4DCA-AE72-DBC52C0EF2B3">
+          <dmn:text>2</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_98D4EB7B-E022-40DF-AE1B-794A380DE522">
+          <dmn:text>3</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_749CC3A4-D86F-44BB-A6DC-BB7EB0DFCE13">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1B1EA402-8752-4C89-8326-0D7E6EA72E64">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_11DEF19F-C6AD-4DCA-AE72-DBC52C0EF2B3">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_98D4EB7B-E022-40DF-AE1B-794A380DE522">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_19B3BF29-AA2E-4FBE-89CC-206924219472" dmnElementRef="_19B3BF29-AA2E-4FBE-89CC-206924219472" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"></dmndi:FillColor>
+          <dmndi:StrokeColor red="0" green="0" blue="0"></dmndi:StrokeColor>
+          <dmndi:FontColor red="0" green="0" blue="0"></dmndi:FontColor>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="299" y="143" width="100" height="50"></dc:Bounds>
+        <dmndi:DMNLabel></dmndi:DMNLabel>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

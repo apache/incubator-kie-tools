@@ -163,14 +163,6 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                 .build();
     }
 
-    @Override
-    protected ProjectMetadata obtainMetadata(final DefinitionSetService services,
-                                             final Path diagramFilePath,
-                                             final String defSetId,
-                                             final String fileName) {
-        return null;
-    }
-
     public Path save(final Path path,
                      final ProjectDiagram diagram,
                      final Map<String, ?> attributes,

@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
-import org.kie.workbench.common.dmn.backend.common.DMNPathsHelper;
+import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;

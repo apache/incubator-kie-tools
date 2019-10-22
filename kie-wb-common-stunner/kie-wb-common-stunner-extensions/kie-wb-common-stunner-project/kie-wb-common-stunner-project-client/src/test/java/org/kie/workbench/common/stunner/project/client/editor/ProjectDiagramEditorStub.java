@@ -27,8 +27,9 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
@@ -38,51 +39,54 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
+import org.uberfire.workbench.events.NotificationEvent;
 
 class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResourceType> {
 
     static final String EDITOR_ID = "ProjectDiagramEditorStub";
 
     public ProjectDiagramEditorStub(final View view,
-                                    final DocumentationView documentationView,
-                                    final PlaceManager placeManager,
-                                    final ErrorPopupPresenter errorPopupPresenter,
-                                    final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                    final SavePopUpPresenter savePopUpPresenter,
-                                    final ClientResourceType resourceType,
-                                    final ClientProjectDiagramService projectDiagramServices,
+                                    final TextEditorView xmlEditorView,
                                     final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                     final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                    final AbstractProjectEditorMenuSessionItems menuSessionItems,
                                     final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                     final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                                    final ProjectMessagesListener projectMessagesListener,
+                                    final Event<NotificationEvent> notificationEvent,
+                                    final ErrorPopupPresenter errorPopupPresenter,
                                     final DiagramClientErrorHandler diagramClientErrorHandler,
+                                    final DocumentationView documentationView,
+                                    final ClientResourceType resourceType,
+                                    final AbstractDiagramEditorMenuSessionItems menuSessionItems,
+                                    final ProjectMessagesListener projectMessagesListener,
                                     final ClientTranslationService translationService,
-                                    final TextEditorView xmlEditorView,
-                                    final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
+                                    final ClientProjectDiagramService projectDiagramServices,
+                                    final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
+                                    final PlaceManager placeManager,
+                                    final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
+                                    final SavePopUpPresenter savePopUpPresenter) {
         super(view,
-              documentationView,
-              placeManager,
-              errorPopupPresenter,
-              changeTitleNotificationEvent,
-              savePopUpPresenter,
-              resourceType,
-              projectDiagramServices,
+              xmlEditorView,
               editorSessionPresenterInstances,
               viewerSessionPresenterInstances,
-              menuSessionItems,
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
-              projectMessagesListener,
+              notificationEvent,
+              errorPopupPresenter,
               diagramClientErrorHandler,
+              documentationView,
+              resourceType,
+              menuSessionItems,
+              projectMessagesListener,
               translationService,
-              xmlEditorView,
+              projectDiagramServices,
               projectDiagramResourceServiceCaller);
+        this.placeManager = placeManager;
+        this.changeTitleNotification = changeTitleNotificationEvent;
+        this.savePopUpPresenter = savePopUpPresenter;
     }
 
     @Override
-    protected String getEditorIdentifier() {
+    public String getEditorIdentifier() {
         return EDITOR_ID;
     }
 }

@@ -110,7 +110,8 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         ));
 
         definition.setExecutionSet(new MessageEventExecutionSet(
-                new MessageRef(EventDefinitionReader.messageRefOf(eventDefinition))
+                new MessageRef(EventDefinitionReader.messageRefOf(eventDefinition),
+                               EventDefinitionReader.messageRefStructureOf(eventDefinition))
         ));
 
         node.getContent().setBounds(p.getBounds());

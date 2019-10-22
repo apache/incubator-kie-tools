@@ -52,6 +52,7 @@
 
   <!-- Stunner. -->
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
   <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementProjectClient"/>
@@ -73,7 +74,6 @@
   <inherits name="org.drools.workbench.models.guided.scorecard.DroolsWorkbenchModelsGuidedScoreCard" />
   <inherits name="org.drools.workbench.models.guided.template.DroolsWorkbenchModelsGuidedTemplate"/>
   <inherits name="org.drools.workbench.models.testscenarios.DroolsWorkbenchModelsTestScenarios" />
-
 
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>

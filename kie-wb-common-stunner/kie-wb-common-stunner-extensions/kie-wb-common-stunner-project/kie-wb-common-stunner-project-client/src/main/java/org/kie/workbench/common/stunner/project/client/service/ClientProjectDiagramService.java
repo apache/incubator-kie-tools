@@ -79,7 +79,6 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
                        final Package projectPkg,
                        final Optional<String> projectType,
                        final ServiceCallback<Path> callback) {
-
         diagramServiceCaller.call((RemoteCallback<Path>) callback::onSuccess,
                                   (message, throwable) -> {
                                       callback.onError(createOnErrorHandler(throwable, name, projectPkg));

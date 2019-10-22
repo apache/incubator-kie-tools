@@ -70,6 +70,15 @@
       <artifactId>kie-wb-common-stunner-bpmn-backend</artifactId>
     </dependency>
 
+    <!-- For further refactroing, if applies:
+    CaseManagement actually splits api/client modules into "project" ones,
+    but does not for backend module. So adding this dependency here is not ideal,
+    but works for now as CM does not provide any "standalone" webapp. -->
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-bpmn-project-backend</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>

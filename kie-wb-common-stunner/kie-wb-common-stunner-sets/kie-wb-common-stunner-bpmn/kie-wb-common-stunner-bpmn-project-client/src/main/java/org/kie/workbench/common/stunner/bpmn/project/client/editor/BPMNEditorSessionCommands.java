@@ -17,13 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 
 @Dependent
-@Typed(BPMNEditorSessionCommands.class)
+@BPMN
 public class BPMNEditorSessionCommands extends AbstractProcessEditorSessionCommands {
 
     @Inject

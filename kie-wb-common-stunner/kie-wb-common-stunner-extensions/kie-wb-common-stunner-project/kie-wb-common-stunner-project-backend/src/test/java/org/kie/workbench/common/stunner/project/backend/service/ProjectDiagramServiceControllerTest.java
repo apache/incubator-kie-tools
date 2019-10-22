@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -108,8 +109,8 @@ public class ProjectDiagramServiceControllerTest
     }
 
     @Override
-    public ProjectDiagram mockDiagram() {
-        return mock(ProjectDiagram.class);
+    public ProjectDiagramImpl mockDiagram() {
+        return mock(ProjectDiagramImpl.class);
     }
 
     public ProjectMetadata mockMetadata() {

@@ -21,7 +21,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -41,7 +43,7 @@ import static org.mockito.Mockito.when;
 public class ProjectEditorMenuSessionItemsTest {
 
     @Mock
-    private AbstractProjectDiagramEditorMenuItemsBuilder itemsBuilder;
+    private AbstractDiagramEditorMenuItemsBuilder itemsBuilder;
 
     @Mock
     private EditorSessionCommands sessionCommands;
@@ -49,11 +51,11 @@ public class ProjectEditorMenuSessionItemsTest {
     @Mock
     private FileMenuBuilder fileMenuBuilder;
 
-    private AbstractProjectEditorMenuSessionItems editorMenuSessionItems;
+    private AbstractDiagramEditorMenuSessionItems editorMenuSessionItems;
 
-    private static class TestAbstractProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<AbstractProjectDiagramEditorMenuItemsBuilder> {
+    private static class TestAbstractProjectEditorMenuSessionItems extends AbstractDiagramEditorMenuSessionItems<AbstractDiagramEditorMenuItemsBuilder> {
 
-        public TestAbstractProjectEditorMenuSessionItems(final AbstractProjectDiagramEditorMenuItemsBuilder itemsBuilder,
+        public TestAbstractProjectEditorMenuSessionItems(final AbstractDiagramEditorMenuItemsBuilder itemsBuilder,
                                                          final EditorSessionCommands sessionCommands) {
             super(itemsBuilder,
                   sessionCommands);

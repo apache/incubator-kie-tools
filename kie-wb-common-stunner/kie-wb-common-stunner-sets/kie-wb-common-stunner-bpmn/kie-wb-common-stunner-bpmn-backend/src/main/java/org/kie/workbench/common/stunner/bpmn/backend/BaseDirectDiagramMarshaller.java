@@ -51,7 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.GraphBuilder;
 import org.kie.workbench.common.stunner.bpmn.backend.resource.JBPMBpmn2Resource;
 import org.kie.workbench.common.stunner.bpmn.backend.resource.JBPMBpmn2ResourceFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
@@ -71,6 +71,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * "Direct" in the name "BaseDirectDiagramMarshaller" means "skipping json encoding".
+ * The old BPMNDiagramMarshaller went through an additional step converting XML into JSON for legacy reasons.
+ * The reason for the new version, beside a necessary spring cleaning, was to remove this extra step.
+ * So the new version is "Direct" as in "it doesn't go through the extra step".
+ *
+ */
 public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseDirectDiagramMarshaller.class);
@@ -78,7 +85,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
     private final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private final DefinitionManager definitionManager;
     private final RuleManager ruleManager;
-    private final WorkItemDefinitionBackendService workItemDefinitionService;
+    private final WorkItemDefinitionLookupService workItemDefinitionService;
     protected final TypedFactoryManager typedFactoryManager;
     private final GraphCommandFactory commandFactory;
     private final GraphCommandManager commandManager;
@@ -86,7 +93,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
     public BaseDirectDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
                                        final DefinitionManager definitionManager,
                                        final RuleManager ruleManager,
-                                       final WorkItemDefinitionBackendService workItemDefinitionService,
+                                       final WorkItemDefinitionLookupService workItemDefinitionService,
                                        final FactoryManager factoryManager,
                                        final GraphCommandFactory commandFactory,
                                        final GraphCommandManager commandManager) {

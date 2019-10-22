@@ -112,6 +112,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         return controller.accepts(path);
     }
 
+    @Override
     public Path create(final Path path,
                        final String name,
                        final String defSetId,
@@ -180,7 +181,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
+    public Path saveOrUpdateSvg(final Path diagramPath,
+                                final String rawDiagramSvg) {
         return controller.saveOrUpdateSvg(diagramPath, rawDiagramSvg);
     }
 
@@ -197,7 +199,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public String getRawContent(ProjectDiagram diagram) {
+    public String getRawContent(final ProjectDiagram diagram) {
         return controller.getRawContent(diagram);
     }
 

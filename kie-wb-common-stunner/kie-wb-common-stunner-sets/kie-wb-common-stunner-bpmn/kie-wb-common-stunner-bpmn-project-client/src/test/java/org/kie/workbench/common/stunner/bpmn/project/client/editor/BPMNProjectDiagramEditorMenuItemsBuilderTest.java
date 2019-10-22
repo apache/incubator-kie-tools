@@ -49,6 +49,6 @@ public class BPMNProjectDiagramEditorMenuItemsBuilderTest {
     @Test
     public void testExportAsRawLabel() {
         assertEquals(CoreTranslationMessages.EXPORT_BPMN,
-                     builder.getExportAsRawLabel());
+                     builder.getExportLabelToRawFormatIfSupported().get());
     }
 }

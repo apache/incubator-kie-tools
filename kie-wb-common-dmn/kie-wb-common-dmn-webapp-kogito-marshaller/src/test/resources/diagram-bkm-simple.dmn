@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_955FDEB2-A984-4829-BF7A-F72978D2899B" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_3BD7CE8C-A4DD-41D0-9F95-81DC223EA436" name="C946954B-A3BA-4AAC-B479-B6F2466BCBAC" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_955FDEB2-A984-4829-BF7A-F72978D2899B">
+  <dmn:extensionElements></dmn:extensionElements>
+  <dmn:businessKnowledgeModel id="_B1AAC724-F6AC-4FD7-BBA7-73AB70BCDBA0" name="BusinessKnowledgeModel-1">
+    <dmn:extensionElements></dmn:extensionElements>
+    <dmn:variable id="_A9AB87E6-AD2D-48E3-954C-6BFF6136943D" name="BusinessKnowledgeModel-1"></dmn:variable>
+    <dmn:encapsulatedLogic id="_8AF6A3F8-BCB2-4CFC-B4BC-E424D791271D" kind="FEEL">
+      <dmn:formalParameter id="_AA087440-3AB0-4D7B-B2B8-56D14D23FE92" name="p-1"></dmn:formalParameter>
+      <dmn:literalExpression id="_B086D689-2E3F-4D90-B468-A9B3CE9D2D8B">
+        <dmn:text></dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_B086D689-2E3F-4D90-B468-A9B3CE9D2D8B">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8AF6A3F8-BCB2-4CFC-B4BC-E424D791271D">
+            <kie:width>50.0</kie:width>
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_B1AAC724-F6AC-4FD7-BBA7-73AB70BCDBA0" dmnElementRef="_B1AAC724-F6AC-4FD7-BBA7-73AB70BCDBA0" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"></dmndi:FillColor>
+          <dmndi:StrokeColor red="0" green="0" blue="0"></dmndi:StrokeColor>
+          <dmndi:FontColor red="0" green="0" blue="0"></dmndi:FontColor>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="270" y="72" width="100" height="50"></dc:Bounds>
+        <dmndi:DMNLabel></dmndi:DMNLabel>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

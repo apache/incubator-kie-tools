@@ -148,7 +148,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         populateTypeSelector();
     }
 
-    void populateTypeSelector(){
+    void populateTypeSelector() {
         typeSelector.clear();
 
         addBuiltInTypes();

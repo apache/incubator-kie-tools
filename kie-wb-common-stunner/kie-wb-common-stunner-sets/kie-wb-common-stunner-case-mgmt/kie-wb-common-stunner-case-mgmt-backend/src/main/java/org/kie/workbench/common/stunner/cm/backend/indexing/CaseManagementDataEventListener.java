@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.cm.backend.indexing;
 
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.stunner.bpmn.backend.indexing.AbstractBpmnProcessDataEventListener;
+import org.kie.workbench.common.stunner.bpmn.project.backend.indexing.AbstractBpmnProcessDataEventListener;
 
 public class CaseManagementDataEventListener extends AbstractBpmnProcessDataEventListener {
 

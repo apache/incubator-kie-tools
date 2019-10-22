@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.kie.workbench.common.dmn.api.marshalling.DMNImportTypesHelper;
+import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
 import org.kie.workbench.common.dmn.backend.editors.included.query.AllModelsValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.included.query.PMMLValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueFileExtensionIndexTerm;

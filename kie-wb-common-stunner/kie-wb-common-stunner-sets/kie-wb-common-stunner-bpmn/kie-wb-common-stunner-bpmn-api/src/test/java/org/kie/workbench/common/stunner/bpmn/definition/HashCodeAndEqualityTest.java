@@ -311,10 +311,10 @@ public class HashCodeAndEqualityTest {
     @Test
     public void testEndMessageEventEquals() {
         final String MESSAGE_REF = "message ref";
-        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
-        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
-        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value"));
-        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
+        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
+        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value", ""));
+        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -427,10 +427,10 @@ public class HashCodeAndEqualityTest {
     @Test
     public void IntermediateMessageEventThrowingEquals() {
         final String MESSAGE_REF = "message ref";
-        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
-        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
-        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value"));
-        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
+        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
+        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value", ""));
+        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF, ""));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -513,16 +513,16 @@ public class HashCodeAndEqualityTest {
         final String MESSAGE_REF = "message ref";
         final CancellingMessageEventExecutionSet A_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
                                                                                                           new SLADueDate(),
-                                                                                                          new MessageRef(MESSAGE_REF));
+                                                                                                          new MessageRef(MESSAGE_REF, ""));
         final CancellingMessageEventExecutionSet B_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
                                                                                                           new SLADueDate(),
-                                                                                                          new MessageRef(MESSAGE_REF));
+                                                                                                          new MessageRef(MESSAGE_REF, ""));
         final CancellingMessageEventExecutionSet C_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
                                                                                                           new SLADueDate(),
-                                                                                                          new MessageRef("Other value"));
+                                                                                                          new MessageRef("Other value", ""));
         final CancellingMessageEventExecutionSet D_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
                                                                                                           new SLADueDate(),
-                                                                                                          new MessageRef(MESSAGE_REF));
+                                                                                                          new MessageRef(MESSAGE_REF, ""));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -813,16 +813,16 @@ public class HashCodeAndEqualityTest {
         final String MESSAGE_REF = "message ref";
         final InterruptingMessageEventExecutionSet A_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
                                                                                                               new SLADueDate(),
-                                                                                                              new MessageRef(MESSAGE_REF));
+                                                                                                              new MessageRef(MESSAGE_REF, ""));
         final InterruptingMessageEventExecutionSet B_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
                                                                                                               new SLADueDate(),
-                                                                                                              new MessageRef(MESSAGE_REF));
+                                                                                                              new MessageRef(MESSAGE_REF, ""));
         final InterruptingMessageEventExecutionSet C_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
                                                                                                               new SLADueDate(),
-                                                                                                              new MessageRef("Other value"));
+                                                                                                              new MessageRef("Other value", ""));
         final InterruptingMessageEventExecutionSet D_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
                                                                                                               new SLADueDate(),
-                                                                                                              new MessageRef(MESSAGE_REF));
+                                                                                                              new MessageRef(MESSAGE_REF, ""));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -2013,14 +2013,14 @@ public class HashCodeAndEqualityTest {
                 .addTrueCase(new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef()),
                              new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef()))
 
-                .addTrueCase(new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF)),
-                             new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF)))
+                .addTrueCase(new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF, "")),
+                             new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF, "")))
 
                 .addFalseCase(new CancellingMessageEventExecutionSet(),
                               null)
 
-                .addFalseCase(new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF)),
-                              new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF_1)))
+                .addFalseCase(new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF, "")),
+                              new CancellingMessageEventExecutionSet(new CancelActivity(false), new SLADueDate(), new MessageRef(MESSAGE_REF_1, "")))
                 .test();
     }
 

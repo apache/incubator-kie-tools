@@ -43,7 +43,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -79,18 +79,20 @@ public class AbstractProcessEditorSessionCommandsTest {
             final Class commandClass = invocation.getArgumentAt(0, Class.class);
 
             if (GenerateProcessFormsSessionCommand.class.isAssignableFrom(commandClass)) {
-                commandList.add(generateProcessFormsSessionCommand);
+                commandList.set(0, generateProcessFormsSessionCommand);
             } else if (GenerateDiagramFormsSessionCommand.class.isAssignableFrom(commandClass)) {
-                commandList.add(generateDiagramFormsSessionCommand);
+                commandList.set(1, generateDiagramFormsSessionCommand);
             } else if (GenerateSelectedFormsSessionCommand.class.isAssignableFrom(commandClass)) {
-                commandList.add(generateSelectedFormsSessionCommand);
+                commandList.set(2, generateSelectedFormsSessionCommand);
             } else {
                 commandList.add(mock(ClientSessionCommand.class));
             }
 
             return commands;
         });
-        when(commands.get(anyInt())).thenAnswer(invocation -> commandList.get(invocation.getArgumentAt(0, Integer.class)));
+        when(commands.get(eq(GenerateProcessFormsSessionCommand.class))).thenAnswer(invocation -> commandList.get(0));
+        when(commands.get(eq(GenerateDiagramFormsSessionCommand.class))).thenAnswer(invocation -> commandList.get(1));
+        when(commands.get(eq(GenerateSelectedFormsSessionCommand.class))).thenAnswer(invocation -> commandList.get(2));
 
         tested.init();
     }

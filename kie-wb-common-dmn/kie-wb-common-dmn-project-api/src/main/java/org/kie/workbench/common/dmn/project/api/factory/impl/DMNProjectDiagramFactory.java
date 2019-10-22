@@ -17,11 +17,11 @@ package org.kie.workbench.common.dmn.project.api.factory.impl;
 
 import org.kie.workbench.common.dmn.api.factory.DMNFactory;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 
 public interface DMNProjectDiagramFactory
         extends DMNFactory,
-                DiagramFactory<ProjectMetadata, ProjectDiagram> {
+                DiagramFactory<ProjectMetadata, ProjectDiagramImpl> {
 
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.event;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
@@ -23,17 +24,17 @@ import org.uberfire.workbench.events.UberFireEvent;
  */
 public final class LoadDiagramEvent implements UberFireEvent {
 
-    private final String uri;
+    private final Path path;
     private final String name;
 
-    public LoadDiagramEvent(final String uri,
+    public LoadDiagramEvent(final Path path,
                             final String name) {
         this.name = name;
-        this.uri = uri;
+        this.path = path;
     }
 
-    public String getURI() {
-        return uri;
+    public Path getPath() {
+        return path;
     }
 
     public String getName() {
@@ -42,6 +43,6 @@ public final class LoadDiagramEvent implements UberFireEvent {
 
     @Override
     public String toString() {
-        return "LoadDiagramEvent [name=" + name + ", uri=" + uri + "]";
+        return "LoadDiagramEvent [name=" + name + ", uri=" + path.toURI() + "]";
     }
 }

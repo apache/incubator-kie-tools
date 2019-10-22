@@ -19,14 +19,12 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEdito
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor.ScriptTypeFieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.Condition;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.GenerateConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.ParseConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
@@ -71,7 +69,9 @@ public class ConditionEditorFieldEditorPresenter
 
     private final ErrorPopupPresenter errorPopup;
 
-    private final Caller<ConditionEditorService> editorService;
+    private final ConditionEditorParsingService conditionEditorParsingService;
+
+    private final ConditionEditorGeneratorService conditionEditorGeneratorService;
 
     private final ClientTranslationService translationService;
 
@@ -80,13 +80,15 @@ public class ConditionEditorFieldEditorPresenter
                                                final SimpleConditionEditorPresenter simpleConditionEditor,
                                                final ScriptTypeFieldEditorPresenter scriptEditor,
                                                final ErrorPopupPresenter errorPopup,
-                                               final Caller<ConditionEditorService> editorService,
+                                               final ConditionEditorParsingService conditionEditorParsingService,
+                                               final ConditionEditorGeneratorService conditionEditorGeneratorService,
                                                final ClientTranslationService translationService) {
         this.view = view;
         this.simpleConditionEditor = simpleConditionEditor;
         this.scriptEditor = scriptEditor;
         this.errorPopup = errorPopup;
-        this.editorService = editorService;
+        this.conditionEditorParsingService = conditionEditorParsingService;
+        this.conditionEditorGeneratorService = conditionEditorGeneratorService;
         this.translationService = translationService;
     }
 
@@ -123,8 +125,16 @@ public class ConditionEditorFieldEditorPresenter
         if (value != null) {
             if (isInDefaultLanguage(value)) {
                 if (!isEmpty(value.getScript())) {
-                    editorService.call(result -> onSetValue((ParseConditionResult) result),
-                                       (message, throwable) -> onSetValueError(throwable)).parseCondition(value.getScript());
+                    conditionEditorParsingService
+                            .call(value.getScript())
+                            .then(result -> {
+                                onSetValue(result);
+                                return null;
+                            })
+                            .catch_(throwable -> {
+                                onSetValueError((Throwable) throwable);
+                                return null;
+                            });
                 } else {
                     showSimpleConditionEditor();
                 }
@@ -140,8 +150,16 @@ public class ConditionEditorFieldEditorPresenter
     void onSimpleConditionSelected() {
         clearError();
         if (value != null && !isEmpty(value.getScript())) {
-            editorService.call(result -> onSimpleConditionSelected((ParseConditionResult) result),
-                               (message, throwable) -> onSimpleConditionSelectedError(throwable)).parseCondition(value.getScript());
+            conditionEditorParsingService
+                    .call(value.getScript())
+                    .then(result -> {
+                        onSimpleConditionSelected(result);
+                        return null;
+                    })
+                    .catch_(throwable -> {
+                        onSimpleConditionSelectedError((Throwable) throwable);
+                        return null;
+                    });
         } else {
             simpleConditionEditor.setValue(null);
             showSimpleConditionEditor();
@@ -156,8 +174,16 @@ public class ConditionEditorFieldEditorPresenter
 
     void onSimpleConditionChange(Condition oldValue, Condition newValue) {
         if (simpleConditionEditor.isValid()) {
-            editorService.call(result -> onSimpleConditionChange((GenerateConditionResult) result),
-                               (message, throwable) -> onSimpleConditionChangeError(throwable)).generateCondition(newValue);
+            conditionEditorGeneratorService
+                    .call(newValue)
+                    .then(result -> {
+                        onSimpleConditionChange(result);
+                        return null;
+                    })
+                    .catch_(throwable -> {
+                        onSimpleConditionChangeError((Throwable) throwable);
+                        return null;
+                    });
         } else {
             clearError();
         }

@@ -81,6 +81,7 @@
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
     </dependency>
 
+    <!-- Required to generate SVG factories -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-svg-gen</artifactId>

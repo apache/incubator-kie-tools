@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetSer
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -114,7 +115,7 @@ public class ProjectDiagramServiceImplTest {
     private Path resultPath;
 
     @Mock
-    private ProjectDiagram diagram;
+    private ProjectDiagramImpl diagram;
 
     private ProjectDiagramServiceImpl diagramService;
 

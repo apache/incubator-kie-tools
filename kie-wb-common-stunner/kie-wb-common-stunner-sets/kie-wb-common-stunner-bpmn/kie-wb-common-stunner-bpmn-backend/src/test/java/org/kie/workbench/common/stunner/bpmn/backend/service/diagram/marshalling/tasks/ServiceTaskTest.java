@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.tasks;
 
-import org.apache.tools.ant.filters.StringInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.junit.Test;
@@ -75,7 +77,7 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBaseTest {
     public void testBasicBidi() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
         String marshall = marshaller.marshall(d);
-        Diagram<Graph, Metadata> d2 = Unmarshalling.unmarshall(marshaller, new StringInputStream(marshall));
+        Diagram<Graph, Metadata> d2 = Unmarshalling.unmarshall(marshaller, new ByteArrayInputStream(marshall.getBytes(Charset.forName("UTF-8"))));
 
         Node<View<ServiceTask>, ?> node = d2.getGraph().getNode(SERVICE_TASK_ID);
 

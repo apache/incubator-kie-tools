@@ -125,6 +125,11 @@
       <artifactId>kie-wb-common-stunner-jbpm-designer-integration-shared</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
+    </dependency>
+
     <!-- KIE Commons -->
 
     <dependency>
@@ -151,6 +156,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Elemental2 -->
+
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-promise</artifactId>
+    </dependency>
+
     <!-- Uberfire & Errai. -->
 
     <dependency>
@@ -171,12 +183,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -248,6 +254,16 @@
       <artifactId>errai-security-server</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-client</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
 
     <dependency>
@@ -260,6 +276,13 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>

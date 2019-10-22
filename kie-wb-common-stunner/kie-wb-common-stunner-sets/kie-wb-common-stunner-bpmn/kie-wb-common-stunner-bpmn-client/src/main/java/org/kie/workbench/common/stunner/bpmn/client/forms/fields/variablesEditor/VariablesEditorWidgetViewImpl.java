@@ -38,20 +38,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.bus.client.api.BusErrorCallback;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.DataTypeNamesService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
-import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -77,6 +73,9 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @DataField
     protected TableCellElement datatypeth = Document.get().createTHElement();
+
+    @Inject
+    private DataTypeNamesService clientDataTypesService;
 
     @DataField
     protected TableCellElement kpith = Document.get().createTHElement();
@@ -158,33 +157,30 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                                                                                             "Integer",
                                                                                             "Object",
                                                                                             "String"));
-        MessageBuilder.createCall(
-                new RemoteCallback<List<String>>() {
-                    public void callback(final List<String> serverDataTypes) {
-                        List<List<String>> mergedDataTypes = mergeDataTypes(simpleDataTypes,
-                                                                            simpleDataTypeDisplayNames,
-                                                                            serverDataTypes);
-                        setDataTypes(mergedDataTypes.get(0),
-                                     mergedDataTypes.get(1));
-                        doSetValue(value,
-                                   fireEvents,
-                                   true);
-                    }
-                },
-                new BusErrorCallback() {
-                    public boolean error(final Message message,
-                                         final Throwable t) {
-                        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
-                                                                NotificationEvent.NotificationType.ERROR));
-                        setDataTypes(simpleDataTypes,
-                                     simpleDataTypeDisplayNames);
-                        doSetValue(value,
-                                   fireEvents,
-                                   true);
-                        return false;
-                    }
-                },
-                DataTypesService.class).getDataTypeNames(presenter.getDiagramPath());
+
+        clientDataTypesService
+                .call(presenter.getDiagramPath())
+                .then(serverDataTypes -> {
+                    List<List<String>> mergedDataTypes = mergeDataTypes(simpleDataTypes,
+                                                                        simpleDataTypeDisplayNames,
+                                                                        serverDataTypes);
+                    setDataTypes(mergedDataTypes.get(0),
+                                 mergedDataTypes.get(1));
+                    doSetValue(value,
+                               fireEvents,
+                               true);
+                    return null;
+                })
+                .catch_(exception -> {
+                    notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                                                            NotificationEvent.NotificationType.ERROR));
+                    setDataTypes(simpleDataTypes,
+                                 simpleDataTypeDisplayNames);
+                    doSetValue(value,
+                               fireEvents,
+                               true);
+                    return null;
+                });
     }
 
     private List<List<String>> mergeDataTypes(final List<String> simpleDataTypes,

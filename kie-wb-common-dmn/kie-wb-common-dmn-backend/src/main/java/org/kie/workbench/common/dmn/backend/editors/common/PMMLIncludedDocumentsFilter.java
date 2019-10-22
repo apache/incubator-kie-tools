@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
-import org.kie.workbench.common.dmn.backend.common.DMNPathsHelper;
+import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent

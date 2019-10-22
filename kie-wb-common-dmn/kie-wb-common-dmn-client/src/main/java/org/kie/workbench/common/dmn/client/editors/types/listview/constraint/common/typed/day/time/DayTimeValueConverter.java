@@ -78,9 +78,9 @@ public class DayTimeValueConverter {
         final String secondsLabel = pluralize(value.getSeconds(), DayTimeValueConverter_Second, DayTimeValueConverter_Seconds);
 
         return Stream
-                   .of(daysLabel, hoursLabel, minutesLabel, secondsLabel)
-                   .filter(e -> !isEmpty(e))
-                   .collect(Collectors.joining(", "));
+                .of(daysLabel, hoursLabel, minutesLabel, secondsLabel)
+                .filter(e -> !isEmpty(e))
+                .collect(Collectors.joining(", "));
     }
 
     private JavaScriptObject makeProperties(final Integer days,

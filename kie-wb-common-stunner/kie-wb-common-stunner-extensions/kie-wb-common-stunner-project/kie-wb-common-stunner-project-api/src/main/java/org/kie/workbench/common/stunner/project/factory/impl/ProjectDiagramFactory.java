@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.project.factory.impl;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,7 +21,6 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 
@@ -31,7 +29,7 @@ import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
  */
 @ApplicationScoped
 public class ProjectDiagramFactory
-        implements DiagramFactory<ProjectMetadata, ProjectDiagram> {
+        implements DiagramFactory<ProjectMetadata, ProjectDiagramImpl> {
 
     @Override
     public Class<? extends Metadata> getMetadataType() {
@@ -39,9 +37,9 @@ public class ProjectDiagramFactory
     }
 
     @Override
-    public ProjectDiagram build(final String name,
-                                final ProjectMetadata metadata,
-                                final Graph<DefinitionSet, ?> graph) {
+    public ProjectDiagramImpl build(final String name,
+                                    final ProjectMetadata metadata,
+                                    final Graph<DefinitionSet, ?> graph) {
         return new ProjectDiagramImpl(name,
                                       graph,
                                       metadata);

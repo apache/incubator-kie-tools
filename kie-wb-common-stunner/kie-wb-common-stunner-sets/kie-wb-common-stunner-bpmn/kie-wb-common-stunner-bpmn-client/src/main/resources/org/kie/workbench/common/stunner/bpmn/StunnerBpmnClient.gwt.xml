@@ -31,6 +31,7 @@
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.soup.commons.KIESoupCommons"/>
   <inherits name="org.kie.workbench.common.forms.processing.FormProcessingEngine"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoAPI"/>
 
   <source path="client"/>
   <source path="" includes="StunnerBPMNEntryPoint.java"/>

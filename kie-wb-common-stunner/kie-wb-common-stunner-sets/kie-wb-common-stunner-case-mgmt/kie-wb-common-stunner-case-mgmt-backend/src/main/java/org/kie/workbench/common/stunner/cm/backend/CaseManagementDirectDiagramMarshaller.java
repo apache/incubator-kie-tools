@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.bpmn.backend.BaseDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
@@ -41,7 +41,7 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
     public CaseManagementDirectDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
                                                  final DefinitionManager definitionManager,
                                                  final RuleManager ruleManager,
-                                                 final WorkItemDefinitionBackendService workItemDefinitionService,
+                                                 final WorkItemDefinitionLookupService workItemDefinitionService,
                                                  final FactoryManager factoryManager,
                                                  final GraphCommandFactory commandFactory,
                                                  final GraphCommandManager commandManager) {

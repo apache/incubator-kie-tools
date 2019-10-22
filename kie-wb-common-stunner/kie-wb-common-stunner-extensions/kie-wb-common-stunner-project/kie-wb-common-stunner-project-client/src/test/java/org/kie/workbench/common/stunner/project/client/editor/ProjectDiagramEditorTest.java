@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.project.client.editor;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -49,14 +51,17 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -68,12 +73,9 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -84,6 +86,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -94,7 +97,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -152,7 +155,7 @@ public class ProjectDiagramEditorTest {
     private SessionPresenter.View presenterView;
 
     @Mock
-    private AbstractProjectEditorMenuSessionItems sessionItems;
+    private AbstractDiagramEditorMenuSessionItems sessionItems;
 
     @Mock
     private EditorSessionCommands editorSessionCommands;
@@ -167,7 +170,7 @@ public class ProjectDiagramEditorTest {
     private ObservablePath path;
 
     @Mock
-    private ProjectDiagram diagram;
+    private ProjectDiagramImpl diagram;
 
     @Mock
     private Graph graph;
@@ -194,7 +197,10 @@ public class ProjectDiagramEditorTest {
     private EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
 
     @Mock
-    private EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
+    private EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
     private ProjectMessagesListener projectMessagesListener;
@@ -229,7 +235,9 @@ public class ProjectDiagramEditorTest {
     @Mock
     private Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
 
-    private ProjectDiagramEditorStub tested;
+    private ProjectDiagramEditorStub presenter;
+
+    private AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> presenterCore;
 
     @Mock
     private DocumentationView documentationView;
@@ -279,25 +287,25 @@ public class ProjectDiagramEditorTest {
         when(stunnerPreferencesRegistr.get(StunnerPreferences.class)).thenReturn(preferences);
         when(preferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
 
-        this.tested = new ProjectDiagramEditorStub(view,
-                                                   documentationView,
-                                                   placeManager,
-                                                   errorPopupPresenter,
-                                                   changeTitleNotificationEvent,
-                                                   savePopUpPresenter,
-                                                   resourceType,
-                                                   projectDiagramServices,
-                                                   sessionEditorPresenters,
-                                                   sessionViewerPresenters,
-                                                   sessionItems,
-                                                   onDiagramFocusEvent,
-                                                   onDiagramLostFocusEven,
-                                                   projectMessagesListener,
-                                                   diagramClientErrorHandler,
-                                                   translationService,
-                                                   xmlEditorView,
-                                                   projectDiagramResourceServiceCaller
-        ) {
+        this.presenter = new ProjectDiagramEditorStub(view,
+                                                      xmlEditorView,
+                                                      sessionEditorPresenters,
+                                                      sessionViewerPresenters,
+                                                      onDiagramFocusEvent,
+                                                      onDiagramLostFocusEvent,
+                                                      notificationEvent,
+                                                      errorPopupPresenter,
+                                                      diagramClientErrorHandler,
+                                                      documentationView,
+                                                      resourceType,
+                                                      sessionItems,
+                                                      projectMessagesListener,
+                                                      translationService,
+                                                      projectDiagramServices,
+                                                      projectDiagramResourceServiceCaller,
+                                                      placeManager,
+                                                      changeTitleNotificationEvent,
+                                                      savePopUpPresenter) {
             {
                 docks = mock(DefaultEditorDock.class);
                 perspectiveManager = ProjectDiagramEditorTest.this.perspectiveManager;
@@ -306,9 +314,31 @@ public class ProjectDiagramEditorTest {
                 place = placeRequest;
                 kieView = mock(KieEditorWrapperView.class);
             }
+
+            @Override
+            protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> makeCore(final AbstractProjectDiagramEditor.View view,
+                                                                                                                                                                            final TextEditorView xmlEditorView,
+                                                                                                                                                                            final Event<NotificationEvent> notificationEvent,
+                                                                                                                                                                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
+                                                                                                                                                                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
+                                                                                                                                                                            final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
+                                                                                                                                                                            final ErrorPopupPresenter errorPopupPresenter,
+                                                                                                                                                                            final DiagramClientErrorHandler diagramClientErrorHandler,
+                                                                                                                                                                            final ClientTranslationService translationService) {
+                presenterCore = spy(super.makeCore(view,
+                                                   xmlEditorView,
+                                                   notificationEvent,
+                                                   editorSessionPresenterInstances,
+                                                   viewerSessionPresenterInstances,
+                                                   menuSessionItems,
+                                                   errorPopupPresenter,
+                                                   diagramClientErrorHandler,
+                                                   translationService));
+                return presenterCore;
+            }
         };
-        tested.init();
-        tested.setEditorSessionPresenter(sessionEditorPresenter);
+        presenter.init();
+        presenterCore.setEditorSessionPresenter(sessionEditorPresenter);
 
         when(translationService.getValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
@@ -316,8 +346,6 @@ public class ProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testInit() {
-        verify(view,
-               times(1)).init(eq(tested));
         verify(sessionItems,
                times(0)).bind(eq(fullSession));
     }
@@ -325,7 +353,7 @@ public class ProjectDiagramEditorTest {
     // TODO @Test
     @SuppressWarnings("unchecked")
     public void testValidateBeforeSave() {
-        tested.save();
+        presenter.save();
         verify(sessionValidateCommand,
                times(1)).execute(any(ClientSessionCommand.Callback.class));
     }
@@ -333,7 +361,7 @@ public class ProjectDiagramEditorTest {
     // TODO: @Test - versionRecordManager is not being set.
     @SuppressWarnings("unchecked")
     public void testLoadContent() {
-        tested.loadContent();
+        presenter.loadContent();
         verify(projectDiagramServices,
                times(1)).getByPath(eq(path),
                                    any(ServiceCallback.class));
@@ -344,7 +372,7 @@ public class ProjectDiagramEditorTest {
     public void testLoadContentError() {
         ArgumentCaptor<ServiceCallback> callbackArgumentCaptor = forClass(ServiceCallback.class);
 
-        tested.loadContent();
+        presenter.loadContent();
 
         verify(projectDiagramServices,
                times(1)).getByPath(eq(path),
@@ -366,80 +394,30 @@ public class ProjectDiagramEditorTest {
 
     @Test
     public void testIsDirty() {
-        tested.init();
-        tested.open(diagram);
-        assertFalse(tested.isDirty(tested.getCurrentDiagramHash()));
-        tested.setOriginalHash(~~(tested.getCurrentDiagramHash() + 1));
-        assertTrue(tested.isDirty(tested.getCurrentDiagramHash()));
+        presenter.init();
+        presenter.open(diagram);
+        assertFalse(presenter.isDirty(presenter.getCurrentDiagramHash()));
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
+        assertTrue(presenter.isDirty(presenter.getCurrentDiagramHash()));
     }
 
     @Test
     public void testHasChanges() {
-        tested.init();
-        tested.open(diagram);
-        assertFalse(tested.hasUnsavedChanges());
-        tested.setOriginalHash(~~(tested.getCurrentDiagramHash() + 1));
-        assertTrue(tested.hasUnsavedChanges());
-        tested.setOriginalHash(~~(tested.getCurrentDiagramHash()));
-        assertFalse(tested.hasUnsavedChanges());
-    }
-
-    @Test
-    public void testOnPlaceHiddenEvent() {
-        PlaceHiddenEvent event = new PlaceHiddenEvent(placeRequest);
-
-        tested.onHideDocks(event);
-
-        verify(onDiagramLostFocusEven).fire(any(OnDiagramLoseFocusEvent.class));
-    }
-
-    @Test
-    public void testNotValidOnPlaceHiddenEvent() {
-        PlaceRequest anotherRequest = mock(PlaceRequest.class);
-
-        when(anotherRequest.getIdentifier()).thenReturn("");
-
-        PlaceHiddenEvent event = new PlaceHiddenEvent(anotherRequest);
-
-        tested.onHideDocks(event);
-
-        verify(onDiagramLostFocusEven,
-               never()).fire(any(OnDiagramLoseFocusEvent.class));
-    }
-
-    @Test
-    public void testOnPlaceGainFocusEvent() {
-        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
-        when(perspectiveActivity.getIdentifier()).thenReturn("perspectiveId");
-        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
-
-        PlaceGainFocusEvent event = new PlaceGainFocusEvent(placeRequest);
-
-        tested.onShowDiagramEditorDocks(event);
-
-        verify(onDiagramFocusEvent).fire(any(OnDiagramFocusEvent.class));
-    }
-
-    @Test
-    public void testNotValidOnPlaceGainFocusEvent() {
-        PlaceRequest anotherRequest = mock(PlaceRequest.class);
-
-        when(anotherRequest.getIdentifier()).thenReturn("");
-
-        PlaceGainFocusEvent event = new PlaceGainFocusEvent(anotherRequest);
-
-        tested.onShowDiagramEditorDocks(event);
-
-        verify(onDiagramFocusEvent,
-               never()).fire(any(OnDiagramFocusEvent.class));
+        presenter.init();
+        presenter.open(diagram);
+        assertFalse(presenter.hasUnsavedChanges());
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
+        assertTrue(presenter.hasUnsavedChanges());
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash()));
+        assertFalse(presenter.hasUnsavedChanges());
     }
 
     @Test
     public void testOnSaveWithoutChanges() {
-        tested.open(diagram);
+        presenter.open(diagram);
         when(versionRecordManager.isCurrentLatest()).thenReturn(true);
 
-        tested.onSave();
+        presenter.onSave();
 
         verify(presenterView).showMessage(CommonConstants.INSTANCE.NoChangesSinceLastSave());
     }
@@ -447,14 +425,14 @@ public class ProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnSaveWithChanges() {
-        tested.open(diagram);
-        tested.setOriginalHash(diagram.hashCode() + 1);
+        presenter.open(diagram);
+        presenter.setOriginalHash(diagram.hashCode() + 1);
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
             return null;
         }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
 
-        tested.onSave();
+        presenter.onSave();
 
         assertOnSaveSavedDiagram();
     }
@@ -462,13 +440,13 @@ public class ProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnSaveRestore() {
-        tested.open(diagram);
+        presenter.open(diagram);
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
             return null;
         }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
 
-        tested.onSave();
+        presenter.onSave();
 
         assertOnSaveSavedDiagram();
     }
@@ -489,18 +467,18 @@ public class ProjectDiagramEditorTest {
 
     // TODO @Test
     public void testSaveWithCommitMessageOnSuccess() {
-        tested.save(SAVE_MESSAGE);
+        presenter.save(SAVE_MESSAGE);
 
         verify(view).showSaving();
 
         verify(projectDiagramServices).saveOrUpdate(eq(path),
-                                                    any(ProjectDiagram.class),
+                                                    any(ProjectDiagramImpl.class),
                                                     any(Metadata.class),
                                                     eq(SAVE_MESSAGE),
                                                     serviceCallbackCaptor.capture());
 
         final ServiceCallback<ProjectDiagram> serviceCallback = serviceCallbackCaptor.getValue();
-        final ProjectDiagram diagram = mock(ProjectDiagram.class);
+        final ProjectDiagramImpl diagram = mock(ProjectDiagramImpl.class);
         serviceCallback.onSuccess(diagram);
 
         verify(view).hideBusyIndicator();
@@ -510,12 +488,12 @@ public class ProjectDiagramEditorTest {
 
     // TODO @Test
     public void testSaveWithCommitMessageOnError() {
-        tested.save(SAVE_MESSAGE);
+        presenter.save(SAVE_MESSAGE);
 
         verify(view).showSaving();
 
         verify(projectDiagramServices).saveOrUpdate(eq(path),
-                                                    any(ProjectDiagram.class),
+                                                    any(ProjectDiagramImpl.class),
                                                     any(Metadata.class),
                                                     eq(SAVE_MESSAGE),
                                                     serviceCallbackCaptor.capture());
@@ -535,21 +513,21 @@ public class ProjectDiagramEditorTest {
 
     @Test
     public void testShowLoadingViews() {
-        tested.showLoadingViews();
+        presenter.showLoadingViews();
 
         verify(view).showLoading();
     }
 
     @Test
     public void testShowSavingViews() {
-        tested.showSavingViews();
+        presenter.showSavingViews();
 
         verify(view).showSaving();
     }
 
     @Test
     public void testHideLoadingViews() {
-        tested.hideLoadingViews();
+        presenter.hideLoadingViews();
 
         verify(view).hideBusyIndicator();
     }

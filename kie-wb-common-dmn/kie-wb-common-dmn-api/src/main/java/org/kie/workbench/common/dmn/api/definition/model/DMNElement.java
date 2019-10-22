@@ -77,13 +77,12 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
         this.extensionElements = extensionElements;
     }
 
-    //TODO {manstis} The DMN model uses Object not String
     @Portable
     public static class ExtensionElements extends DMNModelInstrumentedBase {
 
-        protected List<String> any;
+        protected List<Object> any;
 
-        public List<String> getAny() {
+        public List<Object> getAny() {
             if (any == null) {
                 any = new ArrayList<>();
             }

@@ -22,9 +22,9 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.project.client.docks.screens.PreviewDiagramScreen;
+import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramScreen;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.stunner.project.client.docks.StunnerDockSupplier;
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramPropertiesScreen;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -46,7 +46,7 @@ public class DMNDockSupplierImpl implements StunnerDockSupplier {
 
         result.add(new UberfireDock(UberfireDockPosition.EAST,
                                     PROPERTIES_DOCK_ICON,
-                                    new DefaultPlaceRequest(ProjectDiagramPropertiesScreen.SCREEN_ID),
+                                    new DefaultPlaceRequest(DiagramEditorPropertiesScreen.SCREEN_ID),
                                     perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle()));
         result.add(new UberfireDock(UberfireDockPosition.EAST,
                                     PREVIEW_DOCK_ICON,

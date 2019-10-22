@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -47,12 +46,11 @@ public class BPMNDiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph, Metadata> doBuild(final String name,
-                                            final Metadata metadata,
-                                            final Graph<DefinitionSet, ?> graph) {
-        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl(name,
-                                                                        metadata);
-        result.setGraph(graph);
-        return result;
+    protected Diagram doBuild(final String name,
+                              final Metadata metadata,
+                              final Graph<DefinitionSet, ?> graph) {
+        return new DiagramImpl(name,
+                               graph,
+                               metadata);
     }
 }

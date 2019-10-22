@@ -70,7 +70,8 @@ public class ProjectDiagramLookupServiceImpl
     }
 
     @Override
-    protected boolean matches(String criteria, ProjectDiagram item) {
+    protected boolean matches(final String criteria,
+                              final ProjectDiagram item) {
         return true;
     }
 }

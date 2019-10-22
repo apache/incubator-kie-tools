@@ -167,6 +167,13 @@
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
+    <!-- Kogito -->
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
+    </dependency>
+
     <!-- Testing -->
 
     <dependency>

@@ -19,33 +19,35 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
-
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
-  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
-  <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
-  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
-  <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore" />
-  <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
-  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
-
-  <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
+  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
 
-  <!-- Stunner.-->
+  <!-- Errai, Drools etc -->
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
+  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
+  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
+
+  <!-- Stunner -->
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
-  <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementClient"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
-  <!-- Form modeler.-->
+  <!-- Form modeler -->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+
+  <!-- BPMN -->
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
+
 
   <extend-property name="locale" values="es"/>
   <extend-property name="locale" values="fr"/>
@@ -53,8 +55,6 @@
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
   <extend-property name="locale" values="de"/>
-  <extend-property name="locale" values="zh_TW"/>
-  <extend-property name="locale" values="ru"/>
 
   <!-- We don't need to support IE10 or older -->
   <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
@@ -66,6 +66,6 @@
   <set-property name="gwt.logging.enabled" value="TRUE"/>
 
   <!-- Specify the paths for translatable code -->
-  <source path='client'/>
+  <source path="client"/>
 
 </module>

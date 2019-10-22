@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
-import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElem
 public class BPMNDiagramFilterProvider implements StunnerFormElementFilterProvider {
 
     private final SessionManager sessionManager;
-    private final DiagramTypeService diagramTypeService;
+    private final DiagramTypeClientService diagramTypeService;
     private final FieldChangeHandlerManager fieldChangeHandlerManager;
     private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
@@ -52,7 +52,7 @@ public class BPMNDiagramFilterProvider implements StunnerFormElementFilterProvid
 
     @Inject
     public BPMNDiagramFilterProvider(final SessionManager sessionManager,
-                                     final DiagramTypeService diagramTypeService,
+                                     final DiagramTypeClientService diagramTypeService,
                                      final FieldChangeHandlerManager fieldChangeHandlerManager,
                                      final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent) {
         this.sessionManager = sessionManager;

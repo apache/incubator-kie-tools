@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 public class GenericServiceTaskValue {
 
-    private static final String JAVA = "Java"; // Default value
+    public static final String JAVA = "Java"; // Default value
 
     private String serviceImplementation = JAVA;
 
@@ -35,16 +35,24 @@ public class GenericServiceTaskValue {
 
     private String serviceOperation = "";
 
+    private String inMessageStructure = "";
+
+    private String outMessagetructure = "";
+
     public GenericServiceTaskValue() {
 
     }
 
     public GenericServiceTaskValue(@MapsTo("serviceImplementation") final String serviceImplementation,
                                    @MapsTo("serviceInterface") final String serviceInterface,
-                                   @MapsTo("serviceOperation") final String serviceOperation) {
+                                   @MapsTo("serviceOperation") final String serviceOperation,
+                                   @MapsTo("inMessageStructure") final String inMessageStructure,
+                                   @MapsTo("outMessagetructure") final String outMessagetructure) {
         this.serviceImplementation = serviceImplementation;
         this.serviceInterface = serviceInterface;
         this.serviceOperation = serviceOperation;
+        this.inMessageStructure = inMessageStructure;
+        this.outMessagetructure = outMessagetructure;
     }
 
     public String getServiceImplementation() {
@@ -71,20 +79,41 @@ public class GenericServiceTaskValue {
         this.serviceOperation = serviceOperation;
     }
 
+    public String getInMessageStructure() {
+        return inMessageStructure;
+    }
+
+    public void setInMessageStructure(String inMessageStructure) {
+        this.inMessageStructure = inMessageStructure;
+    }
+
+    public String getOutMessagetructure() {
+        return outMessagetructure;
+    }
+
+    public void setOutMessagetructure(String outMessagetructure) {
+        this.outMessagetructure = outMessagetructure;
+    }
+
     @Override
     public String toString() {
-        return "GenericServiceTaskValue{" +
-                "serviceImplementation='" + serviceImplementation + '\'' +
-                ", serviceInterface='" + serviceInterface + '\'' +
-                ", serviceOperation='" + serviceOperation + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("GenericServiceTaskValue{");
+        sb.append("serviceImplementation='").append(serviceImplementation).append('\'');
+        sb.append(", serviceInterface='").append(serviceInterface).append('\'');
+        sb.append(", serviceOperation='").append(serviceOperation).append('\'');
+        sb.append(", inMessageStructure='").append(inMessageStructure).append('\'');
+        sb.append(", outMessagetructure='").append(outMessagetructure).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(serviceImplementation),
                                          Objects.hashCode(serviceInterface),
-                                         Objects.hashCode(serviceOperation));
+                                         Objects.hashCode(serviceOperation),
+                                         Objects.hashCode(inMessageStructure),
+                                         Objects.hashCode(outMessagetructure));
     }
 
     @Override
@@ -93,7 +122,9 @@ public class GenericServiceTaskValue {
             GenericServiceTaskValue other = (GenericServiceTaskValue) o;
             return Objects.equals(serviceImplementation, other.serviceImplementation) &&
                     Objects.equals(serviceInterface, other.serviceInterface) &&
-                    Objects.equals(serviceOperation, other.serviceOperation);
+                    Objects.equals(serviceOperation, other.serviceOperation) &&
+                    Objects.equals(inMessageStructure, other.inMessageStructure) &&
+                    Objects.equals(outMessagetructure, other.outMessagetructure);
         }
         return false;
     }

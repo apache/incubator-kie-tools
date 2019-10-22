@@ -364,7 +364,7 @@ public class TimeSelectorView implements TimeSelector.View {
     public boolean isChildOfView(final Object element) {
 
         final Element viewElement = getElement();
-        return viewElement.contains((Element)element);
+        return viewElement.contains((Element) element);
     }
 
     @Override

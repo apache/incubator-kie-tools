@@ -22,6 +22,8 @@
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectAPI"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoAPI"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
   <inherits name="org.uberfire.UberfireDocksClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>

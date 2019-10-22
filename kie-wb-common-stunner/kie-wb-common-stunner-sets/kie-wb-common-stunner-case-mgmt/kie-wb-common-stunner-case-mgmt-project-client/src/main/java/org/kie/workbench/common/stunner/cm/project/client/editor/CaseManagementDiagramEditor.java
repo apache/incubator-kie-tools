@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.cm.project.client.editor;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -42,15 +42,14 @@ import org.kie.workbench.common.stunner.cm.project.service.CaseManagementSwitchV
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
@@ -61,10 +60,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -73,6 +69,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -80,58 +77,51 @@ import org.uberfire.workbench.model.menu.Menus;
 @WorkbenchEditor(identifier = CaseManagementDiagramEditor.EDITOR_ID, supportedTypes = {CaseManagementDiagramResourceType.class})
 public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<CaseManagementDiagramResourceType> {
 
-    private static final Logger LOGGER = Logger.getLogger(CaseManagementDiagramEditor.class.getName());
-
     public static final String EDITOR_ID = "CaseManagementDiagramEditor";
 
-    private Caller<CaseManagementSwitchViewService> caseManagementSwitchViewService;
-
+    private final Caller<CaseManagementSwitchViewService> caseManagementSwitchViewService;
+    private final SwitchViewControl switchViewControl;
     private AtomicBoolean switchedToProcess;
-
-    private SwitchViewControl switchViewControl;
+    private OptionalInt switchSessionHash;
 
     @Inject
-    public CaseManagementDiagramEditor(final View view,
-                                       final DocumentationView documentationView,
-                                       final PlaceManager placeManager,
-                                       final ErrorPopupPresenter errorPopupPresenter,
-                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                       final SavePopUpPresenter savePopUpPresenter,
-                                       final CaseManagementDiagramResourceType resourceType,
-                                       final ClientProjectDiagramService projectDiagramServices,
+    public CaseManagementDiagramEditor(final AbstractProjectDiagramEditor.View view,
+                                       final TextEditorView xmlEditorView,
                                        final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                        final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                       final CaseManagementProjectEditorMenuSessionItems menuSessionItems,
                                        final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                        final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                                       final ProjectMessagesListener projectMessagesListener,
+                                       final Event<NotificationEvent> notificationEvent,
+                                       final ErrorPopupPresenter errorPopupPresenter,
                                        final DiagramClientErrorHandler diagramClientErrorHandler,
+                                       final DocumentationView documentationView,
+                                       final CaseManagementDiagramResourceType resourceType,
+                                       final CaseManagementProjectEditorMenuSessionItems menuSessionItems,
+                                       final ProjectMessagesListener projectMessagesListener,
                                        final ClientTranslationService translationService,
-                                       final TextEditorView xmlEditorView,
+                                       final ClientProjectDiagramService projectDiagramServices,
                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                                        final Caller<CaseManagementSwitchViewService> caseManagementSwitchViewService) {
         super(view,
-              documentationView,
-              placeManager,
-              errorPopupPresenter,
-              changeTitleNotificationEvent,
-              savePopUpPresenter,
-              resourceType,
-              projectDiagramServices,
+              xmlEditorView,
               editorSessionPresenterInstances,
               viewerSessionPresenterInstances,
-              menuSessionItems,
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
-              projectMessagesListener,
+              notificationEvent,
+              errorPopupPresenter,
               diagramClientErrorHandler,
+              documentationView,
+              resourceType,
+              menuSessionItems,
+              projectMessagesListener,
               translationService,
-              xmlEditorView,
+              projectDiagramServices,
               projectDiagramResourceServiceCaller);
-
         this.caseManagementSwitchViewService = caseManagementSwitchViewService;
         this.switchedToProcess = new AtomicBoolean();
         this.switchViewControl = initSwitchViewControl();
+        this.switchSessionHash = OptionalInt.empty();
     }
 
     private SwitchViewControl initSwitchViewControl() {
@@ -163,8 +153,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @Override
     public void init() {
         super.init();
-
-        this.addTabBarWidget(switchViewControl);
+        addTabBarWidget(switchViewControl);
     }
 
     private void updateSessionEditorPresenter(final String defSetId, final String shapeSetId) {
@@ -183,7 +172,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     }
 
     @Override
-    protected String getEditorIdentifier() {
+    public String getEditorIdentifier() {
         return CaseManagementDiagramEditor.EDITOR_ID;
     }
 
@@ -196,7 +185,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @Override
     public void onClose() {
         super.doClose();
-        super.onClose();
     }
 
     @OnFocus
@@ -235,7 +223,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     }
 
     @Override
-    protected SessionEditorPresenter<EditorSession> newSessionEditorPresenter() {
+    public SessionEditorPresenter<EditorSession> newSessionEditorPresenter() {
         return (SessionEditorPresenter<EditorSession>) super.newSessionEditorPresenter()
                 .displayNotifications(type -> false);
     }
@@ -248,35 +236,17 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     }
 
     void reopenSession(final ProjectDiagram diagram) {
-        final Integer originalHash = this.originalHash;
-        final boolean unsaved = this.hasUnsavedChanges();
+        switchSessionHash = hasUnsavedChanges() ? OptionalInt.of(originalHash) : OptionalInt.empty();
+        getMenuSessionItems().getCommands().getCommands().clearCommands();
+        destroySession();
+        open(diagram);
+    }
 
-        this.getMenuSessionItems().getCommands().getCommands().clearCommands();
-        this.destroySession();
-
-        this.open(diagram, Optional.of(new SessionPresenter.SessionPresenterCallback<Diagram>() {
-            @Override
-            public void afterSessionOpened() {
-
-            }
-
-            @Override
-            public void afterCanvasInitialized() {
-
-            }
-
-            @Override
-            public void onSuccess() {
-                if (unsaved) {
-                    CaseManagementDiagramEditor.this.setOriginalHash(originalHash);
-                }
-            }
-
-            @Override
-            public void onError(ClientRuntimeError error) {
-
-            }
-        }));
+    @Override
+    public void initialiseKieEditorForSession(ProjectDiagram diagram) {
+        super.initialiseKieEditorForSession(diagram);
+        switchSessionHash.ifPresent(CaseManagementDiagramEditor.this::setOriginalHash);
+        switchSessionHash = OptionalInt.empty();
     }
 
     protected void onSwitch(final Diagram diagram, final String defSetId, final String shapeDefId) {

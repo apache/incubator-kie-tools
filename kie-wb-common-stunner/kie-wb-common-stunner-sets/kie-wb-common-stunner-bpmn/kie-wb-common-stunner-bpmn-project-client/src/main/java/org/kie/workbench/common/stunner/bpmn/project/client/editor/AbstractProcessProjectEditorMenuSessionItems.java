@@ -31,15 +31,15 @@ import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorMenuItemsBuilder;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-public abstract class AbstractProcessProjectEditorMenuSessionItems<B extends AbstractProjectDiagramEditorMenuItemsBuilder>
-        extends AbstractProjectEditorMenuSessionItems<B> {
+public abstract class AbstractProcessProjectEditorMenuSessionItems<B extends AbstractDiagramEditorMenuItemsBuilder>
+        extends AbstractDiagramEditorMenuSessionItems<B> {
 
     MenuItem formsItem;
 

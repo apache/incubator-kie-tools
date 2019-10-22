@@ -23,10 +23,18 @@ public final class RefreshFormPropertiesEvent implements UberFireEvent {
     private final ClientSession session;
     private final String uuid;
 
+    public RefreshFormPropertiesEvent(final ClientSession session) {
+        this(session, null);
+    }
+
     public RefreshFormPropertiesEvent(final ClientSession session,
                                       final String uuid) {
         this.session = session;
         this.uuid = uuid;
+    }
+
+    public boolean hasUuid() {
+        return null != uuid;
     }
 
     public String getUuid() {

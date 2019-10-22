@@ -63,8 +63,8 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
             type = ComboBoxFieldType.class
     )
     @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.RuleFlowGroupFormProvider")
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.RuleFlowGroupFormProvider")
     @Valid
     protected RuleFlowGroup ruleFlowGroup;
 

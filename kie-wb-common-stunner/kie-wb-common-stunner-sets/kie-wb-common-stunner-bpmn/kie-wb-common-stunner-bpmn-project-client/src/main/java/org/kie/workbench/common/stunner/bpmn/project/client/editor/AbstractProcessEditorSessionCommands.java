@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.BPMNFormsContextUtils;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateDiagramFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateProcessFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateSelectedFormsSessionCommand;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 
 public abstract class AbstractProcessEditorSessionCommands extends EditorSessionCommands {
 
@@ -31,8 +31,8 @@ public abstract class AbstractProcessEditorSessionCommands extends EditorSession
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void registerCommands() {
+        super.registerCommands();
         getCommands()
                 .register(GenerateProcessFormsSessionCommand.class)
                 .register(GenerateDiagramFormsSessionCommand.class)
@@ -43,19 +43,19 @@ public abstract class AbstractProcessEditorSessionCommands extends EditorSession
     public EditorSessionCommands bind(final ClientSession session) {
         super.bind(session);
         getGenerateSelectedFormsSessionCommand()
-                .setElementAcceptor(ContextUtils::isFormGenerationSupported);
+                .setElementAcceptor(BPMNFormsContextUtils::isFormGenerationSupported);
         return this;
     }
 
     public GenerateProcessFormsSessionCommand getGenerateProcessFormsSessionCommand() {
-        return get(16);
+        return get(GenerateProcessFormsSessionCommand.class);
     }
 
     public GenerateDiagramFormsSessionCommand getGenerateDiagramFormsSessionCommand() {
-        return get(17);
+        return get(GenerateDiagramFormsSessionCommand.class);
     }
 
     public GenerateSelectedFormsSessionCommand getGenerateSelectedFormsSessionCommand() {
-        return get(18);
+        return get(GenerateSelectedFormsSessionCommand.class);
     }
 }

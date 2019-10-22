@@ -34,8 +34,8 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
-import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
-import org.kie.workbench.common.dmn.backend.common.DMNPathsHelper;
+import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandalone;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.ImportedItemDefinitionConverter;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.common.IncludedModelFactory;
@@ -56,14 +56,14 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
 
     private final PMMLIncludedDocumentsFilter includedDocumentsFilter;
 
-    private final DMNMarshallerImportsHelper importsHelper;
+    private final DMNMarshallerImportsHelperStandalone importsHelper;
 
     @Inject
     public DMNIncludedModelsServiceImpl(final DMNPathsHelper pathsHelper,
                                         final IncludedModelFactory includedModelFactory,
                                         final DMNIncludedNodesFilter includedNodesFilter,
                                         final PMMLIncludedDocumentsFilter includedDocumentsFilter,
-                                        final DMNMarshallerImportsHelper importsHelper) {
+                                        final DMNMarshallerImportsHelperStandalone importsHelper) {
         this.pathsHelper = pathsHelper;
         this.includedModelFactory = includedModelFactory;
         this.includedNodesFilter = includedNodesFilter;

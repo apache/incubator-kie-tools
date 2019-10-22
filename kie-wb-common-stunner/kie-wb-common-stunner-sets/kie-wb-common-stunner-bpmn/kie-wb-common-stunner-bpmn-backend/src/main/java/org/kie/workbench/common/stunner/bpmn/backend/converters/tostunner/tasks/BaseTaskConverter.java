@@ -317,9 +317,11 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 .orElseGet(() -> noneTask(task));
     }
 
-    private BpmnNode serviceTaskResolver(org.eclipse.bpmn2.Task task) {
-        if (StringUtils.nonEmpty(CustomAttribute.serviceImplementation.of(task).get())) {
-            return bpmnServiceTask((org.eclipse.bpmn2.ServiceTask) task);
+    private BpmnNode serviceTaskResolver(final Task task) {
+        org.eclipse.bpmn2.ServiceTask serviceTask = (org.eclipse.bpmn2.ServiceTask) task;
+        if (StringUtils.nonEmpty(CustomAttribute.serviceImplementation.of(task).get())
+                || StringUtils.nonEmpty(serviceTask.getImplementation())) {
+            return bpmnServiceTask(serviceTask);
         } else {
             return jbpmServiceTask(task);
         }

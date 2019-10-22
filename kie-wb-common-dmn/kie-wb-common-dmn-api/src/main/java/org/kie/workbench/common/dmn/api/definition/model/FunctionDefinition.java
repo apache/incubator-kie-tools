@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -148,22 +149,34 @@ public class FunctionDefinition extends Expression implements HasExpression {
 
     @Portable
     public enum Kind {
-        FEEL("F"),
-        JAVA("J"),
-        PMML("P");
+        FEEL("F", "FEEL"),
+        JAVA("J", "Java"),
+        PMML("P", "PMML");
 
         private final String code;
+        private final String value;
 
-        Kind(final String code) {
+        Kind(final String code,
+             final String value) {
             this.code = code;
+            this.value = value;
         }
 
         public String code() {
             return code;
         }
 
+        public static Kind fromValue(final String value) {
+            for (Kind kind : Kind.values()) {
+                if (Objects.equals(kind.value, value)) {
+                    return kind;
+                }
+            }
+            throw new IllegalArgumentException("FunctionKind [" + value + "] is not supported.");
+        }
+
         public static FunctionDefinition.Kind determineFromString(final String code) {
-            return code == null ? null : (FEEL.code.equals(code) ? FEEL : (JAVA.code.equals(code) ? JAVA : (PMML.code.equals(code) ? PMML : null)));
+            return code == null ? null : Objects.equals(FEEL.code, code) ? FEEL : (Objects.equals(JAVA.code, code) ? JAVA : (Objects.equals(PMML.code, code) ? PMML : null));
         }
     }
 }

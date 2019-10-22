@@ -20,17 +20,20 @@ import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import elemental2.dom.HTMLElement;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
-import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
@@ -44,16 +47,26 @@ import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.session.impl.DefaultEditorSession;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorCore;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorProxy;
+import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
@@ -62,8 +75,10 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -104,7 +119,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private DMNEditorSession dmnEditorSession;
 
     @Mock
-    private DefaultEditorSession defaultEditorSession;
+    private DMNEditorSession defaultEditorSession;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -122,7 +137,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private EditExpressionEvent editExpressionEvent;
 
     @Mock
-    private DMNProjectEditorMenuSessionItems dmnProjectMenuSessionItems;
+    private DMNEditorMenuSessionItems dmnProjectMenuSessionItems;
 
     @Mock
     private LayoutHelper layoutHelper;
@@ -173,9 +188,11 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Override
     public void setUp() {
         super.setUp();
-
+        when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
         when(sessionEditorPresenter.getInstance()).thenReturn(dmnEditorSession);
         when(dmnEditorSession.getExpressionEditor()).thenReturn(expressionEditor);
+        when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
         when(searchBarComponentView.getElement()).thenReturn(searchBarComponentViewElement);
     }
@@ -192,30 +209,28 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Override
     protected AbstractProjectDiagramEditor createDiagramEditor() {
         diagramEditor = spy(new DMNDiagramEditor(view,
-                                                 documentationView,
-                                                 placeManager,
-                                                 errorPopupPresenter,
-                                                 changeTitleNotificationEvent,
-                                                 savePopUpPresenter,
-                                                 (DMNDiagramResourceType) getResourceType(),
-                                                 clientProjectDiagramService,
+                                                 xmlEditorView,
                                                  sessionEditorPresenters,
                                                  sessionViewerPresenters,
-                                                 (DMNProjectEditorMenuSessionItems) getMenuSessionItems(),
                                                  onDiagramFocusEvent,
                                                  onDiagramLostFocusEvent,
-                                                 refreshFormPropertiesEvent,
-                                                 projectMessagesListener,
+                                                 notificationEvent,
+                                                 errorPopupPresenter,
                                                  diagramClientErrorHandler,
+                                                 documentationView,
+                                                 (DMNDiagramResourceType) getResourceType(),
+                                                 (DMNEditorMenuSessionItems) getMenuSessionItems(),
+                                                 projectMessagesListener,
                                                  translationService,
-                                                 xmlEditorView,
+                                                 clientProjectDiagramService,
                                                  projectDiagramResourceServiceCaller,
                                                  sessionManager,
                                                  sessionCommandManager,
+                                                 refreshFormPropertiesEvent,
                                                  decisionNavigatorDock,
                                                  layoutHelper,
-                                                 dataTypesPage,
                                                  layoutExecutor,
+                                                 dataTypesPage,
                                                  includedModelsPage,
                                                  importsPageProvider,
                                                  editorSearchIndex,
@@ -230,17 +245,50 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                 alertsButtonMenuItemBuilder = DMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 kieView = DMNDiagramEditorTest.this.kieView;
                 overviewWidget = DMNDiagramEditorTest.this.overviewWidget;
-                notification = DMNDiagramEditorTest.this.notification;
+                notification = DMNDiagramEditorTest.this.notificationEvent;
+                placeManager = DMNDiagramEditorTest.this.placeManager;
+                changeTitleNotification = DMNDiagramEditorTest.this.changeTitleNotificationEvent;
+                savePopUpPresenter = DMNDiagramEditorTest.this.savePopUpPresenter;
+            }
+
+            @Override
+            protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> makeCore(final AbstractProjectDiagramEditor.View view,
+                                                                                                                                                                            final TextEditorView xmlEditorView,
+                                                                                                                                                                            final Event<NotificationEvent> notificationEvent,
+                                                                                                                                                                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
+                                                                                                                                                                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
+                                                                                                                                                                            final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
+                                                                                                                                                                            final ErrorPopupPresenter errorPopupPresenter,
+                                                                                                                                                                            final DiagramClientErrorHandler diagramClientErrorHandler,
+                                                                                                                                                                            final ClientTranslationService translationService) {
+                presenterCore = spy(super.makeCore(view,
+                                                   xmlEditorView,
+                                                   notificationEvent,
+                                                   editorSessionPresenterInstances,
+                                                   viewerSessionPresenterInstances,
+                                                   menuSessionItems,
+                                                   errorPopupPresenter,
+                                                   diagramClientErrorHandler,
+                                                   translationService));
+                return presenterCore;
+            }
+
+            @Override
+            protected boolean isReadOnly() {
+                return DMNDiagramEditorTest.this.isReadOnly;
+            }
+
+            @Override
+            ElementWrapperWidget<?> getWidget(final HTMLElement element) {
+                return searchBarComponentWidget;
             }
         });
-
-        doReturn(searchBarComponentWidget).when(diagramEditor).getWidget(searchBarComponentViewElement);
 
         return diagramEditor;
     }
 
     @Override
-    protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
+    protected AbstractDiagramEditorMenuSessionItems getMenuSessionItems() {
         return dmnProjectMenuSessionItems;
     }
 
@@ -331,7 +379,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         final InOrder inOrder = inOrder(decisionNavigatorDock);
         inOrder.verify(decisionNavigatorDock).setupCanvasHandler(eq(canvasHandler));
 
-        verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
+        verify(expressionEditor).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
         verify(dataTypesPage).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
         verify(includedModelsPage).setup(importsPageProvider);
@@ -342,7 +390,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
         diagramEditor.onDiagramLoad();
 
-        verify(expressionEditor, never()).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
+        verify(expressionEditor, never()).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock, never()).setupCanvasHandler(any());
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
@@ -385,7 +433,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnDataTypePageNavTabActiveEvent() {
-
         diagramEditor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
         verify(multiPage).selectPage(3);
@@ -393,7 +440,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnDataTypeEditModeToggleWhenEditModeIsEnabled() {
-
         final DataTypeEditModeToggleEvent editModeToggleEvent = mock(DataTypeEditModeToggleEvent.class);
 
         doNothing().when(diagramEditor).disableMenuItem(any());
@@ -406,7 +452,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnDataTypeEditModeToggleWhenEditModeIsNotEnabled() {
-
         final DataTypeEditModeToggleEvent editModeToggleEvent = mock(DataTypeEditModeToggleEvent.class);
 
         doNothing().when(diagramEditor).enableMenuItem(any());
@@ -451,7 +496,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         openInvalidBPMNFile(xml);
 
         final ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
-        verify(notification).fire(notificationEventCaptor.capture());
+        verify(notificationEvent).fire(notificationEventCaptor.capture());
 
         final NotificationEvent notificationEvent = notificationEventCaptor.getValue();
         assertEquals(DMNProjectClientConstants.DMNDiagramParsingErrorMessage,
@@ -473,6 +518,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(sessionPresenter.getInstance()).thenReturn(dmnEditorSession);
         when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
 
+        open();
+
         diagramEditor.onMultiPageEditorSelectedPageEvent(mock(MultiPageEditorSelectedPageEvent.class));
 
         verify(searchBarComponent).disableSearch();
@@ -486,6 +533,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         doReturn(sessionPresenter).when(diagramEditor).getSessionPresenter();
         when(sessionPresenter.getInstance()).thenReturn(dmnEditorSession);
         when(sessionManager.getCurrentSession()).thenReturn(defaultEditorSession);
+        when(defaultEditorSession.getExpressionEditor()).thenReturn(expressionEditor);
+
+        open();
 
         diagramEditor.onMultiPageEditorSelectedPageEvent(mock(MultiPageEditorSelectedPageEvent.class));
 

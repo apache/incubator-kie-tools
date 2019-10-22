@@ -26,17 +26,14 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
-import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource.Type;
+import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.RenameService;
-
-import static org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource.Type.PROJECT_DIAGRAM;
-import static org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource.Type.XML_DIAGRAM;
 
 @Service
 @ApplicationScoped
@@ -72,11 +69,11 @@ public class ProjectDiagramResourceServiceImpl implements ProjectDiagramResource
                      final Metadata metadata,
                      final String comment) {
 
-        final Type type = resource.getType();
-        final Map<Type, Function<ProjectDiagramResource, Path>> saveOperations = new HashMap<>();
+        final DiagramType type = resource.getType();
+        final Map<DiagramType, Function<ProjectDiagramResource, Path>> saveOperations = new HashMap<>();
 
-        saveOperations.put(PROJECT_DIAGRAM, (r) -> projectDiagramService.save(path, getProjectDiagram(r), metadata, comment));
-        saveOperations.put(XML_DIAGRAM, (r) -> projectDiagramService.saveAsXml(path, getXmlDiagram(r), metadata, comment));
+        saveOperations.put(DiagramType.PROJECT_DIAGRAM, (r) -> projectDiagramService.save(path, getProjectDiagram(r), metadata, comment));
+        saveOperations.put(DiagramType.XML_DIAGRAM, (r) -> projectDiagramService.saveAsXml(path, getXmlDiagram(r), metadata, comment));
 
         return saveOperations.get(type).apply(resource);
     }

@@ -29,6 +29,7 @@
     <module>kie-wb-common-cli</module>
     <module>kie-wb-common-dev</module>
     <module>kie-wb-common-command-api</module>
+    <module>kie-wb-common-kogito</module>
   </modules>
 
   <properties>

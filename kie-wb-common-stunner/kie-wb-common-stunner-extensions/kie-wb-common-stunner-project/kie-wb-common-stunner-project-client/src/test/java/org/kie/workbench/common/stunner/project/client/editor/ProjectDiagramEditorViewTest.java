@@ -19,15 +19,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -38,26 +37,26 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 @RunWith(GwtMockitoTestRunner.class)
 public class ProjectDiagramEditorViewTest {
 
-    private static final int WIDTH = 10;
+    private Element element;
 
-    private static final int HEIGHT = 20;
+    private Element parentElement;
 
-    private SimplePanel parent;
+    private Style parentElementStyle;
+
     private ResizeFlowPanel editorPanel;
+
     private ProjectDiagramEditorView tested;
 
     @Before
-    public void setup() throws Exception {
-        this.parent = GWT.create(SimplePanel.class);
+    public void setup() {
+        this.element = GWT.create(Element.class);
+        this.parentElement = GWT.create(Element.class);
+        this.parentElementStyle = GWT.create(Style.class);
         this.editorPanel = GWT.create(ResizeFlowPanel.class);
-        this.tested = spy(new ProjectDiagramEditorView(editorPanel));
-        when(tested.getParent()).thenReturn(parent);
-        when(parent.getOffsetWidth()).thenReturn(WIDTH);
-        when(parent.getOffsetHeight()).thenReturn(HEIGHT);
-
-        doCallRealMethod().when(tested).onAttach();
-
-        parent.setWidget(tested);
+        this.tested = Mockito.spy(new ProjectDiagramEditorView(editorPanel));
+        when(tested.getElement()).thenReturn(element);
+        when(element.getParentElement()).thenReturn(parentElement);
+        when(parentElement.getStyle()).thenReturn(parentElementStyle);
     }
 
     @Test
@@ -70,8 +69,7 @@ public class ProjectDiagramEditorViewTest {
     }
 
     @Test
-    public void testOnResizeWithEditor() {
-        //Any Widget implementing RequiresResize will suffice
+    public void testOnResize() {
         tested.onResize();
         verify(editorPanel).onResize();
     }
@@ -84,14 +82,14 @@ public class ProjectDiagramEditorViewTest {
 
     public void testOnAttach(boolean parentExists) {
         tested = spy(new ProjectDiagramEditorView(editorPanel));
-        Element elm = mock(Element.class);
-        Element parentElement = mock(Element.class);
-        Style style = mock(Style.class);
+        final Element element = mock(Element.class);
+        final Element parentElement = mock(Element.class);
+        final Style style = mock(Style.class);
 
-        when(tested.getElement()).thenReturn(elm);
+        when(tested.getElement()).thenReturn(element);
         when(parentElement.getStyle()).thenReturn(style);
-        when(elm.getStyle()).thenReturn(style);
-        when(elm.getParentElement()).thenReturn(parentExists ? parentElement : null);
+        when(element.getStyle()).thenReturn(style);
+        when(element.getParentElement()).thenReturn(parentExists ? parentElement : null);
 
         tested.onAttach();
         verify(tested).onAttach();

@@ -19,9 +19,8 @@ package org.kie.workbench.common.stunner.cm.client.forms.fields.conditionEditor;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionEditorMetadataService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.VariableSearchService;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -36,8 +35,9 @@ public class CaseManagementVariableSearchService
         extends VariableSearchService {
 
     @Inject
-    public CaseManagementVariableSearchService(Caller<ConditionEditorService> service, ClientTranslationService translationService) {
-        super(service, translationService);
+    public CaseManagementVariableSearchService(final ConditionEditorMetadataService metadataService,
+                                               final ClientTranslationService translationService) {
+        super(metadataService, translationService);
     }
 
     @Override

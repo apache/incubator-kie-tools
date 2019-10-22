@@ -47,10 +47,9 @@ public class ReusableSubprocessTaskExecutionSet extends BaseSubprocessTaskExecut
 
     @Property
     @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider")
-    @FormField(type = ComboBoxFieldType.class
-    )
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.CalledElementFormProvider")
+    @FormField(type = ComboBoxFieldType.class)
     @Valid
     protected CalledElement calledElement;
 

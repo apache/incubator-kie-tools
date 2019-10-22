@@ -13,10 +13,6 @@
 # Repository wide ignore mac DS_Store files
 .DS_Store
 
-#Ignore DMN's kogito related work on branch DROOLS-3727
-#Added to simplify switching branches and avoid accidentially committing unrelated work! 
-/kie-wb-common-dmn-webapp-kogito-marshaller
-/kie-wb-common-dmn-webapp-kogito-runtime
-/kie-wb-common-dmn-webapp-kogito-testing
-/kie-wb-common-dmn-webapp-standalone
+#This is on master. Ignore to make switching branches easier
+/kie-wb-common-dmn-webapp
 

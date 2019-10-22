@@ -34,14 +34,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.jboss.errai.bus.client.api.BusErrorCallback;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.marshalling.client.Marshalling;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.DataTypeNamesService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentParser;
@@ -52,7 +49,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -87,6 +83,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     private TextBox assignmentsTextBox;
     @Inject
     private GraphUtils graphUtils;
+    @Inject
+    private DataTypeNamesService clientDataTypesService;
     private BPMNDefinition bpmnModel;
 
     AssignmentsEditorWidget(final BPMNDefinition bpmnModel,
@@ -185,26 +183,21 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected void getDataTypes() {
-
         final String simpleDataTypes = "Boolean:Boolean,Float:Float,Integer:Integer,Object:Object,String:String";
-        MessageBuilder.createCall(
-                new RemoteCallback<List<String>>() {
-                    public void callback(List<String> dataTypes) {
-                        String formattedDataTypes = formatDataTypes(dataTypes);
-                        String allDataTypes = simpleDataTypes + "," + formattedDataTypes;
-                        showDataIOEditor(allDataTypes.toString());
-                    }
-                },
-                new BusErrorCallback() {
-                    public boolean error(Message message,
-                                         Throwable t) {
-                        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
-                                                                NotificationEvent.NotificationType.ERROR));
-                        showDataIOEditor(simpleDataTypes);
-                        return false;
-                    }
-                },
-                DataTypesService.class).getDataTypeNames(getDiagramPath());
+        clientDataTypesService
+                .call(getDiagramPath())
+                .then(dataTypes -> {
+                    String formattedDataTypes = formatDataTypes(dataTypes);
+                    String allDataTypes = simpleDataTypes + "," + formattedDataTypes;
+                    showDataIOEditor(allDataTypes);
+                    return null;
+                })
+                .catch_(exception -> {
+                    notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                                                            NotificationEvent.NotificationType.ERROR));
+                    showDataIOEditor(simpleDataTypes);
+                    return null;
+                });
     }
 
     private Path getDiagramPath() {

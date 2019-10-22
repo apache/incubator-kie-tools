@@ -49,6 +49,6 @@ public class CaseManagementProjectDiagramEditorMenuItemsBuilderTest {
     @Test
     public void testExportAsRawLabel() {
         assertEquals(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDownload,
-                     builder.getExportAsRawLabel());
+                     builder.getExportLabelToRawFormatIfSupported().get());
     }
 }

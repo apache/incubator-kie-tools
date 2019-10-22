@@ -22,13 +22,12 @@ import org.kie.workbench.common.dmn.api.factory.AbstractDMNDiagramFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 
 @Dependent
 public class DMNProjectDiagramFactoryImpl
-        extends AbstractDMNDiagramFactory<ProjectMetadata, ProjectDiagram>
+        extends AbstractDMNDiagramFactory<ProjectMetadata, ProjectDiagramImpl>
         implements DMNProjectDiagramFactory {
 
     @Override
@@ -42,9 +41,9 @@ public class DMNProjectDiagramFactoryImpl
     }
 
     @Override
-    public ProjectDiagram doBuild(final String name,
-                                  final ProjectMetadata metadata,
-                                  final Graph<DefinitionSet, ?> graph) {
+    public ProjectDiagramImpl doBuild(final String name,
+                                      final ProjectMetadata metadata,
+                                      final Graph<DefinitionSet, ?> graph) {
         return new ProjectDiagramImpl(name,
                                       graph,
                                       metadata);

@@ -73,7 +73,7 @@ public class DateSelectorView implements DateSelector.View {
 
     @Override
     public String getValue() {
-        return StringUtils.isEmpty(dateInput.value) ? "" :  valueFormatter.toRaw(dateInput.value);
+        return StringUtils.isEmpty(dateInput.value) ? "" : valueFormatter.toRaw(dateInput.value);
     }
 
     @Override

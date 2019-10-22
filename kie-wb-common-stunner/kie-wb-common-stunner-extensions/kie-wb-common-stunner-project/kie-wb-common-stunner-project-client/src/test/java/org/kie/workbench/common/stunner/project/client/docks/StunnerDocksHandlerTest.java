@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -31,8 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -165,13 +164,5 @@ public class StunnerDocksHandlerTest {
 
         assertFalse(handler.shouldRefreshDocks());
         assertFalse(handler.shouldDisableDocks());
-    }
-
-    public void onDiagramLoseFocusEvent(@Observes OnDiagramLoseFocusEvent event) {
-        assertTrue(handler.shouldRefreshDocks());
-
-        assertTrue(handler.shouldDisableDocks());
-
-        verify(command).execute();
     }
 }

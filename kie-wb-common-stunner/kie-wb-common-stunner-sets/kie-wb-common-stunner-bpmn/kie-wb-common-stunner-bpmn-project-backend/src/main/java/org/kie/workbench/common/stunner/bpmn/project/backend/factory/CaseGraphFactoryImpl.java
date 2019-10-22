@@ -23,12 +23,12 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -65,7 +65,7 @@ public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
                                 RuleManager ruleManager, GraphCommandManager graphCommandManager,
                                 GraphCommandFactory graphCommandFactory, GraphIndexBuilder<?> indexBuilder,
                                 ServiceTaskFactory serviceTaskFactory,
-                                WorkItemDefinitionBackendService workItemDefinitionService) {
+                                WorkItemDefinitionLookupService workItemDefinitionService) {
         super(definitionManager, factoryManager, ruleManager, graphCommandManager, graphCommandFactory, indexBuilder);
         this.serviceTaskFactory = serviceTaskFactory;
         this.workItemDefinitionService = workItemDefinitionService;

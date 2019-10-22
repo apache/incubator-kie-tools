@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.AssigneeLiveSearchService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignee;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
@@ -42,12 +43,17 @@ public class AssigneeListItem {
     private ParameterizedCommand<AssigneeListItem> removeCommand;
 
     @Inject
-    public AssigneeListItem(LiveSearchDropDown liveSearchDropDown, AssigneeLiveSearchService liveSearchService) {
+    public AssigneeListItem(final LiveSearchDropDown liveSearchDropDown,
+                            final AssigneeLiveSearchService liveSearchService) {
         this.liveSearchDropDown = liveSearchDropDown;
         this.liveSearchService = liveSearchService;
     }
 
-    public void init(AssigneeType type, Assignee assignee, Command notifyChangeCommand, ParameterizedCommand<AssigneeListItem> removeCommand, ParameterizedCommand<Throwable> errorCommand) {
+    public void init(final AssigneeType type,
+                     final Assignee assignee,
+                     final Command notifyChangeCommand,
+                     final ParameterizedCommand<AssigneeListItem> removeCommand,
+                     final ParameterizedCommand<Throwable> errorCommand) {
         this.assignee = assignee;
         this.notifyChangeCommand = notifyChangeCommand;
         this.removeCommand = removeCommand;

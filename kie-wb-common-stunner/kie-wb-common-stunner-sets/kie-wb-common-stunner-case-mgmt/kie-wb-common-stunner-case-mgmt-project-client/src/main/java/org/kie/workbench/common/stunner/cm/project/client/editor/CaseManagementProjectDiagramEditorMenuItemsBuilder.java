@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.cm.project.client.editor;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
@@ -22,11 +24,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuItemsBuilder;
 
 @Dependent
 @Typed(CaseManagementProjectDiagramEditorMenuItemsBuilder.class)
-public class CaseManagementProjectDiagramEditorMenuItemsBuilder extends AbstractProjectDiagramEditorMenuItemsBuilder {
+public class CaseManagementProjectDiagramEditorMenuItemsBuilder extends AbstractDiagramEditorMenuItemsBuilder {
 
     @SuppressWarnings("unused")
     public CaseManagementProjectDiagramEditorMenuItemsBuilder() {
@@ -41,7 +43,7 @@ public class CaseManagementProjectDiagramEditorMenuItemsBuilder extends Abstract
     }
 
     @Override
-    protected String getExportAsRawLabel() {
-        return translationService.getValue(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDownload);
+    protected Optional<String> getExportLabelToRawFormatIfSupported() {
+        return Optional.of(translationService.getValue(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDownload));
     }
 }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.backend.common;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
+import org.kie.workbench.common.dmn.api.marshalling.DMNImportTypesHelper;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.backend.vfs.Path;
 

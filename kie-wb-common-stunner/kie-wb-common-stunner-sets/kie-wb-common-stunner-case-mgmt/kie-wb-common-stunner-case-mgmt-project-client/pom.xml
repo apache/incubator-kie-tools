@@ -112,12 +112,12 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-bpmn-project-client</artifactId>
+      <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
+      <artifactId>kie-wb-common-stunner-bpmn-project-client</artifactId>
     </dependency>
 
     <dependency>
@@ -143,6 +143,11 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-forms-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
     </dependency>
 
     <!-- KIE Commons -->
@@ -174,12 +179,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

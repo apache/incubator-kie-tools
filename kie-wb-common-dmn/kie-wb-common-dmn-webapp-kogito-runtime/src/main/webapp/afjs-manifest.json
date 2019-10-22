@@ -1,0 +1,9 @@
+{
+  "name": "demo",
+  "editors": [
+    {
+      "regex": "*.dmn",
+      "editor": "DMNDiagramEditor"
+    }
+  ]
+}

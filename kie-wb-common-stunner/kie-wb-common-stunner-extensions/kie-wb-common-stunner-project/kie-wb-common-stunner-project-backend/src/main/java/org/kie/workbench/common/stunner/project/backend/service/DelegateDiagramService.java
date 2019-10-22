@@ -42,13 +42,14 @@ public class DelegateDiagramService implements DiagramService {
         this.projectDiagramService = projectDiagramService;
     }
 
-    private Diagram convert(ProjectDiagram projectDiagram) {
+    private Diagram convert(final ProjectDiagram projectDiagram) {
         final DiagramImpl diagram = new DiagramImpl(projectDiagram.getName(), projectDiagram.getMetadata());
         diagram.setGraph(projectDiagram.getGraph());
         return diagram;
     }
 
-    private ProjectDiagram convert(Diagram<Graph, Metadata> diagram) {
+    @SuppressWarnings("unchecked")
+    private ProjectDiagram convert(final Diagram<Graph, Metadata> diagram) {
         if (!ProjectMetadata.class.isInstance(diagram.getMetadata())) {
             throw new IllegalStateException("The Metadata is supposed to be a ProjectMetadata for diagram " + diagram.getName());
         }
@@ -56,37 +57,41 @@ public class DelegateDiagramService implements DiagramService {
     }
 
     @Override
-    public Diagram<Graph, Metadata> getDiagramByPath(Path path) {
+    @SuppressWarnings("unchecked")
+    public Diagram<Graph, Metadata> getDiagramByPath(final Path path) {
         return convert(projectDiagramService.getDiagramByPath(path));
     }
 
     @Override
-    public boolean accepts(Path path) {
+    public boolean accepts(final Path path) {
         return projectDiagramService.accepts(path);
     }
 
     @Override
-    public Path create(Path path, String name, String defSetId) {
+    public Path create(final Path path,
+                       final String name,
+                       final String defSetId) {
         return projectDiagramService.create(path, name, defSetId);
     }
 
     @Override
-    public Metadata saveOrUpdate(Diagram<Graph, Metadata> diagram) {
+    public Metadata saveOrUpdate(final Diagram<Graph, Metadata> diagram) {
         return projectDiagramService.saveOrUpdate(convert(diagram));
     }
 
     @Override
-    public boolean delete(Diagram<Graph, Metadata> diagram) {
+    public boolean delete(final Diagram<Graph, Metadata> diagram) {
         return projectDiagramService.delete(convert(diagram));
     }
 
     @Override
-    public String getRawContent(Diagram<Graph, Metadata> diagram) {
+    public String getRawContent(final Diagram<Graph, Metadata> diagram) {
         return projectDiagramService.getRawContent(convert(diagram));
     }
 
     @Override
-    public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
+    public Path saveOrUpdateSvg(final Path diagramPath,
+                                final String rawDiagramSvg) {
         return projectDiagramService.saveOrUpdateSvg(diagramPath, rawDiagramSvg);
     }
 }

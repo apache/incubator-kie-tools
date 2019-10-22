@@ -70,8 +70,8 @@ public class BPMNDiagramFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void testBuild() {
         final Diagram<Graph, Metadata> diagram = tested.build(NAME,
-                                                              metadata,
-                                                              graph);
+                                                                       metadata,
+                                                                       graph);
         assertNotNull(diagram);
         assertEquals(NAME,
                      diagram.getName());

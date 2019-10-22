@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.cm.backend.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.backend.indexing.AbstractBpmnFileIndexer;
+import org.kie.workbench.common.stunner.bpmn.project.backend.indexing.AbstractBpmnFileIndexer;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.uberfire.backend.server.util.Paths;

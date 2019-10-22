@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.project.service;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
+import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 @Remote

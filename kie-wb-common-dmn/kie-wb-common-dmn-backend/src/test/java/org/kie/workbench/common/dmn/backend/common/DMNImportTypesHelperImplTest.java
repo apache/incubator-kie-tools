@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.backend.common;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.marshalling.DMNImportTypesHelper;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;

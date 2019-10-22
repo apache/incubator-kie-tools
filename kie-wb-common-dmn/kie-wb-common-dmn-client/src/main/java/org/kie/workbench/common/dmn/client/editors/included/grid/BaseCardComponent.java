@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
+import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.widgets.client.cards.CardComponent;
 import org.uberfire.client.mvp.UberElemental;

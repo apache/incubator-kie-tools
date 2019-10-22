@@ -17,5 +17,11 @@
 package org.kie.workbench.common.dmn.backend.editors.types.exceptions;
 
 public class DMNIncludeModelCouldNotBeCreatedException extends Exception {
-    // empty.
+
+    public DMNIncludeModelCouldNotBeCreatedException() {
+    }
+
+    public DMNIncludeModelCouldNotBeCreatedException(final String message) {
+        super(message);
+    }
 }

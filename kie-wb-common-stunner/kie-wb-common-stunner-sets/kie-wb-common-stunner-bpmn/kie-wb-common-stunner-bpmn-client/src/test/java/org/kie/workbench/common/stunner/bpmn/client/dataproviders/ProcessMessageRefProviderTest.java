@@ -82,7 +82,7 @@ public class ProcessMessageRefProviderTest
         StartMessageEvent event = new StartMessageEvent();
         event.setExecutionSet(new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
                                                                        new SLADueDate(),
-                                                                       new MessageRef(messageRefValue)));
+                                                                       new MessageRef(messageRefValue, "")));
         return mockNode(event);
     }
 
@@ -90,13 +90,13 @@ public class ProcessMessageRefProviderTest
         IntermediateMessageEventCatching event = new IntermediateMessageEventCatching();
         event.setExecutionSet(new CancellingMessageEventExecutionSet(new CancelActivity(true),
                                                                      new SLADueDate(),
-                                                                     new MessageRef(messageRefValue)));
+                                                                     new MessageRef(messageRefValue, "")));
         return mockNode(event);
     }
 
     private Element mockEndMessageEventNode(String messageRefValue) {
         EndMessageEvent event = new EndMessageEvent();
-        event.setExecutionSet(new MessageEventExecutionSet(new MessageRef(messageRefValue)));
+        event.setExecutionSet(new MessageEventExecutionSet(new MessageRef(messageRefValue, "")));
         return mockNode(event);
     }
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,11 +49,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.BPMNTestDefinitionFactory;
+import org.kie.workbench.common.stunner.bpmn.WorkItemDefinitionMockRegistry;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
-import org.kie.workbench.common.stunner.bpmn.backend.BPMNTestDefinitionFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.ParsedAssignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -69,6 +73,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
@@ -111,18 +116,18 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.notification.No
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.core.StunnerTestingGraphAPI;
 import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
@@ -242,14 +247,16 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = PATH_DIAGRAM + "/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
     private static final String BPMN_LOG_TASK_JBPM_DESIGNER = PATH_DIAGRAM + "/logtask.bpmn";
     private static final String BPMN_SERVICETASKS_JBPM_DESIGNER = PATH_DIAGRAM + "/serviceTasksJBPMDeginer.bpmn";
-    private static final String BPMN_EVENT_GATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventGateway.bpmn";
+    private static final String BPMN_EVENT_GATEWAY = PATH_DIAGRAM + "/eventGateway.bpmn";
+    private static final String BPMN_TRAVELS = PATH_DIAGRAM + "/travels.bpmn";
+    private static final String BPMN_FLIGHT_BOOKING = PATH_DIAGRAM + "/flightBooking.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
     private StunnerTestingGraphAPI stunnerAPI;
     private XMLEncoderDiagramMetadataMarshaller xmlEncoder;
     private WorkItemDefinitionRegistry widRegistry;
-    private WorkItemDefinitionBackendService widService;
+    private WorkItemDefinitionLookupService widService;
 
     private BPMNDirectDiagramMarshaller tested;
 
@@ -258,7 +265,7 @@ public class BPMNDirectDiagramMarshallerTest {
     public void setup() throws Exception {
         // Setup context.
         widRegistry = new WorkItemDefinitionMockRegistry();
-        widService = mock(WorkItemDefinitionBackendService.class);
+        widService = mock(WorkItemDefinitionLookupService.class);
         when(widService.execute(any(Metadata.class))).thenReturn(widRegistry.items());
         stunnerAPI = StunnerTestingGraphBackendAPI.build(BPMNDefinitionSet.class,
                                                          new BPMNTestDefinitionFactory(widRegistry));
@@ -395,10 +402,6 @@ public class BPMNDirectDiagramMarshallerTest {
 
         Node<? extends Definition, ?> log = diagram.getGraph().getNode("_AE76ACC9-CCD0-425D-BD40-5E4F3533A1DF");
         assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
-
-        ServiceTask serviceTask = (ServiceTask) log.getContent().getDefinition();
-
-        validateServiceTask(serviceTask.getExecutionSet(), "12/25/1983");
     }
 
     @Test
@@ -416,24 +419,6 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(rest.getContent().getDefinition() instanceof ServiceTask);
         assertTrue(ws.getContent().getDefinition() instanceof ServiceTask);
         assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
-
-        ServiceTask emailTask = (ServiceTask) email.getContent().getDefinition();
-        ServiceTask restTask = (ServiceTask) rest.getContent().getDefinition();
-        ServiceTask wsTask = (ServiceTask) ws.getContent().getDefinition();
-        ServiceTask logTask = (ServiceTask) log.getContent().getDefinition();
-
-        validateServiceTask(emailTask.getExecutionSet(), "12/25/1983");
-        validateServiceTask(restTask.getExecutionSet(), "12/25/1983");
-        validateServiceTask(wsTask.getExecutionSet(), "12/25/1983");
-        validateServiceTask(logTask.getExecutionSet(), "12/25/1983");
-    }
-
-    private void validateServiceTask(ServiceTaskExecutionSet serviceTaskExecutionSet,
-                                     String slaDueDateValue) {
-        assertNotNull(serviceTaskExecutionSet);
-
-        assertNotNull(serviceTaskExecutionSet.getSlaDueDate());
-        assertEquals(serviceTaskExecutionSet.getSlaDueDate().getValue(), slaDueDateValue);
     }
 
     @Test
@@ -466,6 +451,63 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals(197d,
                      task1LRBound.getY(),
                      0);
+    }
+
+    @Test
+    public void testUnmarshallFlightBooking() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_FLIGHT_BOOKING);
+
+        //User Task 1
+        Node<? extends View, ?> serviceTask1Node = diagram.getGraph().getNode("ServiceTask_1");
+        GenericServiceTask serviceTask1 = (GenericServiceTask) serviceTask1Node.getContent().getDefinition();
+
+        //Assert properties from Generic Service Task
+        GenericServiceTaskValue serviceTaskValue = serviceTask1.getExecutionSet().getGenericServiceTaskInfo().getValue();
+        assertEquals("Java", serviceTaskValue.getServiceImplementation());
+        assertEquals("org.acme.travels.service.FlightBookingService", serviceTaskValue.getServiceInterface());
+        assertEquals("bookFlight", serviceTaskValue.getServiceOperation());
+        assertEquals("org.acme.travels.Trip", serviceTaskValue.getInMessageStructure());
+        assertEquals("org.acme.travels.Flight", serviceTaskValue.getOutMessagetructure());
+
+        String marshalled = tested.marshall(diagram);
+        assertTrue(marshalled.contains("<bpmn2:itemDefinition id=\"ServiceTask_1_InMessageType\" structureRef=\"org.acme.travels.Trip\"/>"));
+        assertTrue(marshalled.contains("<bpmn2:itemDefinition id=\"ServiceTask_1_OutMessageType\" structureRef=\"org.acme.travels.Flight\"/>"));
+    }
+
+    @Test
+    public void testUnmarshallTravels() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_TRAVELS);
+
+        //User Task 1
+        Node<? extends View, ?> userTask1Node = diagram.getGraph().getNode("UserTask_1");
+        UserTask userTask1 = (UserTask) userTask1Node.getContent().getDefinition();
+        ParsedAssignmentsInfo parsedAssignmentsInfo = ParsedAssignmentsInfo.fromString(userTask1.getExecutionSet().getAssignmentsinfo().getValue());
+        assertDataTye("org.acme.travels.Trip", "trip", parsedAssignmentsInfo.getInputs());
+        assertDataTye("org.acme.travels.Traveller", "traveller", parsedAssignmentsInfo.getInputs());
+        assertDataTye("java.lang.Boolean", "Skippable", parsedAssignmentsInfo.getInputs());
+        assertDataTye("java.lang.Integer", "Priority", parsedAssignmentsInfo.getInputs());
+        assertDataTye("java.lang.String", "Comment", parsedAssignmentsInfo.getInputs());
+
+        //Business Rule 1
+        Node<? extends View, ?> businessRuleTaskNode = diagram.getGraph().getNode("BusinessRuleTask_1");
+        BusinessRuleTask businessRuleTask1 = (BusinessRuleTask) businessRuleTaskNode.getContent().getDefinition();
+        ParsedAssignmentsInfo businessRuleParsedAssignmentsInfo =
+                ParsedAssignmentsInfo.fromString(businessRuleTask1.getDataIOSet().getAssignmentsinfo().getValue());
+
+        assertDataTye("org.acme.travels.Traveller", "traveller", businessRuleParsedAssignmentsInfo.getInputs());
+        assertDataTye("org.acme.travels.Trip", "trip", businessRuleParsedAssignmentsInfo.getInputs());
+        assertDataTye("org.acme.travels.Trip", "trip", businessRuleParsedAssignmentsInfo.getOutputs());
+    }
+
+    private void assertDataTye(String expectedType, String name, DeclarationList declarationList) {
+        assertEquals(expectedType,
+                     declarationList
+                             .getDeclarations()
+                             .stream()
+                             .filter(d -> Objects.equals(d.getIdentifier(), name))
+                             .map(VariableDeclaration::getType)
+                             .findFirst()
+                             .orElse(null));
     }
 
     @Test
@@ -625,11 +667,6 @@ public class BPMNDirectDiagramMarshallerTest {
         BusinessRuleTask businessRuleTask = (BusinessRuleTask) businessRuleNode.getContent().getDefinition();
         assertEquals(businessRuleTask.getTaskType().getValue(),
                      TaskTypes.BUSINESS_RULE);
-
-        BusinessRuleTaskExecutionSet executionSet = businessRuleTask.getExecutionSet();
-        assertNotNull(executionSet.getSlaDueDate());
-        assertEquals(executionSet.getSlaDueDate().getValue(), "12/25/1983");
-
         DataIOSet dataIOSet = businessRuleTask.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
@@ -1691,7 +1728,6 @@ public class BPMNDirectDiagramMarshallerTest {
         assertNotNull(businessRuleTask);
         assertNotNull(businessRuleTask.getExecutionSet());
         assertNotNull(businessRuleTask.getExecutionSet().getRuleFlowGroup());
-        assertNotNull(businessRuleTask.getExecutionSet().getSlaDueDate());
         assertNotNull(businessRuleTask.getGeneral());
         assertNotNull(businessRuleTask.getGeneral().getName());
         assertEquals(businessRuleTask.getTaskType().getValue(),
@@ -1717,7 +1753,6 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("java",
                      businessRuleTask.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
-        assertEquals("12/25/1983", businessRuleTask.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -1822,8 +1857,6 @@ public class BPMNDirectDiagramMarshallerTest {
                      executionSet.getCalledElement().getValue());
         assertEquals(false,
                      executionSet.getIndependent().getValue());
-        assertEquals(false,
-                     executionSet.getAbortParent().getValue());
         assertEquals(true,
                      executionSet.getWaitForCompletion().getValue());
 
@@ -1892,16 +1925,12 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("AdHocSubprocess1Documentation",
                      generalSet.getDocumentation().getValue());
 
-        assertNotNull(executionSet.getAdHocActivationCondition());
-        assertNotNull(executionSet.getAdHocActivationCondition().getValue());
         assertNotNull(executionSet.getAdHocCompletionCondition());
         assertNotNull(executionSet.getAdHocCompletionCondition().getValue());
         assertNotNull(executionSet.getAdHocOrdering());
         assertNotNull(executionSet.getOnEntryAction());
         assertNotNull(executionSet.getOnExitAction());
 
-        assertEquals("com.myteam.test.Person(name == \"someName\")",
-                     executionSet.getAdHocActivationCondition().getValue());
         assertEquals("autocomplete",
                      executionSet.getAdHocCompletionCondition().getValue().getScript());
         assertEquals("drools",
@@ -2444,9 +2473,6 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:dataInputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputX</bpmn2:dataInputRefs>"));
         assertTrue(result.contains("<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputX</bpmn2:dataOutputRefs>"));
         assertTrue(result.contains("<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output2OutputX</bpmn2:dataOutputRefs>"));
-        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
-        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
-        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2916,7 +2942,6 @@ public class BPMNDirectDiagramMarshallerTest {
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"elementname\"> <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue> </drools:metaData>"));
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
-        assertTrue(flatResult.contains("<drools:metaData name=\"customAbortParent\"> <drools:metaValue><![CDATA[false]]></drools:metaValue> </drools:metaData>"));
     }
 
     @Test
@@ -2984,7 +3009,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     public void testMarshallEmbeddedSubprocessDuplicateElements() throws Exception {
-        String f = PATH_DIAGRAM + "/subprocessDuplicateElements.bpmn";
+        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessDuplicateElements.bpmn";
         Diagram<Graph, Metadata> diagram = unmarshall(f);
         String result = tested.marshall(diagram);
 
@@ -2996,7 +3021,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     public void testMarshallEmbeddedSubprocessNestedDuplicates() throws Exception {
-        String f = PATH_DIAGRAM + "/subprocessNested.bpmn";
+        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessNested.bpmn";
         Diagram<Graph, Metadata> diagram = unmarshall(f);
 
         String result = tested.marshall(diagram);
@@ -3089,9 +3114,6 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertTrue(result.contains("<bpmn2:adHocSubProcess id=\"_B65DDF51-9822-4B12-8669-2018A845A01B\""));
         assertTrue(result.contains("name=\"AdHocSubprocess1\""));
-
-        assertTrue(result.contains("<drools:metaData name=\"customActivationCondition\">"));
-        assertTrue(result.contains("<drools:metaValue><![CDATA[com.myteam.test.Person(name == \"someName\")]]></drools:metaValue>"));
 
         assertTrue(result.contains("<drools:onEntry-script scriptFormat=\"http://www.mvel.org/2.0\">"));
         assertTrue(result.contains("<drools:script><![CDATA[System.out.println(\"onEntryAction\");]]></drools:script>"));
@@ -3277,12 +3299,6 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
 
         assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
-
-        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
-
-        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
-
-        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3649,9 +3665,6 @@ public class BPMNDirectDiagramMarshallerTest {
                      log.getGeneral().getName().getValue());
         assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
                      log.getGeneral().getDocumentation().getValue());
-
-        assertNotNull(email.getExecutionSet().getSlaDueDate());
-        assertEquals(email.getExecutionSet().getSlaDueDate().getValue(), "12/25/1983");
     }
 
     @Test
@@ -3989,9 +4002,6 @@ public class BPMNDirectDiagramMarshallerTest {
                       3);
         assertTrue(result.contains("drools:taskName=\"Email\""));
         assertTrue(result.contains("drools:taskName=\"Log\""));
-        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
-        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
-        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test

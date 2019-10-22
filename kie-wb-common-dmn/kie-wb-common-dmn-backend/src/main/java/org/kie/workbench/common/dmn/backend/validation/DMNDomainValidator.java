@@ -41,9 +41,9 @@ import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
-import org.kie.workbench.common.dmn.backend.DMNMarshaller;
+import org.kie.workbench.common.dmn.backend.DMNMarshallerStandalone;
 import org.kie.workbench.common.dmn.backend.common.DMNIOHelper;
-import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandalone;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.ImportConverter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -66,15 +66,15 @@ public class DMNDomainValidator implements DomainValidator {
 
     private DMNValidator dmnValidator;
 
-    private final DMNMarshaller dmnMarshaller;
-    private final DMNDiagramUtils dmnDiagramUtils;
-    private final DMNMarshallerImportsHelper importsHelper;
+    private DMNMarshallerStandalone dmnMarshaller;
+    private DMNDiagramUtils dmnDiagramUtils;
+    private DMNMarshallerImportsHelperStandalone importsHelper;
     private final DMNIOHelper dmnIOHelper;
 
     @Inject
-    public DMNDomainValidator(final DMNMarshaller dmnMarshaller,
+    public DMNDomainValidator(final DMNMarshallerStandalone dmnMarshaller,
                               final DMNDiagramUtils dmnDiagramUtils,
-                              final DMNMarshallerImportsHelper importsHelper,
+                              final DMNMarshallerImportsHelperStandalone importsHelper,
                               final DMNIOHelper dmnIOHelper) {
         this.dmnMarshaller = dmnMarshaller;
         this.dmnDiagramUtils = dmnDiagramUtils;

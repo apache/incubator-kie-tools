@@ -31,5 +31,4 @@ public interface DMNProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
     String DMNDiagramParsingErrorMessage = "DMNDiagramParsingErrorMessage";
-
 }

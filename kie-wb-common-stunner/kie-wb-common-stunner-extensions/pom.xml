@@ -36,6 +36,7 @@
     <module>kie-wb-common-stunner-project</module>
     <module>kie-wb-common-stunner-svg</module>
     <module>kie-wb-common-stunner-jbpm-designer-integration</module>
+    <module>kie-wb-common-stunner-kogito</module>
   </modules>
 
 </project>

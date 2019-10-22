@@ -382,7 +382,7 @@ public class DataTypePickerWidgetTest {
     }
 
     @Test
-    public void testPopulateTypeSelector(){
+    public void testPopulateTypeSelector() {
 
         picker.populateTypeSelector();
 

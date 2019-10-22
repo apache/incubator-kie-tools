@@ -23,11 +23,12 @@ public class GenericServiceTaskValueTest {
 
     @Test
     public void testConstructor() {
-        GenericServiceTaskValue a = new GenericServiceTaskValue("aaa", "bbb", "ccc");
+        GenericServiceTaskValue a = new GenericServiceTaskValue("aaa", "bbb", "ccc", "ddd", "eee");
         Assert.assertEquals("aaa", a.getServiceImplementation());
         Assert.assertEquals("bbb", a.getServiceInterface());
         Assert.assertEquals("ccc", a.getServiceOperation());
-
+        Assert.assertEquals("ddd", a.getInMessageStructure());
+        Assert.assertEquals("eee", a.getOutMessagetructure());
     }
 
 
@@ -55,7 +56,8 @@ public class GenericServiceTaskValueTest {
     @Test
     public void testToString() {
         GenericServiceTaskValue a = new GenericServiceTaskValue();
-        Assert.assertEquals("GenericServiceTaskValue{serviceImplementation='Java', serviceInterface='', serviceOperation=''}", a.toString());
+        Assert.assertEquals("GenericServiceTaskValue{serviceImplementation='Java', serviceInterface='', " +
+                                    "serviceOperation='', inMessageStructure='', outMessagetructure=''}", a.toString());
     }
 
     @Test

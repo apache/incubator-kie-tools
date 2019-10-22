@@ -28,18 +28,19 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.components.palette.BPMNCategoryDefinitionProvider;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorator;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorators;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.template.BPMNDocumentationTemplateSource;
 import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNShapeFactory;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -93,6 +94,7 @@ import org.kie.workbench.common.stunner.bpmn.documentation.model.general.Process
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -131,7 +133,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     private final BPMNCategoryDefinitionProvider categoryDefinitionProvider;
     private final DOMGlyphRenderers glyphRenderer;
     private final ClientTranslationService translationService;
-    private final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry;
+    private final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
     private final DefinitionHelper definitionHelper;
     private final PropertyDecorators propertyDecorators;
 
@@ -145,7 +147,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                                           final BPMNCategoryDefinitionProvider categoryDefinitionProvider,
                                           final DOMGlyphRenderers glyphRenderer,
                                           final ClientTranslationService translationService,
-                                          final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry,
+                                          final @Default ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
                                           final PropertyDecorators propertyDecorators
 
     ) {
@@ -158,7 +160,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         this.categoryDefinitionProvider = categoryDefinitionProvider;
         this.glyphRenderer = glyphRenderer;
         this.translationService = translationService;
-        this.workItemDefinitionClientRegistry = workItemDefinitionClientRegistry;
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry;
         this.propertyDecorators = propertyDecorators;
         definitionHelper = new DefinitionHelper();
     }
@@ -464,8 +466,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                     .filter(def -> def instanceof ServiceTask)
                     .map(def -> (ServiceTask) def)
                     .map(ServiceTask::getName)
-                    .map(name -> Optional.ofNullable(workItemDefinitionClientRegistry
-                                                             .getRegistry()
+                    .map(name -> Optional.ofNullable(workItemDefinitionRegistry
+                                                             .get()
                                                              .get(name))
                             .map(WorkItemDefinition::getIconDefinition)
                             .map(IconDefinition::getIconData).orElse(null))
@@ -487,8 +489,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                     .filter(def -> def instanceof ServiceTask)
                     .map(def -> (ServiceTask) def)
                     .map(ServiceTask::getName)
-                    .map(name -> Optional.ofNullable(workItemDefinitionClientRegistry
-                                                             .getRegistry()
+                    .map(name -> Optional.ofNullable(workItemDefinitionRegistry
+                                                             .get()
                                                              .get(name))
                             .map(WorkItemDefinition::getCategory)
                             .orElse(null));
@@ -505,8 +507,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                     .map(HTMLElement::getInnerHTML)
                     //try to get the service task icon if category icon is not found
                     .orElseGet(() -> Optional.ofNullable(category)
-                            .map(name -> workItemDefinitionClientRegistry
-                                    .getRegistry()
+                            .map(name -> workItemDefinitionRegistry
+                                    .get()
                                     .items()
                                     .stream()
                                     .filter(wid -> Objects.equals(wid.getCategory(), category))

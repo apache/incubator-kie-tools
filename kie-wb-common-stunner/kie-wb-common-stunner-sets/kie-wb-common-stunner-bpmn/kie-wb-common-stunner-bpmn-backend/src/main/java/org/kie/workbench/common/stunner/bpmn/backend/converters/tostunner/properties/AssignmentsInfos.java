@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationList;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
@@ -33,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.ParsedAssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static java.util.Arrays.asList;
 
@@ -104,7 +108,7 @@ public class AssignmentsInfos {
                         .filter(o -> !isReservedDeclaration(o))
                         .map(in -> new VariableDeclaration(
                                 in.getName(),
-                                CustomAttribute.dtype.of(in).get()))
+                                getDataType(in)))
                         .collect(Collectors.toList()));
     }
 
@@ -113,8 +117,22 @@ public class AssignmentsInfos {
                 dataOutputs.stream()
                         .map(out -> new VariableDeclaration(
                                 out.getName(),
-                                CustomAttribute.dtype.of(out).get()))
+                                getDataType(out)))
                         .collect(Collectors.toList()));
+    }
+
+    /** Returns the Data Type based on the CustomAttribute dtype and in case it does not exist use the ItemSubjectRef.
+     * @param element the Data Input/Output element
+     * @return the given element type
+     */
+    private static String getDataType(ItemAwareElement element) {
+        return Optional
+                .ofNullable(CustomAttribute.dtype.of(element).get())
+                .filter(StringUtils::nonEmpty)
+                .orElseGet(() -> Optional
+                        .ofNullable(element.getItemSubjectRef())
+                        .map(ItemDefinition::getStructureRef)
+                        .orElse(""));
     }
 
     private static List<AssociationDeclaration> inAssociationDeclarations(List<DataInputAssociation> inputAssociations) {

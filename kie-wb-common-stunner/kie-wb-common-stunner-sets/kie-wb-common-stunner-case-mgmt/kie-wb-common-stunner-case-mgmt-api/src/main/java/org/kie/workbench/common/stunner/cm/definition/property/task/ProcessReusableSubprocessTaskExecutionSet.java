@@ -68,7 +68,7 @@ public class ProcessReusableSubprocessTaskExecutionSet
     @Property
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider")
+            className = "org.kie.workbench.common.stunner.cm.backend.dataproviders.CaseCalledElementFormProvider")
     @FormField(
             type = ListBoxFieldType.class
     )

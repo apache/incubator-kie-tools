@@ -39,7 +39,7 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
 
     @Override
     public <V> void execute(final Callback<V> callback) {
-        //TODO: call the diagram client and remove the logic from Editor Screens
+        //TODO (kogito): call the diagram client and remove the logic from Editor Screens
     }
 
     @Override

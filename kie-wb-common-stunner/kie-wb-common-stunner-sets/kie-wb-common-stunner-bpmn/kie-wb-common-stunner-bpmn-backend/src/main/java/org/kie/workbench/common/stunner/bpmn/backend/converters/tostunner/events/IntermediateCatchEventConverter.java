@@ -266,7 +266,8 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
                 new CancellingMessageEventExecutionSet(
                         new CancelActivity(p.isCancelActivity()),
                         new SLADueDate(p.getSlaDueDate()),
-                        new MessageRef(EventDefinitionReader.messageRefOf(e))
+                        new MessageRef(EventDefinitionReader.messageRefOf(e),
+                                       EventDefinitionReader.messageRefStructureOf(e))
                 )
         );
 

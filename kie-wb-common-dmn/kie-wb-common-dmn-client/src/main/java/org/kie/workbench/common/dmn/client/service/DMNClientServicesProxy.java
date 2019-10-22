@@ -33,7 +33,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * This is a proxy for the single provider of (external) services required by the Editor.
  * An external service is one that may require an RPC in some environments (e.g. Business Central) however may be
- * substituted for client-side implementations in other environments (e.g. Submarine).
+ * substituted for client-side implementations in other environments (e.g. Kogito).
  */
 public interface DMNClientServicesProxy {
 

@@ -25,7 +25,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
+import org.kie.workbench.common.stunner.bpmn.project.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;

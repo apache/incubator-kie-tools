@@ -25,17 +25,17 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.BPMNTestDefinitionFactory;
+import org.kie.workbench.common.stunner.bpmn.WorkItemDefinitionMockRegistry;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
-import org.kie.workbench.common.stunner.bpmn.backend.BPMNTestDefinitionFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.WorkItemDefinitionMockRegistry;
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.morph.BaseTaskMorphPropertyDefinition;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.bind.BackendBindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
@@ -91,7 +91,7 @@ public abstract class BPMNDiagramMarshallerBaseTest {
         doReturn(morphAdapter).when(api.getAdapterRegistry()).getMorphAdapter(eq(BusinessRuleTask.class));
 
         workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
-        WorkItemDefinitionBackendService widService = mock(WorkItemDefinitionBackendService.class);
+        WorkItemDefinitionLookupService widService = mock(WorkItemDefinitionLookupService.class);
         when(widService.execute(any(Metadata.class))).thenReturn(workItemDefinitionMockRegistry.items());
 
         marshaller = new BPMNDirectDiagramMarshaller(
@@ -134,5 +134,4 @@ public abstract class BPMNDiagramMarshallerBaseTest {
     protected InputStream getStream(String data) {
         return new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
     }
-
 }

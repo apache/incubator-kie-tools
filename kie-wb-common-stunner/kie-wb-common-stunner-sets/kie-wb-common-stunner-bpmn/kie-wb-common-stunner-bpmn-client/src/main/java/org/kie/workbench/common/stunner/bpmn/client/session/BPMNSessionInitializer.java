@@ -16,12 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
+import java.util.Collection;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import elemental2.promise.Promise;
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.client.session.impl.SessionInitializer;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.mvp.Command;
@@ -30,8 +35,10 @@ import org.uberfire.mvp.Command;
 @ApplicationScoped
 public class BPMNSessionInitializer implements SessionInitializer {
 
-    private final WorkItemDefinitionClientRegistry workItemDefinitionService;
-    private final DiagramTypeService diagramTypeService;
+    private static Logger LOGGER = Logger.getLogger(BPMNSessionInitializer.class.getName());
+
+    private final WorkItemDefinitionClientService workItemDefinitionService;
+    private final DiagramTypeClientService diagramTypeService;
 
     // CDI proxy.
     protected BPMNSessionInitializer() {
@@ -39,7 +46,8 @@ public class BPMNSessionInitializer implements SessionInitializer {
     }
 
     @Inject
-    public BPMNSessionInitializer(final WorkItemDefinitionClientRegistry workItemDefinitionService, final DiagramTypeService diagramTypeService) {
+    public BPMNSessionInitializer(final WorkItemDefinitionClientService workItemDefinitionService,
+                                  final DiagramTypeClientService diagramTypeService) {
         this.workItemDefinitionService = workItemDefinitionService;
         this.diagramTypeService = diagramTypeService;
     }
@@ -48,6 +56,16 @@ public class BPMNSessionInitializer implements SessionInitializer {
     public void init(final Metadata metadata,
                      final Command completeCallback) {
         diagramTypeService.loadDiagramType(metadata);
-        workItemDefinitionService.load(metadata, completeCallback);
+        workItemDefinitionService
+                .call(metadata)
+                .then(workItemDefinitions -> {
+                    completeCallback.execute();
+                    return null;
+                })
+                .catch_((Promise.CatchOnRejectedCallbackFn<Collection<WorkItemDefinition>>) error -> {
+                    LOGGER.severe("Error obtaining the work item definitions [error=" + error + "]");
+                    completeCallback.execute();
+                    return null;
+                });
     }
 }

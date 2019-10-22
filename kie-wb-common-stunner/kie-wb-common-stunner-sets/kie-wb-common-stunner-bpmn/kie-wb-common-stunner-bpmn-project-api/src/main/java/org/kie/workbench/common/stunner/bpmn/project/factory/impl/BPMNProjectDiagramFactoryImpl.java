@@ -60,9 +60,9 @@ public class BPMNProjectDiagramFactoryImpl
     }
 
     @Override
-    public ProjectDiagram doBuild(final String name,
-                                  final ProjectMetadata metadata,
-                                  final Graph<DefinitionSet, ?> graph) {
+    public ProjectDiagramImpl doBuild(final String name,
+                                      final ProjectMetadata metadata,
+                                      final Graph<DefinitionSet, ?> graph) {
         return new ProjectDiagramImpl(name,
                                       graph,
                                       metadata);

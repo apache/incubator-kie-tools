@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.backend.service;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -116,26 +115,6 @@ public class DiagramServiceImpl
                 .build();
     }
 
-    @Override
-    protected Metadata obtainMetadata(DefinitionSetService services,
-                                      final org.uberfire.backend.vfs.Path diagramFilePath,
-                                      final String defSetId,
-                                      final String fileName) {
-        Metadata metadata = null;
-        final InputStream metaDataStream = loadMetadataForPath(diagramFilePath);
-        if (null != metaDataStream) {
-            try {
-                metadata = services.getDiagramMarshaller().getMetadataMarshaller().unmarshall(metaDataStream);
-                if (null == metadata.getRoot() || null == metadata.getRoot().toURI()) {
-                    metadata.setRoot(getRoot());
-                }
-            } catch (java.io.IOException e) {
-                LOG.error("Cannot unmarshall metadata for diagram's path [{}]", diagramFilePath, e);
-            }
-        }
-        return metadata;
-    }
-
     private org.uberfire.backend.vfs.Path getRoot() {
         return Paths.convert(backendFileSystemManager.getRootPath());
     }
@@ -143,10 +122,6 @@ public class DiagramServiceImpl
     @Override
     protected Class<? extends Metadata> getMetadataType() {
         return Metadata.class;
-    }
-
-    private InputStream loadMetadataForPath(final Path path) {
-        return doLoadMetadataStreamByDiagramPath(path);
     }
 
     @Override
@@ -209,18 +184,6 @@ public class DiagramServiceImpl
 
     public org.uberfire.java.nio.file.Path getDiagramsPath() {
         return backendFileSystemManager.getRootPath().resolve(DIAGRAMS_PATH);
-    }
-
-    private InputStream doLoadMetadataStreamByDiagramPath(final Path dPath) {
-        org.uberfire.java.nio.file.Path path = getDiagramsPath().resolve(getMetadataFileName(dPath.getFileName()));
-        if (null != path) {
-            try {
-                return loadPath(path);
-            } catch (Exception e) {
-                LOG.warn("Cannot load metadata for [{}].", dPath.toString(), e);
-            }
-        }
-        return null;
     }
 
     private String getMetadataFileName(final String uri) {

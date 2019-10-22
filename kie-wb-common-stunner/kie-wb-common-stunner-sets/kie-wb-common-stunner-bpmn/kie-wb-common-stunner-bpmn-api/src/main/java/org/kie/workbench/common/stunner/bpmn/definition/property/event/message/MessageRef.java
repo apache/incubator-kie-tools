@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.message;
 
+import java.util.Objects;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -34,12 +37,15 @@ public class MessageRef implements BPMNProperty {
     @FieldValue
     private String value;
 
+    private String structure;
+
     public MessageRef() {
-        this("");
+        this("", "");
     }
 
-    public MessageRef(final String value) {
+    public MessageRef(@MapsTo("value") final String value, @MapsTo("structure") final String structure) {
         this.value = value;
+        this.structure = structure;
     }
 
     public String getValue() {
@@ -50,17 +56,38 @@ public class MessageRef implements BPMNProperty {
         this.value = value;
     }
 
-    @Override
-    public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+    public String getStructure() {
+        return structure;
+    }
+
+    public void setStructure(String structure) {
+        this.structure = structure;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof MessageRef) {
-            MessageRef other = (MessageRef) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+        if (this == o) {
+            return true;
         }
-        return false;
+        if (!(o instanceof MessageRef)) {
+            return false;
+        }
+        MessageRef that = (MessageRef) o;
+        return Objects.equals(getValue(), that.getValue()) &&
+                Objects.equals(getStructure(), that.getStructure());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue(), getStructure());
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("MessageRef{");
+        sb.append("value='").append(value).append('\'');
+        sb.append(", structure='").append(structure).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

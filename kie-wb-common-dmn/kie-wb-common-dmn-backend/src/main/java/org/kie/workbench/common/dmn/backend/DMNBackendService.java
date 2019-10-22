@@ -33,7 +33,7 @@ public class DMNBackendService extends AbstractDefinitionSetService {
     }
 
     @Inject
-    public DMNBackendService(final DMNMarshaller marshaller,
+    public DMNBackendService(final DMNMarshallerStandalone marshaller,
                              final DMNDefinitionSetResourceType resourceType) {
         super(marshaller);
         this.resourceType = resourceType;

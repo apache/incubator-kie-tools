@@ -20,8 +20,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public interface DMNDiagramFactory
-        extends DMNFactory,
-                DiagramFactory<Metadata, Diagram<Graph, Metadata>> {
+public interface DMNDiagramFactory extends DMNFactory,
+                                           DiagramFactory<Metadata, Diagram<Graph, Metadata>> {
 
 }

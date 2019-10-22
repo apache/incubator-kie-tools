@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.FunctionDef;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.backend.vfs.Path;
@@ -42,25 +40,30 @@ public class FunctionSearchService implements LiveSearchService<String> {
 
     private Map<String, FunctionDef> currentFunctions = new HashMap<>();
 
-    private final Caller<ConditionEditorService> service;
+    private final ConditionEditorAvailableFunctionsService availableFunctionsService;
 
     private final FunctionNamingService functionNamingService;
 
     @Inject
-    public FunctionSearchService(final Caller<ConditionEditorService> service, final FunctionNamingService functionNamingService) {
-        this.service = service;
+    public FunctionSearchService(final ConditionEditorAvailableFunctionsService availableFunctionsService,
+                                 final FunctionNamingService functionNamingService) {
+        this.availableFunctionsService = availableFunctionsService;
         this.functionNamingService = functionNamingService;
     }
 
-    public void init(ClientSession session) {
+    public void init(final ClientSession session) {
         this.path = session.getCanvasHandler().getDiagram().getMetadata().getPath();
     }
 
-    public void reload(String type, Command onSuccess) {
-        service.call(result -> {
-            setFunctions((List<FunctionDef>) result);
-            onSuccess.execute();
-        }).findAvailableFunctions(path, type);
+    public void reload(final String type,
+                       final Command onSuccess) {
+        availableFunctionsService
+                .call(new ConditionEditorAvailableFunctionsService.Input(path, type))
+                .then(result -> {
+                    setFunctions(result);
+                    onSuccess.execute();
+                    return null;
+                });
     }
 
     public void clear() {
@@ -69,7 +72,9 @@ public class FunctionSearchService implements LiveSearchService<String> {
     }
 
     @Override
-    public void search(String pattern, int maxResults, LiveSearchCallback<String> callback) {
+    public void search(final String pattern,
+                       final int maxResults,
+                       final LiveSearchCallback<String> callback) {
         LiveSearchResults<String> results = new LiveSearchResults<>(maxResults);
         options.entrySet().stream()
                 .filter(entry -> entry.getValue().toLowerCase().contains(pattern.toLowerCase()))
@@ -78,7 +83,8 @@ public class FunctionSearchService implements LiveSearchService<String> {
     }
 
     @Override
-    public void searchEntry(String key, LiveSearchCallback<String> callback) {
+    public void searchEntry(final String key,
+                            final LiveSearchCallback<String> callback) {
         LiveSearchResults<String> results = new LiveSearchResults<>();
         if (options.containsKey(key)) {
             results.add(key, options.get(key));
@@ -86,11 +92,11 @@ public class FunctionSearchService implements LiveSearchService<String> {
         callback.afterSearch(results);
     }
 
-    public FunctionDef getFunction(String function) {
+    public FunctionDef getFunction(final String function) {
         return currentFunctions.get(function);
     }
 
-    private void setFunctions(List<FunctionDef> functions) {
+    private void setFunctions(final List<FunctionDef> functions) {
         currentFunctions = functions.stream().collect(Collectors.toMap(FunctionDef::getName, Function.identity()));
         options = functions.stream().collect(Collectors.toMap(FunctionDef::getName, functionDef -> functionNamingService.getFunctionName(functionDef.getName())));
     }

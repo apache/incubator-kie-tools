@@ -156,16 +156,9 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                 final String defSetId = getDefinitionSetId(services);
                 final String name = parseFileName(file,
                                                   services);
-                // Check if any metadata definition exist.
-                M metadata = obtainMetadata(services,
-                                            file,
-                                            defSetId,
-                                            name);
-                if (null == metadata) {
-                    metadata = (M) buildMetadataInstance(file,
-                                                         defSetId,
-                                                         name);
-                }
+                final M metadata = (M) buildMetadataInstance(file,
+                                                             defSetId,
+                                                             name);
                 metadata.setPath(file);
                 // Parse and load the diagram raw data.
                 final InputStream is = loadPath(file);
@@ -194,12 +187,6 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         }
         throw new UnsupportedOperationException("Diagram format not supported [" + file + "]");
     }
-
-    @SuppressWarnings("unchecked")
-    protected abstract M obtainMetadata(final DefinitionSetService services,
-                                        final org.uberfire.backend.vfs.Path diagramFilePath,
-                                        final String defSetId,
-                                        final String fileName);
 
     private String parseFileName(final org.uberfire.backend.vfs.Path file,
                                  final DefinitionSetService services) {
@@ -330,11 +317,6 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     protected InputStream loadPath(final org.uberfire.backend.vfs.Path _path) {
         org.uberfire.java.nio.file.Path path = Paths.convert(_path);
         final byte[] bytes = getIoService().readAllBytes(path);
-        return new ByteArrayInputStream(bytes);
-    }
-
-    protected InputStream loadPath(final org.uberfire.java.nio.file.Path _path) {
-        final byte[] bytes = getIoService().readAllBytes(_path);
         return new ByteArrayInputStream(bytes);
     }
 

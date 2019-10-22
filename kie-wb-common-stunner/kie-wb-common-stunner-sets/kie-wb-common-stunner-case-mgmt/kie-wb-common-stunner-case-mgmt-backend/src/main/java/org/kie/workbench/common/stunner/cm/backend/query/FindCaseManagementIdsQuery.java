@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.cm.backend.query;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.stunner.bpmn.backend.query.AbstractFindIdsQuery;
+import org.kie.workbench.common.stunner.bpmn.project.backend.query.AbstractFindIdsQuery;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 
 @ApplicationScoped

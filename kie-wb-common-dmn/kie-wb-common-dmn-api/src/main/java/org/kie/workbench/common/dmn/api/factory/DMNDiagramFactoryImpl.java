@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.factory;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
-import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -41,12 +40,12 @@ public class DMNDiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph, Metadata> doBuild(final String name,
-                                            final Metadata metadata,
-                                            final Graph<DefinitionSet, ?> graph) {
-        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl(name,
-                                                                        metadata);
-        result.setGraph(graph);
+    public Diagram doBuild(final String name,
+                           final Metadata metadata,
+                           final Graph<DefinitionSet, ?> graph) {
+        final Diagram result = new DiagramImpl(name,
+                                               graph,
+                                               metadata);
         return result;
     }
 }

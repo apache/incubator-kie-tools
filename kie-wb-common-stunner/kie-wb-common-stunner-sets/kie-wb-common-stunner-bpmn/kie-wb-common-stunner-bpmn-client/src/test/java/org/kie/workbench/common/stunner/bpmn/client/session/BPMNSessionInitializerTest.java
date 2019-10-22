@@ -16,17 +16,21 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
+import elemental2.promise.IThenable;
+import elemental2.promise.Promise;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,15 +39,22 @@ import static org.mockito.Mockito.verify;
 public class BPMNSessionInitializerTest {
 
     @Mock
-    private WorkItemDefinitionClientRegistry workItemDefinitionService;
+    private WorkItemDefinitionClientService workItemDefinitionService;
+
+    @Mock
+    private Promise promise;
+
+    @Mock
+    private DiagramTypeClientService diagramTypeService;
 
     private BPMNSessionInitializer tested;
 
-    @Mock
-    private DiagramTypeService diagramTypeService;
-
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
+        doReturn(promise).when(workItemDefinitionService).call(any(Metadata.class));
+        doReturn(promise).when(promise).then(any(IThenable.ThenOnFulfilledCallbackFn.class));
+        doReturn(promise).when(promise).catch_(any(Promise.CatchOnRejectedCallbackFn.class));
         tested = new BPMNSessionInitializer(workItemDefinitionService, diagramTypeService);
     }
 
@@ -52,7 +63,7 @@ public class BPMNSessionInitializerTest {
         Metadata metadata = mock(Metadata.class);
         Command callback = mock(Command.class);
         tested.init(metadata, callback);
-        verify(workItemDefinitionService, times(1)).load(eq(metadata), eq(callback));
         verify(diagramTypeService).loadDiagramType(metadata);
+        verify(workItemDefinitionService, times(1)).call(eq(metadata));
     }
 }

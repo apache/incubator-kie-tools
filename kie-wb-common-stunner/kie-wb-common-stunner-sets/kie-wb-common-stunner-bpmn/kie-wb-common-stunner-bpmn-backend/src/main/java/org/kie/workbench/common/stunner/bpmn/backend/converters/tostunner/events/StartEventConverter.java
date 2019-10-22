@@ -286,7 +286,8 @@ public class StartEventConverter extends AbstractConverter implements NodeConver
 
         IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
         SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
-        MessageRef messageRef = new MessageRef(EventDefinitionReader.messageRefOf(e));
+        MessageRef messageRef = new MessageRef(EventDefinitionReader.messageRefOf(e),
+                                               EventDefinitionReader.messageRefStructureOf(e));
         InterruptingMessageEventExecutionSet executionSet =
                 new InterruptingMessageEventExecutionSet(isInterrupting, slaDueDate, messageRef);
         definition.setExecutionSet(executionSet);

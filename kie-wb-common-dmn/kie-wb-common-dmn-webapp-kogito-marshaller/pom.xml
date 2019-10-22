@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-dmn</artifactId>
+    <groupId>org.kie.workbench</groupId>
+    <version>7.29.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+  <name>Kie Workbench - Common - DMN - Kogito Marshaller</name>
+  <description>Kie Workbench - Common - DMN - Kogito Marshaller</description>
+  <packaging>jar</packaging>
+
+  <properties>
+    <version.jsonix-scripts>3.0.0</version.jsonix-scripts>
+    <version.gwt-jsonix-schema-compiler>1.0d</version.gwt-jsonix-schema-compiler>
+    <version.jaxb2-basics>0.12.0</version.jaxb2-basics>
+    <version.jaxb2-namespace-prefix>1.3</version.jaxb2-namespace-prefix>
+    <version.com.google.jsinterop.base>1.0.0-beta-1</version.com.google.jsinterop.base>
+    <version.maven-jaxb2-plugin>0.14.0</version.maven-jaxb2-plugin>
+    <js.destination>${project.basedir}/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</js.destination>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kogito</groupId>
+        <artifactId>gwt-jsonix-schema-compiler</artifactId>
+        <version>${version.gwt-jsonix-schema-compiler}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jvnet.jaxb2_commons</groupId>
+        <artifactId>jaxb2-basics</artifactId>
+        <version>${version.jaxb2-basics}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jvnet.jaxb2_commons</groupId>
+        <artifactId>jaxb2-namespace-prefix</artifactId>
+        <version>${version.jaxb2-namespace-prefix}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>base</artifactId>
+        <version>${version.com.google.jsinterop.base}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-dmn-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <failOnError>false</failOnError>
+          <filesets>
+            <fileset>
+              <directory>src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>${js.destination}</directory>
+              <includes>
+                <include>DC.js</include>
+                <include>DI.js</include>
+                <include>DMNDI12.js</include>
+                <include>DMN12.js</include>
+                <include>KIE.js</include>
+                <include>Jsonix-all.js</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper</directory>
+              <includes>
+                <include>JsUtils.java</include>
+                <include>JSIName.java</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-javascript</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <extension>true</extension>
+              <addCompileSourceRoot>false</addCompileSourceRoot>
+              <debug>false</debug>
+              <verbose>false</verbose>
+              <args>
+                <arg>-Xgwtjsonix</arg>
+                <arg>-Xinheritance</arg>
+                <arg>-Xnamespace-prefix</arg>
+                <arg>-jsid=${project.build.sourceDirectory}</arg>
+                <arg>-jsmpkg=org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>org.kogito</groupId>
+                  <artifactId>gwt-jsonix-schema-compiler</artifactId>
+                </plugin>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-basics</artifactId>
+                </plugin>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-namespace-prefix</artifactId>
+                </plugin>
+              </plugins>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-javascript</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.hisrc.jsonix</groupId>
+                  <artifactId>jsonix-scripts</artifactId>
+                  <version>${version.jsonix-scripts}</version>
+                  <type>js</type>
+                  <classifier>all</classifier>
+                  <outputDirectory>${js.destination}</outputDirectory>
+                  <destFileName>Jsonix-all.js</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>move-generated-sources</id>
+            <phase>process-sources</phase>
+            <configuration>
+              <failOnError>false</failOnError>
+              <target>
+                <copy file="${project.build.directory}/generated-sources/xjc/DC.js" tofile="${js.destination}/DC.js"/>
+                <copy file="${project.build.directory}/generated-sources/xjc/DI.js" tofile="${js.destination}/DI.js"/>
+                <copy file="${project.build.directory}/generated-sources/xjc/DMNDI12.js" tofile="${js.destination}/DMNDI12.js"/>
+                <copy file="${project.build.directory}/generated-sources/xjc/DMN12.js" tofile="${js.destination}/DMN12.js"/>
+                <copy file="${project.build.directory}/generated-sources/xjc/KIE.js" tofile="${js.destination}/KIE.js"/>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Exclude generated code from checkstyle validation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <excludes>
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/**/*,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/jre/package-info.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jvnet.jaxb2.maven2</groupId>
+          <artifactId>maven-jaxb2-plugin</artifactId>
+          <version>${version.maven-jaxb2-plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

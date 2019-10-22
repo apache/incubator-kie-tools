@@ -20,9 +20,9 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
-import org.kie.workbench.common.stunner.project.editor.impl.ProjectDiagramResourceImpl;
+import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
+import org.kie.workbench.common.stunner.project.diagram.editor.impl.ProjectDiagramResourceImpl;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -67,9 +67,9 @@ public class ProjectDiagramResourceServiceImplTest {
 
         final Path path = mock(Path.class);
         final Metadata metadata = mock(Metadata.class);
-        final ProjectDiagram projectDiagram = mock(ProjectDiagram.class);
+        final ProjectDiagramImpl projectDiagram = mock(ProjectDiagramImpl.class);
         final Path expectedPath = mock(Path.class);
-        final ProjectDiagramResource resource = new ProjectDiagramResourceImpl(projectDiagram);
+        final ProjectDiagramResourceImpl resource = new ProjectDiagramResourceImpl(projectDiagram);
         final String comment = "comment";
 
         when(projectDiagramService.save(path, projectDiagram, metadata, comment)).thenReturn(expectedPath);
@@ -86,7 +86,7 @@ public class ProjectDiagramResourceServiceImplTest {
         final Metadata metadata = mock(Metadata.class);
         final Path expectedPath = mock(Path.class);
         final String diagramXml = "<xml>";
-        final ProjectDiagramResource resource = new ProjectDiagramResourceImpl(diagramXml);
+        final ProjectDiagramResourceImpl resource = new ProjectDiagramResourceImpl(diagramXml);
         final String comment = "comment";
 
         when(projectDiagramService.saveAsXml(path, diagramXml, metadata, comment)).thenReturn(expectedPath);
@@ -113,7 +113,7 @@ public class ProjectDiagramResourceServiceImplTest {
 
         final Path path = mock(Path.class);
         final Metadata metadata = mock(Metadata.class);
-        final ProjectDiagramResource resource = mock(ProjectDiagramResource.class);
+        final ProjectDiagramResourceImpl resource = mock(ProjectDiagramResourceImpl.class);
         final String newName = "newName";
         final String comment = "comment";
 

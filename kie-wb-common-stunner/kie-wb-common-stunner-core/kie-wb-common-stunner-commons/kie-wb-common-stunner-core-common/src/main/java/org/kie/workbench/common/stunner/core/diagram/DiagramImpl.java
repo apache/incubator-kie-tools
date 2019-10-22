@@ -30,6 +30,14 @@ public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
               metadata);
     }
 
+    public DiagramImpl(final String name,
+                       final Graph graph,
+                       final Metadata metadata) {
+        super(name,
+              graph,
+              metadata);
+    }
+
     @Override
     public int hashCode() {
         int graphHash = (null != getGraph()) ? getGraph().hashCode() : 0;

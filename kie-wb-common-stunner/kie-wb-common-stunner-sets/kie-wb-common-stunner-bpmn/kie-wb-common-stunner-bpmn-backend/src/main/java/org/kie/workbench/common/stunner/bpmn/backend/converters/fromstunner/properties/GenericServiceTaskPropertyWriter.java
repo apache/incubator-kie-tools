@@ -23,7 +23,9 @@ import org.eclipse.bpmn2.Operation;
 import org.eclipse.bpmn2.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.GenericServiceTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
@@ -33,7 +35,6 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
 
     private final ServiceTask task;
     private final Interface iface;
-    private Message message;
 
     public GenericServiceTaskPropertyWriter(ServiceTask task, VariableScope variableScope) {
         super(task, variableScope);
@@ -41,15 +42,51 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
         this.iface = bpmn2.createInterface();
     }
 
-    public void setServiceImplementation(String serviceImplementation) {
-        if (!serviceImplementation.equals("Java")) {
-            serviceImplementation = "##WebService";
-        }
-        task.setImplementation(serviceImplementation);
+    public void setValue(GenericServiceTaskValue value) {
+        //1 Implementation
+        String serviceImplementation = value.getServiceImplementation();
+        task.setImplementation(GenericServiceTaskPropertyReader.getServiceImplementation(serviceImplementation));
         CustomAttribute.serviceImplementation.of(task).set(serviceImplementation);
-    }
 
-    public void setServiceOperation(String serviceOperation) {
+        //-------------------------------------------------------------
+
+        //2 Interface
+        String serviceInterface = value.getServiceInterface();
+
+        //in message
+        final Message inMessage;
+        ItemDefinition itemDefinitionInMsg = bpmn2.createItemDefinition();
+        itemDefinitionInMsg.setId(task.getId() + "_InMessageType");
+        itemDefinitionInMsg.setStructureRef(value.getInMessageStructure());
+        addItemDefinition(itemDefinitionInMsg);
+
+        inMessage = bpmn2.createMessage();
+        inMessage.setId(task.getId() + "_InMessage");
+        inMessage.setItemRef(itemDefinitionInMsg);
+        addRootElement(inMessage);
+
+        //out message
+        final Message outMessage;
+        ItemDefinition itemDefinitionOutMsg = bpmn2.createItemDefinition();
+        itemDefinitionOutMsg.setId(task.getId() + "_OutMessageType");
+        itemDefinitionOutMsg.setStructureRef(value.getOutMessagetructure());
+        addItemDefinition(itemDefinitionOutMsg);
+
+        outMessage = bpmn2.createMessage();
+        outMessage.setId(task.getId() + "_OutMessage");
+        outMessage.setItemRef(itemDefinitionOutMsg);
+        addRootElement(outMessage);
+
+        //custom attribute
+        CustomAttribute.serviceInterface.of(task).set(serviceInterface);
+        iface.setImplementationRef(serviceInterface);
+        iface.setName(serviceInterface);
+        iface.setId(task.getId() + "_ServiceInterface");
+
+        //-------------------------------------------------------------
+
+        //3 Operation
+        String serviceOperation = value.getServiceOperation();
         CustomAttribute.serviceOperation.of(task).set(serviceOperation);
 
         Operation operation = bpmn2.createOperation();
@@ -60,23 +97,8 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
         iface.getOperations().add(operation);
         task.setOperationRef(operation);
         addInterfaceDefinition(iface);
-        operation.setInMessageRef(message);
-    }
-
-    public void setServiceInterface(String serviceInterface) {
-        message = bpmn2.createMessage();
-        message.setId(task.getId() + "_InMessage");
-        ItemDefinition itemDefinition = bpmn2.createItemDefinition();
-        itemDefinition.setId(task.getId() + "_InMessageType");
-        addItemDefinition(itemDefinition);
-
-        message.setItemRef(itemDefinition);
-        addRootElement(message);
-
-        CustomAttribute.serviceInterface.of(task).set(serviceInterface);
-        iface.setImplementationRef(serviceInterface);
-        iface.setName(serviceInterface);
-        iface.setId(task.getId() + "_ServiceInterface");
+        operation.setInMessageRef(inMessage);
+        operation.setOutMessageRef(outMessage);
     }
 
     public void setAdHocAutostart(boolean autoStart) {

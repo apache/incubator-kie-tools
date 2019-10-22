@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
@@ -175,7 +176,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private void fireLoadDiagram(final DiagramRepresentation diagramRepresentation) {
         final String name = diagramRepresentation.getName();
-        final String path = diagramRepresentation.getPath().toURI();
+        final Path path = diagramRepresentation.getPath();
         loadDiagramEventEvent.fire(new LoadDiagramEvent(path,
                                                         name));
     }

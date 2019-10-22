@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
-import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -58,7 +58,7 @@ public class BPMNDiagramFilterProviderTest {
     private SessionManager sessionManager;
 
     @Mock
-    private DiagramTypeService diagramTypeService;
+    private DiagramTypeClientService diagramTypeService;
 
     @Mock
     private FieldChangeHandlerManager fieldChangeHandlerManager;

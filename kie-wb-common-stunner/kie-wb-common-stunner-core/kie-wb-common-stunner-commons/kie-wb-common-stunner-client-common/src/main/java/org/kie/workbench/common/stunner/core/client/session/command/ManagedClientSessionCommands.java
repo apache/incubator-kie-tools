@@ -85,6 +85,10 @@ public class ManagedClientSessionCommands {
         return (S) commands.get(index);
     }
 
+    public <S extends ClientSessionCommand> S get(final Class<? extends ClientSessionCommand> type) {
+        return get(types.indexOf(type));
+    }
+
     @SuppressWarnings("unchecked")
     public <S extends ClientSessionCommand> void visit(final BiConsumer<Class<S>, S> visitor) {
         for (int i = 0; i < commands.size(); i++) {

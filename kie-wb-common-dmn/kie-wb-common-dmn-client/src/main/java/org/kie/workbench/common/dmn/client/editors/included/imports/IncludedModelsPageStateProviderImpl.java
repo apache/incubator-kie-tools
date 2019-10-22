@@ -44,6 +44,10 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
 
     private Diagram diagram;
 
+    public IncludedModelsPageStateProviderImpl() {
+        this(null, null);
+    }
+
     @Inject
     public IncludedModelsPageStateProviderImpl(final DMNGraphUtils dmnGraphUtils,
                                                final IncludedModelsFactory factory) {

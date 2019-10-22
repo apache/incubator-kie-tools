@@ -68,6 +68,11 @@
       <artifactId>kie-wb-common-stunner-case-mgmt-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
+    </dependency>
+
     <!-- Uberfire & Errai. -->
 
     <dependency>

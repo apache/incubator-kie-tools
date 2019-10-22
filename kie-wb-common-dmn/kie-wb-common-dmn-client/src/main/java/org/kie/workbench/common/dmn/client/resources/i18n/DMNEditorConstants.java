@@ -450,4 +450,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationFactory_Structure = "DMNDocumentationFactory.Structure";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNPreviewDiagramDock_Title = "DMNPreviewDiagramDock.Title";
 }

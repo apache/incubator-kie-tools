@@ -22,8 +22,8 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramExplorerScreen;
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramPropertiesScreen;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -41,11 +41,11 @@ public class DefaultStunnerDockSupplierImpl implements StunnerDockSupplier {
 
         result.add(new UberfireDock(UberfireDockPosition.EAST,
                                     "PENCIL_SQUARE_O",
-                                    new DefaultPlaceRequest(ProjectDiagramPropertiesScreen.SCREEN_ID),
+                                    new DefaultPlaceRequest(DiagramEditorPropertiesScreen.SCREEN_ID),
                                     perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle()));
         result.add(new UberfireDock(UberfireDockPosition.EAST,
                                     "EYE",
-                                    new DefaultPlaceRequest(ProjectDiagramExplorerScreen.SCREEN_ID),
+                                    new DefaultPlaceRequest(DiagramEditorExplorerScreen.SCREEN_ID),
                                     perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle()));
         return result;
     }

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
+import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
@@ -37,7 +38,7 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEdi
 
     @Inject
     public BPMNProjectEditorMenuSessionItems(final BPMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
-                                             final BPMNEditorSessionCommands sessionCommands) {
+                                             final @BPMN BPMNEditorSessionCommands sessionCommands) {
         super(itemsBuilder, sessionCommands);
     }
 

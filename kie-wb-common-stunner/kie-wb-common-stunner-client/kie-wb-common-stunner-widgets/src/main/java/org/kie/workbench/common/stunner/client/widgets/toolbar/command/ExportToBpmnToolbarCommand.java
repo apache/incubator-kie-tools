@@ -24,16 +24,16 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToRawFormatSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-public class ExportToBpmnToolbarCommand extends AbstractToolbarCommand<AbstractSession<AbstractCanvas, AbstractCanvasHandler>, ExportToBpmnSessionCommand> {
+public class ExportToBpmnToolbarCommand extends AbstractToolbarCommand<AbstractSession<AbstractCanvas, AbstractCanvasHandler>, ExportToRawFormatSessionCommand> {
 
     @Inject
     public ExportToBpmnToolbarCommand(final DefinitionUtils definitionUtils,
-                                      final @Any ManagedInstance<ExportToBpmnSessionCommand> command,
+                                      final @Any ManagedInstance<ExportToRawFormatSessionCommand> command,
                                       final ClientTranslationService translationService) {
         super(definitionUtils,
               command,

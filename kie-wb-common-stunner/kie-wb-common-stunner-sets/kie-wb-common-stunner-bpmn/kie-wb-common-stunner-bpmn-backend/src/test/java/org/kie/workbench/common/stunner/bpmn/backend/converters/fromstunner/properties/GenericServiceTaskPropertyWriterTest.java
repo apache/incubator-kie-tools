@@ -17,15 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import org.eclipse.bpmn2.ServiceTask;
-import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
-import org.mockito.Mock;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,49 +38,52 @@ public class GenericServiceTaskPropertyWriterTest {
 
     private ServiceTask serviceTask = bpmn2.createServiceTask();
 
-    @Mock
-    private BPMNDiagram diagram;
-
-    @Mock
-    private DefinitionResolver definitionResolver;
+    private GenericServiceTaskValue value;
 
     @Before
     public void setUp() {
         PropertyWriterFactory writerFactory = new PropertyWriterFactory();
         w = writerFactory.of(serviceTask);
+        value = new GenericServiceTaskValue("Java",
+                                            "serviceInterface",
+                                            "serviceOperation",
+                                            "inMessageStructure",
+                                            "outMessagetructure");
     }
 
     @Test
     public void setAndTestJava() {
-        w.setServiceImplementation("Java");
-        w.setServiceOperation("setServiceOperation");
-        w.setServiceInterface("setServiceInterface");
+        w.setValue(value);
         w.setSLADueDate(SLA_DUE_DATE);
         w.setAsync(false);
         w.setAdHocAutostart(false);
         w.setAssignmentsInfo(new AssignmentsInfo());
 
-        assertEquals("Java", CustomAttribute.serviceImplementation.of(serviceTask).get());
-        assertEquals("setServiceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
-        assertEquals("setServiceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
+        assertServiceTaskProperties("Java");
         assertEquals(SLA_DUE_DATE_CDATA, CustomElement.slaDueDate.of(serviceTask).get());
         assertEquals(false, CustomElement.async.of(serviceTask).get());
         assertEquals(false, CustomElement.autoStart.of(serviceTask).get());
         assertNotNull(Scripts.onEntry(serviceTask));
     }
 
+    private void assertServiceTaskProperties(String serviceImplementation) {
+        assertEquals(serviceImplementation, CustomAttribute.serviceImplementation.of(serviceTask).get());
+        assertEquals("serviceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
+        assertEquals("serviceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
+        assertEquals("serviceOperation", serviceTask.getOperationRef().getName());
+        assertEquals("inMessageStructure", serviceTask.getOperationRef().getInMessageRef().getItemRef().getStructureRef());
+        assertEquals("outMessagetructure", serviceTask.getOperationRef().getOutMessageRef().getItemRef().getStructureRef());
+    }
+
     @Test
     public void setAndTestWebService() {
-        w.setServiceImplementation("WebService");
-        w.setServiceOperation("setServiceOperation");
-        w.setServiceInterface("setServiceInterface");
+        value.setServiceImplementation("WebService");
+        w.setValue(value);
         w.setSLADueDate(SLA_DUE_DATE);
         w.setAsync(false);
         w.setAdHocAutostart(false);
 
-        assertEquals("##WebService", CustomAttribute.serviceImplementation.of(serviceTask).get());
-        assertEquals("setServiceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
-        assertEquals("setServiceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
+        assertServiceTaskProperties("WebService");
         assertEquals(SLA_DUE_DATE_CDATA, CustomElement.slaDueDate.of(serviceTask).get());
         assertEquals(false, CustomElement.async.of(serviceTask).get());
         assertEquals(false, CustomElement.autoStart.of(serviceTask).get());

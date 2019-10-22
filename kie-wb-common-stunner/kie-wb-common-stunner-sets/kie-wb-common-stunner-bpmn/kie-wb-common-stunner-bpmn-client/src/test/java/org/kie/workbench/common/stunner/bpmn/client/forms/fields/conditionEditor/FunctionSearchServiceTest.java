@@ -20,16 +20,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.FunctionDef;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -38,7 +37,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
-import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -46,6 +44,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,16 +60,11 @@ public class FunctionSearchServiceTest {
     private static final String FUNCTION2_NAME = "FUNCTION2_NAME";
     private static final String TYPE = "TYPE";
 
-    private Caller<ConditionEditorService> editorServiceCaller;
-
     @Mock
-    private ConditionEditorService editorService;
+    private ConditionEditorAvailableFunctionsService availableFunctionsService;
 
     @Mock
     private FunctionNamingService functionNamingService;
-
-    @Mock
-    private FunctionSearchService searchService;
 
     @Mock
     private ClientSession clientSession;
@@ -89,13 +84,14 @@ public class FunctionSearchServiceTest {
     @Mock
     private Command command;
 
-    private List<FunctionDef> testFunctions;
-
     @Mock
     private LiveSearchCallback<String> searchCallback;
 
     @Captor
     private ArgumentCaptor<LiveSearchResults<String>> searchResultsCaptor;
+
+    private FunctionSearchService searchService;
+    private List<FunctionDef> testFunctions;
 
     @Before
     public void setUp() {
@@ -103,8 +99,7 @@ public class FunctionSearchServiceTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getPath()).thenReturn(path);
-        editorServiceCaller = new CallerMock<>(editorService);
-        searchService = new FunctionSearchService(editorServiceCaller, functionNamingService);
+        searchService = new FunctionSearchService(availableFunctionsService, functionNamingService);
     }
 
     @Test
@@ -125,7 +120,11 @@ public class FunctionSearchServiceTest {
         prepareForLoad();
         searchService.reload(TYPE, command);
 
-        verify(editorService).findAvailableFunctions(path, TYPE);
+        ArgumentCaptor<ConditionEditorAvailableFunctionsService.Input> inputArgumentCaptor =
+                ArgumentCaptor.forClass(ConditionEditorAvailableFunctionsService.Input.class);
+        verify(availableFunctionsService).call(inputArgumentCaptor.capture());
+        assertEquals(path, inputArgumentCaptor.getValue().path);
+        assertEquals(TYPE, inputArgumentCaptor.getValue().clazz);
         someFunction = searchService.getFunction(FUNCTION1);
         assertNotNull(someFunction);
         assertEquals(testFunctions.get(0), someFunction);
@@ -239,7 +238,7 @@ public class FunctionSearchServiceTest {
         testFunctions = new ArrayList<>();
         testFunctions.add(mockFunctionDef(FUNCTION1, FUNCTION1_NAME));
         testFunctions.add(mockFunctionDef(FUNCTION2, FUNCTION2_NAME));
-        when(editorService.findAvailableFunctions(path, TYPE)).thenReturn(testFunctions);
+        doReturn(PromiseMock.success(testFunctions)).when(availableFunctionsService).call(any(ConditionEditorAvailableFunctionsService.Input.class));
     }
 
     private void loadTestFunctions() {

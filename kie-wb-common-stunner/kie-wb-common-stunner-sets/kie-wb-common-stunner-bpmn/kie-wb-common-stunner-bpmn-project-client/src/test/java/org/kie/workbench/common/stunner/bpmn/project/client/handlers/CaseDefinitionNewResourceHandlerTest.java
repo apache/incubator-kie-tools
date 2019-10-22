@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.project.client.handlers.util.CaseHelper;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
-import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
+import org.kie.workbench.common.stunner.bpmn.project.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;

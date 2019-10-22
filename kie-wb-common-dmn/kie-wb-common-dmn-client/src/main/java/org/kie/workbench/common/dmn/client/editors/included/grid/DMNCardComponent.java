@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
+import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 
 public class DMNCardComponent extends BaseCardComponent<DMNIncludedModelActiveRecord, DMNCardComponent.ContentView> {

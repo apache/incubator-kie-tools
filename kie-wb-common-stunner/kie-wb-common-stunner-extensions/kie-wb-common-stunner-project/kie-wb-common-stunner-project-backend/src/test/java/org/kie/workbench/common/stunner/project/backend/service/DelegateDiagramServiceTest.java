@@ -22,8 +22,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -61,10 +61,10 @@ public class DelegateDiagramServiceTest {
     private Graph graph;
 
     @Captor
-    private ArgumentCaptor<ProjectDiagram> projectDiagramArgumentCaptor;
+    private ArgumentCaptor<ProjectDiagramImpl> projectDiagramArgumentCaptor;
 
     @Mock
-    private ProjectDiagram projectDiagram;
+    private ProjectDiagramImpl projectDiagram;
 
     @Before
     public void setUp() throws Exception {
@@ -78,9 +78,9 @@ public class DelegateDiagramServiceTest {
         when(projectDiagramService.getDiagramByPath(path)).thenReturn(projectDiagram);
         when(projectDiagramService.accepts(path)).thenReturn(true);
         when(projectDiagramService.create(path, NAME, DEF_ID)).thenReturn(path);
-        when(projectDiagramService.saveOrUpdate(any(ProjectDiagram.class))).thenReturn(projectMetadata);
-        when(projectDiagramService.delete(any(ProjectDiagram.class))).thenReturn(true);
-        when(projectDiagramService.getRawContent(any(ProjectDiagram.class))).thenReturn(CONTENT);
+        when(projectDiagramService.saveOrUpdate(any(ProjectDiagramImpl.class))).thenReturn(projectMetadata);
+        when(projectDiagramService.delete(any(ProjectDiagramImpl.class))).thenReturn(true);
+        when(projectDiagramService.getRawContent(any(ProjectDiagramImpl.class))).thenReturn(CONTENT);
         delegateDiagramService = new DelegateDiagramService(projectDiagramService);
     }
 
@@ -121,13 +121,13 @@ public class DelegateDiagramServiceTest {
         assertTrue(deleted);
     }
 
-    private void assertEqualDiagram(ProjectDiagram projectDiagram) {
+    private void assertEqualDiagram(final ProjectDiagramImpl projectDiagram) {
         assertEquals(projectDiagram.getName(), NAME);
         assertEquals(projectDiagram.getGraph(), graph);
         assertEquals(projectDiagram.getMetadata(), projectMetadata);
     }
 
-    private void assertEqualDiagram(Diagram<Graph, Metadata> diagram) {
+    private void assertEqualDiagram(final Diagram<Graph, Metadata> diagram) {
         assertEquals(diagram.getName(), NAME);
         assertEquals(diagram.getGraph(), graph);
         assertEquals(diagram.getMetadata(), projectMetadata);

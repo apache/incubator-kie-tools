@@ -62,6 +62,11 @@
       <artifactId>kie-wb-common-stunner-project-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
+    </dependency>
+
     <!-- Other deps. -->
 
     <dependency>
