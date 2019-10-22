@@ -11,7 +11,29 @@ on:
     
 
 jobs:
+  fetch-editors:
+   runs-on: macOS-latest
+   steps:
+     - name: Fetch editors from last release
+       uses: actions/checkout@v1
+       with:
+         ref: 0.2.0
+     
+     - name: Upload DMN editor
+       uses: actions/upload-artifact@v1
+       with:
+         name: dmn-editor
+         path: packages/unpacked-gwt-editors/dmn
+ 
+     - name: Upload BPMN editor
+       uses: actions/upload-artifact@v1
+       with:
+         name: bpmn-editor
+         path: packages/unpacked-gwt-editors/bpmn
+   
+     
   build:
+    needs: fetch-editors
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -62,6 +84,18 @@ jobs:
     - name: Unit tests
       run: npx lerna run test --stream
       continue-on-error: true
+      
+    - name: Download DMN editor
+      uses: actions/upload-artifact@v1
+      with:
+        name: dmn-editor
+        path: packages/unpacked-gwt-editors/dmn
+
+    - name: Download BPMN editor
+      uses: actions/upload-artifact@v1
+      with:
+        name: bpmn-editor
+        path: packages/unpacked-gwt-editors/bpmn
     
     - name: "Build :: prod"
       if: success()
