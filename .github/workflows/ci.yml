@@ -109,13 +109,15 @@ jobs:
     - name: Pack artifacts
       run: npx lerna run pack-extension --stream
 
-    - name: Upload VSCode Extension
+    - name: Upload VSCode Extension (Ubuntu only)
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v1
       with:
         name: vscode-extension
         path: packages/vscode-extension-pack-kogito-kie-editors/dist
 
-    - name: Upload Chrome Extension
+    - name: Upload Chrome Extension (Ubuntu only)
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v1
       with:
         name: chrome-extension
