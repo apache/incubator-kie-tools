@@ -23,10 +23,16 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.vscode-extension-pack-kogito-bpmn",
+    extensionName: "kiegroup.vscode-extension-pack-kogito-kie-editors",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    router: new VsCodeKogitoRouter(context, new GwtEditorRoutes({ bpmnPath: "dist/webview/editors/bpmn" }))
+    router: new VsCodeKogitoRouter(
+      context,
+      new GwtEditorRoutes({
+        bpmnPath: "dist/webview/editors/bpmn",
+        dmnPath: "dist/webview/editors/dmn"
+      })
+    )
   });
 
   console.info("Extension is successfully setup.");

@@ -22,7 +22,7 @@ import { startKogitoChromeExtension } from "./index";
 function init() {
   startKogitoChromeExtension({
     editorIndexPath: "envelope/index.html",
-    router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn" }))
+    router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" }))
   });
 }
 

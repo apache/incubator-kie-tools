@@ -27,8 +27,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    libraryTarget: "umd",
-    globalObject: "this"
+    libraryTarget: "commonjs2",
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [

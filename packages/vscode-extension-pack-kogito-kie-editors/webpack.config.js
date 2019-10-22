@@ -75,6 +75,11 @@ module.exports = [
     entry: {
       "webview/index": "./src/webview/index.ts"
     },
-    plugins: [new CopyWebpackPlugin([{ from: "../unpacked-gwt-editors/bpmn", to: "webview/editors/bpmn" }])]
+    plugins: [
+      new CopyWebpackPlugin([
+        { from: "../unpacked-gwt-editors/bpmn", to: "webview/editors/bpmn" },
+        { from: "../unpacked-gwt-editors/dmn", to: "webview/editors/dmn" }
+      ])
+    ]
   }
 ];
