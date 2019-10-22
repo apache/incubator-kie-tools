@@ -39,7 +39,7 @@ oc create -f deploy/service_account.yaml -n ${namespace}
 oc create -f deploy/role_binding.yaml -n ${namespace}
 
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e --namespace ${namespace} --up-local --debug --go-test-flags "-timeout 30m"
+DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e --namespace ${namespace} --up-local --debug --verbose --go-test-flags "-timeout 30m"
 
 # clean up
 oc delete namespace ${namespace}

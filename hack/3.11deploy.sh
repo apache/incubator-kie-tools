@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-for FILE in deploy/crds/app_v1alpha1_kogitoapp_crd.yaml deploy/crds/app_v1alpha1_kogitodataindex_crd.yaml deploy/role.yaml deploy/service_account.yaml deploy/role_binding.yaml deploy/operator.yaml
+for FILE in deploy/crds/app.kiegroup.org_kogitoapps_crd.yaml deploy/crds/app.kiegroup.org_kogitodataindices_crd.yaml deploy/role.yaml deploy/service_account.yaml deploy/role_binding.yaml deploy/operator.yaml
 do
 	oc apply -f ${FILE}
 done
