@@ -20,8 +20,6 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
-import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
-import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseOutEvent;
 import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,40 +28,36 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.CommonOnMoveHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelMouseMoveHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * ScenarioGridPanel implementation of <code>GridLienzoPanel</code>.
  * <p>
  * This panel contains a <code>ScenarioGridLayer</code> and it is instantiated only once.
- * The Clicks are managed by the injected <code>ScenarioSimulationGridPanelClickHandler</code>
+ * The Clicks are managed by the injected <code>ScenarioSimulationMainGridPanelClickHandler</code>
  */
 @Dependent
 public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHandler,
-                                                                  NodeMouseMoveHandler,
                                                                   ScrollHandler {
 
-    private EventBus eventBus;
     private ScenarioSimulationGridPanelClickHandler clickHandler;
-    private CommonOnMoveHandler commonOnMoveHandler;
+    private ScenarioSimulationGridPanelMouseMoveHandler mouseMoveHandler;
 
     Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
 
-    public ScenarioGridPanel() {
-    }
-
-    public void addHandlers(final ScenarioSimulationGridPanelClickHandler clickHandler, final CommonOnMoveHandler commonOnHoverHandler) {
+    public void addHandlers(final ScenarioSimulationGridPanelClickHandler clickHandler,
+                            final ScenarioSimulationGridPanelMouseMoveHandler mouseMoveHandler) {
         this.clickHandler = clickHandler;
-        this.commonOnMoveHandler = commonOnHoverHandler;
+        this.mouseMoveHandler = mouseMoveHandler;
         unregister();
         handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                                         ContextMenuEvent.getType()));
         handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                                         ClickEvent.getType()));
         handlerRegistrations.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
-        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseMoveHandler(this));
+        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseMoveHandler(mouseMoveHandler));
         handlerRegistrations.add(getScrollPanel().addDomHandler(this, ScrollEvent.getType()));
     }
 
@@ -76,7 +70,6 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     }
 
     public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
         getScenarioGrid().setEventBus(eventBus);
     }
 
@@ -92,30 +85,29 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
         final int y = event.getY();
         if (x < 0 || x > width || y < 0 || y > height) {
             clickHandler.hideMenus();
-            commonOnMoveHandler.hidePopover();
+            mouseMoveHandler.hidePopover();
         }
-    }
-
-    @Override
-    public void onNodeMouseMove(NodeMouseMoveEvent event) {
-        commonOnMoveHandler.handleOnMove(event.getX(), event.getY());
     }
 
     @Override
     public void onScroll(ScrollEvent scrollEvent) {
         clickHandler.hideMenus();
-        commonOnMoveHandler.hidePopover();
+        mouseMoveHandler.hidePopover();
     }
 
     @Override
     public void onResize() {
         super.onResize();
         clickHandler.hideMenus();
-        commonOnMoveHandler.hidePopover();
+        mouseMoveHandler.hidePopover();
     }
 
     public void unregister() {
         handlerRegistrations.forEach(HandlerRegistration::removeHandler);
         handlerRegistrations.clear();
+    }
+
+    public void synchronizeFactMappingsWidths() {
+        ((ScenarioGridLayer) getDefaultGridLayer()).getScenarioGrid().getModel().synchronizeFactMappingsWidths();
     }
 }

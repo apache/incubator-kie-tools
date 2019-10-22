@@ -56,6 +56,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
@@ -105,6 +106,8 @@ public abstract class AbstractScenarioSimulationTest {
     protected List<GridRow> rowsMock;
     @Mock
     protected ScenarioGridPanel scenarioGridPanelMock;
+    @Mock
+    protected ScenarioGridWidget scenarioGridWidgetMock;
     @Mock
     protected EventBus eventBusMock;
     @Mock
@@ -306,6 +309,7 @@ public abstract class AbstractScenarioSimulationTest {
         when(scenarioSimulationEditorPresenterMock.getModel()).thenReturn(scenarioSimulationModelMock);
         scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         when(scenarioSimulationEditorPresenterMock.getDataManagementStrategy()).thenReturn(dataManagementStrategyMock);
+        when(scenarioSimulationEditorPresenterMock.getFocusedContext()).thenReturn(scenarioSimulationContextLocal);
 
         when(simulationMock.cloneSimulation()).thenReturn(clonedSimulationMock);
         scenarioSimulationContextLocal.getStatus().setSimulation(simulationMock);
@@ -361,6 +365,8 @@ public abstract class AbstractScenarioSimulationTest {
         when(factMappingMock.getFactAlias()).thenReturn(FACT_ALIAS);
         when(factMappingMock.getGenericTypes()).thenReturn(new ArrayList<>());
         doReturn(factMappingMock).when(simulationDescriptorMock).addFactMapping(anyInt(), anyString(), anyObject(), anyObject());
+        when(scenarioGridWidgetMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
+        when(scenarioSimulationViewMock.getScenarioGridWidget()).thenReturn(scenarioGridWidgetMock);
     }
 
     /**

@@ -101,7 +101,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         String key = className + "#" + propertyName;
         String genericTypeName0 = genericTypes.get(0);
         Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
-        boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
+        boolean isRule = RULE.equals(simulation.orElseThrow(IllegalArgumentException::new).getSimulationDescriptor().getType());
         if (isRule && !isSimpleJavaType(genericTypeName0)) {
             genericTypeName0 = getRuleComplexType(genericTypeName0);
         }
@@ -113,7 +113,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
     }
 
     protected String getRuleComplexType(String genericTypeName0) {
-        return genericTypeName0.substring(genericTypeName0.lastIndexOf(".") + 1);
+        return genericTypeName0.substring(genericTypeName0.lastIndexOf('.') + 1);
     }
 
     protected void manageList(CollectionViewImpl collectionEditorView, String key, String genericTypeName0) {
@@ -160,11 +160,11 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         if (isSimpleJavaType(typeName)) {
             return toReturn;
         }
-        boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
+        boolean isRule = RULE.equals(simulation.orElseThrow(IllegalArgumentException::new).getSimulationDescriptor().getType());
         final Map<String, String> expandableProperties = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getExpandableProperties();
         expandableProperties.forEach((key, nestedTypeName) -> {
             if (isRule) {
-                nestedTypeName = nestedTypeName.substring(nestedTypeName.lastIndexOf(".") + 1);
+                nestedTypeName = nestedTypeName.substring(nestedTypeName.lastIndexOf('.') + 1);
             }
             toReturn.put(key, getSimplePropertiesMap(nestedTypeName));
         });
@@ -180,10 +180,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
 
     @Override
     public void registerHandlers(final CollectionViewImpl widget, final CollectionEditorDOMElement widgetDomElement) {
-
-        widget.addCloseCompositeEventHandler(event -> {
-            commonCloseHandling(widgetDomElement);
-        });
+        widget.addCloseCompositeEventHandler(event -> commonCloseHandling(widgetDomElement));
         widget.addSaveEditorEventHandler(event -> flush());
     }
 }

@@ -44,7 +44,6 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 public abstract class AbstractDataManagementStrategy implements DataManagementStrategy {
 
     protected ScenarioSimulationModel model;
-    protected ScenarioSimulationContext scenarioSimulationContext;
     protected ResultHolder factModelTreeHolder = new ResultHolder();
 
     @Override
@@ -57,7 +56,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         Map<String, String> simpleProperties = new HashMap<>();
         String fullName = canonicalName;
         simpleProperties.put("value", fullName);
-        String packageName = fullName.substring(0, fullName.lastIndexOf("."));
+        String packageName = fullName.substring(0, fullName.lastIndexOf('.'));
         FactModelTree toReturn = new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
         toReturn.setSimple(true);
         return toReturn;
@@ -78,10 +77,8 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
     public Map<String, List<List<String>>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
         final Map<String, List<List<String>>> toReturn = new HashMap<>();
         final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) scenarioGridModel.getSelectedColumn();
-        if (selectedColumn != null) {
-            if (selectedColumn.isInstanceAssigned()) {
-                toReturn.put(selectedColumn.getInformationHeaderMetaData().getTitle(), getPropertiesToHide(selectedColumn, scenarioGridModel));
-            }
+        if (selectedColumn != null && selectedColumn.isInstanceAssigned()) {
+            toReturn.put(selectedColumn.getInformationHeaderMetaData().getTitle(), getPropertiesToHide(selectedColumn, scenarioGridModel));
         }
         return toReturn;
     }
@@ -127,9 +124,11 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
     /**
      * Store data in required target objects
      */
-    public void storeData(final FactModelTuple factModelTuple, final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
+    public void storeData(final FactModelTuple factModelTuple,
+                          final TestToolsView.Presenter testToolsPresenter,
+                          final ScenarioSimulationContext context) {
         // Instantiate a map of already assigned properties
-        final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
+        final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(context.getModel());
         final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
         final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
@@ -146,17 +145,17 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         testToolsPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
         testToolsPresenter.hideProperties(propertiesToHide);
         // Update context
-        SortedMap<String, FactModelTree> context = new TreeMap<>();
-        context.putAll(visibleFacts);
-        context.putAll(factModelTuple.getHiddenFacts());
-        scenarioSimulationContext.setDataObjectFieldsMap(context);
-        // Update model
+        SortedMap<String, FactModelTree> dataObjectFieldsMap = new TreeMap<>();
+        dataObjectFieldsMap.putAll(visibleFacts);
+        dataObjectFieldsMap.putAll(factModelTuple.getHiddenFacts());
+        context.setDataObjectFieldsMap(dataObjectFieldsMap);
         Set<String> dataObjectsInstancesName = new HashSet<>(visibleFacts.keySet());
         dataObjectsInstancesName.addAll(instanceFieldsMap.keySet());
-        scenarioGridModel.setDataObjectsInstancesName(dataObjectsInstancesName);
+        context.setDataObjectsInstancesName(dataObjectsInstancesName);
         Set<String> simpleJavaTypeInstancesName = new HashSet<>(simpleDataObjects.keySet());
         simpleJavaTypeInstancesName.addAll(simpleJavaTypeInstanceFieldsMap.keySet());
-        scenarioGridModel.setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
+        // Update model
+        context.getModel().setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
     }
 
     /**
@@ -186,7 +185,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         return toReturn;
     }
 
-    static public class ResultHolder {
+    public static class ResultHolder {
 
         FactModelTuple factModelTuple;
 

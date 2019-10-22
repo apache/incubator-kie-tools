@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.workbench.screens.scenariosimulation.client.editor;
+package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationTest {
+public class ScenarioGridWidgetTest extends AbstractScenarioSimulationTest {
 
     public static final int WIDTH = 44;
     public static final int HEIGHT = 82;
@@ -39,25 +39,49 @@ public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationTe
     @Mock
     private Widget parentWidget;
 
-    private ScenarioSimulationViewImpl scenarioViewImpl;
+    private ScenarioGridWidget scenarioGridWidget;
 
     @Before
     public void setup() {
         super.setup();
-        scenarioViewImpl = spy(new ScenarioSimulationViewImpl() {
-            {
-                this.scenarioGridWidget = scenarioGridWidgetMock;
-            }
-        });
-        when(scenarioViewImpl.getParent()).thenReturn(parentWidget);
+        scenarioGridWidget = spy(new ScenarioGridWidget());
+        scenarioGridWidget.setScenarioGridPanel(scenarioGridPanelMock);
+
+        when(scenarioGridWidget.getParent()).thenReturn(parentWidget);
         when(parentWidget.getOffsetHeight()).thenReturn(HEIGHT);
         when(parentWidget.getOffsetWidth()).thenReturn(WIDTH);
     }
 
     @Test
+    public void refreshContent() {
+        scenarioGridWidget.refreshContent(simulationMock);
+        verify(scenarioGridModelMock, times(1)).bindContent(eq(simulationMock));
+        verify(scenarioGridModelMock, times(1)).refreshErrors();
+        verify(scenarioGridWidget, times(1)).onResize();
+    }
+
+    @Test
     public void onResize() {
-        scenarioViewImpl.onResize();
-        verify(scenarioViewImpl, times(1)).setPixelSize(eq(WIDTH), eq(HEIGHT));
-        verify(scenarioGridWidgetMock, times(1)).onResize();
+        scenarioGridWidget.onResize();
+        verify(scenarioGridWidget, times(1)).setPixelSize(eq(WIDTH), eq(HEIGHT));
+        verify(scenarioGridPanelMock, times(1)).onResize();
+    }
+
+    @Test
+    public void unregister() {
+        scenarioGridWidget.unregister();
+        verify(scenarioGridPanelMock, times(1)).unregister();
+    }
+
+    @Test
+    public void clearSelection() {
+        scenarioGridWidget.clearSelections();
+        verify(scenarioGridModelMock, times(1)).clearSelections();
+    }
+
+    @Test
+    public void resetErrors() {
+        scenarioGridWidget.resetErrors();
+        verify(scenarioGridModelMock, times(1)).resetErrors();
     }
 }

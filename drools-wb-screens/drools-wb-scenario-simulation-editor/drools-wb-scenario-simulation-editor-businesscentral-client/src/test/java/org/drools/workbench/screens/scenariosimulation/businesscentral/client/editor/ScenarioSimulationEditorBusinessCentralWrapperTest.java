@@ -28,11 +28,13 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
@@ -126,7 +128,10 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     private Supplier<ScenarioSimulationModel> contentSupplierMock;
     @Mock
     private ProjectController projectControllerMock;
-
+    @Mock
+    private ScenarioGridWidget backgroundGridWidgetMock;
+    @Mock
+    private ScenarioSimulationContext backgroundContextMock;
 
     private CallerMock<ScenarioSimulationService> scenarioSimulationCaller;
     private CallerMock<ImportExportService> importExportCaller;
@@ -177,9 +182,12 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         when(scenarioSimulationEditorPresenterMock.getView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationEditorPresenterMock.getModel()).thenReturn(scenarioSimulationModelMock);
         when(scenarioSimulationEditorPresenterMock.getContentSupplier()).thenReturn(contentSupplierMock);
-        when(scenarioSimulationViewMock.getScenarioGridLayer()).thenReturn(scenarioGridLayerMock);
+        when(scenarioSimulationEditorPresenterMock.getFocusedContext()).thenReturn(scenarioSimulationContextLocal);
+        when(scenarioSimulationEditorPresenterMock.getBackgroundGridWidget()).thenReturn(backgroundGridWidgetMock);
+        when(backgroundGridWidgetMock.getScenarioSimulationContext()).thenReturn(backgroundContextMock);
         when(alertsButtonMenuItemBuilderMock.build()).thenReturn(alertsButtonMenuItemMock);
         when(versionRecordManagerMock.buildMenu()).thenReturn(versionRecordMenuItemMock);
+        when(scenarioGridWidgetMock.getScenarioSimulationContext()).thenReturn(scenarioSimulationContextLocal);
     }
 
     @Test
@@ -332,7 +340,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Test
     public void synchronizeColumnsDimension() {
         scenarioSimulationEditorBusinessClientWrapper.synchronizeColumnsDimension();
-        verify(scenarioGridModelMock, times(1)).synchronizeFactMappingsWidths();
+        verify(scenarioGridPanelMock, times(1)).synchronizeFactMappingsWidths();
     }
 
     @Test
@@ -346,6 +354,33 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         scenarioSimulationEditorBusinessClientWrapper.loadContent();
         verify(scenarioSimulationCaller, times(1)).call(isA(RemoteCallback.class), isA(CommandDrivenErrorCallback.class));
         verify(scenarioSimulationServiceMock, times(1)).loadContent(eq(observablePathMock));
+    }
+
+    @Test
+    public void onEditTabSelected() {
+        scenarioSimulationEditorBusinessClientWrapper.onEditTabSelected();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setFocusedContext(eq(scenarioSimulationContextLocal));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setItemMenuForMainGridEnabled(eq(true));
+        verify(scenarioGridWidgetMock, times(1)).clearSelections();
+        verify(scenarioGridWidgetMock, times(1)).select();
+        verify(backgroundGridWidgetMock, times(1)).deselect();
+    }
+
+    @Test
+    public void onOverviewSelected() {
+        scenarioSimulationEditorBusinessClientWrapper.onOverviewSelected();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setFocusedContext(eq(scenarioSimulationContextLocal));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setItemMenuForMainGridEnabled(eq(true));
+    }
+
+    @Test
+    public void onBackGroundTabSelected() {
+        scenarioSimulationEditorBusinessClientWrapper.enableBackgroundTab();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setFocusedContext(eq(backgroundContextMock));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).setItemMenuForMainGridEnabled(eq(false));
+        verify(backgroundGridWidgetMock, times(1)).clearSelections();
+        verify(backgroundGridWidgetMock, times(1)).select();
+        verify(scenarioGridWidgetMock, times(1)).deselect();
     }
 
     @Test

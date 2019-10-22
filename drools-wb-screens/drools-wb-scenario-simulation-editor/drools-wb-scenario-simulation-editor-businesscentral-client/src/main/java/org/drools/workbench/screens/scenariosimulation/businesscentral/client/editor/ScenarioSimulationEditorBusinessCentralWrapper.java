@@ -36,9 +36,10 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSim
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorWrapper;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -62,6 +63,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -295,9 +297,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     protected void synchronizeColumnsDimension() {
-        final ScenarioGridModel scenarioGridModel = scenarioSimulationEditorPresenter.getView().getScenarioGridLayer()
-                .getScenarioGrid().getModel();
-        scenarioGridModel.synchronizeFactMappingsWidths();
+        scenarioSimulationEditorPresenter.getFocusedContext().getScenarioGridPanel().synchronizeFactMappingsWidths();
     }
 
     @Override
@@ -346,9 +346,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         resetEditorPages(content.getOverview());
         DataManagementStrategy dataManagementStrategy;
         if (ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
-            dataManagementStrategy = new BusinessCentralDMODataManagementStrategy(oracleFactory, scenarioSimulationEditorPresenter.getContext());
+            dataManagementStrategy = new BusinessCentralDMODataManagementStrategy(oracleFactory);
         } else {
-            dataManagementStrategy = new BusinessCentralDMNDataManagementStrategy(dmnTypeService, scenarioSimulationEditorPresenter.getContext(), scenarioSimulationEditorPresenter.getEventBus());
+            dataManagementStrategy = new BusinessCentralDMNDataManagementStrategy(dmnTypeService, scenarioSimulationEditorPresenter.getEventBus());
         }
         dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
         ScenarioSimulationModel model = content.getModel();
@@ -361,6 +361,52 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         baseView.hideBusyIndicator();
         setOriginalHash(scenarioSimulationEditorPresenter.getJsonModel(model).hashCode());
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);
+    }
+
+    /**
+     * This method is called when the main grid tab (Model) is focused
+     */
+    @Override
+    public void onEditTabSelected() {
+        super.onEditTabSelected();
+        ScenarioGridWidget scenarioGridWidget = scenarioSimulationEditorPresenter.getView().getScenarioGridWidget();
+        scenarioSimulationEditorPresenter.setFocusedContext(scenarioGridWidget.getScenarioSimulationContext());
+        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(true);
+        scenarioGridWidget.clearSelections();
+        scenarioGridWidget.select();
+        scenarioSimulationEditorPresenter.getBackgroundGridWidget().deselect();
+    }
+
+    @Override
+    public void onOverviewSelected() {
+        super.onOverviewSelected();
+        scenarioSimulationEditorPresenter.setFocusedContext(
+                scenarioSimulationEditorPresenter.getView().getScenarioGridWidget().getScenarioSimulationContext());
+        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(true);
+    }
+
+    /**
+     * This method adds specifically the Background grid and its related onFocus behavior
+     * @param scenarioGridWidget
+     */
+    @Override
+    public void addBackgroundPage(final ScenarioGridWidget scenarioGridWidget) {
+        addPage(new PageImpl(scenarioGridWidget, ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle()) {
+            @Override
+            public void onFocus() {
+                super.onFocus();
+                enableBackgroundTab();
+            }
+        });
+    }
+
+    protected void enableBackgroundTab() {
+        ScenarioGridWidget backgroundWidget = scenarioSimulationEditorPresenter.getBackgroundGridWidget();
+        scenarioSimulationEditorPresenter.setFocusedContext(backgroundWidget.getScenarioSimulationContext());
+        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(false);
+        backgroundWidget.clearSelections();
+        backgroundWidget.select();
+        scenarioSimulationEditorPresenter.getView().getScenarioGridWidget().deselect();
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {

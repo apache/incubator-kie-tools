@@ -28,6 +28,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
@@ -56,6 +57,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Scena
 public class ScenarioGrid extends BaseGridWidget {
 
     private ScenarioContextMenuRegistry scenarioContextMenuRegistry;
+    private ScenarioSimulationContext scenarioSimulationContext;
     private EventBus eventBus;
 
     public ScenarioGrid(ScenarioGridModel model,
@@ -85,6 +87,14 @@ public class ScenarioGrid extends BaseGridWidget {
         this.eventBus = eventBus;
         ((ScenarioGridModel) model).setEventBus(eventBus);
         scenarioContextMenuRegistry.setEventBus(eventBus);
+    }
+
+    public ScenarioSimulationContext getScenarioSimulationContext() {
+        return scenarioSimulationContext;
+    }
+
+    public void setScenarioSimulationContext(ScenarioSimulationContext scenarioSimulationContext) {
+        this.scenarioSimulationContext = scenarioSimulationContext;
     }
 
     @Override
@@ -147,9 +157,7 @@ public class ScenarioGrid extends BaseGridWidget {
         final List<FactMapping> factMappings = simulation.getSimulationDescriptor().getUnmodifiableFactMappings();
         boolean editableHeaders = !simulation.getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN);
         IntStream.range(0, factMappings.size())
-                .forEach(columnIndex -> {
-                    setHeaderColumn(columnIndex, factMappings.get(columnIndex), editableHeaders);
-                });
+                .forEach(columnIndex -> setHeaderColumn(columnIndex, factMappings.get(columnIndex), editableHeaders));
     }
 
     protected void setHeaderColumn(int columnIndex, FactMapping factMapping, boolean editableHeaders) {

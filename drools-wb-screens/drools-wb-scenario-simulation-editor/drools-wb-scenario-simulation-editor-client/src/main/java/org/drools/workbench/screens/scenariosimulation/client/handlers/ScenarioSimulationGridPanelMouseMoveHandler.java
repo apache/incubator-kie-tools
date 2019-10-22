@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-[data-i18n-prefix="ErrorReportPopoverView."] {
+package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-  #popover-container {
-    display: inline;
-  }
+import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
+import org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 
-  #popover-container .popover {
-    /* This parameter must be synchronized with POPOVER_WIDTH static variable ScenarioSimulationMainGridPanelMouseMoveHandler class */
-    width: 200px;
-  }
+public interface ScenarioSimulationGridPanelMouseMoveHandler extends NodeMouseMoveHandler {
 
-  #popover-content-buttons {
-    text-align: right;
-    padding: 5px 5px 5px 5px;
-  }
+    void hidePopover();
 
-  .kie-scesim-container {
-    width: 100%;
-    height: 200px;
-    overflow-y: scroll;
-    margin-top: 10px;
-    border: 1px solid #cccccc;
-    padding: 0px 5px 5px 5px;
-  }
+    void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel);
+
+    void setErrorReportPopupPresenter(ErrorReportPopoverPresenter errorReportPopupPresenter);
 }
-

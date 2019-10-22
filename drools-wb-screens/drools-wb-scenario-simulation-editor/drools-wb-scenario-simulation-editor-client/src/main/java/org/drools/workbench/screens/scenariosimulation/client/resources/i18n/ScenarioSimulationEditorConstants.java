@@ -331,4 +331,8 @@ public interface ScenarioSimulationEditorConstants
     String validationFailedNotification();
 
     String validationSucceed();
+
+    String backgroundTabTitle();
+
+    String export();
 }

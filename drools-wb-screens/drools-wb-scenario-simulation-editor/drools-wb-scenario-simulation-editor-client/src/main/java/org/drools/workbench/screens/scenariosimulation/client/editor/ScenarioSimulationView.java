@@ -16,42 +16,18 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.function.Supplier;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.model.menu.MenuItem;
 
 public interface ScenarioSimulationView extends KieEditorView,
                                                 IsWidget,
                                                 RequiresResize {
 
-    void init(final ScenarioSimulationEditorPresenter presenter);
+    void init();
 
-    void setContent(final Simulation simulation);
+    ScenarioGridWidget getScenarioGridWidget();
 
-    void refreshContent(final Simulation simulation);
-
-    MenuItem getRunScenarioMenuItem();
-
-    MenuItem getUndoMenuItem();
-
-    MenuItem getRedoMenuItem();
-
-    MenuItem getDownloadMenuItem(final Supplier<Path> pathSupplier);
-
-    MenuItem getExportToCsvMenuItem();
-
-    MenuItem getImportMenuItem();
-
-    void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel);
-
-    ScenarioGridPanel getScenarioGridPanel();
-
-    ScenarioGridLayer getScenarioGridLayer();
+    void setScenarioGridWidget(ScenarioGridWidget scenarioMainGridWidget);
 }

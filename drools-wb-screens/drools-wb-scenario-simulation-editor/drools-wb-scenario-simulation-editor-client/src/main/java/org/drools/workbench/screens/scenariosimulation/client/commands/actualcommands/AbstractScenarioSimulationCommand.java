@@ -77,7 +77,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
     }
 
     @Override
-    public CommandResult<ScenarioSimulationViolation> undo(ScenarioSimulationContext context) throws UnsupportedOperationException {
+    public CommandResult<ScenarioSimulationViolation> undo(ScenarioSimulationContext context) {
         if (!undoable || restorableStatus == null) {
             String message = !undoable ? this.getClass().getSimpleName() + " is not undoable" : "restorableStatus status is null";
             throw new UnsupportedOperationException(message);
@@ -85,7 +85,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
         return setCurrentContext(context);
     }
 
-    public CommandResult<ScenarioSimulationViolation> redo(ScenarioSimulationContext context) throws UnsupportedOperationException {
+    public CommandResult<ScenarioSimulationViolation> redo(ScenarioSimulationContext context) {
         if (!undoable || restorableStatus == null) {
             String message = !undoable ? this.getClass().getSimpleName() + " is not redoable" : "restorableStatus status is null";
             throw new UnsupportedOperationException(message);
@@ -113,7 +113,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
             if (toRestore != null) {
                 final ScenarioSimulationContext.Status originalStatus = context.getStatus().cloneStatus();
                 context.getModel().clearSelections();
-                context.getScenarioSimulationEditorPresenter().getView().setContent(toRestore);
+                context.getScenarioGridPanel().getScenarioGrid().setContent(toRestore);
                 context.getScenarioSimulationEditorPresenter().getModel().setSimulation(toRestore);
                 context.getScenarioSimulationEditorPresenter().reloadTestTools(true);
                 context.setStatus(restorableStatus);

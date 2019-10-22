@@ -42,7 +42,7 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
 
     protected AbstractDataManagementStrategy abstractDataManagementStrategySpy;
 
-    public void setUp() throws Exception {
+    public void setup() {
         super.setup();
     }
 

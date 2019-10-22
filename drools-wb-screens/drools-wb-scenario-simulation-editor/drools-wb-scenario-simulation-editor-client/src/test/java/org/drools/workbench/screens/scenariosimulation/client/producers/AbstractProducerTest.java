@@ -79,9 +79,7 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
             }
         };
         when(eventBusProducerMock.getEventBus()).thenReturn(eventBusMock);
-        when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
         when(scenarioSimulationViewProducerMock.getScenarioSimulationView(isA(EventBus.class))).thenReturn(scenarioSimulationViewMock);
-        when(scenarioSimulationViewProducerMock.getScenarioSimulationContext()).thenReturn(scenarioSimulationContextLocal);
         when(scenarioSimulationViewProducerMock.getScenarioContextMenuRegistry()).thenReturn(scenarioContextMenuRegistryMock);
     }
 }

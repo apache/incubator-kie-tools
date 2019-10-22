@@ -21,7 +21,6 @@ import java.util.SortedMap;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMODataManagementStrategy;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -36,9 +35,8 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
     private AsyncPackageDataModelOracleFactory oracleFactory;
     protected AsyncPackageDataModelOracle oracle;
 
-    public BusinessCentralDMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory, final ScenarioSimulationContext scenarioSimulationContext) {
+    public BusinessCentralDMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory) {
         this.oracleFactory = oracleFactory;
-        this.scenarioSimulationContext = scenarioSimulationContext;
     }
 
     @Override
@@ -86,22 +84,26 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
      * This <code>Callback</code> will receive data from other callbacks and when the retrieved results get to the
      * expected ones it will recursively elaborate the map
      * @param testToolsPresenter
-     * @param expectedElements
+     * @param expectedElementsCounts
      * @param factTypeFieldsMap
-     * @param scenarioGridModel
+     * @param context
      * @return
      */
-    protected Callback<FactModelTree> aggregatorCallback(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, final SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final List<String> simpleJavaTypes) {
-        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElements, factTypeFieldsMap, scenarioGridModel, result, simpleJavaTypes);
+    protected Callback<FactModelTree> aggregatorCallback(final TestToolsView.Presenter testToolsPresenter,
+                                                         final int expectedElementsCounts,
+                                                         final SortedMap<String, FactModelTree> factTypeFieldsMap,
+                                                         final ScenarioSimulationContext context,
+                                                         final List<String> simpleJavaTypes) {
+        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElementsCounts, factTypeFieldsMap, context, result, simpleJavaTypes);
     }
 
     @Override
     protected void manageDataObjects(List<String> dataObjectsTypes, final TestToolsView.Presenter testToolsPresenter,  int expectedElements,
                                      final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
-                                     final ScenarioGridModel scenarioGridModel,
+                                     final ScenarioSimulationContext context,
                                      final List<String> simpleJavaTypes) {
         // Instantiate the aggregator callback
-        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
+        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes);
         // Iterate over all dataObjects to retrieve their modelfields
         dataObjectsTypes.forEach(factType ->
                                          oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));

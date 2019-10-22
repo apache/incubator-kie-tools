@@ -159,7 +159,6 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     private HandlerRegistration undoEventHandlerRegistrationMock;
     @Mock
     private HandlerRegistration unsupportedDMNEventHandlerRegistrationMock;
-
     @Mock
     private DeletePopupPresenter deletePopupPresenterMock;
     @Mock
@@ -207,7 +206,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                 this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
                 this.confirmPopupPresenter = confirmPopupPresenterMock;
                 this.fileUploadPopupPresenter = fileUploadPopupPresenterMock;
-                this.context = scenarioSimulationContextLocal;
+                this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenterMock;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
                 this.scenarioCommandRegistry = scenarioCommandRegistryMock;
                 this.notificationEvent = ScenarioSimulationEventHandlerTest.this.notificationEvent;

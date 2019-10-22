@@ -16,8 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import org.uberfire.ext.wires.core.grids.client.model.Bounds;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
 /**
@@ -31,14 +29,6 @@ public class ScenarioGridLayer extends DefaultGridLayer {
 
     private ScenarioGridPanel scenarioGridPanel;
     private ScenarioGrid scenarioGrid;
-    private Bounds bounds;
-
-    public ScenarioGridLayer() {
-        this.bounds = new BaseBounds(0,
-                                     0,
-                                     0,
-                                     0);
-    }
 
     public ScenarioGridPanel getScenarioGridPanel() {
         return scenarioGridPanel;

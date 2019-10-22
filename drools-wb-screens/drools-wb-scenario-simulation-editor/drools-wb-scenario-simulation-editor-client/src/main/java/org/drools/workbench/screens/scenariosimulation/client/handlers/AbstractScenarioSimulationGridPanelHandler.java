@@ -33,9 +33,6 @@ public abstract class AbstractScenarioSimulationGridPanelHandler  {
     protected ScenarioGrid scenarioGrid;
     protected BaseGridRendererHelper rendererHelper;
 
-    public AbstractScenarioSimulationGridPanelHandler() {
-    }
-
     public void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel) {
         this.scenarioGridPanel = scenarioGridPanel;
         this.scenarioGrid = scenarioGridPanel.getScenarioGrid();

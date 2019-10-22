@@ -24,7 +24,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -43,17 +43,18 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
 
     protected abstract boolean skipPopulateTestTools();
 
-    protected abstract void manageDataObjects(List<String> dataObjectsTypes,
+    protected abstract void manageDataObjects(final List<String> dataObjectsTypes,
                                               final TestToolsView.Presenter testToolsPresenter,
-                                              int expectedElements,
+                                              final int expectedElements,
                                               final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
-                                              final ScenarioGridModel scenarioGridModel,
+                                              final ScenarioSimulationContext context,
                                               final List<String> simpleJavaTypes);
 
     @Override
-    public void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
+    public void populateTestTools(final TestToolsView.Presenter testToolsPresenter,
+                                  final ScenarioSimulationContext context) {
         if (factModelTreeHolder.getFactModelTuple() != null) {
-            storeData(factModelTreeHolder.getFactModelTuple(), testToolsPresenter, scenarioGridModel);
+            storeData(factModelTreeHolder.getFactModelTuple(), testToolsPresenter, context);
         } else {
             if (skipPopulateTestTools()) {
                 return;
@@ -71,9 +72,9 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             // Instantiate a dataObjects container map
             final SortedMap<String, FactModelTree> dataObjectsFieldsMap = new TreeMap<>();
             if (dataObjectsTypes.isEmpty()) { // Add to manage the situation when no complex objects are present
-                aggregatorCallbackMethod(testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, null, simpleJavaTypes);
+                aggregatorCallbackMethod(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, null, simpleJavaTypes);
             } else {
-                manageDataObjects(dataObjectsTypes, testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
+                manageDataObjects(dataObjectsTypes, testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes);
             }
         }
     }
@@ -134,11 +135,16 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
      * @param testToolsPresenter
      * @param expectedElements
      * @param factTypeFieldsMap
-     * @param scenarioGridModel
+     * @param context
      * @param result pass <code>null</code> if there is not any <i>complex</i> data object but only simple ones
      * @param simpleJavaTypes
      */
-    public void aggregatorCallbackMethod(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result, final List<String> simpleJavaTypes) {
+    public void aggregatorCallbackMethod(final TestToolsView.Presenter testToolsPresenter,
+                                         final int expectedElements,
+                                         final SortedMap<String, FactModelTree> factTypeFieldsMap,
+                                         final ScenarioSimulationContext context,
+                                         final FactModelTree result,
+                                         final List<String> simpleJavaTypes) {
         if (result != null) {
             factTypeFieldsMap.put(result.getFactName(), result);
         }
@@ -157,7 +163,7 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             visibleFacts.putAll(simpleJavaTypeFieldsMap);
             FactModelTuple factModelTuple = new FactModelTuple(visibleFacts, new TreeMap<>());
             factModelTreeHolder.setFactModelTuple(factModelTuple);
-            storeData(factModelTuple, testToolsPresenter, scenarioGridModel);
+            storeData(factModelTuple, testToolsPresenter, context);
         }
     }
 
