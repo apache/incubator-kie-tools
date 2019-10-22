@@ -47,13 +47,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
-    - uses: actions/checkout@v1
-      name: Checkout to base_ref
+    - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
+      uses: actions/checkout@v1
       if: github.base_ref
       with:
         ref: ${{ github.base_ref }}
 
-    - name: Merge with base ref
+    - name: Merge PR branch with PRs base branch (PR only)
       if: github.base_ref
       run: git merge ${{ github.sha }}
     
@@ -81,7 +81,7 @@ jobs:
       run: npx lerna run lint --stream
       continue-on-error: true
     
-    - name: Unit tests
+    - name: Run unit tests
       run: npx lerna run test --stream
       continue-on-error: true
       
@@ -102,8 +102,9 @@ jobs:
       run: npx lerna run --stream build:fast -- --mode production --devtool none
       continue-on-error: false
     
-    - name: Integration tests
+    - name: Run integration tests
       run: npx lerna run test:it --stream
+      continue-on-error: true
       
     - name: Pack artifacts
       run: npx lerna run pack-extension --stream
