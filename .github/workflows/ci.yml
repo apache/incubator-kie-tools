@@ -1,0 +1,88 @@
+name: CI
+
+env:
+  DISPLAY: ":99.0"
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: "**"
+    
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        node: [12.13.0]
+        yarn: [1.19.0]
+
+    
+    steps:
+    - uses: actions/checkout@v1
+    
+    - uses: actions/checkout@v1
+      name: Checkout to base_ref
+      if: github.base_ref
+      with:
+        ref: ${{ github.base_ref }}
+
+    - name: Merge with base ref
+      if: github.base_ref
+      run: git merge ${{ github.sha }}
+    
+    - uses: actions/setup-node@v1
+      name: Setup Node
+      with:
+        node-version: ${{ matrix.node }}
+
+    - name: Setup Yarn
+      run: npm install -g yarn@${{ matrix.yarn }}
+    
+    - name: Start Xvfb (Ubuntu only)
+      if: matrix.os == 'ubuntu-latest'
+      run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    
+    - name: Download dependencies
+      run: yarn run init
+   
+    - name: "Build :: dev"
+      if: success()
+      run: npx lerna run build:fast --stream
+      continue-on-error: false
+    
+    - name: Lint
+      run: npx lerna run lint --stream
+      continue-on-error: true
+    
+    - name: Unit tests
+      run: npx lerna run test --stream
+      continue-on-error: true
+    
+    - name: "Build :: prod"
+      if: success()
+      run: npx lerna run --stream build:fast -- --mode production --devtool none
+      continue-on-error: false
+    
+    - name: Integration tests
+      run: npx lerna run test:it --stream
+      
+    - name: Pack artifacts
+      run: npx lerna run pack-extension --stream
+
+    - name: Upload VSCode Extension
+      uses: actions/upload-artifact@v1
+      with:
+        name: vscode-extension
+        path: packages/vscode-extension-pack-kogito-kie-editors/dist
+
+    - name: Upload Chrome Extension
+      uses: actions/upload-artifact@v1
+      with:
+        name: chrome-extension
+        path: packages/chrome-extension/dist
+
