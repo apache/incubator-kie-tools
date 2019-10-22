@@ -17,6 +17,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
+const packageJson = require("./package.json");
 
 module.exports = (env, argv) => {
   const isProd = argv.mode === "production";
