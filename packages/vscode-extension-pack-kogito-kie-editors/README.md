@@ -1,7 +1,7 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.0 (alpha)
+## Release notes - 0.2.1 (alpha)
 
 ### Features and fixes included on this release 
 - [AF-2274](https://issues.jboss.org/browse/AF-2274): Open editor on the assets of a PR to compare
