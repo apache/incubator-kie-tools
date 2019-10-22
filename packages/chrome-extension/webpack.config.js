@@ -69,7 +69,7 @@ module.exports = (env, argv) => {
               },
               {
                 search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: isProd ? "tiagobento/kogito-online/chrome-extension-resources/" : ""
+                replace: isProd ? "kiegroup/kogito-online/chrome-extension-resources-0.2.0/" : ""
               }
             ]
           }
