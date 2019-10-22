@@ -1,8 +1,5 @@
 name: CI
 
-env:
-  DISPLAY: ":99.0"
-
 on:
   push:
     branches: [master]
@@ -33,10 +30,13 @@ jobs:
          path: packages/unpacked-gwt-editors/bpmn
    
      
-  build:
+  build:    
     needs: fetch-editors
     runs-on: ${{ matrix.os }}
 
+    env:
+      DISPLAY: ":99.0"
+    
     strategy:
       fail-fast: true
       matrix:
