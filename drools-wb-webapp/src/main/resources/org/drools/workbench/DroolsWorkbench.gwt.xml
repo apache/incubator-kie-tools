@@ -75,7 +75,7 @@
 
   <!-- ScenarioSimulation -->
   <inherits name='org.drools.workbench.screens.scenariosimulation.businesscentral.DroolsWorkbenchScenarioSimulationEditorBusinessCentral'/>
-  <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI" />
+  <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI"/>
 
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
@@ -87,6 +87,9 @@
   <!-- Form modeler -->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+
+  <!-- TODO kogito needs refactoring out of non-kogito webapps. See https://issues.jboss.org/browse/KOGITO-459 -->
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
   <!-- DMN Editor -->
   <inherits name="org.kie.workbench.common.dmn.project.DMNProjectClient"/>
