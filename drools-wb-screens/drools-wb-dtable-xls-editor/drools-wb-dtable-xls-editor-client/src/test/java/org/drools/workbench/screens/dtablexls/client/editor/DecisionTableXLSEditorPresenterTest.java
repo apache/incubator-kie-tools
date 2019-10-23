@@ -34,6 +34,7 @@ import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -59,12 +60,15 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -134,7 +138,12 @@ public class DecisionTableXLSEditorPresenterTest {
     @Mock
     MenuItem alertsButtonMenuItem;
 
+    @Mock
+    MetadataService metadataService;
+
     DecisionTableXLSEditorPresenter presenter;
+
+    Metadata metadata = new Metadata();
 
     @Before
     public void setUp() throws Exception {
@@ -155,7 +164,8 @@ public class DecisionTableXLSEditorPresenterTest {
                                                             decisionTableXLSXResourceType,
                                                             busyIndicatorView,
                                                             validationPopup,
-                                                            new ServiceMock()
+                                                            new ServiceMock(),
+                                                            new CallerMock<>(metadataService)
         ) {
             {
                 kieView = mock(KieEditorWrapperView.class);
@@ -167,6 +177,8 @@ public class DecisionTableXLSEditorPresenterTest {
                 versionRecordManager = DecisionTableXLSEditorPresenterTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = DecisionTableXLSEditorPresenterTest.this.alertsButtonMenuItemBuilder;
                 promises = DecisionTableXLSEditorPresenterTest.this.promises;
+                metadata = DecisionTableXLSEditorPresenterTest.this.metadata;
+                notification = mock(EventSourceMock.class);
             }
 
             @Override
@@ -222,6 +234,7 @@ public class DecisionTableXLSEditorPresenterTest {
                                                             null,
                                                             busyIndicatorView,
                                                             null,
+                                                            null,
                                                             null) {
             {
                 concurrentUpdateSessionInfo = mock(ObservablePath.OnConcurrentUpdateEvent.class);
@@ -273,6 +286,8 @@ public class DecisionTableXLSEditorPresenterTest {
         presenter.makeMenuBar();
 
         verify(fileMenuBuilder,
+               never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder,
                never()).addCopy(any(Path.class),
                                 any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
@@ -282,6 +297,24 @@ public class DecisionTableXLSEditorPresenterTest {
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+    }
+
+    @Test
+    public void testSave() {
+        final ObservablePath path = mock(ObservablePath.class);
+        doReturn(path).when(versionRecordManager).getCurrentPath();
+
+        presenter.onStartup(XLSPath,
+                            mock(PlaceRequest.class));
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
+
+        presenter.save("saving");
+
+        verify(metadataService).saveMetadata(eq(path),
+                                             eq(metadata),
+                                             eq("saving"));
     }
 
     private class ServiceMock
@@ -320,7 +353,7 @@ public class DecisionTableXLSEditorPresenterTest {
             public DecisionTableXLSContent loadContent(Path path) {
                 DecisionTableXLSContent content = new DecisionTableXLSContent();
                 content.setOverview(new Overview() {{
-                    setMetadata(mock(Metadata.class));
+                    setMetadata(metadata);
                 }});
                 remoteCallback.callback(content);
                 return null;

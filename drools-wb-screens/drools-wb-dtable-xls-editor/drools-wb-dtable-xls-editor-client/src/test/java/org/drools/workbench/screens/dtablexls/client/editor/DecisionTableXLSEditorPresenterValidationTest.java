@@ -23,6 +23,7 @@ import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.junit.Before;
@@ -50,6 +51,9 @@ public class DecisionTableXLSEditorPresenterValidationTest {
     @Mock
     DecisionTableXLSService decisionTableXLSService;
 
+    @Mock
+    MetadataService metadataService;
+
     DecisionTableXLSEditorPresenter presenter;
 
     @Before
@@ -59,7 +63,8 @@ public class DecisionTableXLSEditorPresenterValidationTest {
                                                         mock(DecisionTableXLSXResourceType.class),
                                                         mock(BusyIndicatorView.class),
                                                         MockProvider.getMockValidationPopup(),
-                                                        new CallerMock<>(decisionTableXLSService)) {
+                                                        new CallerMock<>(decisionTableXLSService),
+                                                        new CallerMock<>(metadataService)) {
             {
                 versionRecordManager = mock(VersionRecordManager.class);
             }

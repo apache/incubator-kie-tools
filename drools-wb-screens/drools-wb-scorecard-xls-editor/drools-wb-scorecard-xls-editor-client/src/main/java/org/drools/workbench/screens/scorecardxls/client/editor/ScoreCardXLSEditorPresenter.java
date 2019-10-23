@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -53,6 +54,9 @@ public class ScoreCardXLSEditorPresenter
 
     @Inject
     protected Caller<ScoreCardXLSService> scoreCardXLSService;
+
+    @Inject
+    protected Caller<MetadataService> metadataService;
 
     @Inject
     protected ValidationPopup validationPopup;
@@ -104,6 +108,14 @@ public class ScoreCardXLSEditorPresenter
                 validationPopup.getValidationCallback(finished),
                 new CommandErrorCallback(finished)).validate(versionRecordManager.getCurrentPath(),
                                                              versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    protected void save(String commitMessage) {
+        metadataService.call(getSaveSuccessCallback(metadata.hashCode()))
+                .saveMetadata(versionRecordManager.getCurrentPath(),
+                              metadata,
+                              commitMessage);
     }
 
     @Override

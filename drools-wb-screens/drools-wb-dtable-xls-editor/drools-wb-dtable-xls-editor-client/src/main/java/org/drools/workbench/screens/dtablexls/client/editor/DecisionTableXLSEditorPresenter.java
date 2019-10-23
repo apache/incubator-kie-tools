@@ -35,6 +35,7 @@ import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.jboss.errai.common.client.api.Caller;
@@ -81,13 +82,16 @@ public class DecisionTableXLSEditorPresenter
 
     private DecisionTableXLSEditorView view;
 
+    private Caller<MetadataService> metadataService;
+
     @Inject
     public DecisionTableXLSEditorPresenter(final DecisionTableXLSEditorView baseView,
                                            final DecisionTableXLSResourceType decisionTableXLSResourceType,
                                            final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
                                            final BusyIndicatorView busyIndicatorView,
                                            final ValidationPopup validationPopup,
-                                           final Caller<DecisionTableXLSService> decisionTableXLSService) {
+                                           final Caller<DecisionTableXLSService> decisionTableXLSService,
+                                           final Caller<MetadataService> metadataService) {
         super(baseView);
         view = baseView;
         this.decisionTableXLSResourceType = decisionTableXLSResourceType;
@@ -95,6 +99,7 @@ public class DecisionTableXLSEditorPresenter
         this.decisionTableXLSService = decisionTableXLSService;
         this.busyIndicatorView = busyIndicatorView;
         this.validationPopup = validationPopup;
+        this.metadataService = metadataService;
     }
 
     @OnStartup
@@ -206,12 +211,21 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @Override
+    protected void save(String commitMessage) {
+        metadataService.call(getSaveSuccessCallback(metadata.hashCode()))
+                .saveMetadata(versionRecordManager.getCurrentPath(),
+                              metadata,
+                              commitMessage);
+    }
+
+    @Override
     protected Promise<Void> makeMenuBar() {
         if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
                     fileMenuBuilder
+                            .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                             .addCopy(versionRecordManager.getCurrentPath(),
                                      assetUpdateValidator)
                             .addRename(versionRecordManager.getPathToLatest(),
