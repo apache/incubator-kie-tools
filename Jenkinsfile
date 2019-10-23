@@ -34,7 +34,6 @@ pipeline {
                 dir("kogito-tooling") {
                     script {
                         githubscm.checkoutIfExists('kogito-tooling', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        sh('echo $NPM_REGISTRY_URL > ./kogito-tooling/.npmrc')
                         wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
                             sh('yarn run init --registry=${NPM_REGISTRY_URL} && yarn build:prod --registry=${NPM_REGISTRY_URL}')
                         }
