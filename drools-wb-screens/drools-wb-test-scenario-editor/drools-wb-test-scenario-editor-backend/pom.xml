@@ -184,6 +184,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-template</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-backend</artifactId>
     </dependency>

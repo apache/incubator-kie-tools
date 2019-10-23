@@ -22,6 +22,20 @@ public class OrganicAcid extends Acid implements Serializable {
 
     static final long serialVersionUID = 1L;
 
+    private java.time.LocalDate expirationDate;
+
     public OrganicAcid() {
+    }
+
+    public java.time.LocalDate getExpirationDate() {
+        return this.expirationDate;
+    }
+
+    public void setExpirationDate(java.time.LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public OrganicAcid(java.time.LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

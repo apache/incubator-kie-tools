@@ -197,6 +197,12 @@ public class ScenarioRunnerServiceTest {
     }
 
     @Test
+    public void testAcidExpiration() throws Exception {
+        initKieSession("expireOrganicAcid.template");
+        testScenario("testAcidExpiration.scenario", true);
+    }
+
+    @Test
     public void testRunSeveralScenarios() throws Exception {
         initKieSession();
         Path path = mock(Path.class);
