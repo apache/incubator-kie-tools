@@ -16,6 +16,8 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const ZipPlugin = require("zip-webpack-plugin");
+const packageJson = require("./package.json");
 
 module.exports = (env, argv) => {
   const isProd = argv.mode === "production";
@@ -47,7 +49,11 @@ module.exports = (env, argv) => {
         { from: "./static/manifest.json" },
         { from: "./static/resources", to: "./resources" },
         { from: "./static/envelope", to: "./envelope" }
-      ])
+      ]),
+      new ZipPlugin({
+        filename: "kiegroup_kogito_chrome_extension_" + packageJson.version + ".zip",
+        pathPrefix: "dist"
+      })
     ],
     module: {
       rules: [
