@@ -13,6 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+BASEDIR=`pwd`
+KOGITO_CMD_DIR="cmd/kogito"
+
+function packTemplateFiles(){
+  cd ${BASEDIR}/${KOGITO_CMD_DIR} && packr2 -v
+  cd ${BASEDIR}
+}
+
+function cleanTemplateFiles(){
+  cd ${BASEDIR}/${KOGITO_CMD_DIR} && packr2 clean -v
+  cd ${BASEDIR}
+}
+
 release=$1
 version=$2
 
@@ -36,14 +49,14 @@ if [ "$release" = "true" ]; then
   do
     rm -rf build/_output/bin/kogito
 
-    packr2 -v
+    packTemplateFiles
     CGO_ENABLED=0 GOOS="${i}" GOARCH="${arch}" go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
     if [ $? -ne 0 ]; then
       echo "Failed to build for OS ${i} and Architecture ${arch}"
-      packr2 clean -v
+      cleanTemplateFiles 
       exit 1
     fi
-    packr2 clean -v
+    cleanTemplateFiles
 
     if [ "${i}" = "windows" ]; then
       zip -j "build/_output/release/kogito-${version}-${i}-${arch}.zip" build/_output/bin/kogito
@@ -59,9 +72,7 @@ if [ "$release" = "true" ]; then
   done
   echo "--- Finishing building Kogito CLI ${version}"
 else
-  packr2 -v
-
+  packTemplateFiles
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
-
-  packr2 clean -v
+  cleanTemplateFiles
 fi
