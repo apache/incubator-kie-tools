@@ -16,13 +16,14 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
@@ -35,13 +36,10 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.AnyResourceType;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -57,16 +55,10 @@ public class GuvnorDefaultEditorPresenter
     private final GuvnorDefaultEditorView view;
 
     @Inject
-    private Caller<DefaultEditorService> defaultEditorService;
+    protected Caller<DefaultEditorService> defaultEditorService;
 
     @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
-
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
+    protected Caller<MetadataService> metadataService;
 
     @Inject
     private Others category;
@@ -87,12 +79,21 @@ public class GuvnorDefaultEditorPresenter
     }
 
     @Override
+    protected void save(final String commitMessage) {
+        metadataService.call(getSaveSuccessCallback(metadata.hashCode()))
+                .saveMetadata(versionRecordManager.getCurrentPath(),
+                              metadata,
+                              commitMessage);
+    }
+
+    @Override
     protected Promise<Void> makeMenuBar() {
         if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
             final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
                 if (canUpdateProject) {
                     fileMenuBuilder
+                            .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                             .addCopy(versionRecordManager.getCurrentPath(),
                                      assetUpdateValidator)
                             .addRename(versionRecordManager.getCurrentPath(),

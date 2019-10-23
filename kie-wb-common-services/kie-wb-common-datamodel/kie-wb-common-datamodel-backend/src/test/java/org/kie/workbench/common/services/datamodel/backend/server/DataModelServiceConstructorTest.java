@@ -171,6 +171,7 @@ public class DataModelServiceConstructorTest {
         IOService configIOService = cfiosProducer.configIOService();
         MetadataService metadataService = new MetadataServiceImpl(ioService,
                                                                   configIOService,
+                                                                  mock(CommentedOptionFactory.class),
                                                                   sessionInfo);
 
         POMContentHandler pomContentHandler = new POMContentHandler();
@@ -256,6 +257,7 @@ public class DataModelServiceConstructorTest {
                                                                            ioService);
         MetadataServerSideService serverSideMetdataService = new MetadataServiceImpl(ioService,
                                                                                      configIOService,
+                                                                                     commentedOptionFactory,
                                                                                      sessionInfo);
         PackageNameWhiteListSaver saver = new PackageNameWhiteListSaver(ioService,
                                                                         serverSideMetdataService,
