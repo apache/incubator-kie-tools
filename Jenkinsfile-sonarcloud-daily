@@ -1,4 +1,4 @@
- 6111526b5bac57891e382cea71ec74bc056882ed@Library('jenkins-pipeline-shared-libraries')_
+@Library('jenkins-pipeline-shared-libraries')_
 
 pipeline {
     agent {
