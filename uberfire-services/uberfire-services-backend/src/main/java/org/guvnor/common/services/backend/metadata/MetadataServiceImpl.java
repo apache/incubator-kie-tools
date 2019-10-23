@@ -16,15 +16,19 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributesUtil;
@@ -34,6 +38,7 @@ import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributes
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -46,6 +51,7 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.BasicFileAttributesUtil;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.rpc.SessionInfo;
 
@@ -59,6 +65,7 @@ public class MetadataServiceImpl
 
     private IOService ioService;
     private IOService configIOService;
+    private CommentedOptionFactory commentedOptionFactory;
     private SessionInfo sessionInfo;
 
     public MetadataServiceImpl() {
@@ -67,10 +74,29 @@ public class MetadataServiceImpl
     @Inject
     public MetadataServiceImpl(@Named("ioStrategy") IOService ioService,
                                @Named("configIO") IOService configIOService,
+                               CommentedOptionFactory commentedOptionFactory,
                                SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.configIOService = configIOService;
+        this.commentedOptionFactory = commentedOptionFactory;
         this.sessionInfo = sessionInfo;
+    }
+
+    @Override
+    public Path saveMetadata(final Path path,
+                             final Metadata metadata,
+                             final String comment) {
+
+        try (final InputStream inputStream = ioService.newInputStream(Paths.convert(path), StandardOpenOption.READ)) {
+
+            return Paths.convert(ioService.write(Paths.convert(path),
+                                                 IOUtils.toByteArray(inputStream),
+                                                 setUpAttributes(path,
+                                                                 metadata),
+                                                 commentedOptionFactory.makeCommentedOption(comment)));
+        } catch (IOException e) {
+            throw ExceptionUtilities.handleException(e);
+        }
     }
 
     @Override

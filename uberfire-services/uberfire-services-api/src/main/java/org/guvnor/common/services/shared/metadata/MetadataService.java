@@ -38,4 +38,15 @@ public interface MetadataService {
 
     Map<String, Object> setUpAttributes(final Path path,
                                         final Metadata metadata);
+
+    /**
+     * Only saves the Metadata for an asset.
+     * @param path Path to the file that the metadata belongs to
+     * @param metadata Actual metadata to be saved.
+     * @param comment Commit comment.
+     * @return
+     */
+    Path saveMetadata(final Path path,
+                      final Metadata metadata,
+                      final String comment);
 }
