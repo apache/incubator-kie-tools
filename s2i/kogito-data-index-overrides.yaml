@@ -11,7 +11,7 @@ labels:
 - name: "io.openshift.tags"
   value: "kogito,data-index"
 - name: "io.openshift.expose-services"
-  value: "8180:http"
+  value: "8080:http"
 
 envs:
 - name: "INFINISPAN_USEAUTH"
@@ -31,7 +31,7 @@ envs:
   description: "Sasl mechanism to use during authentication. Example: PLAIN (Used to set the infinispan.client.hotrod.sasl_mechanism system property)"
 
 ports:
-- value: 8180
+- value: 8080
 
 modules:
   install:
