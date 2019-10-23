@@ -19,27 +19,39 @@ namespace=$1
 tag=$2
 native=$3
 maven_mirror=$4
+image=$5
 
 if [ -z "$namespace" ]; then
   echo "Please inform the namespace where the tests will run"
   exit 1
 fi
 
+# creates the namespace
+oc create namespace ${namespace}
+
 if [ -z "$tag" ]; then
   echo "-------- tag is empty, assuming default from the Operator"
 fi
 
-echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, native=${native} and maven_mirror=${maven_mirror}"
+if [ -n "$image" ]; then
+  echo "-------- image is set, using Kogito operator image ${image}"
+  # operator permissions are created by operator-sdk
+  E2E_PARAMS="${E2E_PARAMS} --image ${image}"
+else
+  echo "-------- using local operator code for testing"
 
-# creates the namespace
-oc create namespace ${namespace}
-# gives permissions
-oc create -f deploy/role.yaml -n ${namespace}
-oc create -f deploy/service_account.yaml -n ${namespace}
-oc create -f deploy/role_binding.yaml -n ${namespace}
+  # gives permissions
+  oc create -f deploy/role.yaml -n ${namespace}
+  oc create -f deploy/service_account.yaml -n ${namespace}
+  oc create -f deploy/role_binding.yaml -n ${namespace}
+
+  E2E_PARAMS="${E2E_PARAMS} --up-local"
+fi
+
+echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, native=${native}, maven_mirror=${maven_mirror} and image=${image}"
 
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e --namespace ${namespace} --up-local --debug --verbose --go-test-flags "-timeout 30m"
+DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e $E2E_PARAMS --namespace ${namespace} --debug --verbose --go-test-flags "-timeout 30m"
 
 # clean up
 oc delete namespace ${namespace}
