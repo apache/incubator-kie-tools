@@ -69,7 +69,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.0-runner should exist
-    And s2i build log should contain -J-Xmx2147483648
+    And s2i build log should contain -J-Xmx1717986918
 
   # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
   Scenario: Perform a second incremental s2i build
