@@ -33,10 +33,12 @@ import javax.enterprise.inject.Default;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.EdgeClipboard;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @ApplicationScoped
@@ -48,6 +50,11 @@ public class LocalClipboardControl
     private final Set<Element> elements;
     private final Map<String, String> elementsParent;
     private final List<Command> commands;
+
+    /**
+     * Extra Clipboard for Edges. JBPM-7502
+     */
+    private Map<String, EdgeClipboard> edgeMap = new HashMap<>();
 
     public LocalClipboardControl() {
         this.elements = new HashSet<>();
@@ -111,5 +118,20 @@ public class LocalClipboardControl
     @Override
     protected void doDestroy() {
         clear();
+    }
+
+    @Override
+    public Map<String, EdgeClipboard> getEdgeMap() {
+        return edgeMap;
+    }
+
+    @Override
+    public EdgeClipboard buildNewEdgeClipboard(final String source, final Connection sourceConnection, final String target, final Connection targetConnection) {
+        final EdgeClipboard clipboard = new EdgeClipboard();
+        clipboard.setSource(source);
+        clipboard.setSourceConnection(sourceConnection);
+        clipboard.setTarget(target);
+        clipboard.setTargetConnection(targetConnection);
+        return clipboard;
     }
 }

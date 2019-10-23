@@ -16,13 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
@@ -32,7 +35,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
@@ -47,7 +54,7 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
 
     private final Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent;
 
-    private ClipboardControl clipboardControl;
+    private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     public CopySelectionSessionCommand() {
         this(null);
@@ -96,6 +103,25 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
                 clipboardControl.set(selectionControl.getSelectedItems().stream()
                                              .map(this::getElement)
                                              .toArray(Element[]::new));
+                final Set<String> clipboardNodes =
+                        clipboardControl.getElements().stream()
+                                .filter(element -> element instanceof Node)
+                                .map(Element::getUUID)
+                                .collect(Collectors.toSet());
+
+                clipboardControl.getEdgeMap().clear();
+                clipboardControl.getEdgeMap().putAll(clipboardControl.getElements().stream()
+                                                             .filter(element -> element instanceof Edge)
+                                                             .map(edge -> (Edge) edge)
+                                                             .collect(Collectors.toList()).stream()
+                                                             .filter(edge -> clipboardNodes.contains(edge.getSourceNode().getUUID()) && clipboardNodes.contains(edge.getTargetNode().getUUID()))
+                                                             .collect(Collectors.toMap(Edge::getUUID, edge ->
+                                                                     clipboardControl.buildNewEdgeClipboard(edge.getSourceNode().getUUID(),
+                                                                                                            (Connection) ((ViewConnector) edge.getContent()).getSourceConnection().orElse(null),
+                                                                                                            edge.getTargetNode().getUUID(),
+                                                                                                            (Connection) ((ViewConnector) edge.getContent()).getTargetConnection().orElse(null))
+                                                             )));
+
                 commandExecutedEvent.fire(new CopySelectionSessionCommandExecutedEvent(this,
                                                                                        getSession()));
                 callback.onSuccess();

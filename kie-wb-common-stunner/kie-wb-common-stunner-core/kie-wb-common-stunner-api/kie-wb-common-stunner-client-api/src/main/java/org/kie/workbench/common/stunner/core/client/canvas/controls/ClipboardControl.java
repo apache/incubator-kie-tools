@@ -18,11 +18,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 
 public interface ClipboardControl<E extends Element, C extends Canvas, S extends ClientSession> extends CanvasControl<C> {
 
@@ -41,4 +43,8 @@ public interface ClipboardControl<E extends Element, C extends Canvas, S extends
     List<Command> getRollbackCommands();
 
     ClipboardControl<E, C, S> setRollbackCommand(Command... command);
+
+    Map<String, EdgeClipboard> getEdgeMap();
+
+    EdgeClipboard buildNewEdgeClipboard(final String source, final Connection sourceConnection, final String target, final Connection targetConnection);
 }

@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.EdgeClipboard;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -53,8 +54,10 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -272,6 +275,87 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     public void executeWithMultiSelection() {
         pasteSelectionSessionCommand.bind(session);
 
+        pasteSelectionSessionCommand.setTestEdgeFoundInCanvas(true);
+        pasteSelectionSessionCommand.setTestEdgeFoundInClipboard(false);
+
+        //Mock the callback of CloneNodeCommand
+        ArgumentCaptor<Consumer> consumerNode = ArgumentCaptor.forClass(Consumer.class);
+        ArgumentCaptor<Consumer> consumerNode2 = ArgumentCaptor.forClass(Consumer.class);
+        when(cloneNodeCommand.getCandidate()).thenReturn(node);
+        when(cloneNodeCommand2.getCandidate()).thenReturn(node2);
+        when(canvasCommandFactory.cloneNode(eq(node), any(), any(), consumerNode.capture())).thenReturn(cloneNodeCommand);
+        when(canvasCommandFactory.cloneNode(eq(node2), any(), any(), consumerNode2.capture())).thenReturn(cloneNodeCommand2);
+        Map<Node, ArgumentCaptor<Consumer>> consumerMap = new HashMap() {{
+            put(node, consumerNode);
+            put(node2, consumerNode2);
+        }};
+
+        //Mock the callback of CloneConnectorCommand
+        ArgumentCaptor<Consumer> consumerEdge = ArgumentCaptor.forClass(Consumer.class);
+        when(canvasCommandFactory.cloneConnector(any(), anyString(), anyString(), anyString(), consumerEdge.capture())).thenReturn(cloneConnectorCommand);
+
+        //apply callbacks mocks
+        when(sessionCommandManager.execute(eq(canvasHandler), any())).thenAnswer(param -> {
+            CompositeCommand argument = param.getArgumentAt(1, CompositeCommand.class);
+            //callback to nodes
+            argument.getCommands().stream().filter(c -> c instanceof CloneNodeCommand).forEach(c -> {
+                CloneNodeCommand cloneNodeCommand = (CloneNodeCommand) c;
+                Node candidate = cloneNodeCommand.getCandidate();
+                consumerMap.get(candidate).getValue().accept(cloneMap.get(candidate));
+            });
+
+            //callback to connectors
+            argument.getCommands().stream().filter(c -> c instanceof CloneConnectorCommand).forEach(c ->
+                                                                                                            consumerEdge.getValue().accept(cloneEdge)
+            );
+            return commandResult;
+        });
+
+        //Executing the command
+        clipboardControl.set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(graphInstance.startNode.getUUID(), graphInstance.edge1.getUUID(), graphInstance.intermNode.getUUID()));
+
+        pasteSelectionSessionCommand.execute(callback);
+
+        verify(canvasCommandFactory, times(1))
+                .cloneNode(eq(graphInstance.startNode), eq(graphInstance.parentNode.getUUID()), eq(new Point2D(X, DEFAULT_PADDING + Y + NODE_SIZE)), any());
+
+        verify(canvasCommandFactory, times(1))
+                .cloneConnector(eq(graphInstance.edge1), anyString(), anyString(), anyString(), any());
+
+        //check command registry update after execution to allow a single undo/redo
+        verify(commandRegistry, times(2)).pop();
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(commandRegistry, times(1)).register(commandArgumentCaptor.capture());
+        assertTrue(commandArgumentCaptor.getValue() instanceof CompositeCommand);
+        assertEquals(2, ((CompositeCommand) commandArgumentCaptor.getValue()).size());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void executeWithMultiSelectionWithEdgesClipboard() {
+
+        final Connection sourceConnection = (Connection) ((ViewConnector) graphInstance.edge1.getContent()).getSourceConnection().orElse(null);
+        final Connection targetConnection = (Connection) ((ViewConnector) graphInstance.edge1.getContent()).getTargetConnection().orElse(null);
+
+        final EdgeClipboard clipboard = clipboardControl.buildNewEdgeClipboard(graphInstance.startNode.getUUID(), sourceConnection, graphInstance.intermNode.getUUID(), targetConnection);
+        clipboardControl.set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
+
+        final Map<String, EdgeClipboard> map = new HashMap<>();
+        map.put(graphInstance.edge1.getUUID(), clipboard);
+
+        when(clipboardControl.getEdgeMap()).thenReturn(map);
+
+        assertEquals(1, clipboardControl.getEdgeMap().size());
+
+        pasteSelectionSessionCommand.bind(session);
+
+        pasteSelectionSessionCommand.setTestEdgeFoundInCanvas(false);
+        pasteSelectionSessionCommand.setTestEdgeFoundInClipboard(true);
+
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge1));
+        assertEquals(true, pasteSelectionSessionCommand.isEdgeFoundInClipboard(graphInstance.edge1));
+
         //Mock the callback of CloneNodeCommand
         ArgumentCaptor<Consumer> consumerNode = ArgumentCaptor.forClass(Consumer.class);
         ArgumentCaptor<Consumer> consumerNode2 = ArgumentCaptor.forClass(Consumer.class);
@@ -320,7 +404,56 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
         verify(commandRegistry, times(1)).register(commandArgumentCaptor.capture());
         assertTrue(commandArgumentCaptor.getValue() instanceof CompositeCommand);
-        assertEquals(((CompositeCommand) commandArgumentCaptor.getValue()).size(), 2);
+        assertEquals(2, ((CompositeCommand) commandArgumentCaptor.getValue()).size());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testFoundOnCanvasAndClipboard() {
+
+        pasteSelectionSessionCommand.bind(session);
+
+        pasteSelectionSessionCommand.setTestEdgeFoundInCanvas(false);
+        pasteSelectionSessionCommand.setTestEdgeFoundInClipboard(true);
+
+        final Connection sourceConnection = (Connection) ((ViewConnector) graphInstance.edge1.getContent()).getSourceConnection().orElse(null);
+        final Connection targetConnection = (Connection) ((ViewConnector) graphInstance.edge1.getContent()).getTargetConnection().orElse(null);
+
+        final EdgeClipboard clipboard = clipboardControl.buildNewEdgeClipboard(graphInstance.startNode.getUUID(), sourceConnection, graphInstance.intermNode.getUUID(), targetConnection);
+        clipboardControl.set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
+
+        final Map<String, EdgeClipboard> map = new HashMap<>();
+        map.put(graphInstance.edge1.getUUID(), clipboard);
+
+        when(clipboardControl.getEdgeMap()).thenReturn(map);
+
+        assertEquals(1, clipboardControl.getEdgeMap().size());
+
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge1));
+        assertEquals(true, pasteSelectionSessionCommand.isEdgeFoundInClipboard(graphInstance.edge1));
+
+        pasteSelectionSessionCommand.setTestEdgeFoundInClipboard(false);
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInClipboard(graphInstance.edge2));
+
+        pasteSelectionSessionCommand.setTestEdgeFoundInCanvas(true);
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge2));
+        Node source = graphInstance.edge2.getSourceNode();
+        Node target = graphInstance.edge2.getTargetNode();
+
+        graphInstance.edge2.setSourceNode(null);
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge2));
+
+        graphInstance.edge2.setTargetNode(null);
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge2));
+
+        graphInstance.edge2.setSourceNode(source);
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge2));
+
+        pasteSelectionSessionCommand.setTestEdgeFoundInCanvas(false);
+        pasteSelectionSessionCommand.setTestEdgeFoundInClipboard(false);
+
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInCanvas(graphInstance.edge2));
+        assertEquals(false, pasteSelectionSessionCommand.isEdgeFoundInClipboard(graphInstance.edge2));
     }
 
     @Override

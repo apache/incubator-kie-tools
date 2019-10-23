@@ -40,6 +40,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.EdgeClipboard;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -60,6 +61,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.Counter;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -82,10 +84,12 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
     private final Event<CanvasSelectionEvent> selectionEvent;
     private final Map<String, String> clonedElements;
     private final CopySelectionSessionCommand copySelectionSessionCommand;
+    private final DefinitionUtils definitionUtils;
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private transient DoubleSummaryStatistics yPositionStatistics;
-    private final DefinitionUtils definitionUtils;
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private boolean testEdgeFoundInCanvas = false;
+    private boolean testEdgeFoundInClipboard = false;
 
     protected PasteSelectionSessionCommand() {
         this(null, null, null, null, null);
@@ -104,6 +108,14 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
         this.clonedElements = new HashMap<>();
         this.copySelectionSessionCommand = copySelectionSessionCommand;
         this.definitionUtils = definitionUtils;
+    }
+
+    public void setTestEdgeFoundInCanvas(boolean testEdgeFoundInCanvas) {
+        this.testEdgeFoundInCanvas = testEdgeFoundInCanvas;
+    }
+
+    public void setTestEdgeFoundInClipboard(boolean testEdgeFoundInClipboard) {
+        this.testEdgeFoundInClipboard = testEdgeFoundInClipboard;
     }
 
     @Override
@@ -148,7 +160,6 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
             //first processing nodes
             nodesCommandBuilder.addCommands(clipboardControl.getElements().stream()
                                                     .filter(element -> element instanceof Node)
-                                                    .filter(Objects::nonNull)
                                                     .map(node -> (Node<View<?>, Edge>) node)
                                                     .map(node -> {
                                                         String newParentUUID = getNewParentUUID(node);
@@ -224,26 +235,52 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
 
     private CommandResult<CanvasViolation> processConnectors(Counter processedNodesCountdown) {
         if (processedNodesCountdown.equalsToValue(0)) {
+
             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
             commandBuilder.addCommands(clipboardControl.getElements().stream()
                                                .filter(element -> element instanceof Edge)
-                                               .filter(Objects::nonNull)
                                                .map(edge -> (Edge) edge)
-                                               .filter(edge -> Objects.nonNull(edge.getSourceNode()) &&
-                                                       Objects.nonNull(clonedElements.get(edge.getSourceNode().getUUID())) &&
-                                                       Objects.nonNull(edge.getTargetNode()) &&
-                                                       Objects.nonNull(clonedElements.get(edge.getTargetNode().getUUID())))
-                                               .map(edge -> canvasCommandFactory.cloneConnector(edge,
-                                                                                                clonedElements.get(edge.getSourceNode().getUUID()),
-                                                                                                clonedElements.get(edge.getTargetNode().getUUID()),
-                                                                                                getCanvasHandler().getDiagram().getMetadata().getShapeSetId(),
-                                                                                                cloneEdgeCallback(edge)))
+                                               .filter(edge -> isEdgeFoundInCanvas(edge) || isEdgeFoundInClipboard(edge))
+                                               .map(edge -> {
+                                                   if (isEdgeFoundInCanvas(edge)) {
+                                                       return canvasCommandFactory.cloneConnector(edge,
+                                                                                                  clonedElements.get(edge.getSourceNode().getUUID()),
+                                                                                                  clonedElements.get(edge.getTargetNode().getUUID()),
+                                                                                                  getCanvasHandler().getDiagram().getMetadata().getShapeSetId(),
+                                                                                                  cloneEdgeCallback(edge));
+                                                   } else if (isEdgeFoundInClipboard(edge)) {
+                                                       final EdgeClipboard edgeData = clipboardControl.getEdgeMap().get(edge.getUUID());
+                                                       final ViewConnector connectionContent = (ViewConnector) edge.getContent();
+
+                                                       connectionContent.setSourceConnection(edgeData.getSourceConnection());
+                                                       connectionContent.setTargetConnection(edgeData.getTargetConnection());
+
+                                                       return canvasCommandFactory.cloneConnector(edge,
+                                                                                                  clonedElements.get(edgeData.getSource()),
+                                                                                                  clonedElements.get(edgeData.getTarget()),
+                                                                                                  getCanvasHandler().getDiagram().getMetadata().getShapeSetId(),
+                                                                                                  cloneEdgeCallback(edge));
+                                                   }
+                                                   return null; // this should never happen
+                                               })
+
                                                .collect(Collectors.toList()));
 
             return sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
         }
 
         return new CanvasCommandResultBuilder().build();
+    }
+
+    public boolean isEdgeFoundInClipboard(Edge edge) {
+        return Objects.nonNull(clipboardControl.getEdgeMap().get(edge.getUUID())) || testEdgeFoundInClipboard;
+    }
+
+    public boolean isEdgeFoundInCanvas(final Edge edge) {
+        return Objects.nonNull(edge.getSourceNode()) &&
+                Objects.nonNull(clonedElements.get(edge.getSourceNode().getUUID())) &&
+                Objects.nonNull(edge.getTargetNode()) &&
+                Objects.nonNull(clonedElements.get(edge.getTargetNode().getUUID())) && testEdgeFoundInCanvas;
     }
 
     private CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> createCommandBuilder() {

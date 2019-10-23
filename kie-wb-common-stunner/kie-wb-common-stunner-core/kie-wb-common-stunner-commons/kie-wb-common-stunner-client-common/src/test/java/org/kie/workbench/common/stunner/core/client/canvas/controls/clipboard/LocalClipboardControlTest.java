@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.EdgeClipboard;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -72,5 +73,16 @@ public class LocalClipboardControlTest {
         localClipboardControl.set(graphInstance.startNode);
         String parentUUID = localClipboardControl.getParent(graphInstance.startNode.getUUID());
         assertEquals(parentUUID, graphInstance.parentNode.getUUID());
+    }
+
+    @Test
+    public void testEdgeMap() {
+        final EdgeClipboard clipboard = localClipboardControl.buildNewEdgeClipboard("1D", null, "2D", null);
+        localClipboardControl.getEdgeMap().put("Node1", clipboard);
+        assertEquals(localClipboardControl.getEdgeMap().get("Node1").getSource(), clipboard.getSource());
+        assertEquals(localClipboardControl.getEdgeMap().get("Node1").getSourceConnection(), clipboard.getSourceConnection());
+
+        assertEquals(localClipboardControl.getEdgeMap().get("Node1").getTarget(), clipboard.getTarget());
+        assertEquals(localClipboardControl.getEdgeMap().get("Node1").getTargetConnection(), clipboard.getTargetConnection());
     }
 }

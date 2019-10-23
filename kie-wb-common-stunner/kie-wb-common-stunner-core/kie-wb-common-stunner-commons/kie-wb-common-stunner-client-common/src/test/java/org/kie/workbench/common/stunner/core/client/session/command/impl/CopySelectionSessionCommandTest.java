@@ -112,12 +112,83 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
     public void testExecuteMultiSelection() {
         copySelectionSessionCommand.bind(session);
 
-        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(graphInstance.startNode.getUUID(),
-                                                                           graphInstance.edge1.getUUID(),
-                                                                           graphInstance.intermNode.getUUID()));
+        // 1) test copying node - edge - node
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(
+                graphInstance.startNode.getUUID(),
+                graphInstance.edge1.getUUID(),
+                graphInstance.intermNode.getUUID())
+        );
+        graphInstance.edge1.setSourceNode(graphInstance.startNode);
+        graphInstance.edge1.setTargetNode(graphInstance.intermNode);
+
         copySelectionSessionCommand.execute(callback);
         verify(clipboardControl, times(1))
                 .set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
+        assertEquals(1, clipboardControl.getEdgeMap().size());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getSource(), graphInstance.startNode.getUUID());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getTarget(), graphInstance.intermNode.getUUID());
+
+        // 2) test copying edge - node - edge - node
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(
+                graphInstance.edge2.getUUID(),
+                graphInstance.startNode.getUUID(),
+                graphInstance.edge1.getUUID(),
+                graphInstance.intermNode.getUUID())
+        );
+
+        graphInstance.edge2.setSourceNode(graphInstance.endNode);
+        graphInstance.edge2.setTargetNode(graphInstance.startNode);
+
+        graphInstance.edge1.setSourceNode(graphInstance.startNode);
+        graphInstance.edge1.setTargetNode(graphInstance.intermNode);
+
+        copySelectionSessionCommand.execute(callback);
+        verify(clipboardControl, times(1))
+                .set(graphInstance.edge2, graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
+        // edge map should contain only node - edge - node and discard edge that has no source being copied
+        assertEquals(1, clipboardControl.getEdgeMap().size());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getSource(), graphInstance.startNode.getUUID());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getTarget(), graphInstance.intermNode.getUUID());
+
+        // 3) test copying node - edge - node - edge
+
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(
+                graphInstance.startNode.getUUID(),
+                graphInstance.edge1.getUUID(),
+                graphInstance.intermNode.getUUID(),
+                graphInstance.edge2.getUUID())
+        );
+
+        graphInstance.edge1.setSourceNode(graphInstance.startNode);
+        graphInstance.edge1.setTargetNode(graphInstance.intermNode);
+
+        graphInstance.edge2.setSourceNode(graphInstance.intermNode);
+        graphInstance.edge2.setTargetNode(graphInstance.endNode);
+
+        copySelectionSessionCommand.execute(callback);
+        verify(clipboardControl, times(1))
+                .set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode, graphInstance.edge2);
+        // edge map should contain only node - edge - node and discard edge that has no target being copied
+        assertEquals(1, clipboardControl.getEdgeMap().size());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getSource(), graphInstance.startNode.getUUID());
+        assertEquals(clipboardControl.getEdgeMap().get(graphInstance.edge1.getUUID()).getTarget(), graphInstance.intermNode.getUUID());
+
+        // 4) test copying node - node
+
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(
+                graphInstance.startNode.getUUID(),
+                graphInstance.intermNode.getUUID(),
+                graphInstance.edge1.getUUID())
+        );
+
+        graphInstance.edge1.setSourceNode(graphInstance.endNode);
+        graphInstance.edge1.setTargetNode(graphInstance.parentNode);
+
+        copySelectionSessionCommand.execute(callback);
+        verify(clipboardControl, times(1))
+                .set(graphInstance.startNode, graphInstance.intermNode, graphInstance.edge1);
+        // edge map should not contain only node - node 
+        assertEquals(0, clipboardControl.getEdgeMap().size());
     }
 
     @Override
