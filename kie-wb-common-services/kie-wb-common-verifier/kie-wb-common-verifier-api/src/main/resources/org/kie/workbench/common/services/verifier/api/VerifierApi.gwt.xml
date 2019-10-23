@@ -6,6 +6,4 @@
 	<inherits name="com.google.gwt.core.Core" />
 	<inherits name="com.google.gwt.user.User" />
 
-	<inherits name="org.uberfire.commons.UberfireCommons"/>
-
 </module>
