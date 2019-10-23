@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.definition.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
+import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.IsUnaryTests;
@@ -48,7 +50,7 @@ public class UnaryTestsPropertyConverter {
                                     ConstraintType.CONSTRAINT_KEY,
                                     DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
 
-        final Map<QName, String> otherAttributes = JsUtils.toAttributesMap(dmn);
+        final Map<QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(dmn);
         if (otherAttributes.containsKey(key)) {
             constraintTypeField = ConstraintTypeFieldPropertyConverter.wbFromDMN(otherAttributes.get(key));
         } else {
@@ -67,8 +69,10 @@ public class UnaryTestsPropertyConverter {
             return null;
         }
         final JSITUnaryTests result = new JSITUnaryTests();
+        final Map<QName, String> otherAttributes = new HashMap<>();
         result.setId(wb.getId().getValue());
         result.setText(wb.getText().getValue());
+        result.setOtherAttributes(Js.uncheckedCast(JsUtils.fromAttributesMap(otherAttributes)));
 
         final ConstraintType constraint = wb.getConstraintType();
 
@@ -76,7 +80,8 @@ public class UnaryTestsPropertyConverter {
             final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                                         ConstraintType.CONSTRAINT_KEY,
                                         DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
-            result.getOtherAttributes().put(key, constraint.value());
+            otherAttributes.put(key, constraint.value());
+            result.setOtherAttributes(Js.uncheckedCast(JsUtils.fromAttributesMap(otherAttributes)));
         }
 
         return result;

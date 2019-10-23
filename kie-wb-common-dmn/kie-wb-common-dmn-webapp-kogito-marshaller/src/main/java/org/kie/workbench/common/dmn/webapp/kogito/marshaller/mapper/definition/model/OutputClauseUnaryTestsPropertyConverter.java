@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.definition.model;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
@@ -37,7 +38,8 @@ public class OutputClauseUnaryTestsPropertyConverter {
         final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                                     ConstraintType.CONSTRAINT_KEY,
                                     DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
-        final String constraintString = dmn.getOtherAttributes().getOrDefault(key, "");
+        final Map<QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(dmn);
+        final String constraintString = otherAttributes.getOrDefault(key, "");
         final ConstraintType constraint = ConstraintType.fromString(constraintString);
         final OutputClauseUnaryTests result = new OutputClauseUnaryTests(id,
                                                                          new Text(dmn.getText()),

@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.definition.model;
 
+import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
@@ -36,8 +38,9 @@ public class InputClauseUnaryTestsPropertyConverter {
         final Id id = IdPropertyConverter.wbFromDMN(dmn.getId());
         final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                                     ConstraintType.CONSTRAINT_KEY,
-                                    DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
-        final String constraintString = dmn.getOtherAttributes().getOrDefault(key, "");
+                                    XMLConstants.DEFAULT_NS_PREFIX);
+        final Map<QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(dmn);
+        final String constraintString = otherAttributes.getOrDefault(key, "");
         final ConstraintType constraint = ConstraintType.fromString(constraintString);
         final InputClauseUnaryTests result = new InputClauseUnaryTests(id,
                                                                        new Text(dmn.getText()),

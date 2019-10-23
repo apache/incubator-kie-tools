@@ -83,6 +83,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeSource;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITTextAnnotation;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITUnaryTests;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDecisionServiceDividerLine;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDiagram;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNEdge;
@@ -514,7 +515,8 @@ public class DMNMarshallerKogitoUnmarshaller {
                                                  XMLConstants.DEFAULT_NS_PREFIX);
 
         for (JSITDRGElement element : importedDrgElements) {
-            final String namespaceAttribute = element.getOtherAttributes().getOrDefault(defaultNamespace, "");
+            final Map<QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(element);
+            final String namespaceAttribute = otherAttributes.getOrDefault(defaultNamespace, "");
             if (!StringUtils.isEmpty(namespaceAttribute)) {
                 if (indexByUri.containsKey(namespaceAttribute)) {
                     final String alias = indexByUri.get(namespaceAttribute);

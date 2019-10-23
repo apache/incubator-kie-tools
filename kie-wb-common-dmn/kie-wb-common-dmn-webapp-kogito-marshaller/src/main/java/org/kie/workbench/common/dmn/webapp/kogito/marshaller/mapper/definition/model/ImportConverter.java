@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITImport;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITUnaryTests;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.utils.NameSpaceUtils;
 
 import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
@@ -46,7 +47,8 @@ public final class ImportConverter {
                                    final PMMLDocumentMetadata pmmlDocument) {
         final Import result = createWBImport(dmn, definitions, pmmlDocument);
         final Map<QName, String> additionalAttributes = new HashMap<>();
-        for (Map.Entry<javax.xml.namespace.QName, String> entry : dmn.getOtherAttributes().entrySet()) {
+        final Map<javax.xml.namespace.QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(dmn);
+        for (Map.Entry<javax.xml.namespace.QName, String> entry : otherAttributes.entrySet()) {
             additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey().toString()), entry.getValue());
         }
         result.setAdditionalAttributes(additionalAttributes);
