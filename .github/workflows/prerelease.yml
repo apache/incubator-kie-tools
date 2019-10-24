@@ -16,5 +16,5 @@ jobs:
           TIAGO_VERSION: '`cat version.txt`'
         uses: actions/hello-world-docker-action@master
         with:
-          who-to-greet: $TIAGO_VERSION
+          who-to-greet: ${{ TIAGO_VERSION }}
 
