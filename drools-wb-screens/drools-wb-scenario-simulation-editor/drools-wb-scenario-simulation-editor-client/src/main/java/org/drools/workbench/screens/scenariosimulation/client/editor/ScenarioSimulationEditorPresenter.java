@@ -354,7 +354,6 @@ public class ScenarioSimulationEditorPresenter {
             simulation.replaceScenario(index, scenarioWithIndex.getScenario());
         }
         scenarioMainGridWidget.refreshContent(simulation);
-        scenarioBackgroundGridWidget.refreshContent(simulation.cloneSimulation());
         focusedContext.getStatus().setSimulation(simulation);
         scenarioSimulationDocksHandler.expandTestResultsDock();
         testRunnerReportingPanel.onTestRun(newData.getTestResultMessage());
