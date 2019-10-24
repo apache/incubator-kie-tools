@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@master
       - uses: ./.github/actions/prerelease-tag
         id: tiago
+        with:
+          branch: ${{ github.ref }}
 
       - uses: actions/hello-world-javascript-action@master
         with:
