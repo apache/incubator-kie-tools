@@ -19,13 +19,17 @@ package org.guvnor.messageconsole.client.console;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+
+import org.guvnor.messageconsole.events.FilteredMessagesEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
@@ -49,6 +53,7 @@ public class MessageConsoleService {
     private PlaceManager placeManager;
     private SessionInfo sessionInfo;
     private User identity;
+    private Event<FilteredMessagesEvent> filteredMessagesEvent;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -65,11 +70,14 @@ public class MessageConsoleService {
     public MessageConsoleService(final SyncBeanManager iocManager,
                                  final PlaceManager placeManager,
                                  final SessionInfo sessionInfo,
-                                 final User identity) {
+                                 final User identity,
+                                 final Event<FilteredMessagesEvent> filteredMessagesEvent) {
+
         this.iocManager = iocManager;
         this.placeManager = placeManager;
         this.sessionInfo = sessionInfo;
         this.identity = identity;
+        this.filteredMessagesEvent = filteredMessagesEvent;
     }
 
     public void publishMessages(final @Observes PublishMessagesEvent publishEvent) {
@@ -80,6 +88,7 @@ public class MessageConsoleService {
         if (publishEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo(MESSAGE_CONSOLE);
         }
+        fireFilteredMessagesEvent();
     }
 
     public void unpublishMessages(final @Observes UnpublishMessagesEvent unpublishEvent) {
@@ -90,6 +99,7 @@ public class MessageConsoleService {
         if (unpublishEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo(MESSAGE_CONSOLE);
         }
+        fireFilteredMessagesEvent();
     }
 
     public void publishBatchMessages(final @Observes PublishBatchMessagesEvent publishBatchEvent) {
@@ -109,10 +119,19 @@ public class MessageConsoleService {
         if (publishBatchEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo(MESSAGE_CONSOLE);
         }
+        fireFilteredMessagesEvent();
+    }
+
+    private void fireFilteredMessagesEvent() {
+        filteredMessagesEvent.fire(new FilteredMessagesEvent(dataProvider.getList()
+                                                                         .stream()
+                                                                         .map(m -> m.getMessage())
+                                                                         .collect(Collectors.toList())));
     }
 
     public void addDataDisplay(final HasData<MessageConsoleServiceRow> display) {
         dataProvider.addDataDisplay(display);
+        fireFilteredMessagesEvent();
     }
 
     public void onPerspectiveChange(final @Observes PerspectiveChange perspectiveChange) {

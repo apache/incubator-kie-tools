@@ -15,11 +15,16 @@
  */
 package org.guvnor.messageconsole.client.console;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+
+import org.guvnor.messageconsole.events.FilteredMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -32,6 +37,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MessageConsoleServiceTest {
@@ -48,6 +54,9 @@ public class MessageConsoleServiceTest {
     @Mock
     private User identity;
 
+    @Mock
+    private StubEventSource<FilteredMessagesEvent> filteredMessagesEvent;
+
     private MessageConsoleService service;
 
     @Before
@@ -55,7 +64,8 @@ public class MessageConsoleServiceTest {
         this.service = new MessageConsoleService(iocManager,
                                                  placeManager,
                                                  sessionInfo,
-                                                 identity);
+                                                 identity,
+                                                 filteredMessagesEvent);
     }
 
     @Test
@@ -76,5 +86,26 @@ public class MessageConsoleServiceTest {
                      data.get(0).getSequence());
         assertEquals(0,
                      data.get(1).getSequence());
+
+        verify(filteredMessagesEvent, times(1)).fire(any());
+    }
+
+    static class StubEventSource<T> implements Event<T> {
+
+        @Override
+        public void fire(T event) {
+            throw new UnsupportedOperationException("Not implemented.");
+        }
+
+        @Override
+        public Event<T> select(Annotation... qualifiers) {
+            throw new UnsupportedOperationException("Not implemented.");
+        }
+
+        @Override
+        public <U extends T> Event<U> select(Class<U> subtype,
+                                             Annotation... qualifiers) {
+            throw new UnsupportedOperationException("Not implemented.");
+        }
     }
 }

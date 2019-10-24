@@ -34,6 +34,8 @@ public interface MessageConsoleConstants extends Messages {
 
     String ClearMessageConsole();
 
+    String CopyMessageConsole();
+
     String Refreshing();
 
     String ErrorLevelTitle();
@@ -41,4 +43,8 @@ public interface MessageConsoleConstants extends Messages {
     String WarningLevelTitle();
 
     String InfoLevelTitle();
+
+    String MessagesCopiedToClipboard();
+
+    String MessagesNotCopiedToClipboard();
 }

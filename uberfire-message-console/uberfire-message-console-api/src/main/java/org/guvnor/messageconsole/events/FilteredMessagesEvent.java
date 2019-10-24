@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.util;
+package org.guvnor.messageconsole.events;
 
-import javax.enterprise.context.Dependent;
+import java.util.List;
 
-import elemental2.dom.HTMLInputElement;
-import elemental2.dom.HTMLTextAreaElement;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Dependent
-public class Clipboard {
+@Portable
+public class FilteredMessagesEvent {
 
-    public boolean copy(final HTMLInputElement element) {
-        element.select();
-        return copy();
+    private List<SystemMessage> messages;
+
+    public FilteredMessagesEvent() {
+
     }
 
-    public boolean copy(final HTMLTextAreaElement element) {
-        element.select();
-        return copy();
+    public FilteredMessagesEvent(List<SystemMessage> messages) {
+        this.messages = messages;
     }
 
-    public native boolean copy() /*-{
-        return $doc.execCommand("Copy");
-    }-*/;
+    public List<SystemMessage> getMessages() {
+        return messages;
+    }
 }

@@ -24,5 +24,6 @@
 
   <source path="events" />
   <source path="whitelist" />
+  <source path="utils" />
 
 </module>
