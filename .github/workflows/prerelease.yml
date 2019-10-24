@@ -11,7 +11,9 @@ jobs:
     steps:
       - name: Write version to disk
         run: echo $GITHUB_REF_oi > version.txt && TIAGO_VERSION=`cat version.txt`
-      - name:
+      - name: Greet!
+        env:
+          TIAGO_VERSION: `cat version.txt`
         uses: actions/hello-world-docker-action@master
         with:
           who-to-greet: $TIAGO_VERSION
