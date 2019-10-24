@@ -9,6 +9,7 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
       - uses: ./.github/actions/prerelease-tag
         id: tiago
 
