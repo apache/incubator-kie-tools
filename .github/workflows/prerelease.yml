@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+    branches: ["**-prerelease"]
+    
+
+jobs:
+  prerelease:
+    steps:
+      - name: Write version to disk
+        run: echo $GITHUB_REF_oi > version.txt
+      - name:
+        run: TIAGO_VERSION = `cat version.txt`
+        uses: actions/hello-world-docker-action@master
+        with:
+          who-to-greet: ${{ $TIAGO_VERSION }}
+
