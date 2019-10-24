@@ -1,0 +1,12 @@
+name: 'Pre-release Tag'
+description: 'Outputs the `tag` for a prerelease branch'
+inputs:
+  branch:  # id of input
+    description: '*-prerelease branch name'
+    required: true
+outputs:
+  tag: # id of output
+    description: 'The tag for that *-prerelease branch'
+runs:
+  using: 'node12'
+  main: 'index.js'

@@ -9,12 +9,10 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Write version to disk
-        run: touch .github/workflows/.env.global && echo INPUT_WHO_TO_GREET=0.0.0 > .github/workflows/.env.global
-      - uses: zweitag/github-actions/global-variables@master
-      - name: Greet!
-        env:
-          INPUT_who-to-greet: '`cat version.txt`'
-        uses: actions/hello-world-docker-action@master
+      - uses: ./.github/actions/prerelease-tag
+        id: tiago
+
+      - uses: actions/hello-world-javascript-action@master
+        with:
+          who-to-greet: ${{ steps.tiago.output.tag }}
 
