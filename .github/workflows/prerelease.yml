@@ -6,6 +6,7 @@ on:
     
 
 jobs:
+  runs-on: "ubuntu-latest"
   prerelease:
     steps:
       - name: Write version to disk
