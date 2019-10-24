@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.widgets.core.client.editors.metafile;
+package org.uberfire.ext.widgets.core.client.editors.texteditor;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,30 +24,18 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.EditorsConstants;
 import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 
-@Dependent
-@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = {DotResourceType.class}, priority = Integer.MAX_VALUE - 100)
-public class MetaFileEditorPresenter {
+public abstract class TextEditorPresenter {
 
     @Inject
-    public TextEditorPresenter.View view;
-
+    public View view;
+    protected Path path;
     @Inject
     private Caller<VFSService> vfsServices;
-
-    private Path path;
 
     @OnStartup
     public void onStartup(final ObservablePath path) {
@@ -57,25 +44,32 @@ public class MetaFileEditorPresenter {
             @Override
             public void callback(String response) {
                 if (response == null) {
-                    view.setContent(CoreConstants.INSTANCE.EmptyEntry(),
-                                    AceEditorMode.TEXT);
+                    view.setContent(EditorsConstants.INSTANCE.EmptyEntry(),
+                                    getAceEditorMode());
                 } else {
                     view.setContent(response,
-                                    AceEditorMode.TEXT);
+                                    getAceEditorMode());
                 }
+                onAfterViewLoaded();
             }
         }).readAllString(path);
     }
 
-    @OnSave
-    public void onSave() {
-        vfsServices.call(new RemoteCallback<Path>() {
-            @Override
-            public void callback(Path response) {
-                view.setDirty(false);
-            }
-        }).write(path,
-                 view.getContent());
+    /**
+     * This is called after the view's content has been loaded. Sub-classes can override
+     * this method to perform applicable actions after the view's content has been set.
+     * The default implementation does nothing.
+     */
+    protected void onAfterViewLoaded() {
+    }
+
+    /**
+     * This allows sub-classes to determine the Mode of the AceEditor.
+     * By default the AceEditor assumes the AceEditorMode.TEXT.
+     * @return
+     */
+    public AceEditorMode getAceEditorMode() {
+        return AceEditorMode.TEXT;
     }
 
     @IsDirty
@@ -83,23 +77,29 @@ public class MetaFileEditorPresenter {
         return view.isDirty();
     }
 
-    @OnClose
-    public void onClose() {
-        this.path = null;
-    }
-
-    @OnOpen
     public void onOpen() {
         view.setFocus();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return CoreConstants.INSTANCE.MetaFileEditor() + " [" + path.getFileName() + "]";
-    }
-
-    @WorkbenchPartView
     public IsWidget getWidget() {
         return view;
+    }
+
+    public interface View
+            extends
+            IsWidget {
+
+        void setContent(final String content,
+                        final AceEditorMode mode);
+
+        String getContent();
+
+        void setFocus();
+
+        boolean isDirty();
+
+        void setDirty(final boolean dirty);
+
+        void setReadOnly(final boolean isReadOnly);
     }
 }

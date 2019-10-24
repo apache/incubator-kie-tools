@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ Copyright 2015 JBoss, by Red Hat, Inc
   ~
@@ -22,20 +21,38 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-widgets</artifactId>
+    <artifactId>uberfire-widgets-core</artifactId>
     <version>7.29.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>uberfire-widgets-core</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>uberfire-widgets-core-ace</artifactId>
+  <packaging>jar</packaging>
 
-  <name>Uberfire Widgets Core</name>
-  <description>Uberfire Widgets Core</description>
+  <name>Uberfire Widgets Core Ace Editor</name>
+  <description>Uberfire Widgets Core Ace Editor</description>
 
-  <modules>
-    <module>uberfire-widgets-core-client</module>
-    <module>uberfire-widgets-core-ace</module>
-    <module>uberfire-widgets-core-editors</module>
-  </modules>
+  <dependencies>
+
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 
 </project>

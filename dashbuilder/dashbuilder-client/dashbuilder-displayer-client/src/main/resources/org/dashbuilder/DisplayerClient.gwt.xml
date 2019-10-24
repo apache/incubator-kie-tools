@@ -27,6 +27,7 @@
   <inherits name='org.jboss.errai.ioc.Container'/>
 
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireAceEditor"/>
   <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorClient"/>
 
   <inherits name="org.dashbuilder.DatasetClient"/>

@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.core.client.resources.CoreImages;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.EditorsConstants;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.TextResourceTypeDefinition;
 
@@ -49,7 +49,7 @@ public class TextResourceType
 
     @Override
     public String getDescription() {
-        String desc = CoreConstants.INSTANCE.textResourceTypeDescription();
+        String desc = EditorsConstants.INSTANCE.textResourceTypeDescription();
         if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
