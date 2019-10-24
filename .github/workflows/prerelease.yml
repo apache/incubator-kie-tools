@@ -10,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Write version to disk
-        run: echo $GITHUB_REF_oi > version.txt && TIAGO_VERSION=`cat version.txt`
+        run: echo INPUT_who-to-greet=0.0.0 > .github/workflows/.env.global
+      - uses: zweitag/github-actions/global-variables@master
       - name: Greet!
         env:
-          TIAGO_VERSION: '`cat version.txt`'
+          INPUT_who-to-greet: '`cat version.txt`'
         uses: actions/hello-world-docker-action@master
-        with:
-          who-to-greet: ${{ TIAGO_VERSION }}
 
