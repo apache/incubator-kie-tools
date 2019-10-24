@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: .github/actions/prerelease-tag
+      - uses: ./.github/actions/prerelease-tag
         id: tiago
 
       - uses: actions/hello-world-javascript-action@master
