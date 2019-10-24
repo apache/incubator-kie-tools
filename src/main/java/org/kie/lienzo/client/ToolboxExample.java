@@ -1,8 +1,11 @@
 package org.kie.lienzo.client;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.toolbox.ToolboxVisibilityExecutors;
 import com.ait.lienzo.client.core.shape.toolbox.grid.AutoGrid;
 import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
@@ -21,7 +24,6 @@ import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
-import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 import com.google.gwt.dom.client.Style;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
@@ -32,10 +34,12 @@ public class ToolboxExample extends BaseExample implements Example {
 
     private HTMLButtonElement showToolboxesButton;
     private HTMLButtonElement hideToolboxesButton;
+    private HTMLButtonElement destroyToolboxesButton;
 
     private WiresShape rectangleRed;
     private JsArray<LayerToolbox> toolboxes;
-    private HandlerRegistrationManager handlerRegistrationManager;
+    private HandlerRegistration layerClickHandlerReg;
+    private HandlerRegistration redRectangleClickHandlerReg;
 
     public ToolboxExample(final String title) {
         super(title);
@@ -46,10 +50,12 @@ public class ToolboxExample extends BaseExample implements Example {
         super.init(panel, topDiv);
         topDiv.style.display = Style.Display.INLINE_BLOCK.getCssName();
 
-        showToolboxesButton = createButton("Show Toolbox", this::showToolboxes);
+        showToolboxesButton = createButton("Show Toolboxes", this::showToolboxes);
         topDiv.appendChild(showToolboxesButton);
-        hideToolboxesButton = createButton("Hide Toolbox", this::hideToolboxes);
+        hideToolboxesButton = createButton("Hide Toolboxes", this::hideToolboxes);
         topDiv.appendChild(hideToolboxesButton);
+        destroyToolboxesButton = createButton("Destroy Toolboxes", this::destroyToolboxes);
+        topDiv.appendChild(destroyToolboxesButton);
     }
 
     @Override
@@ -57,13 +63,14 @@ public class ToolboxExample extends BaseExample implements Example {
         super.destroy();
         showToolboxesButton.remove();
         hideToolboxesButton.remove();
-        handlerRegistrationManager.removeHandler();
+        destroyToolboxesButton.remove();
+        layerClickHandlerReg.removeHandler();
+        redRectangleClickHandlerReg.removeHandler();
     }
 
     @Override
     public void run() {
 
-        handlerRegistrationManager = new HandlerRegistrationManager();
 
         // Wires Manager.
         WiresManager wires_manager = WiresManager.get(layer);
@@ -89,8 +96,7 @@ public class ToolboxExample extends BaseExample implements Example {
 
         toolboxes = new JsArray<>(rectangleRedToolbox);
 
-        HandlerRegistration layerClickReg = layer.addNodeMouseClickHandler(event -> onLayerClick());
-        handlerRegistrationManager.register(layerClickReg);
+        layerClickHandlerReg = layer.addNodeMouseClickHandler(event -> onLayerClick());
     }
 
     private static final double BUTTON_SIZE = 15;
@@ -111,14 +117,13 @@ public class ToolboxExample extends BaseExample implements Example {
                               .build())
                 .useShowExecutor(ToolboxVisibilityExecutors.upScaleX())
                 .useHideExecutor(ToolboxVisibilityExecutors.downScaleX());
-        HandlerRegistration rectangleRedClickReg = shape.getGroup().addNodeMouseClickHandler(event -> {
+        redRectangleClickHandlerReg = shape.getGroup().addNodeMouseClickHandler(event -> {
             if (toolbox.isVisible()) {
                 toolbox.hide();
             } else {
                 toolbox.show();
             }
         });
-        handlerRegistrationManager.register(rectangleRedClickReg);
         return toolbox;
     }
 
@@ -128,12 +133,20 @@ public class ToolboxExample extends BaseExample implements Example {
                 ToolboxFactory.INSTANCE.buttons()
                         .button(new Rectangle(BUTTON_SIZE, BUTTON_SIZE)
                                         .setFillColor(color))
-                        // .decorate(createDecorator())
-                        // .tooltip(tooltip.createItem(title))
-                        // .onMouseEnter(event -> onMouseEnter())
-                        // .onMouseExit(event -> onMouseExit())
+                        .decorate(ToolboxFactory.INSTANCE.decorators().box())
+                        .tooltip(ToolboxFactory.INSTANCE.tooltips()
+                        .forToolbox(toolbox)
+                        .withText(defaultTextConsumer()))
+                        .onMouseEnter(event -> DomGlobal.console.log("onToolboxMouseEnter [" + color + "]"))
+                        .onMouseExit(event -> DomGlobal.console.log("onToolboxMouseExit [" + color + "]"))
                         .onClick(event -> DomGlobal.console.log("onToolboxButtonClick [" + color + "]"));
         toolbox.add(button);
+    }
+
+    private static Consumer<Text> defaultTextConsumer() {
+        return text -> text
+                .setFontSize(10)
+                .setFontFamily("Verdana");
     }
 
     private void onLayerClick() {
@@ -143,20 +156,42 @@ public class ToolboxExample extends BaseExample implements Example {
 
     private void showToolboxes() {
         DomGlobal.console.log("[Toolbox] Showing all");
-        for (int i = 0; i < toolboxes.length; i++) {
-            LayerToolbox toolbox = toolboxes.getAt(i);
-            toolbox.show();
+        if (toolboxes.length > 0) {
+            for (int i = 0; i < toolboxes.length; i++) {
+                LayerToolbox toolbox = toolboxes.getAt(i);
+                toolbox.show();
+            }
+            draw();
         }
-        draw();
     }
 
     private void hideToolboxes() {
-        DomGlobal.console.log("[Toolbox] Hiding all");
-        for (int i = 0; i < toolboxes.length; i++) {
-            LayerToolbox toolbox = toolboxes.getAt(i);
-            toolbox.hide();
+        if (toolboxes.length > 0) {
+            DomGlobal.console.log("[Toolbox] Hiding all");
+            for (int i = 0; i < toolboxes.length; i++) {
+                LayerToolbox toolbox = toolboxes.getAt(i);
+                toolbox.hide();
+            }
+            draw();
         }
-        draw();
+    }
+
+    private void destroyToolboxes() {
+        DomGlobal.console.log("[Toolbox] Destroying all");
+        if (toolboxes.length > 0) {
+            for (int i = 0; i < toolboxes.length; i++) {
+                LayerToolbox toolbox = toolboxes.getAt(i);
+                toolbox.destroy();
+            }
+            while (toolboxes.length > 0) {
+                toolboxes.pop();
+            }
+            showToolboxesButton.disabled = true;
+            hideToolboxesButton.disabled = true;
+            destroyToolboxesButton.disabled = true;
+            draw();
+        }
+
     }
 
     private Layer getTopLayer() {
