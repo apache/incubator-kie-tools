@@ -4,8 +4,6 @@ import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
-import com.ait.lienzo.client.widget.panel.impl.LienzoPanelEventDetail;
-import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEventDetail;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.DomGlobal;
@@ -23,6 +21,7 @@ public class BaseLienzoExamples {
 
     public void doLoad() {
         createTests(new BasicExample("Basic"),
+                    new ToolboxExample("Toolbox"),
                     new PerformanceTests("Performance tests"),
                     new StrokeAndFillingExample("Stroke and Filling"),
                     new GradientsAndShadowsExample("Gradients and Shadows"),
@@ -100,9 +99,11 @@ public class BaseLienzoExamples {
         // lienzo = new LienzoPanelImpl(panelDiv, new Viewport(), test.getWidthOffset(), test.getHeightOffset());
         // lienzo = LienzoFitPanel.newPanel(panelDiv);
         ScrollablePanel scrollablePanel = ScrollablePanel.newPanel(panelDiv, new BoundsProviderFactory.PrimitivesBoundsProvider());
+        lienzo = scrollablePanel;
+
+        /*
 
         // TODO: REMOVE ALL BELOW EVENT LISTENERS
-
         scrollablePanel.addBoundsChangedEventListener(evt -> {
             DomGlobal.console.log("BOUNDS CHANGED!!! YEAH!");
             LienzoPanelEventDetail detail = LienzoPanelEventDetail.getDetail(evt);
@@ -123,9 +124,8 @@ public class BaseLienzoExamples {
             LienzoPanelScrollEventDetail detail = LienzoPanelScrollEventDetail.getScrollDetail(evt);
             DomGlobal.console.log("DETAIL = " + detail.toString());
             DomGlobal.console.log("Px/Py = " + detail.getPx() + ", " + detail.getPy());
-        });
+        });*/
 
-        lienzo = scrollablePanel;
 
         applyGrid(lienzo);
 
