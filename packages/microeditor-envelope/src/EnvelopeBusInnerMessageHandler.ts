@@ -117,7 +117,7 @@ export class EnvelopeBusInnerMessageHandler {
         this.impl.receive_contentRequest();
         break;
       default:
-        console.info(`Unknown message type received: ${message.type}`);
+        console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);
         break;
     }
   }

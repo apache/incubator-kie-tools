@@ -29,14 +29,20 @@ import * as dependencies__ from "../../dependencies";
 import { ResolvedDomDependencyArray } from "../../dependencies";
 import { Feature } from "../common/Feature";
 import { PrInformation } from "./IsolatedPrEditor";
+import { Logger } from "../../../Logger";
 
-export function renderPrEditorsApp(args: { editorIndexPath: string; router: Router }) {
+export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup();
 
   ReactDOM.render(
-    <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.prView}>
+    <Main
+      router={args.router}
+      logger={args.logger}
+      editorIndexPath={args.editorIndexPath}
+      commonDependencies={dependencies__.prView}
+    >
       <Feature
         name={"Editors directly on PR screen"}
         dependencies={deps => ({ prInfoContainer: () => deps.all.array.pr__prInfoContainer() })}
@@ -46,7 +52,7 @@ export function renderPrEditorsApp(args: { editorIndexPath: string; router: Rout
       />
     </Main>,
     createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
-    () => console.info("[Kogito] Mounted.")
+    () => args.logger.log("Mounted.")
   );
 }
 

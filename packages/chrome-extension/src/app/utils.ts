@@ -16,6 +16,7 @@
 
 import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
 import { ResolvedDomDependency } from "./dependencies";
+import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {
   const scriptTag = document.createElement("script");
@@ -27,7 +28,7 @@ export function runScriptOnPage(scriptString: string) {
 
 let lastUri = window.location.pathname;
 
-export function runAfterUriChange(callback: () => void) {
+export function runAfterUriChange(logger: Logger, callback: () => void) {
   const checkUriThenCallback = () => {
     const currentUri = window.location.pathname;
 
@@ -35,7 +36,7 @@ export function runAfterUriChange(callback: () => void) {
       return;
     }
 
-    console.debug(`[Kogito] URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
     lastUri = currentUri;
     callback();
   };
@@ -54,11 +55,11 @@ export function runAfterUriChange(callback: () => void) {
   history.replaceState = _wr('replaceState');`);
 
   window.addEventListener("replaceState", () => {
-    console.debug("[Kogito] replaceState event happened");
+    logger.log("replaceState event happened");
     checkUriThenCallback();
   });
   window.addEventListener("popstate", () => {
-    console.debug("[Kogito] popstate event happened");
+    logger.log("popstate event happened");
     checkUriThenCallback();
   });
 }

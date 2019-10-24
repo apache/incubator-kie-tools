@@ -29,12 +29,13 @@ import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
+import { Logger } from "../../../Logger";
 
-export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; router: Router }) {
+export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
-    console.info(`[Kogito] Doesn't look like the GitHub page is ready yet.`);
+    args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
     return;
   }
 
@@ -44,17 +45,22 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
-    console.info(`[Kogito] Unable to determine file extension from URL`);
+    args.logger.log(`Unable to determine file extension from URL`);
     return;
   }
 
   if (!args.router.getLanguageData(openFileExtension)) {
-    console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
+    args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
 
   ReactDOM.render(
-    <Main router={args.router} editorIndexPath={args.editorIndexPath} commonDependencies={dependencies__.singleView}>
+    <Main
+      router={args.router}
+      logger={args.logger}
+      editorIndexPath={args.editorIndexPath}
+      commonDependencies={dependencies__.singleView}
+    >
       <Feature
         name={"Readonly editor"}
         dependencies={deps => ({
@@ -76,7 +82,7 @@ export function renderSingleEditorReadonlyApp(args: { editorIndexPath: string; r
       />
     </Main>,
     createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
-    () => console.info("[Kogito] Mounted.")
+    () => args.logger.log("Mounted.")
   );
 }
 

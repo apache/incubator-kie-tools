@@ -23,10 +23,11 @@ import * as dependencies__ from "../../dependencies";
 import { ResolvedDomDependency } from "../../dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInformation } from "./IsolatedPrEditor";
 import { Feature } from "../common/Feature";
+import {Logger} from "../../../Logger";
 
 export function PrEditorsApp(props: { prInfo: PrInformation }) {
   const globalContext = useContext(GlobalContext);
-  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globalContext.router));
+  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globalContext.logger, globalContext.router));
 
   useMutationObserverEffect(
     new MutationObserver(mutations => {
@@ -36,9 +37,9 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
         return;
       }
 
-      const newContainers = supportedPrFileElements(globalContext.router);
+      const newContainers = supportedPrFileElements(globalContext.logger, globalContext.router);
       if (newContainers.length !== prFileContainers.length) {
-        console.debug("Found new containers...");
+        globalContext.logger.log("Found new containers...");
         setPrFileContainers(newContainers);
       }
     }),
@@ -73,8 +74,8 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
   );
 }
 
-function supportedPrFileElements(router: Router) {
-  return prFileElements().filter(container => router.getLanguageData(getFileExtension(container)));
+function supportedPrFileElements(logger: Logger, router: Router) {
+  return prFileElements(logger).filter(container => router.getLanguageData(getFileExtension(container)));
 }
 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
@@ -89,10 +90,10 @@ function useMutationObserverEffect(observer: MutationObserver, options: Mutation
   );
 }
 
-function prFileElements() {
+function prFileElements(logger: Logger) {
   const elements = dependencies__.all.array.supportedPrFileContainers();
   if (!elements) {
-    console.debug("Could not find file containers...");
+    logger.log("Could not find file containers...");
     return [];
   }
 

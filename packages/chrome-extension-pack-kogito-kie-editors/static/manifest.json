@@ -6,7 +6,6 @@
   "content_scripts": [
     {
       "run_at": "document_idle",
-      "css": ["resources/style.css"],
       "js": ["contentscript.js"],
       "matches": ["https://github.com/*"],
       "all_frames": true

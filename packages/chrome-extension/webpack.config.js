@@ -15,81 +15,46 @@
  */
 
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const ZipPlugin = require("zip-webpack-plugin");
-const packageJson = require("./package.json");
 
-module.exports = (env, argv) => {
-  const isProd = argv.mode === "production";
-
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
-    entry: {
-      contentscript: "./src/contentscript.ts",
-      background: "./src/background.ts",
-      "envelope/index": "./src/envelope/index.ts"
-    },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
-    },
-    externals: {},
-    devServer: {
-      contentBase: [path.join(__dirname, "..", "unpacked-gwt-editors")],
-      compress: true,
-      hot: false,
-      liveReload: false,
-      watchContentBase: true,
-      https: true,
-      port: 9000
-    },
-    plugins: [
-      new CopyPlugin([
-        { from: "./static/manifest.json" },
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/envelope", to: "./envelope" }
-      ]),
-      new ZipPlugin({
-        filename: "kiegroup_kogito_chrome_extension_" + packageJson.version + ".zip",
-        pathPrefix: "dist"
-      })
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader",
-          options: {
-            configFile: path.resolve("./tsconfig.json")
-          }
-        },
-        {
-          test: /ChromeRouter\.ts$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__targetOrigin}",
-                replace: isProd ? "https://raw.githubusercontent.com" : "https://localhost:9000"
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: isProd ? "kiegroup/kogito-online/chrome-extension-resources-0.2.0/" : ""
-              }
-            ]
-          }
-        },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: ["babel-loader"]
+module.exports = {
+  mode: "development",
+  devtool: "inline-source-map",
+  entry: {
+    index: "./src/index.ts"
+  },
+  output: {
+    path: path.resolve(__dirname, "./dist"),
+    filename: "[name].js",
+    libraryTarget: "commonjs2"
+  },
+  externals: {},
+  plugins: [],
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        options: {
+          configFile: path.resolve("./tsconfig.json")
         }
-      ]
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-    }
-  };
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
+      }
+    ]
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve("./node_modules"),
+      path.resolve("./src"),
+    ]
+  }
 };
