@@ -31,7 +31,7 @@ cd /tmp/src/
 
 if [ -f "pom.xml" ]; then
 	echo "---> Building application from source..."
-	$MAVEN_HOME/bin/mvn clean package -s $KOGITO_HOME/.m2/settings.xml \
+	$MAVEN_HOME/bin/mvn clean package $MAVEN_ARGS_APPEND -s $KOGITO_HOME/.m2/settings.xml \
     -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
     -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 else
@@ -56,19 +56,24 @@ else
 	mv project/* .
 
 	echo "---> Building application from source..."
-	$MAVEN_HOME/bin/mvn clean package -s $KOGITO_HOME/.m2/settings.xml \
+	$MAVEN_HOME/bin/mvn clean package $MAVEN_ARGS_APPEND -s $KOGITO_HOME/.m2/settings.xml \
     -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
     -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 fi
 
+artifactDir="target"
+if [ ! -z "${ARTIFACT_DIR}" ]; then
+    artifactDir="${ARTIFACT_DIR}"
+fi
+
 echo "---> Installing application binaries"
-cp -v target/*.jar $KOGITO_HOME/bin
+cp -v $artifactDir/*.jar $KOGITO_HOME/bin
 
 echo "---> Copy image metadata file..."
-if [ -e /tmp/src/target/image_metadata.json ]; then
+if [ -e "/tmp/src/${artifactDir}/image_metadata.json" ]; then
     mkdir /tmp/.s2i
-    cp -v /tmp/src/target/image_metadata.json /tmp/.s2i
-    cp -v /tmp/src/target/image_metadata.json $KOGITO_HOME/bin
+    cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/.s2i
+    cp -v /tmp/src/$artifactDir/image_metadata.json $KOGITO_HOME/bin
 else
-    echo "-----> Failed to copy metadata file, /tmp/src/target/image_metadata.json not found."
+    echo "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."
 fi

@@ -15,6 +15,12 @@ envs:
 - name: JAVA_OPTIONS
   example: "-Ddebug=true"
   description: JVM options passed to the Java command.
+- name: MAVEN_ARGS_APPEND
+  example: "-pl mymodule -am"
+  description: Additional Maven arguments
+- name: ARTIFACT_DIR
+  example: mymodule/target
+  description:  Path to target/ where the jar files are created for multi-module builds
 
 modules:
   install:

@@ -39,6 +39,20 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.0-runner.jar should exist
 
+    Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build and if it is listening on the expected port
+    Given s2i build /tmp/kogito-examples from . using 0.5.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+      | variable          | value                           |
+      | NATIVE            | false                           |
+      | ARTIFACT_DIR      | drools-quarkus-example/target   |
+      | MAVEN_ARGS_APPEND | -pl drools-quarkus-example -am  |
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-0.5.0-runner.jar should exist
+
   Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port
     Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.5.0 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
     Then check that page is served

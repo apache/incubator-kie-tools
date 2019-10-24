@@ -16,6 +16,22 @@ Feature: kogito-springboot-ubi8-s2i image tests
     And container log should contain DEBUG o.s.boot.SpringApplication.load
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
+  Scenario: Verify if the s2i build is finished as expected using multi-module build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using 0.5.0 and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
+      | variable            | value                           |
+      | JAVA_OPTIONS        | -Ddebug=true                    |
+      | ARTIFACT_DIR        | jbpm-springboot-example/target   |
+      | MAVEN_ARGS_APPEND   | -pl jbpm-springboot-example -am  |
+    Then check that page is served
+      | property             | value     |
+      | port                 | 8080      |
+      | path                 | /orders/1 |
+      | wait                 | 80        |
+      | expected_status_code | 204       |
+    And file /home/kogito/bin/jbpm-springboot-example-0.5.0.jar should exist
+    And container log should contain DEBUG o.s.boot.SpringApplication.load
+    And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
+
   Scenario: Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using 0.5.0
     Then check that page is served
