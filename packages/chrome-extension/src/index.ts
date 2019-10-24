@@ -25,6 +25,13 @@ import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 
+/**
+ * Starts a Kogito extension.
+ *
+ *  @param args.name The extension name. Used to differentiate logs from other extensions.
+ *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
+ *  @param args.router The Router to be used to find resources for each language.
+ */
 export function startExtension(args: { name: string; editorIndexPath: string; router: Router }) {
   const logger = new Logger(args.name);
 
