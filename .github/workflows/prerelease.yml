@@ -15,6 +15,6 @@ jobs:
       - uses: zweitag/github-actions/global-variables@master
       - name: Greet!
         env:
-          INPUT_who-to-greet: '`cat version.txt`'
+          INPUT_WHO-TO-GREET: Tiago
         uses: actions/hello-world-docker-action@master
 
