@@ -17,6 +17,9 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,12 +55,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
@@ -102,6 +107,42 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
 
         // only outputs
         verifySimulationCreated(false, true);
+    }
+
+    @Test
+    public void addToScenarioRecursive() {
+        FactMapping factMappingMock = mock(FactMapping.class);
+        DMNSimulationCreationStrategy.FactMappingExtractor factMappingExtractorMock = mock(DMNSimulationCreationStrategy.FactMappingExtractor.class);
+        when(factMappingExtractorMock.getFactMapping(any(), anyString(), any(), anyString())).thenReturn(factMappingMock);
+
+        Map<String, FactModelTree> hiddenFacts = new HashMap<>();
+
+        FactModelTree factModelTree = new FactModelTree("myFact", "", new HashMap<>(), Collections.emptyMap());
+        factModelTree.addExpandableProperty("recursiveProperty", "recursive");
+        String propertyType = String.class.getCanonicalName();
+        String propertyName = "simpleProperty";
+        factModelTree.addSimpleProperty(propertyName, propertyType);
+
+        hiddenFacts.put("recursive", factModelTree);
+
+        dmnSimulationCreationStrategy.addToScenario(factMappingExtractorMock,
+                                                    factModelTree,
+                                                    new ArrayList<>(),
+                                                    hiddenFacts);
+
+        verify(factMappingExtractorMock, times(1))
+                .getFactMapping(
+                        eq(factModelTree),
+                        eq(propertyName),
+                        eq(Arrays.asList("myFact", "recursiveProperty")),
+                        eq(propertyType));
+
+        verify(factMappingExtractorMock, times(2))
+                .getFactMapping(
+                        any(),
+                        any(),
+                        any(),
+                        any());
     }
 
     @Test

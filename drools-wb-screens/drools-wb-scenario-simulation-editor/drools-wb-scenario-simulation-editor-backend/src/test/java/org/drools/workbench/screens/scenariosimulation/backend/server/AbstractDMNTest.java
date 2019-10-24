@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -233,6 +234,26 @@ public class AbstractDMNTest {
         CompositeTypeImpl toReturn = new CompositeTypeImpl(null, "tPhoneNumber", null, isCollection);
         toReturn.addField(PHONENUMBER_PREFIX, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
         toReturn.addField(PHONENUMBER_NUMBER, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        return toReturn;
+    }
+
+    /**
+     * Returns a recursive <b>person</b> <code>CompositeTypeImpl</code>
+     * @param isCollection
+     * @return
+     */
+    protected CompositeTypeImpl getRecursivePersonComposite(boolean isCollection) {
+        CompositeTypeImpl toReturn = new CompositeTypeImpl(null, "tPerson", null, isCollection);
+        CompositeTypeImpl tPersonList = new CompositeTypeImpl(null, "tPersonList", null, true, new HashMap<>(), toReturn, null);
+
+        toReturn.addField("name", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        toReturn.addField("parent", toReturn);
+        toReturn.addField("ancestors", tPersonList);
+
+        tPersonList.addField("name", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        tPersonList.addField("parent", toReturn);
+        tPersonList.addField("ancestors", tPersonList);
+
         return toReturn;
     }
 }
