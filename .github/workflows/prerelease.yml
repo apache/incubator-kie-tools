@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Write version to disk
-        run: echo INPUT_who-to-greet=0.0.0 > .github/workflows/.env.global
+        run: touch .github/workflows/.env.global && echo INPUT_who-to-greet=0.0.0 > .github/workflows/.env.global
       - uses: zweitag/github-actions/global-variables@master
       - name: Greet!
         env:
