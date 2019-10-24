@@ -127,5 +127,8 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
         assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(),
                      ScenarioSimulationUtils.getPlaceholder(LocalDate.class.getCanonicalName()));
+
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dmnDateFormatPlaceholder(),
+                     ScenarioSimulationUtils.getPlaceholder(ConstantHolder.DMN_DATE));
     }
 }

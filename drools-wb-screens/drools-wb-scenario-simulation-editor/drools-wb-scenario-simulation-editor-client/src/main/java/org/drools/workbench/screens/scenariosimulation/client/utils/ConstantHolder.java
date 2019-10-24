@@ -31,4 +31,6 @@ public class ConstantHolder {
     // GWT doesn't support Java 8 LocalDate
     public static final String LOCALDATE_SIMPLE_NAME = "LocalDate";
     public static final String LOCALDATE_CANONICAL_NAME = "java.time.LocalDate";
+
+    public static final String DMN_DATE = "date";
 }

@@ -182,6 +182,8 @@ public interface ScenarioSimulationEditorConstants
 
     String dateFormatPlaceholder();
 
+    String dmnDateFormatPlaceholder();
+
     String deleteScenarioMainTitle();
 
     String deleteScenarioMainQuestion();
