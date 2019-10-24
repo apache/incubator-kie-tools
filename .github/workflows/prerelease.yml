@@ -1,4 +1,4 @@
-name: CI
+name: test
 
 on:
   push:
@@ -13,5 +13,5 @@ jobs:
       - name:
         uses: actions/hello-world-docker-action@master
         with:
-          who-to-greet: ${{ $TIAGO_VERSION }}
+          who-to-greet: $TIAGO_VERSION
 
