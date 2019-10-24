@@ -10,12 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: ./.github/actions/prerelease-tag
-        id: tiago
+
+      - name:
+        id: prerelease-tag
+        uses: ./.github/actions/prerelease-tag
         with:
           branch: ${{ github.ref }}
 
       - uses: actions/hello-world-javascript-action@master
         with:
-          who-to-greet: ${{ steps.tiago.outputs.tag }}
+          who-to-greet: ${{ steps.prerelease-tag.outputs.tag }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.prerelease-tag.outputs.tag }}
+          release_name: ${{ steps.prerelease-tag.outputs.tag }} (alpha)
+          draft: true
+          prerelease: true
 
