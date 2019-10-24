@@ -1375,6 +1375,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-editors</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
