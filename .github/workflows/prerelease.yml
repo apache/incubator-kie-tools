@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Write version to disk
-        run: echo $GITHUB_REF_oi > version.txt && TIAGO_VERSION = `cat version.txt`
+        run: echo $GITHUB_REF_oi > version.txt && TIAGO_VERSION=`cat version.txt`
       - name:
         uses: actions/hello-world-docker-action@master
         with:
