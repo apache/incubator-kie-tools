@@ -17,5 +17,5 @@ jobs:
 
       - uses: actions/hello-world-javascript-action@master
         with:
-          who-to-greet: ${{ steps.tiago.output.tag }}
+          who-to-greet: ${{ steps.tiago.outputs.tag }}
 
