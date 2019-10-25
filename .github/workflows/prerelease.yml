@@ -16,7 +16,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Check tag against lernaJson version
+      - name: Check tag against lerna.json version
         run: |
           [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
