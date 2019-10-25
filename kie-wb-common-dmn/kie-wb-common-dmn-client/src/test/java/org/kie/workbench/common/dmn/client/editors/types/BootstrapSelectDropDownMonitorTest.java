@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.types;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +34,12 @@ import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.OPEN_CLASS;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -59,8 +62,11 @@ public class BootstrapSelectDropDownMonitorTest {
     @Mock
     private Command hideCommand;
 
-    @Captor
-    private ArgumentCaptor<CallbackFunction> shownCallbackHandlerCaptor;
+    @Mock
+    private Element menuElement;
+
+    @Mock
+    private DOMTokenList menuElementClassList;
 
     @Captor
     private ArgumentCaptor<CallbackFunction> hiddenCallbackHandlerCaptor;
@@ -71,6 +77,8 @@ public class BootstrapSelectDropDownMonitorTest {
     public void setup() {
         this.monitor = spy(new BootstrapSelectDropDownMonitor(showCommand, hideCommand));
         when(monitor.kieDataTypeSelect()).thenReturn(jQuerySelectPicker);
+        doReturn(menuElement).when(monitor).getMenuElement();
+        menuElement.classList = menuElementClassList;
     }
 
     @Test
@@ -78,45 +86,12 @@ public class BootstrapSelectDropDownMonitorTest {
         monitor.show(TITLE);
 
         verify(showCommand).execute(eq(TITLE));
-
-        verify(jQuerySelectPicker).on(eq(BootstrapSelectDropDownMonitor.BOOTSTRAP_SELECT_SHOWN_EVENT),
-                                      any(CallbackFunction.class));
-        verify(jQuerySelectPicker).on(eq(BootstrapSelectDropDownMonitor.BOOTSTRAP_SELECT_HIDDEN_EVENT),
-                                      any(CallbackFunction.class));
-
-        assertThat(monitor.isSelectDropDownShown).isFalse();
-    }
-
-    @Test
-    public void testShowEventSetup() {
-        monitor.show(TITLE);
-
-        verify(jQuerySelectPicker).on(eq(BootstrapSelectDropDownMonitor.BOOTSTRAP_SELECT_SHOWN_EVENT),
-                                      shownCallbackHandlerCaptor.capture());
-        verify(jQuerySelectPicker).on(eq(BootstrapSelectDropDownMonitor.BOOTSTRAP_SELECT_HIDDEN_EVENT),
-                                      hiddenCallbackHandlerCaptor.capture());
-
-        //Mock Bootstrap Select firing event showing drop-down
-        shownCallbackHandlerCaptor.getValue().call(event);
-
-        assertThat(monitor.isSelectDropDownShown).isTrue();
-
-        //Mock Bootstrap Select firing event hiding drop-down
-        hiddenCallbackHandlerCaptor.getValue().call(event);
-
-        assertThat(monitor.isSelectDropDownShown).isFalse();
     }
 
     @Test
     public void testHideWhenDropDownIsShown() {
-        monitor.show(TITLE);
 
-        //Mock Bootstrap Select firing event showing drop-down
-        verify(jQuerySelectPicker).on(eq(BootstrapSelectDropDownMonitor.BOOTSTRAP_SELECT_SHOWN_EVENT),
-                                      shownCallbackHandlerCaptor.capture());
-        shownCallbackHandlerCaptor.getValue().call(event);
-
-        reset(jQuerySelectPicker);
+        doReturn(true).when(monitor).isVisible();
 
         monitor.hide();
 
@@ -139,9 +114,8 @@ public class BootstrapSelectDropDownMonitorTest {
 
     @Test
     public void testHideWhenDropDownIsNotShown() {
-        monitor.show(TITLE);
 
-        reset(jQuerySelectPicker);
+        doReturn(false).when(monitor).isVisible();
 
         monitor.hide();
 
@@ -151,5 +125,19 @@ public class BootstrapSelectDropDownMonitorTest {
         verify(hideCommand).execute();
 
         verifyNoMoreInteractions(jQuerySelectPicker);
+    }
+
+    @Test
+    public void testIsVisible() {
+        when(menuElementClassList.contains(OPEN_CLASS)).thenReturn(true);
+        final boolean actual = monitor.isVisible();
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsVisibleWhenIsNotVisible() {
+        when(menuElementClassList.contains(OPEN_CLASS)).thenReturn(false);
+        final boolean actual = monitor.isVisible();
+        assertFalse(actual);
     }
 }

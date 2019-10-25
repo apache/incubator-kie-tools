@@ -15,27 +15,38 @@
  */
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Optional;
+
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.Body;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.EventListener;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.PopupEditorControls;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
+import static org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsViewImpl.LEFT;
+import static org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsViewImpl.PX;
+import static org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsViewImpl.TOP;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CellEditorControlsViewImplTest {
@@ -102,5 +113,69 @@ public class CellEditorControlsViewImplTest {
         verify(body).removeEventListener(eq(BrowserEvents.MOUSEWHEEL),
                                          eq(mouseWheelListenerCaptor.getValue()),
                                          eq(false));
+    }
+
+    @Test
+    public void testShow() {
+
+        final PopupEditorControls editor = mock(PopupEditorControls.class);
+        final Optional<String> title = Optional.of("title");
+        final int x = 10;
+        final int y = 20;
+
+        final HTMLElement element = mock(HTMLElement.class);
+        doReturn(element).when(view).getElement();
+        final CSSStyleDeclaration style = mock(CSSStyleDeclaration.class);
+        when(element.getStyle()).thenReturn(style);
+
+        view.show(editor, title, x, y);
+
+        verify(style).setProperty(LEFT, x + PX);
+        verify(style).setProperty(TOP, y + PX);
+        verify(view).setOnClosedByKeyboardCallback(editor);
+        verify(editor).show(title);
+    }
+
+    @Test
+    public void testSetOnClosedByKeyboardCallback() {
+        final PopupEditorControls editor = mock(PopupEditorControls.class, withSettings().extraInterfaces(CanBeClosedByKeyboard.class));
+
+        view.setOnClosedByKeyboardCallback(editor);
+
+        verify((CanBeClosedByKeyboard) editor).setOnClosedByKeyboardCallback(any());
+    }
+
+    @Test
+    public void testRemoveOnClosedByKeyboardCallback() {
+        final PopupEditorControls editor = mock(PopupEditorControls.class, withSettings().extraInterfaces(CanBeClosedByKeyboard.class));
+
+        view.removeOnClosedByKeyboardCallback(editor);
+
+        verify((CanBeClosedByKeyboard) editor).setOnClosedByKeyboardCallback(null);
+    }
+
+    @Test
+    public void testFocusOnDMNContainer() {
+        final elemental2.dom.Element dmnContainerElement = mock(elemental2.dom.Element.class);
+
+        doReturn(dmnContainerElement).when(view).getDMNContainer();
+
+        view.focusOnDMNContainer(null);
+
+        verify(dmnContainerElement).focus();
+    }
+
+    @Test
+    public void testHide() {
+        final PopupEditorControls editor = mock(PopupEditorControls.class);
+        final Optional<PopupEditorControls> activeEditor = Optional.of(editor);
+
+        doReturn(activeEditor).when(view).getActiveEditor();
+
+        view.hide();
+
+        verify(editor).hide();
+        verify(view).removeOnClosedByKeyboardCallback(editor);
+        verify(view).setActiveEditor(Optional.empty());
     }
 }

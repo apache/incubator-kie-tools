@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +27,8 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
 import org.jboss.errai.common.client.dom.Body;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.DOMUtil;
@@ -37,6 +40,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.PopupEditorControls;
 
 @Templated
@@ -48,6 +52,14 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     private static final String BOOTSTRAP_SELECT_CLASS = "bootstrap-select";
 
     private static final String BOOTSTRAP_SELECT_OPEN_CLASS = "open";
+
+    static final String DMN_CONTAINER_SELECT = "[id^='dmn_container_']";
+
+    static final String PX = "px";
+
+    public static final String LEFT = "left";
+
+    public static final String TOP = "top";
 
     @DataField("cellEditorControls")
     private Div cellEditorControls;
@@ -62,6 +74,14 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
             hide();
         }
     };
+
+    public Optional<PopupEditorControls> getActiveEditor() {
+        return activeEditor;
+    }
+
+    public void setActiveEditor(final Optional<PopupEditorControls> activeEditor) {
+        this.activeEditor = activeEditor;
+    }
 
     private Optional<PopupEditorControls> activeEditor = Optional.empty();
 
@@ -128,18 +148,44 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
         cellEditorControlsContainer.appendChild(editor.getElement());
 
         final CSSStyleDeclaration style = getElement().getStyle();
-        style.setProperty("left", x + "px");
-        style.setProperty("top", y + "px");
+        style.setProperty(LEFT, x + PX);
+        style.setProperty(TOP, y + PX);
 
-        activeEditor = Optional.of(editor);
+        setActiveEditor(Optional.of(editor));
+
+        setOnClosedByKeyboardCallback(editor);
 
         editor.show(editorTitle);
     }
 
+    void setOnClosedByKeyboardCallback(final PopupEditorControls editor) {
+        if (editor instanceof CanBeClosedByKeyboard) {
+            ((CanBeClosedByKeyboard) editor).setOnClosedByKeyboardCallback(this::focusOnDMNContainer);
+        }
+    }
+
+    void removeOnClosedByKeyboardCallback(final PopupEditorControls editor) {
+        if (editor instanceof CanBeClosedByKeyboard) {
+            ((CanBeClosedByKeyboard) editor).setOnClosedByKeyboardCallback(null);
+        }
+    }
+
+    void focusOnDMNContainer(final Object o) {
+        final Element element = getDMNContainer();
+        if (!Objects.isNull(element)) {
+            element.focus();
+        }
+    }
+
+    Element getDMNContainer() {
+        return DomGlobal.document.querySelector(DMN_CONTAINER_SELECT);
+    }
+
     @Override
     public void hide() {
-        activeEditor.ifPresent(PopupEditorControls::hide);
-        activeEditor = Optional.empty();
+        getActiveEditor().ifPresent(PopupEditorControls::hide);
+        getActiveEditor().ifPresent(e -> removeOnClosedByKeyboardCallback(e));
+        setActiveEditor(Optional.empty());
     }
 
     private boolean isOverCellEditorControlsContainer(final Event event) {

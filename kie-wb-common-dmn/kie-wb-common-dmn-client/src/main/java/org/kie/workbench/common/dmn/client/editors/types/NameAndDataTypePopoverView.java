@@ -23,9 +23,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.Popover
 import org.uberfire.client.mvp.UberElement;
 
 public interface NameAndDataTypePopoverView extends PopoverView,
-                                                    UberElement<NameAndDataTypePopoverView.Presenter> {
+                                                    UberElement<NameAndDataTypePopoverView.Presenter>,
+                                                    CanBeClosedByKeyboard{
 
-    interface Presenter extends HasCellEditorControls.Editor<HasNameAndTypeRef> {
+    interface Presenter extends HasCellEditorControls.Editor<HasNameAndTypeRef>, CanBeClosedByKeyboard {
 
         void setName(final String name);
 

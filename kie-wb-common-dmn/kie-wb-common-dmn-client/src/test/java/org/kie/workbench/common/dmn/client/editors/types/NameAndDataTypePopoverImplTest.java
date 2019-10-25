@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,5 +113,14 @@ public class NameAndDataTypePopoverImplTest {
         editor.setTypeRef(typeRef);
 
         verify(bound).setTypeRef(eq(typeRef));
+    }
+
+    @Test
+    public void testSetOnClosedByKeyboardCallback(){
+        final Consumer callback = mock(Consumer.class);
+
+        editor.setOnClosedByKeyboardCallback(callback);
+
+        verify(view).setOnClosedByKeyboardCallback(callback);
     }
 }

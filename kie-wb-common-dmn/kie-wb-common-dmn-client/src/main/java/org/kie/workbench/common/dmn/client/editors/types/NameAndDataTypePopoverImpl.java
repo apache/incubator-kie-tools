@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -81,5 +82,10 @@ public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Pr
     @Override
     public void hide() {
         binding.ifPresent(b -> view.hide());
+    }
+
+    @Override
+    public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
+        view.setOnClosedByKeyboardCallback(callback);
     }
 }

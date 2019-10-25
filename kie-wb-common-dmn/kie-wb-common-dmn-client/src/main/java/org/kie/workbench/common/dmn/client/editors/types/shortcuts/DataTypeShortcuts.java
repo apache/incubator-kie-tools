@@ -123,6 +123,10 @@ public class DataTypeShortcuts {
 
     void keyDownListener(final Event e) {
 
+        if (!(e instanceof KeyboardEvent)) {
+            return;
+        }
+
         final KeyboardEvent event = (KeyboardEvent) e;
 
         if (isNotEnabled()) {
