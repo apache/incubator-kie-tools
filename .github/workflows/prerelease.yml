@@ -32,24 +32,24 @@ jobs:
           prerelease: true
 
       - name: Upload VSCode Extension
-          id: upload-vscode-extension
-          uses: actions/upload-release-asset@v1.0.1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
-            asset_name: vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
-            asset_content_type: application/zip
+        id: upload-vscode-extension
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
+          asset_name: vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
+          asset_content_type: application/zip
 
       - name: Upload Chrome Extension
-          id: upload-chrome-extension
-          uses: actions/upload-release-asset@v1.0.1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
-            asset_name: chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
-            asset_content_type: application/zip
+        id: upload-chrome-extension
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
+          asset_name: chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
+          asset_content_type: application/zip
 
