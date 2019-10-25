@@ -32,7 +32,6 @@
   <properties>
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-    <version.thorntail>2.4.0.Final</version.thorntail>
     <gwt.helper.includes>Marshaller</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
   </properties>
@@ -711,79 +710,6 @@
   </build>
 
   <profiles>
-
-    <!-- Thorntail profile -->
-    <profile>
-      <id>thorntail</id>
-      <activation>
-        <property>
-          <name>thorntail</name>
-        </property>
-      </activation>
-
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>bom-all</artifactId>
-            <version>${version.thorntail}</version>
-            <scope>import</scope>
-            <type>pom</type>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-
-      <!-- Factions -->
-      <!-- Let Thorntail first discover factions and then add them explicitly -->
-      <!-- to include messaging that was not detected automatically -->
-      <dependencies>
-        <!-- CDI brings in bean-validation, cdi-config, logging, transactions, container and ee -->
-        <dependency>
-          <groupId>io.thorntail</groupId>
-          <artifactId>cdi</artifactId>
-        </dependency>
-        <!-- Undertow brings in io and request-controller -->
-        <dependency>
-          <groupId>io.thorntail</groupId>
-          <artifactId>undertow</artifactId>
-        </dependency>
-        <!-- Required by AppFormer's SocialActivities and Git clustering -->
-        <dependency>
-          <groupId>io.thorntail</groupId>
-          <artifactId>messaging</artifactId>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.thorntail</groupId>
-            <artifactId>thorntail-maven-plugin</artifactId>
-            <version>${version.thorntail}</version>
-            <executions>
-              <execution>
-                <id>package</id>
-                <goals>
-                  <goal>package</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- No need to bring in Wildfly when packaging for Thorntail -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>none</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
 
     <!-- Full profile builds all GWT permutations -->
     <profile>

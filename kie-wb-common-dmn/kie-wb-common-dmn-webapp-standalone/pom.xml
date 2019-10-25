@@ -32,7 +32,6 @@
   <properties>
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-    <version.thorntail>2.4.0.Final</version.thorntail>
     <code.coverage.disabled>true</code.coverage.disabled>
     <sonar.skip>true</sonar.skip>
   </properties>
