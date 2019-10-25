@@ -25,6 +25,7 @@
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.core.client.UberfireWidgetsEditors"/>
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
 
