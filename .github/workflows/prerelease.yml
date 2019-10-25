@@ -17,6 +17,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.0
+
+      - name: Setup Yarn
+        run: npm install -g yarn@1.19.0
+
       - name: Build
         run: yarn run init && yarn run build:prod
 
