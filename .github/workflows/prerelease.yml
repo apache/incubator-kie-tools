@@ -10,11 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - ? name
+      - name: Parse tag name
         id: prerelease-tag
         uses: ./.github/actions/prerelease-tag
         with:
           ref: ${{ github.ref }}
+
+      - name: Check tag against lerna.json version
+        run: [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
       - name: Setup Node
         uses: actions/setup-node@v1
