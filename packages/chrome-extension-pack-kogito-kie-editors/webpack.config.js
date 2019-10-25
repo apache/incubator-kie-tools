@@ -51,7 +51,7 @@ module.exports = (env, argv) => {
         { from: "./static/envelope", to: "./envelope" }
       ]),
       new ZipPlugin({
-        filename: "kiegroup_kogito_chrome_extension_" + packageJson.version + ".zip",
+        filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist"
       })
     ],
