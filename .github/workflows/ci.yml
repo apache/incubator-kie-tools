@@ -33,9 +33,6 @@ jobs:
   build:    
     needs: fetch-editors
     runs-on: ${{ matrix.os }}
-
-    env:
-      DISPLAY: ":99.0"
     
     strategy:
       fail-fast: true
@@ -56,6 +53,11 @@ jobs:
     - name: Merge PR branch with PRs base branch (PR only)
       if: github.base_ref
       run: git merge ${{ github.sha }}
+
+    - name: Output version
+      id: version
+      run: |
+        echo "::set-output name=version::$(node -e "console.log(require('./lerna.json').version);"")
     
     - name: Setup Node
       uses: actions/setup-node@v1
@@ -75,7 +77,6 @@ jobs:
     - name: "Build :: dev"
       if: success()
       run: npx lerna run build:fast --stream
-      continue-on-error: false
     
     - name: Lint
       run: npx lerna run lint --stream
@@ -100,12 +101,13 @@ jobs:
     - name: "Build :: prod"
       if: success()
       run: npx lerna run --stream build:fast -- --mode production --devtool none
-      continue-on-error: false
     
     - name: Run integration tests
       run: npx lerna run test:it --stream
+      env:
+        DISPLAY: ":99.0"
       continue-on-error: true
-      
+
     - name: Pack artifacts
       run: npx lerna run pack-extension --stream
 
@@ -114,12 +116,12 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: vscode-extension
-        path: packages/vscode-extension-pack-kogito-kie-editors/dist
+        path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
     - name: Upload Chrome Extension (Ubuntu only)
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v1
       with:
         name: chrome-extension
-        path: packages/chrome-extension-pack-kogito-kie-editors/dist
+        path: packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
 
