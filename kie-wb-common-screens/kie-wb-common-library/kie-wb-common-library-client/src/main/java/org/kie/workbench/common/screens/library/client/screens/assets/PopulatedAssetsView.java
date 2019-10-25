@@ -150,6 +150,7 @@ public class PopulatedAssetsView implements PopulatedAssetsScreen.View,
     }
 
     private void doSearch() {
+        presenter.setCurrentPage(1);
         presenter.search(this.filterText.value);
     }
 
