@@ -43,6 +43,8 @@
        possible to measure cross-module test coverage -->
     <!--suppress UnresolvedMavenProperty -->
     <code.coverage.disabled>false</code.coverage.disabled>
+    <!-- The version greater than 1.0.0.GA is not compatible with GWT 2.8.x -->
+    <version.javax.validation>1.0.0.GA</version.javax.validation>
   </properties>
 
   <repositories>
