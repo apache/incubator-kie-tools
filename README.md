@@ -46,33 +46,49 @@ Releases
 In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/releases) you will find extensions and released tooling packages.
 
 
-Building from source
+Build from source
 --------------------
 
-Check out the source:
-```
-git clone git@github.com:kiegroup/kogito-tooling.git
-```
+1. Check out the source:
+    ```
+    git clone git@github.com:kiegroup/kogito-tooling.git
+    ```
+    
+    > If you don't have a GitHub account use this command instead:
+    > ```
+    > git clone https://github.com/kiegroup/kogito-tooling.git
+    > ```
 
-> If you don't have a GitHub account use this command instead:
-> ```
-> git clone https://github.com/kiegroup/kogito-tooling.git
-> ```
+1. Build with Yarn:
+    ```bash
+    cd kogito-tooling
+    yarn run init
+    
+    #prod
+    yarn run build:prod
+    
+    # dev
+    yarn run build # skips integration tests and production packing
+    yarn run build:fast # skips lint and unit tests
+    ```
 
-Build with Yarn:
-```bash
-cd kogito-tooling
-yarn run init
+    > Final artifacts will be on `packages/*/dist` directories.
 
-#prod
-yarn run build:prod
+Develop
+--------------------
 
-# dev
-yarn run build # skips integration tests and production packing
-yarn run build:fast # skips lint and unit tests
-```
+> **NOTE:** We currently pack two GWT-based editors -- BPMN and DMN. They are exploded WARs, so we don't commit them in this repo. We are currently working on automatically fetching them during the build, but we didn't do it **yet**. For builds to work properly, you must have the exploded WARs copied on `packages/unpacked-gwt-editors/` `dmn` and `bpmn` folders. You can go to [the latest commit](https://github.com/kiegroup/kogito-tooling/commits/master), click on the "check" icon and download the exploded WARs from the Artifacts tab. Be aware that each editor must go on its own folder.
+    
+##### VSCode Extension
+1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-pack-kogito-kie-editors` folder on VSCode. Use a new VSCode window so that the `packages/vscode-extension-pack-kogito-kie-editors` folder shows up as root in the VSCode explorer.
+2. From there, you can Run the extension or the integration tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
+3. **Remember!** If you make changes to packages other than `packages/vscode-extension-pack-kogito-kie-editors`, you have to manually rebuild them before relaunching the extension on VSCode.
 
-> Final artifacts will be on `packages/*/dist` directories.
+##### Chrome Extension
+1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
+2. Open a terminal and run `yarn run serve-envelope` on `packages/chrome-extension-pack-kogito-kie-editors`. This will start a `webpack-dev-server` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
+3. Open Chrome and go to `chrome://extension`. Enable "Developer mode" on the top right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
+4. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
 
 Contributing to Kogito
