@@ -121,5 +121,5 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: chrome-extension
-        path: packages/chrome-extension/dist
+        path: packages/chrome-extension-pack-kogito-kie-editors/dist
 

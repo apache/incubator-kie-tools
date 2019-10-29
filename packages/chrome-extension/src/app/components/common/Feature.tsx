@@ -37,7 +37,7 @@ export function Feature<T extends DomDependencyMap>(props: {
   useEffect(() => {
     if (!shouldRender) {
       //FIXME: Show what dependencies weren't satisfied
-      console.debug(`[Kogito] Could not render feature "${props.name}" because its dependencies were not satisfied.`);
+      globalContext.logger.log(`Could not render feature "${props.name}" because its dependencies were not satisfied.`);
     }
   }, []);
 

@@ -19,9 +19,11 @@ import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import * as dependencies__ from "../../dependencies";
 import { GlobalCommonDomDependencies } from "../../dependencies";
+import { Logger } from "../../../Logger";
 
 interface Props {
   router: Router;
+  logger: Logger;
   commonDependencies: GlobalCommonDomDependencies;
   editorIndexPath: string;
 }
@@ -35,6 +37,7 @@ export class Main extends React.Component<Props, {}> {
     return (
       <GlobalContext.Provider
         value={{
+          logger: this.props.logger,
           router: this.props.router,
           editorIndexPath: this.props.editorIndexPath,
           dependencies: {

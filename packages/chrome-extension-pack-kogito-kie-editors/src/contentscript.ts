@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-import { runAfterUriChange } from "./app/utils";
-import { ChromeRouter } from "./app/ChromeRouter";
+import { ChromeRouter } from "./ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
-import { startKogitoChromeExtension } from "./index";
+import { startExtension } from "@kogito-tooling/chrome-extension";
 
-function init() {
-  startKogitoChromeExtension({
-    editorIndexPath: "envelope/index.html",
-    router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" }))
-  });
-}
-
-runAfterUriChange(() => setImmediate(init));
-setImmediate(() => init());
+startExtension({
+  name: "Kogito :: BPMN and DMN editors",
+  editorIndexPath: "envelope/index.html",
+  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" }))
+});

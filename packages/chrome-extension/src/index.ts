@@ -18,35 +18,53 @@ import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
 import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
-import { mainContainer } from "./app/utils";
+import { mainContainer, runAfterUriChange } from "./app/utils";
 import * as dependencies__ from "./app/dependencies";
 import * as ReactDOM from "react-dom";
 import { Router } from "@kogito-tooling/core-api";
+import "../resources/style.css";
+import { Logger } from "./Logger";
 
-export function startKogitoChromeExtension(args: { editorIndexPath: string; router: Router }) {
-  console.info(`[Kogito] ---`);
-  console.info(`[Kogito] Starting GitHub extension.`);
+/**
+ * Starts a Kogito extension.
+ *
+ *  @param args.name The extension name. Used to differentiate logs from other extensions.
+ *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
+ *  @param args.router The Router to be used to find resources for each language.
+ */
+export function startExtension(args: { name: string; editorIndexPath: string; router: Router }) {
+  const logger = new Logger(args.name);
 
-  unmountPreviouslyRenderedFeatures();
+  const runInit = () => init({ logger, editorIndexPath: args.editorIndexPath, router: args.router });
+
+  runAfterUriChange(logger, () => setImmediate(runInit));
+  setImmediate(runInit);
+}
+
+function init(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+  args.logger.log(`---`);
+  args.logger.log(`Starting GitHub extension.`);
+
+  unmountPreviouslyRenderedFeatures(args.logger);
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
-    console.info(`[Kogito] This GitHub page is not supported.`);
+    args.logger.log(`This GitHub page is not supported.`);
     return;
   }
 
   if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({ router: args.router, editorIndexPath: args.editorIndexPath });
+    renderSingleEditorApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
     return;
   }
 
   if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ router: args.router, editorIndexPath: args.editorIndexPath });
+    renderSingleEditorReadonlyApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
     return;
   }
 
   if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({ router: args.router, editorIndexPath: args.editorIndexPath });
+    renderPrEditorsApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
     return;
   }
 
@@ -77,13 +95,13 @@ function discoverCurrentGitHubPageType() {
   return GitHubPageType.ANY;
 }
 
-function unmountPreviouslyRenderedFeatures() {
+function unmountPreviouslyRenderedFeatures(logger: Logger) {
   try {
     if (mainContainer({ name: "", element: dependencies__.all.body() })) {
       ReactDOM.unmountComponentAtNode(mainContainer({ name: "", element: dependencies__.all.body() })!);
-      console.info("[Kogito] Unmounted previous features.");
+      logger.log("Unmounted previous features.");
     }
   } catch (e) {
-    console.info("[Kogito] Ignoring exception while unmounting features.");
+    logger.log("Ignoring exception while unmounting features.");
   }
 }

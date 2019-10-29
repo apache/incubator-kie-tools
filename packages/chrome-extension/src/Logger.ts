@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { GlobalDomDependencies } from "../../dependencies";
-import { Logger } from "../../../Logger";
+export class Logger {
+  private readonly extensionName: string;
 
-export interface GlobalContextType {
-  router: Router;
-  logger: Logger;
-  editorIndexPath: string;
-  dependencies: GlobalDomDependencies;
+  constructor(extensionName: string) {
+    this.extensionName = extensionName;
+  }
+
+  public log(...args: any[]) {
+    console.debug(`[${this.extensionName}] -> `, ...args);
+  }
 }
-
-export const GlobalContext = React.createContext<GlobalContextType>({
-  router: undefined as any,
-  logger: undefined as any,
-  editorIndexPath: "envelope/index.html",
-  dependencies: {} as any
-});
