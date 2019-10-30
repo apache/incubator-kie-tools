@@ -22,6 +22,8 @@ pipeline {
         }
         stage('Prepare') {
             steps {
+                sh "npm install lock-treatment-tool --global-style --no-package-lock --no-save --registry=${NPM_REGISTRY_URL}"
+                sh "npm run env -- locktt --registry=${NPM_REGISTRY_URL}"
                 sh "npm install -g yarn --registry=${NPM_REGISTRY_URL}"
                 sh "yarn config set registry ${NPM_REGISTRY_URL}"
                 sh "export XAUTHORITY=$HOME/.Xauthority"
