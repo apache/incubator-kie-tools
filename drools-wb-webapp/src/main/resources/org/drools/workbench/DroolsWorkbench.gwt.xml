@@ -42,7 +42,6 @@
   <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
   <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementClient"/>
-  <inherits name="org.kie.workbench.common.screens.examples.KieWorkbenchCommonExamplesClient"/>
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <!-- Common Services -->

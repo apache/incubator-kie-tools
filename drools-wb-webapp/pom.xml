@@ -589,11 +589,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-examples-screen-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-examples-screen-backend</artifactId>
     </dependency>
 
@@ -1595,7 +1590,6 @@
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-examples-screen-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-examples-screen-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-server-ui-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-server-ui-client</compileSourcesArtifact>
