@@ -40,25 +40,13 @@ Client-side marshaller for _kogito_.
 9) `kie-wb-common-dmn-webapp-kogito-runtime`
 
 Webapp targeting _kogito_ integration with VSCode etc. No decorations.
-
+To run this module launch the `gwt` plugin with the `kogito` profile; i.e. `mvn clean process-resources gwt:run -Pkogito`.
+To package this module for use in the VSCode/GitHub plugin build the `war` with the `kogito` profile; i.e. `mvn clean install -Pkogito`.
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 
-Webapp used for development of _kogito_ decorated with a diagram _navigator_ to emulate integration with VSCode etc.
+Webapp used for development of _kogito_ decorated with a diagram _navigator_ to emulate integration with VSCode etc. 
+To run this module launch the `gwt` plugin with the `kogito` profile; i.e. `mvn clean process-resources gwt:run -Pkogito`.
 
 11) `kie-wb-common-dmn-webapp-standalone`
 
 Webapp used for development of Business Central integration.
-
-
-The _kogito_ modules are isolated by the `kogito` Maven profile. In order to compile and run a _kogito_ related 
-webapp the following steps need to be adhered to.
-
-1) Clone https://github.com/kiegroup/droolsjbpm-build-bootstrap/ and build the `DROOLS-3727` branch.
-
-2) Clone https://github.com/highsource/jsonix and build the `master` branch. Ignore the failure of the compilation of some sub-modules.. enough is compiled for our use.
-
-3) Clone https://github.com/kiegroup/gwt-jsonix-marshallers and build the `master` branch.
-
-4) Compile `kie-wb-common` using the `kogito` profile; e.g. `mvn clean install -Pkogito`
-
-5) Run one of the _kogito_ webapps using `mvn clean process-resources gwt:run`

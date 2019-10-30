@@ -44,25 +44,13 @@
     <module>kie-wb-common-dmn-project-client</module>
     <module>kie-wb-common-dmn-webapp-common</module>
     <module>kie-wb-common-dmn-webapp-standalone</module>
+    <module>kie-wb-common-dmn-webapp-kogito-common</module>
+    <module>kie-wb-common-dmn-webapp-kogito-marshaller</module>
+    <module>kie-wb-common-dmn-webapp-kogito-runtime</module>
+    <module>kie-wb-common-dmn-webapp-kogito-testing</module>
   </modules>
 
   <profiles>
-    <profile>
-      <id>kogito</id>
-      <modules>
-        <module>kie-wb-common-dmn-api</module>
-        <module>kie-wb-common-dmn-client</module>
-        <module>kie-wb-common-dmn-backend</module>
-        <module>kie-wb-common-dmn-project-api</module>
-        <module>kie-wb-common-dmn-project-client</module>
-        <module>kie-wb-common-dmn-webapp-common</module>
-        <module>kie-wb-common-dmn-webapp-standalone</module>
-        <module>kie-wb-common-dmn-webapp-kogito-common</module>
-        <module>kie-wb-common-dmn-webapp-kogito-marshaller</module>
-        <module>kie-wb-common-dmn-webapp-kogito-runtime</module>
-        <module>kie-wb-common-dmn-webapp-kogito-testing</module>
-      </modules>
-    </profile>
     <profile>
       <id>run-code-coverage</id>
       <properties>
