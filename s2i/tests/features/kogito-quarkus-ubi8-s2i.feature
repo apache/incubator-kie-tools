@@ -40,7 +40,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And file /home/kogito/bin/drools-quarkus-example-0.5.0-runner.jar should exist
 
     Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples from . using 0.5.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using 0.5.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value                           |
       | NATIVE            | false                           |
       | ARTIFACT_DIR      | drools-quarkus-example/target   |
@@ -108,4 +108,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
     And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.2.0.1
 
-
+    Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
+    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using 0.5.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+      | variable          | value                           |
+      | NATIVE            | false                           |
+    Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist

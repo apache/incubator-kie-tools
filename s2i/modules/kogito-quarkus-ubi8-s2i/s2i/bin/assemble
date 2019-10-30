@@ -46,7 +46,7 @@ else
     echo "---> Generating project structure..."
 
     $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
-	-DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
+	-DarchetypeVersion=$KOGITO_VERSION -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
 
     # copy resources into the generated project
     for item in *
@@ -55,7 +55,7 @@ else
             echo "--> Skipping generated project ..."
         else
             echo "--> Coping resource $item"
-            cp -R $item project/src/main/resources
+            cp -R "$item" project/src/main/resources
         fi
     done
 
