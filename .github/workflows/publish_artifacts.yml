@@ -1,0 +1,66 @@
+name: Publish release artifacts
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish_release_artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Parse `tag`
+        id: release-tag
+        run: |
+          # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
+          echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)$/)[1])")
+
+      - name: Check release `tag` against `lerna.json.version`
+        run: |
+          # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
+          [ "${{ steps.release-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.0
+
+      - name: Setup Yarn
+        run: npm install -g yarn@1.19.0
+
+      - name: Start Xvfb
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Build
+        env:
+          ROUTER_targetOrigin: "https://${{ github.actor }}.github.io"
+          ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
+          DISPLAY: ":99.0"
+        run: yarn run init && yarn run build:prod
+
+      - name: Checkout "kogito-online"
+        uses: actions/checkout@v1
+        with:
+          repository: ${{ github.actor }}/kogito-online
+          ref: gh-pages
+
+      # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
+      - name: Update "kogito-online" latest resources
+        run: |
+          cd ../kogito-online
+          rm -rf ./editors/latest
+          ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (${{ github.actor }})"
+          git add . && git commit -m "Update editors/latest to ${{ steps.release-tag.outputs.tag }}" || echo "No changes."
+          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/${{ github.actor }}/kogito-online
+          git push origin gh-pages
+          cd -
+
+      - name: Publish artifacts to NPM registry
+        if: github.actor == "kiegroup"
+        env:
+          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
+        run: npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/unpacked-gwt-editors -- npm publish
+

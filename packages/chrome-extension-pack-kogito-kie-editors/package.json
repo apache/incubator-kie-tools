@@ -38,7 +38,6 @@
     "copy-webpack-plugin": "5.0.2",
     "jest": "23.5.0",
     "jest-junit": "6.3.0",
-    "lerna": "3.4.0",
     "prettier": "1.14.2",
     "string-replace-loader": "2.2.0",
     "ts-jest": "23.1.3",

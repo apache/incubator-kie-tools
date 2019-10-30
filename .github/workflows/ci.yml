@@ -5,38 +5,36 @@ on:
     branches: [master]
   pull_request:
     branches: "**"
-    
 
 jobs:
   fetch-editors:
-   runs-on: macOS-latest
-   steps:
-     - name: Fetch editors from last release
-       uses: actions/checkout@v1
-       with:
-         repository: kiegroup/kogito-tooling
-         ref: 0.2.0
-     
-     - name: Upload DMN editor
-       uses: actions/upload-artifact@v1
-       with:
-         name: dmn-editor
-         path: packages/unpacked-gwt-editors/dmn
- 
-     - name: Upload BPMN editor
-       uses: actions/upload-artifact@v1
-       with:
-         name: bpmn-editor
-         path: packages/unpacked-gwt-editors/bpmn
-   
-     
-  build:    
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v1
+        with:
+          repository: kiegroup/kogito-tooling
+          ref: master
+
+      - name: Checkout to lastest tag
+        run: git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+
+      - name: Upload DMN editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmn-editor
+          path: packages/unpacked-gwt-editors/dmn
+
+      - name: Upload BPMN editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: bpmn-editor
+          path: packages/unpacked-gwt-editors/bpmn
+
+  build:
     needs: fetch-editors
     runs-on: ${{ matrix.os }}
 
-    env:
-      DISPLAY: ":99.0"
-    
     strategy:
       fail-fast: true
       matrix:
@@ -45,81 +43,86 @@ jobs:
         yarn: [1.19.0]
 
     steps:
-    - uses: actions/checkout@v1
-    
-    - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
-      uses: actions/checkout@v1
-      if: github.base_ref
-      with:
-        ref: ${{ github.base_ref }}
+      - uses: actions/checkout@v1
 
-    - name: Merge PR branch with PRs base branch (PR only)
-      if: github.base_ref
-      run: git merge ${{ github.sha }}
-    
-    - uses: actions/setup-node@v1
-      name: Setup Node
-      with:
-        node-version: ${{ matrix.node }}
+      - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
+        uses: actions/checkout@v1
+        if: github.base_ref
+        with:
+          ref: ${{ github.base_ref }}
 
-    - name: Setup Yarn
-      run: npm install -g yarn@${{ matrix.yarn }}
-    
-    - name: Start Xvfb (Ubuntu only)
-      if: matrix.os == 'ubuntu-latest'
-      run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-    
-    - name: Download dependencies
-      run: yarn run init
-   
-    - name: "Build :: dev"
-      if: success()
-      run: npx lerna run build:fast --stream
-      continue-on-error: false
-    
-    - name: Lint
-      run: npx lerna run lint --stream
-      continue-on-error: true
-    
-    - name: Run unit tests
-      run: npx lerna run test --stream
-      continue-on-error: true
-      
-    - name: Download DMN editor
-      uses: actions/download-artifact@v1
-      with:
-        name: dmn-editor
-        path: packages/unpacked-gwt-editors/dmn
+      - name: Merge PR branch with PRs base branch (PR only)
+        if: github.base_ref
+        run: git merge ${{ github.sha }}
 
-    - name: Download BPMN editor
-      uses: actions/download-artifact@v1
-      with:
-        name: bpmn-editor
-        path: packages/unpacked-gwt-editors/bpmn
+      - name: Output version
+        id: version
+        run: |
+          # This bash script will set an output for this step. It can be used with steps.version.outputs.version
+          echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
 
-    - name: "Build :: prod"
-      if: success()
-      run: npx lerna run --stream build:fast -- --mode production --devtool none
-      continue-on-error: false
-    
-    - name: Run integration tests
-      run: npx lerna run test:it --stream
-      continue-on-error: true
-      
-    - name: Pack artifacts
-      run: npx lerna run pack-extension --stream
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
 
-    - name: Upload VSCode Extension (Ubuntu only)
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v1
-      with:
-        name: vscode-extension
-        path: packages/vscode-extension-pack-kogito-kie-editors/dist
+      - name: Setup Yarn
+        run: npm install -g yarn@${{ matrix.yarn }}
 
-    - name: Upload Chrome Extension (Ubuntu only)
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v1
-      with:
-        name: chrome-extension
-        path: packages/chrome-extension-pack-kogito-kie-editors/dist
+      - name: Start Xvfb (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
+      - name: Download dependencies
+        run: yarn run init
+
+      - name: "Build :: dev"
+        if: success()
+        run: npx lerna run build:fast --stream
+
+      - name: Lint
+        run: npx lerna run lint --stream
+        continue-on-error: true
+
+      - name: Run unit tests
+        run: npx lerna run test --stream
+        continue-on-error: true
+
+      - name: Download DMN editor
+        uses: actions/download-artifact@v1
+        with:
+          name: dmn-editor
+          path: packages/unpacked-gwt-editors/dmn
+
+      - name: Download BPMN editor
+        uses: actions/download-artifact@v1
+        with:
+          name: bpmn-editor
+          path: packages/unpacked-gwt-editors/bpmn
+
+      - name: "Build :: prod"
+        if: success()
+        run: npx lerna run --stream build:fast -- --mode production --devtool none
+
+      - name: Run integration tests
+        run: npx lerna run test:it --stream
+        env:
+          DISPLAY: ":99.0"
+        continue-on-error: true
+
+      - name: Pack artifacts
+        run: npx lerna run pack-extension --stream
+
+      - name: Upload VSCode Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension
+          path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Chrome Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension
+          path: packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip

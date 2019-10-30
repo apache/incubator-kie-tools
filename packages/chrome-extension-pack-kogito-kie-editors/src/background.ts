@@ -31,27 +31,10 @@ function removeHeader(headers: HttpHeader[], name: string) {
 
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
-    const contentType = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
-
-    if (details.url.endsWith(".js")) {
-      contentType.value = "text/javascript";
-    } else if (details.url.endsWith(".css")) {
-      contentType.value = "text/css";
-    } else if (details.url.endsWith(".html")) {
-      contentType.value = "text/html";
-    }
-    return { responseHeaders: details.responseHeaders };
-  },
-  { urls: ["https://raw.githubusercontent.com/*"] },
-  ["blocking", "responseHeaders"]
-);
-
-chrome.webRequest.onHeadersReceived.addListener(
-  details => {
     removeHeader(details.responseHeaders!, "content-security-policy");
     removeHeader(details.responseHeaders!, "x-frame-options");
     return { responseHeaders: details.responseHeaders };
   },
-  { urls: ["https://github.com/*", "https://raw.githubusercontent.com/*"] },
-  ["blocking", "responseHeaders", "extraHeaders"]
+  { urls: ["https://github.com/*"] },
+  ["blocking", "responseHeaders"]
 );
