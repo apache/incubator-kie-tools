@@ -2,10 +2,11 @@ name: Publish release artifacts
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   publish_release_artifacts:
+    if: github.repository == 'kiegroup/kogito-tooling'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -34,7 +35,7 @@ jobs:
 
       - name: Build
         env:
-          ROUTER_targetOrigin: "https://${{ github.actor }}.github.io"
+          ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
           DISPLAY: ":99.0"
         run: yarn run init && yarn run build:prod
@@ -42,7 +43,7 @@ jobs:
       - name: Checkout "kogito-online"
         uses: actions/checkout@v1
         with:
-          repository: ${{ github.actor }}/kogito-online
+          repository: kiegroup/kogito-online
           ref: gh-pages
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
@@ -52,14 +53,13 @@ jobs:
           rm -rf ./editors/latest
           ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
           git config --global user.email "kogito-tooling-bot@gmail.com"
-          git config --global user.name "Kogito Tooling Bot (${{ github.actor }})"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
           git add . && git commit -m "Update editors/latest to ${{ steps.release-tag.outputs.tag }}" || echo "No changes."
-          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/${{ github.actor }}/kogito-online
+          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
           git push origin gh-pages
           cd -
 
       - name: Publish artifacts to NPM registry
-        if: github.actor == "kiegroup"
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/unpacked-gwt-editors -- npm publish
