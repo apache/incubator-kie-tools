@@ -2,7 +2,7 @@ name: Publish release artifacts
 
 on:
   release:
-    types: [published, edited]
+    types: [published]
 
 jobs:
   publish_release_artifacts:
@@ -62,5 +62,7 @@ jobs:
       - name: Publish artifacts to NPM registry
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
-        run: npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/unpacked-gwt-editors -- npm publish
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/unpacked-gwt-editors -- npm publish --access public
 
