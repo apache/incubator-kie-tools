@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { SimpleReactEditorsFactory } from "simple-react-editors";
+import { SimpleReactEditorsLanguageData } from "./SimpleReactEditorsLanguageData";
+import { Routes } from "@kogito-tooling/core-api";
 
-declare global {
-  export const acquireVsCodeApi: any;
+export class SimpleReactEditorsRoutes implements Routes {
+  public getRoutes() {
+    return new Map<string, SimpleReactEditorsLanguageData>([["txt", { type: "react" }]]);
+  }
 }
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new SimpleReactEditorsFactory()
-});

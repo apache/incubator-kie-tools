@@ -1,0 +1,26 @@
+{
+  "name": "KIE :: Kogito Simple React Editor",
+  "version": "0.2.1",
+  "manifest_version": 2,
+  "description": "KIE :: Kogito Simple React Editor",
+  "content_scripts": [
+    {
+      "run_at": "document_idle",
+      "js": ["contentscript.js"],
+      "matches": ["https://github.com/*"],
+      "all_frames": true
+    }
+  ],
+  "background": { "scripts": ["background.js"], "persistent": true },
+  "web_accessible_resources": ["envelope/*"],
+  "permissions": [
+    "webRequestBlocking",
+    "webRequest",
+    "https://*/*",
+    "http://*/*",
+    "tabs",
+    "declarativeContent",
+    "background"
+  ],
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'"
+}

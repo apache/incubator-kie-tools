@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { SimpleReactEditorsFactory } from "simple-react-editors";
+import { ChromeRouter } from "./ChromeRouter";
+import { startExtension } from "@kogito-tooling/chrome-extension";
+import { SimpleReactEditorsRoutes } from "simple-react-editors";
 
-declare global {
-  export const acquireVsCodeApi: any;
-}
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new SimpleReactEditorsFactory()
+startExtension({
+  name: "KIE :: Kogito Simple React Editor",
+  editorIndexPath: "envelope/index.html",
+  router: new ChromeRouter(new SimpleReactEditorsRoutes())
 });

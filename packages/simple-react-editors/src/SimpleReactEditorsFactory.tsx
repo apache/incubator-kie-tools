@@ -18,7 +18,7 @@ import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
-import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
+import { SimpleReactEditorsLanguageData } from "./SimpleReactEditorsLanguageData";
 
 export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFactory<SimpleReactEditorsLanguageData> {
   public createEditor(
@@ -27,17 +27,17 @@ export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFact
   ): Promise<AppFormer.Editor> {
     switch (languageData.type) {
       case "react":
-        return Promise.resolve(new ReactReadonlyAppFormerEditor(messageBus));
+        return Promise.resolve(new SimpleReactAppFormerEditor(messageBus));
       default:
         throw new Error(`Unknown type ${languageData.type}`);
     }
   }
 }
 
-class ReactReadonlyAppFormerEditor extends AppFormer.Editor {
+class SimpleReactAppFormerEditor extends AppFormer.Editor {
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
-  private self: ReactReadonlyEditor;
+  private self: SimpleReactEditor;
 
   constructor(messageBus: EnvelopeBusInnerMessageHandler) {
     super("readonly-react-editor");
@@ -58,12 +58,12 @@ class ReactReadonlyAppFormerEditor extends AppFormer.Editor {
   }
 
   public af_componentRoot(): AppFormer.Element {
-    return <ReactReadonlyEditor exposing={s => (this.self = s)} messageBus={this.messageBus} />;
+    return <SimpleReactEditor exposing={s => (this.self = s)} messageBus={this.messageBus} />;
   }
 }
 
 interface Props {
-  exposing: (s: ReactReadonlyEditor) => void;
+  exposing: (s: SimpleReactEditor) => void;
   messageBus: EnvelopeBusInnerMessageHandler;
 }
 
@@ -72,7 +72,7 @@ interface State {
   originalContent: string;
 }
 
-class ReactReadonlyEditor extends React.Component<Props, State> {
+class SimpleReactEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     props.exposing(this);
@@ -80,6 +80,10 @@ class ReactReadonlyEditor extends React.Component<Props, State> {
       originalContent: "",
       content: ""
     };
+  }
+
+  public componentDidMount(): void {
+    this.props.messageBus.notify_ready();
   }
 
   public setContent(content: string) {
@@ -111,7 +115,7 @@ class ReactReadonlyEditor extends React.Component<Props, State> {
   public render() {
     return (
       <textarea
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
         value={this.state.content}
         onInput={(e: any) => this.updateContent(e.target.value)}
       />

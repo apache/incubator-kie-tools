@@ -60,9 +60,8 @@
     "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.1",
     "@kogito-tooling/microeditor-envelope": "0.2.1",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.1",
-    "@kogito-tooling/vscode-extension": "0.2.1"
+    "@kogito-tooling/vscode-extension": "0.2.1",
+    "simple-react-editors": "0.2.1"
   }
 }
