@@ -17,8 +17,8 @@
     <description>AppFormer.js Core</description>
 
     <properties>
-        <node.version>v13.0.1</node.version>
-        <yarn.version>v1.19.1</yarn.version>
+        <node.version>v11.6.0</node.version>
+        <yarn.version>v1.12.3</yarn.version>
         <npm.version>6.9.0</npm.version>
         <frontend-maven-plugin.version>1.7.5</frontend-maven-plugin.version>
     </properties>
