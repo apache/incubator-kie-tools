@@ -11,10 +11,7 @@
       "all_frames": true
     }
   ],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": true
-  },
+  "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
   "permissions": [
     "webRequestBlocking",

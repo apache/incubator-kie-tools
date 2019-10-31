@@ -15,6 +15,7 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   mode: "development",
@@ -27,7 +28,7 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
-  externals: {},
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [],
   module: {
     rules: [

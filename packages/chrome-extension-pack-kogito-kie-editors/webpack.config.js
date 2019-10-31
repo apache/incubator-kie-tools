@@ -19,8 +19,35 @@ const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
 
-module.exports = (env, argv) => {
+function getLatestGitTag() {
+  return require("child_process")
+    .execSync("git describe --tags `git rev-list --tags --max-count=1`")
+    .toString()
+    .trim();
+}
+
+function getRouterArgs(argv) {
   const isProd = argv.mode === "production";
+
+  let targetOrigin = argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
+  let relativePath = argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
+
+  if (isProd) {
+    targetOrigin = targetOrigin || "https://kiegroup.github.io";
+    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
+  } else {
+    targetOrigin = targetOrigin || "https://localhost:9000";
+    relativePath = relativePath || "";
+  }
+
+  console.info("Router :: target origin: " + targetOrigin);
+  console.info("Router :: relative path: " + relativePath);
+
+  return [targetOrigin, relativePath];
+}
+
+module.exports = async (env, argv) => {
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
 
   return {
     mode: "development",
@@ -51,7 +78,7 @@ module.exports = (env, argv) => {
         { from: "./static/envelope", to: "./envelope" }
       ]),
       new ZipPlugin({
-        filename: "kiegroup_kogito_chrome_extension_" + packageJson.version + ".zip",
+        filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist"
       })
     ],
@@ -71,11 +98,11 @@ module.exports = (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__targetOrigin}",
-                replace: isProd ? "https://raw.githubusercontent.com" : "https://localhost:9000"
+                replace: router_targetOrigin
               },
               {
                 search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: isProd ? "kiegroup/kogito-online/chrome-extension-resources-0.2.0/" : ""
+                replace: router_relativePath
               }
             ]
           }

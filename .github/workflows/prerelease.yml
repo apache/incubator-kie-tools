@@ -1,0 +1,97 @@
+name: Create draft release
+
+on:
+  push:
+    branches: ["**-prerelease"]
+
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Parse `tag`
+        id: prerelease-tag
+        run: |
+          # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
+          echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
+
+      - name: Check `tag` against `lerna.json.version`
+        run: |
+          # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
+          [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.0
+
+      - name: Setup Yarn
+        run: npm install -g yarn@1.19.0
+
+      - name: Start Xvfb
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Build
+        env:
+          ROUTER_targetOrigin: "https://${{ github.actor }}.github.io"
+          ROUTER_relativePath: "kogito-online/editors/${{ steps.prerelease-tag.outputs.tag }}/"
+          DISPLAY: ":99.0"
+        run: yarn run init && yarn run build:prod
+
+      - name: Checkout "kogito-online"
+        uses: actions/checkout@v1
+        with:
+          repository: ${{ github.actor }}/kogito-online
+          ref: gh-pages
+
+      # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
+      - name: Update "kogito-online" resources
+        env:
+          KOGITO_ONLINE_DIR: ./editors/${{ steps.prerelease-tag.outputs.tag }}
+        run: |
+          cd ../kogito-online
+          rm -rf $KOGITO_ONLINE_DIR
+          mkdir -p $KOGITO_ONLINE_DIR
+          cp -r ../kogito-tooling/packages/unpacked-gwt-editors/bpmn $KOGITO_ONLINE_DIR/
+          cp -r ../kogito-tooling/packages/unpacked-gwt-editors/dmn $KOGITO_ONLINE_DIR/
+          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_DIR/
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (${{ github.actor }})"
+          git add . && git commit -m "${{ steps.prerelease-tag.outputs.tag }} resources" || echo "No changes."
+          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/${{ github.actor }}/kogito-online
+          git push origin gh-pages
+          cd -
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.prerelease-tag.outputs.tag }}
+          release_name: ${{ steps.prerelease-tag.outputs.tag }} (alpha)
+          draft: true
+          prerelease: true
+
+      - name: Upload VSCode Extension
+        id: upload-vscode-extension
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
+          asset_name: vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: Upload Chrome Extension
+        id: upload-chrome-extension
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
+          asset_name: chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
+          asset_content_type: application/zip

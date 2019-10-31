@@ -1,4 +1,4 @@
-AppFormer.js Core
+Kogito Tooling Core API
 --
 
-Interfaces to define basic components such as Editors
+Interfaces to define basic components such as Editors.

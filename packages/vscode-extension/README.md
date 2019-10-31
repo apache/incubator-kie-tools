@@ -1,4 +1,2 @@
-Visual Studio Code Extension
+Kogito Tooling Visual Studio Code extension library
 --
-
-The VSCode extension itself. Features MicroEditors for some languages such as DMN and BPMN.
