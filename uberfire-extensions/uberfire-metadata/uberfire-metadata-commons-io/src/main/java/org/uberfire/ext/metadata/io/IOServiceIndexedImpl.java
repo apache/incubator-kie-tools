@@ -410,66 +410,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                             }
 
                             if (event.kind() == StandardWatchEventKind.ENTRY_DELETE) {
-                                queueDeleteEvent(event,
-                                                 context,
+                                queueDeleteEvent(context,
                                                  dispatcher);
                             }
-                        }
-
-                        private void queueDeleteEvent(WatchEvent object,
-                                                      final WatchContext context,
-                                                      final IndexerDispatcher dispatcher) throws DisposedException {
-                            final Path oldPath = context.getOldPath();
-                            // ignore delete events for dot files, because dot files are not indexed
-                            if (!oldPath.getFileName().toString().startsWith(".")) {
-                                dispatcher.offer(new DeletedFileEvent(oldPath));
-                            }
-                        }
-
-                        private void queueRenameEvent(final WatchContext context,
-                                                      final IndexerDispatcher dispatcher) throws DisposedException {
-                            final Path sourcePath = context.getOldPath();
-                            final Path destinationPath = context.getPath();
-                            dispatcher.offer(new RenamedFileEvent(sourcePath,
-                                                                  destinationPath));
-                        }
-
-                        private void queueCreationAndModificationEvent(final Set<Path> eventRealPaths,
-                                                                       final WatchContext context,
-                                                                       final IndexerDispatcher dispatcher) throws DisposedException {
-                            // If the path to be indexed is a "dot path" but does not have an associated
-                            // "real path" index the "real path" instead. This ensures when only a
-                            // "dot path" is updated the FileAttributeView(s) are re-indexed.
-                            Path path = context.getPath();
-                            if (path.getFileName().toString().startsWith(".")) {
-                                if (!IOServiceIndexedUtil.isBlackListed(path)) {
-                                    final Path realPath = DotFileUtils.undot(path);
-                                    if (!eventRealPaths.contains(realPath)) {
-                                        path = realPath;
-                                    }
-                                }
-                            }
-
-                            if (!path.getFileName().toString().startsWith(".")) {
-                                dispatcher.offer(new IndexableIOEvent.NewFileEvent(path));
-                            }
-                        }
-
-                        private Set<Path> getRealCreatedPaths(final List<WatchEvent<?>> events) {
-                            // Get a set of "real paths" to be indexed. The "dot path" associated with the "real path"
-                            // is automatically indexed because the "dot path" contains content for FileAttributeView(s)
-                            // linked to the "real path".
-                            final Set<Path> eventRealPaths = new HashSet<>();
-                            for (WatchEvent event : events) {
-                                final WatchContext context = ((WatchContext) event.context());
-                                if (event.kind() == ENTRY_MODIFY || event.kind() == ENTRY_CREATE) {
-                                    final Path path = context.getPath();
-                                    if (!path.getFileName().toString().startsWith(".")) {
-                                        eventRealPaths.add(path);
-                                    }
-                                }
-                            }
-                            return eventRealPaths;
                         }
 
                         private boolean isDisposed() {
@@ -508,6 +451,69 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                DeleteOption[] options) {
         super.delete(path,
                      options);
+    }
+
+    void queueDeleteEvent(final WatchContext context,
+                                  final IndexerDispatcher dispatcher) throws DisposedException {
+        final Path oldPath = context.getOldPath();
+        // ignore delete events for dot files, because dot files are not indexed
+        if (!isIgnored(oldPath)) {
+            dispatcher.offer(new DeletedFileEvent(oldPath));
+        }
+    }
+
+    void queueRenameEvent(final WatchContext context,
+                                  final IndexerDispatcher dispatcher) throws DisposedException {
+        final Path sourcePath = context.getOldPath();
+        final Path destinationPath = context.getPath();
+
+        if (!isIgnored(destinationPath)) {
+            dispatcher.offer(new RenamedFileEvent(sourcePath,
+                    destinationPath));
+        }
+    }
+
+    void queueCreationAndModificationEvent(final Set<Path> eventRealPaths,
+                                                   final WatchContext context,
+                                                   final IndexerDispatcher dispatcher) throws DisposedException {
+        // If the path to be indexed is a "dot path" but does not have an associated
+        // "real path" index the "real path" instead. This ensures when only a
+        // "dot path" is updated the FileAttributeView(s) are re-indexed.
+        Path path = context.getPath();
+        if (isIgnored(path)) {
+            if (!IOServiceIndexedUtil.isBlackListed(path)) {
+                final Path realPath = DotFileUtils.undot(path);
+                if (!eventRealPaths.contains(realPath)) {
+                    path = realPath;
+                }
+            }
+        }
+
+        if (!isIgnored(path)) {
+            dispatcher.offer(new IndexableIOEvent.NewFileEvent(path));
+        }
+    }
+
+    protected Set<Path> getRealCreatedPaths(final List<WatchEvent<?>> events) {
+        // Get a set of "real paths" to be indexed. The "dot path" associated with the "real path"
+        // is automatically indexed because the "dot path" contains content for FileAttributeView(s)
+        // linked to the "real path".
+        final Set<Path> eventRealPaths = new HashSet<>();
+        for (WatchEvent event : events) {
+            final WatchContext context = ((WatchContext) event.context());
+            if (event.kind() == ENTRY_MODIFY || event.kind() == ENTRY_CREATE) {
+                final Path path = context.getPath();
+                if (!isIgnored(path)) {
+                    eventRealPaths.add(path);
+                }
+            }
+        }
+        return eventRealPaths;
+    }
+
+    boolean isIgnored(Path path) {
+        if (path == null || path.getFileName() == null) return true;
+        return path.getFileName().toString().startsWith(".");
     }
 
     private void cleanupDeletedFS(FileSystem fs) {

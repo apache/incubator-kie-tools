@@ -18,10 +18,7 @@ package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 import org.junit.Before;
@@ -32,27 +29,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
-import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
-import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.common.util.TestFileSystemProvider;
 import org.uberfire.ext.metadata.io.common.util.TestFileSystemProvider.MockFileSystem;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.java.nio.base.AttrsStorage;
 import org.uberfire.java.nio.base.FSPath;
+import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.JGitFSPath;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -60,6 +52,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IOServiceIndexedTest {
@@ -149,6 +143,189 @@ public class IOServiceIndexedTest {
 
         verify(indexEngine, never()).delete(any(KCluster.class));
         verify(ioService).deleteRepositoryFiles(eq(file), any());
+    }
+
+    @Test
+    public void dotFileShouldBeIgnored() {
+        Path path = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(path.getFileName()).thenReturn(fileName);
+        when(path.getFileName().toString()).thenReturn(".sample.drl");
+
+        assertTrue(ioService.isIgnored(path));
+    }
+
+    @Test
+    public void queueRenameShouldDispatchIndexEventTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path oldPath = mock(Path.class);
+        Path newPath = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(newPath.getFileName()).thenReturn(fileName);
+        when(newPath.getFileName().toString()).thenReturn("sample.drl");
+
+        when(context.getOldPath()).thenReturn(oldPath);
+        when(context.getPath()).thenReturn(newPath);
+
+        ioService.queueRenameEvent(context, dispatcher);
+
+        verify(dispatcher, times(1)).offer(
+                refEq(new IndexableIOEvent.RenamedFileEvent(oldPath, newPath)));
+    }
+
+    @Test
+    public void queueRenameShouldNotDispatchIndexEventTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path oldPath = mock(Path.class);
+        Path newPath = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(newPath.getFileName()).thenReturn(fileName);
+        when(newPath.getFileName().toString()).thenReturn(".sample.drl");
+
+        when(context.getOldPath()).thenReturn(oldPath);
+        when(context.getPath()).thenReturn(newPath);
+
+        ioService.queueRenameEvent(context, dispatcher);
+
+        verify(dispatcher, times(0)).offer(
+                refEq(new IndexableIOEvent.RenamedFileEvent(oldPath, newPath)));
+    }
+
+    @Test
+    public void queueDeleteShouldDispatchIndexEventTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path oldPath = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(oldPath.getFileName()).thenReturn(fileName);
+        when(oldPath.getFileName().toString()).thenReturn("sample.drl");
+
+        when(context.getOldPath()).thenReturn(oldPath);
+
+        ioService.queueDeleteEvent(context, dispatcher);
+
+        verify(dispatcher, times(1)).offer(
+                refEq(new IndexableIOEvent.DeletedFileEvent(oldPath)));
+    }
+
+    @Test
+    public void queueDeleteShouldNotDispatchIndexEventTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path oldPath = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(oldPath.getFileName()).thenReturn(fileName);
+        when(oldPath.getFileName().toString()).thenReturn(".sample.drl");
+
+        when(context.getOldPath()).thenReturn(oldPath);
+
+        ioService.queueDeleteEvent(context, dispatcher);
+
+        verify(dispatcher, times(0)).offer(
+                refEq(new IndexableIOEvent.DeletedFileEvent(oldPath)));
+    }
+    
+    @Test
+    public void queueCreationAndModificationEventShouldUndotAndDispatchTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path path = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(path.getFileName()).thenReturn(fileName);
+        when(path.getFileName().toString()).thenReturn(".sample.drl");
+
+        when(context.getPath()).thenReturn(path);
+
+        Path realPath = mock(Path.class);
+        Path realFileName = mock(Path.class);
+
+        when(realPath.getFileName()).thenReturn(realFileName);
+        when(realPath.getFileName().toString()).thenReturn("sample.drl");
+
+        Set<Path> eventRealPaths = new HashSet();
+
+        when(path.resolveSibling("sample.drl")).thenReturn(realPath);
+
+        ioService.queueCreationAndModificationEvent(eventRealPaths, context, dispatcher);
+
+        verify(dispatcher, times(1)).offer(
+                refEq(new IndexableIOEvent.NewFileEvent(realPath)));
+    }
+
+    @Test
+    public void shouldNotAddBlankFilesToEventRealPathsTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        when(context.getPath()).thenReturn(null);
+
+        WatchEvent watchEvent = mock(WatchEvent.class);
+        when(watchEvent.context()).thenReturn(context);
+        when(watchEvent.kind()).thenReturn(ENTRY_MODIFY);
+
+        List<WatchEvent<?>> watchEvents = Arrays.asList(watchEvent);
+
+        Set<Path> eventRealPaths = ioService.getRealCreatedPaths(watchEvents);
+        assertEquals(0, eventRealPaths.size());
+    }
+
+    @Test
+    public void shouldNotAddDotFilesToEventRealPathsTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path path = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(path.getFileName()).thenReturn(fileName);
+        when(path.getFileName().toString()).thenReturn(".sample.drl");
+
+        when(context.getPath()).thenReturn(path);
+
+        WatchEvent watchEvent = mock(WatchEvent.class);
+        when(watchEvent.context()).thenReturn(context);
+        when(watchEvent.kind()).thenReturn(ENTRY_MODIFY);
+
+        List<WatchEvent<?>> watchEvents = Arrays.asList(watchEvent);
+
+        Set<Path> eventRealPaths = ioService.getRealCreatedPaths(watchEvents);
+        assertEquals(0, eventRealPaths.size());
+    }
+
+    @Test
+    public void shouldAddRealFilesToEventRealPathsTest() throws Exception {
+        WatchContext context = mock(WatchContext.class);
+        IndexerDispatcher dispatcher = mock(IndexerDispatcher.class);
+
+        Path path = mock(Path.class);
+        Path fileName = mock(Path.class);
+
+        when(path.getFileName()).thenReturn(fileName);
+        when(path.getFileName().toString()).thenReturn("sample.drl");
+
+        when(context.getPath()).thenReturn(path);
+
+        WatchEvent watchEvent = mock(WatchEvent.class);
+        when(watchEvent.context()).thenReturn(context);
+        when(watchEvent.kind()).thenReturn(ENTRY_MODIFY);
+
+        List<WatchEvent<?>> watchEvents = Arrays.asList(watchEvent);
+
+        Set<Path> eventRealPaths = ioService.getRealCreatedPaths(watchEvents);
+        assertEquals(1, eventRealPaths.size());
     }
 
     private FileSystem getFileSystem() throws URISyntaxException {
