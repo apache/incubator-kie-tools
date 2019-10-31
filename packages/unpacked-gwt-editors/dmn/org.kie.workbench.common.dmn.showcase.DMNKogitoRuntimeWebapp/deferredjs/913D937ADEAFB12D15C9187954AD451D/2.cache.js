@@ -1,0 +1,1 @@
+$wnd.org_kie_workbench_common_dmn_showcase_DMNKogitoRuntimeWebapp.runAsyncCallback2("$5i(14733,1,{3298:1,1:1});var P7e=vgk('org.jboss.errai.common.client.util','AsyncBeanFactory/1',14733,EGe);c4O(Qgd)(2);\n//# sourceURL=org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp-2.js\n")
