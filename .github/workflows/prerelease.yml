@@ -6,7 +6,7 @@ on:
 
 jobs:
   prerelease:
-    if: github.repository == "kiegroup/kogito-tooling"
+    if: github.repository == 'kiegroup/kogito-tooling'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
