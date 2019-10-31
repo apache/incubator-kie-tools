@@ -74,7 +74,7 @@ public class DataTypeListShortcutsTest {
         final DataTypeList actualDataTypeList = shortcuts.getDataTypeList();
         final DataTypeList expectedDataTypeList = shortcuts.getDataTypeList();
 
-        when(listItem.getElement()).thenReturn(htmlElement);
+        when(listItem.getDragAndDropElement()).thenReturn(htmlElement);
 
         assertEquals(expectedDataTypeList, actualDataTypeList);
         verify(expectedDataTypeList).registerDataTypeListItemUpdateCallback(onDataTypeListItemUpdateArgumentCaptor.capture());

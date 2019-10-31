@@ -26,7 +26,23 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
  */
 public interface DataTypeRecordEngine extends RecordEngine<DataType> {
 
+    /**
+     * Create record by using {@link CreationType} strategy. The new record can be created above, below, or even
+     * nested to the reference.
+     * @param record represents the new {@link DataType}
+     * @param reference represents the reference {@link DataType} used by the 'creationType'
+     * @param creationType represents the strategy for creating a new type.
+     * @return a list of all affected records by the create operation.
+     */
     List<DataType> create(final DataType record,
                           final DataType reference,
-                          final CreationType nested);
+                          final CreationType creationType);
+
+    /**
+     * Destroy record, but keep all references
+     * nested to the reference.
+     * @param record represents the destroyed {@link DataType}
+     * @return a list of all affected records by the destroy operation.
+     */
+    List<DataType> destroyWithoutDependentTypes(final DataType record);
 }

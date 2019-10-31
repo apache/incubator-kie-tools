@@ -36,6 +36,10 @@ public abstract class DataTypeActiveRecord extends ActiveRecord<DataType> {
         return getDataTypeRecordEngine().create(getRecord(), reference, creationType);
     }
 
+    public List<DataType> destroyWithoutDependentTypes() {
+        return getDataTypeRecordEngine().destroyWithoutDependentTypes(getRecord());
+    }
+
     private DataTypeRecordEngine getDataTypeRecordEngine() {
         return (DataTypeRecordEngine) getRecordEngine();
     }

@@ -16,15 +16,21 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.search;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
@@ -32,8 +38,13 @@ import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -96,6 +107,7 @@ public class DataTypeSearchBarTest {
         verify(searchBar).setCurrentSearch("");
         verify(dataTypeList).showListItems();
         verify(view).resetSearchBar();
+        verify(searchBar).restoreDataTypeListPositions();
     }
 
     @Test
@@ -108,6 +120,7 @@ public class DataTypeSearchBarTest {
 
         searchBar.search(keyword);
 
+        verify(searchBar).storeDataTypeListPositions();
         verify(dataTypeList).showListItems();
         verify(searchBar).setCurrentSearch(keyword);
         verify(view).showSearchResults(results);
@@ -123,6 +136,7 @@ public class DataTypeSearchBarTest {
 
         searchBar.search(keyword);
 
+        verify(searchBar).storeDataTypeListPositions();
         verify(dataTypeList).showNoDataTypesFound();
         verify(searchBar).setCurrentSearch(keyword);
         verify(view).showSearchResults(results);
@@ -137,6 +151,7 @@ public class DataTypeSearchBarTest {
 
         searchBar.search(keyword);
 
+        verify(searchBar).storeDataTypeListPositions();
         verify(dataTypeList).showNoDataTypesFound();
         verify(searchBar, times(2)).setCurrentSearch(keyword);
         verify(dataTypeList).showListItems();
@@ -152,6 +167,7 @@ public class DataTypeSearchBarTest {
 
         searchBar.search(keyword);
 
+        verify(searchBar).storeDataTypeListPositions();
         verify(dataTypeList).showNoDataTypesFound();
         verify(searchBar).setCurrentSearch(keyword);
         verify(dataTypeList).showListItems();
@@ -179,10 +195,151 @@ public class DataTypeSearchBarTest {
 
         final HTMLElement expectedElement = mock(HTMLElement.class);
 
-        when(dataTypeList.getListItemsElement()).thenReturn(expectedElement);
+        when(dataTypeList.getElement()).thenReturn(expectedElement);
 
         final HTMLElement actualElement = searchBar.getResultsContainer();
 
         assertEquals(expectedElement, actualElement);
+    }
+
+    @Test
+    public void testRestoreDataTypeListPositionsWhenSearchBarHasDataTypeListPositionsStored() {
+
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+        final DataTypeListItem list0 = mock(DataTypeListItem.class);
+        final DataTypeListItem list1 = mock(DataTypeListItem.class);
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final List<DataTypeListItem> items = asList(list0, list1);
+        final String uuid0 = "0000-0000-0000-0000";
+        final String uuid1 = "1111-1111-1111-1111";
+        final Integer positionY0 = 2;
+        final Integer positionY1 = -1;
+        final Map<String, Integer> store = spy(new Maps.Builder<String, Integer>()
+                                                       .put(uuid0, positionY0)
+                                                       .put(uuid1, positionY1)
+                                                       .build());
+
+        element0.classList = mock(DOMTokenList.class);
+        element1.classList = mock(DOMTokenList.class);
+        when(dndListComponent.getPositionY(element0)).thenReturn(positionY0);
+        when(dndListComponent.getPositionY(element1)).thenReturn(positionY1);
+        when(list0.getDragAndDropElement()).thenReturn(element0);
+        when(list1.getDragAndDropElement()).thenReturn(element1);
+        when(list0.getDataType()).thenReturn(dataType0);
+        when(list1.getDataType()).thenReturn(dataType1);
+        when(dataType0.getUUID()).thenReturn(uuid0);
+        when(dataType1.getUUID()).thenReturn(uuid1);
+        when(dataTypeList.getItems()).thenReturn(items);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+
+        searchBar.restoreDataTypeListPositions();
+
+        verify(dndListComponent).setPositionY(element0, positionY0);
+        verify(dndListComponent).setPositionY(element1, positionY1);
+        verify(element0.classList).remove(HIDDEN_CSS_CLASS);
+        verify(element1.classList).add(HIDDEN_CSS_CLASS);
+        verify(dndListComponent).refreshItemsPosition();
+        verify(store).clear();
+    }
+
+    @Test
+    public void testRestoreDataTypeListPositionsWhenSearchBarDoesNotHaveDataTypeListPositionsStored() {
+
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final Map<String, Integer> store = spy(new HashMap<>());
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+
+        searchBar.storeDataTypeListPositions();
+
+        verify(dndListComponent, never()).setPositionY(any(), anyDouble());
+        verify(dndListComponent, never()).refreshItemsPosition();
+        verify(store, never()).clear();
+    }
+
+    @Test
+    public void testStoreDataTypeListPositionsWhenSearchBarDoesNotHaveDataTypeListPositionsStored() {
+
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+        final DataTypeListItem list0 = mock(DataTypeListItem.class);
+        final DataTypeListItem list1 = mock(DataTypeListItem.class);
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final List<DataTypeListItem> items = asList(list0, list1);
+        final String uuid0 = "0000-0000-0000-0000";
+        final String uuid1 = "1111-1111-1111-1111";
+        final Integer positionY0 = 2;
+        final Integer positionY1 = 4;
+        final Map<String, Integer> store = new HashMap<>();
+
+        when(dndListComponent.getPositionY(element0)).thenReturn(positionY0);
+        when(dndListComponent.getPositionY(element1)).thenReturn(positionY1);
+        when(list0.getDragAndDropElement()).thenReturn(element0);
+        when(list1.getDragAndDropElement()).thenReturn(element1);
+        when(list0.getDataType()).thenReturn(dataType0);
+        when(list1.getDataType()).thenReturn(dataType1);
+        when(dataType0.getUUID()).thenReturn(uuid0);
+        when(dataType1.getUUID()).thenReturn(uuid1);
+        when(dataTypeList.getItems()).thenReturn(items);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+
+        searchBar.storeDataTypeListPositions();
+
+        assertEquals(2, store.size());
+        assertEquals(positionY0, store.get(uuid0));
+        assertEquals(positionY1, store.get(uuid1));
+    }
+
+    @Test
+    public void testStoreDataTypeListPositionsWhenSearchBarHasDataTypeListPositionsStored() {
+
+        final String uuid0 = "0000-0000-0000-0000";
+        final String uuid1 = "1111-1111-1111-1111";
+        final Integer positionY0 = 2;
+        final Integer positionY1 = 4;
+        final Map<String, Integer> store = spy(new Maps.Builder<String, Integer>()
+                                                       .put(uuid0, positionY0)
+                                                       .put(uuid1, positionY1)
+                                                       .build());
+
+        doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+
+        searchBar.storeDataTypeListPositions();
+
+        verify(store, never()).put(anyString(), any());
+    }
+
+    @Test
+    public void testGetDataTypeListItemsSortedByPositionY() {
+
+        final DataTypeListItem list0 = mock(DataTypeListItem.class);
+        final DataTypeListItem list1 = mock(DataTypeListItem.class);
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final Integer positionY0 = 3;
+        final Integer positionY1 = 2;
+        final Map<String, Integer> store = new HashMap<>();
+
+        when(dndListComponent.getPositionY(element0)).thenReturn(positionY0);
+        when(dndListComponent.getPositionY(element1)).thenReturn(positionY1);
+        when(list0.getDragAndDropElement()).thenReturn(element0);
+        when(list1.getDragAndDropElement()).thenReturn(element1);
+        when(dataTypeList.getItems()).thenReturn(asList(list0, list1));
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+
+        final List<DataTypeListItem> actualListItems = searchBar.getDataTypeListItemsSortedByPositionY();
+        final List<DataTypeListItem> expectedListItems = asList(list1, list0);
+
+        assertEquals(expectedListItems, actualListItems);
     }
 }

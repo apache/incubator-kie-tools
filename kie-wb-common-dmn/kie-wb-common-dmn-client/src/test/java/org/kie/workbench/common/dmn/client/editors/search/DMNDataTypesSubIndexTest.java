@@ -73,9 +73,9 @@ public class DMNDataTypesSubIndexTest {
         final HTMLElement htmlElement3 = mock(HTMLElement.class);
         final List<DataTypeListItem> dataTypeListItems = asList(listItem1, listItem2, listItem3);
 
-        when(listItem1.getElement()).thenReturn(htmlElement1);
-        when(listItem2.getElement()).thenReturn(htmlElement2);
-        when(listItem3.getElement()).thenReturn(htmlElement3);
+        when(listItem1.getDragAndDropElement()).thenReturn(htmlElement1);
+        when(listItem2.getDragAndDropElement()).thenReturn(htmlElement2);
+        when(listItem3.getDragAndDropElement()).thenReturn(htmlElement3);
         when(listItem1.getDataType()).thenReturn(dataType1);
         when(listItem2.getDataType()).thenReturn(dataType2);
         when(listItem3.getDataType()).thenReturn(dataType3);
@@ -119,7 +119,7 @@ public class DMNDataTypesSubIndexTest {
 
         when(listItem.getDataType()).thenReturn(dataType);
         when(parentListItem.getDataType()).thenReturn(parent);
-        when(listItem.getElement()).thenReturn(htmlElement);
+        when(listItem.getDragAndDropElement()).thenReturn(htmlElement);
         when(dataType.getParentUUID()).thenReturn(parentUUID);
         when(dataType.getUUID()).thenReturn(dataTypeUUID);
         when(parent.getUUID()).thenReturn(parentUUID);

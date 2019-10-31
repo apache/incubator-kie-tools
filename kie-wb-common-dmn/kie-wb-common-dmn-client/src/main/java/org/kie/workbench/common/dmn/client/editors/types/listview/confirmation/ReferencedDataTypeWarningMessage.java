@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.ReferencedDataTypeWarningMessage_RegularMessage;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.ReferencedDataTypeWarningMessage_StrongMessage;
 
@@ -39,5 +40,10 @@ public class ReferencedDataTypeWarningMessage extends WarningMessage {
     @Override
     String getRegularMessage() {
         return translationService.format(ReferencedDataTypeWarningMessage_RegularMessage);
+    }
+
+    @Override
+    String getErrorElementSelector(final DataType dataType) {
+        return "[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"] select";
     }
 }

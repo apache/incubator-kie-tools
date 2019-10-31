@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.search;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -35,24 +35,22 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.NodeList;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSearchBarView_Search;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Templated
 @ApplicationScoped
 public class DataTypeSearchBarView implements DataTypeSearchBar.View {
-
-    static final String RESULT_ENTRY_CSS_CLASS = "kie-search-engine-result";
 
     static final String ENABLED_SEARCH = "kie-search-engine-enabled";
 
@@ -115,22 +113,44 @@ public class DataTypeSearchBarView implements DataTypeSearchBar.View {
     }
 
     @Override
-    public void showSearchResults(final List<DataType> results) {
-        enableSearch();
-        disableResults();
-
-        results.forEach(dataType -> {
-            getResultEntry(dataType).ifPresent(e -> e.classList.add(RESULT_ENTRY_CSS_CLASS));
-        });
-    }
-
-    @Override
     public void resetSearchBar() {
         searchBar.value = "";
 
         refreshSearchBarState();
         disableSearch();
-        disableResults();
+    }
+
+    @Override
+    public void showSearchResults(final List<DataType> results) {
+
+        final AtomicInteger position = new AtomicInteger(0);
+
+        for (final DataTypeListItem listItem : presenter.getDataTypeListItemsSortedByPositionY()) {
+            final HTMLElement element = listItem.getDragAndDropElement();
+            if (results.contains(listItem.getDataType())) {
+                showElementAt(element, position);
+            } else {
+                hideElement(element);
+            }
+        }
+
+        refreshItemsPosition();
+        enableSearch();
+    }
+
+    public void refreshItemsPosition() {
+        presenter.getDNDListComponent().refreshItemsPosition();
+    }
+
+    private void hideElement(final HTMLElement element) {
+        HiddenHelper.hide(element);
+        presenter.getDNDListComponent().setPositionY(element, -1);
+    }
+
+    private void showElementAt(final HTMLElement element,
+                               final AtomicInteger position) {
+        HiddenHelper.show(element);
+        presenter.getDNDListComponent().setPositionY(element, position.getAndIncrement());
     }
 
     void enableSearch() {
@@ -152,15 +172,6 @@ public class DataTypeSearchBarView implements DataTypeSearchBar.View {
         }, 500d);
     }
 
-    void disableResults() {
-
-        final NodeList<Element> results = getResultsContainer().querySelectorAll("." + RESULT_ENTRY_CSS_CLASS);
-
-        for (int i = 0; i < results.length; i++) {
-            results.getAt(i).classList.remove(RESULT_ENTRY_CSS_CLASS);
-        }
-    }
-
     void refreshSearchBarState() {
         final boolean isActive = !isEmpty(searchBar.value);
         searchBarActive(isActive);
@@ -174,11 +185,6 @@ public class DataTypeSearchBarView implements DataTypeSearchBar.View {
             show(searchIcon);
             hide(closeSearch);
         }
-    }
-
-    Optional<Element> getResultEntry(final DataType dataType) {
-        final Element entry = getResultsContainer().querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
-        return Optional.ofNullable(entry);
     }
 
     void setTimeout(final DomGlobal.SetTimeoutCallbackFn callback,

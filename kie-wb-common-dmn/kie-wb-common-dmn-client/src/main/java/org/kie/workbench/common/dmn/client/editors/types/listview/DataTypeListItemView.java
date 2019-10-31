@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -66,8 +67,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     static final String ARROW_BUTTON_SELECTOR = "[data-type-field=\"arrow-button\"]";
 
-    private static final int PIXELS_PER_LEVEL = 35;
-
     @DataField("view")
     private final HTMLDivElement view;
 
@@ -99,8 +98,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     void setupRowMetadata(final DataType dataType) {
 
-        getElement().setAttribute(UUID_ATTR, dataType.getUUID());
-        getElement().setAttribute(PARENT_UUID_ATTR, dataType.getParentUUID());
+        getDragAndDropElement().setAttribute(UUID_ATTR, dataType.getUUID());
+        getDragAndDropElement().setAttribute(PARENT_UUID_ATTR, dataType.getParentUUID());
 
         setupRowCSSClass(dataType);
     }
@@ -114,9 +113,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         final String hasSubDataTypesCSSClass = "has-sub-data-types";
 
         if (dataType.hasSubDataTypes()) {
-            getElement().classList.add(hasSubDataTypesCSSClass);
+            getDragAndDropElement().classList.add(hasSubDataTypesCSSClass);
         } else {
-            getElement().classList.remove(hasSubDataTypesCSSClass);
+            getDragAndDropElement().classList.remove(hasSubDataTypesCSSClass);
         }
     }
 
@@ -125,31 +124,14 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         final String readOnlyCSSClass = "read-only";
 
         if (dataType.isReadOnly()) {
-            getElement().classList.add(readOnlyCSSClass);
+            getDragAndDropElement().classList.add(readOnlyCSSClass);
         } else {
-            getElement().classList.remove(readOnlyCSSClass);
+            getDragAndDropElement().classList.remove(readOnlyCSSClass);
         }
     }
 
     void setupArrow(final DataType dataType) {
         toggleArrow(dataType.hasSubDataTypes());
-    }
-
-    void setupIndentationLevel() {
-
-        final int indentationLevel = presenter.getLevel();
-        final int marginPixels = PIXELS_PER_LEVEL * indentationLevel;
-        final String nestingLevelSelector = ".nesting-level";
-        final NodeList<Element> levelElements = getElement().querySelectorAll(nestingLevelSelector);
-
-        for (int i = 0; i < levelElements.length; i++) {
-
-            final Element element = levelElements.getAt(i);
-            final String propertyName = "style";
-            final String propertyValue = "margin-left: " + marginPixels + "px";
-
-            element.setAttribute(propertyName, propertyValue);
-        }
     }
 
     void setupReadOnly(final DataType dataType) {
@@ -174,12 +156,21 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     public void expand() {
 
         final Element parent = getRowElement(getDataType());
+        final int parentPositionY = presenter.getPositionY(parent);
+
+        final AtomicInteger i = new AtomicInteger(1);
 
         asDownArrow(getArrow());
         forEachChildElement(parent, child -> {
+
             show(child);
+            double positionY = parentPositionY + (i.getAndIncrement() / 10.0);
+            presenter.setPositionY(child, positionY);
+
             return !isCollapsed(child.querySelector(ARROW_BUTTON_SELECTOR));
         });
+
+        presenter.refreshItemsCSSAndHTMLPosition();
     }
 
     @Override
@@ -188,7 +179,14 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         final Element parent = getRowElement(getDataType());
 
         asRightArrow(getArrow());
-        forEachChildElement(parent, HiddenHelper::hide);
+        forEachChildElement(parent, element -> {
+
+            presenter.setPositionY(element, -2);
+
+            HiddenHelper.hide(element);
+        });
+
+        presenter.refreshItemsCSSAndHTMLPosition();
     }
 
     @Override
@@ -363,16 +361,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     private Element getRowElement(final String uuid) {
-        return dataTypeListElement().querySelector("[" + UUID_ATTR + "=\"" + uuid + "\"]");
+        return getDragAndDropListElement().querySelector("[" + UUID_ATTR + "=\"" + uuid + "\"]");
     }
 
     private NodeList<Element> getChildren(final Element parent) {
         final String childrenSelector = "[" + PARENT_UUID_ATTR + "=\"" + parent.getAttribute(UUID_ATTR) + "\"]";
-        return dataTypeListElement().querySelectorAll(childrenSelector);
-    }
-
-    HTMLElement dataTypeListElement() {
-        return presenter.getDataTypeList().getElement();
+        return getDragAndDropListElement().querySelectorAll(childrenSelector);
     }
 
     DataType getDataType() {
@@ -383,7 +377,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     public void setDataType(final DataType dataType) {
         setupRowMetadata(dataType);
         setupArrow(dataType);
-        setupIndentationLevel();
         setupReadOnly(dataType);
         setupActionButtons();
         setupEventHandlers();
@@ -424,6 +417,14 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         getInsertFieldBelow().onclick = getOnInsertFieldBelowAction();
         getInsertNestedField().onclick = getOnInsertNestedFieldAction();
         getRemoveButton().onclick = getOnRemoveButtonAction();
+    }
+
+    private HTMLElement getDragAndDropListElement() {
+        return presenter.getDragAndDropListElement();
+    }
+
+    private HTMLElement getDragAndDropElement() {
+        return presenter.getDragAndDropElement();
     }
 
     OnclickCallbackFn getOnEditAction() {

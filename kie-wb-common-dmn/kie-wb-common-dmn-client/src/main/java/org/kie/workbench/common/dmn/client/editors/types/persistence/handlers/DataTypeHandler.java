@@ -78,7 +78,7 @@ public class DataTypeHandler {
     }
 
     void refreshSubDataTypes(final DataType dataType) {
-        final String type = Objects.equals(dataType.getType(), dataTypeManager.structure()) ? dataType.getName() : dataType.getType();
+        final String type = dataTypeManager.withDataType(dataType).getTypeName();
         refreshSubDataTypes(dataType, type);
     }
 

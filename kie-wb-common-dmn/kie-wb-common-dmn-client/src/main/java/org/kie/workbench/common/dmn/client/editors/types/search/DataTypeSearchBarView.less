@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,28 +37,27 @@
   }
 }
 
-[data-i18n-prefix="DataTypeListView."] {
-  [data-field="list-items"].kie-search-engine-enabled {
+[data-i18n-prefix="DataTypeListView."].kie-search-engine-enabled {
 
-    & > div.list-group-item {
-      display: none;
+  [data-i18n-prefix="DNDListComponentView."] {
+    .kie-dnd-drag-area {
+      .kie-dnd-draggable:hover {
+        .kie-dnd-grip {
+          display: none
+        }
+      }
     }
+  }
 
-    & > div.list-group-item.kie-search-engine-result {
-      /* The default Bootstrap/PatternFly  ".hidden" CSS class relies in the use of "display: none !important".
-       * Since the collapse/expand uses the ".hidden" class, the ".kie-search-engine-result" needs to override
-       * ".hidden" with a even more specific selector. */
-      display: block !important;
-    }
-
-    & > div.list-group-item.kie-search-engine-result {
+  [data-i18n-prefix="DataTypeListItemView."].list-group-item {
+    .list-view-pf-main-info {
       [data-type-field="arrow-button"] {
         pointer-events: none;
         cursor: default;
         text-decoration: none;
 
         &:before {
-          opacity: .25;
+          opacity: .25
         }
       }
     }

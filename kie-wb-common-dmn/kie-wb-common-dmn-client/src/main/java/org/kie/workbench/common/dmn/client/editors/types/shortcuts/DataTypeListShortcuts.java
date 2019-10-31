@@ -130,7 +130,7 @@ public class DataTypeListShortcuts {
     }
 
     private void onDataTypeListItemUpdate(final DataTypeListItem dataTypeListItem) {
-        view.highlight(dataTypeListItem.getElement());
+        view.highlight(dataTypeListItem.getDragAndDropElement());
     }
 
     private void consumeIfDataTypeIsNotReadOnly(final Consumer<DataTypeListItem> dataTypeListItemConsumer) {

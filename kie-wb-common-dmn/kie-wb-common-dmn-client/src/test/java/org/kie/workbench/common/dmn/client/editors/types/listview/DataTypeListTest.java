@@ -17,12 +17,13 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -32,6 +33,8 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandler;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.ArgumentCaptor;
@@ -40,9 +43,9 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -83,6 +86,12 @@ public class DataTypeListTest {
     @Mock
     private Consumer<DataTypeListItem> listItemConsumer;
 
+    @Mock
+    private DNDListComponent dndListComponent;
+
+    @Mock
+    private DNDDataTypesHandler dndDataTypesHandler;
+
     private DataTypeStore dataTypeStore;
 
     private DataTypeStackHash dataTypeStackHash;
@@ -96,15 +105,33 @@ public class DataTypeListTest {
     public void setup() {
         dataTypeStore = new DataTypeStore();
         dataTypeStackHash = new DataTypeStackHash(dataTypeStore);
-        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager, searchBar, dataTypeStackHash));
+        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager, searchBar, dndListComponent, dataTypeStackHash, dndDataTypesHandler));
         when(listItems.get()).thenReturn(treeGridItem);
     }
 
     @Test
     public void testSetup() {
+
+        final BiConsumer<Element, Element> consumer = (a, b) -> {/* Nothing. */};
+
+        doReturn(consumer).when(dataTypeList).getOnDropDataType();
+
         dataTypeList.setup();
 
         verify(view).init(dataTypeList);
+        verify(dndDataTypesHandler).init(dataTypeList);
+        verify(dndListComponent).setOnDropItem(consumer);
+    }
+
+    @Test
+    public void testGetOnDropDataType() {
+
+        final Element e1 = mock(Element.class);
+        final Element e2 = mock(Element.class);
+
+        dataTypeList.getOnDropDataType().accept(e1, e2);
+
+        verify(dndDataTypesHandler).onDropDataType(e1, e2);
     }
 
     @Test
@@ -131,11 +158,16 @@ public class DataTypeListTest {
 
         dataTypeList.setupItems(dataTypes);
 
-        final InOrder inOrder = Mockito.inOrder(dataTypeList);
+        final InOrder inOrder = Mockito.inOrder(dndListComponent, dataTypeList, view);
 
-        inOrder.verify(dataTypeList).setListItems(listItems);
-        inOrder.verify(dataTypeList).setupViewItems();
+        inOrder.verify(dndListComponent).clear();
+        inOrder.verify(dataTypeList).makeDataTypeListItems(dataTypes);
+        inOrder.verify(dndListComponent).refreshItemsPosition();
+        inOrder.verify(view).showOrHideNoCustomItemsMessage();
+        inOrder.verify(view).showReadOnlyMessage(false);
         inOrder.verify(dataTypeList).collapseItemsInTheFirstLevel();
+
+        assertEquals(listItems, dataTypeList.getItems());
     }
 
     @Test
@@ -234,40 +266,6 @@ public class DataTypeListTest {
     }
 
     @Test
-    public void testSetViewItemsWhenSomeDataTypeListItemIsReadOnly() {
-
-        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
-        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
-        final List<DataTypeListItem> listItems = asList(listItem1, listItem2);
-
-        doReturn(listItems).when(dataTypeList).getItems();
-        when(listItem1.isReadOnly()).thenReturn(false);
-        when(listItem2.isReadOnly()).thenReturn(true);
-
-        dataTypeList.setupViewItems();
-
-        verify(view).setupListItems(listItems);
-        verify(view).showReadOnlyMessage(true);
-    }
-
-    @Test
-    public void testSetViewItemsWhenNoDataTypeListItemIsReadOnly() {
-
-        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
-        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
-        final List<DataTypeListItem> listItems = asList(listItem1, listItem2);
-
-        doReturn(listItems).when(dataTypeList).getItems();
-        when(listItem1.isReadOnly()).thenReturn(false);
-        when(listItem2.isReadOnly()).thenReturn(false);
-
-        dataTypeList.setupViewItems();
-
-        verify(view).setupListItems(listItems);
-        verify(view).showReadOnlyMessage(false);
-    }
-
-    @Test
     public void testMakeDataTypeListItemsWithoutSubItems() {
 
         final DataType dataType1 = makeDataType("item", "iITem");
@@ -288,7 +286,7 @@ public class DataTypeListTest {
         final DataType subDataType1 = makeDataType("subItem1", "subItemType1");
         final DataType subDataType2 = makeDataType("subItem2", "subItemType2", subDataType3);
         final DataType dataType = makeDataType("item", "iITem", subDataType1, subDataType2);
-        final List<DataType> dataTypes = Collections.singletonList(dataType);
+        final List<DataType> dataTypes = singletonList(dataType);
 
         dataTypeList.makeDataTypeListItems(dataTypes);
 
@@ -483,6 +481,8 @@ public class DataTypeListTest {
 
         verify(listItem).refresh();
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, subDataTypes);
+        verify(dndListComponent).consolidateYPosition();
+        verify(dndListComponent).refreshItemsPosition();
         verify(searchBar).refresh();
     }
 
@@ -498,8 +498,12 @@ public class DataTypeListTest {
 
         dataTypeList.addDataType();
 
+        verify(searchBar).reset();
         verify(dataType).create();
-        verify(view).addSubItem(listItem);
+        verify(view).showOrHideNoCustomItemsMessage();
+        verify(listItem).refresh();
+        verify(listItem).enableEditMode();
+        verify(dndListComponent).refreshItemsCSSAndHTMLPosition();
         verify(listItem).enableEditMode();
     }
 
@@ -511,10 +515,12 @@ public class DataTypeListTest {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
 
         doReturn(listItem).when(dataTypeList).makeListItem(dataType);
+        when(listItem.getDataType()).thenReturn(dataType);
 
         dataTypeList.insertBelow(dataType, reference);
 
         verify(view).insertBelow(listItem, reference);
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(singletonList(dataType));
     }
 
     @Test
@@ -529,6 +535,8 @@ public class DataTypeListTest {
         dataTypeList.insertAbove(dataType, reference);
 
         verify(view).insertAbove(listItem, reference);
+        verify(dndListComponent).consolidateYPosition();
+        verify(dndListComponent).refreshItemsPosition();
     }
 
     @Test
@@ -628,6 +636,68 @@ public class DataTypeListTest {
         assertFalse(item.isPresent());
     }
 
+    @Test
+    public void testOnDataTypeEditModeToggleStartEditing() {
+
+        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
+        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(true, currentEditingItem);
+
+        dataTypeList.onDataTypeEditModeToggle(event);
+
+        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
+
+        verify(searchBar).reset();
+        assertEquals(currentEditingItem, actual);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleStopEditing() {
+
+        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
+        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(false, currentEditingItem);
+
+        dataTypeList.onDataTypeEditModeToggle(event);
+
+        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
+
+        verify(searchBar).reset();
+        assertEquals(null, actual);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleChangedCurrentEditingItem() {
+
+        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
+        final DataTypeListItem previousEditingItem = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> listItems = asList(currentEditingItem, previousEditingItem);
+
+        doReturn(listItems).when(dataTypeList).getItems();
+
+        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(true, currentEditingItem);
+
+        dataTypeList.setCurrentEditingItem(previousEditingItem);
+
+        dataTypeList.onDataTypeEditModeToggle(event);
+
+        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
+
+        verify(searchBar).reset();
+        assertEquals(currentEditingItem, actual);
+        verify(previousEditingItem).disableEditMode();
+    }
+
+    @Test
+    public void testGetListElement() {
+
+        final HTMLElement expectedElement = mock(HTMLElement.class);
+
+        when(view.getListItems()).thenReturn(expectedElement);
+
+        final HTMLElement actualElement = dataTypeList.getListItems();
+
+        assertEquals(expectedElement, actualElement);
+    }
+
     private DataTypeListItem listItem(final DataType dataType) {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         when(listItem.getDataType()).thenReturn(dataType);
@@ -659,52 +729,5 @@ public class DataTypeListTest {
         dataTypeStore.index(dataType.getUUID(), dataType);
 
         return dataType;
-    }
-
-    @Test
-    public void testOnDataTypeEditModeToggleStartEditing() {
-
-        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
-        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(true, currentEditingItem);
-
-        dataTypeList.onDataTypeEditModeToggle(event);
-
-        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
-
-        assertEquals(currentEditingItem, actual);
-    }
-
-    @Test
-    public void testOnDataTypeEditModeToggleStopEditing() {
-
-        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
-        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(false, currentEditingItem);
-
-        dataTypeList.onDataTypeEditModeToggle(event);
-
-        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
-
-        assertEquals(null, actual);
-    }
-
-    @Test
-    public void testOnDataTypeEditModeToggleChangedCurrentEditingItem() {
-
-        final DataTypeListItem currentEditingItem = mock(DataTypeListItem.class);
-        final DataTypeListItem previousEditingItem = mock(DataTypeListItem.class);
-        final List<DataTypeListItem> listItems = asList(currentEditingItem, previousEditingItem);
-
-        doReturn(listItems).when(dataTypeList).getItems();
-
-        final DataTypeEditModeToggleEvent event = new DataTypeEditModeToggleEvent(true, currentEditingItem);
-
-        dataTypeList.setCurrentEditingItem(previousEditingItem);
-
-        dataTypeList.onDataTypeEditModeToggle(event);
-
-        final DataTypeListItem actual = dataTypeList.getCurrentEditingItem();
-
-        assertEquals(currentEditingItem, actual);
-        verify(previousEditingItem).disableEditMode();
     }
 }

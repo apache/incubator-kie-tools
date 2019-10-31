@@ -46,7 +46,7 @@ public class DataTypeUpdateHandler extends DataTypeHandler {
 
     public void update(final DataType dataType) {
 
-        final String type = dataType.getType();
+        final String type = getTypeName(dataType);
 
         if (!isBuiltInType(type)) {
             dataTypeManager
@@ -123,5 +123,9 @@ public class DataTypeUpdateHandler extends DataTypeHandler {
         recordEngine.doUpdate(dataType, itemDefinition);
 
         refreshSubDataTypes(dataType, dataType.getType());
+    }
+
+    private String getTypeName(final DataType dataType) {
+        return dataTypeManager.withDataType(dataType).getTypeName();
     }
 }

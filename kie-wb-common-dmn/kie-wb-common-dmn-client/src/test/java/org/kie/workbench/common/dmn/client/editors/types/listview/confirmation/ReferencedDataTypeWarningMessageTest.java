@@ -63,4 +63,17 @@ public class ReferencedDataTypeWarningMessageTest {
 
         assertEquals(expectedWarningMessage, actualWarningMessage);
     }
+
+    @Test
+    public void testGetErrorElementSelector() {
+
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.getUUID()).thenReturn("1111-1111-1111-1111");
+
+        final String expectedSelector = "[data-row-uuid=\"1111-1111-1111-1111\"] select";
+        final String actualSelector = new ReferencedDataTypeWarningMessage(translationService).getErrorElementSelector(dataType);
+
+        assertEquals(expectedSelector, actualSelector);
+    }
 }

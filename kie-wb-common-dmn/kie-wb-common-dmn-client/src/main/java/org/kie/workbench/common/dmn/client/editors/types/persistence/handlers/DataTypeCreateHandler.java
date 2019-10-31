@@ -44,32 +44,14 @@ public class DataTypeCreateHandler extends DataTypeHandler {
 
     public List<DataType> append(final DataType dataType,
                                  final ItemDefinition itemDefinition) {
-        final DataType updateDataType = updateDataTypeProperties(dataType, TOP_LEVEL_PARENT_UUID, itemDefinition);
+        final DataType updateDataType = updateDataTypeProperties(withNoName(dataType), TOP_LEVEL_PARENT_UUID, itemDefinition);
         return recordEngine.update(updateDataType);
     }
 
-    public List<DataType> insertNested(final DataType dataType,
-                                       final DataType reference,
-                                       final ItemDefinition itemDefinition) {
-
-        final String parentUUID = reference.getUUID();
-        final DataType updatedDataType = updateDataTypeProperties(dataType, parentUUID, itemDefinition);
-        final Optional<DataType> topLevelReference = fetchTopLevelDataType(reference);
-        final DataType parent = topLevelReference.orElse(reference);
-
-        if (isBuiltInType(reference.getType()) || topLevelReference.isPresent()) {
-            dataTypeManager.withDataType(parent).asStructure();
-        }
-
-        parent.getSubDataTypes().add(0, updatedDataType);
-
-        return recordEngine.update(dataType);
-    }
-
-    public List<DataType> insert(final DataType dataType,
-                                 final DataType reference,
-                                 final CreationType creationType,
-                                 final ItemDefinition itemDefinition) {
+    public List<DataType> insertSibling(final DataType dataType,
+                                        final DataType reference,
+                                        final CreationType creationType,
+                                        final ItemDefinition itemDefinition) {
 
         final Optional<DataType> parentOptional = lookupAbsoluteParent(reference);
 
@@ -118,16 +100,43 @@ public class DataTypeCreateHandler extends DataTypeHandler {
         }
     }
 
-    DataType updateDataTypeProperties(final DataType dataType,
-                                      final String parentUUID,
-                                      final ItemDefinition itemDefinition) {
+    public List<DataType> insertNested(final DataType dataType,
+                                       final DataType reference,
+                                       final ItemDefinition itemDefinition) {
 
+        final String newParentUUID = reference.getUUID();
+        final DataType updatedDataType = updateDataTypeProperties(dataType, newParentUUID, itemDefinition);
+        final Optional<DataType> topLevelReference = fetchTopLevelDataType(reference);
+        final DataType parent = topLevelReference.orElse(reference);
+
+        if (isBuiltInType(reference.getType()) || topLevelReference.isPresent()) {
+            dataTypeManager.withDataType(parent).asStructure();
+        }
+
+        parent.getSubDataTypes().add(0, updatedDataType);
+
+        dataTypeManager.withDataType(updatedDataType).withUniqueName(dataType.getName());
+
+        return recordEngine.update(updatedDataType);
+    }
+
+    DataType updateDataTypeProperties(final DataType dataType,
+                                      final String newParentUUID,
+                                      final ItemDefinition newItemDefinition) {
         return dataTypeManager
                 .withDataType(dataType)
-                .withParentUUID(parentUUID)
-                .withNoName()
-                .withItemDefinition(itemDefinition)
+                .withParentUUID(newParentUUID)
+                .withItemDefinition(newItemDefinition)
                 .withIndexedItemDefinition()
+                .withItemDefinitionSubDataTypes()
+                .withUniqueName()
+                .get();
+    }
+
+    private DataType withNoName(final DataType dataType) {
+        return dataTypeManager
+                .withDataType(dataType)
+                .withNoName()
                 .get();
     }
 

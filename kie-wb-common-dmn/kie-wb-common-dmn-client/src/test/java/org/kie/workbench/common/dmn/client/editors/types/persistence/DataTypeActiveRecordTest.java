@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -44,6 +45,20 @@ public class DataTypeActiveRecordTest {
         doReturn(expectedDataTypes).when(engine).create(record, reference, creationType);
 
         final List<DataType> actualDataTypes = record.create(reference, creationType);
+
+        assertEquals(expectedDataTypes, actualDataTypes);
+    }
+
+    @Test
+    public void testDestroyWithoutDependentTypes() {
+
+        final DataTypeRecordEngine engine = makeRecordEngine();
+        final DataType record = spy(new DataType(engine));
+        final List<DataType> expectedDataTypes = singletonList(mock(DataType.class));
+
+        doReturn(expectedDataTypes).when(engine).destroyWithoutDependentTypes(record);
+
+        final List<DataType> actualDataTypes = record.destroyWithoutDependentTypes();
 
         assertEquals(expectedDataTypes, actualDataTypes);
     }
@@ -74,7 +89,12 @@ public class DataTypeActiveRecordTest {
             @Override
             public List<DataType> create(final DataType record,
                                          final DataType reference,
-                                         final CreationType nested) {
+                                         final CreationType creationType) {
+                return null;
+            }
+
+            @Override
+            public List<DataType> destroyWithoutDependentTypes(final DataType record) {
                 return null;
             }
         });

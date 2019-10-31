@@ -71,6 +71,7 @@ public class ItemDefinitionCreateHandlerTest {
     @Test
     public void testInsertNestedItemDefinitionWhenAbsoluteParentIsPresent() {
 
+        final DataType record = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final ItemDefinition relativeParent = mock(ItemDefinition.class);
         final Optional<ItemDefinition> absoluteParent = Optional.of(mock(ItemDefinition.class));
@@ -82,7 +83,7 @@ public class ItemDefinitionCreateHandlerTest {
         when(absoluteParent.get().getItemComponent()).thenReturn(itemDefinitions);
         doReturn(absoluteParent).when(handler).lookupAbsoluteParent(referenceUUID);
 
-        final ItemDefinition nestedItemDefinition = handler.insertNestedItemDefinition(reference);
+        final ItemDefinition nestedItemDefinition = handler.insertNested(record, reference);
 
         assertEquals(nestedItemDefinition, itemDefinitions.get(0));
     }
@@ -90,6 +91,7 @@ public class ItemDefinitionCreateHandlerTest {
     @Test
     public void testInsertNestedItemDefinitionWhenAbsoluteParentIsNotPresent() {
 
+        final DataType record = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final ItemDefinition relativeParent = mock(ItemDefinition.class);
         final Optional<ItemDefinition> absoluteParent = Optional.empty();
@@ -101,7 +103,7 @@ public class ItemDefinitionCreateHandlerTest {
         when(relativeParent.getItemComponent()).thenReturn(itemDefinitions);
         doReturn(absoluteParent).when(handler).lookupAbsoluteParent(referenceUUID);
 
-        final ItemDefinition nestedItemDefinition = handler.insertNestedItemDefinition(reference);
+        final ItemDefinition nestedItemDefinition = handler.insertNested(record, reference);
 
         verify(relativeParent).setTypeRef(null);
 
@@ -111,6 +113,7 @@ public class ItemDefinitionCreateHandlerTest {
     @Test
     public void testInsertItemDefinition() {
 
+        final DataType record = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final ItemDefinition itemDefinitionReference = mock(ItemDefinition.class);
         final ItemDefinition item = mock(ItemDefinition.class);
@@ -126,7 +129,7 @@ public class ItemDefinitionCreateHandlerTest {
         when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinitionReference);
         doReturn(actualItemDefinitions).when(handler).getItemDefinitionSiblings(reference);
 
-        final ItemDefinition itemDefinition = handler.insertItemDefinition(reference, BELOW);
+        final ItemDefinition itemDefinition = handler.insertSibling(record, reference, BELOW);
         final List<ItemDefinition> expectedItemDefinitions = asList(item, item, itemDefinitionReference, itemDefinition, item);
 
         assertEquals(expectedItemDefinitions, actualItemDefinitions);

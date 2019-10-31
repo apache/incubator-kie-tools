@@ -68,6 +68,9 @@ public class DataTypeUpdateHandlerTest {
     public void setup() {
         handler = spy(new DataTypeUpdateHandler(itemDefinitionStore, dataTypeStore, dataTypeManager));
         handler.init(recordEngine);
+
+        when(dataTypeManager.withDataType(any())).thenCallRealMethod();
+        when(dataTypeManager.getTypeName()).thenCallRealMethod();
     }
 
     @Test

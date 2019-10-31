@@ -29,6 +29,7 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.views.pfly.selectpicker.JQueryList;
 
@@ -112,14 +113,14 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     @Override
     public void focusIn() {
         if (isEmpty(getCurrentUUID())) {
-            getDataTypeListItem(getPreviousUUID()).ifPresent(listItem -> highlight(listItem.getElement()));
+            getDataTypeListItem(getPreviousUUID()).ifPresent(listItem -> highlight(listItem.getDragAndDropElement()));
         }
     }
 
     void scrollTo(final Element target) {
 
         final int padding = 20;
-        final HTMLElement container = presenter.getDataTypeList().getListItemsElement();
+        final HTMLElement container = getDataTypeList().getListItems();
 
         scrollHelper.scrollTo(target, container, padding);
     }
@@ -137,7 +138,7 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     }
 
     NodeList<Element> querySelectorAll(final String selector) {
-        return presenter.getDataTypeList().getListItemsElement().querySelectorAll(selector);
+        return getDataTypeList().getElement().querySelectorAll(selector);
     }
 
     void addHighlightClass(final Element element) {
@@ -145,8 +146,7 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     }
 
     Optional<DataTypeListItem> getDataTypeListItem(final String uuid) {
-        return presenter
-                .getDataTypeList()
+        return getDataTypeList()
                 .getItems()
                 .stream()
                 .filter(item -> Objects.equals(item.getDataType().getUUID(), uuid))
@@ -176,6 +176,10 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     void setCurrentUUID(final String currentUUID) {
         this.previousUUID = this.currentUUID;
         this.currentUUID = currentUUID;
+    }
+
+    private DataTypeList getDataTypeList() {
+        return presenter.getDataTypeList();
     }
 
     private List<Element> getVisibleDataTypeRows() {

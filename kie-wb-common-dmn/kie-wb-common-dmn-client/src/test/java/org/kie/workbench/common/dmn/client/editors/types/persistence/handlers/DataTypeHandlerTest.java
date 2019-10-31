@@ -187,29 +187,15 @@ public class DataTypeHandlerTest {
     }
 
     @Test
-    public void testRefreshSubDataTypesWhenDataTypeIsTopLevel() {
+    public void testRefreshSubDataTypes() {
 
-        final DataType dataType = makeDataType();
-        final String name = "name";
-
-        when(dataType.getName()).thenReturn(name);
-        when(dataType.isTopLevel()).thenReturn(true);
-        doNothing().when(handler).refreshSubDataTypes(any(), anyString());
-
-        handler.refreshSubDataTypes(dataType);
-
-        verify(handler).refreshSubDataTypes(dataType, name);
-    }
-
-    @Test
-    public void testRefreshSubDataTypesWhenDataTypeIsNotTopLevel() {
-
+        final DataTypeManager dataTypeManagerWithDataType = mock(DataTypeManager.class);
         final DataType dataType = makeDataType();
         final String type = "type";
 
-        when(dataType.getType()).thenReturn(type);
-        when(dataType.isTopLevel()).thenReturn(false);
         doNothing().when(handler).refreshSubDataTypes(any(), anyString());
+        when(dataTypeManager.withDataType(dataType)).thenReturn(dataTypeManagerWithDataType);
+        when(dataTypeManagerWithDataType.getTypeName()).thenReturn(type);
 
         handler.refreshSubDataTypes(dataType);
 

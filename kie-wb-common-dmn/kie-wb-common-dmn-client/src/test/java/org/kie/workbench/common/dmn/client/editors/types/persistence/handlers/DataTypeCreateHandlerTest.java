@@ -72,12 +72,18 @@ public class DataTypeCreateHandlerTest {
     public void testAppend() {
 
         final DataType dataType = mock(DataType.class);
+        final DataType dataTypeWithoutName = mock(DataType.class);
         final DataType updatedDataType = mock(DataType.class);
+        final DataTypeManager withDataType = mock(DataTypeManager.class);
+        final DataTypeManager withNoName = mock(DataTypeManager.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
 
+        when(dataTypeManager.withDataType(dataType)).thenReturn(withDataType);
+        when(withDataType.withNoName()).thenReturn(withNoName);
+        when(withNoName.get()).thenReturn(dataTypeWithoutName);
         when(recordEngine.update(updatedDataType)).thenReturn(expectedAffectedDataTypes);
-        doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, TOP_LEVEL_PARENT_UUID, itemDefinition);
+        doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataTypeWithoutName, TOP_LEVEL_PARENT_UUID, itemDefinition);
 
         final List<DataType> actualAffectedDataTypes = handler.append(dataType, itemDefinition);
 
@@ -93,9 +99,9 @@ public class DataTypeCreateHandlerTest {
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final CreationType creationType = ABOVE;
 
-        doReturn(expectedAffectedDataTypes).when(handler).insert(dataType, reference, creationType, itemDefinition);
+        doReturn(expectedAffectedDataTypes).when(handler).insertSibling(dataType, reference, creationType, itemDefinition);
 
-        final List<DataType> actualAffectedDataTypes = handler.insert(dataType, reference, creationType, itemDefinition);
+        final List<DataType> actualAffectedDataTypes = handler.insertSibling(dataType, reference, creationType, itemDefinition);
 
         assertEquals(expectedAffectedDataTypes, actualAffectedDataTypes);
     }
@@ -127,7 +133,7 @@ public class DataTypeCreateHandlerTest {
         doReturn(Optional.of(absoluteParent)).when(handler).lookupAbsoluteParent(reference);
         doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, uuid, itemDefinition);
 
-        final List<DataType> actualAffectedDataTypes = handler.insert(dataType, reference, BELOW, itemDefinition);
+        final List<DataType> actualAffectedDataTypes = handler.insertSibling(dataType, reference, BELOW, itemDefinition);
 
         verify(recordEngine).doUpdate(dataType, itemDefinition);
 
@@ -148,7 +154,7 @@ public class DataTypeCreateHandlerTest {
         doReturn(Optional.empty()).when(handler).lookupAbsoluteParent(reference);
         doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, parentUUID, itemDefinition);
 
-        final List<DataType> actualAffectedDataTypes = handler.insert(dataType, reference, BELOW, itemDefinition);
+        final List<DataType> actualAffectedDataTypes = handler.insertSibling(dataType, reference, BELOW, itemDefinition);
         final List<DataType> expectedAffectedDataTypes = emptyList();
 
         verify(recordEngine).doUpdate(updatedDataType, itemDefinition);
@@ -164,6 +170,8 @@ public class DataTypeCreateHandlerTest {
         final DataType dataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final DataType updatedDataType = mock(DataType.class);
+        final DataTypeManager updatedDataTypeManager = mock(DataTypeManager.class);
+        final DataTypeManager referenceDataTypeManager = mock(DataTypeManager.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final List<DataType> referenceSubDataTypes = new ArrayList<>();
@@ -171,8 +179,9 @@ public class DataTypeCreateHandlerTest {
         when(reference.getUUID()).thenReturn(parentUUID);
         when(reference.getType()).thenReturn(type);
         when(reference.getSubDataTypes()).thenReturn(referenceSubDataTypes);
-        when(dataTypeManager.withDataType(reference)).thenReturn(dataTypeManager);
-        when(recordEngine.update(dataType)).thenReturn(expectedAffectedDataTypes);
+        when(dataTypeManager.withDataType(updatedDataType)).thenReturn(updatedDataTypeManager);
+        when(dataTypeManager.withDataType(reference)).thenReturn(referenceDataTypeManager);
+        when(recordEngine.update(updatedDataType)).thenReturn(expectedAffectedDataTypes);
         doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, parentUUID, itemDefinition);
 
         final List<DataType> actualAffectedDataTypes = handler.insertNested(dataType, reference, itemDefinition);
@@ -191,6 +200,8 @@ public class DataTypeCreateHandlerTest {
         final DataType reference = mock(DataType.class);
         final DataType topLevelReference = mock(DataType.class);
         final DataType updatedDataType = mock(DataType.class);
+        final DataTypeManager updatedDataTypeManager = mock(DataTypeManager.class);
+        final DataTypeManager topLevelReferenceDataTypeManager = mock(DataTypeManager.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final List<DataType> referenceSubDataTypes = new ArrayList<>();
@@ -200,14 +211,15 @@ public class DataTypeCreateHandlerTest {
         when(topLevelReference.getSubDataTypes()).thenReturn(referenceSubDataTypes);
         when(topLevelReference.getName()).thenReturn(type);
         when(topLevelReference.getType()).thenReturn(BuiltInType.STRING.getName());
-        when(dataTypeManager.withDataType(topLevelReference)).thenReturn(dataTypeManager);
-        when(recordEngine.update(dataType)).thenReturn(expectedAffectedDataTypes);
+        when(dataTypeManager.withDataType(topLevelReference)).thenReturn(topLevelReferenceDataTypeManager);
+        when(dataTypeManager.withDataType(updatedDataType)).thenReturn(updatedDataTypeManager);
+        when(recordEngine.update(updatedDataType)).thenReturn(expectedAffectedDataTypes);
         when(dataTypeStore.getTopLevelDataTypes()).thenReturn(singletonList(topLevelReference));
         doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, parentUUID, itemDefinition);
 
         final List<DataType> actualAffectedDataTypes = handler.insertNested(dataType, reference, itemDefinition);
 
-        verify(dataTypeManager).asStructure();
+        verify(topLevelReferenceDataTypeManager).asStructure();
         assertEquals(singletonList(updatedDataType), referenceSubDataTypes);
         assertEquals(expectedAffectedDataTypes, actualAffectedDataTypes);
     }
@@ -215,25 +227,28 @@ public class DataTypeCreateHandlerTest {
     @Test
     public void testInsertNestedWhenReferenceTypeIsDefault() {
 
-        final String parentUUID = "parentUUID";
-        final String type = BuiltInType.STRING.getName();
         final DataType dataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
-        final DataType updatedDataType = mock(DataType.class);
+        final DataTypeManager updatedDataTypeManager = mock(DataTypeManager.class);
+        final DataTypeManager referenceDataTypeManager = mock(DataTypeManager.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final String parentUUID = "parentUUID";
+        final String type = BuiltInType.STRING.getName();
+        final DataType updatedDataType = mock(DataType.class);
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final List<DataType> referenceSubDataTypes = new ArrayList<>();
 
         when(reference.getUUID()).thenReturn(parentUUID);
         when(reference.getType()).thenReturn(type);
         when(reference.getSubDataTypes()).thenReturn(referenceSubDataTypes);
-        when(dataTypeManager.withDataType(reference)).thenReturn(dataTypeManager);
-        when(recordEngine.update(dataType)).thenReturn(expectedAffectedDataTypes);
+        when(dataTypeManager.withDataType(updatedDataType)).thenReturn(updatedDataTypeManager);
+        when(dataTypeManager.withDataType(reference)).thenReturn(referenceDataTypeManager);
+        when(recordEngine.update(updatedDataType)).thenReturn(expectedAffectedDataTypes);
         doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, parentUUID, itemDefinition);
 
         final List<DataType> actualAffectedDataTypes = handler.insertNested(dataType, reference, itemDefinition);
 
-        verify(dataTypeManager).asStructure();
+        verify(referenceDataTypeManager).asStructure();
         assertEquals(singletonList(updatedDataType), referenceSubDataTypes);
         assertEquals(expectedAffectedDataTypes, actualAffectedDataTypes);
     }
@@ -299,18 +314,21 @@ public class DataTypeCreateHandlerTest {
         final DataType dataType = mock(DataType.class);
         final DataType expectedUpdateDataType = mock(DataType.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
-        final DataTypeManager dataTypeManagerDataType = mock(DataTypeManager.class);
-        final DataTypeManager dataTypeManagerWithParentUUID = mock(DataTypeManager.class);
-        final DataTypeManager dataTypeManagerWithNoName = mock(DataTypeManager.class);
-        final DataTypeManager dataTypeManagerItemDefinition = mock(DataTypeManager.class);
-        final DataTypeManager dataTypeManagerIndexedItemDefinition = mock(DataTypeManager.class);
 
-        when(dataTypeManager.withDataType(dataType)).thenReturn(dataTypeManagerDataType);
-        when(dataTypeManagerDataType.withParentUUID(parentUUID)).thenReturn(dataTypeManagerWithParentUUID);
-        when(dataTypeManagerWithParentUUID.withNoName()).thenReturn(dataTypeManagerWithNoName);
-        when(dataTypeManagerWithNoName.withItemDefinition(itemDefinition)).thenReturn(dataTypeManagerItemDefinition);
-        when(dataTypeManagerItemDefinition.withIndexedItemDefinition()).thenReturn(dataTypeManagerIndexedItemDefinition);
-        when(dataTypeManagerIndexedItemDefinition.get()).thenReturn(expectedUpdateDataType);
+        final DataTypeManager dataTypeManagerWithDataType = mock(DataTypeManager.class);
+        final DataTypeManager dataTypeManagerWithParentUUID = mock(DataTypeManager.class);
+        final DataTypeManager dataTypeManagerWithItemDefinition = mock(DataTypeManager.class);
+        final DataTypeManager dataTypeManagerWithIndexedItemDefinition = mock(DataTypeManager.class);
+        final DataTypeManager dataTypeManagerWithItemDefinitionSubDataTypes = mock(DataTypeManager.class);
+        final DataTypeManager dataTypeManagerWithUniqueName = mock(DataTypeManager.class);
+
+        when(dataTypeManager.withDataType(dataType)).thenReturn(dataTypeManagerWithDataType);
+        when(dataTypeManagerWithDataType.withParentUUID(parentUUID)).thenReturn(dataTypeManagerWithParentUUID);
+        when(dataTypeManagerWithParentUUID.withItemDefinition(itemDefinition)).thenReturn(dataTypeManagerWithItemDefinition);
+        when(dataTypeManagerWithItemDefinition.withIndexedItemDefinition()).thenReturn(dataTypeManagerWithIndexedItemDefinition);
+        when(dataTypeManagerWithIndexedItemDefinition.withItemDefinitionSubDataTypes()).thenReturn(dataTypeManagerWithItemDefinitionSubDataTypes);
+        when(dataTypeManagerWithItemDefinitionSubDataTypes.withUniqueName()).thenReturn(dataTypeManagerWithUniqueName);
+        when(dataTypeManagerWithUniqueName.get()).thenReturn(expectedUpdateDataType);
 
         final DataType actualUpdatedDataType = handler.updateDataTypeProperties(dataType, parentUUID, itemDefinition);
 

@@ -15,32 +15,12 @@
  */
 
 [data-i18n-prefix="DataTypeListItemView."] {
-  height: 50px;
-
-  &.list-group-item:hover {
-    background: #eff8ff;
-  }
 
   &.list-group-item {
-    border-color: #e2e4e3;
-    padding: 0 5px 0 0;
-  }
-
-  &.list-group-item.key-highlight {
-    background: #E5EEF5;
-  }
-
-  &.focused-data-type {
-    background: #eff8ff;
-    height: 72px;
-  }
-
-  &.read-only {
-    cursor: not-allowed;
-
-    .list-view-pf-actions {
-      pointer-events: none;
-    }
+    height: 70px;
+    background: none;
+    border: none;
+    padding-left: 25px;
   }
 
   [data-type-field="arrow-button"] {
@@ -78,23 +58,23 @@
   }
 
   .list-view-pf-main-info {
-    padding-top: 8px;
-    padding-bottom: 12px;
+    padding: 0;
+    height: 100%;
+
+    .list-view-pf-body {
+      padding-left: 24px;
+      position: relative;
+    }
 
     [data-type-field="arrow-button"] {
-      margin-left: -20px;
-      width: 55px;
-      display: inline-block
+      position: absolute;
+      left: 3px;
     }
 
     [data-type-field="type"] {
       display: inline-block;
       padding-right: 30px;
     }
-  }
-
-  .nesting-level {
-    height: 32px;
   }
 
   .collection-component {
@@ -114,16 +94,6 @@
     margin-top: -8px;
     padding-top: 2px;
     height: 40px;
-  }
-
-  &.focused-data-type {
-    .constraint-component {
-      padding-top: 5px;
-    }
-
-    .collection-component {
-      padding-top: 10px;
-    }
   }
 
   .list-view-pf-actions {
@@ -146,11 +116,12 @@
     font-weight: initial;
     opacity: .75;
     padding-bottom: 3px;
+    margin-top: -10px;
   }
 
   [data-type-field="save-button"],
   [data-type-field="close-button"] {
-    margin-top: 12px;
+    margin-top: 2px;
   }
 
   ul.dropdown-menu {
@@ -165,5 +136,48 @@
 
   button {
     outline: none;
+  }
+}
+
+[data-i18n-prefix="DNDListComponentView."] {
+
+  div[data-row-uuid] {
+
+    border: 1px solid #e2e4e3;
+    height: 71px;
+
+    &:hover {
+      background: #eff8ff;
+    }
+
+    &.read-only {
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: brightness(.98);
+      opacity: .75;
+
+      &.kie-dnd-hover {
+        background-color: #FFF;
+      }
+    }
+
+    &.focused-data-type {
+      background: #eff8ff;
+      height: 72px;
+
+      .list-group-item {
+        .constraint-component {
+          padding-top: 5px;
+        }
+
+        .collection-component {
+          padding-top: 10px;
+        }
+      }
+    }
+
+    &.key-highlight {
+      background: #E5EEF5;
+    }
   }
 }

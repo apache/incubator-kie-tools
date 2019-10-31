@@ -20,9 +20,9 @@ import elemental2.dom.Element;
 
 public class ListItemViewCssHelper {
 
-    public static final String RIGHT_ARROW_CSS_CLASS = "fa-caret-right";
+    public static final String RIGHT_ARROW_CSS_CLASS = "fa-chevron-right";
 
-    public static final String DOWN_ARROW_CSS_CLASS = "fa-caret-down";
+    public static final String DOWN_ARROW_CSS_CLASS = "fa-chevron-down";
 
     public static final String FOCUSED_CSS_CLASS = "focused-data-type";
 

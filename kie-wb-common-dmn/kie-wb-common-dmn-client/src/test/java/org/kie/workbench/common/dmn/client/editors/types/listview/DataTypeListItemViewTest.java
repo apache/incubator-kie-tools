@@ -99,6 +99,9 @@ public class DataTypeListItemViewTest {
     private HTMLElement dataTypeListElement;
 
     @Mock
+    private HTMLElement dragAndDropElement;
+
+    @Mock
     private TranslationService translationService;
 
     private DataTypeListItemView view;
@@ -108,7 +111,8 @@ public class DataTypeListItemViewTest {
         view = spy(new DataTypeListItemView(row, translationService));
         view.init(presenter);
 
-        doReturn(dataTypeListElement).when(view).dataTypeListElement();
+        when(presenter.getDragAndDropElement()).thenReturn(dragAndDropElement);
+        doReturn(dataTypeListElement).when(presenter).getDragAndDropListElement();
     }
 
     @Test
@@ -118,7 +122,6 @@ public class DataTypeListItemViewTest {
 
         doNothing().when(view).setupRowMetadata(dataType);
         doNothing().when(view).setupArrow(dataType);
-        doNothing().when(view).setupIndentationLevel();
         doNothing().when(view).setupReadOnly(dataType);
         doNothing().when(view).setupActionButtons();
         doNothing().when(view).setupEventHandlers();
@@ -128,7 +131,6 @@ public class DataTypeListItemViewTest {
 
         verify(view).setupRowMetadata(dataType);
         verify(view).setupArrow(dataType);
-        verify(view).setupIndentationLevel();
         verify(view).setupReadOnly(dataType);
         verify(view).setupActionButtons();
         verify(view).setupEventHandlers();
@@ -142,12 +144,12 @@ public class DataTypeListItemViewTest {
 
         when(dataType.getUUID()).thenReturn("1234");
         when(dataType.getParentUUID()).thenReturn("4567");
-        row.classList = classList;
+        dragAndDropElement.classList = classList;
 
         view.setupRowMetadata(dataType);
 
-        verify(row).setAttribute(UUID_ATTR, "1234");
-        verify(row).setAttribute(PARENT_UUID_ATTR, "4567");
+        verify(dragAndDropElement).setAttribute(UUID_ATTR, "1234");
+        verify(dragAndDropElement).setAttribute(PARENT_UUID_ATTR, "4567");
         verify(view).setupRowCSSClass(dataType);
     }
 
@@ -156,12 +158,12 @@ public class DataTypeListItemViewTest {
 
         final DataType dataType = mock(DataType.class);
 
-        row.classList = mock(DOMTokenList.class);
+        dragAndDropElement.classList = mock(DOMTokenList.class);
         when(dataType.hasSubDataTypes()).thenReturn(true);
 
         view.setupSubDataTypesCSSClass(dataType);
 
-        verify(row.classList).add("has-sub-data-types");
+        verify(dragAndDropElement.classList).add("has-sub-data-types");
     }
 
     @Test
@@ -169,12 +171,12 @@ public class DataTypeListItemViewTest {
 
         final DataType dataType = mock(DataType.class);
 
-        row.classList = mock(DOMTokenList.class);
+        dragAndDropElement.classList = mock(DOMTokenList.class);
         when(dataType.hasSubDataTypes()).thenReturn(false);
 
         view.setupSubDataTypesCSSClass(dataType);
 
-        verify(row.classList).remove("has-sub-data-types");
+        verify(dragAndDropElement.classList).remove("has-sub-data-types");
     }
 
     @Test
@@ -182,12 +184,12 @@ public class DataTypeListItemViewTest {
 
         final DataType dataType = mock(DataType.class);
 
-        row.classList = mock(DOMTokenList.class);
+        dragAndDropElement.classList = mock(DOMTokenList.class);
         when(dataType.isReadOnly()).thenReturn(true);
 
         view.setupReadOnlyCSSClass(dataType);
 
-        verify(row.classList).add("read-only");
+        verify(dragAndDropElement.classList).add("read-only");
     }
 
     @Test
@@ -195,12 +197,12 @@ public class DataTypeListItemViewTest {
 
         final DataType dataType = mock(DataType.class);
 
-        row.classList = mock(DOMTokenList.class);
+        dragAndDropElement.classList = mock(DOMTokenList.class);
         when(dataType.isReadOnly()).thenReturn(false);
 
         view.setupReadOnlyCSSClass(dataType);
 
-        verify(row.classList).remove("read-only");
+        verify(dragAndDropElement.classList).remove("read-only");
     }
 
     @Test
@@ -257,27 +259,6 @@ public class DataTypeListItemViewTest {
         view.setupArrow(dataType);
 
         verify(view).toggleArrow(false);
-    }
-
-    @Test
-    public void testSetupIndentationLevel() {
-
-        final int indentationLevel = 3;
-        final NodeList<Element> levelElements = spy(new NodeList<>());
-        final Element element0 = mock(Element.class);
-        final Element element1 = mock(Element.class);
-
-        levelElements.length = 2;
-        doReturn(element0).when(levelElements).getAt(0);
-        doReturn(element1).when(levelElements).getAt(1);
-
-        when(presenter.getLevel()).thenReturn(indentationLevel);
-        when(row.querySelectorAll(".nesting-level")).thenReturn(levelElements);
-
-        view.setupIndentationLevel();
-
-        verify(element0).setAttribute("style", "margin-left: 105px");
-        verify(element1).setAttribute("style", "margin-left: 105px");
     }
 
     @Test

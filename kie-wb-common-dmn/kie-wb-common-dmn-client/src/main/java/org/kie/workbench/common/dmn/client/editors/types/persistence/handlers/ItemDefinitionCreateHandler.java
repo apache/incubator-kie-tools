@@ -48,10 +48,11 @@ public class ItemDefinitionCreateHandler {
         return itemDefinition;
     }
 
-    public ItemDefinition insertNestedItemDefinition(final DataType reference) {
+    public ItemDefinition insertNested(final DataType record,
+                                       final DataType reference) {
 
-        final ItemDefinition itemDefinition = new ItemDefinition();
-        final ItemDefinition relativeParent = getItemDefinition(reference.getUUID());
+        final ItemDefinition itemDefinition = getItemDefinition(record);
+        final ItemDefinition relativeParent = getIndexedItemDefinition(reference.getUUID());
         final Optional<ItemDefinition> absoluteParent = lookupAbsoluteParent(reference.getUUID());
         final List<ItemDefinition> itemComponent;
 
@@ -67,11 +68,12 @@ public class ItemDefinitionCreateHandler {
         return itemDefinition;
     }
 
-    public ItemDefinition insertItemDefinition(final DataType reference,
-                                               final CreationType creationType) {
+    public ItemDefinition insertSibling(final DataType record,
+                                        final DataType reference,
+                                        final CreationType creationType) {
 
-        final ItemDefinition itemDefinition = new ItemDefinition();
-        final ItemDefinition itemDefinitionReference = getItemDefinition(reference.getUUID());
+        final ItemDefinition itemDefinition = getItemDefinition(record);
+        final ItemDefinition itemDefinitionReference = getIndexedItemDefinition(reference.getUUID());
         final List<ItemDefinition> siblings = getItemDefinitionSiblings(reference);
 
         siblings.add(siblings.indexOf(itemDefinitionReference) + creationType.getIndexIncrement(), itemDefinition);
@@ -90,7 +92,7 @@ public class ItemDefinitionCreateHandler {
     }
 
     Optional<ItemDefinition> lookupAbsoluteParent(final String parentUUID) {
-        final Optional<ItemDefinition> optionalParent = Optional.ofNullable(getItemDefinition(parentUUID));
+        final Optional<ItemDefinition> optionalParent = Optional.ofNullable(getIndexedItemDefinition(parentUUID));
 
         if (optionalParent.isPresent()) {
 
@@ -115,7 +117,13 @@ public class ItemDefinitionCreateHandler {
         return itemDefinitionUtils.all();
     }
 
-    private ItemDefinition getItemDefinition(final String uuid) {
+    private ItemDefinition getIndexedItemDefinition(final String uuid) {
         return itemDefinitionStore.get(uuid);
+    }
+
+    private ItemDefinition getItemDefinition(final DataType dataType) {
+        return Optional
+                .ofNullable(getIndexedItemDefinition(dataType.getUUID()))
+                .orElse(new ItemDefinition());
     }
 }

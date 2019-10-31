@@ -308,7 +308,7 @@ public class DataTypeListShortcutsViewTest {
         final DataTypeList dataTypeList = mock(DataTypeList.class);
 
         when(presenter.getDataTypeList()).thenReturn(dataTypeList);
-        when(dataTypeList.getListItemsElement()).thenReturn(container);
+        when(dataTypeList.getListItems()).thenReturn(container);
 
         view.scrollTo(element);
 
@@ -365,7 +365,7 @@ public class DataTypeListShortcutsViewTest {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         final HTMLElement element = mock(HTMLElement.class);
 
-        when(listItem.getElement()).thenReturn(element);
+        when(listItem.getDragAndDropElement()).thenReturn(element);
         doReturn("").when(view).getCurrentUUID();
         doReturn("uuid").when(view).getPreviousUUID();
         doReturn(Optional.of(listItem)).when(view).getDataTypeListItem("uuid");

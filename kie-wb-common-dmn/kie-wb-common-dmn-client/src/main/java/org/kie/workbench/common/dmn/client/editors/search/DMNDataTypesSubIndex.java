@@ -69,7 +69,7 @@ public class DMNDataTypesSubIndex implements DMNSubIndex {
 
     void highlight(final DataTypeListItem item) {
         expandParents(item);
-        dataTypeShortcuts.highlight(item.getElement());
+        dataTypeShortcuts.highlight(item.getDragAndDropElement());
     }
 
     private void expandParents(final DataTypeListItem item) {

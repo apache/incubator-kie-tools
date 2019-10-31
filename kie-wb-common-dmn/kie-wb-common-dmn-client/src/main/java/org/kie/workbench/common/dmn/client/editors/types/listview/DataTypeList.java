@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
@@ -27,7 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import elemental2.dom.HTMLDivElement;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
@@ -35,8 +36,12 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandler;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.uberfire.client.mvp.UberElemental;
+
+import static java.util.Collections.singletonList;
 
 @ApplicationScoped
 public class DataTypeList {
@@ -51,28 +56,42 @@ public class DataTypeList {
 
     private final DataTypeStackHash dataTypeStackHash;
 
+    private final DNDListComponent dndListComponent;
+
+    private final DNDDataTypesHandler dndDataTypesHandler;
+
     private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
 
-    private List<DataTypeListItem> items;
+    private List<DataTypeListItem> items = new ArrayList<>();
 
     private DataTypeListItem currentEditingItem;
 
     @Inject
-    public DataTypeList(final DataTypeList.View view,
+    public DataTypeList(final View view,
                         final ManagedInstance<DataTypeListItem> listItems,
                         final DataTypeManager dataTypeManager,
                         final DataTypeSearchBar searchBar,
-                        final DataTypeStackHash dataTypeStackHash) {
+                        final DNDListComponent dndListComponent,
+                        final DataTypeStackHash dataTypeStackHash,
+                        final DNDDataTypesHandler dndDataTypesHandler) {
         this.view = view;
         this.listItems = listItems;
         this.dataTypeManager = dataTypeManager;
         this.searchBar = searchBar;
+        this.dndListComponent = dndListComponent;
         this.dataTypeStackHash = dataTypeStackHash;
+        this.dndDataTypesHandler = dndDataTypesHandler;
     }
 
     @PostConstruct
     void setup() {
         view.init(this);
+        dndDataTypesHandler.init(this);
+        dndListComponent.setOnDropItem(getOnDropDataType());
+    }
+
+    BiConsumer<Element, Element> getOnDropDataType() {
+        return dndDataTypesHandler::onDropDataType;
     }
 
     public HTMLElement getElement() {
@@ -80,9 +99,20 @@ public class DataTypeList {
     }
 
     public void setupItems(final List<DataType> dataTypes) {
-        setListItems(makeDataTypeListItems(dataTypes));
-        setupViewItems();
+        setupItemsView(dataTypes);
+        setupViewElements();
         collapseItemsInTheFirstLevel();
+    }
+
+    private void setupItemsView(final List<DataType> dataTypes) {
+        getDNDListComponent().clear();
+        setListItems(makeDataTypeListItems(dataTypes));
+        getDNDListComponent().refreshItemsPosition();
+    }
+
+    private void setupViewElements() {
+        view.showOrHideNoCustomItemsMessage();
+        view.showReadOnlyMessage(hasReadOnlyDataTypes());
     }
 
     List<DataTypeListItem> makeDataTypeListItems(final List<DataType> dataTypes) {
@@ -160,19 +190,19 @@ public class DataTypeList {
                 refreshSubItemsFromListItem(listItem, dataType.getSubDataTypes());
             });
         }
-        searchBar.refresh();
+        refreshDragAndDropList();
+        refreshSearchBar();
     }
 
-    Optional<DataTypeListItem> findItem(final DataType dataType) {
+    public Optional<DataTypeListItem> findItem(final DataType dataType) {
         return getItems()
                 .stream()
                 .filter(item -> Objects.equals(item.getDataType().getUUID(), dataType.getUUID()))
                 .findFirst();
     }
 
-    void setupViewItems() {
-        view.setupListItems(getItems());
-        view.showReadOnlyMessage(hasReadOnlyDataTypes());
+    public DNDListComponent getDNDListComponent() {
+        return dndListComponent;
     }
 
     private boolean hasReadOnlyDataTypes() {
@@ -198,26 +228,30 @@ public class DataTypeList {
 
     void addDataType() {
 
+        resetSearchBar();
+
         final DataType dataType = dataTypeManager.fromNew().get();
         final DataTypeListItem listItem = makeListItem(dataType);
 
         dataType.create();
 
-        searchBar.reset();
-        view.addSubItem(listItem);
-
+        showListItems();
+        listItem.refresh();
         listItem.enableEditMode();
-        fireOnDataTypeListItemUpdateCallback(listItem);
+        refreshItemsCSSAndHTMLPosition();
     }
 
     void insertBelow(final DataType dataType,
                      final DataType reference) {
-        view.insertBelow(makeListItem(dataType), reference);
+        final DataTypeListItem listItem = makeListItem(dataType);
+        view.insertBelow(listItem, reference);
+        refreshItemsByUpdatedDataTypes(singletonList(listItem.getDataType()));
     }
 
     void insertAbove(final DataType dataType,
                      final DataType reference) {
         view.insertAbove(makeListItem(dataType), reference);
+        refreshDragAndDropList();
     }
 
     public void showNoDataTypesFound() {
@@ -228,18 +262,10 @@ public class DataTypeList {
         view.showOrHideNoCustomItemsMessage();
     }
 
-    public HTMLElement getListItemsElement() {
-        return view.getListItems();
-    }
-
     DataTypeListItem makeListItem(final DataType dataType) {
-
-        final DataTypeListItem listItem = makeListItem();
-
-        listItem.setupDataType(dataType, 1);
-        getItems().add(listItem);
-
-        return listItem;
+        final List<DataTypeListItem> items = makeTreeListItems(dataType, 1);
+        getItems().addAll(items);
+        return items.get(0);
     }
 
     void expandAll() {
@@ -274,11 +300,11 @@ public class DataTypeList {
         findItemByDataTypeHash(dataTypeHash).ifPresent(this::fireOnDataTypeListItemUpdateCallback);
     }
 
-    private void fireOnDataTypeListItemUpdateCallback(final DataTypeListItem listItem) {
+    void fireOnDataTypeListItemUpdateCallback(final DataTypeListItem listItem) {
         onDataTypeListItemUpdate.accept(listItem);
     }
 
-    Optional<DataTypeListItem> findItemByDataTypeHash(final String dataTypeHash) {
+    public Optional<DataTypeListItem> findItemByDataTypeHash(final String dataTypeHash) {
         return getItems()
                 .stream()
                 .filter(item -> Objects.equals(calculateHash(item.getDataType()), dataTypeHash))
@@ -289,11 +315,12 @@ public class DataTypeList {
         return dataTypeStackHash.calculateParentHash(dataType);
     }
 
-    String calculateHash(final DataType dataType) {
+    public String calculateHash(final DataType dataType) {
         return dataTypeStackHash.calculateHash(dataType);
     }
 
     public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent event) {
+        resetSearchBar();
         if (event.isEditModeEnabled()) {
             if (getCurrentEditingItem() != null && getItems().contains(getCurrentEditingItem())) {
                 getCurrentEditingItem().disableEditMode();
@@ -304,6 +331,11 @@ public class DataTypeList {
         }
     }
 
+    void refreshDragAndDropList() {
+        getDNDListComponent().consolidateYPosition();
+        getDNDListComponent().refreshItemsPosition();
+    }
+
     DataTypeListItem getCurrentEditingItem() {
         return currentEditingItem;
     }
@@ -312,21 +344,33 @@ public class DataTypeList {
         this.currentEditingItem = currentEditingItem;
     }
 
+    void refreshItemsCSSAndHTMLPosition() {
+        dndListComponent.refreshItemsCSSAndHTMLPosition();
+    }
+
+    public HTMLElement getListItems() {
+        return view.getListItems();
+    }
+
+    private void resetSearchBar() {
+        searchBar.reset();
+    }
+
+    private void refreshSearchBar() {
+        searchBar.refresh();
+    }
+
     public interface View extends UberElemental<DataTypeList>,
                                   IsElement {
-
-        void setupListItems(final List<DataTypeListItem> treeGridItems);
 
         void showOrHideNoCustomItemsMessage();
 
         void addSubItems(final DataType dataType,
                          final List<DataTypeListItem> treeGridItems);
 
-        void addSubItem(final DataTypeListItem listItem);
-
         void removeItem(final DataType dataType);
 
-        void cleanSubTypes(DataType dataType);
+        void cleanSubTypes(final DataType dataType);
 
         void insertBelow(final DataTypeListItem listItem,
                          final DataType reference);
@@ -336,8 +380,8 @@ public class DataTypeList {
 
         void showNoDataTypesFound();
 
-        HTMLDivElement getListItems();
+        void showReadOnlyMessage(final boolean show);
 
-        void showReadOnlyMessage(boolean show);
+        HTMLElement getListItems();
     }
 }

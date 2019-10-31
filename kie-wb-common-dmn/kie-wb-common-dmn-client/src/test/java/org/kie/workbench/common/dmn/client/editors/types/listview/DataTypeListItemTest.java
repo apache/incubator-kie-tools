@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.NodeList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.validation.DataTypeNameFormatValidator;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.ArgumentCaptor;
@@ -129,13 +132,13 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testGetElement() {
+    public void testGetContentElement() {
 
         final HTMLElement expectedElement = mock(HTMLElement.class);
 
         when(view.getElement()).thenReturn(expectedElement);
 
-        HTMLElement actualElement = listItem.getElement();
+        HTMLElement actualElement = listItem.getContentElement();
 
         assertEquals(expectedElement, actualElement);
     }
@@ -146,9 +149,14 @@ public class DataTypeListItemTest {
         final DataType expectedDataType = this.dataType;
         final int expectedLevel = 1;
 
+        doNothing().when(listItem).setupDragAndDropComponent();
+        doNothing().when(listItem).setupView();
+
         listItem.setupDataType(expectedDataType, expectedLevel);
 
         final InOrder inOrder = inOrder(listItem);
+
+        inOrder.verify(listItem).setupDragAndDropComponent();
         inOrder.verify(listItem).setupSelectComponent();
         inOrder.verify(listItem).setupListComponent();
         inOrder.verify(listItem).setupConstraintComponent();
@@ -156,6 +164,24 @@ public class DataTypeListItemTest {
 
         assertEquals(expectedDataType, listItem.getDataType());
         assertEquals(expectedLevel, listItem.getLevel());
+    }
+
+    @Test
+    public void testSetupDragAndDropComponent() {
+
+        final DNDListComponent dragAndDropComponent = mock(DNDListComponent.class);
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+        final HTMLElement expectedElement = mock(HTMLElement.class);
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dragAndDropComponent);
+        when(listItem.getContentElement()).thenReturn(htmlElement);
+        when(dragAndDropComponent.registerNewItem(htmlElement)).thenReturn(expectedElement);
+
+        listItem.setupDragAndDropComponent();
+
+        final HTMLElement actualElement = listItem.getDragAndDropElement();
+
+        assertEquals(expectedElement, actualElement);
     }
 
     @Test
@@ -216,6 +242,8 @@ public class DataTypeListItemTest {
 
         final DataType dataType = mock(DataType.class);
         when(listItem.getDataType()).thenReturn(dataType);
+        doNothing().when(listItem).setupIndentationLevel();
+        doNothing().when(listItem).hideTooltips();
 
         listItem.setupView();
 
@@ -223,6 +251,8 @@ public class DataTypeListItemTest {
         verify(view).setupConstraintComponent(dataTypeConstraintComponent);
         verify(view).setupListComponent(dataTypeListComponent);
         verify(view).setDataType(dataType);
+        verify(listItem).setupIndentationLevel();
+        verify(listItem).hideTooltips();
     }
 
     @Test
@@ -270,6 +300,7 @@ public class DataTypeListItemTest {
         listItem.refreshSubItems(dataTypes);
 
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
+        verify(listItem).expandOrCollapseSubTypes();
         verify(view).enableFocusMode();
         verify(view).toggleArrow(anyBoolean());
     }
@@ -308,6 +339,7 @@ public class DataTypeListItemTest {
         verify(dataTypeSelectComponent).enableEditMode();
         verify(dataTypeConstraintComponent).enableEditMode();
         verify(editModeToggleEvent).fire(eventArgumentCaptor.capture());
+        verify(dataTypeList).fireOnDataTypeListItemUpdateCallback(listItem);
 
         assertTrue(eventArgumentCaptor.getValue().isEditModeEnabled());
     }
@@ -328,6 +360,7 @@ public class DataTypeListItemTest {
         verify(dataTypeSelectComponent, never()).enableEditMode();
         verify(dataTypeConstraintComponent, never()).enableEditMode();
         verify(editModeToggleEvent, never()).fire(any());
+        verify(dataTypeList, never()).fireOnDataTypeListItemUpdateCallback(any(DataTypeListItem.class));
     }
 
     @Test
@@ -336,11 +369,13 @@ public class DataTypeListItemTest {
         when(view.isOnFocusMode()).thenReturn(true);
         doNothing().when(listItem).discardNewDataType();
         doNothing().when(listItem).closeEditMode();
+        doNothing().when(listItem).hideTooltips();
 
         listItem.disableEditMode();
 
         verify(listItem).discardNewDataType();
         verify(listItem).closeEditMode();
+        verify(listItem).hideTooltips();
     }
 
     @Test
@@ -352,6 +387,7 @@ public class DataTypeListItemTest {
 
         verify(listItem, never()).discardNewDataType();
         verify(listItem, never()).closeEditMode();
+        verify(listItem, never()).hideTooltips();
     }
 
     @Test
@@ -517,6 +553,7 @@ public class DataTypeListItemTest {
 
         doNothing().when(listItem).setupSelectComponent();
         doNothing().when(listItem).setupListComponent();
+        doNothing().when(listItem).setupIndentationLevel();
         doNothing().when(listItem).refreshSubItems(subDataTypes);
         doReturn(subDataTypes).when(dataType).getSubDataTypes();
         doReturn(dataType).when(listItem).discardDataTypeProperties();
@@ -528,6 +565,7 @@ public class DataTypeListItemTest {
         verify(listItem).setupSelectComponent();
         verify(listItem).setupConstraintComponent();
         verify(listItem).refreshSubItems(subDataTypes);
+        verify(listItem).setupIndentationLevel();
     }
 
     @Test
@@ -635,6 +673,7 @@ public class DataTypeListItemTest {
         doReturn(expectedConstraint).when(dataType).getConstraint();
         doReturn(expectedName).when(dataType).getName();
         doReturn(dataType).when(listItem).getDataType();
+        doNothing().when(listItem).hideTooltips();
 
         listItem.refresh();
 
@@ -644,6 +683,7 @@ public class DataTypeListItemTest {
         verify(view).setName(expectedName);
         verify(listItem).setupListComponent();
         verify(listItem).setupConstraintComponent();
+        verify(listItem).hideTooltips();
     }
 
     @Test
@@ -653,7 +693,7 @@ public class DataTypeListItemTest {
         final Command command = mock(Command.class);
 
         doReturn(dataType).when(listItem).getDataType();
-        doReturn(command).when(listItem).doRemove();
+        doReturn(command).when(listItem).destroy();
 
         listItem.remove();
 
@@ -661,7 +701,7 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testDoRemove() {
+    public void testDestroy() {
 
         final DataType dataType = mock(DataType.class);
         final DataType dataType0 = mock(DataType.class);
@@ -674,11 +714,46 @@ public class DataTypeListItemTest {
         doReturn(destroyedDataTypes).when(dataType).destroy();
         doReturn(removedDataTypes).when(listItem).removeTopLevelDataTypes(destroyedDataTypes);
         doReturn(dataType).when(listItem).getDataType();
+        doNothing().when(listItem).hideTooltips();
 
-        listItem.doRemove().execute();
+        listItem.destroy().execute();
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(asList(dataType0, dataType3));
         verify(listItem).fireDataChangedEvent();
+        verify(listItem).hideTooltips();
+    }
+
+    @Test
+    public void testDestroyWithDependentTypes() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+        final List<DataType> removedDataTypes = asList(dataType0, dataType1);
+
+        when(dataType.destroy()).thenReturn(removedDataTypes);
+        doReturn(dataType).when(listItem).getDataType();
+        doNothing().when(listItem).destroy(any());
+
+        listItem.destroyWithDependentTypes();
+
+        verify(listItem).destroy(removedDataTypes);
+    }
+
+    @Test
+    public void testDestroyWithoutDependentTypes() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType dataType0 = mock(DataType.class);
+        final List<DataType> removedDataTypes = asList(dataType0);
+
+        when(dataType.destroyWithoutDependentTypes()).thenReturn(removedDataTypes);
+        doReturn(dataType).when(listItem).getDataType();
+        doNothing().when(listItem).destroy(any());
+
+        listItem.destroyWithoutDependentTypes();
+
+        verify(listItem).destroy(removedDataTypes);
     }
 
     @Test
@@ -752,14 +827,18 @@ public class DataTypeListItemTest {
     @Test
     public void testInsertFieldAboveWhenTheNewDataTypeIsTopLevel() {
 
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
+        final DataTypeListItem newListItem = mock(DataTypeListItem.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final String referenceDataTypeHash = "tDataType.id";
         final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(true);
         when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        when(dataTypeList.findItemByDataTypeHash(newDataTypeHash)).thenReturn(Optional.of(newListItem));
         when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
@@ -769,21 +848,26 @@ public class DataTypeListItemTest {
         listItem.insertFieldAbove();
 
         verify(listItem).closeEditMode();
-        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).insertAbove(newDataType, reference);
+        verify(dndListComponent).refreshItemsCSSAndHTMLPosition();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
     }
 
     @Test
     public void testInsertFieldAboveWhenTheNewDataTypeIsNotTopLevel() {
 
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
+        final DataTypeListItem newListItem = mock(DataTypeListItem.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final String referenceDataTypeHash = "tDataType.id";
         final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(false);
         when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        when(dataTypeList.findItemByDataTypeHash(newDataTypeHash)).thenReturn(Optional.of(newListItem));
         when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
@@ -793,13 +877,15 @@ public class DataTypeListItemTest {
         listItem.insertFieldAbove();
 
         verify(listItem).closeEditMode();
-        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(dndListComponent).refreshItemsCSSAndHTMLPosition();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
     }
 
     @Test
     public void testInsertFieldBelowWhenTheNewDataTypeIsTopLevel() {
 
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
@@ -809,6 +895,7 @@ public class DataTypeListItemTest {
         when(newDataType.isTopLevel()).thenReturn(true);
         when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
         when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
@@ -824,6 +911,7 @@ public class DataTypeListItemTest {
     @Test
     public void testInsertFieldBelowWhenTheNewDataTypeIsNotTopLevel() {
 
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
@@ -833,6 +921,7 @@ public class DataTypeListItemTest {
         when(newDataType.isTopLevel()).thenReturn(false);
         when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
         when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
@@ -1124,6 +1213,107 @@ public class DataTypeListItemTest {
         when(dataType.isReadOnly()).thenReturn(false);
 
         assertFalse(listItem.isReadOnly());
+    }
+
+    @Test
+    public void testRefreshItemsCSSAndHTMLPosition() {
+        listItem.refreshItemsCSSAndHTMLPosition();
+        verify(dataTypeList).refreshItemsCSSAndHTMLPosition();
+    }
+
+    @Test
+    public void testSetPositionX() {
+
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final Element element = mock(Element.class);
+        final int positionX = 2;
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+
+        listItem.setPositionX(element, positionX);
+
+        verify(dndListComponent).setPositionX(element, positionX);
+    }
+
+    @Test
+    public void testSetPositionY() {
+
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final Element element = mock(Element.class);
+        final int positionY = 2;
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+
+        listItem.setPositionY(element, positionY);
+
+        verify(dndListComponent).setPositionY(element, positionY);
+    }
+
+    @Test
+    public void testGetPositionY() {
+
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final Element element = mock(Element.class);
+        final Integer expectedPositionY = 2;
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        when(dndListComponent.getPositionY(element)).thenReturn(expectedPositionY);
+
+        final Integer actualPositionY = listItem.getPositionY(element);
+
+        assertEquals(expectedPositionY, actualPositionY);
+    }
+
+    @Test
+    public void testGetDragAndDropListElement() {
+
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final HTMLElement expectedHTMLElement = mock(HTMLElement.class);
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        when(dndListComponent.getElement()).thenReturn(expectedHTMLElement);
+
+        final HTMLElement actualHTMLElement = listItem.getDragAndDropListElement();
+
+        assertEquals(expectedHTMLElement, actualHTMLElement);
+    }
+
+    @Test
+    public void testSetupIndentationLevel() {
+
+        final HTMLElement dragAndDropElement = mock(HTMLElement.class);
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+
+        when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
+        doReturn(dragAndDropElement).when(listItem).getDragAndDropElement();
+        doReturn(5).when(listItem).getLevel();
+
+        listItem.setupIndentationLevel();
+
+        verify(dndListComponent).setPositionX(dragAndDropElement, 4);
+    }
+
+    @Test
+    public void testHideTooltips() {
+
+        final HTMLElement listItems = mock(HTMLElement.class);
+        final NodeList<Element> tooltips = spy(new NodeList<>());
+        final Element element0 = mock(Element.class);
+        final Element element1 = mock(Element.class);
+
+        when(tooltips.getAt(0)).thenReturn(element0);
+        when(tooltips.getAt(1)).thenReturn(element1);
+        tooltips.length = 2;
+        element0.parentNode = listItems;
+        element1.parentNode = listItems;
+
+        when(dataTypeList.getListItems()).thenReturn(listItems);
+        when(listItems.querySelectorAll(".tooltip")).thenReturn(tooltips);
+
+        listItem.hideTooltips();
+
+        verify(listItems).removeChild(element0);
+        verify(listItems).removeChild(element1);
     }
 
     private DataType makeDataType() {

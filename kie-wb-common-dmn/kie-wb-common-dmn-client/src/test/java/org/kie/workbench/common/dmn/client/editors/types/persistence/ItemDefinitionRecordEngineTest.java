@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -151,6 +152,21 @@ public class ItemDefinitionRecordEngineTest {
     }
 
     @Test
+    public void testDestroyWithoutDependentTypes() {
+
+        final DataType dataType = mock(DataType.class);
+        final List<DataType> dependentDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(dataTypeDestroyHandler.refreshDependentDataTypes(dataType)).thenReturn(dependentDataTypes);
+
+        final List<DataType> actualDependentDataTypes = recordEngine.destroyWithoutDependentTypes(dataType);
+        final List<DataType> expectedDependentDataTypes = singletonList(dataType);
+
+        verify(recordEngine).doDestroy(dataType);
+        assertEquals(expectedDependentDataTypes, actualDependentDataTypes);
+    }
+
+    @Test
     public void testCreate() {
 
         final DataType dataType = mock(DataType.class);
@@ -174,8 +190,8 @@ public class ItemDefinitionRecordEngineTest {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final CreationType creationType = ABOVE;
 
-        when(itemDefinitionCreateHandler.insertItemDefinition(reference, creationType)).thenReturn(itemDefinition);
-        when(dataTypeCreateHandler.insert(dataType, reference, creationType, itemDefinition)).thenReturn(expectedAffectedDataTypes);
+        when(itemDefinitionCreateHandler.insertSibling(dataType, reference, creationType)).thenReturn(itemDefinition);
+        when(dataTypeCreateHandler.insertSibling(dataType, reference, creationType, itemDefinition)).thenReturn(expectedAffectedDataTypes);
 
         final List<DataType> actualAffectedDataTypes = recordEngine.create(dataType, reference, creationType);
 
@@ -190,7 +206,7 @@ public class ItemDefinitionRecordEngineTest {
         final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
-        when(itemDefinitionCreateHandler.insertNestedItemDefinition(reference)).thenReturn(itemDefinition);
+        when(itemDefinitionCreateHandler.insertNested(dataType, reference)).thenReturn(itemDefinition);
         when(dataTypeCreateHandler.insertNested(dataType, reference, itemDefinition)).thenReturn(expectedAffectedDataTypes);
 
         final List<DataType> actualAffectedDataTypes = recordEngine.create(dataType, reference, NESTED);

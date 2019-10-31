@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.types.search;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,16 +26,16 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.DomGlobal.SetTimeoutCallbackFn;
-import elemental2.dom.Element;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.NodeList;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -45,13 +44,11 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBarView.ENABLED_SEARCH;
-import static org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBarView.RESULT_ENTRY_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSearchBarView_Search;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -152,28 +149,49 @@ public class DataTypeSearchBarViewTest {
     @Test
     public void testShowSearchResults() {
 
+        final DNDListComponent dndListComponent = mock(DNDListComponent.class);
+        final DataType dataType0 = mock(DataType.class);
         final DataType dataType1 = mock(DataType.class);
         final DataType dataType2 = mock(DataType.class);
-        final DataType dataType3 = mock(DataType.class);
-        final Element element1 = mock(Element.class);
-        final Element element2 = mock(Element.class);
-        final List<DataType> results = asList(dataType1, dataType2);
+        final DataTypeListItem listItem0 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem3 = mock(DataTypeListItem.class);
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final HTMLElement element2 = mock(HTMLElement.class);
+        final HTMLElement element3 = mock(HTMLElement.class);
+        final List<DataType> results = asList(dataType0, dataType1, dataType2);
+        final List<DataTypeListItem> listItems = asList(listItem0, listItem1, listItem2, listItem3);
 
-        doReturn(Optional.of(element1)).when(view).getResultEntry(dataType1);
-        doReturn(Optional.of(element2)).when(view).getResultEntry(dataType2);
-        doReturn(Optional.empty()).when(view).getResultEntry(dataType3);
-        doNothing().when(view).enableSearch();
-        doNothing().when(view).disableResults();
-
+        element0.classList = mock(DOMTokenList.class);
         element1.classList = mock(DOMTokenList.class);
         element2.classList = mock(DOMTokenList.class);
+        element3.classList = mock(DOMTokenList.class);
+
+        when(listItem0.getDataType()).thenReturn(dataType0);
+        when(listItem1.getDataType()).thenReturn(dataType1);
+        when(listItem2.getDataType()).thenReturn(dataType2);
+        when(listItem0.getDragAndDropElement()).thenReturn(element0);
+        when(listItem1.getDragAndDropElement()).thenReturn(element1);
+        when(listItem2.getDragAndDropElement()).thenReturn(element2);
+        when(listItem3.getDragAndDropElement()).thenReturn(element3);
+        when(presenter.getDataTypeListItemsSortedByPositionY()).thenReturn(listItems);
+        when(presenter.getDNDListComponent()).thenReturn(dndListComponent);
+        doNothing().when(view).enableSearch();
 
         view.showSearchResults(results);
 
+        verify(element0.classList).remove(HIDDEN_CSS_CLASS);
+        verify(element1.classList).remove(HIDDEN_CSS_CLASS);
+        verify(element2.classList).remove(HIDDEN_CSS_CLASS);
+        verify(element3.classList).add(HIDDEN_CSS_CLASS);
+        verify(dndListComponent).setPositionY(element0, 0);
+        verify(dndListComponent).setPositionY(element1, 1);
+        verify(dndListComponent).setPositionY(element2, 2);
+        verify(dndListComponent).setPositionY(element3, -1);
+        verify(dndListComponent).refreshItemsPosition();
         verify(view).enableSearch();
-        verify(view).disableResults();
-        verify(element1.classList).add(RESULT_ENTRY_CSS_CLASS);
-        verify(element2.classList).add(RESULT_ENTRY_CSS_CLASS);
     }
 
     @Test
@@ -182,14 +200,12 @@ public class DataTypeSearchBarViewTest {
         searchBar.value = "something";
 
         doNothing().when(view).disableSearch();
-        doNothing().when(view).disableResults();
 
         view.resetSearchBar();
 
         assertEquals(searchBar.value, "");
         verify(view).refreshSearchBarState();
         verify(view).disableSearch();
-        verify(view).disableResults();
     }
 
     @Test
@@ -233,28 +249,6 @@ public class DataTypeSearchBarViewTest {
         callback.getValue().onInvoke();
 
         verify(presenter).search(keyword);
-    }
-
-    @Test
-    public void testDisableResults() {
-
-        final HTMLElement resultsContainer = mock(HTMLElement.class);
-        final NodeList<Element> results = spy(new NodeList<>());
-        final Element element1 = mock(Element.class);
-        final Element element2 = mock(Element.class);
-
-        when(presenter.getResultsContainer()).thenReturn(resultsContainer);
-        when(resultsContainer.querySelectorAll("." + RESULT_ENTRY_CSS_CLASS)).thenReturn(results);
-        doReturn(element1).when(results).getAt(0);
-        doReturn(element2).when(results).getAt(1);
-        element1.classList = mock(DOMTokenList.class);
-        element2.classList = mock(DOMTokenList.class);
-        results.length = 2;
-
-        view.disableResults();
-
-        verify(element1.classList).remove(RESULT_ENTRY_CSS_CLASS);
-        verify(element2.classList).remove(RESULT_ENTRY_CSS_CLASS);
     }
 
     @Test

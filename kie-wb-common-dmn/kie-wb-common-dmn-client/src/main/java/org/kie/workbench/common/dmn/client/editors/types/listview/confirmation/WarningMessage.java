@@ -38,7 +38,7 @@ abstract class WarningMessage {
         return new FlashMessage(WARNING, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType), onSuccess, onError);
     }
 
-    private String getErrorElementSelector(final DataType dataType) {
+    String getErrorElementSelector(final DataType dataType) {
         return "[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"] .bootstrap-select";
     }
 

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.Mock;
 
@@ -48,7 +48,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -112,6 +111,12 @@ public class DataTypeListViewTest {
     private ScrollHelper scrollHelper;
 
     @Mock
+    private DNDListComponent dndListComponent;
+
+    @Mock
+    private HTMLElement dndListComponentElement;
+
+    @Mock
     private DataTypeList presenter;
 
     private DataTypeListView view;
@@ -121,6 +126,8 @@ public class DataTypeListViewTest {
 
         when(presenter.getSearchBar()).thenReturn(searchBar);
         when(searchBar.getElement()).thenReturn(searchBarElement);
+        when(presenter.getDNDListComponent()).thenReturn(dndListComponent);
+        when(dndListComponent.getElement()).thenReturn(dndListComponentElement);
 
         placeholder.classList = mock(DOMTokenList.class);
         noDataTypesFound.classList = mock(DOMTokenList.class);
@@ -137,6 +144,7 @@ public class DataTypeListViewTest {
     public void testInit() {
         // "view.init(..)" called in the setup.
         verify(searchBarContainer).appendChild(searchBarElement);
+        verify(listItems).appendChild(dndListComponentElement);
     }
 
     @Test
@@ -218,24 +226,6 @@ public class DataTypeListViewTest {
     }
 
     @Test
-    public void testSetupGridItems() {
-
-        final DataTypeListItem gridItem1 = mock(DataTypeListItem.class);
-        final DataTypeListItem gridItem2 = mock(DataTypeListItem.class);
-        final HTMLElement element1 = mock(HTMLElement.class);
-        final HTMLElement element2 = mock(HTMLElement.class);
-
-        when(gridItem1.getElement()).thenReturn(element1);
-        when(gridItem2.getElement()).thenReturn(element2);
-
-        view.setupListItems(Arrays.asList(gridItem1, gridItem2));
-
-        verify(listItems).appendChild(eq(element1));
-        verify(listItems).appendChild(eq(element2));
-        verify(view).showOrHideNoCustomItemsMessage();
-    }
-
-    @Test
     public void testCleanSubTypesByDataType() {
 
         final DataType dataType = mock(DataType.class);
@@ -296,8 +286,8 @@ public class DataTypeListViewTest {
 
         when(this.listItems.querySelector("[data-row-uuid=\"" + dataTypeUUID + "\"]")).thenReturn(dataTypeRow);
         when(dataType.getUUID()).thenReturn(dataTypeUUID);
-        when(listItem1.getElement()).thenReturn(listItemElement1);
-        when(listItem2.getElement()).thenReturn(listItemElement2);
+        when(listItem1.getDragAndDropElement()).thenReturn(listItemElement1);
+        when(listItem2.getDragAndDropElement()).thenReturn(listItemElement2);
 
         doNothing().when(view).cleanSubTypes(anyString());
         doNothing().when(view).hideItemElementIfParentIsCollapsed(any(), any());
@@ -311,20 +301,6 @@ public class DataTypeListViewTest {
 
         verify(dataTypeRow.parentNode).insertBefore(listItemElement1, dataTypeRow.nextSibling);
         verify(listItemElement1.parentNode).insertBefore(listItemElement2, listItemElement1.nextSibling);
-        verify(view).showOrHideNoCustomItemsMessage();
-    }
-
-    @Test
-    public void testAddSubItem() {
-
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        final HTMLElement element = mock(HTMLElement.class);
-
-        when(listItem.getElement()).thenReturn(element);
-
-        view.addSubItem(listItem);
-
-        verify(listItems).appendChild(element);
         verify(view).showOrHideNoCustomItemsMessage();
     }
 
@@ -348,33 +324,6 @@ public class DataTypeListViewTest {
         view.onReadOnlyMessageCloseButtonClick(event);
 
         verify(readOnlyMessage.classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testHideNoCustomItemsMessageWhenThereIsCustomItem() {
-
-        final DataTypeListItem gridItem1 = mock(DataTypeListItem.class);
-        final DataTypeListItem gridItem2 = mock(DataTypeListItem.class);
-        final HTMLElement element1 = mock(HTMLElement.class);
-        final HTMLElement element2 = mock(HTMLElement.class);
-
-        when(gridItem1.getElement()).thenReturn(element1);
-        when(gridItem2.getElement()).thenReturn(element2);
-
-        when(view.hasCustomDataType()).thenReturn(true);
-        view.setupListItems(Arrays.asList(gridItem1, gridItem2));
-
-        verify(listItems.classList).remove(HIDDEN_CSS_CLASS);
-        verify(placeholder.classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testShowNoCustomItemsMessageWhenThereIsNoCustomItem() {
-
-        view.setupListItems(new ArrayList<>());
-
-        verify(placeholder.classList).remove(HIDDEN_CSS_CLASS);
-        verify(listItems.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -566,7 +515,7 @@ public class DataTypeListViewTest {
         lastElement.parentNode = parentElement;
         lastElement.nextSibling = siblingElement;
 
-        when(listItem.getElement()).thenReturn(listItemElement);
+        when(listItem.getDragAndDropElement()).thenReturn(listItemElement);
         doReturn(lastElement).when(view).getLastSubDataTypeElement(reference);
 
         view.insertBelow(listItem, reference);
@@ -585,7 +534,7 @@ public class DataTypeListViewTest {
         final Element parentElement = mock(Element.class);
         element.parentNode = parentElement;
 
-        when(listItem.getElement()).thenReturn(listItemElement);
+        when(listItem.getDragAndDropElement()).thenReturn(listItemElement);
         doReturn(element).when(view).getDataTypeRow(reference);
 
         view.insertAbove(listItem, reference);
@@ -601,13 +550,18 @@ public class DataTypeListViewTest {
         final NodeList<Element> children = spy(new NodeList<>());
         final Element child1 = makeElement("uuid1");
         final Element child2 = makeElement("uuid2");
+        final Element child3 = makeElement("uuid3");
 
         child1.parentNode = parentElement;
         child2.parentNode = parentElement;
 
+        when(dndListComponent.getPositionY(child1)).thenReturn(0);
+        when(dndListComponent.getPositionY(child2)).thenReturn(0);
+        when(dndListComponent.getPositionY(child3)).thenReturn(-1);
         doReturn(child1).when(children).getAt(0);
         doReturn(child2).when(children).getAt(1);
-        children.length = 2;
+        doReturn(child3).when(children).getAt(2);
+        children.length = 3;
 
         mockDOMElementsByParentUUID(parentUUID, children);
 

@@ -28,7 +28,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.NodeList;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
@@ -37,8 +39,10 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
+import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.validation.DataTypeNameFormatValidator;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
@@ -87,6 +91,8 @@ public class DataTypeListItem {
 
     private String[] canNotHaveConstraintTypes;
 
+    private HTMLElement dragAndDropElement;
+
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
@@ -123,20 +129,22 @@ public class DataTypeListItem {
         this.dataTypeList = dataTypeList;
     }
 
-    public HTMLElement getElement() {
-        return view.getElement();
-    }
-
     void setupDataType(final DataType dataType,
                        final int level) {
 
         this.dataType = dataType;
         this.level = level;
 
+        setupDragAndDropComponent();
         setupSelectComponent();
         setupListComponent();
         setupConstraintComponent();
         setupView();
+    }
+
+    void setupDragAndDropComponent() {
+        final DNDListComponent dragAndDropComponent = getDNDListComponent();
+        this.dragAndDropElement = dragAndDropComponent.registerNewItem(getContentElement());
     }
 
     void setupListComponent() {
@@ -154,10 +162,14 @@ public class DataTypeListItem {
     }
 
     void setupView() {
+
         view.setupSelectComponent(dataTypeSelectComponent);
         view.setupConstraintComponent(dataTypeConstraintComponent);
         view.setupListComponent(dataTypeListComponent);
         view.setDataType(getDataType());
+
+        setupIndentationLevel();
+        hideTooltips();
     }
 
     void refresh() {
@@ -167,6 +179,7 @@ public class DataTypeListItem {
         view.setName(getDataType().getName());
         setupListComponent();
         setupConstraintComponent();
+        hideTooltips();
     }
 
     public DataType getDataType() {
@@ -181,16 +194,20 @@ public class DataTypeListItem {
         return level;
     }
 
-    public String[] getCanNotHaveConstraintTypes() {
+    private String[] getCanNotHaveConstraintTypes() {
         return canNotHaveConstraintTypes;
     }
 
     void expandOrCollapseSubTypes() {
-        if (view.isCollapsed()) {
+        if (isCollapsed()) {
             expand();
         } else {
             collapse();
         }
+    }
+
+    public boolean isCollapsed() {
+        return view.isCollapsed();
     }
 
     public void expand() {
@@ -205,6 +222,9 @@ public class DataTypeListItem {
 
         dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
 
+        expandOrCollapseSubTypes();
+
+        dataTypeList.refreshDragAndDropList();
         view.enableFocusMode();
         view.toggleArrow(!dataTypes.isEmpty());
     }
@@ -232,12 +252,22 @@ public class DataTypeListItem {
         dataTypeConstraintComponent.enableEditMode();
 
         editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(true, this));
+        dataTypeList.fireOnDataTypeListItemUpdateCallback(this);
     }
 
     public void disableEditMode() {
         if (view.isOnFocusMode()) {
             discardNewDataType();
             closeEditMode();
+            hideTooltips();
+        }
+    }
+
+    void hideTooltips() {
+        final String selector = ".tooltip";
+        final NodeList<Element> tooltips = getDataTypeList().getListItems().querySelectorAll(selector);
+        for (int i = 0; i < tooltips.length; i++) {
+            ElementHelper.remove(tooltips.getAt(i));
         }
     }
 
@@ -305,6 +335,7 @@ public class DataTypeListItem {
         setupListComponent();
         setupSelectComponent();
         setupConstraintComponent();
+        setupIndentationLevel();
         refreshSubItems(oldDataType.getSubDataTypes());
     }
 
@@ -344,21 +375,31 @@ public class DataTypeListItem {
     }
 
     public void remove() {
-        confirmation.ifIsNotReferencedDataType(getDataType(), doRemove());
+        confirmation.ifIsNotReferencedDataType(getDataType(), destroy());
     }
 
-    Command doRemove() {
-        return () -> {
+    public Command destroy() {
+        return this::destroyWithDependentTypes;
+    }
 
-            final List<DataType> destroyedDataTypes = getDataType().destroy();
-            final List<DataType> removedDataTypes = removeTopLevelDataTypes(destroyedDataTypes);
+    public void destroyWithDependentTypes() {
+        final List<DataType> destroyedDataTypes = getDataType().destroy();
+        destroy(destroyedDataTypes);
+    }
 
-            destroyedDataTypes.removeAll(removedDataTypes);
+    public void destroyWithoutDependentTypes() {
+        final List<DataType> destroyedDataTypes = getDataType().destroyWithoutDependentTypes();
+        destroy(destroyedDataTypes);
+    }
 
-            dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+    void destroy(final List<DataType> destroyedDataTypes) {
 
-            fireDataChangedEvent();
-        };
+        final List<DataType> removedDataTypes = removeTopLevelDataTypes(destroyedDataTypes);
+        destroyedDataTypes.removeAll(removedDataTypes);
+        dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+
+        fireDataChangedEvent();
+        hideTooltips();
     }
 
     List<DataType> removeTopLevelDataTypes(final List<DataType> destroyedDataTypes) {
@@ -443,16 +484,25 @@ public class DataTypeListItem {
         closeEditMode();
 
         final DataType newDataType = newDataType();
-        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
-        final List<DataType> updatedDataTypes = newDataType.create(getDataType(), ABOVE);
+        final String referenceDataTypeHash = insertFieldAbove(newDataType);
 
-        if (newDataType.isTopLevel()) {
-            dataTypeList.insertAbove(newDataType, getDataType());
+        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+    }
+
+    public String insertFieldAbove(final DataType dataType) {
+
+        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
+        final List<DataType> updatedDataTypes = dataType.create(getDataType(), ABOVE);
+
+        if (dataType.isTopLevel()) {
+            dataTypeList.insertAbove(dataType, getDataType());
         } else {
             dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
         }
 
-        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+        getDNDListComponent().refreshItemsCSSAndHTMLPosition();
+
+        return referenceDataTypeHash;
     }
 
     public void insertFieldBelow() {
@@ -460,29 +510,44 @@ public class DataTypeListItem {
         closeEditMode();
 
         final DataType newDataType = newDataType();
-        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
-        final List<DataType> updatedDataTypes = newDataType.create(getDataType(), BELOW);
-
-        if (newDataType.isTopLevel()) {
-            dataTypeList.insertBelow(newDataType, getDataType());
-        } else {
-            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        }
+        final String referenceDataTypeHash = insertFieldBelow(newDataType);
 
         enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
     }
 
+    public String insertFieldBelow(final DataType dataType) {
+
+        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
+        final List<DataType> updatedDataTypes = dataType.create(getDataType(), BELOW);
+
+        if (dataType.isTopLevel()) {
+            dataTypeList.insertBelow(dataType, getDataType());
+        } else {
+            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        }
+
+        getDNDListComponent().refreshItemsCSSAndHTMLPosition();
+
+        return referenceDataTypeHash;
+    }
+
     public void insertNestedField() {
+
+        final DataType newDataType = newDataType();
+        final String referenceDataTypeHash = dataTypeList.calculateHash(getDataType());
+
+        insertNestedField(newDataType);
+
+        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+    }
+
+    public void insertNestedField(final DataType newDataType) {
 
         closeEditMode();
         expand();
 
-        final DataType newDataType = newDataType();
-        final String referenceDataTypeHash = dataTypeList.calculateHash(getDataType());
         final List<DataType> updatedDataTypes = newDataType.create(getDataType(), NESTED);
-        dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
-
-        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+        dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes.stream().distinct().collect(Collectors.toList()));
     }
 
     void enableEditModeAndUpdateCallbacks(final String dataTypeHash) {
@@ -515,18 +580,11 @@ public class DataTypeListItem {
             return true;
         }
 
-        if (Stream.of(getCanNotHaveConstraintTypes())
-                .filter(type -> Objects.equals(type, getType()))
-                .findFirst()
-                .isPresent()) {
+        if (Stream.of(getCanNotHaveConstraintTypes()).anyMatch(type -> Objects.equals(type, getType()))) {
             return true;
         }
 
-        if (isIndirectCanNotHaveConstraintType()) {
-            return true;
-        }
-
-        return false;
+        return isIndirectCanNotHaveConstraintType();
     }
 
     boolean isStructureType() {
@@ -546,10 +604,48 @@ public class DataTypeListItem {
 
         if (customType.isPresent()) {
             final String type = customType.get().getType();
-            return Arrays.stream(types).anyMatch(t -> t.equals(type)) || isIndirectTypeOf(type, types);
+            return Arrays.asList(types).contains(type) || isIndirectTypeOf(type, types);
         }
 
         return false;
+    }
+
+    HTMLElement getContentElement() {
+        return view.getElement();
+    }
+
+    void refreshItemsCSSAndHTMLPosition() {
+        dataTypeList.refreshItemsCSSAndHTMLPosition();
+    }
+
+    HTMLElement getDragAndDropListElement() {
+        return getDNDListComponent().getElement();
+    }
+
+    void setPositionX(final Element element,
+                      final double positionX) {
+        getDNDListComponent().setPositionX(element, positionX);
+    }
+
+    void setPositionY(final Element element,
+                      final double positionY) {
+        getDNDListComponent().setPositionY(element, positionY);
+    }
+
+    int getPositionY(final Element element) {
+        return getDNDListComponent().getPositionY(element);
+    }
+
+    private DNDListComponent getDNDListComponent() {
+        return dataTypeList.getDNDListComponent();
+    }
+
+    public HTMLElement getDragAndDropElement() {
+        return dragAndDropElement;
+    }
+
+    void setupIndentationLevel() {
+        setPositionX(getDragAndDropElement(), getLevel() - 1d);
     }
 
     public interface View extends UberElemental<DataTypeListItem> {
