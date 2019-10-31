@@ -194,8 +194,6 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
         decisionNavigatorDock.init(PERSPECTIVE_ID);
         diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
         diagramPropertiesDock.init(PERSPECTIVE_ID);
-
-        getWidget().init(this);
     }
 
     void superDoStartUp(final PlaceRequest place) {
@@ -236,7 +234,7 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
         getWidget().getMultiPage().addTabBarWidget(getWidget(element));
     }
 
-    ElementWrapperWidget<?> getWidget(final HTMLElement element) {
+    protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
         return ElementWrapperWidget.getWidget(element);
     }
 
@@ -373,10 +371,14 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
     public void onDataTypeEditModeToggle(final DataTypeEditModeToggleEvent event) {
         /* Delaying the 'onDataTypeEditModeToggleCallback' since external events
          * refresh the menu widget and override this change. */
+        scheduleOnDataTypeEditModeToggleCallback(event);
+    }
+
+    protected void scheduleOnDataTypeEditModeToggleCallback(final DataTypeEditModeToggleEvent event) {
         setTimeout(getOnDataTypeEditModeToggleCallback(event), 250);
     }
 
-    DomGlobal.SetTimeoutCallbackFn getOnDataTypeEditModeToggleCallback(final DataTypeEditModeToggleEvent event) {
+    protected DomGlobal.SetTimeoutCallbackFn getOnDataTypeEditModeToggleCallback(final DataTypeEditModeToggleEvent event) {
         return (e) -> {
             if (event.isEditModeEnabled()) {
                 disableMenuItem(MenuItems.SAVE);

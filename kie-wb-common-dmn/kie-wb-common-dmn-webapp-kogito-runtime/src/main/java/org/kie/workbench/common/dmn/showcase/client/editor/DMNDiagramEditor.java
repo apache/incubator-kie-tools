@@ -64,8 +64,8 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.workbench.events.NotificationEvent;
 
-@ApplicationScoped
 @DiagramEditor
+@ApplicationScoped
 @WorkbenchClientEditor(identifier = BaseDMNDiagramEditor.EDITOR_ID)
 public class DMNDiagramEditor extends BaseDMNDiagramEditor {
 
