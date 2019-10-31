@@ -2,7 +2,7 @@
   "name": "vscode-extension-pack-kogito-kie-editors",
   "displayName": "BPMN and DMN Editors",
   "description": "",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.33.0"
@@ -81,11 +81,11 @@
     "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.1",
-    "@kogito-tooling/gwt-editors": "0.2.1",
-    "@kogito-tooling/microeditor-envelope": "0.2.1",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.1",
-    "@kogito-tooling/unpacked-gwt-editors": "0.2.1",
-    "@kogito-tooling/vscode-extension": "0.2.1"
+    "@kogito-tooling/core-api": "0.2.2",
+    "@kogito-tooling/gwt-editors": "0.2.2",
+    "@kogito-tooling/microeditor-envelope": "0.2.2",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.2",
+    "@kogito-tooling/unpacked-gwt-editors": "0.2.2",
+    "@kogito-tooling/vscode-extension": "0.2.2"
   }
 }

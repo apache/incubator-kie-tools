@@ -2,7 +2,7 @@
   "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -50,8 +50,8 @@
     "webpack-node-externals": "1.7.2"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.1",
-    "@kogito-tooling/microeditor-envelope": "0.2.1",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.1"
+    "@kogito-tooling/core-api": "0.2.2",
+    "@kogito-tooling/microeditor-envelope": "0.2.2",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.2"
   }
 }
