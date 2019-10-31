@@ -17,9 +17,9 @@
 # runs end-2-end tests for the operator into a given namespace
 namespace=$1
 tag=$2
-native=$3
-maven_mirror=$4
-image=$5
+maven_mirror=$3
+image=$4
+tests=$5
 
 if [ -z "$namespace" ]; then
   echo "Please inform the namespace where the tests will run"
@@ -48,10 +48,10 @@ else
   E2E_PARAMS="${E2E_PARAMS} --up-local"
 fi
 
-echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, native=${native}, maven_mirror=${maven_mirror} and image=${image}"
+echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, maven_mirror=${maven_mirror} and image=${image}"
 
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} NATIVE=${native} MAVEN_MIRROR_URL=${maven_mirror} operator-sdk test local ./test/e2e $E2E_PARAMS --namespace ${namespace} --debug --verbose --go-test-flags "-timeout 30m"
+DEBUG=true KOGITO_IMAGE_TAG=${tag} MAVEN_MIRROR_URL=${maven_mirror} TESTS=${tests} operator-sdk test local ./test/e2e $E2E_PARAMS --namespace ${namespace} --debug --verbose --go-test-flags "-timeout 120m"
 
 # clean up
 oc delete namespace ${namespace}
