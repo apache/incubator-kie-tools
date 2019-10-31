@@ -19,8 +19,6 @@ package e2e
 import (
 	goctx "context"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"testing"
 	"time"
 
@@ -56,74 +54,103 @@ func TestKogitoApp(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to add custom resource scheme to framework: %v", err)
 	}
-	// more clusters can be added
-	t.Run("kogitoapp", func(t *testing.T) {
-		t.Run("Cluster1", KogitoAppCluster)
-	})
+
+	// Specifies what tests should be executed
+	tests := util.GetEnv("TESTS", "full")
+	if tests == "jvm" {
+		// Run just JVM tests
+		t.Run("kogitoapp", func(t *testing.T) {
+			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
+		})
+	} else if tests == "native" {
+		// Run just native tests
+		t.Run("kogitoapp", func(t *testing.T) {
+			t.Run("QuarkusNative", testKogitoQuarkusNativeExample)
+		})
+	} else if tests == "full" {
+		// Run whole test suite
+		t.Run("kogitoapp", func(t *testing.T) {
+			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
+			t.Run("QuarkusNative", testKogitoQuarkusNativeExample)
+		})
+	} else {
+		log.Fatalf("wrong value of tests parameter: %v", tests)
+	}
 }
 
-func KogitoAppCluster(t *testing.T) {
-	t.Parallel()
+func testKogitoQuarkusJvmExample(t *testing.T) {
 	// initialize framework
 	ctx := framework.NewTestCtx(t)
 	defer ctx.Cleanup()
+
+	appName := "example-quarkus-jvm"
+	namespace := getNamespace(ctx)
+
+	kogitoService := getKogitoServiceStub(appName, namespace)
+	kogitoService.Spec.Build.Native = false
+
+	deployAndTestDroolsQuarkusExampleWithKogitoService(t, ctx, kogitoService)
+}
+
+func testKogitoQuarkusNativeExample(t *testing.T) {
+	// initialize framework
+	ctx := framework.NewTestCtx(t)
+	defer ctx.Cleanup()
+
+	appName := "example-quarkus-native"
+	namespace := getNamespace(ctx)
+
+	kogitoService := getKogitoServiceStub(appName, namespace)
+	kogitoService.Spec.Build.Native = true
+
+	deployAndTestDroolsQuarkusExampleWithKogitoService(t, ctx, kogitoService)
+}
+
+func deployAndTestDroolsQuarkusExampleWithKogitoService(t *testing.T, ctx *framework.TestCtx, kogitoService *v1alpha1.KogitoApp) {
+	t.Parallel()
+
+	// get global framework variables
+	f := framework.Global
+
+	initializeKogitoOperator(t, f, ctx)
+
+	gitProjectURI := "https://github.com/kiegroup/kogito-examples"
+	contextDir := "drools-quarkus-example"
+
+	kogitoService.Spec.Build.GitSource.URI = &gitProjectURI
+	kogitoService.Spec.Build.GitSource.ContextDir = contextDir
+
+	deployKogitoServiceApp(t, kogitoService, f, ctx)
+	verifyDroolsQuarkusExample(t, kogitoService)
+}
+
+func initializeKogitoOperator(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
 	// initialize cluster resources
 	err := ctx.InitializeClusterResources(&framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: retryInterval})
 	if err != nil {
 		log.Fatalf("failed to initialize cluster resources: %v", err)
 	}
 	log.Info("Initialized cluster resources")
+
 	// get our namespace
 	namespace, err := ctx.GetNamespace()
 	if err != nil {
 		log.Fatal(err)
 	}
-	// get global framework variables
-	f := framework.Global
+
 	// wait for kogito-operator to be ready
 	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-cloud-operator", 1, time.Second*20, time.Second*40)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Run our tests
-	if err = deployKogitoQuarkusExample(t, f, ctx); err != nil {
-		log.Fatal(err)
-	}
 }
 
-func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
-	gitProjectURI := "https://github.com/kiegroup/kogito-examples"
-	contextDir := "drools-quarkus-example"
-	appName := "example-quarkus"
+func deployKogitoServiceApp(t *testing.T, kogitoService *v1alpha1.KogitoApp, f *framework.Framework, ctx *framework.TestCtx) {
 	namespace, err := ctx.GetNamespace()
 	if err != nil {
-		return fmt.Errorf("could not get namespace: %v", err)
+		log.Fatal(err)
 	}
-	kogitoService := &v1alpha1.KogitoApp{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      appName,
-			Namespace: namespace,
-		},
-		Status: v1alpha1.KogitoAppStatus{
-			Conditions:  []v1alpha1.Condition{},
-			Deployments: v1alpha1.Deployments{},
-		},
-		Spec: v1alpha1.KogitoAppSpec{
-			Build: &v1alpha1.KogitoAppBuildObject{
-				Env: []v1alpha1.Env{v1alpha1.Env{
-					Name:  "MAVEN_MIRROR_URL",
-					Value: util.GetEnv("MAVEN_MIRROR_URL", ""),
-				}},
-				GitSource: &v1alpha1.GitSource{
-					URI:        &gitProjectURI,
-					ContextDir: contextDir,
-				},
-				Native: util.GetBoolEnv("NATIVE"),
-			},
-		},
-	}
-
+	appName := kogitoService.Name
 	tag := util.GetEnv("KOGITO_IMAGE_TAG", resource.ImageStreamTag)
 	log.Infof("Using image tag %s", tag)
 
@@ -133,7 +160,7 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 
 	err = f.Client.Create(goctx.TODO(), kogitoService, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil {
-		return err
+		log.Fatalf("could not create kogito service CR: %v", err)
 	}
 
 	bc := v1.BuildConfig{
@@ -151,7 +178,6 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 			time.Sleep(waitForDeploymentInterval)
 		} else if err != nil {
 			log.Fatalf("Impossible to find bc '%s' in namespace '%s'. Error: %s", bc.Name, namespace, err)
-			return err
 		}
 	}
 
@@ -166,7 +192,6 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 			time.Sleep(waitForDeploymentInterval)
 		} else if err != nil {
 			log.Fatalf("Error while fetching DC '%s' in namespace '%s'", appName, namespace)
-			return err
 		} else {
 			log.Infof("DeploymentConfig '%s' is available", appName)
 			break
@@ -176,7 +201,7 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 	//wait for the app to be deployed
 	for i := 1; i <= 60; i++ {
 		if err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: appName, Namespace: namespace}, &dc); err != nil {
-			return err
+			log.Fatalf("could not get deployment config: %v", err)
 		}
 
 		if dc.Status.AvailableReplicas > 0 {
@@ -192,24 +217,12 @@ func deployKogitoQuarkusExample(t *testing.T, f *framework.Framework, ctx *frame
 
 	f.Client.Get(goctx.TODO(), types.NamespacedName{Name: kogitoService.Name, Namespace: namespace}, kogitoService)
 	assert.NotEmpty(t, kogitoService.Status.Route)
+}
 
-	resp, err := http.Get(kogitoService.Status.Route + "/hello")
+func getNamespace(ctx *framework.TestCtx) string {
+	namespace, err := ctx.GetNamespace()
 	if err != nil {
-		log.Fatalf("Error while trying to get the application endpoint: %s", err)
-		return err
+		log.Fatalf("could not get namespace: %v", err)
 	}
-	assert.Equal(t, 200, resp.StatusCode)
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error while trying to read application response body: %s", err)
-		return err
-	}
-	assert.NotNil(t, body)
-	assert.NotEmpty(t, body)
-	assert.Contains(t, string(body), "older")
-
-	return nil
+	return namespace
 }
