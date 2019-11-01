@@ -99,7 +99,7 @@ public class QName {
     }
 
     /**
-     * See {@link javax.xml.namespace.QName#equals(Object)}
+     * See {@link QName#equals(Object)}
      */
     @Override
     public boolean equals(final Object o) {
@@ -117,7 +117,7 @@ public class QName {
     }
 
     /**
-     * See {@link javax.xml.namespace.QName#hashCode()}
+     * See {@link QName#hashCode()}
      */
     @Override
     public int hashCode() {
@@ -134,16 +134,16 @@ public class QName {
 
         // "" local part is valid to preserve compatible behavior with QName 1.0
         if (qNameAsString.length() == 0) {
-            return new javax.xml.namespace.QName(XMLConstants.NULL_NS_URI,
-                                                 qNameAsString,
-                                                 XMLConstants.DEFAULT_NS_PREFIX);
+            return new QName(XMLConstants.NULL_NS_URI,
+                             qNameAsString,
+                             XMLConstants.DEFAULT_NS_PREFIX);
         }
 
         // local part only?
         if (qNameAsString.charAt(0) != '{') {
-            return new javax.xml.namespace.QName(XMLConstants.NULL_NS_URI,
-                                                 qNameAsString,
-                                                 XMLConstants.DEFAULT_NS_PREFIX);
+            return new QName(XMLConstants.NULL_NS_URI,
+                             qNameAsString,
+                             XMLConstants.DEFAULT_NS_PREFIX);
         }
 
         // Namespace URI improperly specified?
@@ -164,8 +164,8 @@ public class QName {
                                                        + qNameAsString
                                                        + "\", missing closing \"}\"");
         }
-        return new javax.xml.namespace.QName(qNameAsString.substring(1, endOfNamespaceURI),
-                                             qNameAsString.substring(endOfNamespaceURI + 1),
-                                             XMLConstants.DEFAULT_NS_PREFIX);
+        return new QName(qNameAsString.substring(1, endOfNamespaceURI),
+                         qNameAsString.substring(endOfNamespaceURI + 1),
+                         XMLConstants.DEFAULT_NS_PREFIX);
     }
 }
