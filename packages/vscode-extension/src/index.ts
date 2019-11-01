@@ -42,3 +42,5 @@ export function startExtension(args: {
   extension.registerCustomSaveCommand();
   extension.registerCustomSaveAllCommand();
 }
+
+export * from "./DefaultVsCodeRouter";
