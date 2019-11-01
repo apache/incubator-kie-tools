@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+# see https://quarkus.io/guides/infinispan-client-guide#quarkus-infinispan-client_configuration
 function set_infinispan_props() {
     local infinispan_props=""
 
@@ -14,11 +15,11 @@ function set_infinispan_props() {
         fi
     fi
  
-    if [ ! -z "${INFINISPAN_USERNAME}" ]; then infinispan_props=$(echo "${infinispan_props} -Dinfinispan_username=${INFINISPAN_USERNAME}"); INFINISPAN_USEAUTH="true"; fi
-    if [ ! -z "${INFINISPAN_PASSWORD}" ]; then infinispan_props=$(echo "${infinispan_props} -Dinfinispan_password=${INFINISPAN_PASSWORD}"); fi
-    if [ ! -z "${INFINISPAN_USEAUTH}" ]; then infinispan_props=$(echo "${infinispan_props} -Dinfinispan_useauth=${INFINISPAN_USEAUTH}"); fi
-    if [ ! -z "${INFINISPAN_AUTHREALM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dinfinispan_authrealm=${INFINISPAN_AUTHREALM}"); fi
-    if [ ! -z "${INFINISPAN_SASLMECHANISM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dinfinispan_saslmechanism=${INFINISPAN_SASLMECHANISM}"); fi
+    if [ ! -z "${INFINISPAN_USERNAME}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-username=${INFINISPAN_USERNAME}"); INFINISPAN_USEAUTH="true"; fi
+    if [ ! -z "${INFINISPAN_PASSWORD}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-password=${INFINISPAN_PASSWORD}"); fi
+    if [ ! -z "${INFINISPAN_USEAUTH}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.use-auth=${INFINISPAN_USEAUTH}"); fi
+    if [ ! -z "${INFINISPAN_AUTHREALM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-realm=${INFINISPAN_AUTHREALM}"); fi
+    if [ ! -z "${INFINISPAN_SASLMECHANISM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.sasl-mechanism=${INFINISPAN_SASLMECHANISM}"); fi
 
     echo $infinispan_props
 }

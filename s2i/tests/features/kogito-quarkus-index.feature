@@ -20,7 +20,7 @@ Feature: Kogito-quarkus-ubi8 feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain infinispan_useauth = false
+    Then container log should contain quarkus.infinispan-client.use-auth = false
 
   Scenario: verify if auth is correctly set
     When container is started with env
@@ -29,9 +29,9 @@ Feature: Kogito-quarkus-ubi8 feature.
       | INFINISPAN_USEAUTH  | true        |
       | INFINISPAN_USERNAME | IamNotExist |
       | INFINISPAN_PASSWORD | hard2guess  |
-    Then container log should contain infinispan_useauth = true
-    And container log should contain infinispan_password = hard2guess
-    And container log should contain infinispan_username = IamNotExist
+    Then container log should contain quarkus.infinispan-client.use-auth = true
+    And container log should contain quarkus.infinispan-client.auth-password = hard2guess
+    And container log should contain quarkus.infinispan-client.auth-username = IamNotExist
 
   Scenario: verify if all parameters are correctly set
     When container is started with env
@@ -42,11 +42,11 @@ Feature: Kogito-quarkus-ubi8 feature.
       | INFINISPAN_PASSWORD      | hard2guess  |
       | INFINISPAN_AUTHREALM     | SecretRealm |
       | INFINISPAN_SASLMECHANISM | COOLGSSAPI  |
-    Then container log should contain infinispan_useauth = true
-    And container log should contain infinispan_password = hard2guess
-    And container log should contain infinispan_username = IamNotExist
-    And container log should contain infinispan_authrealm = SecretRealm
-    And container log should contain infinispan_saslmechanism = COOLGSSAPI
+    Then container log should contain quarkus.infinispan-client.use-auth = true
+    And container log should contain quarkus.infinispan-client.auth-password = hard2guess
+    And container log should contain quarkus.infinispan-client.auth-username = IamNotExist
+    And container log should contain quarkus.infinispan-client.auth-realm = SecretRealm
+    And container log should contain quarkus.infinispan-client.sasl-mechanism = COOLGSSAPI
 
   Scenario: verify if all parameters are correctly set
     When container is started with env

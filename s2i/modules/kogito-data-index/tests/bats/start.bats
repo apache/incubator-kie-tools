@@ -26,7 +26,7 @@ function clear_vars() {
 @test "check if infinispan auth is false" {
     clear_vars
     export INFINISPAN_USEAUTH="false"
-    local expected="-Dinfinispan_useauth=false"
+    local expected="-Dquarkus.infinispan-client.use-auth=false"
     run set_infinispan_props
     
     echo "Result is ${output} and expected is ${expected}" >&2
@@ -41,7 +41,7 @@ function clear_vars() {
     export INFINISPAN_AUTHREALM="default"
     export INFINISPAN_SASLMECHANISM="PLAIN"
     
-    local expected="-Dinfinispan_username=developer -Dinfinispan_password=developer -Dinfinispan_useauth=true -Dinfinispan_authrealm=default -Dinfinispan_saslmechanism=PLAIN"
+    local expected="-Dquarkus.infinispan-client.auth-username=developer -Dquarkus.infinispan-client.auth-password=developer -Dquarkus.infinispan-client.use-auth=true -Dquarkus.infinispan-client.auth-realm=default -Dquarkus.infinispan-client.sasl-mechanism=PLAIN"
     run set_infinispan_props
     
     echo "Result is ${output} and expected is ${expected}" >&2
@@ -52,7 +52,7 @@ function clear_vars() {
     clear_vars
     export INFINISPAN_USERNAME="developer"
     export INFINISPAN_USEAUTH="false"
-    local expected="-Dinfinispan_username=developer -Dinfinispan_useauth=true"
+    local expected="-Dquarkus.infinispan-client.auth-username=developer -Dquarkus.infinispan-client.use-auth=true"
 
     run set_infinispan_props
     
@@ -63,7 +63,7 @@ function clear_vars() {
 @test "when use auth is set to nonsense and no credentials" {
     clear_vars
     export INFINISPAN_USEAUTH="dsadsadasdsa"
-    local expected="-Dinfinispan_useauth=false"
+    local expected="-Dquarkus.infinispan-client.use-auth=false"
 
     run set_infinispan_props
     
@@ -75,7 +75,7 @@ function clear_vars() {
     clear_vars
     export INFINISPAN_USEAUTH="dsadsadasdsa"
     export INFINISPAN_USERNAME="developer"
-    local expected="-Dinfinispan_username=developer -Dinfinispan_useauth=true"
+    local expected="-Dquarkus.infinispan-client.auth-username=developer -Dquarkus.infinispan-client.use-auth=true"
 
     run set_infinispan_props
     
@@ -86,7 +86,7 @@ function clear_vars() {
 @test "when use auth is set to true and no credentials" {
     clear_vars
     export INFINISPAN_USEAUTH="true"
-    local expected="-Dinfinispan_username=developer -Dinfinispan_useauth=true"
+    local expected="-Dquarkus.infinispan-client.auth-username=developer -Dquarkus.infinispan-client.use-auth=true"
 
     run set_infinispan_props
     # exit(1)
