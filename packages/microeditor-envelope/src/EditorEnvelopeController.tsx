@@ -24,6 +24,31 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 
+// describes how we want to modify the XML - indent everything
+const xsltDoc = new DOMParser().parseFromString(
+  [
+    '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">',
+    '  <xsl:strip-space elements="*"/>',
+    '  <xsl:template match="para[content-style][not(text())]">', // change to just text() to strip space in text nodes
+    '    <xsl:value-of select="normalize-space(.)"/>',
+    "  </xsl:template>",
+    '  <xsl:template match="node()|@*">',
+    '    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
+    "  </xsl:template>",
+    '  <xsl:output indent="yes"/>',
+    "</xsl:stylesheet>"
+  ].join("\n"),
+  "application/xml"
+);
+
+function prettifyXml(sourceXml: string) {
+  const xmlDoc = new DOMParser().parseFromString(sourceXml, "application/xml");
+  const xsltProcessor = new XSLTProcessor();
+  xsltProcessor.importStylesheet(xsltDoc);
+  const resultDoc = xsltProcessor.transformToDocument(xmlDoc);
+  return new XMLSerializer().serializeToString(resultDoc);
+}
+
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
 
@@ -57,7 +82,10 @@ export class EditorEnvelopeController {
       receive_contentRequest: () => {
         const editor = this.getEditor();
         if (editor) {
-          editor.getContent().then(content => self.respond_contentRequest(content));
+          editor
+            .getContent()
+            .then(content => prettifyXml(content))
+            .then(content => self.respond_contentRequest(content));
         }
       },
       receive_languageResponse: (languageData: LanguageData) => {
