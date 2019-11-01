@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-SOURCES_DIR=/tmp/artifacts
-
-tar xzf ${SOURCES_DIR}/graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz -C /usr/share
-mv /usr/share/graalvm-ce-${GRAALVM_VERSION} /usr/share/graalvm
-
