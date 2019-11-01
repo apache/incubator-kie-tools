@@ -14,7 +14,7 @@ Feature: Kogito-quarkus-ubi8 feature.
 
   Scenario: verify if the binary index is available on /home/kogito
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-0.5.0-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-0.5.1-runner.jar
 
   Scenario: Verify data-index default configuration
     When container is started with env

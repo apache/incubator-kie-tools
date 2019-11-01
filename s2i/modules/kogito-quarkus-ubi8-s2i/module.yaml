@@ -1,9 +1,9 @@
 schema_version: 1
-version: "0.5.0"
+version: "0.5.1"
 name: kogito-quarkus-ubi8-s2i
 execute:
   - script: configure
 
 envs:
 - name: "KOGITO_VERSION"
-  value: "0.5.0"
+  value: "0.5.1"
