@@ -126,8 +126,11 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
 
         constraintType = isNone(type) ? inferComponentType(getConstraintValue()) : type;
         currentComponent = getComponentByType(getConstraintType());
-        currentComponent.setValue(getConstraintValue());
+        // Constraint type must be set before value to ensure underlying widget is initialised before an
+        // attempt is made to set the value. This was masked in Business Central where setting the value results
+        // in an asynchronous call to the server that completes after the Constraint type had been set.
         currentComponent.setConstraintValueType(getConstraintValueType());
+        currentComponent.setValue(getConstraintValue());
         currentComponent.getElement().setAttribute("class", componentCssClass());
 
         if (constraintType != RANGE) {

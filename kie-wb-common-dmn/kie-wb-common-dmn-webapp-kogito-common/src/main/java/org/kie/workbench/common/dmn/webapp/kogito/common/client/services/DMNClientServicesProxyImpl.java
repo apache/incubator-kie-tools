@@ -73,7 +73,7 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     @Override
     public void parseRangeValue(final String source,
                                 final ServiceCallback<RangeValue> callback) {
-        callback.onSuccess(new RangeValue());
+        callback.onSuccess(FEELRangeParser.parse(source));
     }
 
     @Override

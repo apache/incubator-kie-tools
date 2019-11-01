@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.exp
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range.DataTypeConstraintRange;
 import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -46,6 +47,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.constra
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -224,8 +226,11 @@ public class DataTypeConstraintModalTest {
         modal.setupComponent(type);
 
         assertEquals(constraintExpression, modal.getCurrentComponent());
-        verify(constraintExpression).setValue(constraint);
-        verify(constraintExpression).setConstraintValueType(constraintValueType);
+
+        final InOrder inOrder = inOrder(constraintExpression);
+        inOrder.verify(constraintExpression).setConstraintValueType(constraintValueType);
+        inOrder.verify(constraintExpression).setValue(constraint);
+
         verify(modal).enableOkButton();
         verify(element).setAttribute("class", "kie-string");
     }
@@ -244,8 +249,11 @@ public class DataTypeConstraintModalTest {
         modal.setupComponent(type);
 
         assertEquals(constraintRange, modal.getCurrentComponent());
-        verify(constraintRange).setValue(constraint);
-        verify(constraintRange).setConstraintValueType(constraintValueType);
+
+        final InOrder inOrder = inOrder(constraintRange);
+        inOrder.verify(constraintRange).setConstraintValueType(constraintValueType);
+        inOrder.verify(constraintRange).setValue(constraint);
+
         verify(element).setAttribute("class", "kie-number");
     }
 
@@ -263,8 +271,11 @@ public class DataTypeConstraintModalTest {
         modal.setupComponent(type);
 
         assertEquals(constraintRange, modal.getCurrentComponent());
-        verify(constraintRange).setValue(constraint);
-        verify(constraintRange).setConstraintValueType(constraintValueType);
+
+        final InOrder inOrder = inOrder(constraintRange);
+        inOrder.verify(constraintRange).setConstraintValueType(constraintValueType);
+        inOrder.verify(constraintRange).setValue(constraint);
+
         verify(modal, never()).enableOkButton();
         verify(element).setAttribute("class", "kie-number");
     }
@@ -284,8 +295,11 @@ public class DataTypeConstraintModalTest {
         modal.setupComponent(type);
 
         assertEquals(constraintEnumeration, modal.getCurrentComponent());
-        verify(constraintEnumeration).setValue(constraint);
-        verify(constraintEnumeration).setConstraintValueType(constraintValueType);
+
+        final InOrder inOrder = inOrder(constraintEnumeration);
+        inOrder.verify(constraintEnumeration).setConstraintValueType(constraintValueType);
+        inOrder.verify(constraintEnumeration).setValue(constraint);
+
         verify(element).setAttribute("class", "kie-number");
     }
 

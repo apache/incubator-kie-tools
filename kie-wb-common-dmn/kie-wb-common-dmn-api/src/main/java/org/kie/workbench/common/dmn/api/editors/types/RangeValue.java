@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.editors.types;
 
+import java.util.Objects;
+
 public class RangeValue {
 
     private boolean includeStartValue;
@@ -60,5 +62,25 @@ public class RangeValue {
 
     public void setEndValue(final String endValue) {
         this.endValue = endValue;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final RangeValue that = (RangeValue) o;
+        return includeStartValue == that.includeStartValue &&
+                includeEndValue == that.includeEndValue &&
+                Objects.equals(startValue, that.startValue) &&
+                Objects.equals(endValue, that.endValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(includeStartValue, startValue, endValue, includeEndValue);
     }
 }
