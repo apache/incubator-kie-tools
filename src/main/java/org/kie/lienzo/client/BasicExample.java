@@ -27,8 +27,4 @@ public class BasicExample extends BaseExample implements Example {
         layer.draw();
     }
 
-    @Override
-    public void onResize() {
-        super.onResize();
-    }
 }

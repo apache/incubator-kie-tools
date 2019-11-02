@@ -22,6 +22,7 @@ public class BaseLienzoExamples {
 
     public void doLoad() {
         createTests(new BasicExample("Basic"),
+                    new BasicWiresExample("Basic Wires"),
                     new ToolboxExample("Toolbox"),
                     new PerformanceTests("Performance tests"),
                     new StrokeAndFillingExample("Stroke and Filling"),
