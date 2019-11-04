@@ -31,7 +31,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @ApplicationScoped
 public class DMNVFSService {
 
-    private static final PlaceRequest DIAGRAM_EDITOR = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+    static final PlaceRequest DIAGRAM_EDITOR = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
 
     private PlaceManager placeManager;
     private Caller<VFSService> vfsServiceCaller;

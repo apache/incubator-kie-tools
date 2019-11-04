@@ -164,11 +164,6 @@ public class DMNDiagramEditor extends BaseDMNDiagramEditor {
     }
 
     @Override
-    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
-        super.onDataTypePageNavTabActiveEvent(event);
-    }
-
-    @Override
     protected void makeMenuBar() {
         if (!menuBarInitialized) {
             getFileMenuBuilder().addSave(this::doSave);
@@ -207,6 +202,11 @@ public class DMNDiagramEditor extends BaseDMNDiagramEditor {
                                 });
             return promises.resolve();
         });
+    }
+
+    @Override
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
+        super.onDataTypePageNavTabActiveEvent(event);
     }
 
     @Override

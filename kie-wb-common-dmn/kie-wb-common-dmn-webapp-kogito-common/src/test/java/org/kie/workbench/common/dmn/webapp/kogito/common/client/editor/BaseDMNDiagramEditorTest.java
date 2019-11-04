@@ -60,6 +60,7 @@ import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagra
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -69,6 +70,7 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
@@ -77,7 +79,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -85,9 +86,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public abstract class BaseDMNDiagramEditorTest {
-
-    @Mock
-    protected PlaceRequest place;
 
     @Mock
     protected AbstractCanvasHandler canvasHandler;
@@ -216,7 +214,21 @@ public abstract class BaseDMNDiagramEditorTest {
     @Mock
     protected RefreshFormPropertiesEvent refreshFormPropertiesEvent;
 
+    @Mock
+    protected Diagram diagram;
+
+    @Mock
+    protected Metadata metadata;
+
+    @Mock
+    protected Path root;
+
+    @Mock
+    protected Path path;
+
     protected BaseDMNDiagramEditor editor;
+
+    protected PlaceRequest place = new DefaultPlaceRequest();
 
     @Before
     @SuppressWarnings("unchecked")
@@ -250,7 +262,7 @@ public abstract class BaseDMNDiagramEditorTest {
     protected abstract BaseDMNDiagramEditor getEditor();
 
     @Test
-    public void testSetup() {
+    public void testOnStartup() {
         editor.onStartup(place);
 
         verify(decisionNavigatorDock).init(PERSPECTIVE_ID);
@@ -332,16 +344,26 @@ public abstract class BaseDMNDiagramEditorTest {
         verify(searchBarComponent).disableSearch();
     }
 
-    private void openDiagram() {
+    protected void openDiagram() {
         editor.onStartup(place);
-
-        final Diagram diagram = mock(Diagram.class);
-        final Metadata metadata = mock(Metadata.class);
 
         when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(editorPresenter.getInstance()).thenReturn(session);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getRoot()).thenReturn(root);
+        when(metadata.getPath()).thenReturn(path);
+        when(metadata.getTitle()).thenReturn("dmn");
+        when(root.toURI()).thenReturn("dmn-file");
 
         editor.open(diagram);
+
+        verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
+        verify(decisionNavigatorDock).open();
+        verify(diagramPropertiesDock).open();
+        verify(diagramPreviewDock).open();
+        verify(dataTypesPage).reload();
+        verify(includedModelsPage).setup(importsPageProvider);
     }
 }

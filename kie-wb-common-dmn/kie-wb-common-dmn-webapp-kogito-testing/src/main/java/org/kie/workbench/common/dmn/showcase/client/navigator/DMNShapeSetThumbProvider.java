@@ -24,9 +24,11 @@ import org.kie.workbench.common.stunner.core.client.ShapeSetThumbProvider;
 @ApplicationScoped
 public class DMNShapeSetThumbProvider implements ShapeSetThumbProvider {
 
+    static final String THUMBNAIL_URI = "/images/default-diagram-thumbnail.png";
+
     @Override
     public SafeUri getThumbnailUri() {
-        return UriUtils.fromSafeConstant("/images/default-diagram-thumbnail.png");
+        return UriUtils.fromSafeConstant(THUMBNAIL_URI);
     }
 
     @Override

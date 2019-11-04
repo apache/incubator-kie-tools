@@ -31,10 +31,12 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 @WorkbenchPerspective(identifier = BaseDMNDiagramEditor.PERSPECTIVE_ID, isDefault = true)
 public class AuthoringPerspective {
 
+    static final String PERSPECTIVE_NAME = "Authoring";
+
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        perspective.setName("Authoring");
+        perspective.setName(PERSPECTIVE_NAME);
         perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(DMNDiagramsNavigatorScreen.SCREEN_ID)));
         return perspective;
     }
