@@ -19,6 +19,7 @@ import * as AppFormer from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
 import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { editors } from "./GwtEditorRoutes";
+import { XmlFormatter } from "./XmlFormatter";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -27,15 +28,22 @@ export class GwtEditorWrapper extends AppFormer.Editor {
   public readonly editorId: string;
 
   private readonly gwtEditor: GwtEditor;
+  private readonly xmlFormatter: XmlFormatter;
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
-  constructor(editorId: string, gwtEditor: GwtEditor, messageBus: EnvelopeBusInnerMessageHandler) {
+  constructor(
+    editorId: string,
+    gwtEditor: GwtEditor,
+    messageBus: EnvelopeBusInnerMessageHandler,
+    xmlFormatter: XmlFormatter
+  ) {
     super("gwt-editor-wrapper");
     this.af_componentTitle = editorId;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
     this.messageBus = messageBus;
     this.editorId = editorId;
+    this.xmlFormatter = xmlFormatter;
   }
 
   public af_onOpen() {
@@ -53,7 +61,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
   }
 
   public getContent() {
-    return this.gwtEditor.getContent();
+    return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
   }
 
   public isDirty() {

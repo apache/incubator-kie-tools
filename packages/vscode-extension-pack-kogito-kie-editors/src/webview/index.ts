@@ -27,5 +27,5 @@ gwtAppFormerApi.setClientSideOnly(true);
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
+  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, { format: c => c })
 });
