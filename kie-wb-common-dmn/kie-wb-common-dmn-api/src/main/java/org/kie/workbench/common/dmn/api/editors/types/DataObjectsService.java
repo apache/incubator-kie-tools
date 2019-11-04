@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.marshalling;
 
-import org.uberfire.backend.vfs.Path;
+package org.kie.workbench.common.dmn.api.editors.types;
 
-public interface DMNImportTypesHelper {
+import java.util.List;
 
-    /**
-     * Returns true if the path represents a DMN file.
-     * @param path
-     * @return
-     */
-    boolean isDMN(final Path path);
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.jboss.errai.bus.server.annotations.Remote;
 
-    /**
-     * Returns true if the path represents a PMML file.
-     * @param path
-     * @return
-     */
-    boolean isPMML(final Path path);
+/**
+ * This service handlers calls related to Data Objects.
+ */
+@Remote
+public interface DataObjectsService {
 
     /**
-     * Returns true if the path represents a Java file.
-     * @param path
-     * @return
+     * Loads the Data Objects (Java classes) from a given project.
+     * @param workspaceProject The project from which the Data Objects will be loaded.
+     * @return All {@link DataObject}s from the given project.
      */
-    boolean isJava(final Path path);
+    List<DataObject> loadDataObjects(final WorkspaceProject workspaceProject);
 }

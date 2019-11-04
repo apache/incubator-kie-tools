@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.api.included.legacy;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -27,19 +26,16 @@ import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.api.DMNServiceClient;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent
-public class DMNIncludeModelsClient {
-
-    private final DMNClientServicesProxy clientServicesProxy;
+public class DMNIncludeModelsClient extends DMNServiceClient {
 
     @Inject
     public DMNIncludeModelsClient(final DMNClientServicesProxy clientServicesProxy) {
-        this.clientServicesProxy = clientServicesProxy;
+        super(clientServicesProxy);
     }
 
     public void loadModels(final Path path,
@@ -60,20 +56,5 @@ public class DMNIncludeModelsClient {
         clientServicesProxy.loadItemDefinitionsByNamespace(modelName,
                                                            namespace,
                                                            callback(consumer));
-    }
-
-    <T> ServiceCallback<List<T>> callback(final Consumer<List<T>> consumer) {
-        return new ServiceCallback<List<T>>() {
-            @Override
-            public void onSuccess(final List<T> item) {
-                consumer.accept(item);
-            }
-
-            @Override
-            public void onError(final ClientRuntimeError error) {
-                clientServicesProxy.logWarning(error);
-                consumer.accept(new ArrayList<>());
-            }
-        };
     }
 }

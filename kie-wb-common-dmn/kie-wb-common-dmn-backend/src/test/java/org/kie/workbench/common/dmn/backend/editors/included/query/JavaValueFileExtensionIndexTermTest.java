@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.marshalling;
 
-import org.uberfire.backend.vfs.Path;
+package org.kie.workbench.common.dmn.backend.editors.included.query;
 
-public interface DMNImportTypesHelper {
+import org.junit.Before;
+import org.junit.Test;
 
-    /**
-     * Returns true if the path represents a DMN file.
-     * @param path
-     * @return
-     */
-    boolean isDMN(final Path path);
+import static org.junit.Assert.assertEquals;
 
-    /**
-     * Returns true if the path represents a PMML file.
-     * @param path
-     * @return
-     */
-    boolean isPMML(final Path path);
+public class JavaValueFileExtensionIndexTermTest {
 
-    /**
-     * Returns true if the path represents a Java file.
-     * @param path
-     * @return
-     */
-    boolean isJava(final Path path);
+    private JavaValueFileExtensionIndexTerm index;
+
+    @Before
+    public void setup() {
+        this.index = new JavaValueFileExtensionIndexTerm();
+    }
+
+    @Test
+    public void testGetValue() {
+        final String value = index.getValue();
+        assertEquals(JavaValueFileExtensionIndexTerm.TERM_VALUE, value);
+    }
 }

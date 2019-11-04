@@ -13,30 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.marshalling;
+[data-i18n-prefix="TreeListItemView."] {
 
-import org.uberfire.backend.vfs.Path;
+  .row {
+    margin: 0;
+  }
 
-public interface DMNImportTypesHelper {
+  .row:hover {
+    background-color: #eff8ff;
+  }
 
-    /**
-     * Returns true if the path represents a DMN file.
-     * @param path
-     * @return
-     */
-    boolean isDMN(final Path path);
+  .list-view-pf-expand {
+    padding: 0 0 0 10px;
+    margin: 0;
+    width: 30px;
+  }
 
-    /**
-     * Returns true if the path represents a PMML file.
-     * @param path
-     * @return
-     */
-    boolean isPMML(final Path path);
+  .col-md-2 {
+    padding: 0;
+    margin: 0;
+    width: 20px;
+  }
 
-    /**
-     * Returns true if the path represents a Java file.
-     * @param path
-     * @return
-     */
-    boolean isJava(final Path path);
+  .col-md-6 {
+    padding: 0 10px;
+  }
+
+  [data-field="item-details"] {
+    padding-bottom: 0;
+    font-weight: 600;
+    color: #0088ce;
+  }
+
+
+
+  .container-fluid{
+    overflow: hidden;
+  }
+
 }

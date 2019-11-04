@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
+import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.Mock;
@@ -119,6 +120,12 @@ public class DataTypeListViewTest {
     @Mock
     private DataTypeList presenter;
 
+    @Mock
+    private HTMLButtonElement importDataObjectButton;
+
+    @Mock
+    private ImportDataObjectModal importDataObjectModal;
+
     private DataTypeListView view;
 
     @Before
@@ -134,7 +141,7 @@ public class DataTypeListViewTest {
         listItems.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper));
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();

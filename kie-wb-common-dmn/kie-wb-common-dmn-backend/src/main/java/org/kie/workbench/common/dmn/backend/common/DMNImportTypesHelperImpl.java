@@ -35,6 +35,15 @@ public class DMNImportTypesHelperImpl implements DMNImportTypesHelper {
         return matchesExtension(path, DMNImportTypes.PMML);
     }
 
+    @Override
+    public boolean isJava(final Path path) {
+        final String fileName = path.getFileName();
+        if (StringUtils.isEmpty(fileName)) {
+            return false;
+        }
+        return fileName.endsWith(".java");
+    }
+
     private boolean matchesExtension(final Path path,
                                      final DMNImportTypes importTypes) {
         final String fileName = path.getFileName();

@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsServic
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
+import org.kie.workbench.common.dmn.api.editors.types.DataObjectsService;
 import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -69,6 +71,9 @@ public class DMNClientServicesProxyImplTest {
     private CallerMock<TimeZoneService> timeZoneServiceCaller;
 
     @Mock
+    private Caller<DataObjectsService> dataObjectsServiceCaller;
+
+    @Mock
     private DMNIncludedModelsService includedModelsService;
 
     @Mock
@@ -103,7 +108,8 @@ public class DMNClientServicesProxyImplTest {
                                                                  includedModelsServiceCaller,
                                                                  parseServiceCaller,
                                                                  validationServiceCaller,
-                                                                 timeZoneServiceCaller));
+                                                                 timeZoneServiceCaller,
+                                                                 dataObjectsServiceCaller));
 
         when(includedModelsServiceCaller.call(any(RemoteCallback.class),
                                               any(ErrorCallback.class))).thenReturn(includedModelsService);

@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -84,6 +85,11 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
 
     @Override
     public void getTimeZones(final ServiceCallback<List<DMNSimpleTimeZone>> callback) {
+        callback.onSuccess(Collections.emptyList());
+    }
+
+    @Override
+    public void loadDataObjects(final ServiceCallback<List<DataObject>> callback) {
         callback.onSuccess(Collections.emptyList());
     }
 

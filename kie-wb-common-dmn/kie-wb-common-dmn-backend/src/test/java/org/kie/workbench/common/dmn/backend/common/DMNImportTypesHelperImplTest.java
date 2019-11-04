@@ -36,6 +36,9 @@ public class DMNImportTypesHelperImplTest {
     @Mock
     private Path pmmlPath;
 
+    @Mock
+    private Path javaPath;
+
     private DMNImportTypesHelper helper;
 
     @Before
@@ -44,19 +47,27 @@ public class DMNImportTypesHelperImplTest {
 
         when(dmnPath.getFileName()).thenReturn("file.dmn");
         when(pmmlPath.getFileName()).thenReturn("file.pmml");
+        when(javaPath.getFileName()).thenReturn("file.java");
     }
 
     @Test
     public void testIsDMN() {
         assertThat(helper.isDMN(dmnPath)).isTrue();
-
         assertThat(helper.isDMN(pmmlPath)).isFalse();
+        assertThat(helper.isDMN(javaPath)).isFalse();
     }
 
     @Test
     public void testIsPMML() {
         assertThat(helper.isPMML(dmnPath)).isFalse();
-
         assertThat(helper.isPMML(pmmlPath)).isTrue();
+        assertThat(helper.isPMML(javaPath)).isFalse();
+    }
+
+    @Test
+    public void testIsJava() {
+        assertThat(helper.isJava(javaPath)).isTrue();
+        assertThat(helper.isPMML(javaPath)).isFalse();
+        assertThat(helper.isDMN(javaPath)).isFalse();
     }
 }

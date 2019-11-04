@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -111,4 +112,11 @@ public interface DMNClientServicesProxy {
     // ------------------------------------
 
     void getTimeZones(final ServiceCallback<List<DMNSimpleTimeZone>> callback);
+
+    /**
+     * This method loads all Data Objects from .java classes from the current project.
+     *
+     * @param callback Invoked with all {@link DataObject}s from the current project.
+     */
+    void loadDataObjects(final ServiceCallback<List<DataObject>> callback);
 }

@@ -36,6 +36,8 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
+import org.kie.workbench.common.dmn.api.editors.types.DataObjectsService;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
@@ -51,18 +53,21 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     private final Caller<DMNParseService> parserService;
     private final Caller<DMNValidationService> validationService;
     private final Caller<TimeZoneService> timeZoneService;
+    private final Caller<DataObjectsService> dataObjectsService;
 
     @Inject
     public DMNClientServicesProxyImpl(final WorkspaceProjectContext projectContext,
                                       final Caller<DMNIncludedModelsService> includedModelsService,
                                       final Caller<DMNParseService> parserService,
                                       final Caller<DMNValidationService> validationService,
-                                      final Caller<TimeZoneService> timeZoneService) {
+                                      final Caller<TimeZoneService> timeZoneService,
+                                      final Caller<DataObjectsService> dataObjectsService) {
         this.projectContext = projectContext;
         this.includedModelsService = includedModelsService;
         this.parserService = parserService;
         this.validationService = validationService;
         this.timeZoneService = timeZoneService;
+        this.dataObjectsService = dataObjectsService;
     }
 
     @Override
@@ -117,6 +122,12 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     @Override
     public void getTimeZones(final ServiceCallback<List<DMNSimpleTimeZone>> callback) {
         timeZoneService.call(onSuccess(callback), onError(callback)).getTimeZones();
+    }
+
+    @Override
+    public void loadDataObjects(final ServiceCallback<List<DataObject>> callback) {
+        dataObjectsService.call(onSuccess(callback), onError(callback)).loadDataObjects(
+                getWorkspaceProject());
     }
 
     <T> RemoteCallback<T> onSuccess(final ServiceCallback<T> callback) {

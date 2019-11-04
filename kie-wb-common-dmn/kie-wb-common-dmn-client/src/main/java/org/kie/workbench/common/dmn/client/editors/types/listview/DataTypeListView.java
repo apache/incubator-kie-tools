@@ -37,6 +37,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
+import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
@@ -92,7 +93,12 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("read-only-message-close-button")
     private final HTMLButtonElement readOnlyMessageCloseButton;
 
+    @DataField("import-data-object-button")
+    private final HTMLButtonElement importDataObjectButton;
+
     private final ScrollHelper scrollHelper;
+
+    private final ImportDataObjectModal importDataObjectModal;
 
     private DataTypeList presenter;
 
@@ -110,7 +116,9 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLDivElement noDataTypesFound,
                             final HTMLDivElement readOnlyMessage,
                             final HTMLButtonElement readOnlyMessageCloseButton,
-                            final ScrollHelper scrollHelper) {
+                            final ScrollHelper scrollHelper,
+                            final HTMLButtonElement importDataObjectButton,
+                            final ImportDataObjectModal importDataObjectModal) {
         this.listItems = listItems;
         this.collapsedDescription = collapsedDescription;
         this.expandedDescription = expandedDescription;
@@ -125,6 +133,8 @@ public class DataTypeListView implements DataTypeList.View {
         this.readOnlyMessage = readOnlyMessage;
         this.readOnlyMessageCloseButton = readOnlyMessageCloseButton;
         this.scrollHelper = scrollHelper;
+        this.importDataObjectButton = importDataObjectButton;
+        this.importDataObjectModal = importDataObjectModal;
     }
 
     @Override
@@ -132,6 +142,7 @@ public class DataTypeListView implements DataTypeList.View {
         this.presenter = presenter;
 
         setupSearchBar();
+        importDataObjectModal.setup();
         setupListElement();
     }
 
@@ -200,6 +211,11 @@ public class DataTypeListView implements DataTypeList.View {
     public void onAddClick(final ClickEvent e) {
         scrollHelper.animatedScrollToBottom(listItems);
         presenter.addDataType();
+    }
+
+    @EventHandler("import-data-object-button")
+    public void onImportDataObjectClick(final ClickEvent e) {
+        importDataObjectModal.show();
     }
 
     @EventHandler("read-only-message-close-button")
