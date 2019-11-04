@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+target/
+out/
+.idea
+**/.DS_Store
+*.log
+yarn.lock
+packages/unpacked-gwt-editors/dmn
+packages/unpacked-gwt-editors/bpmn

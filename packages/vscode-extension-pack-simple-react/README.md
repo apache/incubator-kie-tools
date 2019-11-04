@@ -1,0 +1,1 @@
+Simple React Editors :: Visual Studio Code Extension
