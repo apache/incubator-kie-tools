@@ -64,6 +64,11 @@
       <artifactId>uberfire-ssh-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-server</artifactId>
+    </dependency>
+
     <!-- Formatting -->
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
