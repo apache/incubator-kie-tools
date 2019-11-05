@@ -63,6 +63,10 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
             if (props.readonly) {
               return;
             }
+
+            //keep line breaks
+            content = content.split("\n").join("\\n");
+
             runScriptOnPage(
               `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
             );

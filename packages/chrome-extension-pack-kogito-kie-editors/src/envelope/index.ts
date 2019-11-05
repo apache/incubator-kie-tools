@@ -15,7 +15,7 @@
  */
 
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
+import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const gwtAppFormerApi = new GwtAppFormerApi();
@@ -28,5 +28,5 @@ MicroEditorEnvelope.init({
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
+  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter())
 });

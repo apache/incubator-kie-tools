@@ -20,18 +20,28 @@ import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
+import { XmlFormatter } from "./XmlFormatter";
 
 export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
   private readonly appFormerGwtApi: GwtAppFormerApi;
+  private readonly xmlFormatter: XmlFormatter;
 
-  constructor(appFormerGwtApi: GwtAppFormerApi) {
+  constructor(appFormerGwtApi: GwtAppFormerApi, xmlFormatter: XmlFormatter) {
     this.appFormerGwtApi = appFormerGwtApi;
+    this.xmlFormatter = xmlFormatter;
   }
 
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     const gwtFinishedLoading = new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.onFinishedLoading(() => {
-        res(new GwtEditorWrapper(languageData.editorId, this.appFormerGwtApi.getEditor(languageData.editorId), messageBus));
+        res(
+          new GwtEditorWrapper(
+            languageData.editorId,
+            this.appFormerGwtApi.getEditor(languageData.editorId),
+            messageBus,
+            this.xmlFormatter
+          )
+        );
         messageBus.notify_ready();
         return Promise.resolve();
       });

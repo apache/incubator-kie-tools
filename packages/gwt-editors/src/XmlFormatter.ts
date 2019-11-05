@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-
-declare global {
-  export const acquireVsCodeApi: any;
+export interface XmlFormatter {
+  format(xml: string): string;
 }
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter())
-});
