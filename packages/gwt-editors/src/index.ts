@@ -21,4 +21,4 @@ export * from "./GwtEditorWrapperFactory";
 export * from "./GwtLanguageData";
 export * from "./GwtEditorRoutes";
 export * from "./XmlFormatter";
-export * from "./BrowserXmlFormatter";
+export * from "./DefaultXmlFormatter";

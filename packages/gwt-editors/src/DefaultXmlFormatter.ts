@@ -17,7 +17,7 @@
 import { XmlFormatter } from "./XmlFormatter";
 import * as prettifyXml from "prettify-xml";
 
-export class BrowserXmlFormatter implements XmlFormatter {
+export class DefaultXmlFormatter implements XmlFormatter {
   public format(xml: string) {
     return prettifyXml(xml, { indent: 2, newLine: "\n" });
   }
