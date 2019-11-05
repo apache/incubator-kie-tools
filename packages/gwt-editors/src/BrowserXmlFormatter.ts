@@ -15,37 +15,10 @@
  */
 
 import { XmlFormatter } from "./XmlFormatter";
+import * as prettifyXml from "prettify-xml";
 
 export class BrowserXmlFormatter implements XmlFormatter {
-  private static XSLT_DOC: Document;
-
-  private xsltDoc() {
-    if (BrowserXmlFormatter.XSLT_DOC) {
-      return BrowserXmlFormatter.XSLT_DOC;
-    }
-
-    return new DOMParser().parseFromString(
-      [
-        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">',
-        '  <xsl:strip-space elements="*"/>',
-        '  <xsl:template match="para[content-style][not(text())]">',
-        '    <xsl:value-of select="normalize-space(.)"/>',
-        "  </xsl:template>",
-        '  <xsl:template match="node()|@*">',
-        '    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
-        "  </xsl:template>",
-        '  <xsl:output indent="yes"/>',
-        "</xsl:stylesheet>"
-      ].join("\n"),
-      "application/xml"
-    );
-  }
-
   public format(xml: string) {
-    const xmlDoc = new DOMParser().parseFromString(xml, "application/xml");
-    const xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(this.xsltDoc());
-    const resultDoc = xsltProcessor.transformToDocument(xmlDoc);
-    return new XMLSerializer().serializeToString(resultDoc);
+    return prettifyXml(xml, { indent: 2, newLine: "\n" });
   }
 }
