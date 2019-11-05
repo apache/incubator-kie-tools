@@ -105,3 +105,5 @@ function unmountPreviouslyRenderedFeatures(logger: Logger) {
     logger.log("Ignoring exception while unmounting features.");
   }
 }
+
+export * from "./DefaultChromeRouter";

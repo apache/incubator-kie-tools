@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-import { Router } from "@kogito-tooling/core-api";
+import { Router, Routes } from "@kogito-tooling/core-api";
 import * as vscode from "vscode";
 import * as __path from "path";
-import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
 
-export class SimpleReactEditorsRouter extends Router {
+export class DefaultVsCodeRouter extends Router {
   private readonly context: vscode.ExtensionContext;
 
-  constructor(context: vscode.ExtensionContext) {
-    super({
-      getRoutes: () =>
-        new Map<string, SimpleReactEditorsLanguageData>([["dmn", { type: "react" }], ["bpmn", { type: "react" }]])
-    });
+  constructor(context: vscode.ExtensionContext, ...routes: Routes[]) {
+    super(...routes);
     this.context = context;
   }
 
