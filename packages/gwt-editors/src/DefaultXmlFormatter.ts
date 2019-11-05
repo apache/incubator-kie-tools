@@ -19,6 +19,6 @@ import * as prettifyXml from "prettify-xml";
 
 export class DefaultXmlFormatter implements XmlFormatter {
   public format(xml: string) {
-    return prettifyXml(xml, { indent: 2, newLine: "\n" });
+    return prettifyXml(xml, { indent: 2, newLine: '\n' });
   }
 }
