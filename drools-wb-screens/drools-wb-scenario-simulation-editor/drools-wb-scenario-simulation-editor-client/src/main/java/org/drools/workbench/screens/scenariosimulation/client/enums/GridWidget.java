@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.handlers;
+package org.drools.workbench.screens.scenariosimulation.client.enums;
 
-import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
-
-/**
- * <code>EventHandler</code> for {@link ScenarioGridReloadEvent}
- */
-public interface ScenarioGridReloadEventHandler extends EventHandler {
-    void onEvent(ScenarioGridReloadEvent event);
+public enum GridWidget {
+    SIMULATION,
+    BACKGROUND;
 }

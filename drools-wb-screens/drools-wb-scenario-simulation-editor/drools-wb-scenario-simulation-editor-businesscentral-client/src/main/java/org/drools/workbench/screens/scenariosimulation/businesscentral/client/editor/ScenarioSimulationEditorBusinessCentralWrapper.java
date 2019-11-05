@@ -28,8 +28,9 @@ import elemental2.promise.Promise;
 import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.businesscentral.client.editor.strategies.BusinessCentralDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.businesscentral.client.editor.strategies.BusinessCentralDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
@@ -207,11 +208,12 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     @Override
-    public void onRunScenario(RemoteCallback<SimulationRunResult> refreshModelCallback, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> toRun) {
+    public void onRunScenario(RemoteCallback<SimulationRunResult> refreshModelCallback, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, ScesimModelDescriptor simulationDescriptor, Settings settings, List<ScenarioWithIndex> toRun) {
         service.call(refreshModelCallback, scenarioSimulationHasBusyIndicatorDefaultErrorCallback)
                 .runScenario(versionRecordManager.getCurrentPath(),
                              simulationDescriptor,
-                             toRun);
+                             toRun,
+                             settings);
     }
 
     @Override
@@ -230,12 +232,42 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     @Override
-    public void validate(Simulation simulation, RemoteCallback<?> callback) {
+    public void validate(Simulation simulation, Settings settings, RemoteCallback<?> callback) {
         scenarioSimulationEditorPresenter.getView().showLoading();
         service.call(
                 callback,
                 scenarioSimulationEditorPresenter.getValidationFailedCallback())
-                .validate(simulation, versionRecordManager.getCurrentPath());
+                .validate(simulation, settings, versionRecordManager.getCurrentPath());
+    }
+
+    /**
+     * This method is called when the main grid tab (Model) is focused
+     */
+    @Override
+    public void onEditTabSelected() {
+        super.onEditTabSelected();
+        scenarioSimulationEditorPresenter.onEditTabSelected();
+    }
+
+    @Override
+    public void onOverviewSelected() {
+        super.onOverviewSelected();
+        scenarioSimulationEditorPresenter.onOverviewSelected();
+    }
+
+    /**
+     * This method adds specifically the Background grid and its related onFocus behavior
+     * @param scenarioGridWidget
+     */
+    @Override
+    public void addBackgroundPage(final ScenarioGridWidget scenarioGridWidget) {
+        kieView.getMultiPage().addPage(BACKGROUND_TAB_INDEX, new PageImpl(scenarioGridWidget, ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle()) {
+            @Override
+            public void onFocus() {
+                super.onFocus();
+                onBackgroundTabSelected();
+            }
+        });
     }
 
     protected void registerTestToolsCallback() {
@@ -297,7 +329,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     protected void synchronizeColumnsDimension() {
-        scenarioSimulationEditorPresenter.getFocusedContext().getScenarioGridPanel().synchronizeFactMappingsWidths();
+        scenarioSimulationEditorPresenter.getContext().getSelectedScenarioGridPanel().synchronizeFactMappingsWidths();
     }
 
     @Override
@@ -345,7 +377,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         scenarioSimulationEditorPresenter.setPackageName(content.getDataModel().getPackageName());
         resetEditorPages(content.getOverview());
         DataManagementStrategy dataManagementStrategy;
-        if (ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
+        if (ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSettings().getType())) {
             dataManagementStrategy = new BusinessCentralDMODataManagementStrategy(oracleFactory);
         } else {
             dataManagementStrategy = new BusinessCentralDMNDataManagementStrategy(dmnTypeService, scenarioSimulationEditorPresenter.getEventBus());
@@ -363,50 +395,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);
     }
 
-    /**
-     * This method is called when the main grid tab (Model) is focused
-     */
-    @Override
-    public void onEditTabSelected() {
-        super.onEditTabSelected();
-        ScenarioGridWidget scenarioGridWidget = scenarioSimulationEditorPresenter.getView().getScenarioGridWidget();
-        scenarioSimulationEditorPresenter.setFocusedContext(scenarioGridWidget.getScenarioSimulationContext());
-        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(true);
-        scenarioGridWidget.clearSelections();
-        scenarioGridWidget.select();
-        scenarioSimulationEditorPresenter.getBackgroundGridWidget().deselect();
-    }
-
-    @Override
-    public void onOverviewSelected() {
-        super.onOverviewSelected();
-        scenarioSimulationEditorPresenter.setFocusedContext(
-                scenarioSimulationEditorPresenter.getView().getScenarioGridWidget().getScenarioSimulationContext());
-        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(true);
-    }
-
-    /**
-     * This method adds specifically the Background grid and its related onFocus behavior
-     * @param scenarioGridWidget
-     */
-    @Override
-    public void addBackgroundPage(final ScenarioGridWidget scenarioGridWidget) {
-        addPage(new PageImpl(scenarioGridWidget, ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle()) {
-            @Override
-            public void onFocus() {
-                super.onFocus();
-                enableBackgroundTab();
-            }
-        });
-    }
-
-    protected void enableBackgroundTab() {
-        ScenarioGridWidget backgroundWidget = scenarioSimulationEditorPresenter.getBackgroundGridWidget();
-        scenarioSimulationEditorPresenter.setFocusedContext(backgroundWidget.getScenarioSimulationContext());
-        scenarioSimulationEditorPresenter.setItemMenuForMainGridEnabled(false);
-        backgroundWidget.clearSelections();
-        backgroundWidget.select();
-        scenarioSimulationEditorPresenter.getView().getScenarioGridWidget().deselect();
+    protected void onBackgroundTabSelected() {
+        scenarioSimulationEditorPresenter.onBackgroundTabSelected();
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {

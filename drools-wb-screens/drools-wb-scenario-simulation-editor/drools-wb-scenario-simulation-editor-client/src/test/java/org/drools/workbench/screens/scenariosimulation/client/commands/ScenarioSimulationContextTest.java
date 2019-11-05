@@ -35,17 +35,17 @@ public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTes
 
     @Test
     public void getScenarioGridPanel() {
-        assertEquals(scenarioGridPanelMock, scenarioSimulationContextLocal.getScenarioGridPanel());
+        assertEquals(scenarioGridPanelMock, scenarioSimulationContextLocal.getSelectedScenarioGridPanel());
     }
 
     @Test
     public void getModel() {
-        assertEquals(scenarioGridModelMock, scenarioSimulationContextLocal.getModel());
+        assertEquals(scenarioGridModelMock, scenarioSimulationContextLocal.getSelectedScenarioGridModel());
     }
 
     @Test
     public void getScenarioGridLayer() {
-        assertEquals(scenarioGridLayerMock, scenarioSimulationContextLocal.getScenarioGridLayer());
+        assertEquals(scenarioGridLayerMock, scenarioSimulationContextLocal.getSelectedScenarioGridLayer());
     }
 
 }

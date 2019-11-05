@@ -23,6 +23,8 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.junit.Before;
@@ -42,8 +44,12 @@ public class RULEScenarioValidationTest {
     @Mock
     private KieContainer kieContainerMock;
 
+    private Settings settingsLocal;
+
     @Before
     public void init() {
+        settingsLocal = new Settings();
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         when(kieContainerMock.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
         when(kieContainerMock.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
     }
@@ -54,65 +60,65 @@ public class RULEScenarioValidationTest {
 
         // Test 0 - skip empty or not GIVEN/EXPECT columns
         Simulation test0 = new Simulation();
-        test0.getSimulationDescriptor().addFactMapping(
+        test0.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.DESCRIPTION,
                 ExpressionIdentifier.create("value", FactMappingType.OTHER));
-        test0.getSimulationDescriptor().addFactMapping(
+        test0.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.EMPTY,
                 ExpressionIdentifier.create("value", FactMappingType.GIVEN));
 
-        List<FactMappingValidationError> errorsTest0 = validation.validate(test0, kieContainerMock);
+        List<FactMappingValidationError> errorsTest0 = validation.validate(test0, settingsLocal, kieContainerMock);
         checkResult(errorsTest0);
 
         // Test 1 - simple type
         Simulation test1 = new Simulation();
-        test1.getSimulationDescriptor().addFactMapping(
+        test1.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", int.class.getCanonicalName()),
                 ExpressionIdentifier.create("value", FactMappingType.GIVEN));
 
-        List<FactMappingValidationError> errorsTest1 = validation.validate(test1, kieContainerMock);
+        List<FactMappingValidationError> errorsTest1 = validation.validate(test1, settingsLocal, kieContainerMock);
         checkResult(errorsTest1);
 
-        FactMapping mySimpleType = test1.getSimulationDescriptor().addFactMapping(
+        FactMapping mySimpleType = test1.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", "notValidClass"),
                 ExpressionIdentifier.create("value", FactMappingType.GIVEN));
         mySimpleType.addExpressionElement("notValidClass", "notValidClass");
 
-        errorsTest1 = validation.validate(test1, kieContainerMock);
+        errorsTest1 = validation.validate(test1, settingsLocal, kieContainerMock);
         checkResult(errorsTest1, "Impossible to load class notValidClass");
 
         // Test 2 - nested field
         Simulation test2 = new Simulation();
         // nameFM is valid
         FactIdentifier myFactIdentifier = FactIdentifier.create("mySimpleType", SampleBean.class.getCanonicalName());
-        FactMapping nameFM = test2.getSimulationDescriptor().addFactMapping(
+        FactMapping nameFM = test2.getScesimModelDescriptor().addFactMapping(
                 myFactIdentifier,
                 ExpressionIdentifier.create("name", FactMappingType.GIVEN));
         nameFM.addExpressionElement("SampleBean", String.class.getCanonicalName());
         nameFM.addExpressionElement("name", String.class.getCanonicalName());
 
         // parentFM is valid
-        FactMapping parentFM = test2.getSimulationDescriptor().addFactMapping(
+        FactMapping parentFM = test2.getScesimModelDescriptor().addFactMapping(
                 myFactIdentifier,
                 ExpressionIdentifier.create("parent", FactMappingType.EXPECT));
         parentFM.addExpressionElement("SampleBean", SampleBean.class.getCanonicalName());
         parentFM.addExpressionElement("parent", SampleBean.class.getCanonicalName());
 
-        List<FactMappingValidationError> errorsTest2 = validation.validate(test2, kieContainerMock);
+        List<FactMappingValidationError> errorsTest2 = validation.validate(test2, settingsLocal, kieContainerMock);
         checkResult(errorsTest2);
 
         // parentFM is not valid anymore
         parentFM.addExpressionElement("notExisting", String.class.getCanonicalName());
-        errorsTest2 = validation.validate(test2, kieContainerMock);
+        errorsTest2 = validation.validate(test2, settingsLocal, kieContainerMock);
         checkResult(errorsTest2, "Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean");
 
         // nameWrongTypeFM has a wrong type
-        FactMapping nameWrongTypeFM = test2.getSimulationDescriptor().addFactMapping(
+        FactMapping nameWrongTypeFM = test2.getScesimModelDescriptor().addFactMapping(
                 myFactIdentifier,
                 ExpressionIdentifier.create("parent2", FactMappingType.EXPECT));
         nameWrongTypeFM.addExpressionElement("SampleBean", Integer.class.getCanonicalName());
         nameWrongTypeFM.addExpressionElement("name", Integer.class.getCanonicalName());
-        errorsTest2 = validation.validate(test2, kieContainerMock);
+        errorsTest2 = validation.validate(test2, settingsLocal, kieContainerMock);
         checkResult(errorsTest2,
                     "Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean",
                     "Field type has changed: old 'java.lang.Integer', current 'java.lang.String'");
@@ -120,21 +126,21 @@ public class RULEScenarioValidationTest {
         // Test 3 - list
         Simulation test3 = new Simulation();
         // topLevelListFM is valid
-        FactMapping topLevelListFM = test3.getSimulationDescriptor().addFactMapping(
+        FactMapping topLevelListFM = test3.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", List.class.getCanonicalName()),
                 ExpressionIdentifier.create("name", FactMappingType.GIVEN));
         topLevelListFM.addExpressionElement("List", List.class.getCanonicalName());
         topLevelListFM.setGenericTypes(Collections.singletonList(String.class.getCanonicalName()));
 
         // addressesFM is valid
-        FactMapping addressesFM = test3.getSimulationDescriptor().addFactMapping(
+        FactMapping addressesFM = test3.getScesimModelDescriptor().addFactMapping(
                 myFactIdentifier,
                 ExpressionIdentifier.create("addresses", FactMappingType.EXPECT));
         addressesFM.addExpressionElement("SampleBean", List.class.getCanonicalName());
         addressesFM.addExpressionElement("addresses", List.class.getCanonicalName());
         addressesFM.setGenericTypes(Collections.singletonList(String.class.getCanonicalName()));
 
-        List<FactMappingValidationError> errorsTest3 = validation.validate(test3, kieContainerMock);
+        List<FactMappingValidationError> errorsTest3 = validation.validate(test3, settingsLocal, kieContainerMock);
         checkResult(errorsTest3);
     }
 

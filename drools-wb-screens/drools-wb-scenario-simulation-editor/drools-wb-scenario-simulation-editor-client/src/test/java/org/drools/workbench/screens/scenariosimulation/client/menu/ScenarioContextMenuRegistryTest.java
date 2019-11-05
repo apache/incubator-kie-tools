@@ -105,7 +105,7 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                                              clickPointy,
                                              0,
                                              COLUMN_GROUP, false,
-                                             simulationDescriptorMock.getType().equals(ScenarioSimulationModel.Type.RULE));
+                                             settingsLocal.getType().equals(ScenarioSimulationModel.Type.RULE));
         verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
         verifyZeroInteractions(headerExpectedContextMenuMock);
     }

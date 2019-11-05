@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.kie.api.runtime.KieContainer;
@@ -29,8 +30,6 @@ import static org.drools.scenariosimulation.api.model.FactIdentifier.EMPTY;
 import static org.drools.scenariosimulation.api.model.FactMappingType.OTHER;
 
 public abstract class AbstractScenarioValidation {
-
-    public abstract List<FactMappingValidationError> validate(Simulation simulation, KieContainer kieContainer);
 
     /**
      * Skip descriptive columns (FactMappingType.OTHER), column with no instance (FactIdentifier.EMPTY)
@@ -43,6 +42,8 @@ public abstract class AbstractScenarioValidation {
                 EMPTY.equals(factMapping.getFactIdentifier()) ||
                 factMapping.getExpressionElements().isEmpty();
     }
+
+    public abstract List<FactMappingValidationError> validate(Simulation simulation, Settings settings, KieContainer kieContainer);
 
     protected List<String> expressionElementToString(FactMapping factMapping) {
         return factMapping.getExpressionElementsWithoutClass().stream()

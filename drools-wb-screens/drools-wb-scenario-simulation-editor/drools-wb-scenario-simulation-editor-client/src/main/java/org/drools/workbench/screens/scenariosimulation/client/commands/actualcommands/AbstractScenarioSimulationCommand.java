@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Simulation;
@@ -109,12 +110,20 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
 
     protected CommandResult<ScenarioSimulationViolation> setCurrentContext(ScenarioSimulationContext context) {
         try {
-            final Simulation toRestore = restorableStatus.getSimulation();
-            if (toRestore != null) {
+            final Simulation simulationToRestore = restorableStatus.getSimulation();
+            final Background backgroundToRestore = restorableStatus.getBackground();
+            if (simulationToRestore != null || backgroundToRestore != null) {
                 final ScenarioSimulationContext.Status originalStatus = context.getStatus().cloneStatus();
-                context.getModel().clearSelections();
-                context.getScenarioGridPanel().getScenarioGrid().setContent(toRestore);
-                context.getScenarioSimulationEditorPresenter().getModel().setSimulation(toRestore);
+                context.getSimulationGrid().getModel().clearSelections();
+                context.getBackgroundGrid().getModel().clearSelections();
+                if (simulationToRestore != null) {
+                    context.getSimulationGrid().setContent(simulationToRestore, context.getSettings().getType());
+                    context.getScenarioSimulationEditorPresenter().getModel().setSimulation(simulationToRestore);
+                }
+                if (backgroundToRestore != null) {
+                    context.getBackgroundGrid().setContent(backgroundToRestore, context.getSettings().getType());
+                    context.getScenarioSimulationEditorPresenter().getModel().setBackground(backgroundToRestore);
+                }
                 context.getScenarioSimulationEditorPresenter().reloadTestTools(true);
                 context.setStatus(restorableStatus);
                 restorableStatus = originalStatus;
@@ -167,15 +176,15 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
 
     protected Optional<FactIdentifier> getFactIdentifierByColumnTitle(String columnTitle, ScenarioSimulationContext context) {
 
-        return context.getScenarioGridLayer().getScenarioGrid().getModel().getColumns().stream()
+        return context.getSelectedScenarioGridLayer().getScenarioGrid().getModel().getColumns().stream()
                 .filter(column -> columnTitle.equals(((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle()))
                 .findFirst()
                 .map(column -> ((ScenarioGridColumn) column).getFactIdentifier());
     }
 
     protected CommandResult<ScenarioSimulationViolation> commonExecution(final ScenarioSimulationContext context) {
-        context.getScenarioGridPanel().onResize();
-        context.getScenarioGridPanel().select();
+        context.getSelectedScenarioGridPanel().onResize();
+        context.getSelectedScenarioGridPanel().select();
         return CommandResultBuilder.SUCCESS;
     }
 }

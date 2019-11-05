@@ -15,46 +15,70 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
+import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.BackgroundDataWithIndex;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
-import org.drools.scenariosimulation.api.model.Scenario;
-import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.ScesimDataWithIndex;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.uberfire.backend.vfs.Path;
 
+import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
+
 /**
- * <b>Strategy</b> that actually builds the required <code>Simulation</code> based on <code>ScenarioSimulationModel.Type</code>
+ * <b>Strategy</b> that actually builds the required <code>Simulation</code> and <code>Settings</code> based on <code>ScenarioSimulationModel.Type</code>
  */
-public interface SimulationCreationStrategy {
+public interface SimulationSettingsCreationStrategy {
 
     Simulation createSimulation(Path context, String value) throws Exception;
 
-    default ScenarioWithIndex createScenario(Simulation simulation, SimulationDescriptor simulationDescriptor) {
+    Settings createSettings(Path context, String value) throws Exception;
+
+    default <T extends AbstractScesimData, E extends ScesimDataWithIndex<T>> E createScesimDataWithIndex(AbstractScesimModel<T> abstractScesimModel, ScesimModelDescriptor simulationDescriptor, Class<E> toInstantiate) throws Exception {
         simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
-        Scenario scenario = simulation.addScenario();
+        T scenario = abstractScesimModel.addData();
         scenario.setDescription(null);
-        int index = simulation.getUnmodifiableScenarios().indexOf(scenario) + 1;
-        return new ScenarioWithIndex(index, scenario);
+        int index = abstractScesimModel.getUnmodifiableData().indexOf(scenario) + 1;
+        return toInstantiate.getConstructor(int.class, scenario.getClass()).newInstance(index, scenario);
+    }
+
+    default Background createBackground(Path context, String dmnFilePath) throws Exception {
+        Background toReturn = new Background();
+        ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
+        BackgroundDataWithIndex backgroundDataWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, BackgroundDataWithIndex.class);
+
+        // Add GIVEN Fact
+        createEmptyColumn(simulationDescriptor,
+                          backgroundDataWithIndex,
+                          1,
+                          GIVEN,
+                          simulationDescriptor.getFactMappings().size());
+        return toReturn;
     }
 
     /**
      * Create an empty column using factMappingType defined. The new column will be added as last column of
      * the group (GIVEN/EXPECT) (see findLastIndexOfGroup)
+     *
      * @param simulationDescriptor
-     * @param scenarioWithIndex
+     * @param scesimDataWithIndex
      * @param placeholderId
      * @param factMappingType
+     * @param columnIndex
      */
-    default void createEmptyColumn(SimulationDescriptor simulationDescriptor,
-                                   ScenarioWithIndex scenarioWithIndex,
+    default void createEmptyColumn(ScesimModelDescriptor simulationDescriptor,
+                                   ScesimDataWithIndex scesimDataWithIndex,
                                    int placeholderId,
                                    FactMappingType factMappingType,
                                    int columnIndex) {
-        int row = scenarioWithIndex.getIndex();
+        int row = scesimDataWithIndex.getIndex();
         final ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create(row + "|" + placeholderId, factMappingType);
 
         final FactMapping factMapping = simulationDescriptor
@@ -64,6 +88,6 @@ public interface SimulationCreationStrategy {
                         FactIdentifier.EMPTY,
                         expressionIdentifier);
         factMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(placeholderId));
-        scenarioWithIndex.getScenario().addMappingValue(FactIdentifier.EMPTY, expressionIdentifier, null);
+        scesimDataWithIndex.getScesimData().addMappingValue(FactIdentifier.EMPTY, expressionIdentifier, null);
     }
 }

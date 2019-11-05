@@ -169,7 +169,7 @@ public class CoverageReportPresenter extends AbstractSubDockPresenter<CoverageRe
         List<ScenarioWithIndex> scenarioIndexes = new ArrayList<>(scenarioCounter.keySet());
         scenarioIndexes.sort(Comparator.comparingInt(ScenarioWithIndex::getIndex));
         for (ScenarioWithIndex scenarioWithIndex : scenarioIndexes) {
-            coverageScenarioListPresenter.addScenarioGroup(scenarioWithIndex, scenarioCounter.get(scenarioWithIndex), type);
+            coverageScenarioListPresenter.addScesimDataGroup(scenarioWithIndex, scenarioCounter.get(scenarioWithIndex), type);
         }
     }
 }

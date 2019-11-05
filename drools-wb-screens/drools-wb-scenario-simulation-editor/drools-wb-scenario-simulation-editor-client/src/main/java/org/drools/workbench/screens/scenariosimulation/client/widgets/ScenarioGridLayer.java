@@ -43,10 +43,10 @@ public class ScenarioGridLayer extends DefaultGridLayer {
     }
 
     /**
-     * Add a scenarioGrid to this Layer. If the child is a GridWidget then also add
+     * Add a <code>ScenarioGrid</code> to this Layer. If the child is a GridWidget then also add
      * a Connector between the Grid Widget and any "linked" GridWidgets.
-     * @param scenarioGrid ScenarioGrid to add to the Layer
-     * @return The Layer
+     * @param scenarioGrid <code>ScenarioGrid</code> to add to the Layer
+     * @return The <code>Layer</code>
      */
     public Layer addScenarioGrid(final ScenarioGrid scenarioGrid) {
         this.scenarioGrid = scenarioGrid;

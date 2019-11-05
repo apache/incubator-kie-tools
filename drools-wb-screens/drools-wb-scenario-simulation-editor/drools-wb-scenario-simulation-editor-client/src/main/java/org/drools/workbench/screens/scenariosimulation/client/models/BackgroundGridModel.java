@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
+import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
-import org.drools.scenariosimulation.api.model.Scenario;
-import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-public class ScenarioGridModel extends AbstractScesimGridModel<Simulation, Scenario> {
+public class BackgroundGridModel extends AbstractScesimGridModel<Background, BackgroundData> {
 
-    public ScenarioGridModel() {
+    public BackgroundGridModel() {
     }
 
-    public ScenarioGridModel(boolean isMerged) {
+    public BackgroundGridModel(boolean isMerged) {
         super(isMerged);
     }
 
@@ -41,12 +41,13 @@ public class ScenarioGridModel extends AbstractScesimGridModel<Simulation, Scena
      */
     @Override
     public void insertRowGridOnly(final int rowIndex,
-                                  final GridRow row, final Scenario scenario) {
+                                  final GridRow row,
+                                  final BackgroundData abstractScesimData) {
         insertRowGridOnly(rowIndex, row);
-        scenario.getUnmodifiableFactMappingValues().forEach(value -> {
+        abstractScesimData.getUnmodifiableFactMappingValues().forEach(value -> {
             FactIdentifier factIdentifier = value.getFactIdentifier();
             ExpressionIdentifier expressionIdentifier = value.getExpressionIdentifier();
-            if (value.getRawValue() == null || value.getRawValue() instanceof String) { // Let' put a placeholder
+            if (value.getRawValue() == null || value.getRawValue() instanceof String) {
                 String stringValue = (String) value.getRawValue();
                 int columnIndex = abstractScesimModel.getScesimModelDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
                 final FactMapping factMappingByIndex = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);

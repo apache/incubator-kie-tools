@@ -45,7 +45,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
                 this.confirmPopupPresenter = confirmPopupPresenterMock;
                 this.fileUploadPopupPresenter = fileUploadPopupPresenterMock;
                 this.eventBusProducer = eventBusProducerMock;
-                this.scenarioSimulationViewProducer = scenarioSimulationViewProducerMock;
+                this.scenarioGridPanelProducer = scenarioGridPanelProducerMock;
                 this.notificationEvent = notificationEventNew;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
                 this.scenarioCommandRegistry = scenarioCommandRegistryMock;
@@ -80,13 +80,13 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
         ScenarioSimulationView retrieved = scenarioSimulationProducer.getScenarioSimulationView();
         assertNotNull(retrieved);
         assertEquals(retrieved, scenarioSimulationViewMock);
-        verify(scenarioSimulationViewProducerMock, times(1)).getScenarioSimulationView(eq(eventBusMock));
+        verify(scenarioGridPanelProducerMock, times(1)).getScenarioSimulationView(eq(eventBusMock));
     }
 
     @Test
     public void getScenarioBackgroundGridView() {
         scenarioSimulationProducer.getScenarioBackgroundGridWidget();
-        verify(scenarioSimulationViewProducerMock, times(1)).getScenarioBackgroundGridWidget(eq(eventBusMock));
+        verify(scenarioGridPanelProducerMock, times(1)).getBackgroundGridWidget(eq(eventBusMock));
     }
 
     @Test

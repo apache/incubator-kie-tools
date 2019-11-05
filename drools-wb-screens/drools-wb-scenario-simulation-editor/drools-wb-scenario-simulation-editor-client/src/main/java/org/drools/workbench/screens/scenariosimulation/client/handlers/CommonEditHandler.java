@@ -16,8 +16,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.ait.lienzo.client.core.types.Point2D;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
@@ -87,7 +89,7 @@ public class CommonEditHandler {
      * @return
      */
     protected static boolean manageGivenExpectHeaderLeftClick(ScenarioGrid scenarioGrid, ScenarioHeaderMetaData clickedScenarioHeaderMetadata, int uiColumnIndex, int uiHeaderRowIndex) {
-        final ScenarioGridModel gridModel = scenarioGrid.getModel();
+        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> gridModel = scenarioGrid.getModel();
         final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
         final BaseGridRendererHelper rendererHelper = scenarioGrid.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();

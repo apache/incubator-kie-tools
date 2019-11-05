@@ -30,11 +30,8 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
 import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
-import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDataManagementStrategy;
-import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDataManagementStrategyTest;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-import org.jgroups.util.Util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +64,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class BusinessCentralDMODataManagementStrategyTest extends AbstractDataManagementStrategyTest {
+public class BusinessCentralDMODataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
 
     private BusinessCentralDMODataManagementStrategy businessCentralDmoDataManagementStrategy;
 
@@ -92,7 +89,6 @@ public class BusinessCentralDMODataManagementStrategyTest extends AbstractDataMa
                 this.factModelTreeHolder = factModelTreeHolderlocal;
             }
         });
-        abstractDataManagementStrategySpy = businessCentralDmoDataManagementStrategy;
     }
 
     @Test
@@ -191,29 +187,6 @@ public class BusinessCentralDMODataManagementStrategyTest extends AbstractDataMa
         assertNotNull(retrieved);
         Assert.assertEquals(TestProperties.FACT_NAME, retrieved.getFactName());
         assertEquals("", retrieved.getFullPackage());
-    }
-
-    @Test
-    public void getSimpleClassFactModelTree() {
-        Class[] expectedClazzes = {String.class, Boolean.class, Integer.class, Double.class, Number.class};
-        for (Class expectedClazz : expectedClazzes) {
-            final FactModelTree retrieved = AbstractDataManagementStrategy.getSimpleClassFactModelTree(
-                    expectedClazz.getSimpleName(),
-                    expectedClazz.getCanonicalName());
-            assertNotNull(retrieved);
-            String key = expectedClazz.getSimpleName();
-            assertEquals(key, retrieved.getFactName());
-            String fullName = expectedClazz.getCanonicalName();
-            String packageName = fullName.substring(0, fullName.lastIndexOf("."));
-            assertEquals(packageName, retrieved.getFullPackage());
-            Map<String, String> simpleProperties = retrieved.getSimpleProperties();
-            assertNotNull(simpleProperties);
-            assertEquals(1, simpleProperties.size());
-            Util.assertTrue(simpleProperties.containsKey(TestProperties.LOWER_CASE_VALUE));
-            String simplePropertyValue = simpleProperties.get(TestProperties.LOWER_CASE_VALUE);
-            assertNotNull(simplePropertyValue);
-            assertEquals(fullName, simplePropertyValue);
-        }
     }
 
     @Test

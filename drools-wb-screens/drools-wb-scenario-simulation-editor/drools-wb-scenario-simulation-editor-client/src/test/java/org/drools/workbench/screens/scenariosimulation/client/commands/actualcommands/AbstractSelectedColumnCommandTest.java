@@ -80,7 +80,7 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         super.setup();
 
         when(gridColumnsMock.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         when(factModelTreeMock.getExpandableProperties()).thenReturn(mock(SortedMap.class));
         when(dataObjectFieldsMapMock.get(anyString())).thenReturn(factModelTreeMock);
 
@@ -147,14 +147,14 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
     @Test
     public void executeKeepDataFalseDMN() {
         scenarioSimulationContextLocal.getStatus().setKeepData(false);
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.DMN);
+        settingsLocal.setType(ScenarioSimulationModel.Type.DMN);
         commonSetPropertyHeader(ScenarioSimulationModel.Type.DMN, false, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME);
     }
 
     @Test
     public void executeKeepDataFalseRule() {
         scenarioSimulationContextLocal.getStatus().setKeepData(false);
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         commonSetPropertyHeader(ScenarioSimulationModel.Type.RULE, false, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME);
     }
 

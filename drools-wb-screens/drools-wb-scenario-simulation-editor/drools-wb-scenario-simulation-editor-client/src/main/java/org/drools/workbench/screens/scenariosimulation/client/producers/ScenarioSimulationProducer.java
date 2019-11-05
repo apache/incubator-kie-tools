@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandManager;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistry;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
@@ -41,7 +42,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class ScenarioSimulationProducer {
 
     @Inject
-    protected ScenarioSimulationViewProducer scenarioSimulationViewProducer;
+    protected ScenarioGridPanelProducer scenarioGridPanelProducer;
 
     @Inject
     protected EventBusProducer eventBusProducer;
@@ -72,8 +73,7 @@ public class ScenarioSimulationProducer {
 
     @PostConstruct
     public void init() {
-        final ScenarioContextMenuRegistry scenarioContextMenuRegistry =
-                scenarioSimulationViewProducer.getScenarioContextMenuRegistry();
+        final ScenarioContextMenuRegistry scenarioContextMenuRegistry = scenarioGridPanelProducer.getScenarioContextMenuRegistry();
         scenarioContextMenuRegistry.setEventBus(getEventBus());
 
         scenarioSimulationEventHandler.setEventBus(getEventBus());
@@ -84,6 +84,7 @@ public class ScenarioSimulationProducer {
         scenarioSimulationEventHandler.setNotificationEvent(notificationEvent);
         scenarioSimulationEventHandler.setScenarioCommandManager(scenarioCommandManager);
         scenarioSimulationEventHandler.setScenarioCommandRegistry(scenarioCommandRegistry);
+        scenarioSimulationEventHandler.setContext(scenarioGridPanelProducer.getScenarioSimulationContext());
     }
 
     public EventBus getEventBus() {
@@ -91,11 +92,15 @@ public class ScenarioSimulationProducer {
     }
 
     public ScenarioSimulationView getScenarioSimulationView() {
-        return scenarioSimulationViewProducer.getScenarioSimulationView(getEventBus());
+        return scenarioGridPanelProducer.getScenarioSimulationView(getEventBus());
     }
 
     public ScenarioGridWidget getScenarioBackgroundGridWidget() {
-        return scenarioSimulationViewProducer.getScenarioBackgroundGridWidget(getEventBus());
+        return scenarioGridPanelProducer.getBackgroundGridWidget(getEventBus());
+    }
+
+    public ScenarioSimulationContext getScenarioSimulationContext() {
+        return scenarioGridPanelProducer.getScenarioSimulationContext();
     }
 
     public void setScenarioSimulationEditorPresenter(ScenarioSimulationEditorPresenter presenter) {

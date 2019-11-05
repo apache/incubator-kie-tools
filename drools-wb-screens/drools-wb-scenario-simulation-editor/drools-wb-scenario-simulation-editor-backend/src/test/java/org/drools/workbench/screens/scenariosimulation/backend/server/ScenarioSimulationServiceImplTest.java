@@ -20,7 +20,9 @@ import java.util.Set;
 
 import javax.inject.Named;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
 import org.drools.scenariosimulation.backend.util.ImpossibleToFindDMNException;
@@ -82,24 +84,18 @@ import static org.mockito.Mockito.when;
 public class ScenarioSimulationServiceImplTest {
 
     @Mock
-    @Named("ioStrategy")
-    private IOService ioServiceMock;
-
-    @Mock
-    private CommentedOptionFactory commentedOptionFactoryMock;
-
-    @Mock
-    private SaveAndRenameServiceImpl<ScenarioSimulationModel, Metadata> saveAndRenameServiceMock;
-
-    @Mock
-    private PathResolver pathResolverMock;
-
-    @Mock
     protected KieServiceOverviewLoader overviewLoaderMock;
-
     @Mock
     protected MetadataServerSideService metadataServiceMock;
-
+    @Mock
+    @Named("ioStrategy")
+    private IOService ioServiceMock;
+    @Mock
+    private CommentedOptionFactory commentedOptionFactoryMock;
+    @Mock
+    private SaveAndRenameServiceImpl<ScenarioSimulationModel, Metadata> saveAndRenameServiceMock;
+    @Mock
+    private PathResolver pathResolverMock;
     @Mock
     private DeleteService deleteServiceMock;
 
@@ -150,9 +146,11 @@ public class ScenarioSimulationServiceImplTest {
         @Override
         protected ScenarioSimulationModel unmarshalInternal(String content) {
             Simulation simulation = new Simulation();
-            simulation.getSimulationDescriptor().setType(Type.DMN);
+            Settings settings = new Settings();
+            settings.setType(Type.DMN);
             ScenarioSimulationModel toReturn = new ScenarioSimulationModel();
             toReturn.setSimulation(simulation);
+            toReturn.setSettings(settings);
             return toReturn;
         }
     };
@@ -179,6 +177,8 @@ public class ScenarioSimulationServiceImplTest {
         when(ioServiceMock.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
         when(packageMock.getPackageTestSrcPath()).thenReturn(path);
         when(scenarioSimulationBuilderMock.createSimulation(any(), any(), any())).thenReturn(new Simulation());
+        when(scenarioSimulationBuilderMock.createBackground(any(), any(), any())).thenReturn(new Background());
+        when(scenarioSimulationBuilderMock.createSettings(any(), any(), any())).thenReturn(new Settings());
         service.scenarioSimulationBuilder = scenarioSimulationBuilderMock;
     }
 
@@ -266,6 +266,8 @@ public class ScenarioSimulationServiceImplTest {
         doReturn(false).when(ioServiceMock).exists(any());
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         assertNull(model.getSimulation());
+        assertNull(model.getBackground());
+        assertNull(model.getSettings());
         final Path returnPath = service.create(this.path,
                                                "test.scesim",
                                                model,
@@ -275,6 +277,8 @@ public class ScenarioSimulationServiceImplTest {
 
         assertNotNull(returnPath);
         assertNotNull(model.getSimulation());
+        assertNotNull(model.getBackground());
+        assertNotNull(model.getSettings());
         verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
                                               anyString(),
                                               any(CommentedOption.class));
@@ -285,6 +289,8 @@ public class ScenarioSimulationServiceImplTest {
         doReturn(false).when(ioServiceMock).exists(any());
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         assertNull(model.getSimulation());
+        assertNull(model.getBackground());
+        assertNull(model.getSettings());
         final Path returnPath = service.create(this.path,
                                                "test.scesim",
                                                model,
@@ -294,6 +300,8 @@ public class ScenarioSimulationServiceImplTest {
 
         assertNotNull(returnPath);
         assertNotNull(model.getSimulation());
+        assertNotNull(model.getBackground());
+        assertNotNull(model.getSettings());
         verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
                                               anyString(),
                                               any(CommentedOption.class));
@@ -315,13 +323,15 @@ public class ScenarioSimulationServiceImplTest {
 
         final Path path = mock(Path.class);
         Simulation simulation = new Simulation();
+        Settings settings = new Settings();
 
-        service.runScenario(path, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex());
+        service.runScenario(path, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), settings);
 
         verify(scenarioRunnerServiceMock).runTest("test userMock",
                                                   path,
-                                                  simulation.getSimulationDescriptor(),
-                                                  simulation.getScenarioWithIndex());
+                                                  simulation.getScesimModelDescriptor(),
+                                                  simulation.getScenarioWithIndex(),
+                                                  settings);
     }
 
     @Test
@@ -429,7 +439,7 @@ public class ScenarioSimulationServiceImplTest {
     public void load() {
         ScenarioSimulationModel model = service.load(path);
 
-        assertEquals(Type.DMN, model.getSimulation().getSimulationDescriptor().getType());
+        assertEquals(Type.DMN, model.getSettings().getType());
         verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(any(), any(), anyString());
 
         doThrow(new ImpossibleToFindDMNException("")).when(dmnTypeServiceMock).initializeNameAndNamespace(any(), any(), anyString());

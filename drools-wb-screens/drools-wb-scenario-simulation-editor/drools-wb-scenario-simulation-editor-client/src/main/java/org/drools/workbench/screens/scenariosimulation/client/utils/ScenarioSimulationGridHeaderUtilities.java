@@ -30,7 +30,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -127,7 +127,7 @@ public class ScenarioSimulationGridHeaderUtilities {
                                                                final String columnGroup) {
         if (!scenarioGridColumn.isInstanceAssigned()) {
             String complexSearch = getExistingInstances(columnGroup,
-                                                        scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType(),
+                                                        scenarioGrid.getType(),
                                                         scenarioGrid.getModel().getColumns());
             return new EnableTestToolsEvent(complexSearch, true);
         } else if (Objects.equals(clickedScenarioHeaderMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY)) {
@@ -158,14 +158,14 @@ public class ScenarioSimulationGridHeaderUtilities {
                 .collect(Collectors.toSet()));
     }
 
-    public static List<String> getPropertyNameElements(final ScenarioGridModel scenarioGridModel, final int columnIndex) {
-        final Optional<Simulation> optionalSimulation = scenarioGridModel.getSimulation();
+    public static List<String> getPropertyNameElements(final AbstractScesimGridModel abstractScesimGridModel, final int columnIndex) {
+        final Optional<Simulation> optionalSimulation = abstractScesimGridModel.getAbstractScesimModel();
         return optionalSimulation.map(simulation -> {
-            final FactMapping factMapping = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-            if (scenarioGridModel.isSimpleType(factMapping.getFactAlias())) {
+            final FactMapping factMapping = simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
+            if (abstractScesimGridModel.isSimpleType(factMapping.getFactAlias())) {
                 return Arrays.asList(ConstantHolder.VALUE);
             } else {
-                return Collections.unmodifiableList(simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                return Collections.unmodifiableList(simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                             .stream()
                                                             .map(ExpressionElement::getStep)
                                                             .collect(Collectors.toList()));

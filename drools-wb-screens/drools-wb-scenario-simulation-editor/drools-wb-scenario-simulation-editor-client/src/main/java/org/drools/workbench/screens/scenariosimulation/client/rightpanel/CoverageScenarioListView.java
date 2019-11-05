@@ -44,7 +44,7 @@ public interface CoverageScenarioListView {
 
         void clear();
 
-        void addScenarioGroup(ScenarioWithIndex key, Map<String, Integer> value, Type type);
+        void addScesimDataGroup(ScenarioWithIndex key, Map<String, Integer> value, Type type);
 
         void onElementClick(CoverageScenarioListView coverageScenarioListView);
     }

@@ -227,7 +227,7 @@ public class ScenarioContextMenuRegistry {
         if (uiHeaderRowIndex == null) {
             return false;
         }
-        boolean showDuplicateInstance = scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.RULE);
+        boolean showDuplicateInstance = scenarioGrid.getType().equals(ScenarioSimulationModel.Type.RULE);
             String group = ScenarioSimulationUtils.getOriginalColumnGroup(columnMetadata.getColumnGroup());
         /* The first case managed, empty string, is related to clicking on the first header row, the one containing
            GIVEN or EXPECT labels. In this case, the menu to show depends on columnMetadata.getTitle() value.

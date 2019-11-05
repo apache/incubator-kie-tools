@@ -17,7 +17,6 @@ package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.junit.Before;
 import org.junit.Test;

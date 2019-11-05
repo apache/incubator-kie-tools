@@ -28,7 +28,7 @@ public class AppendColumnCommand extends AbstractInsertColumnCommand {
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        final int index = context.getModel().getFirstIndexRightOfGroup(status.getColumnGroup());
+        final int index = context.getSelectedScenarioGridModel().getFirstIndexRightOfGroup(status.getColumnGroup());
         commonInsertColumnCommand(context, status, index);
     }
 }

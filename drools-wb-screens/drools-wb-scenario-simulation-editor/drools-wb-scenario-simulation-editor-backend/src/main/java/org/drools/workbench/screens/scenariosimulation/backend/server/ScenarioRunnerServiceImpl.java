@@ -25,8 +25,9 @@ import javax.inject.Inject;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.runner.AbstractScenarioRunner;
 import org.drools.scenariosimulation.backend.runner.ScenarioRunnerProvider;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
@@ -58,13 +59,15 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
         for (Map.Entry<Path, ScenarioSimulationModel> entry : scenarioLoader.loadScenarios(path).entrySet()) {
 
             final Simulation simulation = entry.getValue().getSimulation();
-
-            if (!simulation.getSimulationDescriptor().isSkipFromBuild()) {
+            final Settings settings = entry.getValue().getSettings();
+            if (!settings.isSkipFromBuild()) {
 
                 testResultMessages.add(runTest(identifier,
                                                entry.getKey(),
-                                               simulation.getSimulationDescriptor(),
-                                               simulation.getScenarioWithIndex()).getTestResultMessage());
+                                               simulation.getScesimModelDescriptor(),
+                                               simulation.getScenarioWithIndex(),
+                                               settings)
+                                               .getTestResultMessage());
             }
         }
 
@@ -74,11 +77,12 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
     @Override
     public SimulationRunResult runTest(final String identifier,
                                        final Path path,
-                                       final SimulationDescriptor simulationDescriptor,
-                                       final List<ScenarioWithIndex> scenarios) {
+                                       final ScesimModelDescriptor simulationDescriptor,
+                                       final List<ScenarioWithIndex> scenarios,
+                                       final Settings settings) {
         final KieContainer kieContainer = getKieContainer(path);
-        final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor)
-                .create(kieContainer, simulationDescriptor, scenarios);
+        final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor, settings.getType())
+                .create(kieContainer, simulationDescriptor, scenarios, settings);
 
         final List<Failure> failures = new ArrayList<>();
 
@@ -96,11 +100,11 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
                                                failures));
     }
 
-    public ScenarioRunnerProvider getOrCreateRunnerSupplier(SimulationDescriptor simulationDescriptor) {
+    public ScenarioRunnerProvider getOrCreateRunnerSupplier(ScesimModelDescriptor simulationDescriptor, ScenarioSimulationModel.Type type) {
         if (runnerSupplier != null) {
             return runnerSupplier;
         }
-        return AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor);
+        return AbstractScenarioRunner.getSpecificRunnerProvider(type);
     }
 
     public void setRunnerSupplier(ScenarioRunnerProvider runnerSupplier) {

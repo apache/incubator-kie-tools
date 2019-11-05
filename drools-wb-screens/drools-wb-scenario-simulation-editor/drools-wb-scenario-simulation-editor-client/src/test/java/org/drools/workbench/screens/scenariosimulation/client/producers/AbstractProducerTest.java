@@ -41,7 +41,7 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
     @Mock
     protected EventBusProducer eventBusProducerMock;
     @Mock
-    protected ScenarioSimulationViewProducer scenarioSimulationViewProducerMock;
+    protected ScenarioGridPanelProducer scenarioGridPanelProducerMock;
     @Mock
     protected DeletePopupPresenter deletePopupPresenterMock;
     @Mock
@@ -79,7 +79,7 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
             }
         };
         when(eventBusProducerMock.getEventBus()).thenReturn(eventBusMock);
-        when(scenarioSimulationViewProducerMock.getScenarioSimulationView(isA(EventBus.class))).thenReturn(scenarioSimulationViewMock);
-        when(scenarioSimulationViewProducerMock.getScenarioContextMenuRegistry()).thenReturn(scenarioContextMenuRegistryMock);
+        when(scenarioGridPanelProducerMock.getScenarioSimulationView(isA(EventBus.class))).thenReturn(scenarioSimulationViewMock);
+        when(scenarioGridPanelProducerMock.getScenarioContextMenuRegistry()).thenReturn(scenarioContextMenuRegistryMock);
     }
 }

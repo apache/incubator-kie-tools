@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.service;
 
-import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -33,10 +33,10 @@ public interface DMNTypeService {
     FactModelTuple retrieveFactModelTuple(Path path, String dmnPath);
 
     /**
-     * Extract name and namespace from DMN model (dmnPath) and update simulation
-     * @param simulation to update
+     * Extract name and namespace from DMN model (dmnPath) and update settings
+     * @param settings to update
      * @param path to project
      * @param dmnPath to dmn file
      */
-    void initializeNameAndNamespace(Simulation simulation, Path path, String dmnPath);
+    void initializeNameAndNamespace(Settings settings, Path path, String dmnPath);
 }

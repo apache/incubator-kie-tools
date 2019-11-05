@@ -39,11 +39,11 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         int newColumnPosition = -1;
         if (status.isAsProperty()) {
-            context.getModel().deleteColumn(status.getColumnIndex());
+            context.getSelectedScenarioGridModel().deleteColumn(status.getColumnIndex());
             newColumnPosition = status.getColumnIndex();
         } else {
-            newColumnPosition = context.getModel().getInstanceLimits(status.getColumnIndex()).getMinRowIndex();
-            context.getModel().deleteInstance(status.getColumnIndex());
+            newColumnPosition = context.getSelectedScenarioGridModel().getInstanceLimits(status.getColumnIndex()).getMinRowIndex();
+            context.getSelectedScenarioGridModel().deleteInstance(status.getColumnIndex());
         }
         createColumnIfEmptyGroup(context, status, newColumnPosition);
         new ReloadTestToolsCommand().execute(context);
@@ -57,19 +57,19 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
      * @param newColumnPosition
      */
     protected void createColumnIfEmptyGroup(ScenarioSimulationContext context, ScenarioSimulationContext.Status status, int newColumnPosition) {
-        if (context.getModel().getGroupSize(status.getColumnGroup()) < 1) {
+        if (context.getSelectedScenarioGridModel().getGroupSize(status.getColumnGroup()) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
-            Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
+            Map.Entry<String, String> validPlaceholders = context.getSelectedScenarioGridModel().getValidPlaceholders();
             String instanceTitle = validPlaceholders.getKey();
             String propertyTitle = validPlaceholders.getValue();
-            context.getModel().insertColumn(newColumnPosition, getScenarioGridColumnLocal(instanceTitle,
-                                                                                          propertyTitle,
-                                                                                          String.valueOf(new Date().getTime()),
-                                                                                          status.getColumnGroup(),
-                                                                                          factMappingType,
-                                                                                          context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
-                                                                                          context.getScenarioCellTextAreaSingletonDOMElementFactory(),
-                                                                                          ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+            context.getSelectedScenarioGridModel().insertColumn(newColumnPosition, getScenarioGridColumnLocal(instanceTitle,
+                                                                                                              propertyTitle,
+                                                                                                              String.valueOf(new Date().getTime()),
+                                                                                                              status.getColumnGroup(),
+                                                                                                              factMappingType,
+                                                                                                              context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
+                                                                                                              context.getScenarioCellTextAreaSingletonDOMElementFactory(),
+                                                                                                              ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
     }
 }

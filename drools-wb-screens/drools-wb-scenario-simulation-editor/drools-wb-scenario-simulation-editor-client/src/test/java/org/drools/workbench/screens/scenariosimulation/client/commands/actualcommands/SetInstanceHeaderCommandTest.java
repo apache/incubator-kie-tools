@@ -69,7 +69,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
             }
         });
         assertTrue(command.isUndoable());
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
     public void executeDMN() {
         scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.DMN);
+        settingsLocal.setType(ScenarioSimulationModel.Type.DMN);
         command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(false));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
@@ -97,7 +97,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
     public void executeRULE() {
         scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();

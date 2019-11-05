@@ -201,4 +201,13 @@
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <sonar.coverage.exclusions>**/editor/ScenarioSimulationEditorWrapper.java,**/events/**.java</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>

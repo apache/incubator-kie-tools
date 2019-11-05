@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.shared.EventBus;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -32,8 +33,8 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
@@ -123,7 +124,7 @@ public class ScenarioGridTest {
     @Before
     public void setup() {
         when(scenarioGridColumnMock.getPropertyHeaderMetaData()).thenReturn(propertyHeaderMetadataMock);
-        when(scenarioGridModelMock.getSimulation()).thenReturn(Optional.of(simulation));
+        when(scenarioGridModelMock.getAbstractScesimModel()).thenReturn(Optional.of(simulation));
         factIdentifierGiven = new FactIdentifier("GIVEN", "GIVEN");
         factIdentifierInteger = new FactIdentifier("Integer", "java.lang.Integer");
         factMappingDescription = new FactMapping(EXPRESSION_ALIAS_DESCRIPTION, FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
@@ -137,7 +138,7 @@ public class ScenarioGridTest {
                                             scenarioContextMenuRegistryMock) {
 
             @Override
-            protected void appendRow(int rowIndex, Scenario scenario) {
+            protected <T extends AbstractScesimData> void appendRow(int rowIndex, T scesimData) {
                 // do nothing
             }
 
@@ -211,10 +212,10 @@ public class ScenarioGridTest {
     @Test
     public void setContent() {
         InOrder callsOrder = inOrder(scenarioGridModelMock, scenarioGrid);
-        scenarioGrid.setContent(simulation);
+        scenarioGrid.setContent(simulation, ScenarioSimulationModel.Type.RULE);
         callsOrder.verify(scenarioGridModelMock, times(1)).clear();
         callsOrder.verify(scenarioGridModelMock, times(1)).bindContent(eq(simulation));
-        callsOrder.verify(scenarioGrid, times(1)).setHeaderColumns(eq(simulation));
+        callsOrder.verify(scenarioGrid, times(1)).setHeaderColumns(eq(simulation), eq(ScenarioSimulationModel.Type.RULE));
         callsOrder.verify(scenarioGrid, times(1)).appendRows(eq(simulation));
         callsOrder.verify(scenarioGridModelMock, times(1)).loadFactMappingsWidth();
         callsOrder.verify(scenarioGridModelMock, times(1)).forceRefreshWidth();
@@ -256,7 +257,7 @@ public class ScenarioGridTest {
 
     @Test
     public void setHeaderColumns() {
-        scenarioGrid.setHeaderColumns(simulation);
+        scenarioGrid.setHeaderColumns(simulation, ScenarioSimulationModel.Type.RULE);
         verify(scenarioGrid, times(COLUMNS)).setHeaderColumn(anyInt(), isA(FactMapping.class), eq(true));
     }
 
@@ -434,14 +435,12 @@ public class ScenarioGridTest {
 
     private Simulation getSimulation() {
         Simulation toReturn = new Simulation();
-        SimulationDescriptor simulationDescriptor = toReturn.getSimulationDescriptor();
-        simulationDescriptor.setType(ScenarioSimulationModel.Type.RULE);
-
+        ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
 
-        Scenario scenario = toReturn.addScenario();
-        int row = toReturn.getUnmodifiableScenarios().indexOf(scenario);
+        Scenario scenario = toReturn.addData();
+        int row = toReturn.getUnmodifiableData().indexOf(scenario);
         scenario.setDescription(null);
 
         // Add GIVEN Facts

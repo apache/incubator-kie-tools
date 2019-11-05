@@ -21,8 +21,8 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 
 /**
  * Class used to provide common methods used by different classes
@@ -31,7 +31,7 @@ public class TestUtils {
 
     public static Simulation getSimulation(int numberOfColumns, int numberOfRows) {
         Simulation simulation = new Simulation();
-        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
         // generate simulationDescriptor
         IntStream.range(0, numberOfColumns).forEach(columnIndex -> {
@@ -41,7 +41,7 @@ public class TestUtils {
         });
         // generate scenarios
         IntStream.range(0, numberOfRows).forEach(rowIndex -> {
-            final Scenario scenario = simulation.addScenario();
+            final Scenario scenario = simulation.addData();
             scenario.setDescription(getRowName(rowIndex));
             IntStream.range(0, numberOfColumns).forEach( columnIndex -> {
                 scenario.addMappingValue(FactIdentifier.create(getFactName(columnIndex), String.class.getCanonicalName()),

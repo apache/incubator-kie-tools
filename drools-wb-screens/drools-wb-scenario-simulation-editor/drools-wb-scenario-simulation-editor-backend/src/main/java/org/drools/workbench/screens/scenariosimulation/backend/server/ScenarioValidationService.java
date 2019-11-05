@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.kie.api.runtime.KieContainer;
@@ -38,31 +39,32 @@ public class ScenarioValidationService
     /**
      * Validate the structure of a simulation. It does not validate the content of the cells
      * @param simulation to validate
+     * @param settings
      * @param path to test scenario file
      * @return list of validation errors
      */
-    public List<FactMappingValidationError> validateSimulationStructure(Simulation simulation, Path path) {
+    public List<FactMappingValidationError> validateSimulationStructure(Simulation simulation, Settings settings, Path path) {
         // skip validation (and compilation) if there are no columns to validate
-        List<FactMapping> factMappings = simulation.getSimulationDescriptor().getFactMappings();
+        List<FactMapping> factMappings = simulation.getScesimModelDescriptor().getFactMappings();
         if (factMappings.stream().allMatch(AbstractScenarioValidation::isToSkip)) {
             return Collections.emptyList();
         }
         KieContainer kieContainer = getKieContainer(path);
-        ScenarioSimulationModel.Type type = simulation.getSimulationDescriptor().getType();
+        ScenarioSimulationModel.Type type = settings.getType();
         if (DMN.equals(type)) {
-            return validateDMN(simulation, kieContainer);
+            return validateDMN(simulation, settings, kieContainer);
         } else if (RULE.equals(type)) {
-            return validateRULE(simulation, kieContainer);
+            return validateRULE(simulation, settings, kieContainer);
         } else {
             throw new IllegalArgumentException("Only DMN and RULE test scenarios can be validated");
         }
     }
 
-    protected List<FactMappingValidationError> validateDMN(Simulation simulation, KieContainer kieContainer) {
-        return DMNScenarioValidation.INSTANCE.validate(simulation, kieContainer);
+    protected List<FactMappingValidationError> validateDMN(Simulation simulation, Settings settings, KieContainer kieContainer) {
+        return DMNScenarioValidation.INSTANCE.validate(simulation, settings, kieContainer);
     }
 
-    protected List<FactMappingValidationError> validateRULE(Simulation simulation, KieContainer kieContainer) {
-        return RULEScenarioValidation.INSTANCE.validate(simulation, kieContainer);
+    protected List<FactMappingValidationError> validateRULE(Simulation simulation, Settings settings, KieContainer kieContainer) {
+        return RULEScenarioValidation.INSTANCE.validate(simulation, settings, kieContainer);
     }
 }

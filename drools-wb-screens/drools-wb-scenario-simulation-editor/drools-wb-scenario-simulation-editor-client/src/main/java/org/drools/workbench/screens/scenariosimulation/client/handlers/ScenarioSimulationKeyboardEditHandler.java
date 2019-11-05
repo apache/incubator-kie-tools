@@ -15,7 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -42,7 +44,7 @@ public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEdit
                            final boolean isShiftKeyDown,
                            final boolean isControlKeyDown) {
         ScenarioGrid scenarioGrid = (ScenarioGrid) gridWidget;
-        final ScenarioGridModel scenarioGridModel = scenarioGrid.getModel();
+        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> scenarioGridModel = scenarioGrid.getModel();
         // Allows editing only if a single cell is selected
         if (!scenarioGridModel.getSelectedHeaderCells().isEmpty()
                 && !scenarioGridModel.getSelectedCells().isEmpty()) {

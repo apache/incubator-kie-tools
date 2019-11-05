@@ -26,12 +26,15 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.backend.server.AbstractDMNTest;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -59,15 +62,16 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
+public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
 
-    private DMNSimulationCreationStrategy dmnSimulationCreationStrategy;
+    private DMNSimulationSettingsCreationStrategy dmnSimulationCreationStrategy;
 
     @Mock
     protected DMNTypeService dmnTypeServiceMock;
@@ -75,7 +79,7 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
     @Before
     public void init() {
         super.init();
-        dmnSimulationCreationStrategy = spy(new DMNSimulationCreationStrategy() {
+        dmnSimulationCreationStrategy = spy(new DMNSimulationSettingsCreationStrategy() {
             {
                 this.dmnTypeService = dmnTypeServiceMock;
             }
@@ -91,10 +95,36 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
         final Simulation retrieved = dmnSimulationCreationStrategy.createSimulation(pathMock, dmnFilePath);
 
         assertNotNull(retrieved);
-        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(
-                any(Simulation.class),
+        verify(dmnTypeServiceMock, never()).initializeNameAndNamespace(
+                any(Settings.class),
                 eq(pathMock),
                 eq(dmnFilePath));
+    }
+
+    @Test
+    public void createBackground() throws Exception {
+        FactModelTuple factModelTuple = getFactModelTuple();
+        final Path pathMock = mock(Path.class);
+        final String dmnFilePath = "test";
+        doReturn(factModelTuple).when(dmnSimulationCreationStrategy).getFactModelTuple(any(), any());
+        final Background retrieved = dmnSimulationCreationStrategy.createBackground(pathMock, dmnFilePath);
+
+        assertNotNull(retrieved);
+        verify(dmnTypeServiceMock, never()).initializeNameAndNamespace(
+                any(Settings.class),
+                eq(pathMock),
+                eq(dmnFilePath));
+    }
+
+    @Test
+    public void createSettings() throws Exception {
+        final String dmnFilePath = "test";
+        final Path pathMock = mock(Path.class);
+        final Settings retrieved = dmnSimulationCreationStrategy.createSettings(pathMock, dmnFilePath);
+
+        assertNotNull(retrieved);
+        assertEquals(ScenarioSimulationModel.Type.DMN, retrieved.getType());
+        assertEquals(dmnFilePath, retrieved.getDmnFilePath());
     }
 
     @Test
@@ -112,7 +142,7 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
     @Test
     public void addToScenarioRecursive() {
         FactMapping factMappingMock = mock(FactMapping.class);
-        DMNSimulationCreationStrategy.FactMappingExtractor factMappingExtractorMock = mock(DMNSimulationCreationStrategy.FactMappingExtractor.class);
+        DMNSimulationSettingsCreationStrategy.FactMappingExtractor factMappingExtractorMock = mock(DMNSimulationSettingsCreationStrategy.FactMappingExtractor.class);
         when(factMappingExtractorMock.getFactMapping(any(), anyString(), any(), anyString())).thenReturn(factMappingMock);
 
         Map<String, FactModelTree> hiddenFacts = new HashMap<>();
@@ -125,7 +155,7 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
 
         hiddenFacts.put("recursive", factModelTree);
 
-        dmnSimulationCreationStrategy.addToScenario(factMappingExtractorMock,
+        dmnSimulationCreationStrategy.addFactMapping(factMappingExtractorMock,
                                                     factModelTree,
                                                     new ArrayList<>(),
                                                     hiddenFacts);
@@ -148,9 +178,9 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
     @Test
     public void addEmptyColumnIfNeeded() {
         Simulation simulation = new Simulation();
-        ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, simulation.addScenario());
+        ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, simulation.addData());
         ExpressionIdentifier givenExpressionIdentifier = ExpressionIdentifier.create("given1", GIVEN);
-        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.EMPTY, givenExpressionIdentifier);
 
         dmnSimulationCreationStrategy.addEmptyColumnsIfNeeded(simulation, scenarioWithIndex);
@@ -159,9 +189,9 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
                            .anyMatch(elem -> EXPECT.equals(elem.getExpressionIdentifier().getType())));
 
         simulation = new Simulation();
-        scenarioWithIndex = new ScenarioWithIndex(1, simulation.addScenario());
+        scenarioWithIndex = new ScenarioWithIndex(1, simulation.addData());
         ExpressionIdentifier expectExpressionIdentifier = ExpressionIdentifier.create("expect1", EXPECT);
-        simulationDescriptor = simulation.getSimulationDescriptor();
+        simulationDescriptor = simulation.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.EMPTY, expectExpressionIdentifier);
 
         dmnSimulationCreationStrategy.addEmptyColumnsIfNeeded(simulation, scenarioWithIndex);
@@ -172,19 +202,19 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
 
     @Test
     public void findNewIndexOfGroup() {
-        SimulationDescriptor simulationDescriptorGiven = new SimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptorGiven = new ScesimModelDescriptor();
         ExpressionIdentifier givenExpressionIdentifier = ExpressionIdentifier.create("given1", GIVEN);
         simulationDescriptorGiven.addFactMapping(FactIdentifier.EMPTY, givenExpressionIdentifier);
         assertEquals(1, dmnSimulationCreationStrategy.findNewIndexOfGroup(simulationDescriptorGiven, GIVEN));
         assertEquals(1, dmnSimulationCreationStrategy.findNewIndexOfGroup(simulationDescriptorGiven, EXPECT));
 
-        SimulationDescriptor simulationDescriptorExpect = new SimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptorExpect = new ScesimModelDescriptor();
         ExpressionIdentifier expectExpressionIdentifier = ExpressionIdentifier.create("expect1", EXPECT);
         simulationDescriptorExpect.addFactMapping(FactIdentifier.EMPTY, expectExpressionIdentifier);
         assertEquals(0, dmnSimulationCreationStrategy.findNewIndexOfGroup(simulationDescriptorExpect, GIVEN));
         assertEquals(1, dmnSimulationCreationStrategy.findNewIndexOfGroup(simulationDescriptorExpect, EXPECT));
 
-        assertThatThrownBy(() -> dmnSimulationCreationStrategy.findNewIndexOfGroup(new SimulationDescriptor(), OTHER))
+        assertThatThrownBy(() -> dmnSimulationCreationStrategy.findNewIndexOfGroup(new ScesimModelDescriptor(), OTHER))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("This method can be invoked only with GIVEN or EXPECT as FactMappingType");
     }
@@ -198,7 +228,7 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
         Simulation simulation = dmnSimulationCreationStrategy.createSimulation(pathMock, dmnFilePath);
 
         assertNotNull(simulation);
-        List<FactMapping> factMappings = simulation.getSimulationDescriptor().getFactMappings();
+        List<FactMapping> factMappings = simulation.getScesimModelDescriptor().getFactMappings();
         if (hasInput) {
             assertTrue(factMappings.stream().anyMatch(elem -> GIVEN.equals(elem.getExpressionIdentifier().getType())));
         } else {

@@ -27,12 +27,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -71,14 +73,14 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * (e.g. inside GIVEN there is an "Author" group; if clicking on "books" property header, the <b>value</b> of the <code>Map</code> returned by this method is an <b>empty</b> <code>List</code>;
      * if click is on an unassigned property column, the <b>value</b> of the <code>Map</code> returned by this method is a <code>List</code>.
      * with all the <b>already assigned</b> Author's properties)
-     * @param scenarioGridModel
+     * @param abstractScesimGridModel
      * @return
      */
-    public Map<String, List<List<String>>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
+    public <T extends AbstractScesimModel<E>, E extends AbstractScesimData> Map<String, List<List<String>>> getPropertiesToHide(AbstractScesimGridModel<T, E> abstractScesimGridModel) {
         final Map<String, List<List<String>>> toReturn = new HashMap<>();
-        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) scenarioGridModel.getSelectedColumn();
+        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) abstractScesimGridModel.getSelectedColumn();
         if (selectedColumn != null && selectedColumn.isInstanceAssigned()) {
-            toReturn.put(selectedColumn.getInformationHeaderMetaData().getTitle(), getPropertiesToHide(selectedColumn, scenarioGridModel));
+            toReturn.put(selectedColumn.getInformationHeaderMetaData().getTitle(), getPropertiesToHide(selectedColumn, abstractScesimGridModel));
         }
         return toReturn;
     }
@@ -93,18 +95,18 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * if click is on an unassigned property column, this method returns a <code>List</code>.
      * with all the <b>already assigned</b> Author's properties)
      * @param selectedColumn
-     * @param scenarioGridModel
+     * @param abstractScesimGridModel
      * @return
      */
-    protected List<List<String>> getPropertiesToHide(ScenarioGridColumn selectedColumn, ScenarioGridModel scenarioGridModel) {
+    protected <T extends AbstractScesimModel<E>, E extends AbstractScesimData> List<List<String>> getPropertiesToHide(ScenarioGridColumn selectedColumn, AbstractScesimGridModel<T, E> abstractScesimGridModel) {
         List<List<String>> toReturn = new ArrayList<>();
         if (!selectedColumn.isPropertyAssigned()) {
-            scenarioGridModel.getSimulation().ifPresent(simulation -> {
-                final SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
-                List<ScenarioGridColumn> instanceColumns = scenarioGridModel.getInstanceScenarioGridColumns(selectedColumn);
+            abstractScesimGridModel.getAbstractScesimModel().ifPresent(simulation -> {
+                final ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
+                List<ScenarioGridColumn> instanceColumns = abstractScesimGridModel.getInstanceScenarioGridColumns(selectedColumn);
                 toReturn.addAll(instanceColumns.stream()
                                         .filter(ScenarioGridColumn::isPropertyAssigned)
-                                        .map(instanceColumn -> scenarioGridModel.getColumns().indexOf(instanceColumn))
+                                        .map(instanceColumn -> abstractScesimGridModel.getColumns().indexOf(instanceColumn))
                                         .map(columnIndex -> {
                                             List<String> propertyNameElements = simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                     .stream()
@@ -128,7 +130,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                           final TestToolsView.Presenter testToolsPresenter,
                           final ScenarioSimulationContext context) {
         // Instantiate a map of already assigned properties
-        final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(context.getModel());
+        final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(context.getSelectedScenarioGridModel());
         final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
         final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
@@ -155,7 +157,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         Set<String> simpleJavaTypeInstancesName = new HashSet<>(simpleDataObjects.keySet());
         simpleJavaTypeInstancesName.addAll(simpleJavaTypeInstanceFieldsMap.keySet());
         // Update model
-        context.getModel().setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
+        context.getSelectedScenarioGridModel().setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
     }
 
     /**
@@ -167,7 +169,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
         // map instance name to base class
         if (model != null) {
-            final SimulationDescriptor simulationDescriptor = model.getSimulation().getSimulationDescriptor();
+            final ScesimModelDescriptor simulationDescriptor = model.getSimulation().getScesimModelDescriptor();
             simulationDescriptor.getUnmodifiableFactMappings()
                     .stream()
                     .filter(factMapping -> !Objects.equals(FactMappingType.OTHER, factMapping.getExpressionIdentifier().getType()))

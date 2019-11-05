@@ -30,7 +30,7 @@ public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimula
 
     public void commonInsertColumnCommand(ScenarioSimulationContext context, ScenarioSimulationContext.Status status, int index) {
         FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
-        Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
+        Map.Entry<String, String> validPlaceholders = context.getSelectedScenarioGridModel().getValidPlaceholders();
         String instanceTitle = validPlaceholders.getKey();
         String propertyTitle = validPlaceholders.getValue();
         final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
@@ -41,6 +41,6 @@ public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimula
                                                                                       context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
                                                                                       context.getScenarioCellTextAreaSingletonDOMElementFactory(),
                                                                                       ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
-        context.getModel().insertColumn(index, scenarioGridColumnLocal);
+        context.getSelectedScenarioGridModel().insertColumn(index, scenarioGridColumnLocal);
     }
 }

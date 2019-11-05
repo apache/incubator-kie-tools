@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
@@ -63,8 +65,11 @@ public class AbstractDMNTest {
     protected DMNType compositeTypeCollection;
     protected Set<InputDataNode> inputDataNodes;
     protected Set<DecisionNode> decisionNodes;
+    protected Settings settingsLocal;
 
     protected void init() {
+        settingsLocal = new Settings();
+        settingsLocal.setType(ScenarioSimulationModel.Type.DMN);
         inputDataNodes = new HashSet<>();
         simpleTypeNoCollection = getSimpleNoCollection();
         InputDataNode inputDataNodeSimpleNoCollection = getInputDataNode(simpleTypeNoCollection, SIMPLE_INPUT_DATA_NAME_NO_COLLECTION);

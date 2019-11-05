@@ -23,6 +23,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.junit.Test;
@@ -52,15 +53,15 @@ public class ScenarioValidationServiceTest {
     @Test
     public void validateSimulationStructure() {
         Simulation simulation = new Simulation();
-
+        Settings settings = new Settings();
         ScenarioValidationService scenarioValidationServiceSpy = spy(new ScenarioValidationService() {
             @Override
-            protected List<FactMappingValidationError> validateDMN(Simulation simulation, KieContainer kieContainer) {
+            protected List<FactMappingValidationError> validateDMN(Simulation simulation, Settings settings, KieContainer kieContainer) {
                 return Collections.emptyList();
             }
 
             @Override
-            protected List<FactMappingValidationError> validateRULE(Simulation simulation, KieContainer kieContainer) {
+            protected List<FactMappingValidationError> validateRULE(Simulation simulation, Settings settings, KieContainer kieContainer) {
                 return Collections.emptyList();
             }
 
@@ -70,29 +71,29 @@ public class ScenarioValidationServiceTest {
             }
         });
 
-        simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.DMN);
-        scenarioValidationServiceSpy.validateSimulationStructure(simulation, pathMock);
-        verify(scenarioValidationServiceSpy, never()).validateDMN(eq(simulation), eq(kieContainerMock));
-        verify(scenarioValidationServiceSpy, never()).validateRULE(eq(simulation), eq(kieContainerMock));
+        settings.setType(ScenarioSimulationModel.Type.DMN);
+        scenarioValidationServiceSpy.validateSimulationStructure(simulation, settings, pathMock);
+        verify(scenarioValidationServiceSpy, never()).validateDMN(eq(simulation), eq(settings), eq(kieContainerMock));
+        verify(scenarioValidationServiceSpy, never()).validateRULE(eq(simulation), eq(settings), eq(kieContainerMock));
 
         reset(scenarioValidationServiceSpy);
-        FactMapping sampleFactMapping = simulation.getSimulationDescriptor()
+        FactMapping sampleFactMapping = simulation.getScesimModelDescriptor()
                 .addFactMapping(FactIdentifier.create("sample", String.class.getCanonicalName()),
                                 ExpressionIdentifier.create("sample", FactMappingType.GIVEN));
         sampleFactMapping.addExpressionElement("sample", String.class.getCanonicalName());
 
-        simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.DMN);
-        scenarioValidationServiceSpy.validateSimulationStructure(simulation, pathMock);
-        verify(scenarioValidationServiceSpy, timeout(1)).validateDMN(eq(simulation), eq(kieContainerMock));
+        settings.setType(ScenarioSimulationModel.Type.DMN);
+        scenarioValidationServiceSpy.validateSimulationStructure(simulation, settings, pathMock);
+        verify(scenarioValidationServiceSpy, timeout(1)).validateDMN(eq(simulation), eq(settings), eq(kieContainerMock));
 
         reset(scenarioValidationServiceSpy);
 
-        simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.RULE);
-        scenarioValidationServiceSpy.validateSimulationStructure(simulation, pathMock);
-        verify(scenarioValidationServiceSpy, timeout(1)).validateRULE(eq(simulation), eq(kieContainerMock));
+        settings.setType(ScenarioSimulationModel.Type.RULE);
+        scenarioValidationServiceSpy.validateSimulationStructure(simulation, settings, pathMock);
+        verify(scenarioValidationServiceSpy, timeout(1)).validateRULE(eq(simulation), eq(settings), eq(kieContainerMock));
 
-        simulation.getSimulationDescriptor().setType(null);
-        assertThatThrownBy(() -> scenarioValidationServiceSpy.validateSimulationStructure(simulation, pathMock))
+        settings.setType(null);
+        assertThatThrownBy(() -> scenarioValidationServiceSpy.validateSimulationStructure(simulation, settings, pathMock))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

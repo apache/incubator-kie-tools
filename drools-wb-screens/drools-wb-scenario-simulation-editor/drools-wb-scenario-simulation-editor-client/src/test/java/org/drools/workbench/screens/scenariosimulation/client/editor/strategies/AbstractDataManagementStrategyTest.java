@@ -17,14 +17,28 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
+import org.jgroups.util.Util;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.uberfire.backend.vfs.ObservablePath;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,27 +49,58 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public abstract class AbstractDataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
+@RunWith(GwtMockitoTestRunner.class)
+public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
 
     protected AbstractDataManagementStrategy abstractDataManagementStrategySpy;
 
     public void setup() {
         super.setup();
+        abstractDataManagementStrategySpy = spy(new AbstractDataManagementStrategy() {
+
+            @Override
+            public void populateTestTools(TestToolsView.Presenter testToolsPresenter, ScenarioSimulationContext context) {
+
+            }
+
+            @Override
+            public void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage) {
+
+            }
+
+            @Override
+            public boolean isADataType(String value) {
+                return false;
+            }
+        });
     }
 
     @Test
     public void getSimpleClassFactModelTree() {
-        Class<String> clazz = String.class;
-        final FactModelTree retrieved = AbstractDataManagementStrategy.getSimpleClassFactModelTree(
-                clazz.getSimpleName(),
-                clazz.getCanonicalName());
-        assertNotNull(retrieved);
-        assertEquals(clazz.getSimpleName(), retrieved.getFactName());
-        assertEquals("java.lang", retrieved.getFullPackage());
-        assertNotNull(retrieved.getSimpleProperties());
+        Class[] expectedClazzes = {String.class, Boolean.class, Integer.class, Double.class, Number.class};
+        for (Class expectedClazz : expectedClazzes) {
+            final FactModelTree retrieved = AbstractDataManagementStrategy.getSimpleClassFactModelTree(
+                    expectedClazz.getSimpleName(),
+                    expectedClazz.getCanonicalName());
+            assertNotNull(retrieved);
+            String key = expectedClazz.getSimpleName();
+            assertEquals(key, retrieved.getFactName());
+            String fullName = expectedClazz.getCanonicalName();
+            String packageName = fullName.substring(0, fullName.lastIndexOf("."));
+            assertEquals(packageName, retrieved.getFullPackage());
+            Map<String, String> simpleProperties = retrieved.getSimpleProperties();
+            assertNotNull(simpleProperties);
+            assertEquals(1, simpleProperties.size());
+            Util.assertTrue(simpleProperties.containsKey(TestProperties.LOWER_CASE_VALUE));
+            String simplePropertyValue = simpleProperties.get(TestProperties.LOWER_CASE_VALUE);
+            assertNotNull(simplePropertyValue);
+            assertEquals(fullName, simplePropertyValue);
+        }
     }
 
     @Test
@@ -75,6 +120,7 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
     public void getPropertiesToHideMapSelectedColumnNotInstanceAssigned() {
         commonGetPropertiesToHideMap(false, false);
     }
+
     @Test
     public void getPropertiesToHideMapSelectedColumnInstanceAssigned() {
         commonGetPropertiesToHideMap(false, true);
@@ -88,6 +134,48 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
     @Test
     public void getPropertiesToHideListPropertyAssigned() {
         commonGetPropertiesToHideList(true);
+    }
+
+    @Test
+    public void storeData() {
+        ScenarioSimulationContext scenarioSimulationContextSpy = spy(scenarioSimulationContextLocal);
+        AbstractScesimGridModel abstractScesimGridModelMock = mock(AbstractScesimGridModel.class);
+        when(scenarioSimulationContextSpy.getSelectedScenarioGridModel()).thenReturn(abstractScesimGridModelMock);
+        final FactModelTuple factModelTuple = getFactTuple();
+        abstractDataManagementStrategySpy.storeData(factModelTuple, testToolsPresenterMock, scenarioSimulationContextSpy);
+        verify(testToolsPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
+        verify(testToolsPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
+        verify(testToolsPresenterMock, times(1)).setInstanceFieldsMap(isA(SortedMap.class));
+        verify(testToolsPresenterMock, times(1)).setSimpleJavaInstanceFieldsMap(isA(SortedMap.class));
+        verify(testToolsPresenterMock, times(1)).setHiddenFieldsMap(isA(SortedMap.class));
+        verify(testToolsPresenterMock, times(1)).hideProperties(isA(Map.class));
+        verify(scenarioSimulationContextSpy, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
+        verify(scenarioSimulationContextSpy, times(1)).setDataObjectsInstancesName(isA(Set.class));
+        verify(abstractScesimGridModelMock, times(1)).setSimpleJavaTypeInstancesName(isA(Set.class));
+    }
+
+    @Test
+    public void getInstanceMap() {
+        SortedMap<String, FactModelTree> sourceMap = getSourceMap();
+        SortedMap<String, FactModelTree> retrieved = abstractDataManagementStrategySpy.getInstanceMap(sourceMap);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isEmpty());
+        abstractDataManagementStrategySpy.setModel(modelLocal);
+        retrieved = abstractDataManagementStrategySpy.getInstanceMap(sourceMap);
+        assertNotNull(retrieved);
+        // " is the number of factmappings - inside modelLocal - whose class is "Void"
+        assertEquals(2, retrieved.size());
+    }
+
+    private SortedMap<String, FactModelTree> getSourceMap() {
+        SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
+        FactModelTree toPut = new FactModelTree("Void", "package", new HashMap<>(), new HashMap<>());
+        toReturn.put("Void", toPut);
+        return toReturn;
+    }
+
+    private FactModelTuple getFactTuple() {
+        return new FactModelTuple(new TreeMap<>(), new TreeMap<>());
     }
 
     private void commonGetPropertiesToHideMap(boolean selectedColumnNull, boolean isInstanceAssigned) {
@@ -115,9 +203,9 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
         List<List<String>> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(gridColumnMock, scenarioGridModelMock);
         if (isPropertyAssigned) {
             assertTrue(retrieved.isEmpty());
-            verify(scenarioGridModelMock, never()).getSimulation();
+            verify(scenarioGridModelMock, never()).getAbstractScesimModel();
         } else {
-            verify(scenarioGridModelMock, times(1)).getSimulation();
+            verify(scenarioGridModelMock, times(1)).getAbstractScesimModel();
             verify(scenarioGridModelMock, times(1)).getInstanceScenarioGridColumns(eq(gridColumnMock));
         }
         reset(scenarioGridModelMock);

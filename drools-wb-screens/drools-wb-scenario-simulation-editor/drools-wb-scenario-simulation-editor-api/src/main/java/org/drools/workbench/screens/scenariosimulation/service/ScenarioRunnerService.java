@@ -18,7 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.service;
 import java.util.List;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.test.TestService;
 import org.uberfire.backend.vfs.Path;
@@ -28,6 +29,7 @@ public interface ScenarioRunnerService
 
     SimulationRunResult runTest(final String identifier,
                                 final Path path,
-                                final SimulationDescriptor simulationDescriptor,
-                                final List<ScenarioWithIndex> scenarios);
+                                final ScesimModelDescriptor simulationDescriptor,
+                                final List<ScenarioWithIndex> scenarios,
+                                final Settings settings);
 }

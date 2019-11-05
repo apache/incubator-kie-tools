@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.uberfire.mvp.Command;
 
 public interface SettingsView
@@ -31,7 +31,7 @@ public interface SettingsView
 
     interface Presenter extends SubDockView.Presenter {
 
-        void setScenarioType(ScenarioSimulationModel.Type scenarioType, SimulationDescriptor simulationDescriptor, String fileName);
+        void setScenarioType(ScenarioSimulationModel.Type scenarioType, Settings settings, String fileName);
 
         void onSaveButton(String type);
 

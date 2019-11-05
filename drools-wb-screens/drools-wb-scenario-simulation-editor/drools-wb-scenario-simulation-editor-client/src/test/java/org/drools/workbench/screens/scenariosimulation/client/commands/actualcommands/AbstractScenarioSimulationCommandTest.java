@@ -100,7 +100,7 @@ public abstract class AbstractScenarioSimulationCommandTest extends AbstractScen
             command.restorableStatus = status;
             command.setCurrentContext(scenarioSimulationContextLocal);
             verify(scenarioGridModelMock, times(1)).clearSelections();
-            verify(scenarioGridMock, times(1)).setContent(eq(simulationMock));
+            verify(scenarioGridMock, times(1)).setContent(eq(simulationMock), eq(scenarioSimulationContextLocal.getSettings().getType()));
             verify(scenarioSimulationModelMock, times(1)).setSimulation(eq(simulationMock));
             verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
             assertNotEquals(status, command.restorableStatus);

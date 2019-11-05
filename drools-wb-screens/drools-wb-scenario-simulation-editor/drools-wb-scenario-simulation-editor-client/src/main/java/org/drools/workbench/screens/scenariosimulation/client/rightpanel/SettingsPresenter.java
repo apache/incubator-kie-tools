@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import com.google.gwt.dom.client.Style;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.client.dropdown.SettingsScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
@@ -44,7 +44,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.Settings";
 
-    protected SimulationDescriptor simulationDescriptor;
+    protected Settings settings;
 
     protected Command saveCommand;
 
@@ -73,18 +73,18 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     @Override
-    public void setScenarioType(ScenarioSimulationModel.Type scenarioType, SimulationDescriptor simulationDescriptor, String fileName) {
-        this.simulationDescriptor = simulationDescriptor;
+    public void setScenarioType(ScenarioSimulationModel.Type scenarioType, Settings settings, String fileName) {
+        this.settings = settings;
         view.getScenarioType().setInnerText(scenarioType.name());
         view.getFileName().setValue(fileName);
-        view.getSkipFromBuild().setChecked(simulationDescriptor.isSkipFromBuild());
+        view.getSkipFromBuild().setChecked(settings.isSkipFromBuild());
         view.getSaveButton().setDisabled(false);
         switch (scenarioType) {
             case RULE:
-                setRuleSettings(simulationDescriptor);
+                setRuleSettings(settings);
                 break;
             case DMN:
-                setDMNSettings(simulationDescriptor);
+                setDMNSettings(settings);
                 break;
             default:
                 // nop
@@ -109,7 +109,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     @Override
     public void onSaveButton(String scenarioType) {
         if (saveCommand != null) {
-            simulationDescriptor.setSkipFromBuild(view.getSkipFromBuild().isChecked());
+            settings.setSkipFromBuild(view.getSkipFromBuild().isChecked());
             switch (ScenarioSimulationModel.Type.valueOf(scenarioType)) {
                 case RULE:
                     saveRuleSettings();
@@ -142,35 +142,35 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
 
-    protected void setRuleSettings(SimulationDescriptor simulationDescriptor) {
+    protected void setRuleSettings(Settings settings) {
         view.getDmnSettings().getStyle().setDisplay(Style.Display.NONE);
         view.getRuleSettings().getStyle().setDisplay(Style.Display.INLINE);
-        view.getDmoSession().setValue(Optional.ofNullable(simulationDescriptor.getDmoSession()).orElse(""));
-        view.getRuleFlowGroup().setValue(Optional.ofNullable(simulationDescriptor.getRuleFlowGroup()).orElse(""));
-        view.getStateless().setChecked(simulationDescriptor.isStateless());
+        view.getDmoSession().setValue(Optional.ofNullable(settings.getDmoSession()).orElse(""));
+        view.getRuleFlowGroup().setValue(Optional.ofNullable(settings.getRuleFlowGroup()).orElse(""));
+        view.getStateless().setChecked(settings.isStateless());
     }
 
-    protected void setDMNSettings(SimulationDescriptor simulationDescriptor) {
+    protected void setDMNSettings(Settings settings) {
         view.getRuleSettings().getStyle().setDisplay(Style.Display.NONE);
         view.getDmnSettings().getStyle().setDisplay(Style.Display.INLINE);
-        view.getDmnName().setValue(Optional.ofNullable(simulationDescriptor.getDmnName()).orElse(""));
-        view.getDmnNamespace().setValue(Optional.ofNullable(simulationDescriptor.getDmnNamespace()).orElse(""));
+        view.getDmnName().setValue(Optional.ofNullable(settings.getDmnName()).orElse(""));
+        view.getDmnNamespace().setValue(Optional.ofNullable(settings.getDmnNamespace()).orElse(""));
         view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
         view.getDmnFilePathErrorLabel().setInnerText("");
         settingsScenarioSimulationDropdown.registerOnMissingValueHandler(this::setDmnErrorPath);
         settingsScenarioSimulationDropdown.registerOnChangeHandler(this::validateDmnPath);
-        settingsScenarioSimulationDropdown.loadAssets(simulationDescriptor.getDmnFilePath());
+        settingsScenarioSimulationDropdown.loadAssets(settings.getDmnFilePath());
     }
 
     protected void saveRuleSettings() {
-        simulationDescriptor.setDmoSession(getCleanValue(() -> view.getDmoSession().getValue()));
-        simulationDescriptor.setRuleFlowGroup(getCleanValue(() -> view.getRuleFlowGroup().getValue()));
-        simulationDescriptor.setStateless(view.getStateless().isChecked());
+        settings.setDmoSession(getCleanValue(() -> view.getDmoSession().getValue()));
+        settings.setRuleFlowGroup(getCleanValue(() -> view.getRuleFlowGroup().getValue()));
+        settings.setStateless(view.getStateless().isChecked());
     }
 
     protected void saveDMNSettings() {
        String value = settingsScenarioSimulationDropdown.getValue().map(KieAssetsDropdownItem::getValue).orElse("");
-       simulationDescriptor.setDmnFilePath(getCleanValue(() -> value));
+       settings.setDmnFilePath(getCleanValue(() -> value));
     }
 
     /**
@@ -180,7 +180,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     protected void setDmnErrorPath() {
         view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.INLINE);
         view.getDmnFilePathErrorLabel().setInnerText(
-                ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorLabel(simulationDescriptor.getDmnFilePath()));
+                ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorLabel(settings.getDmnFilePath()));
         view.getSaveButton().setDisabled(true);
     }
 

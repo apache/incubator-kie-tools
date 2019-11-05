@@ -56,4 +56,6 @@ public class ScenarioSimulationViewImpl extends KieEditorViewImpl implements Sce
         }
         scenarioGridWidget.onResize();
     }
+
+
 }

@@ -46,7 +46,7 @@ public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationTe
         super.setup();
         scenarioViewImpl = spy(new ScenarioSimulationViewImpl() {
             {
-                this.scenarioGridWidget = scenarioGridWidgetMock;
+                this.scenarioGridWidget = scenarioGridWidgetSpy;
             }
         });
         when(scenarioViewImpl.getParent()).thenReturn(parentWidget);
@@ -58,6 +58,6 @@ public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationTe
     public void onResize() {
         scenarioViewImpl.onResize();
         verify(scenarioViewImpl, times(1)).setPixelSize(eq(WIDTH), eq(HEIGHT));
-        verify(scenarioGridWidgetMock, times(1)).onResize();
+        verify(scenarioGridWidgetSpy, times(1)).onResize();
     }
 }

@@ -99,7 +99,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
                 return new Point2D(MX, MY);
             }
         });
-        when(simulationMock.getScenarioByIndex(isA(Integer.class))).thenReturn(scenarioMock);
+        when(simulationMock.getDataByIndex(isA(Integer.class))).thenReturn(scenarioMock);
         when(scenarioMock.getFactMappingValue(any())).thenReturn(Optional.of(factMappingValueMock));
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
         when(factMappingValueMock.getRawValue()).thenReturn(RAW_VALUE);
@@ -124,7 +124,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     @Test
     public void manageBodyCoordinates_Right() {
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -143,7 +143,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     public void manageBodyCoordinates_Left() {
         when(scenarioGridLayerMock.getWidth()).thenReturn(TINY_LAYER);
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -163,7 +163,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         when(factMappingValueMock.getRawValue()).thenReturn(null);
         when(factMappingValueMock.getErrorValue()).thenReturn(null);
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -183,7 +183,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         when(factMappingValueMock.getExceptionMessage()).thenReturn(EXCEPTION);
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -201,7 +201,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         when(elementMock.getScrollTop()).thenReturn(SCROLL_TOP);
         when(elementMock.getScrollLeft()).thenReturn(SCROLL_LEFT);
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -220,7 +220,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     public void manageBodyCoordinates_NoError() {
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.SUCCESS);
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, never()).retrieveCellMiddleXYPosition(any(), isA(Integer.class));
@@ -239,7 +239,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         });
         when(errorReportPopupPresenterMock.isShown()).thenReturn(Boolean.TRUE);
         mouseMoveHandler.manageBodyCoordinates(0, 0);
-        verify(simulationMock, never()).getScenarioByIndex(isA(Integer.class));
+        verify(simulationMock, never()).getDataByIndex(isA(Integer.class));
         verify(simulationDescriptorMock, never()).getFactMappingByIndex(isA(Integer.class));
         verify(scenarioMock, never()).getFactMappingValue(any());
         verify(mouseMoveHandler, never()).retrieveCellMiddleXYPosition(any(), isA(Integer.class));
@@ -268,7 +268,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
             }
         });
         mouseMoveHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
         verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
         verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, ROW_INDEX);
@@ -294,7 +294,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
             }
         });
         boolean inGrid = mouseMoveHandler.manageBodyCoordinates(-1, -1);
-        verify(simulationMock, never()).getScenarioByIndex(isA(Integer.class));
+        verify(simulationMock, never()).getDataByIndex(isA(Integer.class));
         verify(simulationDescriptorMock, never()).getFactMappingByIndex(isA(Integer.class));
         verify(scenarioMock, never()).getFactMappingValue(any());
         verify(mouseMoveHandler, never()).retrieveCellMiddleXYPosition(any(), isA(Integer.class));
@@ -305,7 +305,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     @Test
     public void manageBodyCoordinates_notInGrid() {
         boolean inGrid = mouseMoveHandler.manageBodyCoordinates(-1, -1);
-        verify(simulationMock, never()).getScenarioByIndex(isA(Integer.class));
+        verify(simulationMock, never()).getDataByIndex(isA(Integer.class));
         verify(simulationDescriptorMock, never()).getFactMappingByIndex(isA(Integer.class));
         verify(scenarioMock, never()).getFactMappingValue(any());
         verify(mouseMoveHandler, never()).retrieveCellMiddleXYPosition(any(), isA(Integer.class));

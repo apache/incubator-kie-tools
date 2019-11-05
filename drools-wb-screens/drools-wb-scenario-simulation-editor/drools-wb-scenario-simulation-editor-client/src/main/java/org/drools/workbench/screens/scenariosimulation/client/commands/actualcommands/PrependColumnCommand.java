@@ -28,7 +28,7 @@ public class PrependColumnCommand extends AbstractInsertColumnCommand {
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        final int index = context.getModel().getFirstIndexLeftOfGroup(status.getColumnGroup());
+        final int index = context.getSelectedScenarioGridModel().getFirstIndexLeftOfGroup(status.getColumnGroup());
         commonInsertColumnCommand(context, status, index);
     }
 }

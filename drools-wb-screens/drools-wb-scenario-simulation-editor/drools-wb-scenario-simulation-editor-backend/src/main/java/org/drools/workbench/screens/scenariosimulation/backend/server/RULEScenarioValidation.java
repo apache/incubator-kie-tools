@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.util.ScenarioBeanWrapper;
@@ -48,14 +49,15 @@ public class RULEScenarioValidation extends AbstractScenarioValidation {
      * - navigation of bean still valid
      * - field type changed
      * @param simulation
+     * @param settings
      * @param kieContainer
      * @return
      */
     @Override
-    public List<FactMappingValidationError> validate(Simulation simulation, KieContainer kieContainer) {
+    public List<FactMappingValidationError> validate(Simulation simulation, Settings settings, KieContainer kieContainer) {
         List<FactMappingValidationError> errors = new ArrayList<>();
         Map<String, Object> beanInstanceMap = new HashMap<>();
-        for (FactMapping factMapping : simulation.getSimulationDescriptor().getFactMappings()) {
+        for (FactMapping factMapping : simulation.getScesimModelDescriptor().getFactMappings()) {
             if (isToSkip(factMapping)) {
                 continue;
             }

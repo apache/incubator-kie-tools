@@ -38,13 +38,13 @@ public class ScenarioCsvImportExport {
 
     public String exportData(Simulation simulation) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        List<FactMapping> factMappings = simulation.getSimulationDescriptor().getUnmodifiableFactMappings();
+        List<FactMapping> factMappings = simulation.getScesimModelDescriptor().getUnmodifiableFactMappings();
 
         CSVPrinter printer = new CSVPrinter(stringBuilder, CSVFormat.DEFAULT);
 
         generateHeader(factMappings, printer);
 
-        for (Scenario scenario : simulation.getUnmodifiableScenarios()) {
+        for (Scenario scenario : simulation.getUnmodifiableData()) {
             List<Object> values = new ArrayList<>();
             for (FactMapping factMapping : factMappings) {
                 Optional<FactMappingValue> factMappingValue = scenario.getFactMappingValue(factMapping.getFactIdentifier(),
@@ -63,10 +63,10 @@ public class ScenarioCsvImportExport {
 
         CSVParser csvParser = CSVFormat.DEFAULT.parse(new StringReader(raw));
 
-        Simulation toReturn = originalSimulation.cloneSimulation();
-        toReturn.clearScenarios();
+        Simulation toReturn = originalSimulation.cloneModel();
+        toReturn.clearDatas();
 
-        List<FactMapping> factMappings = toReturn.getSimulationDescriptor().getUnmodifiableFactMappings();
+        List<FactMapping> factMappings = toReturn.getScesimModelDescriptor().getUnmodifiableFactMappings();
 
         List<CSVRecord> csvRecords = csvParser.getRecords();
         if (csvRecords.size() < HEADER_SIZE) {
@@ -75,7 +75,7 @@ public class ScenarioCsvImportExport {
         csvRecords = csvRecords.subList(HEADER_SIZE, csvRecords.size());
 
         for (CSVRecord csvRecord : csvRecords) {
-            Scenario scenarioToFill = toReturn.addScenario();
+            Scenario scenarioToFill = toReturn.addData();
             if (csvRecord.size() != factMappings.size()) {
                 throw new IllegalArgumentException("Malformed row " + csvRecord);
             }

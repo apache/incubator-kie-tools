@@ -24,8 +24,8 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.BaseMenuView;
@@ -116,7 +116,10 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
         when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
         this.modelLocal = new ScenarioSimulationModel();
-        modelLocal.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, null));
+        modelLocal.setSimulation(getSimulation());
+        modelLocal.setSettings(settingsLocal);
+        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
+        settingsLocal.setDmoSession(null);
         this.content = new ScenarioSimulationModelContent(modelLocal,
                                                           overviewMock,
                                                           packageDataModelOracleBaselinePayload);
@@ -124,24 +127,14 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         when(scenarioSimulationServiceMock.loadContent(observablePathMock)).thenReturn(content);
     }
 
-    protected Simulation getSimulation(ScenarioSimulationModel.Type selectedType, String value) {
+    protected Simulation getSimulation() {
         Simulation toReturn = new Simulation();
-        SimulationDescriptor simulationDescriptor = toReturn.getSimulationDescriptor();
-        simulationDescriptor.setType(selectedType);
-        switch (selectedType) {
-            case DMN:
-                simulationDescriptor.setDmnFilePath(value);
-                break;
-            case RULE:
-            default:
-                simulationDescriptor.setDmoSession(value);
-        }
-
+        ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
 
-        Scenario scenario = toReturn.addScenario();
-        int row = toReturn.getUnmodifiableScenarios().indexOf(scenario);
+        Scenario scenario = toReturn.addData();
+        int row = toReturn.getUnmodifiableData().indexOf(scenario);
         scenario.setDescription(null);
 
         // Add GIVEN Fact

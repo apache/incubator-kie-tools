@@ -26,8 +26,8 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +69,7 @@ public class ScenarioCsvImportExportTest {
     public void importData() throws IOException {
         Simulation originalSimulation = createDummySimulation(3, 1);
 
-        assertEquals(1, originalSimulation.getUnmodifiableScenarios().size());
+        assertEquals(1, originalSimulation.getUnmodifiableData().size());
 
         String rawCSV = "OTHER,OTHER,GIVEN,GIVEN,GIVEN\r\n" +
                 "#,Scenario description,instance1,instance2,instance3\r\n" +
@@ -78,11 +78,11 @@ public class ScenarioCsvImportExportTest {
 
         Simulation simulation = scenarioCsvImportExport.importData(rawCSV, originalSimulation);
 
-        assertEquals(1, simulation.getUnmodifiableScenarios().size());
+        assertEquals(1, simulation.getUnmodifiableData().size());
 
-        assertEquals("value1", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(2)).get().getRawValue());
-        assertEquals("value2", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(3)).get().getRawValue());
-        assertNull(simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(4)).get().getRawValue());
+        assertEquals("value1", simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(2)).get().getRawValue());
+        assertEquals("value2", simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(3)).get().getRawValue());
+        assertNull(simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(4)).get().getRawValue());
 
         assertThatThrownBy(() -> scenarioCsvImportExport.importData("", originalSimulation))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -91,7 +91,7 @@ public class ScenarioCsvImportExportTest {
 
     @Test
     public void generateHeader() throws IOException {
-        SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptor = new ScesimModelDescriptor();
         FactMapping test1FactMapping = createFactMapping(simulationDescriptor, 1);
         FactMapping test2FactMapping = createFactMapping(simulationDescriptor, 2);
 
@@ -107,7 +107,7 @@ public class ScenarioCsvImportExportTest {
         assertEquals(propertyName + 1 + "," + propertyName + 2, result[2]);
     }
 
-    private FactMapping createFactMapping(SimulationDescriptor simulationDescriptor, int number) {
+    private FactMapping createFactMapping(ScesimModelDescriptor simulationDescriptor, int number) {
         FactMapping toReturn = simulationDescriptor.addFactMapping(
                 FactIdentifier.create(instanceName + number, String.class.getCanonicalName()),
                 ExpressionIdentifier.create(propertyName + number, FactMappingType.GIVEN));
@@ -117,7 +117,7 @@ public class ScenarioCsvImportExportTest {
 
     private Simulation createDummySimulation(int numberOfColumn, int numberOfRow) {
         Simulation simulation = new Simulation();
-        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
         simulationDescriptor.addFactMapping(FactIdentifier.INDEX, ExpressionIdentifier.INDEX)
                 .setExpressionAlias("Index");
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION)
@@ -128,7 +128,7 @@ public class ScenarioCsvImportExportTest {
         }
 
         for (int row = 0; row < numberOfRow; row += 1) {
-            Scenario scenario = simulation.addScenario();
+            Scenario scenario = simulation.addData();
             scenario.addMappingValue(FactIdentifier.INDEX, ExpressionIdentifier.INDEX, row);
             scenario.setDescription("My scenario " + row);
             for (int col = 2; col < numberOfColumn + 2; col += 1) {

@@ -59,7 +59,6 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFactoriesTest {
 
-
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactoryMock;
     protected CollectionViewImpl collectionEditorViewImpl;
 
@@ -122,7 +121,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
 
     @Test
     public void manageList() {
-        String key =  FULL_CLASS_NAME + "#" + LIST_CLASS_NAME;
+        String key = FULL_CLASS_NAME + "#" + LIST_CLASS_NAME;
         collectionEditorSingletonDOMElementFactoryMock.manageList(collectionEditorViewImpl, key, STRING_CLASS_NAME);
         verify(collectionEditorViewImpl, times(1)).setListWidget(true);
         Map<String, String> expectedMap1 = new HashMap<>();
@@ -165,7 +164,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     }
 
     private void manageMap(String genericType1, boolean isRule, Map<String, String> expectedMap1) {
-        String key =  FULL_CLASS_NAME + "#" + LIST_CLASS_NAME;
+        String key = FULL_CLASS_NAME + "#" + LIST_CLASS_NAME;
         Map<String, String> expectedMap0 = new HashMap<>();
 
         doReturn(expectedMap0).when(collectionEditorSingletonDOMElementFactoryMock).getSimplePropertiesMap(eq(STRING_CLASS_NAME));
@@ -189,8 +188,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRuleSimpleType() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(RULE);
-
+        settingsLocal.setType(RULE);
         setCollectionEditorStructureData();
     }
 
@@ -198,7 +196,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRule_NotSimpleType() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(RULE);
+        settingsLocal.setType(RULE);
         factMappingMock.getGenericTypes().clear();
         factMappingMock.getGenericTypes().add(FULL_CLASS_NAME);
         factMappingMock.getGenericTypes().add(FULL_CLASS_NAME + "1");
@@ -210,7 +208,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRule() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(RULE);
+        settingsLocal.setType(RULE);
 
         setCollectionEditorStructureData();
     }
@@ -219,7 +217,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageListRule() {
         when(factMappingMock.getExpressionAlias()).thenReturn(LIST_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(LIST_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(RULE);
+        settingsLocal.setType(RULE);
 
         setCollectionEditorStructureData();
     }
@@ -228,14 +226,13 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageListDMN() {
         when(factMappingMock.getExpressionAlias()).thenReturn(LIST_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(LIST_CLASS_NAME);
-        when(simulationDescriptorMock.getType()).thenReturn(DMN);
-
+        settingsLocal.setType(DMN);
         setCollectionEditorStructureData();
     }
 
     private void setCollectionEditorStructureData() {
         collectionEditorSingletonDOMElementFactoryMock.setCollectionEditorStructureData(collectionEditorViewImpl, factMappingMock);
-        boolean isRule = RULE.equals(simulationDescriptorMock.getType());
+        boolean isRule = RULE.equals(settingsLocal.getType());
         String genericTypeName0 = factMappingMock.getGenericTypes().get(0);
         String genericTypeName1 = factMappingMock.getGenericTypes().get(1);
         if (isRule && !isSimpleJavaType(genericTypeName0)) {

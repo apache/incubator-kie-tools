@@ -40,7 +40,6 @@ public class ScenarioCommandRegistry extends CommandRegistryImpl<AbstractScenari
     /**
      * Method to register the status as it was soon before the command execution,
      * to be used for undo/redo
-     *
      * @param context
      * @param command
      */
@@ -59,7 +58,7 @@ public class ScenarioCommandRegistry extends CommandRegistryImpl<AbstractScenari
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (!getCommandHistory().isEmpty()) {
             final AbstractScenarioSimulationCommand toUndo = pop();
-            toReturn = commonOperation(scenarioSimulationContext, toUndo, true);
+            toReturn = commonUndoRedoOperation(scenarioSimulationContext, toUndo, true);
             if (Objects.equals(CommandResultBuilder.SUCCESS, toReturn)) {
                 undoneCommands.push(toUndo);
             }
@@ -79,7 +78,7 @@ public class ScenarioCommandRegistry extends CommandRegistryImpl<AbstractScenari
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (!undoneCommands.isEmpty()) {
             final AbstractScenarioSimulationCommand toRedo = undoneCommands.pop();
-            toReturn = commonOperation(scenarioSimulationContext, toRedo, false);
+            toReturn = commonUndoRedoOperation(scenarioSimulationContext, toRedo, false);
             if (Objects.equals(CommandResultBuilder.SUCCESS, toReturn)) {
                 register(toRedo);
             }
@@ -90,7 +89,14 @@ public class ScenarioCommandRegistry extends CommandRegistryImpl<AbstractScenari
         return toReturn;
     }
 
-    protected CommandResult<ScenarioSimulationViolation> commonOperation(final ScenarioSimulationContext scenarioSimulationContext, final AbstractScenarioSimulationCommand command, boolean isUndo) {
+    /**
+     * Common method called by <b>undo</b> and <b>redo</b> events
+     * @param scenarioSimulationContext
+     * @param command
+     * @param isUndo
+     * @return
+     */
+    protected CommandResult<ScenarioSimulationViolation> commonUndoRedoOperation(final ScenarioSimulationContext scenarioSimulationContext, final AbstractScenarioSimulationCommand command, boolean isUndo) {
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (isUndo) {
             toReturn = command.undo(scenarioSimulationContext);

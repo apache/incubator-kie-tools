@@ -32,7 +32,7 @@ public class ScenarioGridReloadEvent extends GwtEvent<ScenarioGridReloadEventHan
 
     @Override
     protected void dispatch(ScenarioGridReloadEventHandler handler) {
-        handler.handle(this);
+        handler.onEvent(this);
     }
 
 }

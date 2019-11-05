@@ -203,7 +203,7 @@ public class CoverageReportPresenterTest {
         presenterSpy.populateScenarioList(scenarioCounterLocal, Type.DMN);
         verify(coverageScenarioListPresenterMock, times(1)).clear();
         verify(coverageScenarioListPresenterMock, times(scenarioCounterLocal.size()))
-                .addScenarioGroup(scenarioWithIndexCaptor.capture(),
+                .addScesimDataGroup(scenarioWithIndexCaptor.capture(),
                                   resultCounterCaptor.capture(),
                                   eq(Type.DMN));
 

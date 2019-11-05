@@ -36,7 +36,7 @@ public class InsertColumnCommand extends AbstractSelectedColumnCommand {
         if (context.getStatus().isAsProperty()) {
             columnPosition = context.getStatus().isRight() ? context.getStatus().getColumnIndex() + 1 : context.getStatus().getColumnIndex();
         } else {
-            GridData.Range instanceRange = context.getModel().getInstanceLimits(context.getStatus().getColumnIndex());
+            GridData.Range instanceRange = context.getSelectedScenarioGridModel().getInstanceLimits(context.getStatus().getColumnIndex());
             columnPosition = context.getStatus().isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
         }
         boolean cloneInstance = context.getStatus().isAsProperty() && selectedColumn.isInstanceAssigned();

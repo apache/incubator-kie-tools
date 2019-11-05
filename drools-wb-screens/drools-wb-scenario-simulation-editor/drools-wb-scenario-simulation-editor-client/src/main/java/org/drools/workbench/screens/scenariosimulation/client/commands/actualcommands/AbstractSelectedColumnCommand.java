@@ -24,6 +24,7 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -72,7 +73,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         String columnGroup = selectedInformationHeaderMetaData.getColumnGroup();
         String originalInstanceTitle = selectedInformationHeaderMetaData.getTitle();
         final FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
-        final Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
+        final Map.Entry<String, String> validPlaceholders = context.getSelectedScenarioGridModel().getValidPlaceholders();
         String instanceTitle = cloneInstance ? originalInstanceTitle : validPlaceholders.getKey();
         String propertyTitle = validPlaceholders.getValue();
         String placeHolder = ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
@@ -89,7 +90,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         }
         scenarioGridColumnLocal.setInstanceAssigned(cloneInstance);
         scenarioGridColumnLocal.setPropertyAssigned(false);
-        context.getModel().insertColumn(columnPosition, scenarioGridColumnLocal);
+        context.getSelectedScenarioGridModel().insertColumn(columnPosition, scenarioGridColumnLocal);
         return scenarioGridColumnLocal;
     }
 
@@ -99,12 +100,12 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
      * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
      */
     protected void setInstanceHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String alias, String fullClassName) {
-        int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
+        int columnIndex = context.getSelectedScenarioGridModel().getColumns().indexOf(selectedColumn);
         final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, alias, fullClassName);
         setInstanceHeaderMetaData(selectedColumn, alias, factIdentifier);
         final ScenarioHeaderMetaData propertyHeaderMetaData = selectedColumn.getPropertyHeaderMetaData();
         setPropertyMetaData(propertyHeaderMetaData, getPropertyPlaceHolder(columnIndex), false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
-        context.getModel().updateColumnInstance(columnIndex, selectedColumn);
+        context.getSelectedScenarioGridModel().updateColumnInstance(columnIndex, selectedColumn);
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().reloadTestTools(false);
         }
@@ -116,7 +117,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
      * @return
      */
     protected Optional<ScenarioGridColumn> getSelectedColumn(ScenarioSimulationContext context) {
-        return Optional.ofNullable((ScenarioGridColumn) context.getModel().getSelectedColumn());
+        return Optional.ofNullable((ScenarioGridColumn) context.getSelectedScenarioGridModel().getSelectedColumn());
     }
 
     /**
@@ -141,7 +142,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
      * @return
      */
     protected FactIdentifier setEditableHeadersAndGetFactIdentifier(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String aliasName, String canonicalClassName) {
-        final ScenarioSimulationModel.Type simulationModelType = context.getModel().getSimulation().orElseThrow(IllegalArgumentException::new).getSimulationDescriptor().getType();
+        final ScenarioSimulationModel.Type simulationModelType = context.getSettings().getType();
         selectedColumn.setEditableHeaders(!simulationModelType.equals(ScenarioSimulationModel.Type.DMN));
         String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
         return getFactIdentifierByColumnTitle(aliasName, context).orElseGet(() -> FactIdentifier.create(nameToUseForCreation, canonicalClassName));
@@ -202,16 +203,16 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         if (propertyTitle == null) {
             throw new IllegalArgumentException("Property title can not be null");
         }
-        int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
+        int columnIndex = context.getSelectedScenarioGridModel().getColumns().indexOf(selectedColumn);
         String instanceAliasName = propertyNameElements.get(0);
         if (selectedColumn.isInstanceAssigned() && !instanceAliasName.equals(selectedColumn.getInformationHeaderMetaData().getTitle())) {
             throw new IllegalArgumentException("It's not possible to assign this property");
         }
         String className = factIdentifier.getClassName();
-        final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
+        final GridData.Range instanceLimits = context.getSelectedScenarioGridModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
-                    final ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) context.getModel().getColumns().get(index);
+                    final ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) context.getSelectedScenarioGridModel().getColumns().get(index);
                     if (!scenarioGridColumn.isInstanceAssigned()) { // We have not defined the instance, yet
                         setInstanceHeaderMetaData(scenarioGridColumn, instanceAliasName, factIdentifier);
                     }
@@ -220,10 +221,10 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(propertyClass);
         setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyTitle, false, selectedColumn, editableCellPlaceholder);
         selectedColumn.setPropertyAssigned(true);
-        context.getModel().updateColumnProperty(columnIndex,
-                                                selectedColumn,
-                                                propertyNameElements,
-                                                propertyClass, context.getStatus().isKeepData());
+        context.getSelectedScenarioGridModel().updateColumnProperty(columnIndex,
+                                                                    selectedColumn,
+                                                                    propertyNameElements,
+                                                                    propertyClass, context.getStatus().isKeepData());
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
             manageCollectionProperty(context, selectedColumn, className, columnIndex, propertyNameElements);
         } else {
@@ -261,7 +262,11 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
             className = className.substring(className.lastIndexOf('.') + 1);
         }
         final FactModelTree factModelTree = dataObjectFieldsMap.get(className);
-        final FactMapping factMapping = context.getModel().getSimulation().orElseThrow(IllegalArgumentException::new).getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+        final Optional<AbstractScesimModel> selectedScenarioGridModel = context.getSelectedScenarioGridModel().getAbstractScesimModel();
+        if (!selectedScenarioGridModel.isPresent()) {
+            throw new IllegalArgumentException("SelectedGrid not found");
+        }
+        final FactMapping factMapping = selectedScenarioGridModel.get().getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
         selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
         if (factModelTree.isSimple()) {
             factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(ConstantHolder.VALUE));
@@ -301,7 +306,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
     }
 
     protected Optional<String> getMatchingExpressionAlias(ScenarioSimulationContext context, List<String> propertyNameElements, FactIdentifier factIdentifier) {
-        final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingsByFactName(factIdentifier.getName());
+        final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getScesimModelDescriptor().getFactMappingsByFactName(factIdentifier.getName());
         return factMappingsByFactName.stream()
                 .filter(factMapping -> {
                     List<String> expressionElements = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.toList());

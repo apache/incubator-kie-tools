@@ -46,7 +46,7 @@ public class CoverageScenarioListPresenter implements CoverageScenarioListView.P
     }
 
     @Override
-    public void addScenarioGroup(ScenarioWithIndex scenarioWithIndex, Map<String, Integer> resultCounter, Type type) {
+    public void addScesimDataGroup(ScenarioWithIndex scenarioWithIndex, Map<String, Integer> resultCounter, Type type) {
         CoverageScenarioListView coverageScenarioListView = viewsProvider.getCoverageScenarioListView();
         coverageScenarioListView.setPresenter(this);
         coverageScenarioListView.setVisible(false);
@@ -58,7 +58,7 @@ public class CoverageScenarioListPresenter implements CoverageScenarioListView.P
                 ScenarioSimulationEditorConstants.INSTANCE.rulesFired();
 
         coverageScenarioListView.getFaAngleRight().textContent = "  " + customText
-                + " " + scenarioWithIndex.getIndex() + ": " + scenarioWithIndex.getScenario().getDescription();
+                + " " + scenarioWithIndex.getIndex() + ": " + scenarioWithIndex.getScesimData().getDescription();
 
         scenarioElement.appendChild(createInternalList(resultCounter, coverageScenarioListView.getScenarioContentList()));
 

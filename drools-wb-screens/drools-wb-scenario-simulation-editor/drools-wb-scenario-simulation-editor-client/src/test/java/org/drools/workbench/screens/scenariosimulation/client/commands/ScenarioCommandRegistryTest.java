@@ -18,13 +18,21 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.command.client.CommandResult;
+import org.kie.workbench.common.command.client.CommandResultBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -45,40 +53,52 @@ public class ScenarioCommandRegistryTest extends AbstractScenarioSimulationTest 
     }
 
     @Test
+    public void register() {
+        scenarioCommandRegistry.undoneCommands.add(mock(AbstractScenarioSimulationCommand.class));
+        assertFalse(scenarioCommandRegistry.undoneCommands.isEmpty());
+        scenarioCommandRegistry.register(scenarioSimulationContextLocal, mock(AbstractScenarioSimulationCommand.class));
+        assertTrue(scenarioCommandRegistry.undoneCommands.isEmpty());
+        verify(scenarioCommandRegistry, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
+    }
+
+    @Test
     public void undoEmpty() {
         scenarioCommandRegistry.undoneCommands.clear();
         final CommandResult<ScenarioSimulationViolation> retrieved = scenarioCommandRegistry.undo(scenarioSimulationContextLocal);
         assertEquals(CommandResult.Type.WARNING, retrieved.getType());
-        verify(scenarioCommandRegistry, never()).commonOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(true));
+        verify(scenarioCommandRegistry, never()).commonUndoRedoOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(true));
         verify(scenarioCommandRegistry, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
     }
 
     @Test
     public void undoNotEmpty() {
-        int currentSize = scenarioCommandRegistry.undoneCommands.size();
-        scenarioCommandRegistry.register(scenarioSimulationContextLocal, appendRowCommandMock);
+        scenarioCommandRegistry.undoneCommands.clear();
+        AbstractScenarioSimulationCommand commandMock = mock(AbstractScenarioSimulationCommand.class);
+        scenarioCommandRegistry.register(commandMock);
+        doReturn(CommandResultBuilder.SUCCESS).when(scenarioCommandRegistry).commonUndoRedoOperation(any(), any(), anyBoolean());
+        final CommandResult<ScenarioSimulationViolation> retrieved = scenarioCommandRegistry.undo(scenarioSimulationContextLocal);
+        assertEquals(CommandResult.Type.INFO, retrieved.getType());
+        verify(scenarioCommandRegistry, times(1)).commonUndoRedoOperation(eq(scenarioSimulationContextLocal), eq(commandMock), eq(true));
         verify(scenarioCommandRegistry, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
-        scenarioCommandRegistry.undo(scenarioSimulationContextLocal);
-        assertEquals(currentSize + 1, scenarioCommandRegistry.undoneCommands.size());
-        verify(scenarioCommandRegistry, times(1)).commonOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(true));
-        verify(scenarioCommandRegistry, times(2)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
     }
 
     @Test
     public void redoEmpty() {
         scenarioCommandRegistry.undoneCommands.clear();
         scenarioCommandRegistry.redo(scenarioSimulationContextLocal);
-        verify(scenarioCommandRegistry, never()).commonOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(true));
+        verify(scenarioCommandRegistry, never()).commonUndoRedoOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(true));
         verify(scenarioCommandRegistry, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
     }
 
     @Test
     public void redoNotEmpty() {
-        scenarioCommandRegistry.undoneCommands.push(appendRowCommandMock);
-        int currentSize = scenarioCommandRegistry.undoneCommands.size();
-        scenarioCommandRegistry.redo(scenarioSimulationContextLocal);
-        assertEquals(currentSize - 1, scenarioCommandRegistry.undoneCommands.size());
-        verify(scenarioCommandRegistry, times(1)).commonOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(false));
+        scenarioCommandRegistry.undoneCommands.clear();
+        AbstractScenarioSimulationCommand commandMock = mock(AbstractScenarioSimulationCommand.class);
+        scenarioCommandRegistry.undoneCommands.add(commandMock);
+        doReturn(CommandResultBuilder.SUCCESS).when(scenarioCommandRegistry).commonUndoRedoOperation(any(), any(), anyBoolean());
+        final CommandResult<ScenarioSimulationViolation> retrieved = scenarioCommandRegistry.redo(scenarioSimulationContextLocal);
+        assertEquals(CommandResult.Type.INFO, retrieved.getType());
+        verify(scenarioCommandRegistry, never()).commonUndoRedoOperation(eq(scenarioSimulationContextLocal), eq(commandMock), eq(true));
         verify(scenarioCommandRegistry, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
     }
 
@@ -105,14 +125,14 @@ public class ScenarioCommandRegistryTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void commonOperationUndo() {
-        scenarioCommandRegistry.commonOperation(scenarioSimulationContextLocal, appendRowCommandMock, true);
+        scenarioCommandRegistry.commonUndoRedoOperation(scenarioSimulationContextLocal, appendRowCommandMock, true);
         verify(appendRowCommandMock, times(1)).undo(eq(scenarioSimulationContextLocal));
         verify(appendRowCommandMock, never()).redo(eq(scenarioSimulationContextLocal));
     }
 
     @Test
     public void commonOperationRedo() {
-        scenarioCommandRegistry.commonOperation(scenarioSimulationContextLocal, appendRowCommandMock, false);
+        scenarioCommandRegistry.commonUndoRedoOperation(scenarioSimulationContextLocal, appendRowCommandMock, false);
         verify(appendRowCommandMock, times(1)).redo(eq(scenarioSimulationContextLocal));
         verify(appendRowCommandMock, never()).undo(eq(scenarioSimulationContextLocal));
     }
