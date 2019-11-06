@@ -68,7 +68,7 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     @Override
     public void parseFEELList(final String source,
                               final ServiceCallback<List<String>> callback) {
-        callback.onSuccess(Collections.emptyList());
+        callback.onSuccess(FEELListParser.parse(source));
     }
 
     @Override

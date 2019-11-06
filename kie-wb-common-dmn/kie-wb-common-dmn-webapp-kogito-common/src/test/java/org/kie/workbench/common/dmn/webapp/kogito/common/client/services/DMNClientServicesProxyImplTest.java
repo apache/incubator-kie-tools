@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
@@ -51,5 +53,22 @@ public class DMNClientServicesProxyImplTest {
         };
 
         service.parseRangeValue("[1..2]", callback);
+    }
+
+    @Test
+    public void testParseFEELList() {
+        final ServiceCallback<List<String>> callback = new ServiceCallback<List<String>>() {
+            @Override
+            public void onSuccess(final List<String> actual) {
+                assertThat(actual).containsExactly("one", "two");
+            }
+
+            @Override
+            public void onError(final ClientRuntimeError error) {
+                fail(error.getMessage());
+            }
+        };
+
+        service.parseFEELList("one,two", callback);
     }
 }
