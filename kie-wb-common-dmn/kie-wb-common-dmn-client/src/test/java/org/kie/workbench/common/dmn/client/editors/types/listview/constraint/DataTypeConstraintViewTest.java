@@ -33,6 +33,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintView_AddConstraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintView_ConstraintsTooltip;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -45,16 +46,19 @@ import static org.mockito.Mockito.when;
 public class DataTypeConstraintViewTest {
 
     @Mock
-    private HTMLAnchorElement constraintsAnchor;
+    private HTMLAnchorElement constraintsAnchorContainer;
+
+    @Mock
+    private HTMLDivElement constraintsLabelContainer;
+
+    @Mock
+    private HTMLElement constraintsAnchorText;
+
+    @Mock
+    private HTMLElement constraintsLabelText;
 
     @Mock
     private HTMLElement constraintsTooltip;
-
-    @Mock
-    private HTMLElement constraintsLabel;
-
-    @Mock
-    private HTMLDivElement constraintsText;
 
     @Mock
     private TranslationService translationService;
@@ -66,7 +70,7 @@ public class DataTypeConstraintViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DataTypeConstraintView(constraintsAnchor, constraintsTooltip, constraintsLabel, constraintsText, translationService));
+        view = spy(new DataTypeConstraintView(constraintsAnchorContainer, constraintsLabelContainer, constraintsAnchorText, constraintsLabelText, constraintsTooltip, translationService));
         view.init(presenter);
     }
 
@@ -98,65 +102,53 @@ public class DataTypeConstraintViewTest {
     @Test
     public void testShowAnchor() {
 
-        constraintsAnchor.classList = mock(DOMTokenList.class);
+        constraintsLabelContainer.classList = mock(DOMTokenList.class);
+        constraintsAnchorContainer.classList = mock(DOMTokenList.class);
         constraintsTooltip.classList = mock(DOMTokenList.class);
 
         view.showAnchor();
 
-        verify(constraintsAnchor.classList).remove(HIDDEN_CSS_CLASS);
+        verify(constraintsLabelContainer.classList).add(HIDDEN_CSS_CLASS);
+        verify(constraintsAnchorContainer.classList).remove(HIDDEN_CSS_CLASS);
         verify(constraintsTooltip.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
-    public void testShowTextLabel() {
+    public void testHideAnchorWhenLabelTextIsConstraints() {
 
-        constraintsLabel.classList = mock(DOMTokenList.class);
+        final String addConstraints = "Add Constraints";
+        when(translationService.format(DataTypeConstraintView_AddConstraints)).thenReturn(addConstraints);
 
-        view.showTextLabel();
-
-        verify(constraintsLabel.classList).remove(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testHideAnchor() {
-
-        constraintsAnchor.classList = mock(DOMTokenList.class);
+        constraintsLabelContainer.classList = mock(DOMTokenList.class);
+        constraintsAnchorContainer.classList = mock(DOMTokenList.class);
         constraintsTooltip.classList = mock(DOMTokenList.class);
+
+        constraintsLabelText.textContent = addConstraints;
 
         view.hideAnchor();
 
-        verify(constraintsAnchor.classList).add(HIDDEN_CSS_CLASS);
+        verify(constraintsLabelContainer.classList).add(HIDDEN_CSS_CLASS);
+        verify(constraintsAnchorContainer.classList).add(HIDDEN_CSS_CLASS);
         verify(constraintsTooltip.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
-    public void testHideTextLabel() {
+    public void testHideAnchorWhenLabelTextIsNotConstraints() {
 
-        constraintsLabel.classList = mock(DOMTokenList.class);
+        final String addConstraints = "Add Constraints";
+        when(translationService.format(DataTypeConstraintView_AddConstraints)).thenReturn(addConstraints);
 
-        view.hideTextLabel();
+        constraintsLabelContainer.classList = mock(DOMTokenList.class);
+        constraintsAnchorContainer.classList = mock(DOMTokenList.class);
+        constraintsTooltip.classList = mock(DOMTokenList.class);
 
-        verify(constraintsLabel.classList).add(HIDDEN_CSS_CLASS);
-    }
+        constraintsLabelText.textContent = "1, 2, 3";
 
-    @Test
-    public void testShowText() {
+        view.hideAnchor();
 
-        constraintsText.classList = mock(DOMTokenList.class);
-
-        view.showText();
-
-        verify(constraintsText.classList).remove(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testHideText() {
-
-        constraintsText.classList = mock(DOMTokenList.class);
-
-        view.hideText();
-
-        verify(constraintsText.classList).add(HIDDEN_CSS_CLASS);
+        verify(constraintsLabelContainer.classList).remove(HIDDEN_CSS_CLASS);
+        verify(constraintsAnchorContainer.classList).add(HIDDEN_CSS_CLASS);
+        verify(constraintsTooltip.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -164,30 +156,28 @@ public class DataTypeConstraintViewTest {
 
         final String expectedText = "text";
 
-        constraintsText.classList = mock(DOMTokenList.class);
-        constraintsText.textContent = "something";
+        constraintsAnchorText.textContent = "something...";
+        constraintsLabelText.textContent = "something...";
 
         view.setText(expectedText);
 
-        final String actualText = constraintsText.textContent;
-
-        verify(constraintsText.classList).remove("none");
-        assertEquals(expectedText, actualText);
+        assertEquals(expectedText, constraintsAnchorText.textContent);
+        assertEquals(expectedText, constraintsLabelText.textContent);
     }
 
     @Test
     public void testSetTextWhenTextIsBlank() {
 
-        constraintsText.classList = mock(DOMTokenList.class);
-        constraintsText.textContent = "something";
+        final String expectedText = "Add Constraints";
+        when(translationService.format(DataTypeConstraintView_AddConstraints)).thenReturn(expectedText);
+
+        constraintsAnchorText.textContent = "something...";
+        constraintsLabelText.textContent = "something...";
 
         view.setText("");
 
-        final String expectedText = "NONE";
-        final String actualText = constraintsText.textContent;
-
-        verify(constraintsText.classList).add("none");
-        assertEquals(expectedText, actualText);
+        assertEquals(expectedText, constraintsAnchorText.textContent);
+        assertEquals(expectedText, constraintsLabelText.textContent);
     }
 
     @Test

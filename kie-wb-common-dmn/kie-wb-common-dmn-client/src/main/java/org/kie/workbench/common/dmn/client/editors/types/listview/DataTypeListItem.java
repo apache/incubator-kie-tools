@@ -244,7 +244,6 @@ public class DataTypeListItem {
         view.showSaveButton();
         view.showDataTypeNameInput();
         view.showListContainer();
-        view.hideKebabMenu();
         view.hideListYesLabel();
         view.enableFocusMode();
 
@@ -355,7 +354,6 @@ public class DataTypeListItem {
         view.hideDataTypeNameInput();
         view.hideListContainer();
         view.showEditButton();
-        view.showKebabMenu();
         view.disableFocusMode();
 
         refreshListYesLabel();
@@ -691,9 +689,5 @@ public class DataTypeListItem {
         String getName();
 
         void setName(final String name);
-
-        void hideKebabMenu();
-
-        void showKebabMenu();
     }
 }

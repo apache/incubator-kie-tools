@@ -16,32 +16,21 @@
 
 <div data-field="view" class="list-group-item">
     <div class="list-view-pf-actions">
-        <button data-type-field="edit-button" class="btn btn-sm btn-default" data-i18n-key="Edit" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom"></button>
-        <button data-type-field="save-button" class="btn btn-sm btn-primary" data-i18n-key="Save" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom"></button>
-        <button data-type-field="close-button" class="btn btn-sm btn-default" data-i18n-key="Cancel" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom"></button>
-        <div data-type-field="kebab-menu" class="dropdown-kebab-container">
-            <div class="dropdown pull-right dropdown-kebab-pf">
-                <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="fa fa-ellipsis-v"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a data-type-field="remove-button" href="#" data-i18n-key="Remove" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="left"></a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a data-type-field="insert-field-above" href="#" data-i18n-key="InsertFieldAbove" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="left"></a>
-                    </li>
-                    <li>
-                        <a data-type-field="insert-field-below" href="#" data-i18n-key="InsertFieldBelow" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="left"></a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a data-type-field="insert-nested-field" href="#" data-i18n-key="InsertNestedField" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="left"></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <button data-type-field="edit-button" class="btn" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <button data-type-field="insert-nested-field" class="btn" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom">
+            <i class="fa fa-plus-circle"></i>
+        </button>
+        <button data-type-field="remove-button" class="btn" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom">
+            <i class="fa fa-trash"></i>
+        </button>
+        <button data-type-field="save-button" class="btn" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom">
+            <i class="fa fa-check"></i>
+        </button>
+        <button data-type-field="close-button" class="btn" data-toggle="tooltip" data-container="[data-field='list-items']" data-delay="500" data-placement="bottom">
+            <i class="fa fa-times"></i>
+        </button>
     </div>
 
     <div class="list-view-pf-main-info">
@@ -56,9 +45,18 @@
                 <span class="data-type-label hidden" data-i18n-key="Type"></span>
                 <span data-type-field="type"></span>
             </div>
-            <div class="hidden collection-component" data-type-field="list-container"></div>
+            <div class="hidden collection-component" data-type-field="list-container">
+                <div class="kie-data-type-list">
+                    <i class="fa fa-th-list"></i>
+                    <span data-i18n-key="List"></span>
+                </div>
+                <div data-type-field="list-checkbox-container"></div>
+            </div>
             <div class="hidden collection-component" data-type-field="list-yes">
-                <span data-i18n-key="List"></span>
+                <div class="kie-data-type-list">
+                    <i class="fa fa-th-list"></i>
+                    <span data-i18n-key="List"></span>
+                </div>
                 <div>
                     <i class="fa fa-check"></i>
                     <span data-i18n-key="Yes"></span>

@@ -113,34 +113,15 @@ public class DataTypeConstraintTest {
 
         assertTrue(dataTypeConstraint.isEditModeEnabled());
         verify(view).showAnchor();
-        verify(view).showText();
-        verify(view).hideTextLabel();
     }
 
     @Test
-    public void testDisableEditModeWhenValueIsEmpty() {
-
-        doReturn("").when(dataTypeConstraint).getValue();
+    public void testDisableEditMode() {
 
         dataTypeConstraint.disableEditMode();
 
         assertFalse(dataTypeConstraint.isEditModeEnabled());
         verify(view).hideAnchor();
-        verify(view).hideText();
-        verify(view).hideTextLabel();
-    }
-
-    @Test
-    public void testDisableEditModeWhenValueIsNotEmpty() {
-
-        doReturn("1,2,3").when(dataTypeConstraint).getValue();
-
-        dataTypeConstraint.disableEditMode();
-
-        assertFalse(dataTypeConstraint.isEditModeEnabled());
-        verify(view).hideAnchor();
-        verify(view).showText();
-        verify(view).showTextLabel();
     }
 
     @Test

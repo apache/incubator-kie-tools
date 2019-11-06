@@ -15,20 +15,24 @@
  */
 
 [data-i18n-prefix="DataTypeConstraintView."] {
+  padding-top: 10px;
 
-  [data-field="constraints-anchor"] {
-    padding-right: 3px;
+  .fa {
+    vertical-align: middle;
+    padding: 1px 2px 0;
   }
 
-  [data-field="constraints-text"] {
+  [data-field="constraints-anchor-container"] {
+    text-decoration: none;
+  }
+
+  [data-field="constraints-label-text"],
+  [data-field="constraints-anchor-text"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
-
-    &.none {
-      font-style: italic;
-      opacity: .5;
-    }
+    display: inline-block;
+    vertical-align: middle;
   }
 }

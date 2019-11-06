@@ -29,8 +29,6 @@ import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.mvp.UberElemental;
 
-import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
-
 @Dependent
 public class DataTypeConstraint {
 
@@ -87,27 +85,13 @@ public class DataTypeConstraint {
     }
 
     public void enableEditMode() {
-
         isEditModeEnabled = true;
-
         view.showAnchor();
-        view.showText();
-        view.hideTextLabel();
     }
 
     public void disableEditMode() {
-
         isEditModeEnabled = false;
-
         view.hideAnchor();
-
-        if (isEmpty(getValue())) {
-            view.hideText();
-            view.hideTextLabel();
-        } else {
-            view.showText();
-            view.showTextLabel();
-        }
     }
 
     public void refreshView() {
@@ -181,15 +165,7 @@ public class DataTypeConstraint {
 
         void showAnchor();
 
-        void showTextLabel();
-
-        void showText();
-
         void hideAnchor();
-
-        void hideTextLabel();
-
-        void hideText();
 
         void setText(final String text);
 

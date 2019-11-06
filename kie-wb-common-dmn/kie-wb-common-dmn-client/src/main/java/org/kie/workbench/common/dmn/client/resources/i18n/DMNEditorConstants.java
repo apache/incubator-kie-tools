@@ -290,16 +290,10 @@ public class DMNEditorConstants {
     public static final String DataTypeConstraintView_ConstraintsTooltip = "DataTypeConstraintView.ConstraintsTooltip";
 
     @TranslationKey(defaultValue = "")
-    public static final String DataTypeListItemView_List = "DataTypeListItemView.List";
+    public static final String DataTypeConstraintView_AddConstraints = "DataTypeConstraintView.AddConstraints";
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeListItemView_ArrowKeysTooltip = "DataTypeListItemView.ArrowKeysTooltip";
-
-    @TranslationKey(defaultValue = "")
-    public static final String SmallSwitchComponentView_Yes = "SmallSwitchComponentView.Yes";
-
-    @TranslationKey(defaultValue = "")
-    public static final String SmallSwitchComponentView_No = "SmallSwitchComponentView.No";
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypesPage_Title = "DataTypesPage.Title";

@@ -335,7 +335,6 @@ public class DataTypeListItemTest {
         verify(view).enableFocusMode();
         verify(view).hideListYesLabel();
         verify(view).showListContainer();
-        verify(view).hideKebabMenu();
         verify(dataTypeSelectComponent).enableEditMode();
         verify(dataTypeConstraintComponent).enableEditMode();
         verify(editModeToggleEvent).fire(eventArgumentCaptor.capture());
@@ -356,7 +355,6 @@ public class DataTypeListItemTest {
         verify(view, never()).enableFocusMode();
         verify(view, never()).hideListYesLabel();
         verify(view, never()).showListContainer();
-        verify(view, never()).hideKebabMenu();
         verify(dataTypeSelectComponent, never()).enableEditMode();
         verify(dataTypeConstraintComponent, never()).enableEditMode();
         verify(editModeToggleEvent, never()).fire(any());
@@ -605,7 +603,6 @@ public class DataTypeListItemTest {
         verify(view).hideDataTypeNameInput();
         verify(view).disableFocusMode();
         verify(view).hideListContainer();
-        verify(view).showKebabMenu();
         verify(listItem).refreshListYesLabel();
         verify(dataTypeSelectComponent).disableEditMode();
         verify(dataTypeConstraintComponent).disableEditMode();

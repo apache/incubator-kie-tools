@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQueryTooltip.$;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintView_AddConstraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintView_ConstraintsTooltip;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -43,32 +46,37 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 @Dependent
 public class DataTypeConstraintView implements DataTypeConstraint.View {
 
-    @DataField("constraints-anchor")
-    private final HTMLAnchorElement constraintsAnchor;
+    @DataField("constraints-anchor-container")
+    private final HTMLAnchorElement constraintsAnchorContainer;
+
+    @DataField("constraints-label-container")
+    private final HTMLDivElement constraintsLabelContainer;
+
+    @DataField("constraints-anchor-text")
+    private final HTMLElement constraintsAnchorText;
+
+    @DataField("constraints-label-text")
+    private final HTMLElement constraintsLabelText;
 
     @DataField("constraints-tooltip")
     private final HTMLElement constraintsTooltip;
-
-    @DataField("constraints-label")
-    private final HTMLElement constraintsLabel;
-
-    @DataField("constraints-text")
-    private final HTMLDivElement constraintsText;
 
     private final TranslationService translationService;
 
     private DataTypeConstraint presenter;
 
     @Inject
-    public DataTypeConstraintView(final HTMLAnchorElement constraintsAnchor,
+    public DataTypeConstraintView(final HTMLAnchorElement constraintsAnchorContainer,
+                                  final HTMLDivElement constraintsLabelContainer,
+                                  final @Named("span") HTMLElement constraintsAnchorText,
+                                  final @Named("span") HTMLElement constraintsLabelText,
                                   final @Named("span") HTMLElement constraintsTooltip,
-                                  final @Named("span") HTMLElement constraintsLabel,
-                                  final HTMLDivElement constraintsText,
                                   final TranslationService translationService) {
-        this.constraintsAnchor = constraintsAnchor;
+        this.constraintsAnchorContainer = constraintsAnchorContainer;
+        this.constraintsLabelContainer = constraintsLabelContainer;
+        this.constraintsAnchorText = constraintsAnchorText;
+        this.constraintsLabelText = constraintsLabelText;
         this.constraintsTooltip = constraintsTooltip;
-        this.constraintsLabel = constraintsLabel;
-        this.constraintsText = constraintsText;
         this.translationService = translationService;
     }
 
@@ -83,56 +91,39 @@ public class DataTypeConstraintView implements DataTypeConstraint.View {
         setupTooltip(properties().getJavaScriptObject());
     }
 
-    @EventHandler("constraints-anchor")
+    @EventHandler("constraints-anchor-container")
     public void onConstraintsClick(final ClickEvent e) {
         presenter.openModal();
     }
 
     @Override
     public void showAnchor() {
-        show(constraintsAnchor);
+        hide(constraintsLabelContainer);
+        show(constraintsAnchorContainer);
         show(constraintsTooltip);
     }
 
     @Override
-    public void showTextLabel() {
-        show(constraintsLabel);
-    }
-
-    @Override
     public void hideAnchor() {
-        hide(constraintsAnchor);
+
+        if (Objects.equals(constraintsLabelText.textContent, addConstraints())) {
+            hide(constraintsLabelContainer);
+        } else {
+            show(constraintsLabelContainer);
+        }
+
+        hide(constraintsAnchorContainer);
         hide(constraintsTooltip);
-    }
-
-    @Override
-    public void hideTextLabel() {
-        hide(constraintsLabel);
-    }
-
-    @Override
-    public void showText() {
-        show(constraintsText);
-    }
-
-    @Override
-    public void hideText() {
-        hide(constraintsText);
     }
 
     @Override
     public void setText(final String text) {
 
-        final boolean isValueBlank = isEmpty(text);
-        final String noneCSSClass = "none";
+        final String constraints = addConstraints();
+        final String constraintText = isEmpty(text) ? constraints : text;
 
-        if (isValueBlank) {
-            constraintsText.textContent = "NONE";
-            constraintsText.classList.add(noneCSSClass);
-        } else {
-            constraintsText.classList.remove(noneCSSClass);
-            constraintsText.textContent = text;
-        }
+        constraintsAnchorText.textContent = constraintText;
+        constraintsLabelText.textContent = constraintText;
     }
 
     @Override
@@ -157,5 +148,9 @@ public class DataTypeConstraintView implements DataTypeConstraint.View {
 
     JSONObject makeJsonObject() {
         return new JSONObject();
+    }
+
+    private String addConstraints() {
+        return translationService.format(DataTypeConstraintView_AddConstraints);
     }
 }

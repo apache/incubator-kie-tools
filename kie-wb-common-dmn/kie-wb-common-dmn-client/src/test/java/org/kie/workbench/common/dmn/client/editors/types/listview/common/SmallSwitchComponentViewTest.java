@@ -18,21 +18,16 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.SmallSwitchComponentView_No;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.SmallSwitchComponentView_Yes;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SmallSwitchComponentViewTest {
@@ -40,48 +35,11 @@ public class SmallSwitchComponentViewTest {
     @Mock
     private HTMLInputElement inputCheckbox;
 
-    @Mock
-    private HTMLElement checkboxText;
-
-    @Mock
-    private TranslationService translationService;
-
     private SmallSwitchComponentView view;
 
     @Before
     public void setup() {
-        view = spy(new SmallSwitchComponentView(inputCheckbox, checkboxText, translationService));
-    }
-
-    @Test
-    public void testSetup() {
-        view.setup();
-
-        verify(view).refreshCheckBoxText();
-    }
-
-    @Test
-    public void testRefreshCheckBoxTextWhenCheckBoxIsChecked() {
-
-        final String yes = "Yes";
-        when(translationService.format(SmallSwitchComponentView_Yes)).thenReturn(yes);
-        inputCheckbox.checked = true;
-
-        view.setup();
-
-        assertEquals(yes, checkboxText.textContent);
-    }
-
-    @Test
-    public void testRefreshCheckBoxTextWhenCheckBoxIsNotChecked() {
-
-        final String no = "No";
-        when(translationService.format(SmallSwitchComponentView_No)).thenReturn(no);
-        inputCheckbox.checked = false;
-
-        view.setup();
-
-        assertEquals(no, checkboxText.textContent);
+        view = spy(new SmallSwitchComponentView(inputCheckbox));
     }
 
     @Test
@@ -90,7 +48,6 @@ public class SmallSwitchComponentViewTest {
 
         view.onInputCheckBoxChange(event);
 
-        verify(view).refreshCheckBoxText();
         verify(view).callOnValueChanged();
     }
 
@@ -125,6 +82,5 @@ public class SmallSwitchComponentViewTest {
         view.setValue(value);
 
         assertEquals(value, inputCheckbox.checked);
-        verify(view).refreshCheckBoxText();
     }
 }

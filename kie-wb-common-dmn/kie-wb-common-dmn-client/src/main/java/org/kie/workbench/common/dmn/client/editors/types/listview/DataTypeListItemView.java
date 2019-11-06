@@ -20,18 +20,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Element.OnclickCallbackFn;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.NodeList;
-import elemental2.dom.Text;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -39,7 +36,6 @@ import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 
@@ -53,7 +49,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_ArrowKeysTooltip;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_List;
 
 @Dependent
 @Templated
@@ -79,11 +74,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final TranslationService translationService) {
         this.view = view;
         this.translationService = translationService;
-    }
-
-    @PostConstruct
-    public void setupKebabElement() {
-        new MenuInitializer(getKebabMenu(), ".dropdown").init();
     }
 
     @Override
@@ -192,6 +182,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void showEditButton() {
         show(getEditButton());
+        show(getInsertNestedFieldButton());
+        show(getRemoveButton());
         hide(getSaveButton());
         hide(getCloseButton());
     }
@@ -199,6 +191,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void showSaveButton() {
         hide(getEditButton());
+        hide(getInsertNestedFieldButton());
+        hide(getRemoveButton());
         show(getSaveButton());
         show(getCloseButton());
     }
@@ -287,28 +281,13 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     @Override
     public void setupListComponent(final SmallSwitchComponent dataTypeListComponent) {
-        RemoveHelper.removeChildren(getListContainer());
-        getListContainer().appendChild(listTextNode());
-        getListContainer().appendChild(dataTypeListComponent.getElement());
-    }
-
-    Text listTextNode() {
-        return DomGlobal.document.createTextNode(list());
+        RemoveHelper.removeChildren(getListCheckBoxContainer());
+        getListCheckBoxContainer().appendChild(dataTypeListComponent.getElement());
     }
 
     @Override
     public void showListContainer() {
         show(getListContainer());
-    }
-
-    @Override
-    public void hideKebabMenu() {
-        hide(getKebabMenu());
-    }
-
-    @Override
-    public void showKebabMenu() {
-        show(getKebabMenu());
     }
 
     @Override
@@ -389,9 +368,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         setTitleAttribute(getEditButton(), "Ctrl + E");
         setTitleAttribute(getSaveButton(), "Ctrl + S");
-        setTitleAttribute(getInsertNestedField(), "Ctrl + B");
-        setTitleAttribute(getInsertFieldAbove(), "Ctrl + U");
-        setTitleAttribute(getInsertFieldBelow(), "Ctrl + D");
+        setTitleAttribute(getInsertNestedFieldButton(), "Ctrl + B");
         setTitleAttribute(getRemoveButton(), "Ctrl + Backspace");
         setTitleAttribute(getCloseButton(), "Esc");
         setTitleAttribute(getArrow(), arrowKeysTooltip);
@@ -413,9 +390,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         getSaveButton().onclick = getOnSaveAction();
         getCloseButton().onclick = getOnCloseAction();
         getArrow().onclick = getOnArrowClickAction();
-        getInsertFieldAbove().onclick = getOnInsertFieldAboveAction();
-        getInsertFieldBelow().onclick = getOnInsertFieldBelowAction();
-        getInsertNestedField().onclick = getOnInsertNestedFieldAction();
+        getInsertNestedFieldButton().onclick = getOnInsertNestedFieldAction();
         getRemoveButton().onclick = getOnRemoveButtonAction();
     }
 
@@ -455,20 +430,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         };
     }
 
-    OnclickCallbackFn getOnInsertFieldAboveAction() {
-        return (e) -> {
-            presenter.insertFieldAbove();
-            return true;
-        };
-    }
-
-    OnclickCallbackFn getOnInsertFieldBelowAction() {
-        return (e) -> {
-            presenter.insertFieldBelow();
-            return true;
-        };
-    }
-
     OnclickCallbackFn getOnInsertNestedFieldAction() {
         return (e) -> {
             presenter.insertNestedField();
@@ -481,10 +442,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
             presenter.remove();
             return true;
         };
-    }
-
-    private String list() {
-        return translationService.format(DataTypeListItemView_List);
     }
 
     Element getArrow() {
@@ -511,6 +468,10 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         return querySelector("list-container");
     }
 
+    Element getListCheckBoxContainer() {
+        return querySelector("list-checkbox-container");
+    }
+
     Element getListYes() {
         return querySelector("list-yes");
     }
@@ -531,20 +492,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         return querySelector("remove-button");
     }
 
-    Element getInsertFieldAbove() {
-        return querySelector("insert-field-above");
-    }
-
-    Element getInsertFieldBelow() {
-        return querySelector("insert-field-below");
-    }
-
-    Element getInsertNestedField() {
+    Element getInsertNestedFieldButton() {
         return querySelector("insert-nested-field");
-    }
-
-    Element getKebabMenu() {
-        return querySelector("kebab-menu");
     }
 
     NodeList<Element> getLabels() {
