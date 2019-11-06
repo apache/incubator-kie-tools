@@ -20,3 +20,5 @@ export * from "./GwtEditorWrapper";
 export * from "./GwtEditorWrapperFactory";
 export * from "./GwtLanguageData";
 export * from "./GwtEditorRoutes";
+export * from "./XmlFormatter";
+export * from "./DefaultXmlFormatter";

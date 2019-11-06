@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { DefaultXmlFormatter } from "../DefaultXmlFormatter";
 
-declare global {
-  export const acquireVsCodeApi: any;
-}
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter())
+describe("format works", () => {
+  test("", () => {
+    const xmlFormatter = new DefaultXmlFormatter();
+    const formatted = xmlFormatter.format("<foo><bar /></foo>");
+    expect(formatted).toEqual("<foo>\n  <bar />\n</foo>");
+  });
 });

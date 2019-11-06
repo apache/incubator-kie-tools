@@ -61,7 +61,9 @@ const testLanguageData: GwtLanguageData = {
   resources: [cssResource, jsResource]
 };
 
-const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(gwtAppFormerApi);
+const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(gwtAppFormerApi, {
+  format: (c: string) => c
+});
 
 function waitForNScriptsToLoad(remaining: number) {
   if (remaining <= 0) {
