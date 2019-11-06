@@ -15,110 +15,14 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { SimpleReactEditorsLanguageData } from "./SimpleReactEditorsLanguageData";
+import { SimpleReactEditorInterface } from "./SimpleReactEditorInterface";
+import { LanguageData } from "@kogito-tooling/core-api";
 
 export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFactory<SimpleReactEditorsLanguageData> {
-  public createEditor(
-    languageData: SimpleReactEditorsLanguageData,
-    messageBus: EnvelopeBusInnerMessageHandler
-  ): Promise<AppFormer.Editor> {
-    switch (languageData.type) {
-      case "react":
-        return Promise.resolve(new SimpleReactAppFormerEditor(messageBus));
-      default:
-        throw new Error(`Unknown type ${languageData.type}`);
-    }
-  }
-}
-
-class SimpleReactAppFormerEditor extends AppFormer.Editor {
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
-
-  private self: SimpleReactEditor;
-
-  constructor(messageBus: EnvelopeBusInnerMessageHandler) {
-    super("readonly-react-editor");
-    this.af_isReact = true;
-    this.messageBus = messageBus;
-  }
-
-  public getContent(): Promise<string> {
-    return this.self.getContent();
-  }
-
-  public isDirty(): boolean {
-    return this.self.isDirty();
-  }
-
-  public setContent(content: string): Promise<void> {
-    return this.self.setContent(content);
-  }
-
-  public af_componentRoot(): AppFormer.Element {
-    return <SimpleReactEditor exposing={s => (this.self = s)} messageBus={this.messageBus} />;
-  }
-}
-
-interface Props {
-  exposing: (s: SimpleReactEditor) => void;
-  messageBus: EnvelopeBusInnerMessageHandler;
-}
-
-interface State {
-  content: string;
-  originalContent: string;
-}
-
-class SimpleReactEditor extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    props.exposing(this);
-    this.state = {
-      originalContent: "",
-      content: ""
-    };
-  }
-
-  public componentDidMount(): void {
-    this.props.messageBus.notify_ready();
-  }
-
-  public setContent(content: string) {
-    return new Promise<void>(res =>
-      this.setState({ originalContent: content }, () => {
-        res();
-      })
-    ).then(() => this.updateContent(content));
-  }
-
-  private updateContent(content: string) {
-    return new Promise<void>(res => {
-      this.setState({ content: content }, () => {
-        this.props.messageBus.notify_dirtyIndicatorChange(this.isDirty());
-        res();
-      });
-    });
-  }
-
-  //saving triggers this method, so we also update the originalContent by calling `this.setContent`
-  public getContent() {
-    return this.setContent(this.state.content).then(() => this.state.content);
-  }
-
-  public isDirty() {
-    return this.state.content !== this.state.originalContent;
-  }
-
-  public render() {
-    return (
-      <textarea
-        style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
-        value={this.state.content}
-        onInput={(e: any) => this.updateContent(e.target.value)}
-      />
-    );
+  public createEditor(languageData: LanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
+    return Promise.resolve(new SimpleReactEditorInterface(messageBus));
   }
 }

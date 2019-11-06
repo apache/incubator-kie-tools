@@ -19,6 +19,14 @@ import { Routes } from "@kogito-tooling/core-api";
 
 export class SimpleReactEditorsRoutes implements Routes {
   public getRoutes() {
-    return new Map<string, SimpleReactEditorsLanguageData>([["txt", { type: "react" }]]);
+    return new Map<string, SimpleReactEditorsLanguageData>([
+      [
+        "txt",
+        {
+          type: "my-editor-type",
+          anyData: "something"
+        }
+      ]
+    ]);
   }
 }

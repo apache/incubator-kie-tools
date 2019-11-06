@@ -22,7 +22,7 @@ const commonConfig = {
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "AppFormer.VsCodePack",
+    library: "VsCodePackSimpleReact",
     libraryTarget: "umd",
     umdNamedDefine: true
   },
