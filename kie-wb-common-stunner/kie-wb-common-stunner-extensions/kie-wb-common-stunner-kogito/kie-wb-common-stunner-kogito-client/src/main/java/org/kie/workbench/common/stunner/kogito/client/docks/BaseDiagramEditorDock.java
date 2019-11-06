@@ -16,31 +16,39 @@
 package org.kie.workbench.common.stunner.kogito.client.docks;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-public abstract class BaseDiagramEditorDock {
+public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
 
-    static final double DOCK_SIZE = 400d;
+    protected static final double DOCK_SIZE = 400d;
 
-    private final UberfireDocks uberfireDocks;
-    private UberfireDock uberfireDock;
-    private boolean isOpened = false;
-    private String owningPerspectiveId;
-    private final TranslationService translationService;
+    protected final UberfireDocks uberfireDocks;
+    protected UberfireDock uberfireDock;
+    protected boolean isOpened = false;
+    protected String owningPerspectiveId;
+    protected final TranslationService translationService;
 
     public BaseDiagramEditorDock(UberfireDocks uberfireDocks, TranslationService translationService) {
         this.uberfireDocks = uberfireDocks;
         this.translationService = translationService;
     }
 
+    @Override
     public void init(final String owningPerspectiveId) {
         this.owningPerspectiveId = owningPerspectiveId;
         this.uberfireDock = makeUberfireDock();
     }
 
+    @Override
+    public void destroy() {
+        uberfireDocks.remove(getUberfireDock());
+    }
+
+    @Override
     public void open() {
         if (isOpened()) {
             return;
@@ -51,6 +59,7 @@ public abstract class BaseDiagramEditorDock {
         uberfireDocks.show(position(), owningPerspectiveId());
     }
 
+    @Override
     public void close() {
         if (!isOpened()) {
             return;
@@ -58,41 +67,41 @@ public abstract class BaseDiagramEditorDock {
 
         isOpened = false;
         uberfireDocks.close(getUberfireDock());
-        uberfireDocks.remove(getUberfireDock());
+        destroy();
     }
 
     public boolean isOpened() {
         return isOpened;
     }
 
-    private UberfireDockPosition position() {
+    protected UberfireDockPosition position() {
         return UberfireDockPosition.EAST;
     }
 
-    private String owningPerspectiveId() {
+    protected String owningPerspectiveId() {
         return owningPerspectiveId;
     }
 
-    private UberfireDock getUberfireDock() {
+    protected UberfireDock getUberfireDock() {
         return uberfireDock;
     }
 
-    private UberfireDock makeUberfireDock() {
+    protected UberfireDock makeUberfireDock() {
         final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest(), owningPerspectiveId());
         return uberfireDock.withSize(DOCK_SIZE).withLabel(dockLabel());
     }
 
-    private DefaultPlaceRequest placeRequest() {
+    protected DefaultPlaceRequest placeRequest() {
         return new DefaultPlaceRequest(getScreenId());
     }
 
-    abstract String getScreenId();
+    protected abstract String getScreenId();
 
-    private String dockLabel() {
+    protected String dockLabel() {
         return translationService.getTranslation(getLabelKey());
     }
 
-    abstract String getLabelKey();
+    protected abstract String getLabelKey();
 
-    abstract String icon();
+    protected abstract String icon();
 }

@@ -31,8 +31,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @ApplicationScoped
 public class DMNVFSService {
 
-    static final PlaceRequest DIAGRAM_EDITOR = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
-
     private PlaceManager placeManager;
     private Caller<VFSService> vfsServiceCaller;
 
@@ -48,14 +46,15 @@ public class DMNVFSService {
     }
 
     public void newFile() {
-        DIAGRAM_EDITOR.getParameters().clear();
-        placeManager.goTo(DIAGRAM_EDITOR);
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+        placeManager.goTo(placeRequest);
     }
 
     public void openFile(final Path path) {
         vfsServiceCaller.call((String xml) -> {
-            DIAGRAM_EDITOR.addParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, xml);
-            placeManager.goTo(DIAGRAM_EDITOR);
+            final PlaceRequest placeRequest = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+            placeRequest.addParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, xml);
+            placeManager.goTo(placeRequest);
         }).readAllString(path);
     }
 

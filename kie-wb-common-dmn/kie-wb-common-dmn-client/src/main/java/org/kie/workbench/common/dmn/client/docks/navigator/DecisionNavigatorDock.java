@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
@@ -30,21 +31,21 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 
 @ApplicationScoped
-public class DecisionNavigatorDock {
+public class DecisionNavigatorDock implements DiagramEditorDock {
 
-    static final double DOCK_SIZE = 400d;
+    protected static final double DOCK_SIZE = 400d;
 
-    private UberfireDocks uberfireDocks;
+    protected UberfireDocks uberfireDocks;
 
-    private DecisionNavigatorPresenter decisionNavigatorPresenter;
+    protected DecisionNavigatorPresenter decisionNavigatorPresenter;
 
-    private TranslationService translationService;
+    protected TranslationService translationService;
 
-    private UberfireDock uberfireDock;
+    protected UberfireDock uberfireDock;
 
-    private boolean isOpened = false;
+    protected boolean isOpened = false;
 
-    private String perspective;
+    protected String perspective;
 
     public DecisionNavigatorDock() {
         // CDI proxy
@@ -59,9 +60,15 @@ public class DecisionNavigatorDock {
         this.translationService = translationService;
     }
 
+    @Override
     public void init(final String perspective) {
         this.perspective = perspective;
         this.uberfireDock = makeUberfireDock();
+    }
+
+    @Override
+    public void destroy() {
+        uberfireDocks.remove(getUberfireDock());
     }
 
     public void setupCanvasHandler(final CanvasHandler handler) {
@@ -72,6 +79,7 @@ public class DecisionNavigatorDock {
         decisionNavigatorPresenter.removeAllElements();
     }
 
+    @Override
     public void open() {
 
         if (isOpened()) {
@@ -84,6 +92,7 @@ public class DecisionNavigatorDock {
         uberfireDocks.open(getUberfireDock());
     }
 
+    @Override
     public void close() {
 
         if (!isOpened()) {
@@ -92,45 +101,45 @@ public class DecisionNavigatorDock {
 
         isOpened = false;
         uberfireDocks.close(getUberfireDock());
-        uberfireDocks.remove(getUberfireDock());
+        destroy();
     }
 
-    boolean isOpened() {
+    protected boolean isOpened() {
         return isOpened;
     }
 
-    void setOpened(final boolean opened) {
+    protected void setOpened(final boolean opened) {
         isOpened = opened;
     }
 
-    UberfireDock makeUberfireDock() {
+    protected UberfireDock makeUberfireDock() {
 
         final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest(), perspective());
 
         return uberfireDock.withSize(DOCK_SIZE).withLabel(dockLabel());
     }
 
-    String perspective() {
+    protected String perspective() {
         return perspective;
     }
 
-    UberfireDock getUberfireDock() {
+    protected UberfireDock getUberfireDock() {
         return uberfireDock;
     }
 
-    UberfireDockPosition position() {
+    protected UberfireDockPosition position() {
         return UberfireDockPosition.WEST;
     }
 
-    private String icon() {
+    protected String icon() {
         return IconType.MAP.toString();
     }
 
-    private String dockLabel() {
+    protected String dockLabel() {
         return translationService.format(DecisionNavigatorPresenter_DecisionNavigator);
     }
 
-    private DefaultPlaceRequest placeRequest() {
+    protected DefaultPlaceRequest placeRequest() {
         return new DefaultPlaceRequest(DecisionNavigatorPresenter.IDENTIFIER);
     }
 }

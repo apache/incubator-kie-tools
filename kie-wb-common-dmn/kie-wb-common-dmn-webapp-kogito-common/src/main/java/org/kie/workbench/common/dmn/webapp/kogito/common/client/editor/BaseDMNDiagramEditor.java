@@ -192,8 +192,8 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
         superDoStartUp(place);
 
         decisionNavigatorDock.init(PERSPECTIVE_ID);
-        diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
         diagramPropertiesDock.init(PERSPECTIVE_ID);
+        diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
     }
 
     void superDoStartUp(final PlaceRequest place) {
@@ -264,11 +264,11 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
     public void onClose() {
         superOnClose();
 
-        decisionNavigatorDock.close();
+        decisionNavigatorDock.destroy();
         decisionNavigatorDock.resetContent();
 
-        diagramPropertiesDock.close();
-        diagramPreviewAndExplorerDock.close();
+        diagramPropertiesDock.destroy();
+        diagramPreviewAndExplorerDock.destroy();
 
         dataTypesPage.disableShortcuts();
     }
@@ -287,15 +287,8 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
 
             final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
-
             decisionNavigatorDock.setupCanvasHandler(c);
-            decisionNavigatorDock.open();
-
-            diagramPropertiesDock.open();
-            diagramPreviewAndExplorerDock.open();
-
             dataTypesPage.reload();
-
             includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
         });
     }

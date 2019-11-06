@@ -29,9 +29,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService.DIAGRAM_EDITOR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -63,6 +63,9 @@ public class DMNVFSServiceTest {
     @Captor
     private ArgumentCaptor<RemoteCallback<Path>> remoteCallbackPathArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
+
     private DMNVFSService dmnvfsService;
 
     @Before
@@ -75,12 +78,12 @@ public class DMNVFSServiceTest {
 
     @Test
     public void testNewFile() {
-        DIAGRAM_EDITOR.addParameter("p1", "value");
-
         dmnvfsService.newFile();
 
-        assertThat(DIAGRAM_EDITOR.getParameters()).isEmpty();
-        verify(placeManager).goTo(DIAGRAM_EDITOR);
+        verify(placeManager).goTo(placeRequestArgumentCaptor.capture());
+
+        final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
+        assertThat(placeRequest.getParameters()).isEmpty();
     }
 
     @Test
@@ -95,8 +98,10 @@ public class DMNVFSServiceTest {
 
         remoteCallback.callback(CONTENT);
 
-        assertThat(DIAGRAM_EDITOR.getParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, "")).isEqualTo(CONTENT);
-        verify(placeManager).goTo(DIAGRAM_EDITOR);
+        verify(placeManager).goTo(placeRequestArgumentCaptor.capture());
+
+        final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
+        assertThat(placeRequest.getParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, "")).isEqualTo(CONTENT);
     }
 
     @Test

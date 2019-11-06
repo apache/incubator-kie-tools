@@ -165,6 +165,17 @@ public class DecisionNavigatorDockTest {
     }
 
     @Test
+    public void testDestroy() {
+        final UberfireDock uberfireDock = mock(UberfireDock.class);
+
+        doReturn(uberfireDock).when(dock).getUberfireDock();
+
+        dock.destroy();
+
+        verify(uberfireDocks).remove(uberfireDock);
+    }
+
+    @Test
     public void testMakeUberfireDock() {
 
         final UberfireDockPosition expectedPosition = UberfireDockPosition.WEST;

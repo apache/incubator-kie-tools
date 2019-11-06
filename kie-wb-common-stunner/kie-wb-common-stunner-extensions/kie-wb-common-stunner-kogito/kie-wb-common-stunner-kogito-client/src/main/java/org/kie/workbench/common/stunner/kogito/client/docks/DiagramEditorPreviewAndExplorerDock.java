@@ -39,17 +39,17 @@ public class DiagramEditorPreviewAndExplorerDock extends BaseDiagramEditorDock {
     }
 
     @Override
-    final String icon() {
+    protected final String icon() {
         return IconType.EYE.toString();
     }
 
     @Override
-    final String getScreenId() {
+    protected final String getScreenId() {
         return DiagramEditorExplorerScreen.SCREEN_ID;
     }
 
     @Override
-    final String getLabelKey() {
+    protected final String getLabelKey() {
         return KogitoClientMessages.EXPLORER_DOCK_TITLE;
     }
 }

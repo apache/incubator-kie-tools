@@ -39,17 +39,17 @@ public class DiagramEditorPropertiesDock extends BaseDiagramEditorDock {
     }
 
     @Override
-    final String icon() {
+    protected final String icon() {
         return IconType.PENCIL_SQUARE_O.toString();
     }
 
     @Override
-    final String getScreenId() {
+    protected final String getScreenId() {
         return DiagramEditorPropertiesScreen.SCREEN_ID;
     }
 
     @Override
-    final String getLabelKey() {
+    protected final String getLabelKey() {
         return KogitoClientMessages.PROPERTIES_DOCK_TITLE;
     }
 }

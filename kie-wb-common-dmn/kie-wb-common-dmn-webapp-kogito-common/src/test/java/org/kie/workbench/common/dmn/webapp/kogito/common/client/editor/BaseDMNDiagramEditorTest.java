@@ -360,9 +360,6 @@ public abstract class BaseDMNDiagramEditorTest {
         editor.open(diagram);
 
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
-        verify(decisionNavigatorDock).open();
-        verify(diagramPropertiesDock).open();
-        verify(diagramPreviewDock).open();
         verify(dataTypesPage).reload();
         verify(includedModelsPage).setup(importsPageProvider);
     }
