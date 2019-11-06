@@ -78,7 +78,7 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public notify_setContentError(errorMessage: string) {
-    this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage })
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage })
   }
 
   public notify_dirtyIndicatorChange(isDirty: boolean) {
