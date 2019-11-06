@@ -27,6 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.Element;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
@@ -157,11 +158,17 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
     }
 
     public void render() {
-        view.clear();
-        getEnumerationItems()
-                .stream()
-                .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
-                .forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
+        scheduleRender(() -> {
+            view.clear();
+            getEnumerationItems()
+                    .stream()
+                    .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
+                    .forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
+        });
+    }
+
+    void scheduleRender(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
     }
 
     void addEnumerationItem() {

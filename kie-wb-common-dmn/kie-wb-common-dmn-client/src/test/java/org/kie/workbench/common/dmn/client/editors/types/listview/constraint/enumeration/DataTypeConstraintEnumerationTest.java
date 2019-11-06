@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.en
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
@@ -31,6 +32,8 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -69,6 +72,9 @@ public class DataTypeConstraintEnumerationTest {
     @Mock
     private ManagedInstance<DataTypeConstraintEnumerationItem> enumerationItemInstances;
 
+    @Captor
+    private ArgumentCaptor<ScheduledCommand> scheduledCommandArgumentCaptor;
+
     private DataTypeConstraintEnumeration constraintEnumeration;
 
     @Before
@@ -78,6 +84,8 @@ public class DataTypeConstraintEnumerationTest {
                                                                       scrollHelper,
                                                                       parserWarningEvent,
                                                                       enumerationItemInstances));
+
+        doNothing().when(constraintEnumeration).scheduleRender(any(ScheduledCommand.class));
     }
 
     @Test
@@ -217,6 +225,9 @@ public class DataTypeConstraintEnumerationTest {
         doReturn(asList(item1, item2)).when(constraintEnumeration).getEnumerationItems();
 
         constraintEnumeration.render();
+
+        verify(constraintEnumeration).scheduleRender(scheduledCommandArgumentCaptor.capture());
+        scheduledCommandArgumentCaptor.getValue().execute();
 
         verify(view).clear();
         inorder.verify(view).addItem(element2);
