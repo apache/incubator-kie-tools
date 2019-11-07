@@ -338,4 +338,6 @@ public interface ProjectEditorConstants
     String DeploySuccessfulAndContainerStarted();
 
     String DeploySuccessfulAndContainerUpdated();
+
+    String ViewDeploymentDetails();
 }

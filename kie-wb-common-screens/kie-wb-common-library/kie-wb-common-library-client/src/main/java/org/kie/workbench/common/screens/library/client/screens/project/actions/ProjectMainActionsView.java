@@ -26,6 +26,8 @@ public interface ProjectMainActionsView extends UberElemental<ProjectMainActions
 
     void setRedeployEnabled(boolean redeploy);
 
+    void setViewDeploymentDetailsEnabled(boolean enabled);
+
     void showBusyIndicator(String message);
 
     void hideBusyIndicator();

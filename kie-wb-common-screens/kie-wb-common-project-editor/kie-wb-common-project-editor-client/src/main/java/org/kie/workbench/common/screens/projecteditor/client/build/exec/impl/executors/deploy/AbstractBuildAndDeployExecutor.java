@@ -43,8 +43,10 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.exe
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.utils.BuildUtils;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentPopup;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
 import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
@@ -110,7 +112,14 @@ public abstract class AbstractBuildAndDeployExecutor extends AbstractExecutor {
         buildServiceCaller.call((RemoteCallback<BuildResults>) result -> {
             if (result.getErrorMessages().isEmpty()) {
                 notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), NotificationEvent.NotificationType.SUCCESS));
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploymentSkippedDueToNoServerTemplateConfiguredForMode(preferedKieServerMode.name().toLowerCase()), NotificationEvent.NotificationType.WARNING));
+                notificationEvent.fire(
+                        new NotificationEvent(
+                                CONSTANTS.DeploymentSkippedDueToNoServerTemplateConfiguredForMode(
+                                        preferedKieServerMode.name().toLowerCase()),
+                                NotificationEvent.NotificationType.WARNING)
+                        .setAutoHide(false)
+                        .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                       new DefaultPlaceRequest(SERVER_MANAGEMENT)));
             } else {
                 notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), NotificationEvent.NotificationType.ERROR));
             }
@@ -161,39 +170,81 @@ public abstract class AbstractBuildAndDeployExecutor extends AbstractExecutor {
                 return false;
             }).updateContainerSpec(context.getServerTemplate().getId(), containerSpec);
         } else {
-            notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploymentSkippedCannotUpdateDeploymentsOnProduction(), ERROR));
+            notificationEvent.fire(
+                    new NotificationEvent(
+                            CONSTANTS.DeploymentSkippedCannotUpdateDeploymentsOnProduction(),
+                            ERROR)
+                    .setAutoHide(false)
+                    .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                   new DefaultPlaceRequest(SERVER_MANAGEMENT)));
             finish();
         }
     }
 
     protected void notifyUpdateSuccess() {
-        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulAndContainerUpdated(), NotificationEvent.NotificationType.SUCCESS));
+        notificationEvent.fire(
+                new NotificationEvent(
+                        CONSTANTS.DeploySuccessfulAndContainerUpdated(),
+                        NotificationEvent.NotificationType.SUCCESS)
+                .setAutoHide(false)
+                .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                               new DefaultPlaceRequest(SERVER_MANAGEMENT)));
         finish();
     }
 
     protected void notifyUpdateError() {
-        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeployFailed(), NotificationEvent.NotificationType.ERROR));
+        notificationEvent.fire(
+                new NotificationEvent(
+                        CONSTANTS.DeployFailed(),
+                        NotificationEvent.NotificationType.ERROR)
+                .setAutoHide(false)
+                .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                               new DefaultPlaceRequest(SERVER_MANAGEMENT)));
         finish();
     }
 
     protected void saveContainerSpecAndMaybeStartContainer(final BuildExecutionContext context, final ContainerSpec containerSpec) {
         specManagementService.call(ignore -> {
             if (!context.isStartContainer()) {
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessful(), NotificationEvent.NotificationType.SUCCESS));
+                notificationEvent.fire(
+                        new NotificationEvent(
+                                CONSTANTS.DeploySuccessful(),
+                                NotificationEvent.NotificationType.SUCCESS)
+                        .setAutoHide(false)
+                        .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                       new DefaultPlaceRequest(SERVER_MANAGEMENT)));
                 finish();
                 return;
             }
 
             specManagementService.call(ignore2 -> {
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulAndContainerStarted(), NotificationEvent.NotificationType.SUCCESS));
+                notificationEvent.fire(
+                        new NotificationEvent(
+                                CONSTANTS.DeploySuccessfulAndContainerStarted(),
+                                NotificationEvent.NotificationType.SUCCESS)
+                        .setAutoHide(false)
+                        .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                       new DefaultPlaceRequest(SERVER_MANAGEMENT)));
                 finish();
             }, (o, throwable) -> {
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulButContainerFailedToStart(), NotificationEvent.NotificationType.WARNING));
+                notificationEvent.fire(
+                        new NotificationEvent(
+                                CONSTANTS.DeploySuccessfulButContainerFailedToStart(),
+                                NotificationEvent.NotificationType.WARNING)
+                        .setAutoHide(false)
+                        .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                       new DefaultPlaceRequest(SERVER_MANAGEMENT)));
                 finish();
                 return false;
             }).startContainer(containerSpec);
         }, (o, throwable) -> {
-            notificationEvent.fire(new NotificationEvent(CONSTANTS.DeployFailed(), NotificationEvent.NotificationType.ERROR));
+            notificationEvent.fire(
+                    new NotificationEvent(
+                            CONSTANTS.DeployFailed(),
+                            NotificationEvent.NotificationType.ERROR)
+                    .setAutoHide(false)
+                    .setNavigation(CONSTANTS.ViewDeploymentDetails(),
+                                   new DefaultPlaceRequest(SERVER_MANAGEMENT)));
             finish();
             return false;
         }).saveContainerSpec(context.getServerTemplate().getId(), containerSpec);

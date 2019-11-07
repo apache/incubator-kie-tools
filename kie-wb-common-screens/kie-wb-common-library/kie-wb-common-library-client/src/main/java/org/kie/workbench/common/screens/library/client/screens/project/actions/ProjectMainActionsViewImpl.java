@@ -29,7 +29,10 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
 
 @Templated
 public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
@@ -71,14 +74,26 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
 
     @Inject
     @DataField
+    private HTMLLIElement viewDeploymentDetailsLI;
+
+    @Inject
+    @DataField
+    private HTMLAnchorElement viewDeploymentDetails;
+
+    @Inject
+    @DataField
     private HTMLButtonElement runTests;
 
     @Inject
     private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
 
+    @Inject
+    private PlaceManager placeManager;
+
     private Presenter presenter;
 
     private boolean redeployEnabled = true;
+    private boolean viewDeploymentDetailsEnabled = true;
 
     @PostConstruct
     public void init() {
@@ -118,6 +133,16 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
     }
 
     @Override
+    public void setViewDeploymentDetailsEnabled(boolean enabled) {
+        viewDeploymentDetailsEnabled = enabled;
+        if (enabled) {
+            this.viewDeploymentDetailsLI.classList.remove(DISABLED_CLASS);
+        } else {
+            this.viewDeploymentDetailsLI.classList.add(DISABLED_CLASS);
+        }
+    }
+
+    @Override
     public void showBusyIndicator(String message) {
         BusyPopup.showMessage(message);
     }
@@ -154,5 +179,10 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
         } else {
             clickEvent.stopPropagation();
         }
+    }
+
+    @EventHandler("viewDeploymentDetails")
+    public void onViewDeploymentDetails(ClickEvent clickEvent) {
+        placeManager.goTo(SERVER_MANAGEMENT);
     }
 }

@@ -66,6 +66,8 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
+
 @WorkbenchScreen(identifier = LibraryPlaces.PROJECT_SCREEN,
         owningPerspective = LibraryPerspective.class)
 public class ProjectScreen {
@@ -258,6 +260,11 @@ public class ProjectScreen {
         });
 
         projectMainActions.setRedeployEnabled(workspaceProject.getMainModule().getPom().getGav().isSnapshot());
+
+        projectController.canViewDeploymentDetails(SERVER_MANAGEMENT).then(status -> {
+            projectMainActions.setViewDeploymentDetailsEnabled(status);
+            return promises.resolve();
+        });
     }
 
     @OnMayClose

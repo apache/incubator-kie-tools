@@ -51,6 +51,7 @@ public class ProjectMainActions implements ProjectMainActionsView.Presenter,
     private boolean buildEnabled;
     private boolean deployEnabled;
     private boolean redeployEnabled;
+    private boolean viewDeploymentDetailsEnabled;
 
     @Inject
     public ProjectMainActions(final BuildExecutor buildExecutor,
@@ -87,6 +88,11 @@ public class ProjectMainActions implements ProjectMainActionsView.Presenter,
     public void setRedeployEnabled(boolean redeployEnabled) {
         this.redeployEnabled = redeployEnabled;
         view.setRedeployEnabled(redeployEnabled);
+    }
+
+    public void setViewDeploymentDetailsEnabled(boolean viewDeploymentDetailsEnabled) {
+        this.viewDeploymentDetailsEnabled = viewDeploymentDetailsEnabled;
+        view.setViewDeploymentDetailsEnabled(viewDeploymentDetailsEnabled);
     }
 
     @Override
