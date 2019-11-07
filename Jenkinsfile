@@ -22,6 +22,7 @@ pipeline {
         }
         stage('Prepare') {
             steps {
+                sh "npm install -g lock-treatment-tool --registry=${NPM_REGISTRY_URL}"
                 sh "npm install -g yarn --registry=${NPM_REGISTRY_URL}"
                 sh "yarn config set registry ${NPM_REGISTRY_URL}"
                 sh "export XAUTHORITY=$HOME/.Xauthority"
@@ -34,6 +35,7 @@ pipeline {
                     script {
                         githubscm.checkoutIfExists('kogito-tooling', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
                         wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
+                            sh "locktt --registry=${NPM_REGISTRY_URL}"
                             sh('yarn run init && yarn build:prod')
                         }
                     }
