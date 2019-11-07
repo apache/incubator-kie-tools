@@ -56,7 +56,7 @@ func TestKogitoApp(t *testing.T) {
 	}
 
 	// Specifies what tests should be executed
-	tests := util.GetEnv("TESTS", "full")
+	tests := util.GetOSEnv("TESTS", "full")
 	if tests == "jvm" {
 		// Run just JVM tests
 		t.Run("kogitoapp", func(t *testing.T) {
@@ -151,7 +151,7 @@ func deployKogitoServiceApp(t *testing.T, kogitoService *v1alpha1.KogitoApp, f *
 		log.Fatal(err)
 	}
 	appName := kogitoService.Name
-	tag := util.GetEnv("KOGITO_IMAGE_TAG", resource.ImageStreamTag)
+	tag := util.GetOSEnv("KOGITO_IMAGE_TAG", resource.ImageStreamTag)
 	log.Infof("Using image tag %s", tag)
 
 	// set tags (used in devel for non-released versions)

@@ -35,7 +35,7 @@ func getKogitoServiceStub(appName string, namespace string) *v1alpha1.KogitoApp 
 			Build: &v1alpha1.KogitoAppBuildObject{
 				Env: []v1alpha1.Env{v1alpha1.Env{
 					Name:  "MAVEN_MIRROR_URL",
-					Value: util.GetEnv("MAVEN_MIRROR_URL", ""),
+					Value: util.GetOSEnv("MAVEN_MIRROR_URL", ""),
 				}},
 				GitSource: &v1alpha1.GitSource{},
 			},
