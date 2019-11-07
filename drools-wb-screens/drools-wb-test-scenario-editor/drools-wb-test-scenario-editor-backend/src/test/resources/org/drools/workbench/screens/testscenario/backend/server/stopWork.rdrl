@@ -1,0 +1,14 @@
+package org.drools.workbench.screens.testscenario.backend.server;
+
+import java.lang.Number;
+import org.drools.workbench.screens.testscenario.backend.server.model.Employee;
+import org.drools.workbench.screens.testscenario.backend.server.model.Salary;
+
+rule "stopWork"
+	dialect "mvel"
+	when
+		Salary( amount > 5000.0B )
+		e : Employee( jobs contains "worker" , jobs contains "manager" )
+	then
+		e.jobs.remove("worker");
+end

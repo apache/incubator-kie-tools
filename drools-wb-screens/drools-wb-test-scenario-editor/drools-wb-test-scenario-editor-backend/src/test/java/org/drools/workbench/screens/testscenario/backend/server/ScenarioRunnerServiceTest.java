@@ -202,6 +202,15 @@ public class ScenarioRunnerServiceTest {
         testScenario("testAcidExpiration.scenario", true);
     }
 
+    /**
+     * Reproducer test for https://issues.jboss.org/browse/DROOLS-4725
+     */
+    @Test
+    public void testStopWork() throws Exception {
+        initKieSession("stopWork.rdrl");
+        testScenario("stopWorkTest.scenario", true);
+    }
+
     @Test
     public void testRunSeveralScenarios() throws Exception {
         initKieSession();

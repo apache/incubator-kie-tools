@@ -17,12 +17,15 @@
 package org.drools.workbench.screens.testscenario.backend.server.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Employee implements Serializable {
 
     static final long serialVersionUID = 1L;
 
     private Salary salary;
+
+    private List<String> jobs;
 
     public Employee() {
     }
@@ -33,6 +36,14 @@ public class Employee implements Serializable {
 
     public void setSalary(Salary salary) {
         this.salary = salary;
+    }
+
+    public List<String> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<String> jobs) {
+        this.jobs = jobs;
     }
 
     public Employee(Salary salary) {
