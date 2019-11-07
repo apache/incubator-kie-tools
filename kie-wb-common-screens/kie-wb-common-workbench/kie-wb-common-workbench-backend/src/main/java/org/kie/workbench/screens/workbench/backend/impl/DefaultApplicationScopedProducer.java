@@ -35,6 +35,7 @@ import org.kie.workbench.common.screens.library.api.index.Constants;
 import org.kie.workbench.screens.workbench.backend.ApplicationScopedProducer;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
+import org.uberfire.commons.concurrent.Indexing;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -92,7 +93,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
                                             DefaultIndexEngineObserver defaultIndexEngineObserver,
                                             IndexersFactory indexersFactory,
                                             Event<BatchIndexEvent> batchIndexEvent,
-                                            @Unmanaged ExecutorService executorService,
+                                            @Indexing ExecutorService executorService,
                                             BatchIndexListener batchIndexListener) {
         this();
         this.config = config;
