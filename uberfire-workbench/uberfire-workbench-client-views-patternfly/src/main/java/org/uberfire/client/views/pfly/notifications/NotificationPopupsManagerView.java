@@ -20,15 +20,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityBeansCache;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.ActivityResourceType;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {
@@ -40,6 +51,10 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     private boolean removing = false;
     private int initialSpacing = SPACING;
     private IsWidget container;
+    @Inject private PlaceManager placeManager;
+    @Inject private AuthorizationManager authorizationManager;
+    @Inject private User user;
+    @Inject private ActivityBeansCache activityBeansCache;
 
     @Override
     public void setContainer(final IsWidget container) {
@@ -62,6 +77,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         final NotificationPopupView view = new NotificationPopupView();
         final PopupHandle popupHandle = new PopupHandle(view,
                                                         event);
+
         activeNotifications.add(popupHandle);
         int size = activeNotifications.size();
         int topMargin = (size == 1) ? initialSpacing : (size * SPACING) - (SPACING - initialSpacing);
@@ -70,7 +86,25 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         view.setNotification(event.getNotification());
         view.setType(event.getType());
         view.setNotificationWidth(getWidth() + "px");
-        view.show(hideCommand);
+
+        if (event.hasNavigation()) {
+            final String identifier = event.getNavigationPlace().getIdentifier();
+            final SyncBeanDef<Activity> syncBeanDefActivity = activityBeansCache.getActivity(identifier);
+            final ResourceRef resourceRef = new ResourceRef(identifier, syncBeanDefActivity.getInstance().getResourceType());
+            final Boolean isAuthorized = authorizationManager.authorize(resourceRef, user);
+            if (isAuthorized) {
+                view.addNavigation(
+                        event.getNavigationText(),
+                        () -> {
+                            hideCommand.execute();
+                            placeManager.goTo(event.getNavigationPlace());
+                        });
+            }
+        }
+
+        view.show(hideCommand,
+                  event.autoHide());
+
         return popupHandle;
     }
 

@@ -41,7 +41,9 @@ import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.promise.Promises;
+import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 @ApplicationScoped
 public class ProjectController {
@@ -193,6 +195,12 @@ public class ProjectController {
         return checkBranchPermission(project,
                                      branch,
                                      RolePermissions::canDelete);
+    }
+
+    public Promise<Boolean> canViewDeploymentDetails(String id) {
+        ResourceRef resourceRef = new ResourceRef(id, ActivityResourceType.PERSPECTIVE);
+        Boolean authorized = authorizationManager.authorize(resourceRef, user);
+        return promises.resolve(authorized);
     }
 
     public Promise<Boolean> canSubmitChangeRequest(final WorkspaceProject project,
