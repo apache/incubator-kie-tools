@@ -1,13 +1,10 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.1 (alpha)
+## Release notes - 0.2.2 (alpha)
 
 ### Features and fixes included on this release 
-- [AF-2274](https://issues.jboss.org/browse/AF-2274): Open editor on the assets of a PR to compare
-- [AF-2273](https://issues.jboss.org/browse/AF-2273): Open editor on visualization screen on GitHub
-- [KOGITO-448](https://issues.jboss.org/browse/KOGITO-448): Configure extensions to support DMN files
-- [AF-2119](https://issues.jboss.org/browse/AF-2119): Integrate UX design of Loading Screen 
+- [KOGITO-541](https://issues.jboss.org/browse/KOGITO-541): Format the output XML
     
 ![gif](https://i.imgur.com/DeUs5qh.gif)
 
