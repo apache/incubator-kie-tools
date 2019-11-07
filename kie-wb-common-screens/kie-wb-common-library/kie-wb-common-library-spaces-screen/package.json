@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest --silent",
-    "init": "yarn install",
+    "init": "yarn install --force",
     "build:dev": "yarn run lint && yarn test && webpack --mode development --devtool inline-source-map",
     "build:prod": "yarn run lint && yarn test && webpack --mode production --devtool none",
     "live-reload-on": "sh -c 'mvn clean install -Psourcemaps && find ${0} | grep $npm_package_bundleName | grep -v target | xargs -I{} cp dist/$npm_package_bundleName {}'"
