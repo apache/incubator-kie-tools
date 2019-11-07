@@ -19,6 +19,7 @@ package org.uberfire.commons.concurrent;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
@@ -36,13 +37,16 @@ public class ExecutorServiceProducer {
 
     private final ExecutorService executorService;
     private final ExecutorService unmanagedExecutorService;
+    private final ExecutorService indexingExecutorService;
 
     protected static final String MANAGED_LIMIT_PROPERTY = "org.appformer.concurrent.managed.thread.limit";
     protected static final String UNMANAGED_LIMIT_PROPERTY = "org.appformer.concurrent.unmanaged.thread.limit";
+    protected static final String INDEXING_LIMIT_PROPERTY = "org.appformer.concurrent.indexing.thread.limit";
 
     public ExecutorServiceProducer() {
         this.executorService = this.buildFixedThreadPoolExecutorService(MANAGED_LIMIT_PROPERTY);
         this.unmanagedExecutorService = this.buildFixedThreadPoolExecutorService(UNMANAGED_LIMIT_PROPERTY);
+        this.indexingExecutorService = this.buildFixedThreadPoolExecutorService(INDEXING_LIMIT_PROPERTY);
     }
 
     protected ExecutorService buildFixedThreadPoolExecutorService(String key) {
@@ -82,11 +86,22 @@ public class ExecutorServiceProducer {
         return this.getUnmanagedExecutorService();
     }
 
+    @Produces
+    @ApplicationScoped
+    @Indexing
+    public ExecutorService produceIndexingExecutorService() {
+        return this.getIndexingExecutorService();
+    }
+
     protected ExecutorService getManagedExecutorService() {
         return this.executorService;
     }
 
     protected ExecutorService getUnmanagedExecutorService() {
         return this.unmanagedExecutorService;
+    }
+
+    protected ExecutorService getIndexingExecutorService() {
+        return this.indexingExecutorService;
     }
 }

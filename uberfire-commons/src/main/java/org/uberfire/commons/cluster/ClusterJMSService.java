@@ -17,8 +17,8 @@
 package org.uberfire.commons.cluster;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import javax.jms.Connection;
@@ -43,7 +43,7 @@ public class ClusterJMSService implements ClusterService {
 
     private Connection connection;
     private ClusterParameters clusterParameters;
-    private List<Session> consumerSessions = new ArrayList<>();
+    private Map<String, Session> consumerSessions = new ConcurrentHashMap();
 
     public ClusterJMSService() {
         clusterParameters = loadParameters();
@@ -107,28 +107,41 @@ public class ClusterJMSService implements ClusterService {
                                    String channel,
                                    Class<T> objectMessageClass,
                                    Consumer<T> listener) {
-        try {
-            Session session = createConsumerSession();
-            Destination topic = createDestination(type,
-                                                  channel,
-                                                  session);
-            MessageConsumer messageConsumer = session.createConsumer(topic);
 
-            messageConsumer.setMessageListener(message -> {
-                if (message instanceof ObjectMessage) {
-                    try {
-                        Serializable object = ((ObjectMessage) message).getObject();
-                        if (objectMessageClass.isInstance(object)) {
-                            listener.accept((T) object);
+        consumerSessions.computeIfAbsent(channel, (key) -> {
+            Session newSession = createConsumerSession();
+            try {
+                Destination topic = createDestination(type,
+                                                      key,
+                                                      newSession);
+                MessageConsumer messageConsumer = newSession.createConsumer(topic);
+
+                messageConsumer.setMessageListener(message -> {
+                    if (message instanceof ObjectMessage) {
+                        try {
+                            Serializable object = ((ObjectMessage) message).getObject();
+                            if (objectMessageClass.isInstance(object)) {
+                                if (LOGGER.isTraceEnabled()) {
+                                    LOGGER.trace("JSM: Consumer for channel {} - {} and session {} is accepting ObjectMessage", type, channel, newSession);
+                                }
+                                listener.accept((T) object);
+                            }
+                        } catch (JMSException e) {
+                            LOGGER.error("Exception receiving JMS message: " + e.getMessage());
                         }
-                    } catch (JMSException e) {
-                        LOGGER.error("Exception receiving JMS message: " + e.getMessage());
                     }
+                });
+                return newSession;
+            } catch (Exception e) {
+                try {
+                    newSession.close();
+                } catch (Exception ex) {
+                    LOGGER.error("Exception on closing JMS session (this could trigger a leak) " + e.getMessage());
                 }
-            });
-        } catch (Exception e) {
-            LOGGER.error("Error creating JMS Watch Service: " + e.getMessage());
-        }
+                LOGGER.error("Error creating JMS Watch Service: " + e.getMessage());
+                return null;
+            }
+        });
     }
 
     @Override
@@ -162,20 +175,19 @@ public class ClusterJMSService implements ClusterService {
         }
     }
 
-    private Destination createDestination(DestinationType type,
-                                          String channel,
-                                          Session session) throws JMSException {
+    protected Destination createDestination(DestinationType type,
+                                            String channel,
+                                            Session session) throws JMSException {
         if (type.equals(DestinationType.LoadBalancer)) {
             return session.createQueue(channel);
         }
         return session.createTopic(channel);
     }
 
-    private Session createConsumerSession() {
+    protected Session createConsumerSession() {
         try {
             Session session = connection.createSession(false,
                                                        Session.AUTO_ACKNOWLEDGE);
-            consumerSessions.add(session);
             return session;
         } catch (JMSException e) {
             LOGGER.error("Error creating session " + e.getMessage());
@@ -199,7 +211,7 @@ public class ClusterJMSService implements ClusterService {
     @Override
     public void close() {
         try {
-            for (Session s : consumerSessions) {
+            for (Session s : consumerSessions.values()) {
                 s.close();
             }
             connection.close();
