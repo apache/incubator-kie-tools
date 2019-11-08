@@ -25,7 +25,6 @@ fi
 
 ######################
 # incremental builds
-# import ${KOGITO_HOME}/launch/configure-maven.sh
 manage_incremental_build
 
 echo "---> Installing application source..."

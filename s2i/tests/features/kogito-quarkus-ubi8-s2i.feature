@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-quarkus-ubi8-s2i
-
 Feature: kogito-quarkus-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected
@@ -65,12 +64,17 @@ Feature: kogito-quarkus-ubi8-s2i image tests
 
   Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.5.1
-    Then check that page is served
-      | property        | value                    |
-      | port            | 8080                     |
-      | path            | /hello                   |
-      | wait            | 80                       |
-      | expected_phrase | Mario is older than Mark |
+      | variable          | value                  |
+      | NATIVE            | false                  |
+    Then s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
+
+  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
+  Scenario: Perform a second incremental s2i build
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.5.1
+      | variable          | value    |
+      | NATIVE            | false    |
+    Then s2i build log should contain Expanding artifacts from incremental build...
+    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 
   Scenario: Verify if the memory limit is correctly applied
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
@@ -84,11 +88,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner should exist
     And s2i build log should contain -J-Xmx1717986918
-
-  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
-  Scenario: Perform a second incremental s2i build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.5.1
-    Then s2i build log should contain Expanding artifacts from incremental build...
 
   Scenario: verify if all labels are correctly set.
     Given image is built

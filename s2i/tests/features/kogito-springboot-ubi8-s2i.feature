@@ -46,7 +46,7 @@ Feature: kogito-springboot-ubi8-s2i image tests
   Scenario: Perform a second incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using 0.5.1
     Then s2i build log should contain Expanding artifacts from incremental build...
-
+    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 
   Scenario: verify if all labels are correctly set.
     Given image is built
