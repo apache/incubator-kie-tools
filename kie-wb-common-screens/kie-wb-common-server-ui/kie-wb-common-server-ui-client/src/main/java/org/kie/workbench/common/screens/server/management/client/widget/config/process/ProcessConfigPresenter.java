@@ -16,17 +16,23 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ProcessConfig;
+import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ClientMergeMode;
 import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
+import org.kie.workbench.common.screens.server.management.model.ProcessConfigModule;
+import org.kie.workbench.common.screens.server.management.service.DeploymentDescriptorService;
 import org.uberfire.client.mvp.UberView;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.*;
@@ -61,10 +67,12 @@ public class ProcessConfigPresenter {
     private final View view;
     private ContainerSpecKey containerSpecKey;
     private ProcessConfig processConfig;
+    private final Caller<DeploymentDescriptorService> deploymentDescriptorService;
 
     @Inject
-    public ProcessConfigPresenter(final View view) {
+    public ProcessConfigPresenter(final View view, Caller<DeploymentDescriptorService> deploymentDescriptorService) {
         this.view = view;
+        this.deploymentDescriptorService = deploymentDescriptorService;
     }
 
     @PostConstruct
@@ -113,6 +121,19 @@ public class ProcessConfigPresenter {
                              processConfig.getKSession(),
                              mergeMode);
     }
+
+    void onDependencyPathSelectedEvent(@Observes final DependencyPathSelectedEvent event) throws IOException {
+        if (event != null && event.getContext() != null && event.getPath() != null) {
+            deploymentDescriptorService.call(processConfigModule -> {
+                ProcessConfigModule module = (ProcessConfigModule) processConfigModule;
+                view.setContent(ClientRuntimeStrategy.convert(module.getRuntimeStrategy()).getValue(view.getTranslationService()),
+                                module.getKBase(),
+                                module.getKSession(),
+                                ClientMergeMode.MERGE_COLLECTIONS.getValue(view.getTranslationService()));
+            }).getProcessConfig(event.getPath());
+        }
+    }
+
 
     public void disable() {
         view.disable();

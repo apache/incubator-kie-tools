@@ -16,20 +16,27 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
+import java.io.IOException;
+
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ProcessConfig;
+import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.client.util.ClientMergeMode;
 import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
-import org.mockito.InjectMocks;
+import org.kie.workbench.common.screens.server.management.model.ProcessConfigModule;
+import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
+import org.kie.workbench.common.screens.server.management.service.DeploymentDescriptorService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -43,8 +50,12 @@ public class ProcessConfigPresenterTest {
     @Mock
     ProcessConfigPresenter.View view;
 
-    @InjectMocks
     ProcessConfigPresenter presenter;
+
+    Caller<DeploymentDescriptorService> deploymentDescriptorServiceCaller;
+
+    @Mock
+    DeploymentDescriptorService deploymentDescriptorService;
 
     @Before
     public void setup() {
@@ -57,6 +68,10 @@ public class ProcessConfigPresenterTest {
         } );
 
         when( view.getTranslationService() ).thenReturn( translationService );
+
+        deploymentDescriptorServiceCaller = new CallerMock<DeploymentDescriptorService>(deploymentDescriptorService);
+
+        presenter = spy(new ProcessConfigPresenter(view, deploymentDescriptorServiceCaller));
     }
 
     @Test
@@ -145,6 +160,19 @@ public class ProcessConfigPresenterTest {
         assertEquals( "b", processConfig.getKBase() );
         assertEquals( "c", processConfig.getKSession() );
         assertEquals( "MERGE_COLLECTIONS", processConfig.getMergeMode() );
+    }
+
+
+    @Test
+    public void testOnDependencyPathSelectedEvent() throws IOException {
+        final String path = "org:kie:1.0";
+        when(deploymentDescriptorService.getProcessConfig(path)).thenReturn(new ProcessConfigModule(RuntimeStrategy.SINGLETON,
+                                                                                                    "mykiebase",
+                                                                                                    "mykiesession"));
+
+        presenter.onDependencyPathSelectedEvent(new DependencyPathSelectedEvent("", path));
+
+        verify(view).setContent("ClientRuntimeStrategy.Singleton", "mykiebase", "mykiesession", "ClientMergeMode.MergeCollections");
     }
 
 }

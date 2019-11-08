@@ -33,6 +33,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
 
 @Dependent
 @Templated
@@ -97,7 +98,7 @@ public class ProcessConfigView extends Composite
 
         final List<String> runtimeStrategies = presenter.getRuntimeStrategies();
 
-        runtimeStrategy.setText( runtimeStrategies.get( 0 ) );
+        runtimeStrategy.setText(ClientRuntimeStrategy.PER_PROCESS_INSTANCE.getValue(translationService));
         for ( final String strategy : runtimeStrategies ) {
             runtimeStrategyDropdown.add( new AnchorListItem( strategy ) {{
                 addClickHandler( new ClickHandler() {
