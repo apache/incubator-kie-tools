@@ -63,7 +63,7 @@ module.exports = async (env, argv) => {
     },
     externals: {},
     devServer: {
-      contentBase: [path.join(__dirname, "..", "unpacked-gwt-editors")],
+      contentBase: [path.join(__dirname, "..", "kie-bc-editors-unpacked")],
       compress: true,
       hot: false,
       liveReload: false,

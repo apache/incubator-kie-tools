@@ -63,7 +63,7 @@
     "@kogito-tooling/kie-bc-editors": "0.2.3",
     "@kogito-tooling/microeditor-envelope": "0.2.3",
     "@kogito-tooling/microeditor-envelope-protocol": "0.2.3",
-    "@kogito-tooling/unpacked-gwt-editors": "0.2.3",
+    "@kogito-tooling/kie-bc-editors-unpacked": "0.2.3",
     "@kogito-tooling/vscode-extension": "0.2.3"
   }
 }
