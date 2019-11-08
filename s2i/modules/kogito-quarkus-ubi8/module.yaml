@@ -1,5 +1,5 @@
 schema_version: 1
-version: "0.5.1"
+version: "0.6.0"
 name: kogito-quarkus-ubi8
 execute:
 - script: configure

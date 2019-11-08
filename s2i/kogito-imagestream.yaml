@@ -15,18 +15,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '0.5.1'
+    - name: '0.6.0'
       annotations:
         description: Runtime image for Kogito based on Quarkus native image
         iconClass: icon-jbpm
         tags: runtime,kogito,quarkus
         supports: quarkus
-        version: '0.5.1'
+        version: '0.6.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-ubi8:0.5.1
+        name: quay.io/kiegroup/kogito-quarkus-ubi8:0.6.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -36,18 +36,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-      - name: '0.5.1'
+      - name: '0.6.0'
         annotations:
           description: Runtime image for Kogito based on Quarkus JVM image
           iconClass: icon-jbpm
           tags: runtime,kogito,quarkus,jvm
           supports: quarkus
-          version: '0.5.1'
+          version: '0.6.0'
         referencePolicy:
           type: Local
         from:
           kind: DockerImage
-          name: quay.io/kiegroup/kogito-quarkus-jvm-ubi8:0.5.1
+          name: quay.io/kiegroup/kogito-quarkus-jvm-ubi8:0.6.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -57,18 +57,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '0.5.1'
+    - name: '0.6.0'
       annotations:
         description: Platform for building Kogito based on Quarkus
         iconClass: icon-jbpm
         tags: builder,kogito,quarkus
         supports: quarkus
-        version: '0.5.1'
+        version: '0.6.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.5.1
+        name: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.6.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -78,18 +78,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '0.5.1'
+    - name: '0.6.0'
       annotations:
         description: Runtime image for Kogito based on SpringBoot
         iconClass: icon-jbpm
         tags: runtime,kogito,springboot
         supports: springboot
-        version: '0.5.1'
+        version: '0.6.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-ubi8:0.5.1
+        name: quay.io/kiegroup/kogito-springboot-ubi8:0.6.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -99,18 +99,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '0.5.1'
+    - name: '0.6.0'
       annotations:
         description: Platform for building Kogito based on Quarkus
         iconClass: icon-jbpm
         tags: builder,kogito,springboot
         supports: springboot
-        version: '0.5.1'
+        version: '0.6.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.5.1
+        name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.6.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -120,14 +120,14 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '0.5.1'
+    - name: '0.6.0'
       annotations:
         description: Runtime image for the Kogito Data Index Service
         iconClass: icon-jbpm
         tags: kogito,data-index
-        version: '0.5.1'
+        version: '0.6.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-data-index:0.5.1
+        name: quay.io/kiegroup/kogito-data-index:0.6.0

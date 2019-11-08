@@ -108,8 +108,9 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
     And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.2.1
 
-    Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
+  Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
     Given s2i build /tmp/kogito-examples from dmn-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value                           |
       | NATIVE            | false                           |
+      | KOGITO_VERSION    | 8.0.0-SNAPSHOT                  |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist

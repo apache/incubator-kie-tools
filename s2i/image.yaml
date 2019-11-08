@@ -1,8 +1,11 @@
 schema_version: 1
 
 name: "kogito-image-real-name-on-overrides-file"
-version: "0.5.1"
-from: "registry.redhat.io/ubi8-minimal:latest"
+version: "0.6.0"
+# until this issue is not fixed use 8.0 tag.
+# https://github.com/rpm-software-management/microdnf/issues/50
+# https://bugzilla.redhat.com/show_bug.cgi?id=1769831
+from: "registry.redhat.io/ubi8/ubi-minimal:8.0"
 
 labels:
 - name: "maintainer"
