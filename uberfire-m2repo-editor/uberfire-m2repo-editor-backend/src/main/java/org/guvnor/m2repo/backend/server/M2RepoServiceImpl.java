@@ -260,6 +260,18 @@ public class M2RepoServiceImpl implements M2RepoService,
         }
     }
 
+    @Override
+    public String getKModuleText(String path) {
+        checkPathTraversal(path);
+        return repository.getKModuleText(path);
+    }
+
+    @Override
+    public String getKieDeploymentDescriptorText(String path) {
+        checkPathTraversal(path);
+        return repository.getKieDeploymentDescriptorText(path);
+    }
+
     private boolean isURLValid() {
         final String urlProperty = System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_URL);
         try {

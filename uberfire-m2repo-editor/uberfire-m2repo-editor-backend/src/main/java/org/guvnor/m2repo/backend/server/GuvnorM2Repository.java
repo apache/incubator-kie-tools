@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -66,6 +67,18 @@ public class GuvnorM2Repository {
     private static final Logger log = LoggerFactory.getLogger(GuvnorM2Repository.class);
 
     private static final int BUFFER_SIZE = 1024;
+    protected static final String META_INF = "META-INF";
+    private static final String MAVEN = "maven";
+    private static final String META_INF_MAVEN = META_INF + "/" + MAVEN;
+    private static final String POM = "pom";
+    private static final String POM_XML = POM + ".xml";
+    private static final String POM_PROPERTIES = POM + ".properties";
+
+    private static final String GROUP_ID_NAME = "groupId";
+    private static final String ARTIFACT_ID_NAME = "artifactId";
+    private static final String VERSION_NAME = "version";
+    protected static final String KMODULE_XML = "kmodule.xml";
+    protected static final String KIE_DEPLOYMENT_DESCRIPTOR_XML = "kie-deployment-descriptor.xml";
 
     private final List<ArtifactRepository> repositories = new ArrayList<>();
     private final List<ArtifactRepository> pomRepositories = new ArrayList<>();
@@ -182,9 +195,7 @@ public class GuvnorM2Repository {
     public void deployPom(final InputStream pomStream,
                           final GAV gav) {
         //Write POM to temporary file for deployment
-        File pomFile = new File(System.getProperty("java.io.tmpdir"),
-                                toFileName(gav,
-                                           "pom"));
+        File pomFile = new File(System.getProperty("java.io.tmpdir"), toFileName(gav, POM));
 
         try {
 
@@ -239,7 +250,7 @@ public class GuvnorM2Repository {
         //Write pom.xml to temporary file for deployment
         final File pomXMLFile = new File(System.getProperty("java.io.tmpdir"),
                                          toFileName(gav,
-                                                    "pom.xml"));
+                                                    POM_XML));
 
         try {
 
@@ -249,7 +260,7 @@ public class GuvnorM2Repository {
             //pom.xml Artifact
             Artifact pomXMLArtifact = new DefaultArtifact(gav.getGroupId(),
                                                           gav.getArtifactId(),
-                                                          "pom",
+                                                          POM,
                                                           gav.getVersion());
             pomXMLArtifact = pomXMLArtifact.setFile(pomXMLFile);
 
@@ -273,9 +284,7 @@ public class GuvnorM2Repository {
                                 final boolean includeAdditionalRepositories,
                                 final Predicate<ArtifactRepository> filter) {
         //Write pom.xml to temporary file for deployment
-        final File pomXMLFile = new File(System.getProperty("java.io.tmpdir"),
-                                         toFileName(gav,
-                                                    "pom.xml"));
+        final File pomXMLFile = new File(System.getProperty("java.io.tmpdir"), toFileName(gav, POM_XML));
 
         try {
 
@@ -290,9 +299,7 @@ public class GuvnorM2Repository {
             jarArtifact = jarArtifact.setFile(jarFile);
 
             //pom.xml Artifact
-            Artifact pomXMLArtifact = new SubArtifact(jarArtifact,
-                                                      "",
-                                                      "pom");
+            Artifact pomXMLArtifact = new SubArtifact(jarArtifact, "", POM);
             pomXMLArtifact = pomXMLArtifact.setFile(pomXMLFile);
 
             final Artifact finalJarArtifact = jarArtifact;
@@ -346,7 +353,7 @@ public class GuvnorM2Repository {
         //POM Artifact
         Artifact pomArtifact = new DefaultArtifact(gav.getGroupId(),
                                                    gav.getArtifactId(),
-                                                   "pom",
+                                                   POM,
                                                    gav.getVersion());
         pomArtifact = pomArtifact.setFile(pomFile);
 
@@ -396,7 +403,7 @@ public class GuvnorM2Repository {
             fileFormats = new ArrayList<String>();
             fileFormats.add("jar");
             fileFormats.add("kjar");
-            fileFormats.add("pom");
+            fileFormats.add(POM);
         }
 
         for (String fileFormat : fileFormats) {
@@ -421,7 +428,7 @@ public class GuvnorM2Repository {
             fileFormats = new ArrayList<String>();
             fileFormats.add("jar");
             fileFormats.add("kjar");
-            fileFormats.add("pom");
+            fileFormats.add(POM);
         }
 
         for (String fileFormat : fileFormats) {
@@ -460,29 +467,53 @@ public class GuvnorM2Repository {
         }
     }
 
-    private static String loadPomFromJar(final File file) {
-        try (ZipFile zip = new ZipFile(file)) {
-            for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
-                ZipEntry entry = (ZipEntry) e.nextElement();
+    public String getKModuleText(final String path) {
+        return loadKieTextFromJar(path, META_INF, KMODULE_XML);
+    }
 
-                if (entry.getName().startsWith("META-INF/maven") && entry.getName().endsWith("pom.xml")) {
-                    return zipEntryToString(zip,
-                                            entry);
-                }
-            }
-        } catch (ZipException e) {
-            log.error(e.getMessage());
-        } catch (IOException e) {
-            log.error(e.getMessage());
+    public String getKieDeploymentDescriptorText(final String path) {
+        return loadKieTextFromJar(path, META_INF, KIE_DEPLOYMENT_DESCRIPTOR_XML);
+    }
+
+    protected String loadKieTextFromJar(final String jarFilePath, final String subPath, final String fileName) {
+        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
+        final File file = new File(repository.getRootDir(),
+                                   jarFilePath);
+
+
+        final String normalizedPath = file.toPath().normalize().toString();
+        if (isJar(normalizedPath) || isKJar(normalizedPath)) {
+            return loadFileTextFromJar(file, subPath, fileName);
         }
+        return null;
+    }
 
+    private static String loadPomFromJar(final File file) {
+        return loadFileTextFromJar(file, META_INF_MAVEN, POM_XML);
+    }
+
+    protected static String loadFileTextFromJar(final File jarFile, String path, String fileName) {
+        if (jarFile != null && fileName != null && !fileName.isEmpty()) {
+            try (ZipFile zip = new ZipFile(jarFile)) {
+                for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
+                    ZipEntry entry = (ZipEntry) e.nextElement();
+                    if (entry.getName().startsWith(path) && entry.getName().endsWith(fileName)) {
+                        return zipEntryToString(zip,
+                                                entry);
+                    }
+                }
+            } catch (ZipException e) {
+                log.error(e.getMessage());
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
         return null;
     }
 
     private static String loadPom(final File file) {
         try (InputStream is = new FileInputStream(file);
-             InputStreamReader isr = new InputStreamReader(is,
-                                                           "UTF-8")) {
+             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             StringBuilder sb = new StringBuilder();
             for (int c = isr.read(); c != -1; c = isr.read()) {
                 sb.append((char) c);
@@ -506,9 +537,9 @@ public class GuvnorM2Repository {
             final Properties props = new Properties();
             props.load(new StringReader(pomProperties));
 
-            final String groupId = props.getProperty("groupId");
-            final String artifactId = props.getProperty("artifactId");
-            final String version = props.getProperty("version");
+            final String groupId = props.getProperty(GROUP_ID_NAME);
+            final String artifactId = props.getProperty(ARTIFACT_ID_NAME);
+            final String version = props.getProperty(VERSION_NAME);
 
             return new GAV(groupId,
                            artifactId,
@@ -527,7 +558,7 @@ public class GuvnorM2Repository {
             for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) e.nextElement();
 
-                if (entry.getName().startsWith("META-INF/maven") && entry.getName().endsWith("pom.properties")) {
+                if (entry.getName().startsWith(META_INF_MAVEN) && entry.getName().endsWith(POM_PROPERTIES)) {
                     return zipEntryToString(zip,
                                             entry);
                 }
@@ -544,9 +575,7 @@ public class GuvnorM2Repository {
     public static String loadPomFromJar(final InputStream jarInputStream) {
         try {
 
-            InputStream is = getInputStreamFromJar(jarInputStream,
-                                                   "META-INF/maven",
-                                                   "pom.xml");
+            InputStream is = getInputStreamFromJar(jarInputStream, META_INF_MAVEN, POM_XML);
             StringBuilder sb = new StringBuilder();
             for (int c = is.read(); c != -1; c = is.read()) {
                 sb.append((char) c);
@@ -562,9 +591,7 @@ public class GuvnorM2Repository {
     public static String loadPomPropertiesFromJar(final InputStream jarInputStream) {
         try {
 
-            InputStream is = getInputStreamFromJar(jarInputStream,
-                                                   "META-INF/maven",
-                                                   "pom.properties");
+            InputStream is = getInputStreamFromJar(jarInputStream, META_INF_MAVEN, POM_PROPERTIES);
             StringBuilder sb = new StringBuilder();
             for (int c = is.read(); c != -1; c = is.read()) {
                 sb.append((char) c);
@@ -586,8 +613,7 @@ public class GuvnorM2Repository {
         while ((entry = zis.getNextEntry()) != null) {
             final String entryName = entry.getName();
             if (entryName.startsWith(prefix) && entryName.endsWith(suffix)) {
-                return new ReaderInputStream( new InputStreamReader( zis,
-                                                                     "UTF-8"));
+                return new ReaderInputStream(new InputStreamReader(zis, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
             }
         }
 
@@ -658,15 +684,15 @@ public class GuvnorM2Repository {
 
     public static String generatePomProperties(final GAV gav) {
         StringBuilder sBuilder = new StringBuilder();
-        sBuilder.append("groupId=");
+        sBuilder.append(GROUP_ID_NAME + "=");
         sBuilder.append(gav.getGroupId());
         sBuilder.append("\n");
 
-        sBuilder.append("artifactId=");
+        sBuilder.append(ARTIFACT_ID_NAME + "=");
         sBuilder.append(gav.getArtifactId());
         sBuilder.append("\n");
 
-        sBuilder.append("version=");
+        sBuilder.append(VERSION_NAME + "=");
         sBuilder.append(gav.getVersion());
         sBuilder.append("\n");
 
@@ -674,11 +700,11 @@ public class GuvnorM2Repository {
     }
 
     public String getPomXmlPath(final GAV gav) {
-        return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.xml";
+        return META_INF_MAVEN + "/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/" + POM_XML;
     }
 
     public String getPomPropertiesPath(final GAV gav) {
-        return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.properties";
+        return META_INF_MAVEN + "/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/" + POM_PROPERTIES;
     }
 
     public String generateParentPOM(final GAV gav) {
@@ -686,7 +712,7 @@ public class GuvnorM2Repository {
         model.setGroupId(gav.getGroupId());
         model.setArtifactId(gav.getArtifactId());
         model.setVersion(gav.getVersion());
-        model.setPackaging("pom");
+        model.setPackaging(POM);
         model.setModelVersion("4.0.0");
 
         StringWriter stringWriter = new StringWriter();
@@ -723,8 +749,7 @@ public class GuvnorM2Repository {
     protected static String zipEntryToString(ZipFile zip,
                                              ZipEntry entry) throws IOException {
         final InputStream is = zip.getInputStream(entry);
-        final InputStreamReader isr = new InputStreamReader(is,
-                                                            "UTF-8");
+        final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
         StringBuilder sb = new StringBuilder();
         for (int c = isr.read(); c != -1; c = isr.read()) {
             sb.append((char) c);

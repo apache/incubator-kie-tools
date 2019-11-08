@@ -19,12 +19,15 @@ package org.guvnor.m2repo.backend.server;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import org.apache.commons.fileupload.FileItem;
 import org.eclipse.aether.artifact.Artifact;
@@ -47,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.paging.PageResponse;
 
+import static java.util.Collections.singletonList;
 import static org.guvnor.m2repo.backend.server.M2RepoServiceCreator.deleteDir;
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
 import static org.junit.Assert.assertEquals;
@@ -631,5 +635,24 @@ public class M2MavenRepositoryServiceImplTest {
         repo.deployArtifact(is,
                             gav,
                             false);
+    }
+
+    @Test
+    public void testGetKieText() {
+        GAV gavEvaluation = new GAV("evaluation", "evaluation", "12.1.1-SNAPSHOT");
+        InputStream is = this.getClass().getResourceAsStream("evaluation-12.1.1.jar");
+
+        repo.deployArtifact(is, gavEvaluation, false);
+
+        Optional<File> file = repo.listFiles("evaluation-12.1.1", singletonList("jar")).stream().findFirst();
+        assertTrue(file.isPresent());
+
+        String path = file.get().getPath();
+        String jarPath = path.substring(repo.getM2RepositoryRootDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME).length());
+
+        String kieDeploymentDescriptorText = repo.getKieDeploymentDescriptorText(jarPath);
+        assertNotNull(kieDeploymentDescriptorText);
+        String kModuleText = repo.getKModuleText(jarPath);
+        assertNotNull(kModuleText);
     }
 }

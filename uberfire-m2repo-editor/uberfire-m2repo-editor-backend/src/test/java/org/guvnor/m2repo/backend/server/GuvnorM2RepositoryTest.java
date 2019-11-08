@@ -62,6 +62,8 @@ import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
 import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
@@ -335,5 +337,21 @@ public class GuvnorM2RepositoryTest {
 
         exception.expect(RuntimeException.class);
         repo.getPomText("dir/name.foo");
+    }
+
+    @Test
+    public void testLoadFileTextFromJar() {
+        File jarFile = new File("src/test/resources/org/guvnor/m2repo/backend/server/evaluation-12.1.1.jar");
+        assertNotNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, GuvnorM2Repository.KIE_DEPLOYMENT_DESCRIPTOR_XML));
+        assertNotNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, GuvnorM2Repository.KMODULE_XML));
+
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, "kie-descriptor.xml"));
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, "modu.xml"));
+
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, ""));
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, ""));
+
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, null));
+        assertNull(GuvnorM2Repository.loadFileTextFromJar(jarFile, GuvnorM2Repository.META_INF, null));
     }
 }

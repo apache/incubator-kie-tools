@@ -16,6 +16,8 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import java.io.File;
+
 import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.junit.After;
 import org.junit.Before;
@@ -26,10 +28,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class M2RepoServiceImplM2RepoURLTest {
@@ -89,5 +93,18 @@ public class M2RepoServiceImplM2RepoURLTest {
 
         assertEquals("file://path-to-m2", m2RepoService.getRepositoryURL());
         verify(logger).warn(anyString());
+    }
+
+    @Test
+    public void testGetKModuleAndKieDeploymentDescriptorText() throws Exception {
+        File jarFile = new File("src/test/resources/org/guvnor/m2repo/backend/server/evaluation-12.1.1.jar");
+
+        when(repository.getKieDeploymentDescriptorText("evaluation-12.1.1.jar"))
+                .thenReturn(GuvnorM2Repository.loadFileTextFromJar(jarFile, "META-INF", "kie-deployment-descriptor.xml"));
+        when(repository.getKModuleText("evaluation-12.1.1.jar"))
+                .thenReturn(GuvnorM2Repository.loadFileTextFromJar(jarFile, "META-INF", "kmodule.xml"));
+
+        assertNotNull(m2RepoService.getKModuleText("evaluation-12.1.1.jar"));
+        assertNotNull(m2RepoService.getKieDeploymentDescriptorText("evaluation-12.1.1.jar"));
     }
 }
