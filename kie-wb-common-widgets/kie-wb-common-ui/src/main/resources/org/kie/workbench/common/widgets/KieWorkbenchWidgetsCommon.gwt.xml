@@ -35,7 +35,6 @@
   <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
   <inherits name="org.kie.soup.project.datamodel.commons.ProjectDataModelCommons"/>
 
-  <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
 

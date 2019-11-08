@@ -84,6 +84,11 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-core-editors</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
