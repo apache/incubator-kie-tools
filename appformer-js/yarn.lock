@@ -1372,6 +1372,14 @@ babel-helpers@^6.24.1:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
+babel-jest@23.0.0:
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-23.0.0.tgz#0e383a2aa6b3535e197db2929570a2182bd084e8"
+  integrity sha1-Djg6KqazU14ZfbKSlXCiGCvQhOg=
+  dependencies:
+    babel-plugin-istanbul "^4.1.6"
+    babel-preset-jest "^23.0.0"
+
 babel-jest@^23.6.0:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-23.6.0.tgz#a644232366557a2240a0c083da6b25786185a2f1"
@@ -1754,7 +1762,7 @@ babel-preset-flow@^6.23.0:
   dependencies:
     babel-plugin-transform-flow-strip-types "^6.22.0"
 
-babel-preset-jest@^23.2.0:
+babel-preset-jest@^23.0.0, babel-preset-jest@^23.2.0:
   version "23.2.0"
   resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-23.2.0.tgz#8ec7a03a138f001a1a8fb1e8113652bf1a55da46"
   integrity sha1-jsegOhOPABoaj7HoETZSvxpV2kY=
