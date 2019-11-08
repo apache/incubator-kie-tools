@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { ChromeRouter } from "./ChromeRouter";
-import { startExtension } from "@kogito-tooling/chrome-extension";
+import { startExtension, DefaultChromeRouter } from "@kogito-tooling/chrome-extension";
 import { SimpleReactEditorsRoutes } from "simple-react-editors";
 
 startExtension({
   name: "KIE :: Kogito Simple React Editor",
   editorIndexPath: "envelope/index.html",
-  router: new ChromeRouter(new SimpleReactEditorsRoutes())
+  router: new DefaultChromeRouter(new SimpleReactEditorsRoutes())
 });

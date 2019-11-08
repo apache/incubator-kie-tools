@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-pack-simple-react",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -22,9 +22,9 @@
     ]
   },
   "dependencies": {
-    "@kogito-tooling/chrome-extension": "0.2.1",
-    "@kogito-tooling/microeditor-envelope": "0.2.1",
-    "simple-react-editors": "0.2.1"
+    "@kogito-tooling/chrome-extension": "0.2.2",
+    "@kogito-tooling/microeditor-envelope": "0.2.2",
+    "simple-react-editors": "0.2.2"
   },
   "devDependencies": {
     "@types/jest": "23.3.1",
