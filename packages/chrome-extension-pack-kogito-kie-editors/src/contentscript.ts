@@ -15,7 +15,7 @@
  */
 
 import { ChromeRouter } from "./ChromeRouter";
-import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import { startExtension } from "@kogito-tooling/chrome-extension";
 
 startExtension({

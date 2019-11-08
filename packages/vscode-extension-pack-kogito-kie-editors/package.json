@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.2.3",
-    "@kogito-tooling/gwt-editors": "0.2.3",
+    "@kogito-tooling/kie-bc-editors": "0.2.3",
     "@kogito-tooling/microeditor-envelope": "0.2.3",
     "@kogito-tooling/microeditor-envelope-protocol": "0.2.3",
     "@kogito-tooling/unpacked-gwt-editors": "0.2.3",
