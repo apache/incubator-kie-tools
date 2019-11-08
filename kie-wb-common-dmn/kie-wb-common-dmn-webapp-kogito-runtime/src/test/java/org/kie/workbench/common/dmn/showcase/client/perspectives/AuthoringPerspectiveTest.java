@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
-import org.uberfire.client.workbench.panels.impl.SimpleNoExpandWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -35,7 +35,7 @@ public class AuthoringPerspectiveTest {
         final PerspectiveDefinition perspectiveDefinition = perspective.buildPerspective();
 
         assertThat(perspectiveDefinition).isNotNull();
-        assertThat(perspectiveDefinition.getRoot().getPanelType()).isEqualTo(SimpleNoExpandWorkbenchPanelPresenter.class.getName());
+        assertThat(perspectiveDefinition.getRoot().getPanelType()).isEqualTo(StaticWorkbenchPanelPresenter.class.getName());
         assertThat(perspectiveDefinition.getName()).isEqualTo(AuthoringPerspective.PERSPECTIVE_NAME);
 
         final Set<PartDefinition> parts = perspectiveDefinition.getRoot().getParts();
