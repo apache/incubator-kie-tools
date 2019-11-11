@@ -23,13 +23,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: dmn-editor
-          path: packages/kie-bc-editors-unpacked/dmn
+          path: packages/unpacked-gwt-editors/dmn
 
       - name: Upload BPMN editor
         uses: actions/upload-artifact@v1
         with:
           name: bpmn-editor
-          path: packages/kie-bc-editors-unpacked/bpmn
+          path: packages/unpacked-gwt-editors/bpmn
 
   build:
     needs: fetch-editors
