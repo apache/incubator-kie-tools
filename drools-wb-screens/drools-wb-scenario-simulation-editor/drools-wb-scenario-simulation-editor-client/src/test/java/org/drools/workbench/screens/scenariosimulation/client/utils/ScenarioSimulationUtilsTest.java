@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.List;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Test;
@@ -36,6 +36,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_PROPERTY_TITLE_FIRST;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.PLACEHOLDER;
 import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.DMN_DATE;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATE_CANONICAL_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -57,7 +59,7 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
     @Test
     public void getOriginalColumnGroup() {
         String subGroup = ScenarioSimulationUtils.getOriginalColumnGroup(COLUMN_GROUP + "-3");
-        assertEquals(subGroup, COLUMN_GROUP);
+        assertEquals(COLUMN_GROUP, subGroup);
     }
 
     @Test
@@ -121,14 +123,34 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
     }
 
     @Test
-    public void getPlaceholder() {
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertValue(),
-                     ScenarioSimulationUtils.getPlaceholder(String.class.getCanonicalName()));
+    public void getPlaceholder_InstanceNotAssigned() {
+        String placeholder = ScenarioSimulationUtils.getPlaceHolder(false, false, FactMappingValueType.NOT_EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(false, true, FactMappingValueType.NOT_EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(false, false, FactMappingValueType.EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(false, true, FactMappingValueType.EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+    }
 
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(),
-                     ScenarioSimulationUtils.getPlaceholder(LocalDate.class.getCanonicalName()));
+    @Test
+    public void getPlaceholder_InstanceAssignedPropertyNot() {
+        String placeholder = ScenarioSimulationUtils.getPlaceHolder(true, false, FactMappingValueType.NOT_EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, false, FactMappingValueType.EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(), placeholder);
+    }
 
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dmnDateFormatPlaceholder(),
-                     ScenarioSimulationUtils.getPlaceholder(ConstantHolder.DMN_DATE));
+    @Test
+    public void getPlaceholder_InstanceAndPropertyAssigned() {
+        String placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertExpression(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, "com.Test");
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertValue(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, LOCALDATE_CANONICAL_NAME);
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, DMN_DATE);
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dmnDateFormatPlaceholder(), placeholder);
     }
 }

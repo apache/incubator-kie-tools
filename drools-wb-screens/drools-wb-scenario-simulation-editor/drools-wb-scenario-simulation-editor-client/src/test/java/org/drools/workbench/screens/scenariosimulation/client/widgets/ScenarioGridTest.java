@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +30,15 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioExpressionCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -111,6 +113,10 @@ public class ScenarioGridTest {
     private Viewport viewportMock;
     @Mock
     private ScenarioContextMenuRegistry scenarioContextMenuRegistryMock;
+    @Mock
+    private ScenarioExpressionCellTextAreaSingletonDOMElementFactory expressionCellTextAreaSingletonDOMElementFactoryMock;
+    @Mock
+    private CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactory;
 
     private FactMapping factMappingDescription;
     private FactMapping factMappingGiven;
@@ -125,6 +131,8 @@ public class ScenarioGridTest {
     public void setup() {
         when(scenarioGridColumnMock.getPropertyHeaderMetaData()).thenReturn(propertyHeaderMetadataMock);
         when(scenarioGridModelMock.getAbstractScesimModel()).thenReturn(Optional.of(simulation));
+        when(scenarioGridModelMock.getScenarioExpressionCellTextAreaSingletonDOMElementFactory()).thenReturn(expressionCellTextAreaSingletonDOMElementFactoryMock);
+        when(scenarioGridModelMock.getCollectionEditorSingletonDOMElementFactory()).thenReturn(collectionEditorSingletonDOMElementFactory);
         factIdentifierGiven = new FactIdentifier("GIVEN", "GIVEN");
         factIdentifierInteger = new FactIdentifier("Integer", "java.lang.Integer");
         factMappingDescription = new FactMapping(EXPRESSION_ALIAS_DESCRIPTION, FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
@@ -266,9 +274,10 @@ public class ScenarioGridTest {
         String columnId = factMappingDescription.getExpressionIdentifier().getName();
         FactMappingType type = factMappingDescription.getExpressionIdentifier().getType();
         String columnGroup = type.name();
+        scenarioGrid.setType(ScenarioSimulationModel.Type.RULE);
         scenarioGrid.setHeaderColumn(1, factMappingDescription, true);
         verify(scenarioGrid, times(1)).isPropertyAssigned(eq(true), eq(factMappingDescription));
-        verify(scenarioGrid, times(1)).getPlaceholder(eq(true), any());
+        verify(scenarioGrid, times(1)).getPlaceHolder(eq(true), eq(true), isA(FactMappingValueType.class), anyString());
         verify(scenarioGrid, times(1)).getScenarioGridColumnLocal(eq(EXPRESSION_ALIAS_DESCRIPTION),
                                                                   any(),
                                                                   eq(columnId),
@@ -276,6 +285,7 @@ public class ScenarioGridTest {
                                                                   eq(type),
                                                                   anyString());
         verify(scenarioGridColumnMock, times(1)).setColumnWidthMode(ColumnWidthMode.FIXED);
+        verify(scenarioGridModelMock, times(1)).getDOMElementFactory(anyString(), eq(ScenarioSimulationModel.Type.RULE), eq(FactMappingValueType.NOT_EXPRESSION));
 
         reset(scenarioGrid);
         reset(scenarioGridColumnMock);
@@ -285,7 +295,7 @@ public class ScenarioGridTest {
         columnGroup = type.name();
         scenarioGrid.setHeaderColumn(1, factMappingGiven, true);
         verify(scenarioGrid, times(1)).isPropertyAssigned(eq(true), eq(factMappingGiven));
-        verify(scenarioGrid, times(1)).getPlaceholder(eq(false), any());
+        verify(scenarioGrid, times(1)).getPlaceHolder(eq(true), eq(false), eq(FactMappingValueType.NOT_EXPRESSION), anyString());
         verify(scenarioGrid, times(1)).getScenarioGridColumnLocal(eq(EXPRESSION_ALIAS_GIVEN),
                                                                   any(),
                                                                   eq(columnId),
@@ -293,6 +303,7 @@ public class ScenarioGridTest {
                                                                   eq(type),
                                                                   anyString());
         verify(scenarioGridColumnMock, never()).setColumnWidthMode(any());
+        verify(scenarioGridModelMock, never()).getDOMElementFactory(any(), any(), any());
     }
 
     @Test
@@ -335,25 +346,6 @@ public class ScenarioGridTest {
         factMappingInteger.getExpressionElements().clear();
         assertFalse(scenarioGrid.isPropertyAssigned(false, factMappingInteger));
         assertTrue(scenarioGrid.isPropertyAssigned(true, factMappingInteger));
-    }
-
-    @Test
-    public void getPlaceholder() {
-        FactMapping stringFactMapping = new FactMapping(
-                FactIdentifier.create("test", String.class.getCanonicalName()),
-                ExpressionIdentifier.create("test", FactMappingType.GIVEN));
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertValue(),
-                     scenarioGrid.getPlaceholder(true, stringFactMapping));
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(),
-                     scenarioGrid.getPlaceholder(false, stringFactMapping));
-
-        FactMapping localDateFactMapping = new FactMapping(
-                FactIdentifier.create("test", LocalDate.class.getCanonicalName()),
-                ExpressionIdentifier.create("test", FactMappingType.GIVEN));
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(),
-                     scenarioGrid.getPlaceholder(true, localDateFactMapping));
-        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.defineValidType(),
-                     scenarioGrid.getPlaceholder(false, localDateFactMapping));
     }
 
     @Test

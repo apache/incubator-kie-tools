@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AppendColumnCommand;
@@ -406,16 +407,16 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
 
     @Test
     public void onSetPropertyHeaderEvent() {
-        SetPropertyHeaderEvent event = new SetPropertyHeaderEvent(FULL_PACKAGE, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME);
+        SetPropertyHeaderEvent event = new SetPropertyHeaderEvent(FULL_PACKAGE, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, FactMappingValueType.NOT_EXPRESSION);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, never()).commonExecution(isA(SetPropertyHeaderCommand.class),anyBoolean());
+        verify(scenarioSimulationEventHandler, never()).commonExecution(isA(SetPropertyHeaderCommand.class), anyBoolean());
         //
         doReturn(gridColumnMock).when(scenarioGridModelMock).getSelectedColumn();
         when(scenarioGridModelMock.isAlreadyAssignedProperty(MULTIPART_VALUE_ELEMENTS)).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler, times(1)).onEvent(isA(ScenarioNotificationEvent.class));
-        verify(scenarioSimulationEventHandler, never()).commonExecution(isA(SetPropertyHeaderCommand.class),anyBoolean());
+        verify(scenarioSimulationEventHandler, never()).commonExecution(isA(SetPropertyHeaderCommand.class), anyBoolean());
         //
         reset(scenarioSimulationEventHandler);
         when(scenarioGridModelMock.isAlreadyAssignedProperty(MULTIPART_VALUE_ELEMENTS)).thenReturn(false);

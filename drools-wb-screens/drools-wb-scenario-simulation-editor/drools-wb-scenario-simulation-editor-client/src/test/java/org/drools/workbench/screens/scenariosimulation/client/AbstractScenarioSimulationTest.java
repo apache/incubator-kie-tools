@@ -50,6 +50,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSim
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioExpressionCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.BackgroundGridModel;
@@ -199,6 +200,7 @@ public abstract class AbstractScenarioSimulationTest {
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactoryTest;
     protected ScenarioCellTextAreaSingletonDOMElementFactory scenarioCellTextAreaSingletonDOMElementFactoryTest;
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryTest;
+    protected ScenarioExpressionCellTextAreaSingletonDOMElementFactory scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock;
 
     protected final Set<FactIdentifier> factIdentifierSet = new HashSet<>();
     protected final List<FactMapping> factMappingLocal = new ArrayList<>();
@@ -238,6 +240,9 @@ public abstract class AbstractScenarioSimulationTest {
         scenarioHeaderTextBoxSingletonDOMElementFactoryTest = new ScenarioHeaderTextBoxSingletonDOMElementFactory(scenarioGridPanelMock,
                                                                                                                   scenarioGridLayerMock,
                                                                                                                   scenarioGridMock);
+        scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock = new ScenarioExpressionCellTextAreaSingletonDOMElementFactory(scenarioGridPanelMock,
+                                                                                                                                    scenarioGridLayerMock,
+                                                                                                                                    scenarioGridMock);
 
         scenarioGridModelMock = spy(new ScenarioGridModel(false) {
             {
@@ -247,6 +252,7 @@ public abstract class AbstractScenarioSimulationTest {
                 this.collectionEditorSingletonDOMElementFactory = collectionEditorSingletonDOMElementFactoryTest;
                 this.scenarioCellTextAreaSingletonDOMElementFactory = scenarioCellTextAreaSingletonDOMElementFactoryTest;
                 this.scenarioHeaderTextBoxSingletonDOMElementFactory = scenarioHeaderTextBoxSingletonDOMElementFactoryTest;
+                this.scenarioExpressionCellTextAreaSingletonDOMElementFactory = scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock;
                 this.eventBus = eventBusMock;
             }
 

@@ -504,7 +504,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenter.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
-        verify(testToolsPresenter, times(1)).filterTerm(FACT_NAME, FILTER_TERM, true);
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME), eq(FILTER_TERM), eq(true));
         verify(testToolsViewMock, times(1)).enableAddButton();
         assertNull(testToolsPresenter.selectedListGroupItemView);
         assertEquals(selectedFieldItemViewMock, testToolsPresenter.selectedFieldItemView);
@@ -587,8 +587,8 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(selectedFieldItemViewMock, never()).getFullPath();
         verify(selectedFieldItemViewMock, never()).getFieldName();
         verify(selectedFieldItemViewMock, never()).getClassName();
-        verify(eventBusMock, never()).fireEvent(isA(SetPropertyHeaderEvent.class));
-        verify(eventBusMock, times(1)).fireEvent(isA(SetInstanceHeaderEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(isA(SetPropertyHeaderEvent.class));
+        verify(eventBusMock, never()).fireEvent(isA(SetInstanceHeaderEvent.class));
     }
 
     @Test

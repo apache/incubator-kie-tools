@@ -29,6 +29,7 @@ import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -49,8 +50,15 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Scena
  */
 public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimulationCommand {
 
+    protected FactMappingValueType factMappingValueType = FactMappingValueType.NOT_EXPRESSION;
+
     public AbstractSelectedColumnCommand() {
         super(true);
+    }
+
+    public AbstractSelectedColumnCommand(FactMappingValueType factMappingValueType) {
+        super(true);
+        this.factMappingValueType = factMappingValueType;
     }
 
     protected abstract void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn);
@@ -104,7 +112,14 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, alias, fullClassName);
         setInstanceHeaderMetaData(selectedColumn, alias, factIdentifier);
         final ScenarioHeaderMetaData propertyHeaderMetaData = selectedColumn.getPropertyHeaderMetaData();
-        setPropertyMetaData(propertyHeaderMetaData, getPropertyPlaceHolder(columnIndex), false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
+        setPropertyMetaData(propertyHeaderMetaData,
+                            getPropertyPlaceHolder(columnIndex),
+                            false,
+                            selectedColumn,
+                            ScenarioSimulationUtils.getPlaceHolder(selectedColumn.isInstanceAssigned(),
+                                                                   selectedColumn.isPropertyAssigned(),
+                                                                   factMappingValueType,
+                                                                   fullClassName));
         context.getSelectedScenarioGridModel().updateColumnInstance(columnIndex, selectedColumn);
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().reloadTestTools(false);
@@ -217,18 +232,27 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
                         setInstanceHeaderMetaData(scenarioGridColumn, instanceAliasName, factIdentifier);
                     }
                 });
-        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getColumnSubGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
-        String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(propertyClass);
-        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyTitle, false, selectedColumn, editableCellPlaceholder);
         selectedColumn.setPropertyAssigned(true);
+        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getColumnSubGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
+        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(),
+                            propertyTitle,
+                            false,
+                            selectedColumn,
+                            ScenarioSimulationUtils.getPlaceHolder(selectedColumn.isInstanceAssigned(),
+                                                                   selectedColumn.isPropertyAssigned(),
+                                                                   factMappingValueType,
+                                                                   propertyClass));
         context.getSelectedScenarioGridModel().updateColumnProperty(columnIndex,
-                                                                    selectedColumn,
-                                                                    propertyNameElements,
-                                                                    propertyClass, context.getStatus().isKeepData());
-        if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
+                                                selectedColumn,
+                                                propertyNameElements,
+                                                propertyClass, context.getStatus().isKeepData(),
+                                                factMappingValueType);
+        if (ScenarioSimulationSharedUtils.isCollection(propertyClass) && factMappingValueType.equals(FactMappingValueType.NOT_EXPRESSION)) {
             manageCollectionProperty(context, selectedColumn, className, columnIndex, propertyNameElements);
         } else {
-            selectedColumn.setFactory(context.getScenarioCellTextAreaSingletonDOMElementFactory());
+            selectedColumn.setFactory(context.getSelectedScenarioGridModel().getDOMElementFactory(propertyClass,
+                                                                                                  context.getSettings().getType(),
+                                                                                                  factMappingValueType));
         }
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().reloadTestTools(false);
@@ -297,8 +321,11 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
     }
 
     protected String getPropertyHeaderTitle(ScenarioSimulationContext context, List<String> propertyNameElements, FactIdentifier factIdentifier) {
-        String propertyPathPart = propertyNameElements.size() > 1 ?
-                String.join(".", propertyNameElements.subList(1, propertyNameElements.size())) : "value";
+        /* If propertyNameElements contains only one step, it's managing an Expression or a SimpleClass type */
+        if (propertyNameElements.size() == 1) {
+            return FactMappingValueType.EXPRESSION.equals(factMappingValueType) ? ConstantHolder.EXPRESSION_INSTANCE_PLACEHOLDER : ConstantHolder.VALUE;
+        }
+        String propertyPathPart = String.join(".", propertyNameElements.subList(1, propertyNameElements.size()));
         List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements, factIdentifier);
         // This is because the propertyName starts with the alias of the fact; i.e. it may be Book.name but also Bookkk.name,
         // while the first element of ExpressionElements is always the class name

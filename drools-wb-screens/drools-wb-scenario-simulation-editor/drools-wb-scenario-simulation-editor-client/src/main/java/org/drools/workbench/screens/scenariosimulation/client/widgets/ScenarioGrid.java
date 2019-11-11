@@ -26,8 +26,8 @@ import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
@@ -37,7 +37,6 @@ import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioConte
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils;
@@ -45,6 +44,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
@@ -106,6 +106,10 @@ public class ScenarioGrid extends BaseGridWidget {
 
     public ScenarioSimulationModel.Type getType() {
         return type;
+    }
+
+    protected void setType(ScenarioSimulationModel.Type type) {
+        this.type = type;
     }
 
     /**
@@ -174,7 +178,10 @@ public class ScenarioGrid extends BaseGridWidget {
         String columnGroup = factMapping.getExpressionIdentifier().getType().name();
         boolean isInstanceAssigned = isInstanceAssigned(factIdentifier);
         boolean isPropertyAssigned = isPropertyAssigned(isInstanceAssigned, factMapping);
-        String placeHolder = getPlaceholder(isPropertyAssigned, factMapping);
+        String placeHolder = getPlaceHolder(isInstanceAssigned,
+                                            isPropertyAssigned,
+                                            factMapping.getFactMappingValueType(),
+                                            factMapping.getClassName());
         ScenarioGridColumn scenarioGridColumn = getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, factMapping.getExpressionIdentifier().getType(), placeHolder);
         scenarioGridColumn.setInstanceAssigned(isInstanceAssigned);
         scenarioGridColumn.setPropertyAssigned(isPropertyAssigned);
@@ -185,20 +192,13 @@ public class ScenarioGrid extends BaseGridWidget {
             scenarioGridColumn.setMinimumWidth(scenarioGridColumn.getWidth());
         }
         if (isPropertyAssigned) {
-            setDOMElementFactory(scenarioGridColumn, factMapping.getClassName());
+            BaseSingletonDOMElementFactory factory = ((AbstractScesimGridModel) model).getDOMElementFactory(
+                    factMapping.getClassName(),
+                    type,
+                    factMapping.getFactMappingValueType());
+            scenarioGridColumn.setFactory(factory);
         }
         ((AbstractScesimGridModel) model).insertColumnGridOnly(columnIndex, scenarioGridColumn);
-    }
-
-    /**
-     * Set the correct <b>DOMElement</b> factory to the given <code>ScenarioGridColumn</code>
-     * @param scenarioGridColumn
-     * @param className
-     */
-    protected void setDOMElementFactory(ScenarioGridColumn scenarioGridColumn, String className) {
-        if (ScenarioSimulationSharedUtils.isCollection(className)) {
-            scenarioGridColumn.setFactory(((AbstractScesimGridModel) model).getCollectionEditorSingletonDOMElementFactory());
-        }
     }
 
     /**
@@ -244,16 +244,6 @@ public class ScenarioGrid extends BaseGridWidget {
         } else {
             return instanceAssigned && (isSimpleJavaType(factMapping.getClassName()) || !factMapping.getExpressionElements().isEmpty());
         }
-    }
-
-    /**
-     * Returns <code>ScenarioSimulationEditorConstants.INSTANCE.insertValue()</code> if <code>isPropertyAssigned == true</code>, <code>ScenarioSimulationEditorConstants.INSTANCE.defineValidType()</code> otherwise
-     * @param isPropertyAssigned
-     * @return
-     */
-    protected String getPlaceholder(boolean isPropertyAssigned, FactMapping factMapping) {
-        String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(factMapping.getClassName());
-        return isPropertyAssigned ? editableCellPlaceholder : ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String
@@ -347,5 +337,16 @@ public class ScenarioGrid extends BaseGridWidget {
                                                                              scenarioHeaderMetaData,
                                                                              uiColumnIndex,
                                                                              group);
+    }
+
+    //Indirection for tests
+    protected String getPlaceHolder(final boolean isInstanceAssigned,
+                                     final boolean isPropertyAssigned,
+                                     final FactMappingValueType valueType,
+                                     final String className) {
+        return ScenarioSimulationUtils.getPlaceHolder(isInstanceAssigned,
+                                                      isPropertyAssigned,
+                                                      valueType,
+                                                      className);
     }
 }

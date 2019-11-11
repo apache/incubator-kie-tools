@@ -116,6 +116,7 @@ public class ScenarioGridPanelProducerTest extends AbstractProducerTest {
         assertNotNull(scenarioGridArgumentCaptor.getValue().getModel().getCollectionEditorSingletonDOMElementFactory());
         assertNotNull(scenarioGridArgumentCaptor.getValue().getModel().getScenarioCellTextAreaSingletonDOMElementFactory());
         assertNotNull(scenarioGridArgumentCaptor.getValue().getModel().getScenarioHeaderTextBoxSingletonDOMElementFactory());
+        assertNotNull(scenarioGridArgumentCaptor.getValue().getModel().getScenarioExpressionCellTextAreaSingletonDOMElementFactory());
     }
 
     @Test

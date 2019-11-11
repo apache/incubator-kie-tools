@@ -46,10 +46,10 @@ public class TestToolsViewImpl
     protected Presenter presenter;
 
     @DataField("clearSearchButton")
-    protected ButtonElement clearSearchButton = Document.get().createButtonElement();
+    protected ButtonElement clearSearchButton = Document.get().createPushButtonElement();
 
     @DataField("searchButton")
-    protected ButtonElement searchButton = Document.get().createButtonElement();
+    protected ButtonElement searchButton = Document.get().createPushButtonElement();
 
     @DataField("inputSearch")
     protected InputElement inputSearch = Document.get().createTextInputElement();
@@ -82,10 +82,13 @@ public class TestToolsViewImpl
     protected DivElement simpleJavaInstanceListContainer = Document.get().createDivElement();
 
     @DataField("conditionsButton")
-    protected ButtonElement conditionsButton = Document.get().createButtonElement();
+    protected ButtonElement conditionsButton = Document.get().createPushButtonElement();
+
+    @DataField("addButtonLabel")
+    protected DivElement addButtonLabel = Document.get().createDivElement();
 
     @DataField("addButton")
-    protected ButtonElement addButton = Document.get().createButtonElement();
+    protected ButtonElement addButton = Document.get().createPushButtonElement();
 
     @DataField("kieTestToolsContent")
     protected DivElement kieTestToolsContent = Document.get().createDivElement();
@@ -101,6 +104,8 @@ public class TestToolsViewImpl
         this.presenter = presenter;
         disableEditorTab();
         addButton.setDisabled(true);
+        addButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.testToolsAddButton());
+        addButtonLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.testToolsAddButtonLabel());
         dataObjectListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.complexTypes());
         simpleJavaTypeListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.simpleTypes());
         instanceListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.complexCustomInstances());

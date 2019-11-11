@@ -40,6 +40,8 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
@@ -47,6 +49,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioExpressionCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -59,6 +62,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias;
@@ -83,6 +87,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactory;
     protected ScenarioCellTextAreaSingletonDOMElementFactory scenarioCellTextAreaSingletonDOMElementFactory;
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory;
+    protected ScenarioExpressionCellTextAreaSingletonDOMElementFactory scenarioExpressionCellTextAreaSingletonDOMElementFactory;
 
     public AbstractScesimGridModel() {
     }
@@ -144,6 +149,14 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
 
     public void setScenarioHeaderTextBoxSingletonDOMElementFactory(ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory) {
         this.scenarioHeaderTextBoxSingletonDOMElementFactory = scenarioHeaderTextBoxSingletonDOMElementFactory;
+    }
+
+    public ScenarioExpressionCellTextAreaSingletonDOMElementFactory getScenarioExpressionCellTextAreaSingletonDOMElementFactory() {
+        return scenarioExpressionCellTextAreaSingletonDOMElementFactory;
+    }
+
+    public void setScenarioExpressionCellTextAreaSingletonDOMElementFactory(ScenarioExpressionCellTextAreaSingletonDOMElementFactory scenarioExpressionCellTextAreaSingletonDOMElementFactory) {
+        this.scenarioExpressionCellTextAreaSingletonDOMElementFactory = scenarioExpressionCellTextAreaSingletonDOMElementFactory;
     }
 
     /**
@@ -287,7 +300,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @param lastLevelClassName
      * @param keepData
      */
-    public void updateColumnProperty(int columnIndex, final GridColumn<?> column, List<String> propertyNameElements, String lastLevelClassName, boolean keepData) {
+    public void updateColumnProperty(int columnIndex, final GridColumn<?> column, List<String> propertyNameElements, String lastLevelClassName, boolean keepData, FactMappingValueType valueType) {
         checkSimulation();
         List<GridCellValue<?>> originalValues = new ArrayList<>();
         if (keepData) {
@@ -296,6 +309,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         }
         replaceColumn(columnIndex, column);
         final FactMapping factMappingByIndex = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
+        factMappingByIndex.setFactMappingValueType(valueType);
         List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements, factMappingByIndex.getFactIdentifier());
         // This is because the value starts with the alias of the fact; i.e. it may be Book.name but also Bookkk.name,
         // while the first element of ExpressionElements is always the class name
@@ -927,10 +941,11 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         IntStream.range(1, getColumnCount()).forEach(columnIndex -> {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             scesimData.addMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier(), null);
-            String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(factMappingByIndex.getClassName());
-            String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).isPropertyAssigned() ?
-                    editableCellPlaceholder :
-                    ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
+            ScenarioGridColumn column = ((ScenarioGridColumn) columns.get(columnIndex));
+            String placeHolder = ScenarioSimulationUtils.getPlaceHolder(column.isInstanceAssigned(),
+                                                                        column.isPropertyAssigned(),
+                                                                        factMappingByIndex.getFactMappingValueType(),
+                                                                        factMappingByIndex.getClassName());
             setCell(rowIndex, columnIndex, () -> {
                 ScenarioGridCell newCell = new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder));
                 if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
@@ -1053,6 +1068,24 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                 cell.setErrorMode(false);
             }
         });
+    }
+
+    /**
+     * Returns the correct <b>DOMElement</b> factory to the given data
+     * @param modelType
+     * @param valueType
+     */
+    public BaseSingletonDOMElementFactory getDOMElementFactory(String className,
+                                                               ScenarioSimulationModel.Type modelType,
+                                                               FactMappingValueType valueType) {
+        boolean isRuleScenario = Objects.equals(ScenarioSimulationModel.Type.RULE, modelType);
+        if (ScenarioSimulationSharedUtils.isCollection(className) && Objects.equals(FactMappingValueType.NOT_EXPRESSION, valueType)) {
+            return collectionEditorSingletonDOMElementFactory;
+        }
+        if (Objects.equals(FactMappingValueType.EXPRESSION, valueType) && isRuleScenario) {
+            return scenarioExpressionCellTextAreaSingletonDOMElementFactory;
+        }
+        return scenarioCellTextAreaSingletonDOMElementFactory;
     }
 
     // Helper method to avoid potential NPE

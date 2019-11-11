@@ -62,8 +62,6 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 @RunWith(GwtMockitoTestRunner.class)
 public class DuplicateInstanceCommandTest extends AbstractSelectedColumnCommandTest {
 
-
-
     @Mock
     protected ScenarioGridColumn scenarioGridColumnMock1;
     @Mock

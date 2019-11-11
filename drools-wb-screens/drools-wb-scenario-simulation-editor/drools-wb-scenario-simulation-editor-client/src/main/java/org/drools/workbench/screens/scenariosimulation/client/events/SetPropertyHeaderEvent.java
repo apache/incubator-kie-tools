@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.events;
 import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 
 /**
@@ -30,6 +31,7 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     private String fullPackage;
     private List<String> propertyNameElements;
     private String valueClassName;
+    private FactMappingValueType factMappingValueType;
 
     /**
      * Use this constructor to modify the <i>property</i> level header
@@ -37,11 +39,13 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
      * @param fullPackage
      * @param propertyNameElements
      * @param valueClassName
+     * @param factMappingValueType
      */
-    public SetPropertyHeaderEvent(String fullPackage, List<String> propertyNameElements, String valueClassName) {
+    public SetPropertyHeaderEvent(String fullPackage, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
         this.fullPackage = fullPackage;
         this.propertyNameElements = propertyNameElements;
         this.valueClassName = valueClassName;
+        this.factMappingValueType = factMappingValueType;
     }
 
     @Override
@@ -59,6 +63,14 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     public String getValueClassName() {
         return valueClassName;
+    }
+
+    public FactMappingValueType getFactMappingValueType() {
+        return factMappingValueType;
+    }
+
+    public void setFactMappingValueType(FactMappingValueType factMappingValueType) {
+        this.factMappingValueType = factMappingValueType;
     }
 
     @Override

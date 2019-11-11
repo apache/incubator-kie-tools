@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
@@ -162,14 +163,17 @@ public class ScenarioSimulationGridHeaderUtilities {
         final Optional<Simulation> optionalSimulation = abstractScesimGridModel.getAbstractScesimModel();
         return optionalSimulation.map(simulation -> {
             final FactMapping factMapping = simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
-            if (abstractScesimGridModel.isSimpleType(factMapping.getFactAlias())) {
-                return Arrays.asList(ConstantHolder.VALUE);
-            } else {
-                return Collections.unmodifiableList(simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
-                                                            .stream()
-                                                            .map(ExpressionElement::getStep)
-                                                            .collect(Collectors.toList()));
+            if (FactMappingValueType.EXPRESSION.equals(factMapping.getFactMappingValueType())) {
+                return Arrays.asList(ConstantHolder.EXPRESSION);
             }
+            if (abstractScesimGridModel.isSimpleType(factMapping.getFactAlias()) &&
+                    FactMappingValueType.NOT_EXPRESSION.equals(factMapping.getFactMappingValueType())) {
+                return Arrays.asList(ConstantHolder.VALUE);
+            }
+            return Collections.unmodifiableList(simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                                                        .stream()
+                                                        .map(ExpressionElement::getStep)
+                                                        .collect(Collectors.toList()));
         }).orElse(null);
     }
 }

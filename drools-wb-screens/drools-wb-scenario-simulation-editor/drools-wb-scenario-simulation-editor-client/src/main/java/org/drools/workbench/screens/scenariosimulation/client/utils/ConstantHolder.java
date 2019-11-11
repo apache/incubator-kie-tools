@@ -15,10 +15,16 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+
 /**
  * Class used to store constants used throughout the code
  */
 public class ConstantHolder {
+
+    private ConstantHolder() {
+        // Not instantiable
+    }
 
     public static final String FA_ANGLE_DOWN = "fa-angle-down";
     public static final String FA_ANGLE_RIGHT = "fa-angle-right";
@@ -28,9 +34,12 @@ public class ConstantHolder {
 
     public static final String SAVE = "Save";
 
+    public static final String EXPRESSION = "expression";
+    public static final String EXPRESSION_INSTANCE_PLACEHOLDER = EXPRESSION + " </>";
+    public static final String EXPRESSION_VALUE_PREFIX = MVEL_ESCAPE_SYMBOL + " ";
+
     // GWT doesn't support Java 8 LocalDate
     public static final String LOCALDATE_SIMPLE_NAME = "LocalDate";
     public static final String LOCALDATE_CANONICAL_NAME = "java.time.LocalDate";
-
     public static final String DMN_DATE = "date";
 }
