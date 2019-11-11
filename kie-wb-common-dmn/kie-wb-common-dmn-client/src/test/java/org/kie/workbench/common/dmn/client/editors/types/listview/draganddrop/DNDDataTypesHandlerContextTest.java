@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
@@ -39,6 +40,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_TOP_LEVEL_DATA_TYPE_AT_THE_TOP;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DATA_X_POSITION;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DATA_Y_POSITION;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DRAGGING;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -130,6 +132,7 @@ public class DNDDataTypesHandlerContextTest {
 
         final Element firstElement = mock(Element.class);
         final Element hiddenElement = mock(Element.class);
+        final Element wrongFirstElement = mock(Element.class);
         final HTMLElement dragArea = mock(HTMLElement.class);
         final Optional<DataType> currentDataType = Optional.of(mock(DataType.class));
         final Optional<DataType> firstDataType = Optional.of(mock(DataType.class));
@@ -137,17 +140,22 @@ public class DNDDataTypesHandlerContextTest {
         final String firstUUID = "1111-1111-1111-1111";
 
         dragArea.childNodes = spy(new NodeList<>());
-        dragArea.childNodes.length = 3;
+        dragArea.childNodes.length = 4;
+        currentElement.classList = mock(DOMTokenList.class);
+        wrongFirstElement.classList = mock(DOMTokenList.class);
+        firstElement.classList = mock(DOMTokenList.class);
 
         doReturn(hiddenElement).when(dragArea.childNodes).getAt(0);
         doReturn(currentElement).when(dragArea.childNodes).getAt(1);
-        doReturn(firstElement).when(dragArea.childNodes).getAt(2);
-
+        doReturn(wrongFirstElement).when(dragArea.childNodes).getAt(2);
+        doReturn(firstElement).when(dragArea.childNodes).getAt(3);
         when(hiddenElement.getAttribute(DATA_Y_POSITION)).thenReturn("-1");
         when(currentElement.getAttribute(DATA_Y_POSITION)).thenReturn("0");
-        when(firstElement.getAttribute(DATA_Y_POSITION)).thenReturn("1");
+        when(wrongFirstElement.getAttribute(DATA_Y_POSITION)).thenReturn("1");
+        when(firstElement.getAttribute(DATA_Y_POSITION)).thenReturn("2");
         when(hiddenElement.getAttribute(DATA_X_POSITION)).thenReturn("0");
         when(currentElement.getAttribute(DATA_X_POSITION)).thenReturn("0");
+        when(wrongFirstElement.getAttribute(DATA_X_POSITION)).thenReturn("0");
         when(firstElement.getAttribute(DATA_X_POSITION)).thenReturn("0");
         when(dndListComponent.getDragArea()).thenReturn(dragArea);
         when(dndListComponent.getPreviousElement(any(), any())).thenReturn(Optional.empty());
@@ -157,6 +165,8 @@ public class DNDDataTypesHandlerContextTest {
         when(firstDataType.get().getName()).thenReturn("First Data Type");
         when(currentElement.getAttribute(UUID_ATTR)).thenReturn(currentUUID);
         when(firstElement.getAttribute(UUID_ATTR)).thenReturn(firstUUID);
+        when(wrongFirstElement.classList.contains(DRAGGING)).thenReturn(true);
+        when(firstElement.classList.contains(DRAGGING)).thenReturn(false);
 
         // The current element is loaded into constructor.
         // So re-instantiating context here, since this test mock the current element behavior.

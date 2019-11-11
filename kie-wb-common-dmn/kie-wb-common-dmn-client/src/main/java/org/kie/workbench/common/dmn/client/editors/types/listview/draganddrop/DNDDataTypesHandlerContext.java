@@ -30,6 +30,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_SIBLING_DATA_TYPE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_TOP_LEVEL_DATA_TYPE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_TOP_LEVEL_DATA_TYPE_AT_THE_TOP;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DRAGGING;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.HIDDEN_Y_POSITION;
 
 class DNDDataTypesHandlerContext {
@@ -133,8 +134,12 @@ class DNDDataTypesHandlerContext {
         final NodeList<Node> nodes = dndDataTypesHandler.getDndListComponent().getDragArea().childNodes;
 
         for (int i = 0; i < nodes.length; i++) {
+
             final Element element = (Element) nodes.getAt(i);
-            if (DNDListDOMHelper.Position.getY(element) > HIDDEN_Y_POSITION && DNDListDOMHelper.Position.getX(element) == 0) {
+            final Integer elementY = DNDListDOMHelper.Position.getY(element);
+            final Integer elementX = DNDListDOMHelper.Position.getX(element);
+
+            if (elementY > HIDDEN_Y_POSITION && elementX == 0 && !element.classList.contains(DRAGGING)) {
                 final DataType dataType = getDataType(element);
                 if (dataType != null && !Objects.equals(current.getName(), dataType.getName())) {
                     return Optional.of(dataType);
