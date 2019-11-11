@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
@@ -153,13 +154,13 @@ public class DataModelUtils {
         for ( int i = 0; i < fields1.size(); i++ ) {
             field1 = fields1.get( i );
             field2 = fields2.get( i );
-            if ( !equals( field1.getClassName(), field2.getClassName() ) ) {
+            if ( !Objects.equals( field1.getClassName(), field2.getClassName() ) ) {
                 return false;
             }
             if ( field1.isMultiple() != field2.isMultiple() ) {
                 return false;
             }
-            if ( !equals( field1.getBag(), field2.getBag() ) ) {
+            if ( !Objects.equals( field1.getBag(), field2.getBag() ) ) {
                 return false;
             }
         }
@@ -289,10 +290,6 @@ public class DataModelUtils {
             }
         } );
         return properties;
-    }
-
-    public static boolean equals( String str1, String str2 ) {
-        return str1 != null ? str1.equals( str2 ) : str2 == null;
     }
 
 }
