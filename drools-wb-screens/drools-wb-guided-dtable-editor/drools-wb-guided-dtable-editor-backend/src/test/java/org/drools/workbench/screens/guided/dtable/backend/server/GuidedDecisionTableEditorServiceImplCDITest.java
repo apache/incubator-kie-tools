@@ -28,7 +28,6 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -63,17 +62,6 @@ public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
         final Path path = getPath("rhba370/src/main/resources/com/sample/dtissuesampleproject/UseFunctionFromDrl.gdst");
         final List<ValidationMessage> validationMessages = testedService.validate(path, testedService.load(path));
         Assertions.assertThat(validationMessages).isEmpty();
-    }
-
-    @Test
-    @Ignore("RHDM-329")
-    public void testUndeclaredFunction() throws Exception {
-        final Path path = getPath("rhba370/src/main/resources/com/sample/dtissuesampleproject/UseUndeclaredFunction.gdst");
-        final List<ValidationMessage> validationMessages = testedService.validate(path, testedService.load(path));
-        Assertions.assertThat(validationMessages).hasSize(1);
-        Assertions.assertThat(validationMessages)
-                .extracting("text", String.class)
-                .allMatch(text -> text.contains("[KBase: defaultKieBase]: Unable to Analyse Expression  isNotEmptyUndeclaredFunction(userCode)"));
     }
 
     @Test
