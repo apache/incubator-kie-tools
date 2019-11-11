@@ -16,7 +16,7 @@
 
 import * as vscode from "vscode";
 import { VsCodeKogitoRouter } from "./VsCodeKogitoRouter";
-import { GwtEditorRoutes } from "@kogito-tooling/gwt-editors";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {

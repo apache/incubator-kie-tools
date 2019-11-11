@@ -64,5 +64,5 @@ jobs:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/unpacked-gwt-editors -- npm publish --access public
+          npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/kie-bc-editors-unpacked -- npm publish --access public
 

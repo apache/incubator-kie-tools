@@ -15,7 +15,7 @@
  */
 
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/gwt-editors";
+import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const gwtAppFormerApi = new GwtAppFormerApi();

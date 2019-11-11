@@ -54,8 +54,8 @@ jobs:
           cd ../kogito-online
           rm -rf $KOGITO_ONLINE_DIR
           mkdir -p $KOGITO_ONLINE_DIR
-          cp -r ../kogito-tooling/packages/unpacked-gwt-editors/bpmn $KOGITO_ONLINE_DIR/
-          cp -r ../kogito-tooling/packages/unpacked-gwt-editors/dmn $KOGITO_ONLINE_DIR/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_DIR/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_DIR/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_DIR/
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"

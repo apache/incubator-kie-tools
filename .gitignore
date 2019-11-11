@@ -6,5 +6,5 @@ out/
 .idea
 **/.DS_Store
 *.log
-packages/unpacked-gwt-editors/dmn
-packages/unpacked-gwt-editors/bpmn
+packages/kie-bc-editors-unpacked/dmn
+packages/kie-bc-editors-unpacked/bpmn
