@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.dmn.backend.editors.types.classes;
 
-package org.kie.workbench.common.dmn.backend.editors.included.query;
+import org.kie.workbench.common.dmn.backend.editors.types.DataObjectsServiceImplTest;
 
-import org.junit.Before;
-import org.junit.Test;
+/**
+ * Place-holder for classloading in {@link DataObjectsServiceImplTest}
+ */
+public class APerson {
 
-import static org.junit.Assert.assertEquals;
-
-public class JavaValueFileExtensionIndexTermTest {
-
-    private JavaValueFileExtensionIndexTerm index;
-
-    @Before
-    public void setup() {
-        this.index = new JavaValueFileExtensionIndexTerm();
-    }
-
-    @Test
-    public void testGetValue() {
-        final String value = index.getValue();
-        assertEquals(JavaValueFileExtensionIndexTerm.TERM_VALUE, value);
-    }
 }

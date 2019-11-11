@@ -90,11 +90,6 @@ public class DMNPathsHelperImplTest {
         doTestGetPathsWhenWorkspaceProjectIsNull(workspaceProject1 -> pathsHelper.getPMMLModelsPaths(null));
     }
 
-    @Test
-    public void testGetDataObjectsPathsWhenWorkspaceProjectIsNull() {
-        doTestGetPathsWhenWorkspaceProjectIsNull(workspaceProject1 -> pathsHelper.getDataObjectsPaths(null));
-    }
-
     @SuppressWarnings("unchecked")
     private void doTestGetPathsWhenWorkspaceProjectIsNull(final Function<WorkspaceProject, List<Path>> paths) {
         final org.uberfire.java.nio.file.Path nioPath1 = mock(org.uberfire.java.nio.file.Path.class);
@@ -126,11 +121,6 @@ public class DMNPathsHelperImplTest {
     @Test
     public void testGetPMMLDocumentsPathsWhenWorkspaceProjectIsNotNull() {
         doTestGetPathsWhenWorkspaceProjectIsNotNull(workspaceProject -> pathsHelper.getPMMLModelsPaths(workspaceProject));
-    }
-
-    @Test
-    public void testGetDataObjectsPathsWhenWorkspaceProjectIsNotNull() {
-        doTestGetPathsWhenWorkspaceProjectIsNotNull(workspaceProject -> pathsHelper.getDataObjectsPaths(workspaceProject));
     }
 
     private void doTestGetPathsWhenWorkspaceProjectIsNotNull(final Function<WorkspaceProject, List<Path>> paths) {

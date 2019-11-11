@@ -418,6 +418,12 @@
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie.workbench</groupId>
+          <artifactId>kie-wb-common-dmn-backend</artifactId>
+        </exclusion>
+      </exclusions>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

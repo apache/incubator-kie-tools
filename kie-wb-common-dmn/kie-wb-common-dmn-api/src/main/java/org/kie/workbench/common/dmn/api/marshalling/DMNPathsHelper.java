@@ -48,13 +48,6 @@ public interface DMNPathsHelper {
     List<Path> getPMMLModelsPaths(final WorkspaceProject workspaceProject);
 
     /**
-     * This method returns all Data Object (Java classes) paths for a given project.
-     * @param workspaceProject represents the project that will be scanned.
-     * @return all paths from a given project.
-     */
-    List<Path> getDataObjectsPaths(final WorkspaceProject workspaceProject);
-
-    /**
      * Returns a {@link String} representation of the relative {@link Path} between two other {@link Path}s.
      * @param dmnModelPath The {@link Path} of the DMN file being edited.
      * @param includedModelPath The {@link Path} of an included external model file.

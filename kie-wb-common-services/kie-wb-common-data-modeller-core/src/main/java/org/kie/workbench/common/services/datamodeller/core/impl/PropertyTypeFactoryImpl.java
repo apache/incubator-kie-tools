@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
-import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.datamodeller.core.PropertyTypeFactory;
-import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -27,10 +23,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.core.PropertyTypeFactory;
+
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.BOOLEAN;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.BYTE;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.CHAR;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.DOUBLE;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.FLOAT;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.INT;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.LONG;
+import static org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities.SHORT;
+
 public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
 
     private static List<PropertyType> baseTypes = new ArrayList<PropertyType>();
-    
+
     private static HashMap<String, PropertyType> baseTypesByClass = new HashMap<String, PropertyType>();
 
     //needs to be public for errai marshalling
@@ -57,15 +65,14 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
         baseTypes.add(new PropertyTypeImpl("BigDecimal", BigDecimal.class.getName()));
         baseTypes.add(new PropertyTypeImpl("BigInteger", BigInteger.class.getName()));
 
-
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.BYTE, NamingUtils.BYTE));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.SHORT, NamingUtils.SHORT));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.INT, NamingUtils.INT));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.LONG, NamingUtils.LONG));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.FLOAT, NamingUtils.FLOAT));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.DOUBLE, NamingUtils.DOUBLE));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.BOOLEAN, NamingUtils.BOOLEAN));
-        baseTypes.add(new PropertyTypeImpl(NamingUtils.CHAR, NamingUtils.CHAR));
+        baseTypes.add(new PropertyTypeImpl(BYTE, BYTE));
+        baseTypes.add(new PropertyTypeImpl(SHORT, SHORT));
+        baseTypes.add(new PropertyTypeImpl(INT, INT));
+        baseTypes.add(new PropertyTypeImpl(LONG, LONG));
+        baseTypes.add(new PropertyTypeImpl(FLOAT, FLOAT));
+        baseTypes.add(new PropertyTypeImpl(DOUBLE, DOUBLE));
+        baseTypes.add(new PropertyTypeImpl(BOOLEAN, BOOLEAN));
+        baseTypes.add(new PropertyTypeImpl(CHAR, CHAR));
 
         for (PropertyType type : baseTypes) {
             baseTypesByClass.put(type.getClassName(), type);
@@ -94,6 +101,7 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
     }
 
     private static class HoldInstance {
+
         private static final PropertyTypeFactoryImpl INSTANCE = new PropertyTypeFactoryImpl();
     }
 }

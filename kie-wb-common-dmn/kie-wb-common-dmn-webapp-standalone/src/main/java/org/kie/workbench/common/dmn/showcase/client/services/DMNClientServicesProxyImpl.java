@@ -126,8 +126,7 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
 
     @Override
     public void loadDataObjects(final ServiceCallback<List<DataObject>> callback) {
-        dataObjectsService.call(onSuccess(callback), onError(callback)).loadDataObjects(
-                getWorkspaceProject());
+        dataObjectsService.call(onSuccess(callback), onError(callback)).loadDataObjects(getWorkspaceProject());
     }
 
     <T> RemoteCallback<T> onSuccess(final ServiceCallback<T> callback) {

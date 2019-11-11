@@ -31,7 +31,6 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.dmn.api.marshalling.DMNImportTypesHelper;
 import org.kie.workbench.common.dmn.api.marshalling.DMNPathsHelper;
 import org.kie.workbench.common.dmn.backend.editors.included.query.AllModelsValueFileExtensionIndexTerm;
-import org.kie.workbench.common.dmn.backend.editors.included.query.JavaValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.included.query.PMMLValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueRepositoryRootIndexTerm;
@@ -102,15 +101,6 @@ public class DMNPathsHelperImpl implements DMNPathsHelper {
     }
 
     @Override
-    public List<Path> getDataObjectsPaths(final WorkspaceProject workspaceProject) {
-        if (workspaceProject != null) {
-            return getPathsByWorkspaceProject(javaQueryTerms(workspaceProject.getRootPath().toURI()));
-        } else {
-            return getStandalonePaths(javaDocumentFilter());
-        }
-    }
-
-    @Override
     public String getRelativeURI(final Path dmnModelPath,
                                  final Path includedModelPath) {
         //This is true on standalone new diagrams.. move to interface with different impls for standalone and -project
@@ -173,13 +163,6 @@ public class DMNPathsHelperImpl implements DMNPathsHelper {
         return queryTerms;
     }
 
-    private Set<ValueIndexTerm> javaQueryTerms(final String rootPath) {
-        final Set<ValueIndexTerm> queryTerms = new HashSet<>();
-        queryTerms.add(new DMNValueRepositoryRootIndexTerm(rootPath));
-        queryTerms.add(new JavaValueFileExtensionIndexTerm());
-        return queryTerms;
-    }
-
     //---------------------------
     // Standalone specific
     //---------------------------
@@ -206,10 +189,6 @@ public class DMNPathsHelperImpl implements DMNPathsHelper {
 
     DirectoryStream.Filter<org.uberfire.java.nio.file.Path> pmmlDocumentFilter() {
         return path -> importTypesHelper.isPMML(convertPath(path));
-    }
-
-    DirectoryStream.Filter<org.uberfire.java.nio.file.Path> javaDocumentFilter() {
-        return path -> importTypesHelper.isJava(convertPath(path));
     }
 
     org.uberfire.java.nio.file.Path getStandaloneRootPath() {

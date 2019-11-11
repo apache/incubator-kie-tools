@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.dmn.backend.editors.types.classes;
 
-package org.kie.workbench.common.dmn.backend.editors.included.query;
+import org.kie.workbench.common.dmn.backend.editors.types.DataObjectsServiceImplTest;
 
-import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueFileExtensionIndexTerm;
+/**
+ * Place-holder for classloading in {@link DataObjectsServiceImplTest}
+ */
+public class BPet {
 
-public class JavaValueFileExtensionIndexTerm extends DMNValueFileExtensionIndexTerm {
-
-    static final String TERM = "libraryFileName";
-
-    static final String TERM_VALUE = ".*(java)";
-
-    @Override
-    public String getValue() {
-        return TERM_VALUE;
-    }
-
-    @Override
-    public String getTerm() {
-        return TERM;
-    }
 }
