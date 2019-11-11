@@ -16,14 +16,24 @@
 
 package org.uberfire.backend.server.security.adapter;
 
+import java.security.Principal;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import javax.management.remote.JMXPrincipal;
+import javax.security.auth.Subject;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.uberfire.security.backend.BasicAuthorizationPrincipal;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GroupAdapterAuthorizationSourceTest {
 
@@ -47,5 +57,27 @@ public class GroupAdapterAuthorizationSourceTest {
         service.shutdown();
         assertTrue(latch.await(3,
                                TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void skipBasicAuthorizationPrincipalTest() {
+        Set<Principal> principals = new HashSet<>();
+
+        principals.add(new JMXPrincipal("admin"));
+        principals.add(new BasicAuthorizationPrincipal("analyst"));
+        principals.add(new JMXPrincipal("developer"));
+
+        Subject subject = new Subject(true,
+                                      principals,
+                                      Collections.emptySet(),
+                                      Collections.emptySet());
+
+        List<String> entities = adapter.collectEntitiesFromSubject("admin",
+                                                                   subject,
+                                                                   new String[0]);
+
+        assertEquals(2, entities.size());
+        assertEquals("admin", entities.get(0));
+        assertEquals("developer", entities.get(1));
     }
 }

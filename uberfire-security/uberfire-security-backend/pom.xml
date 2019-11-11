@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,25 +15,20 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent</artifactId>
+    <artifactId>uberfire-security</artifactId>
     <version>7.30.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>uberfire-security</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>uberfire-security-backend</artifactId>
+  <packaging>jar</packaging>
 
-  <name>UberFire Security</name>
+  <name>UberFire Security Backend</name>
+  <description>UberFire Security Backend</description>
 
-  <modules>
-    <module>uberfire-security-api</module>
-    <module>uberfire-security-client</module>
-    <module>uberfire-security-backend</module>
-    <module>uberfire-security-codegen</module>
-    <module>uberfire-security-client-backend</module>
-  </modules>
 </project>
