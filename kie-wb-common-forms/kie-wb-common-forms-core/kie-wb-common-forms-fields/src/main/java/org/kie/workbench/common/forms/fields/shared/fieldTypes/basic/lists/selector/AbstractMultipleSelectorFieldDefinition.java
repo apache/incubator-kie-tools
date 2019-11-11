@@ -101,7 +101,10 @@ public abstract class AbstractMultipleSelectorFieldDefinition<TYPE> extends Abst
 
     @Override
     public TypeInfo getFieldTypeInfo() {
-        return new TypeInfoImpl(TypeKind.BASE, getStandaloneClassName(), true);
+        TypeKind typeKind = Object.class.getName().equals(getStandaloneClassName()) ? TypeKind.OBJECT : TypeKind.BASE;
+        return new TypeInfoImpl(typeKind,
+                                getStandaloneClassName(),
+                                true);
     }
 
     @Override

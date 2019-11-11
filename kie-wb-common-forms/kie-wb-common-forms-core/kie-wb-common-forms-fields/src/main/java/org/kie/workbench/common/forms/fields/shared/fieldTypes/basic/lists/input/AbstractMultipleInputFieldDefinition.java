@@ -56,7 +56,8 @@ public abstract class AbstractMultipleInputFieldDefinition extends AbstractField
 
     @Override
     public TypeInfo getFieldTypeInfo() {
-        return new TypeInfoImpl(TypeKind.BASE,
+        TypeKind typeKind = Object.class.getName().equals(getStandaloneClassName()) ? TypeKind.OBJECT : TypeKind.BASE;
+        return new TypeInfoImpl(typeKind,
                                 getStandaloneClassName(),
                                 true);
     }
