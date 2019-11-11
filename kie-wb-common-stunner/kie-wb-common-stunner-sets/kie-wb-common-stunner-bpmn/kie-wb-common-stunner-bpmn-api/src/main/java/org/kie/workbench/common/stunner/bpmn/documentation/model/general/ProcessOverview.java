@@ -24,15 +24,17 @@ import jsinterop.annotations.JsType;
 public class ProcessOverview {
 
     private General general;
+    private Imports imports;
     private ProcessVariablesTotal dataTotal;
 
     private ProcessOverview() {
     }
 
     @JsOverlay
-    public static final ProcessOverview create(final General general, final ProcessVariablesTotal dataTotal) {
+    public static final ProcessOverview create(final General general, final Imports imports, final ProcessVariablesTotal dataTotal) {
         final ProcessOverview instance = new ProcessOverview();
         instance.general = general;
+        instance.imports = imports;
         instance.dataTotal = dataTotal;
         return instance;
     }
@@ -40,6 +42,11 @@ public class ProcessOverview {
     @JsOverlay
     public final General getGeneral() {
         return general;
+    }
+
+    @JsOverlay
+    public final Imports getImports() {
+        return imports;
     }
 
     @JsOverlay

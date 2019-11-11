@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
@@ -89,6 +92,7 @@ import org.kie.workbench.common.stunner.bpmn.documentation.model.element.Element
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementDetails;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementTotal;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.General;
+import org.kie.workbench.common.stunner.bpmn.documentation.model.general.Imports;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessOverview;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessVariablesTotal;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
@@ -191,7 +195,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
     private ProcessOverview getProcessOverview(final Optional<BPMNDiagramImpl> diagramModel,
                                                final Graph<?, Node> graph) {
-        return ProcessOverview.create(getGeneral(diagramModel), getAllProcessVariables(graph));
+        return ProcessOverview.create(getGeneral(diagramModel), getAllImports(graph), getAllProcessVariables(graph));
     }
 
     private General getGeneral(Optional<BPMNDiagramImpl> diagramModel) {
@@ -252,6 +256,31 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .pkg(pkg)
                 .description(description)
                 .build();
+    }
+
+    private Imports getAllImports(final Graph<?, Node> graph) {
+        final List<Imports.DefaultImport> defaultImports = getDiagramModel(graph)
+                .map(BPMNDiagramImpl::getDiagramSet)
+                .map(DiagramSet::getImports)
+                .filter(Objects::nonNull)
+                .map(org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports::getValue)
+                .map(ImportsValue::getDefaultImports)
+                .flatMap(Collection::stream)
+                .map(DefaultImport::getClassName)
+                .map(Imports.DefaultImport::create)
+                .collect(Collectors.toList());
+
+        final List<Imports.WSDLImport> wsdlImports = getDiagramModel(graph)
+                .map(BPMNDiagram::getDiagramSet)
+                .map(DiagramSet::getImports)
+                .filter(Objects::nonNull)
+                .map(org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports::getValue)
+                .map(ImportsValue::getWSDLImports)
+                .flatMap(Collection::stream)
+                .map(wsdlImport -> Imports.WSDLImport.create(wsdlImport.getLocation(), wsdlImport.getNamespace()))
+                .collect(Collectors.toList());
+
+        return Imports.create(defaultImports, wsdlImports);
     }
 
     private ProcessVariablesTotal getAllProcessVariables(final Graph<?, Node> graph) {
@@ -376,6 +405,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
     /**
      * Basically replace all \n with <br> html tag.
+     *
      * @param input
      * @return
      */
@@ -391,6 +421,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
     /**
      * Properties that should be ignored on the documentation
+     *
      * @return
      */
     private static Map<String, Boolean> buildIgnoredPropertiesIds() {

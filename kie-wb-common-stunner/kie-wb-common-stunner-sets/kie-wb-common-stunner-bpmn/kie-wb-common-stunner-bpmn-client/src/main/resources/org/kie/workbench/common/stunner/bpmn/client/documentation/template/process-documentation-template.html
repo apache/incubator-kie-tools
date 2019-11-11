@@ -63,7 +63,7 @@
 </head>
 <body>
 <div id="pagecontainer">
-    <div>
+    <p>
         <p id="pagecontainercore">
 
         <p>
@@ -120,11 +120,61 @@
         {{/general}}
         <!-- End Process info -->
 
+        <!--Imports -->
+        {{#imports}}
+        <p>
+        <h3 id="process-imports"><span class="badge badge-inverse">1.2</span> Imports</h3></p>
+
+        <p id="importscontent">
+
+            <ul class="list-group" {{noImportsHidden}}>
+                <li class="list-group-item">
+                    <span class="pull-xs-right">No imports</span>
+                </li>
+            </ul>
+
+            <table class="table table-inverse" {{importsTableHidden}}>
+                <thead>
+                    <tr {{importsTableHidden}}>
+                        <th width="100%" colspan="2" style="text-align: center">Data Type Imports: {{totalDefaultImports}}</th>
+                    </tr>
+                    <tr {{defaultImportsHidden}}>
+                        <th width="100%" colspan="2">Class Name</th>
+                    </tr>
+                </thead>
+                <tbody {{defaultImportsHidden}}>
+                    {{#defaultImports}}
+                    <tr>
+                        <td colspan="2">{{className}}</td>
+                    </tr>
+                    {{/defaultImports}}
+                </tbody>
+                <thead>
+                    <tr {{importsTableHidden}}>
+                        <th width="100%" colspan="2" style="text-align: center">WSDL Imports: {{totalWSDLImports}}</th>
+                    </tr>
+                    <tr {{wsdlImportsHidden}}>
+                        <th width="50%">Location</th>
+                        <th width="50%">Namespace</th>
+                    </tr>
+                </thead>
+                <tbody {{wsdlImportsHidden}}>
+                    {{#wsdlImports}}
+                    <tr>
+                        <td>{{location}}</td>
+                        <td>{{namespace}}</td>
+                    </tr>
+                    {{/wsdlImports}}
+                </tbody>
+            </table>
+
+        </p>
+        {{/imports}}
 
         <!-- DataTotal -->
         {{#dataTotal}}
         <p id="processTotal">
-        <h3 id="process-titals"><span class="badge badge-inverse">1.2</span> Data Totals</h3></p>
+        <h3 id="process-totals"><span class="badge badge-inverse">1.3</span> Data Totals</h3></p>
 
         <p id="processdatatotals">
         <ul class="list-group">
@@ -135,8 +185,9 @@
         </ul>
         </p>
 
+        <!--Variables -->
         <p>
-        <h3 id="process-vars"><span class="badge badge-inverse">1.3</span> Variables</h3></p>
+        <h3 id="process-vars"><span class="badge badge-inverse">1.4</span> Variables</h3></p>
 
         <p id="processvarcontent">
         <table class="table table-inverse">
