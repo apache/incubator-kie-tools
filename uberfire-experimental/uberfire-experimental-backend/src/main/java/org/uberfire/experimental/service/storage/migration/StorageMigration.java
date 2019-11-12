@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage;
+package org.uberfire.experimental.service.storage.migration;
 
-import java.util.Collection;
+import org.uberfire.java.nio.file.FileSystem;
 
-import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
+public interface StorageMigration {
 
-public interface ExperimentalFeaturesStorage {
+    int getTargetVersion();
 
-    Collection<ExperimentalFeatureImpl> getFeatures();
-
-    void store(ExperimentalFeatureImpl experimentalFeature);
+    void migrate(FileSystem fileSystem);
 }

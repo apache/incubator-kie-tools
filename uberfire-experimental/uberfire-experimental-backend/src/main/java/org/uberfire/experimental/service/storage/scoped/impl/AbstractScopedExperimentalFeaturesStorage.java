@@ -14,60 +14,42 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage.impl;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
+package org.uberfire.experimental.service.storage.scoped.impl;
 
 import org.slf4j.Logger;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefRegistry;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
-import org.uberfire.experimental.service.storage.ExperimentalFeaturesStorage;
+import org.uberfire.experimental.service.storage.scoped.ScopedExperimentalFeaturesStorage;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.spaces.SpacesAPI;
 
-public abstract class AbstractExperimentalFeaturesStorage implements ExperimentalFeaturesStorage {
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
-    public static final String COMMENTS = "Updating experimental features registry";
+import static org.uberfire.experimental.service.storage.util.ExperimentalConstants.COMMENTS;
 
-    private static final String EXPERIMENTAL = "experimental";
-
-    public static final String EXPERIMENTAL_FILE_NAME = "." + EXPERIMENTAL;
-
-    public static final String SEPARATOR = "/";
-
-    public static final String EXPERIMENTAL_STORAGE_FOLDER = SEPARATOR + EXPERIMENTAL;
+public abstract class AbstractScopedExperimentalFeaturesStorage implements ScopedExperimentalFeaturesStorage {
 
     protected final SessionInfo sessionInfo;
-
-    protected final SpacesAPI spaces;
-
-    protected final IOService ioService;
-
     protected final ExperimentalFeatureDefRegistry defRegistry;
+    protected final IOService ioService;
 
     protected FileSystem fileSystem;
 
-    public AbstractExperimentalFeaturesStorage(SessionInfo sessionInfo, SpacesAPI spaces, IOService ioService, ExperimentalFeatureDefRegistry defRegistry) {
+    public AbstractScopedExperimentalFeaturesStorage(final SessionInfo sessionInfo, final IOService ioService, final ExperimentalFeatureDefRegistry defRegistry) {
         this.sessionInfo = sessionInfo;
-        this.spaces = spaces;
         this.ioService = ioService;
         this.defRegistry = defRegistry;
+    }
+
+    @Override
+    public void init(final FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
     }
 
     public abstract String getStoragePath();
@@ -91,7 +73,7 @@ public abstract class AbstractExperimentalFeaturesStorage implements Experimenta
                 properties.load(in);
 
                 properties.entrySet().stream()
-                        .map(entry -> new ExperimentalFeatureImpl((String) entry.getKey(), Boolean.valueOf((String) entry.getValue())))
+                        .map(entry -> new ExperimentalFeatureImpl((String) entry.getKey(), Boolean.parseBoolean((String) entry.getValue())))
                         .forEach(registeredFeatures::add);
             } catch (Exception ex) {
                 log().warn("Impossible to load registry", ex);
@@ -142,9 +124,7 @@ public abstract class AbstractExperimentalFeaturesStorage implements Experimenta
         return requiresSync;
     }
 
-    @Override
     public void storeFeatures(Collection<ExperimentalFeatureImpl> features) {
-
         doStoreFeatures(features, () -> {});
     }
 
@@ -189,21 +169,6 @@ public abstract class AbstractExperimentalFeaturesStorage implements Experimenta
         }
     }
 
-    protected void initializeFileSystem() {
-
-        final URI fileSystemURI = spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT, SpacesAPI.DEFAULT_SPACE, "preferences");
-
-        try {
-            Map<String, Object> options = new HashMap<>();
-
-            options.put("init", Boolean.TRUE);
-            options.put("internal", Boolean.TRUE);
-
-            fileSystem = ioService.newFileSystem(fileSystemURI, options);
-        } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(fileSystemURI);
-        }
-    }
 
     protected void maybeNotifyFeatureUpdate(ExperimentalFeatureImpl feature) {
 

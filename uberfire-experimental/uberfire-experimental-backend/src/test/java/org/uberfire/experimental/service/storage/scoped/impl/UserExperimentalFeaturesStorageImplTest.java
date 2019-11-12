@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage.impl;
+package org.uberfire.experimental.service.storage.scoped.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -32,22 +32,25 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.uberfire.experimental.service.util.TestUtils.FEATURE_1;
+import static org.uberfire.experimental.service.util.TestUtils.FEATURE_2;
+import static org.uberfire.experimental.service.util.TestUtils.FEATURE_3;
+import static org.uberfire.experimental.service.util.TestUtils.GLOBAL_FEATURE_1;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserExperimentalFeaturesStorageImplTest extends AbstractExperimentalFeaturesStorageTest<UserExperimentalFeaturesStorageImpl> {
 
     @Test
     public void testFirstLoad() {
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         List<ExperimentalFeatureImpl> features = new ArrayList<>(storage.getFeatures());
 
-        verify(ioService).exists(any());
+        verify(ioService, times(2)).exists(any());
         verify(ioService, never()).newInputStream(any());
+        verify(ioService).createDirectory(any());
 
-        verify(ioService).newOutputStream(any());
+        verify(ioService, times(2)).newOutputStream(any());
         verify(ioService).startBatch(fileSystem);
         verify(ioService).endBatch();
 
@@ -61,13 +64,12 @@ public class UserExperimentalFeaturesStorageImplTest extends AbstractExperimenta
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/user/regularFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         List<ExperimentalFeatureImpl> features = new ArrayList<>(storage.getFeatures());
 
-        verify(ioService, times(2)).exists(any());
+        verify(ioService, times(3)).exists(any());
+        verify(ioService, never()).createDirectory(any());
         verify(ioService).newInputStream(any());
 
         verify(ioService, never()).newOutputStream(any());
@@ -83,13 +85,12 @@ public class UserExperimentalFeaturesStorageImplTest extends AbstractExperimenta
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/user/extraFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         List<ExperimentalFeatureImpl> features = new ArrayList<>(storage.getFeatures());
 
-        verify(ioService, times(2)).exists(any());
+        verify(ioService, times(3)).exists(any());
+        verify(ioService, never()).createDirectory(any());
         verify(ioService).newInputStream(any());
 
         verify(ioService).newOutputStream(any());
@@ -105,13 +106,12 @@ public class UserExperimentalFeaturesStorageImplTest extends AbstractExperimenta
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/user/missingFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         List<ExperimentalFeatureImpl> features = new ArrayList<>(storage.getFeatures());
 
-        verify(ioService, times(2)).exists(any());
+        verify(ioService, times(3)).exists(any());
+        verify(ioService, never()).createDirectory(any());
         verify(ioService).newInputStream(any());
 
         verify(ioService).newOutputStream(any());
@@ -140,13 +140,8 @@ public class UserExperimentalFeaturesStorageImplTest extends AbstractExperimenta
         verifyLoadedFeatures(new ArrayList<>(storage.getFeatures()), new ExperimentalFeatureImpl(FEATURE_1, false), new ExperimentalFeatureImpl(FEATURE_2, false), new ExperimentalFeatureImpl(FEATURE_3, true));
     }
 
-    private void verifyInit() {
-        verify(spaces).resolveFileSystemURI(any(), any(), any());
-        verify(ioService).newFileSystem(any(), any());
-    }
-
     @Override
     protected UserExperimentalFeaturesStorageImpl getStorageInstance() {
-        return new UserExperimentalFeaturesStorageImpl(sessionInfo, spaces, ioService, defRegistry);
+        return new UserExperimentalFeaturesStorageImpl(sessionInfo, ioService, defRegistry);
     }
 }

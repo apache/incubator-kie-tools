@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage.impl;
+package org.uberfire.experimental.service.storage.scoped.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -34,6 +34,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.uberfire.experimental.service.util.TestUtils.FEATURE_1;
+import static org.uberfire.experimental.service.util.TestUtils.GLOBAL_FEATURE_1;
+import static org.uberfire.experimental.service.util.TestUtils.GLOBAL_FEATURE_2;
+import static org.uberfire.experimental.service.util.TestUtils.GLOBAL_FEATURE_3;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimentalFeaturesStorageTest<GlobalExperimentalFeaturesStorageImpl> {
@@ -43,9 +47,7 @@ public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimen
 
     @Test
     public void testFirstLoad() {
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         verify(ioService).exists(any());
         verify(ioService).newOutputStream(any());
@@ -62,9 +64,7 @@ public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimen
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/global/regularFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         verify(ioService, times(2)).exists(any());
         verify(ioService).newInputStream(any());
@@ -82,9 +82,7 @@ public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimen
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/global/extraFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         verify(ioService, times(2)).exists(any());
         verify(ioService).newInputStream(any());
@@ -102,9 +100,7 @@ public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimen
 
         ioService.write(path, IOUtils.toString(getClass().getResourceAsStream("/test/global/missingFeatures.txt"), Charset.defaultCharset()));
 
-        storage.init();
-
-        verifyInit();
+        storage.init(fileSystem);
 
         verify(ioService, times(2)).exists(any());
         verify(ioService).newInputStream(any());
@@ -137,13 +133,8 @@ public class GlobalExperimentalFeaturesStorageImplTest extends AbstractExperimen
         verifyLoadedFeatures(new ArrayList<>(storage.getFeatures()), new ExperimentalFeatureImpl(GLOBAL_FEATURE_1, false), new ExperimentalFeatureImpl(GLOBAL_FEATURE_2, false), new ExperimentalFeatureImpl(GLOBAL_FEATURE_3, true));
     }
 
-    private void verifyInit() {
-        verify(spaces).resolveFileSystemURI(any(), any(), any());
-        verify(ioService).newFileSystem(any(), any());
-    }
-
     @Override
     protected GlobalExperimentalFeaturesStorageImpl getStorageInstance() {
-        return new GlobalExperimentalFeaturesStorageImpl(sessionInfo, spaces, ioService, defRegistry, event);
+        return new GlobalExperimentalFeaturesStorageImpl(sessionInfo, ioService, defRegistry, event);
     }
 }

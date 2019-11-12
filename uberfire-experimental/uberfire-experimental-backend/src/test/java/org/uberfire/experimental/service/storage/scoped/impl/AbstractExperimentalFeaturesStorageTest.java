@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage.impl;
+package org.uberfire.experimental.service.storage.scoped.impl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,16 +26,15 @@ import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mock;
-import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 import org.uberfire.experimental.service.definition.impl.ExperimentalFeatureDefRegistryImpl;
 import org.uberfire.experimental.service.registry.ExperimentalFeature;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
+import org.uberfire.experimental.service.util.TestUtils;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
 import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.spaces.SpacesAPI;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
@@ -43,15 +42,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-public abstract class AbstractExperimentalFeaturesStorageTest<STORAGE extends AbstractExperimentalFeaturesStorage> {
-
-    protected static final String GLOBAL_FEATURE_1 = "globalFeature_1";
-    protected static final String GLOBAL_FEATURE_2 = "globalFeature_2";
-    protected static final String GLOBAL_FEATURE_3 = "globalFeature_3";
-
-    protected static final String FEATURE_1 = "feature_1";
-    protected static final String FEATURE_2 = "feature_2";
-    protected static final String FEATURE_3 = "feature_3";
+public abstract class AbstractExperimentalFeaturesStorageTest<STORAGE extends AbstractScopedExperimentalFeaturesStorage> {
 
     protected static final String USER_NAME = "my-user";
 
@@ -59,10 +50,6 @@ public abstract class AbstractExperimentalFeaturesStorageTest<STORAGE extends Ab
 
     protected SessionInfo sessionInfo;
 
-    @Mock
-    protected SpacesAPI spaces;
-
-    @Mock
     protected IOService ioService;
 
     @Mock
@@ -85,13 +72,7 @@ public abstract class AbstractExperimentalFeaturesStorageTest<STORAGE extends Ab
         doNothing().when(ioService).endBatch();
         doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
 
-        defRegistry = new ExperimentalFeatureDefRegistryImpl();
-        defRegistry.register(new ExperimentalFeatureDefinition(GLOBAL_FEATURE_1, true, "", GLOBAL_FEATURE_1, GLOBAL_FEATURE_1));
-        defRegistry.register(new ExperimentalFeatureDefinition(GLOBAL_FEATURE_2, true, "", GLOBAL_FEATURE_2, GLOBAL_FEATURE_2));
-        defRegistry.register(new ExperimentalFeatureDefinition(GLOBAL_FEATURE_3, true, "", GLOBAL_FEATURE_3, GLOBAL_FEATURE_3));
-        defRegistry.register(new ExperimentalFeatureDefinition(FEATURE_1, false, "", FEATURE_1, FEATURE_1));
-        defRegistry.register(new ExperimentalFeatureDefinition(FEATURE_2, false, "", FEATURE_2, FEATURE_2));
-        defRegistry.register(new ExperimentalFeatureDefinition(FEATURE_3, false, "", FEATURE_3, FEATURE_3));
+        defRegistry = TestUtils.getRegistry();
 
         storage = getStorageInstance();
     }

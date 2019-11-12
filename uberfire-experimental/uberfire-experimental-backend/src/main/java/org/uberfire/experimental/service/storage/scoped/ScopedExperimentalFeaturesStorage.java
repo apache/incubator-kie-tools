@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage;
+package org.uberfire.experimental.service.storage.scoped;
 
-import java.util.Collection;
+import org.uberfire.experimental.service.storage.ExperimentalFeaturesStorage;
+import org.uberfire.java.nio.file.FileSystem;
 
-import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
+public interface ScopedExperimentalFeaturesStorage extends ExperimentalFeaturesStorage {
 
-public interface ExperimentalFeaturesStorage {
+    void init(FileSystem fileSystem);
 
-    Collection<ExperimentalFeatureImpl> getFeatures();
-
-    void store(ExperimentalFeatureImpl experimentalFeature);
+    ExperimentalStorageScope getScope();
 }

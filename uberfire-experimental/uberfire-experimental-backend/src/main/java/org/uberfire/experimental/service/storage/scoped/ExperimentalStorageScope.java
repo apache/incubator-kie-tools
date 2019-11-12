@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.service.storage;
+package org.uberfire.experimental.service.storage.scoped;
 
-import java.util.Collection;
+import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 
-import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
+public enum ExperimentalStorageScope {
+    GLOBAL, USER;
 
-public interface ExperimentalFeaturesStorage {
-
-    Collection<ExperimentalFeatureImpl> getFeatures();
-
-    void store(ExperimentalFeatureImpl experimentalFeature);
+    public static ExperimentalStorageScope getScope(ExperimentalFeatureDefinition featureDefinition) {
+        if (featureDefinition.isGlobal()) {
+            return GLOBAL;
+        }
+        return USER;
+    }
 }

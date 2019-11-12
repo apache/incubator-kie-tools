@@ -49,19 +49,18 @@ public class BackendExperimentalFeaturesRegistryServiceImpl implements Experimen
 
     private ExperimentalFeaturesStorage globalStorage;
 
-    private ExperimentalFeaturesStorage userStorage;
 
     @Inject
-    public BackendExperimentalFeaturesRegistryServiceImpl(final ExperimentalFeatureDefRegistry defRegistry, @Named("global") final ExperimentalFeaturesStorage globalStorage, @Named("user") final ExperimentalFeaturesStorage userStorage) {
+    public BackendExperimentalFeaturesRegistryServiceImpl(final ExperimentalFeatureDefRegistry defRegistry, @Named("global") final ExperimentalFeaturesStorage globalStorage) {
         this.defRegistry = defRegistry;
         this.globalStorage = globalStorage;
-        this.userStorage = userStorage;
     }
 
     @Override
     public ExperimentalFeaturesRegistryImpl getFeaturesRegistry() {
         return loadRegistry();
     }
+
     @Override
     public Boolean isExperimentalEnabled() {
         return Boolean.parseBoolean(System.getProperty(EXPERIMENTAL_FEATURES_PROPERTY_NAME, "false"));
@@ -89,15 +88,9 @@ public class BackendExperimentalFeaturesRegistryServiceImpl implements Experimen
         Optional<ExperimentalFeatureDefinition> optional = Optional.ofNullable(defRegistry.getFeatureById(editableFeature.getFeatureId()));
 
         if (optional.isPresent()) {
-            ExperimentalFeatureDefinition definition = optional.get();
-
             ExperimentalFeatureImpl feature = new ExperimentalFeatureImpl(editableFeature.getFeatureId(), editableFeature.isEnabled());
 
-            if (definition.isGlobal()) {
-                globalStorage.store(feature);
-            } else {
-                userStorage.store(feature);
-            }
+            globalStorage.store(feature);
         } else {
             throw new IllegalArgumentException("Cannot find ExperimentalFeature '" + editableFeature.getFeatureId() + "'");
         }
@@ -105,8 +98,6 @@ public class BackendExperimentalFeaturesRegistryServiceImpl implements Experimen
 
     private ExperimentalFeaturesRegistryImpl loadRegistry() {
         List<ExperimentalFeatureImpl> features = new ArrayList<>();
-
-        features.addAll(userStorage.getFeatures());
 
         features.addAll(globalStorage.getFeatures());
 
