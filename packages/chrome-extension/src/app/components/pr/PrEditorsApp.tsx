@@ -15,19 +15,20 @@
  */
 
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import { useEffectWithDependencies } from "../common/customEffects";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
 import { ResolvedDomDependency } from "../../dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInformation } from "./IsolatedPrEditor";
 import { Feature } from "../common/Feature";
-import {Logger} from "../../../Logger";
+import { Logger } from "../../../Logger";
 
 export function PrEditorsApp(props: { prInfo: PrInformation }) {
   const globalContext = useContext(GlobalContext);
-  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globalContext.logger, globalContext.router));
+  const [prFileContainers, setPrFileContainers] = useState(
+    supportedPrFileElements(globalContext.logger, globalContext.router)
+  );
 
   useMutationObserverEffect(
     new MutationObserver(mutations => {
@@ -62,7 +63,7 @@ export function PrEditorsApp(props: { prInfo: PrInformation }) {
           component={resolved => (
             <IsolatedPrEditor
               prInfo={props.prInfo}
-              prFileContainer={container}
+              prFileContainer={{ name: "", element: container }}
               fileExtension={getFileExtension(container)}
               unprocessedFilePath={getUnprocessedFilePath(resolved.unprocessedFilePath as ResolvedDomDependency)}
               githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
@@ -79,15 +80,11 @@ function supportedPrFileElements(logger: Logger, router: Router) {
 }
 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
-  useEffectWithDependencies(
-    "PR files mutation observer",
-    deps => ({ target: () => deps.all.pr__mutationObserverTarget() }),
-    deps => {
-      observer.observe((deps.target as ResolvedDomDependency).element, options);
-      return () => observer.disconnect();
-    },
-    []
-  );
+  const globalContext = useContext(GlobalContext);
+  useEffect(() => {
+    observer.observe(globalContext.dependencies.all.pr__mutationObserverTarget()!, options);
+    return () => observer.disconnect();
+  }, []);
 }
 
 function prFileElements(logger: Logger) {
@@ -97,10 +94,10 @@ function prFileElements(logger: Logger) {
     return [];
   }
 
-  return elements!.map(e => ({ name: "", element: e }));
+  return elements;
 }
 
-function getFileExtension(prFileContainer: ResolvedDomDependency) {
+function getFileExtension(prFileContainer: HTMLElement) {
   const element = dependencies__.all.pr__unprocessedFilePathContainer(prFileContainer)!;
   if (!element) {
     console.error("Could not find file name here...", prFileContainer);

@@ -97,8 +97,8 @@ export const all = {
   pr__viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
     return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
   },
-  pr__unprocessedFilePathContainer: (container: ResolvedDomDependency) => {
-    return container.element.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
+  pr__unprocessedFilePathContainer: (container: HTMLElement) => {
+    return container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
   },
 
   array: {
