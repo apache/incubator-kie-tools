@@ -18,20 +18,21 @@ package org.kie.workbench.common.workbench.client.error;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Queue;
 import java.util.List;
+import java.util.Queue;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-
 import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.server.api.exception.KieServicesException;
 import org.kie.server.api.exception.KieServicesHttpException;
 import org.kie.workbench.common.workbench.client.entrypoint.GenericErrorPopup;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
+import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -42,6 +43,18 @@ public class DefaultWorkbenchErrorCallback {
 
     @Inject
     private GenericErrorPopup genericErrorPopup;
+
+    @Inject
+    private GenericErrorTimeController genericErrorTimeController;
+
+    @Inject
+    private User user;
+
+    @Inject
+    private PlaceHistoryHandler placeHistoryHandler;
+
+    @Inject
+    private GenericErrorLoggerProxy genericErrorLoggerProxy;
 
     private Queue<Throwable> queue = new ArrayDeque<>();
 
@@ -180,9 +193,26 @@ public class DefaultWorkbenchErrorCallback {
             return;
         }
 
-        genericErrorPopup.show();
-        genericErrorPopup.setup("Uncaught exception: " + extractMessageRecursively(throwable),
-                                this::dequeue);
+        handleGenericError(throwable);
+    }
+
+    private void handleGenericError(final Throwable throwable) {
+        final String errorDetails = "Uncaught exception: " + extractMessageRecursively(throwable);
+        final String errorId = String.valueOf((user.getIdentifier() + System.currentTimeMillis()).hashCode());
+        final String clientLocation = placeHistoryHandler.getCurrentBookmarkableURLStatus();
+
+        if (genericErrorTimeController.isExpired()) {
+            genericErrorPopup.show();
+            genericErrorPopup.setup(errorDetails,
+                                    this::dequeue,
+                                    errorId);
+        } else {
+            queue.poll();
+        }
+
+        genericErrorLoggerProxy.log(errorId,
+                                    clientLocation,
+                                    errorDetails);
     }
 
     private String extractMessageRecursively(final Throwable t) {

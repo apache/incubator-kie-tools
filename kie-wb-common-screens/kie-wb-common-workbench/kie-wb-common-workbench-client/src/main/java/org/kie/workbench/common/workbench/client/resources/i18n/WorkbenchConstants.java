@@ -15,4 +15,10 @@ public class WorkbenchConstants {
 
     @TranslationKey(defaultValue = "Failed")
     public static final String Failed = "TestResultDonutPresenter.Failed";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GenericErrorPopup_TimeSelectionTooltip = "GenericErrorPopup.TimeSelectionTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GenericErrorPopup_ErrorId = "GenericErrorPopup.ErrorId";
 }

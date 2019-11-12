@@ -14,20 +14,48 @@
   ~ limitations under the License.
   -->
 
-<div>
-    <div>
-        <div data-field="header">Unexpected error</div>
+<div class="generic-error-popup">
+    <div data-field="header"><span data-i18n-key="SystemErrorTitle"></span></div>
 
-        <div data-field="body">
-            <p>An unexpected error happened. Please try again in a few moments.</p>
-            <form>
-                <textarea data-field="error-details" class="form-control" style="height: 0; opacity: 0; resize: none; white-space: pre; cursor: text; border: none;"></textarea>
-            </form>
+    <div data-field="body">
+        <div class="alert alert-warning">
+            <span class="pficon pficon-warning-triangle-o"></span>
+            <strong><span data-i18n-key="SystemErrorAlert"></span></strong>
+        </div>
+        <div class="error-info">
+            <span data-i18n-key="SystemErrorDetails"></span>
+            <span data-i18n-key="SystemErrorDetailsInLog"></span>
+            <span data-field="error-id"></span>
         </div>
 
-        <div data-field="footer" style="margin-top: -20px;">
-            <button data-field="copy-details-button" class="btn btn-link">Copy error details</button>
-            <button data-field="ignore-button" class="btn btn-default btn-primary">Ignore</button>
+        <div>
+            <a data-field="chevron-down" hidden><em class="glyphicon glyphicon-chevron-down"></em></a>
+            <a data-field="chevron-right"><em class="glyphicon glyphicon-chevron-right"></em></a>
+            <span data-i18n-key="ErrorDetails" class="chevron-title"></span>
+            <a data-field="copy-details"><em class="glyphicon glyphicon-copy"></em></a>
         </div>
+        <div data-field="error-details-section" hidden>
+            <textarea data-field="error-details" class="error-details form-control" readonly></textarea>
+        </div>
+        <hr>
+        <div>
+            <label for="do-not-show-again">
+                <input type="checkbox" data-field="do-not-show-again-checkbox" id="do-not-show-again"/>
+                <span data-i18n-key="DoNotShowAgainMsg"></span>
+            </label>
+            <select data-field="time-select" class="time-select">
+                <option value="TEN_MINUTES" data-i18n-key="TimeSelectionTenMinutes"></option>
+                <option value="THIRTY_MINUTES" data-i18n-key="TimeSelectionThirtyMinutes"></option>
+                <option value="ONE_HOUR" data-i18n-key="TimeSelectionOneHour"></option>
+                <option value="TWO_HOURS" data-i18n-key="TimeSelectionTwoHours"></option>
+            </select>
+            <a href="#" data-toggle="tooltip" data-delay="0">
+                <span data-field="unresolved-errors-tooltip" class="fa fa-info-circle"></span>
+            </a>
+        </div>
+    </div>
+
+    <div data-field="footer">
+        <button data-field="continue-button" class="btn btn-default btn-primary" data-i18n-key="Continue"></button>
     </div>
 </div>
