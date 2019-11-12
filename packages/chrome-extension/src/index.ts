@@ -59,7 +59,13 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
   }
 
   if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    const split = window.location.pathname.split("/");
+    renderSingleEditorReadonlyApp({
+      logger: args.logger,
+      router: args.router,
+      editorIndexPath: args.editorIndexPath,
+      info: { repo: split[2], org: split[1], path: split.slice(5).join("/") }
+    });
     return;
   }
 

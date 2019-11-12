@@ -30,8 +30,15 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
+import * as Octokit from "@octokit/rest";
 
-export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+export interface Info {
+  repo: string,
+  org: string,
+  path: string,
+}
+
+export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorIndexPath: string; router: Router, info: Info }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
@@ -64,7 +71,6 @@ export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorInde
       <Feature
         name={"Readonly editor"}
         dependencies={deps => ({
-          rawUrl: () => deps.all.view__rawUrlLink(),
           iframeContainerTarget: () => deps.common.iframeContainerTarget(),
           toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
           githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
@@ -73,7 +79,7 @@ export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorInde
           <SingleEditorApp
             readonly={true}
             openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(resolved.rawUrl as ResolvedDomDependency)}
+            getFileContents={() => getFileContents(args.info)}
             iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
             toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
             githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
@@ -94,8 +100,16 @@ function cleanup() {
   removeAllChildren(createAndGetMainContainer({ name: "", element: dependencies__.all.body() }));
 }
 
-function getFileContents(domDependency: ResolvedDomDependency) {
-  return fetch((domDependency.element as HTMLAnchorElement).href).then(res => res.text());
+function getFileContents(info: Info) {
+  return new Octokit().repos
+      .getContents({
+        repo: info.repo,
+        owner: info.org,
+        path: info.path,
+        headers: { "cache-control": "no-cache" }
+      })
+      .then(r => atob((r.data as any).content))
+      .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
 }
 
 function toolbarContainer(domDependency: ResolvedDomDependency) {

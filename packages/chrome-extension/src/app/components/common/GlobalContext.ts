@@ -18,9 +18,11 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalDomDependencies } from "../../dependencies";
 import { Logger } from "../../../Logger";
+import * as Octokit from "@octokit/rest";
 
 export interface GlobalContextType {
   router: Router;
+  octokit: Octokit;
   logger: Logger;
   editorIndexPath: string;
   dependencies: GlobalDomDependencies;
@@ -29,6 +31,7 @@ export interface GlobalContextType {
 export const GlobalContext = React.createContext<GlobalContextType>({
   router: undefined as any,
   logger: undefined as any,
+  octokit: undefined as any,
   editorIndexPath: "envelope/index.html",
   dependencies: {} as any
 });

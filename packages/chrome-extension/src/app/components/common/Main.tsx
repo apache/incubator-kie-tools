@@ -20,6 +20,7 @@ import { GlobalContext } from "./GlobalContext";
 import * as dependencies__ from "../../dependencies";
 import { GlobalCommonDomDependencies } from "../../dependencies";
 import { Logger } from "../../../Logger";
+import * as Octokit from "@octokit/rest";
 
 interface Props {
   router: Router;
@@ -39,6 +40,7 @@ export class Main extends React.Component<Props, {}> {
         value={{
           logger: this.props.logger,
           router: this.props.router,
+          octokit: new Octokit(),
           editorIndexPath: this.props.editorIndexPath,
           dependencies: {
             all: dependencies__.all,
