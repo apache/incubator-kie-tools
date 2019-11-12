@@ -64,7 +64,7 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
       logger: args.logger,
       router: args.router,
       editorIndexPath: args.editorIndexPath,
-      info: { repo: split[2], org: split[1], path: split.slice(5).join("/") }
+      fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") }
     });
     return;
   }

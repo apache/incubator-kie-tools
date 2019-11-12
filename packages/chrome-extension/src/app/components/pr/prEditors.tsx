@@ -26,7 +26,7 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import { PrInformation } from "./IsolatedPrEditor";
+import { PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
 export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
@@ -43,7 +43,7 @@ export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: stri
   );
 }
 
-function parsePrInfo(): PrInformation {
+function parsePrInfo(): PrInfo {
   const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
@@ -52,21 +52,21 @@ function parsePrInfo(): PrInformation {
   // PR is within the same organization
   if (prInfos.length < 6) {
     return {
-      repository: repository,
-      targetOrganization: targetOrganization,
-      targetGitReference: prInfos[1],
-      organization: targetOrganization,
-      gitReference: prInfos[3]
+      repo: repository,
+      targetOrg: targetOrganization,
+      targetGitRef: prInfos[1],
+      org: targetOrganization,
+      gitRef: prInfos[3]
     };
   }
 
   // PR is from a fork to an upstream
   return {
-    repository: repository,
-    targetOrganization: targetOrganization,
-    targetGitReference: prInfos[2],
-    organization: prInfos[4],
-    gitReference: prInfos[5]
+    repo: repository,
+    targetOrg: targetOrganization,
+    targetGitRef: prInfos[2],
+    org: prInfos[4],
+    gitRef: prInfos[5]
   };
 }
 

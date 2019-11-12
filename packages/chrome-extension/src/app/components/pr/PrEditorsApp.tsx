@@ -19,10 +19,10 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
-import { getOriginalFilePath, IsolatedPrEditor, PrInformation } from "./IsolatedPrEditor";
+import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
-export function PrEditorsApp(props: { prInfo: PrInformation }) {
+export function PrEditorsApp(props: { prInfo: PrInfo }) {
   const globalContext = useContext(GlobalContext);
   const [prFileContainers, setPrFileContainers] = useState(
     supportedPrFileElements(globalContext.logger, globalContext.router)

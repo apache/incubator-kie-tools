@@ -35,17 +35,18 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import { GlobalContext } from "../common/GlobalContext";
+import * as Octokit from "@octokit/rest";
 
-export interface PrInformation {
-  repository: string;
-  targetOrganization: string;
-  targetGitReference: string;
-  organization: string;
-  gitReference: string;
+export interface PrInfo {
+  repo: string;
+  targetOrg: string;
+  targetGitRef: string;
+  org: string;
+  gitRef: string;
 }
 
 export function IsolatedPrEditor(props: {
-  prInfo: PrInformation;
+  prInfo: PrInfo;
   prFileContainer: HTMLElement;
   fileExtension: string;
   githubTextEditorToReplace: HTMLElement;
@@ -63,7 +64,7 @@ export function IsolatedPrEditor(props: {
   useIsolatedEditorTogglingEffect(textMode, iframeContainer(props.prFileContainer), props.githubTextEditorToReplace);
 
   useInitialAsyncCallEffect(
-    () => discoverFileStatusOnPr(props.prInfo, originalFilePath, modifiedFilePath),
+    () => discoverFileStatusOnPr(globalContext.octokit, props.prInfo, originalFilePath, modifiedFilePath),
     setFileStatusOnPr
   );
 
@@ -85,8 +86,8 @@ export function IsolatedPrEditor(props: {
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
-      ? () => getOriginalFileContents(props.prInfo, originalFilePath)
-      : () => getModifiedFileContents(props.prInfo, modifiedFilePath);
+      ? () => getOriginalFileContents(globalContext.octokit, props.prInfo, originalFilePath)
+      : () => getModifiedFileContents(globalContext.octokit, props.prInfo, modifiedFilePath);
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
@@ -138,9 +139,14 @@ export function IsolatedPrEditor(props: {
   );
 }
 
-async function discoverFileStatusOnPr(prInfo: PrInformation, originalFilePath: string, modifiedFilePath: string) {
-  const hasOriginal = await getOriginalFileContents(prInfo, originalFilePath);
-  const hasModified = await getModifiedFileContents(prInfo, modifiedFilePath);
+async function discoverFileStatusOnPr(
+  octokit: Octokit,
+  prInfo: PrInfo,
+  originalFilePath: string,
+  modifiedFilePath: string
+) {
+  const hasOriginal = await getOriginalFileContents(octokit, prInfo, originalFilePath);
+  const hasModified = await getModifiedFileContents(octokit, prInfo, modifiedFilePath);
 
   if (hasOriginal && hasModified) {
     return FileStatusOnPr.CHANGED;
@@ -206,28 +212,36 @@ function iframeContainer(container: HTMLElement) {
   return element() as HTMLElement;
 }
 
-function getModifiedFileContents(prInfo: PrInformation, modifiedFilePath: string) {
-  const org = prInfo.organization;
-  const repo = prInfo.repository;
-  const branch = prInfo.gitReference;
-  return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${modifiedFilePath}`).then(res => {
-    return res.ok ? res.text() : Promise.resolve(undefined);
-  });
+function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFilePath: string) {
+  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath);
 }
 
-function getOriginalFileContents(prInfo: PrInformation, originalFilePath: string) {
-  const org = prInfo.targetOrganization;
-  const repo = prInfo.repository;
-  const branch = prInfo.targetGitReference;
-  return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${originalFilePath}`).then(res => {
-    return res.ok ? res.text() : Promise.resolve(undefined);
-  });
+function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
+  return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath);
 }
 
-function viewOriginalFileHref(prInfo: PrInformation, originalFilePath: string) {
-  const org = prInfo.targetOrganization;
-  const repo = prInfo.repository;
-  const branch = prInfo.targetGitReference;
+function fetchFile(octokit: Octokit, org: string, repo: string, ref: string, path: string) {
+  return octokit.repos
+      .getContents({
+        repo: repo,
+        owner: org,
+        ref: ref,
+        path: path,
+        headers: { "cache-control": "no-cache" }
+      })
+      .then(res => atob((res.data as any).content))
+      .catch(e => {
+        console.debug(`Error fetching ${path} with Octokit.`);
+        return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(
+            res => (res.ok ? res.text() : Promise.resolve(undefined))
+        );
+      });
+}
+
+function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {
+  const org = prInfo.targetOrg;
+  const repo = prInfo.repo;
+  const branch = prInfo.targetGitRef;
 
   return `/${org}/${repo}/blob/${branch}/${originalFilePath}`;
 }

@@ -35,13 +35,14 @@ export interface FileInfo {
   repo: string;
   org: string;
   path: string;
+  gitRef: string
 }
 
 export function renderSingleEditorReadonlyApp(args: {
   logger: Logger;
   editorIndexPath: string;
   router: Router;
-  info: FileInfo;
+  fileInfo: FileInfo;
 }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
@@ -67,7 +68,7 @@ export function renderSingleEditorReadonlyApp(args: {
 
   ReactDOM.render(
     <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
-      <SingleEditorViewApp fileInfo={args.info} openFileExtension={openFileExtension} />
+      <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()!),
     () => args.logger.log("Mounted.")
@@ -82,6 +83,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
         repo: props.fileInfo.repo,
         owner: props.fileInfo.org,
         path: props.fileInfo.path,
+        ref: props.fileInfo.gitRef,
         headers: { "cache-control": "no-cache" }
       })
       .then((response: any) => atob(response.data.content))
