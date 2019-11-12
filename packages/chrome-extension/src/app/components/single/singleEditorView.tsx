@@ -30,12 +30,13 @@ import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
 import { GlobalContext } from "../common/GlobalContext";
+import { fetchFile } from "../../github/api";
 
 export interface FileInfo {
   repo: string;
   org: string;
   path: string;
-  gitRef: string
+  gitRef: string;
 }
 
 export function renderSingleEditorReadonlyApp(args: {
@@ -77,18 +78,17 @@ export function renderSingleEditorReadonlyApp(args: {
 
 function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
   const globalContext = useContext(GlobalContext);
-  const getFileContents = useCallback(() => {
-    return globalContext.octokit.repos
-      .getContents({
-        repo: props.fileInfo.repo,
-        owner: props.fileInfo.org,
-        path: props.fileInfo.path,
-        ref: props.fileInfo.gitRef,
-        headers: { "cache-control": "no-cache" }
-      })
-      .then((response: any) => atob(response.data.content))
-      .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
-  }, []);
+  const getFileContents = useCallback(
+    () =>
+      fetchFile(
+        globalContext.octokit,
+        props.fileInfo.org,
+        props.fileInfo.repo,
+        props.fileInfo.gitRef,
+        props.fileInfo.path
+      ),
+    []
+  );
 
   return (
     <SingleEditorApp

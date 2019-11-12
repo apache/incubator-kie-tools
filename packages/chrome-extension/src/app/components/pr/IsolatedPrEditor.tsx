@@ -16,7 +16,7 @@
 
 import * as dependencies__ from "../../dependencies";
 import * as React from "react";
-import { useContext, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import {
   useEffectAfterFirstRender,
@@ -36,6 +36,7 @@ import {
 } from "../../constants";
 import { GlobalContext } from "../common/GlobalContext";
 import * as Octokit from "@octokit/rest";
+import { fetchFile } from "../../github/api";
 
 export interface PrInfo {
   repo: string;
@@ -63,10 +64,9 @@ export function IsolatedPrEditor(props: {
 
   useIsolatedEditorTogglingEffect(textMode, iframeContainer(props.prFileContainer), props.githubTextEditorToReplace);
 
-  useInitialAsyncCallEffect(
-    () => discoverFileStatusOnPr(globalContext.octokit, props.prInfo, originalFilePath, modifiedFilePath),
-    setFileStatusOnPr
-  );
+  useInitialAsyncCallEffect(() => {
+    return discoverFileStatusOnPr(globalContext.octokit, props.prInfo, originalFilePath, modifiedFilePath);
+  }, setFileStatusOnPr);
 
   useEffectAfterFirstRender(
     () => {
@@ -79,10 +79,10 @@ export function IsolatedPrEditor(props: {
     [showOriginal]
   );
 
-  const closeDiagram = () => {
+  const closeDiagram = useCallback(() => {
     setTextMode(true);
     setEditorReady(false);
-  };
+  }, []);
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
@@ -218,24 +218,6 @@ function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFileP
 
 function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
   return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath);
-}
-
-function fetchFile(octokit: Octokit, org: string, repo: string, ref: string, path: string) {
-  return octokit.repos
-      .getContents({
-        repo: repo,
-        owner: org,
-        ref: ref,
-        path: path,
-        headers: { "cache-control": "no-cache" }
-      })
-      .then(res => atob((res.data as any).content))
-      .catch(e => {
-        console.debug(`Error fetching ${path} with Octokit.`);
-        return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(
-            res => (res.ok ? res.text() : Promise.resolve(undefined))
-        );
-      });
 }
 
 function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {
