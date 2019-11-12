@@ -17,16 +17,20 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,13 +40,26 @@ import org.kie.workbench.common.screens.library.client.screens.organizationaluni
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.spaces.Space;
+import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryScreenTest {
@@ -92,6 +109,12 @@ public class LibraryScreenTest {
     @Mock
     private WorkspaceProjectContext projectContext;
 
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private Event<NotificationEvent> notificationEvent;
+
     private LibraryScreen libraryScreen;
 
     @Before
@@ -103,6 +126,7 @@ public class LibraryScreenTest {
         doReturn(true).when(projectController).canCreateProjects(any());
         doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
         doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
+        doReturn(true).when(organizationalUnitController).canReadOrgUnit(any());
 
         doReturn(mock(PopulatedLibraryScreen.View.class)).when(populatedLibraryScreen).getView();
         doReturn(mock(EmptyLibraryScreen.View.class)).when(emptyLibraryScreen).getView();
@@ -130,7 +154,9 @@ public class LibraryScreenTest {
                                               contributorsListPresenter,
                                               new CallerMock<>(libraryService),
                                               libraryPlaces,
-                                              spaceContributorsListService));
+                                              spaceContributorsListService,
+                                              notificationEvent,
+                                              translationService));
     }
 
     @Test
@@ -311,6 +337,50 @@ public class LibraryScreenTest {
 
         when(repositoryRemovedEvent.getRepository()).thenReturn(repository);
         return repositoryRemovedEvent;
+    }
+
+    @Test
+    public void testOnSpaceContributorsUpdatedSameSpace() {
+        String spaceName = "ou1";
+
+        OrganizationalUnit ou1 = mock(OrganizationalUnit.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(ou1.getSpace().getName()).thenReturn(spaceName);
+
+        doReturn(Optional.of(ou1)).when(projectContext).getActiveOrganizationalUnit();
+
+        OrganizationalUnit ou2 = mock(OrganizationalUnit.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(ou2.getSpace().getName()).thenReturn(spaceName);
+
+        SpaceContributorsUpdatedEvent event = new SpaceContributorsUpdatedEvent(ou2);
+        this.libraryScreen.onSpaceContributorsUpdated(event);
+
+        verify(this.libraryScreen, times(1)).showProjects(any());
+        verify(this.view, times(1)).setContributorsCount(anyInt());
+    }
+
+    @Test
+    public void testOnSpaceContributorsUpdatedDifferentSpace() {
+        OrganizationalUnit ou1 = mock(OrganizationalUnit.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(ou1.getSpace().getName()).thenReturn("ou1");
+
+        doReturn(Optional.of(ou1)).when(projectContext).getActiveOrganizationalUnit();
+
+        OrganizationalUnit ou2 = mock(OrganizationalUnit.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(ou2.getSpace().getName()).thenReturn("ou2");
+
+        SpaceContributorsUpdatedEvent event = new SpaceContributorsUpdatedEvent(ou2);
+        this.libraryScreen.onSpaceContributorsUpdated(event);
+
+        verify(this.libraryScreen, times(0)).showProjects(any());
+        verify(this.view, times(0)).setContributorsCount(anyInt());
+    }
+
+    @Test
+    public void testRedirectIfNoRightPermissions() {
+        doReturn(false).when(organizationalUnitController).canReadOrgUnit(any());
+        this.libraryScreen.showProjects();
+        verify(this.libraryService, times(0)).hasProjects(any());
+        verify(this.libraryPlaces).goToOrganizationalUnits();
     }
 }
 

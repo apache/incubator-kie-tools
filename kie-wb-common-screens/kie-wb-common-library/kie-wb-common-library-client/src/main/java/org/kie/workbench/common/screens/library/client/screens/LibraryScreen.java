@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -31,9 +32,11 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectCountUpdate;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
@@ -44,6 +47,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.spaces.Space;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @WorkbenchScreen(identifier = LibraryPlaces.LIBRARY_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -62,6 +66,8 @@ public class LibraryScreen {
     private Caller<LibraryService> libraryService;
     private LibraryPlaces libraryPlaces;
     private SpaceContributorsListServiceImpl spaceContributorsListService;
+    private Event<NotificationEvent> notificationEvent;
+    private TranslationService translationService;
 
     @Inject
     public LibraryScreen(final View view,
@@ -75,7 +81,9 @@ public class LibraryScreen {
                          final ContributorsListPresenter contributorsListPresenter,
                          final Caller<LibraryService> libraryService,
                          final LibraryPlaces libraryPlaces,
-                         final SpaceContributorsListServiceImpl spaceContributorsListService) {
+                         final SpaceContributorsListServiceImpl spaceContributorsListService,
+                         final Event<NotificationEvent> notificationEvent,
+                         final TranslationService translationService) {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
         this.projectContext = projectContext;
@@ -88,6 +96,8 @@ public class LibraryScreen {
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
         this.spaceContributorsListService = spaceContributorsListService;
+        this.notificationEvent = notificationEvent;
+        this.translationService = translationService;
     }
 
     @PostConstruct
@@ -132,10 +142,19 @@ public class LibraryScreen {
         final OrganizationalUnit activeOU = projectContext.getActiveOrganizationalUnit()
                 .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit."));
 
-        libraryService.call((RemoteCallback<Boolean>) this::setLibraryProjectScreen).hasProjects(activeOU);
+        this.showProjects(activeOU);
     }
 
-    private void setLibraryProjectScreen(boolean hasProjects) {
+    protected void showProjects(OrganizationalUnit organizationalUnit) {
+        if (organizationalUnitController.canReadOrgUnit(organizationalUnit)) {
+            libraryService.call((RemoteCallback<Boolean>) this::setLibraryProjectScreen).hasProjects(organizationalUnit);
+        } else {
+            notificationEvent.fire(new NotificationEvent(translationService.format(LibraryConstants.SpacePermissionsChanged, organizationalUnit.getName()), NotificationEvent.NotificationType.WARNING));
+            libraryPlaces.closeAllPlacesOrNothing(() -> libraryPlaces.goToOrganizationalUnits());
+        }
+    }
+
+    protected void setLibraryProjectScreen(boolean hasProjects) {
         if (hasProjects) {
             showPopulatedLibraryScreen();
         } else {
@@ -215,6 +234,7 @@ public class LibraryScreen {
         projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
             if (eventOnCurrentSpace(p, spaceContributorsUpdatedEvent.getOrganizationalUnit().getSpace())) {
                 view.setContributorsCount(spaceContributorsUpdatedEvent.getOrganizationalUnit().getContributors().size());
+                this.showProjects(spaceContributorsUpdatedEvent.getOrganizationalUnit());
             }
         });
     }

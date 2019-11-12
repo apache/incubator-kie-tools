@@ -766,4 +766,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ErrorCreatingPoject = "ErrorCreatingProject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SpacePermissionsChanged = "SpacePermissionsChanged";
 }
