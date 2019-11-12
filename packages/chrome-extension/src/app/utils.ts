@@ -70,21 +70,21 @@ export function removeAllChildren(node: Node) {
   }
 }
 
-export function mainContainer(container: ResolvedDomDependency) {
-  return container.element.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
+export function mainContainer(container: HTMLElement) {
+  return container.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
 }
 
-export function createAndGetMainContainer(container: ResolvedDomDependency) {
+export function createAndGetMainContainer(container: HTMLElement) {
   if (!mainContainer(container)) {
-    container.element.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+    container.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
   }
   return mainContainer(container)!;
 }
 
-export function iframeFullscreenContainer(container: ResolvedDomDependency) {
+export function iframeFullscreenContainer(container: HTMLElement) {
   const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
   if (!element()) {
-    container.element.insertAdjacentHTML(
+    container.insertAdjacentHTML(
       "afterbegin",
       `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
     );

@@ -15,7 +15,6 @@
  */
 
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependency } from "../../dependencies";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -24,21 +23,26 @@ import {
 } from "../../utils";
 import * as ReactDOM from "react-dom";
 import { Main } from "../common/Main";
-import { Feature } from "../common/Feature";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
+import { useCallback, useContext } from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
-import * as Octokit from "@octokit/rest";
+import { GlobalContext } from "../common/GlobalContext";
 
 export interface Info {
-  repo: string,
-  org: string,
-  path: string,
+  repo: string;
+  org: string;
+  path: string;
 }
 
-export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorIndexPath: string; router: Router, info: Info }) {
+export function renderSingleEditorReadonlyApp(args: {
+  logger: Logger;
+  editorIndexPath: string;
+  router: Router;
+  info: Info;
+}) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
@@ -61,6 +65,32 @@ export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorInde
     return;
   }
 
+  function SingleEditor() {
+    const globalContext = useContext(GlobalContext);
+    const getFileContents = useCallback(() => {
+      return globalContext.octokit.repos
+        .getContents({
+          repo: args.info.repo,
+          owner: args.info.org,
+          path: args.info.path,
+          headers: { "cache-control": "no-cache" }
+        })
+        .then((response: any) => atob(response.data.content))
+        .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
+    }, []);
+
+    return (
+      <SingleEditorApp
+        readonly={true}
+        openFileExtension={openFileExtension!}
+        getFileContents={getFileContents}
+        iframeContainer={iframeContainer()}
+        toolbarContainer={toolbarContainer()}
+        githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
+      />
+    );
+  }
+
   ReactDOM.render(
     <Main
       router={args.router}
@@ -68,67 +98,38 @@ export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorInde
       editorIndexPath={args.editorIndexPath}
       commonDependencies={dependencies__.singleView}
     >
-      <Feature
-        name={"Readonly editor"}
-        dependencies={deps => ({
-          iframeContainerTarget: () => deps.common.iframeContainerTarget(),
-          toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
-          githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
-        })}
-        component={resolved => (
-          <SingleEditorApp
-            readonly={true}
-            openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(args.info)}
-            iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
-            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
-            githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
-          />
-        )}
-      />
+      <SingleEditor />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(dependencies__.all.body()!),
     () => args.logger.log("Mounted.")
   );
 }
 
 function cleanup() {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer({ name: "", element: dependencies__.singleView.iframeContainerTarget()! }));
-  removeAllChildren(toolbarContainer({ name: "", element: dependencies__.singleView.toolbarContainerTarget()! }));
-  removeAllChildren(iframeFullscreenContainer({ name: "", element: dependencies__.all.body() }));
-  removeAllChildren(createAndGetMainContainer({ name: "", element: dependencies__.all.body() }));
+  removeAllChildren(iframeContainer());
+  removeAllChildren(toolbarContainer());
+  removeAllChildren(iframeFullscreenContainer(dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies__.all.body()));
 }
 
-function getFileContents(info: Info) {
-  return new Octokit().repos
-      .getContents({
-        repo: info.repo,
-        owner: info.org,
-        path: info.path,
-        headers: { "cache-control": "no-cache" }
-      })
-      .then(r => atob((r.data as any).content))
-      .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
-}
-
-function toolbarContainer(domDependency: ResolvedDomDependency) {
+function toolbarContainer() {
   const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="view d-flex flex-column flex-items-start flex-md-row"></div>`;
   const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("beforebegin", div);
+    dependencies__.singleView.toolbarContainerTarget()!.insertAdjacentHTML("beforebegin", div);
   }
 
   return element();
 }
 
-function iframeContainer(domDependency: ResolvedDomDependency) {
+function iframeContainer() {
   const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
   const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("afterend", div);
+    dependencies__.singleView.iframeContainerTarget()!.insertAdjacentHTML("afterend", div);
   }
 
   return element();

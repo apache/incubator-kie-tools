@@ -103,8 +103,8 @@ function discoverCurrentGitHubPageType() {
 
 function unmountPreviouslyRenderedFeatures(logger: Logger) {
   try {
-    if (mainContainer({ name: "", element: dependencies__.all.body() })) {
-      ReactDOM.unmountComponentAtNode(mainContainer({ name: "", element: dependencies__.all.body() })!);
+    if (mainContainer(dependencies__.all.body())) {
+      ReactDOM.unmountComponentAtNode(mainContainer(dependencies__.all.body())!);
       logger.log("Unmounted previous features.");
     }
   } catch (e) {

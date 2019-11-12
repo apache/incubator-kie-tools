@@ -51,7 +51,7 @@ export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: stri
         )}
       />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }

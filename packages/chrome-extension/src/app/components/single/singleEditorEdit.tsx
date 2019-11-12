@@ -26,8 +26,6 @@ import { SingleEditorApp } from "./SingleEditorApp";
 import { Main } from "../common/Main";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependency } from "../../dependencies";
-import { Feature } from "../common/Feature";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
 
@@ -61,60 +59,49 @@ export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: s
       editorIndexPath={args.editorIndexPath}
       commonDependencies={dependencies__.singleEdit}
     >
-      <Feature
-        name={"Editable editor"}
-        dependencies={deps => ({
-          fileContents: () => deps.all.edit__githubTextAreaWithFileContents(),
-          iframeContainerTarget: () => deps.common.iframeContainerTarget(),
-          toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
-          githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
-        })}
-        component={resolved => (
-          <SingleEditorApp
-            readonly={false}
-            openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(resolved.fileContents as ResolvedDomDependency)}
-            iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
-            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
-            githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
-          />
-        )}
+      <SingleEditorApp
+        readonly={false}
+        openFileExtension={openFileExtension}
+        getFileContents={getFileContents}
+        iframeContainer={iframeContainer()}
+        toolbarContainer={toolbarContainer()}
+        githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
       />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
 function cleanup() {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer({ name: "", element: dependencies__.singleEdit.iframeContainerTarget()! }));
-  removeAllChildren(toolbarContainer({ name: "", element: dependencies__.singleEdit.toolbarContainerTarget()! }));
-  removeAllChildren(iframeFullscreenContainer({ name: "", element: dependencies__.all.body() }));
-  removeAllChildren(createAndGetMainContainer({ name: "", element: dependencies__.all.body() }));
+  removeAllChildren(iframeContainer());
+  removeAllChildren(toolbarContainer());
+  removeAllChildren(iframeFullscreenContainer(dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(dependencies__.all.body()));
 }
 
-function getFileContents(domDependency: ResolvedDomDependency) {
-  return Promise.resolve((domDependency.element as HTMLTextAreaElement).value);
+function getFileContents() {
+  return Promise.resolve(dependencies__.all.edit__githubTextAreaWithFileContents()!.value);
 }
 
-function toolbarContainer(domDependency: ResolvedDomDependency) {
+function toolbarContainer() {
   const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`;
   const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("beforeend", div);
+    dependencies__.singleEdit.toolbarContainerTarget()!.insertAdjacentHTML("beforeend", div);
   }
 
   return element();
 }
 
-function iframeContainer(domDependency: ResolvedDomDependency) {
+function iframeContainer() {
   const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
   const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("afterend", div);
+    dependencies__.singleEdit.iframeContainerTarget()!.insertAdjacentHTML("afterend", div);
   }
 
   return element();
