@@ -188,25 +188,6 @@ public class BaseViewPresenterUpdateTest {
     }
 
     @Test
-    public void showTag() throws Exception {
-        when(activeContextOptions.canShowTag()).thenReturn(true);
-        presenter.update();
-
-        verify(view).showTagFilter();
-        verify(activeContextManager).refresh();
-    }
-
-    @Test
-    public void hideTag() throws Exception {
-        when(activeContextOptions.canShowTag()).thenReturn(false);
-        presenter.update();
-
-        verify(view).hideTagFilter();
-        verify(activeContextManager,
-               never()).refresh();
-    }
-
-    @Test
     public void hideTagWhenActiveContentDoesNotExist() throws Exception {
         when(activeContextOptions.canShowTag()).thenReturn(false);
         presenter.update();

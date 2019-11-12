@@ -53,4 +53,6 @@ public interface StylesCss
     @ClassName("directory-name")
     String directory();
 
+    @ClassName("busy-indicator")
+    String busyIndicator();
 }

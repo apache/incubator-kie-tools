@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:navigator="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:tagselector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
-             xmlns:branches="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.branches"
+             xmlns:loading="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.loading"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
@@ -27,6 +27,7 @@
 
     <gwt:HTMLPanel visible="true">
         <div class="{resources.CSS.viewContainer}">
+            <loading:BusyIndicator ui:field="busyIndicator"/>
             <tagselector:TagSelector ui:field="tagSelector"/>
             <navigator:Explorer ui:field="explorer"/>
             <bootstrap:PanelGroup ui:field="itemsContainer"/>

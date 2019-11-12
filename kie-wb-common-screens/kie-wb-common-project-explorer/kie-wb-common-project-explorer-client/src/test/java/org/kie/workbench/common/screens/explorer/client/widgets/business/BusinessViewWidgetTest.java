@@ -18,20 +18,40 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.loading.BusyIndicator;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
+import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BusinessViewWidgetTest {
 
     @GwtMock
     Explorer explorer;
+
+    @GwtMock
+    TagSelector tagSelector;
+
+    @GwtMock
+    PanelGroup itemsContainer;
+
+    @GwtMock
+    BusyIndicator busyIndicator;
+
+    @GwtMock
+    BaseViewPresenter presenter;
 
     private BusinessViewWidget businessViewWidget;
 
@@ -40,8 +60,13 @@ public class BusinessViewWidgetTest {
         businessViewWidget = new BusinessViewWidget() {
             {
                 explorer = BusinessViewWidgetTest.this.explorer;
+                tagSelector = BusinessViewWidgetTest.this.tagSelector;
+                itemsContainer = BusinessViewWidgetTest.this.itemsContainer;
+                busyIndicator = BusinessViewWidgetTest.this.busyIndicator;
             }
         };
+
+        businessViewWidget.init(presenter);
     }
 
     @Test
@@ -70,5 +95,41 @@ public class BusinessViewWidgetTest {
         verify(explorer).hideHeaderNavigator();
         verify(explorer,
                never()).showHeaderNavigator();
+    }
+
+    @Test
+    public void hideContentTest() {
+        final String msg = "Loading";
+
+        businessViewWidget.showBusyIndicator(msg);
+
+        verify(busyIndicator).showBusyIndicator(msg);
+        verify(explorer).setVisible(false);
+        verify(itemsContainer).setVisible(false);
+        verify(tagSelector).hide();
+    }
+
+    @Test
+    public void showContentNoTagsTest() {
+        doReturn(false).when(presenter).canShowTags();
+
+        businessViewWidget.hideBusyIndicator();
+
+        verify(busyIndicator).hideBusyIndicator();
+        verify(tagSelector).hide();
+        verify(explorer).setVisible(true);
+        verify(itemsContainer).setVisible(true);
+    }
+
+    @Test
+    public void showContentWithTagsTest() {
+        doReturn(true).when(presenter).canShowTags();
+
+        businessViewWidget.hideBusyIndicator();
+
+        verify(busyIndicator).hideBusyIndicator();
+        verify(tagSelector).show();
+        verify(explorer).setVisible(true);
+        verify(itemsContainer).setVisible(true);
     }
 }

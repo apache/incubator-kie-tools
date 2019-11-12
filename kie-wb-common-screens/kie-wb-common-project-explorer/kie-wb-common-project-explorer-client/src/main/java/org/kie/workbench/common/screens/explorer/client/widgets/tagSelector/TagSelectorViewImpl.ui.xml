@@ -27,7 +27,7 @@
     }
   </ui:style>
 
-  <gwt:HTMLPanel>
+  <gwt:HTMLPanel visible="false">
     <b:Form type="INLINE">
       <b:FormLabel addStyleNames="{style.tagLabel}"><ui:text from="{i18n.filterByTag}"/></b:FormLabel>
       <b:ButtonGroup>

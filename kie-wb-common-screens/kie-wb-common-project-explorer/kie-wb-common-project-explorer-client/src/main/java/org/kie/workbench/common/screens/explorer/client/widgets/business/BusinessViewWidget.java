@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -53,6 +54,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
+import org.kie.workbench.common.screens.explorer.client.widgets.loading.BusyIndicator;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
@@ -60,11 +62,9 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.accordion.TriggerWidget;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 /**
  * Business View implementation
@@ -92,6 +92,8 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
         showItemLastUpdater(false);
     }};
     @UiField
+    BusyIndicator busyIndicator;
+    @UiField
     Explorer explorer;
     @UiField
     PanelGroup itemsContainer;
@@ -100,8 +102,6 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     TagSelector tagSelector;
     @Inject
     Classifier classifier;
-    @Inject
-    PlaceManager placeManager;
     @Inject
     User user;
     private Map<String, PanelCollapse> collapses = new HashMap<>();
@@ -301,11 +301,26 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
 
     @Override
     public void showBusyIndicator(final String message) {
-        BusyPopup.showMessage(message);
+        showContent(false);
+        busyIndicator.showBusyIndicator(message);
+
     }
 
     @Override
     public void hideBusyIndicator() {
-        BusyPopup.close();
+        showContent(true);
+        busyIndicator.hideBusyIndicator();
+    }
+
+    @Override
+    public void showContent(final boolean isVisible) {
+        if (isVisible && presenter.canShowTags()) {
+            tagSelector.show();
+        } else {
+            tagSelector.hide();
+        }
+
+        explorer.setVisible(isVisible);
+        itemsContainer.setVisible(isVisible);
     }
 }

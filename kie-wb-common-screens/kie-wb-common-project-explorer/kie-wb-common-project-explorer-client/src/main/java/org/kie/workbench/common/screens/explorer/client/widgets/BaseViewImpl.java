@@ -17,7 +17,6 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -56,4 +55,6 @@ public abstract class BaseViewImpl extends Composite implements View {
                           final CommandWithFileNameAndCommitMessage command ) {
         copyPopUpPresenter.show( path, validator, command );
     }
+
+    public abstract void showContent(final boolean isVisible);
 }

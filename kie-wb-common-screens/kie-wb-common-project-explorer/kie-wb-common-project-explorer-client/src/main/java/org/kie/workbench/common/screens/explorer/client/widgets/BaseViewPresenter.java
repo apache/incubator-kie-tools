@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -150,10 +151,8 @@ public abstract class BaseViewPresenter {
         }
 
         if (activeOptions.canShowTag()) {
-            baseView.showTagFilter();
             activeContextManager.refresh();
         } else {
-            baseView.hideTagFilter();
             if (activeContextItems.getActiveContent() != null) {
                 baseView.setItems(activeContextItems.getActiveContent());
             }
@@ -682,5 +681,9 @@ public abstract class BaseViewPresenter {
 
     CopyPopUpPresenter.View getCopyView() {
         return copyPopUpPresenter.getView();
+    }
+
+    public boolean canShowTags() {
+        return activeOptions.canShowTag();
     }
 }

@@ -112,3 +112,19 @@
 .navigator-icon-container i:hover {
     cursor: pointer;
 }
+
+.busy-indicator {
+    width: 300px;
+    margin: auto;
+}
+
+.busy-indicator span {
+    padding-left: 15px;
+    vertical-align: text-top;
+}
+
+@external .spinner;
+
+.busy-indicator .spinner {
+    margin-top: -3px;
+}

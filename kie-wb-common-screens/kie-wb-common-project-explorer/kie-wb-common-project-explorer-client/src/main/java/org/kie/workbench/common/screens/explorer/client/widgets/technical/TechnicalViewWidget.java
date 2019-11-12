@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -30,14 +31,13 @@ import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
+import org.kie.workbench.common.screens.explorer.client.widgets.loading.BusyIndicator;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 /**
  * Technical View implementation
@@ -64,12 +64,12 @@ public class TechnicalViewWidget
         showItemLastUpdater(false);
     }};
     @UiField
+    BusyIndicator busyIndicator;
+    @UiField
     Explorer explorer;
     @UiField(provided = true)
     @Inject
     TagSelector tagSelector;
-    @Inject
-    PlaceManager placeManager;
     private BaseViewPresenter presenter;
 
     @PostConstruct
@@ -147,12 +147,25 @@ public class TechnicalViewWidget
 
     @Override
     public void showBusyIndicator(final String message) {
-        BusyPopup.showMessage(message);
+        showContent(false);
+        busyIndicator.showBusyIndicator(message);
     }
 
     @Override
     public void hideBusyIndicator() {
-        BusyPopup.close();
+        showContent(true);
+        busyIndicator.hideBusyIndicator();
+    }
+
+    @Override
+    public void showContent(final boolean isVisible) {
+        if (isVisible && presenter.canShowTags()) {
+            tagSelector.show();
+        } else {
+            tagSelector.hide();
+        }
+
+        explorer.setVisible(isVisible);
     }
 
     @Override

@@ -18,17 +18,18 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:navigator="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
-             xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.branches"
+             xmlns:loading="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.loading"
              xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector">
 
     <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
     <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
   <gwt:HTMLPanel visible="false">
-        <div ui:field="technicalView">
-            <tagSelector:TagSelector ui:field="tagSelector"/>
-          <navigator:Explorer ui:field="explorer"/>
-        </div>
+    <div ui:field="technicalView" class="{resources.CSS.viewContainer}">
+        <loading:BusyIndicator ui:field="busyIndicator"/>
+        <tagSelector:TagSelector ui:field="tagSelector"/>
+        <navigator:Explorer ui:field="explorer"/>
+    </div>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>
