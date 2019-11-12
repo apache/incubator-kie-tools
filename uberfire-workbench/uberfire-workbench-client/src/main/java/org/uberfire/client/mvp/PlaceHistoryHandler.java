@@ -25,6 +25,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -87,8 +88,11 @@ public class PlaceHistoryHandler {
                     currentBookmarkableURLStatus.substring(0,
                                                            currentBookmarkableURLStatus.length() - 1);
         }
-        historian.newItem(currentBookmarkableURLStatus,
-                          false);
+        if (BusToolsCli.isRemoteCommunicationEnabled()) {
+            historian.newItem(currentBookmarkableURLStatus,
+                    false);
+        }
+
     }
 
     Logger log() {
