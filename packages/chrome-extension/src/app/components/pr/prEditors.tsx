@@ -35,21 +35,16 @@ export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: stri
   cleanup();
 
   ReactDOM.render(
-    <Main
-      router={args.router}
-      logger={args.logger}
-      editorIndexPath={args.editorIndexPath}
-      commonDependencies={dependencies__.prView}
-    >
-      <PrEditorsApp prInfo={parsePrInfo(dependencies__.all.array.pr__prInfoContainer()!)} />
+    <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
+      <PrEditorsApp prInfo={parsePrInfo()} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function parsePrInfo(prInfoContainer: HTMLElement[]): PrInformation {
-  const prInfos = prInfoContainer.map(e => e.textContent!);
+function parsePrInfo(): PrInformation {
+  const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];

@@ -36,10 +36,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   forwardedRef
 ) => {
   const ref = useRef<HTMLIFrameElement>(null);
-  const globalContext = useContext(GlobalContext);
-
-  const { router, editorIndexPath } = useContext(GlobalContext);
-
+  const { router, editorIndexPath, logger } = useContext(GlobalContext);
   const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
 
   const envelopeBusOuterMessageHandler = useMemo(
@@ -76,14 +73,14 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           },
           receive_setContentError() {
             //TODO: Display a nice message with explanation why "setContent" failed
-            globalContext.logger.log("Set content error");
+            logger.log("Set content error");
           },
           receive_dirtyIndicatorChange(isDirty: boolean) {
             //TODO: Perhaps show window.alert to warn that the changes were not saved?
-            globalContext.logger.log(`Dirty indicator changed to ${isDirty}`);
+            logger.log(`Dirty indicator changed to ${isDirty}`);
           },
           receive_ready() {
-            globalContext.logger.log(`Editor is ready`);
+            logger.log(`Editor is ready`);
             if (onEditorReady) {
               onEditorReady();
             }

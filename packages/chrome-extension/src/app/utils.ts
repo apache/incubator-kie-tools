@@ -15,7 +15,6 @@
  */
 
 import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
-import { ResolvedDomDependency } from "./dependencies";
 import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {

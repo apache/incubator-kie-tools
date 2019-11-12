@@ -66,12 +66,7 @@ export function renderSingleEditorReadonlyApp(args: {
   }
 
   ReactDOM.render(
-    <Main
-      router={args.router}
-      logger={args.logger}
-      editorIndexPath={args.editorIndexPath}
-      commonDependencies={dependencies__.singleView}
-    >
+    <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
       <SingleEditorViewApp fileInfo={args.info} openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()!),

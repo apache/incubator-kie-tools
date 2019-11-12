@@ -14,35 +14,6 @@
  * limitations under the License.
  */
 
-export type DomDependency = (...args: any[]) => HTMLElement | HTMLElement[] | null;
-
-export interface ResolvedDomDependency {
-  name: string;
-  element: HTMLElement;
-}
-
-export interface ResolvedDomDependencyArray {
-  name: string;
-  element: HTMLElement[];
-}
-
-export type AnyResolvedDomDependency = ResolvedDomDependency | ResolvedDomDependencyArray;
-
-export interface DomDependencyMap {
-  [k: string]: DomDependency;
-}
-
-export interface GlobalDomDependencies {
-  common: GlobalCommonDomDependencies;
-  all: typeof all;
-}
-
-export interface GlobalCommonDomDependencies {
-  iframeContainerTarget: DomDependency;
-  toolbarContainerTarget: DomDependency;
-  githubTextEditorToReplaceElement: DomDependency;
-}
-
 export const singleEdit = {
   iframeContainerTarget: () => {
     return document.querySelector(".file") as HTMLElement | null;
@@ -68,14 +39,14 @@ export const singleView = {
 };
 
 export const prView = {
-  iframeContainerTarget: (container: ResolvedDomDependency) => {
-    return container.element as HTMLElement | null;
+  iframeContainerTarget: (container: HTMLElement) => {
+    return container as HTMLElement | null;
   },
-  toolbarContainerTarget: (container: ResolvedDomDependency) => {
-    return container.element.querySelector(".file-info") as HTMLElement | null;
+  toolbarContainerTarget: (container: HTMLElement) => {
+    return container.querySelector(".file-info") as HTMLElement | null;
   },
-  githubTextEditorToReplaceElement: (container: ResolvedDomDependency) => {
-    return container.element.querySelector(".js-file-content") as HTMLElement | null;
+  githubTextEditorToReplaceElement: (container: HTMLElement) => {
+    return container.querySelector(".js-file-content") as HTMLElement | null;
   }
 };
 
@@ -94,15 +65,15 @@ export const all = {
   pr__mutationObserverTarget: () => {
     return document.getElementById("files") as HTMLElement | null;
   },
-  pr__viewOriginalFileLinkContainer: (container: ResolvedDomDependency) => {
-    return container.element.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
+  pr__viewOriginalFileLinkContainer: (container: HTMLElement) => {
+    return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
   },
   pr__unprocessedFilePathContainer: (container: HTMLElement) => {
     return container.querySelector(".file-info > .link-gray-dark") as HTMLAnchorElement | null;
   },
 
   array: {
-    supportedPrFileContainers: () => {
+    pr__supportedPrFileContainers: () => {
       const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
         e => e as HTMLElement
       );
@@ -115,17 +86,3 @@ export const all = {
     }
   }
 };
-
-export function dependenciesAllSatisfied(dependencies: DomDependencyMap) {
-  return (
-    Object.keys(dependencies)
-      .map(k => dependencies[k])
-      .filter(d => !!d()).length > 0
-  );
-}
-
-export function resolveDependencies<T extends DomDependencyMap>(deps: T) {
-  return Object.keys(deps).reduce((o, key) => ({ ...o, [key]: { name: key, element: deps[key]()! } }), {}) as {
-    [J in keyof T]: AnyResolvedDomDependency
-  };
-}

@@ -14,33 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  AnyResolvedDomDependency,
-  dependenciesAllSatisfied,
-  DomDependencyMap,
-  GlobalDomDependencies,
-  resolveDependencies
-} from "../../dependencies";
-import { DependencyList, EffectCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
-import { GlobalContext } from "./GlobalContext";
-
-export function useEffectWithDependencies<T extends DomDependencyMap>(
-  name: string,
-  dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<EffectCallback>,
-  effectDependencies: DependencyList
-) {
-  use(name, useEffect, dependenciesProducer, effect, effectDependencies);
-}
-
-export function useLayoutEffectWithDependencies<T extends DomDependencyMap>(
-  name: string,
-  dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<EffectCallback>,
-  effectDependencies: DependencyList
-) {
-  use(name, useLayoutEffect, dependenciesProducer, effect, effectDependencies);
-}
+import { DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
   const firstRender = useRef(true);
@@ -52,28 +26,6 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
       firstRender.current = false;
     }
   }, deps);
-}
-
-export function use<T extends DomDependencyMap>(
-  name: string,
-  useEffectFunction: typeof useEffect,
-  dependenciesProducer: (d: GlobalDomDependencies) => T,
-  effect: (resolvedDependencies: { [J in keyof T]: AnyResolvedDomDependency }) => ReturnType<React.EffectCallback>,
-  effectDependencies: React.DependencyList
-) {
-  const globalContext = useContext(GlobalContext);
-  const dependencies = dependenciesProducer(globalContext.dependencies);
-
-  useEffectFunction(() => {
-    if (dependenciesAllSatisfied(dependencies)) {
-      return effect(resolveDependencies(dependencies));
-    } else {
-      console.debug(`Could not use effect '${name}' because because its dependencies were not satisfied.`);
-      return () => {
-        /**/
-      };
-    }
-  }, effectDependencies);
 }
 
 export function useIsolatedEditorTogglingEffect(

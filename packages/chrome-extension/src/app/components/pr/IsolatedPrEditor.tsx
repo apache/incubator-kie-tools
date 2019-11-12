@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ResolvedDomDependency } from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import {
   useEffectAfterFirstRender,
@@ -25,7 +25,6 @@ import {
 } from "../common/customEffects";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
-import { Feature } from "../common/Feature";
 import * as ReactDOM from "react-dom";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditor } from "../common/IsolatedEditor";
@@ -35,6 +34,7 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
+import { GlobalContext } from "../common/GlobalContext";
 
 export interface PrInformation {
   repository: string;
@@ -46,9 +46,9 @@ export interface PrInformation {
 
 export function IsolatedPrEditor(props: {
   prInfo: PrInformation;
-  prFileContainer: ResolvedDomDependency;
+  prFileContainer: HTMLElement;
   fileExtension: string;
-  githubTextEditorToReplace: ResolvedDomDependency;
+  githubTextEditorToReplace: HTMLElement;
   unprocessedFilePath: string;
 }) {
   const [showOriginal, setShowOriginal] = useState(false);
@@ -60,11 +60,7 @@ export function IsolatedPrEditor(props: {
   const originalFilePath = getOriginalFilePath(props.unprocessedFilePath);
   const modifiedFilePath = getModifiedFilePath(props.unprocessedFilePath);
 
-  useIsolatedEditorTogglingEffect(
-    textMode,
-    iframeContainer(props.prFileContainer),
-    props.githubTextEditorToReplace.element
-  );
+  useIsolatedEditorTogglingEffect(textMode, iframeContainer(props.prFileContainer), props.githubTextEditorToReplace);
 
   useInitialAsyncCallEffect(
     () => discoverFileStatusOnPr(props.prInfo, originalFilePath, modifiedFilePath),
@@ -95,63 +91,49 @@ export function IsolatedPrEditor(props: {
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
 
+  const globalContext = useContext(GlobalContext);
+
   return (
     <IsolatedEditorContext.Provider
       value={{ textMode: textMode, fullscreen: false, onEditorReady: () => setEditorReady(true) }}
     >
-      {shouldAddLinkToOriginalFile && (
-        <Feature
-          name={"Link to original PR file"}
-          dependencies={deps => ({
-            container: () => deps.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)
-          })}
-          component={resolved =>
-            ReactDOM.createPortal(
-              <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
-                View original file
-              </a>,
-              viewOriginalFileLinkContainer(props.prFileContainer, resolved.container as ResolvedDomDependency)
-            )
-          }
-        />
+      {shouldAddLinkToOriginalFile &&
+        ReactDOM.createPortal(
+          <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
+            View original file
+          </a>,
+          viewOriginalFileLinkContainer(
+            props.prFileContainer,
+            dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+          )
+        )}
+
+      {ReactDOM.createPortal(
+        <PrToolbar
+          showOriginalChangesToggle={editorReady}
+          fileStatusOnPr={fileStatusOnPr}
+          textMode={textMode}
+          originalDiagram={showOriginal}
+          toggleOriginal={() => setShowOriginal(prev => !prev)}
+          closeDiagram={closeDiagram}
+          onSeeAsDiagram={() => setTextMode(false)}
+        />,
+        toolbarContainer(props.prFileContainer, dependencies__.prView.toolbarContainerTarget(
+          props.prFileContainer
+        ) as HTMLElement)
       )}
 
-      <Feature
-        name={"PR editor toolbar"}
-        dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.prFileContainer) })}
-        component={resolved =>
-          ReactDOM.createPortal(
-            <PrToolbar
-              showOriginalChangesToggle={editorReady}
-              fileStatusOnPr={fileStatusOnPr}
-              textMode={textMode}
-              originalDiagram={showOriginal}
-              toggleOriginal={() => setShowOriginal(prev => !prev)}
-              closeDiagram={closeDiagram}
-              onSeeAsDiagram={() => setTextMode(false)}
-            />,
-            toolbarContainer(props.prFileContainer, resolved.container as ResolvedDomDependency)
-          )
-        }
-      />
-
-      <Feature
-        name={`PR Editor for ${props.unprocessedFilePath}`}
-        dependencies={deps => ({ container: () => deps.common.iframeContainerTarget(props.prFileContainer) })}
-        component={resolved =>
-          ReactDOM.createPortal(
-            <IsolatedEditor
-              ref={isolatedEditorRef}
-              textMode={textMode}
-              getFileContents={getFileContents}
-              openFileExtension={props.fileExtension}
-              readonly={true}
-              keepRenderedEditorInTextMode={false}
-            />,
-            iframeContainer(resolved.container as ResolvedDomDependency)
-          )
-        }
-      />
+      {ReactDOM.createPortal(
+        <IsolatedEditor
+          ref={isolatedEditorRef}
+          textMode={textMode}
+          getFileContents={getFileContents}
+          openFileExtension={props.fileExtension}
+          readonly={true}
+          keepRenderedEditorInTextMode={false}
+        />,
+        iframeContainer(dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
+      )}
     </IsolatedEditorContext.Provider>
   );
 }
@@ -191,34 +173,34 @@ export function getModifiedFilePath(path: string) {
   }
 }
 
-function viewOriginalFileLinkContainer(prFileContainer: ResolvedDomDependency, container: ResolvedDomDependency) {
+function viewOriginalFileLinkContainer(prFileContainer: HTMLElement, container: HTMLElement) {
   const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.element.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
+  const element = () => prFileContainer.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
 
   if (!element()) {
-    container.element.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML("afterend", div);
   }
 
   return element()!;
 }
 
-function toolbarContainer(prFileContainer: ResolvedDomDependency, container: ResolvedDomDependency) {
+function toolbarContainer(prFileContainer: HTMLElement, container: HTMLElement) {
   const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.element.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
+  const element = () => prFileContainer.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
 
   if (!element()) {
-    container.element.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML("afterend", div);
   }
 
   return element()!;
 }
 
-function iframeContainer(container: ResolvedDomDependency) {
+function iframeContainer(container: HTMLElement) {
   const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => container.element.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
+  const element = () => container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
 
   if (!element()!) {
-    container.element.insertAdjacentHTML("beforeend", div);
+    container.insertAdjacentHTML("beforeend", div);
   }
 
   return element() as HTMLElement;
