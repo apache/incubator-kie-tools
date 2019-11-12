@@ -31,7 +31,7 @@ import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../c
 import { Logger } from "../../../Logger";
 import { GlobalContext } from "../common/GlobalContext";
 
-export interface Info {
+export interface FileInfo {
   repo: string;
   org: string;
   path: string;
@@ -41,7 +41,7 @@ export function renderSingleEditorReadonlyApp(args: {
   logger: Logger;
   editorIndexPath: string;
   router: Router;
-  info: Info;
+  info: FileInfo;
 }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
@@ -65,32 +65,6 @@ export function renderSingleEditorReadonlyApp(args: {
     return;
   }
 
-  function SingleEditor() {
-    const globalContext = useContext(GlobalContext);
-    const getFileContents = useCallback(() => {
-      return globalContext.octokit.repos
-        .getContents({
-          repo: args.info.repo,
-          owner: args.info.org,
-          path: args.info.path,
-          headers: { "cache-control": "no-cache" }
-        })
-        .then((response: any) => atob(response.data.content))
-        .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
-    }, []);
-
-    return (
-      <SingleEditorApp
-        readonly={true}
-        openFileExtension={openFileExtension!}
-        getFileContents={getFileContents}
-        iframeContainer={iframeContainer()}
-        toolbarContainer={toolbarContainer()}
-        githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
-      />
-    );
-  }
-
   ReactDOM.render(
     <Main
       router={args.router}
@@ -98,10 +72,36 @@ export function renderSingleEditorReadonlyApp(args: {
       editorIndexPath={args.editorIndexPath}
       commonDependencies={dependencies__.singleView}
     >
-      <SingleEditor />
+      <SingleEditorViewApp fileInfo={args.info} openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()!),
     () => args.logger.log("Mounted.")
+  );
+}
+
+function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
+  const globalContext = useContext(GlobalContext);
+  const getFileContents = useCallback(() => {
+    return globalContext.octokit.repos
+      .getContents({
+        repo: props.fileInfo.repo,
+        owner: props.fileInfo.org,
+        path: props.fileInfo.path,
+        headers: { "cache-control": "no-cache" }
+      })
+      .then((response: any) => atob(response.data.content))
+      .catch(e => fetch(dependencies__.all.view__rawUrlLink()!.href).then(res => res.text()));
+  }, []);
+
+  return (
+    <SingleEditorApp
+      readonly={true}
+      openFileExtension={props.openFileExtension}
+      getFileContents={getFileContents}
+      iframeContainer={iframeContainer()}
+      toolbarContainer={toolbarContainer()}
+      githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
+    />
   );
 }
 
