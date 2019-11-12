@@ -57,15 +57,17 @@ export function SingleEditorApp(props: {
     setTextModeEnabled(false);
   };
 
-  const IsolatedEditorComponent = (
-    <IsolatedEditor
-      getFileContents={props.getFileContents}
-      openFileExtension={props.openFileExtension}
-      textMode={textMode}
-      readonly={props.readonly}
-      keepRenderedEditorInTextMode={true}
-    />
-  );
+  function IsolatedEditorComponent() {
+    return (
+      <IsolatedEditor
+        getFileContents={props.getFileContents}
+        openFileExtension={props.openFileExtension}
+        textMode={textMode}
+        readonly={props.readonly}
+        keepRenderedEditorInTextMode={true}
+      />
+    );
+  }
 
   return (
     <>
@@ -78,7 +80,7 @@ export function SingleEditorApp(props: {
       >
         {!fullscreen && (
           <>
-            {ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
+            {ReactDOM.createPortal(<IsolatedEditorComponent />, props.iframeContainer)}
             {ReactDOM.createPortal(
               <SingleEditorToolbar
                 textMode={textMode}
@@ -99,7 +101,7 @@ export function SingleEditorApp(props: {
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
               iframeFullscreenContainer(dependencies__.all.body())
             )}
-            {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(dependencies__.all.body()))}
+            {ReactDOM.createPortal(<IsolatedEditorComponent />, iframeFullscreenContainer(dependencies__.all.body()))}
           </>
         )}
       </IsolatedEditorContext.Provider>

@@ -26,8 +26,6 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependencyArray } from "../../dependencies";
-import { Feature } from "../common/Feature";
 import { PrInformation } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
@@ -43,21 +41,15 @@ export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: stri
       editorIndexPath={args.editorIndexPath}
       commonDependencies={dependencies__.prView}
     >
-      <Feature
-        name={"Editors directly on PR screen"}
-        dependencies={deps => ({ prInfoContainer: () => deps.all.array.pr__prInfoContainer() })}
-        component={resolved => (
-          <PrEditorsApp prInfo={parsePrInfo(resolved.prInfoContainer as ResolvedDomDependencyArray)} />
-        )}
-      />
+      <PrEditorsApp prInfo={parsePrInfo(dependencies__.all.array.pr__prInfoContainer()!)} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function parsePrInfo(prInfoContainer: ResolvedDomDependencyArray): PrInformation {
-  const prInfos = prInfoContainer.element.map(e => e.textContent!);
+function parsePrInfo(prInfoContainer: HTMLElement[]): PrInformation {
+  const prInfos = prInfoContainer.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];
