@@ -177,7 +177,7 @@ public class CheatSheetViewImpl
                                                 + "<tt>time(\"14:10:00+02:00\")</tt>");
         dmnCheatSheetList4.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet13() + "</i>");
         dmnCheatSheetList5.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet14() + "</i>" + ScenarioSimulationEditorConstants.INSTANCE.forExample() +
-                                                " " + "<tt>{x : 5, y : 3}</tt>");
+                                                " " + "<tt>{x : 5, even : false, type : \"integer number\"}</tt>");
         dmnCheatSheetList6.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet15() + "</i>"
                                                 + " " + ScenarioSimulationEditorConstants.INSTANCE.and() + " " + "<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet16() + "</i>"
                                                 + ScenarioSimulationEditorConstants.INSTANCE.forExample() + " " + "<tt>[1 .. 10]</tt> or <tt>[2, 3, 4, 5]</tt>");
