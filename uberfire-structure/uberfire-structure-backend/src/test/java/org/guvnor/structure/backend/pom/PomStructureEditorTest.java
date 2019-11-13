@@ -36,6 +36,7 @@ public class PomStructureEditorTest {
     private PomStructureEditor editor;
     private Path tmpRoot, tmp;
     private final String POM = "pom.xml";
+    private static String fileSeparator = "/";
 
     @Before
     public void setUp() throws Exception {
@@ -48,16 +49,16 @@ public class PomStructureEditorTest {
     @Test
     public void onNEwDynamicDependencyEventTest() throws Exception {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
+        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + fileSeparator + POM))));
         assertThat(model.getDependencies()).hasSize(0);
 
         editor = new PomStructureEditor();
         AddPomDependencyEvent event = new AddPomDependencyEvent(DependencyType.JPA,
                                                                 PathFactory.newPath(tmp.getFileName().toString(),
-                                                                                    tmp.toUri().toString() + File.separator + POM));
+                                                                                    tmp.toUri().toString() + fileSeparator + POM));
         editor.onNewDynamicDependency(event);
 
-        model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
+        model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + fileSeparator + POM))));
         assertThat(model.getDependencies()).hasSize(1);
         Dependency dep = model.getDependencies().get(0);
         assertThat(dep.getGroupId()).containsOnlyOnce("javax.persistence");

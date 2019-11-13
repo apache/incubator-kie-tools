@@ -66,7 +66,7 @@ public class M2ServletContextListener implements ServletContextListener {
     private static final String LIB_FOLDER = "lib";
     private static final String JAR_ARTIFACT = "jar";
     private static final String JARS_FOLDER = File.separator + WEB_INF_FOLDER + File.separator + LIB_FOLDER + File.separator;
-    private static final String MAVEN_META_INF = "META-INF" + File.separator + "maven";
+    private static final String MAVEN_META_INF = "META-INF/maven";
     private final Path tempDir;
     private final FixNotMavenizedArtifactInfo fixNotMavenizedArtifact = new FixNotMavenizedArtifactInfo();
 

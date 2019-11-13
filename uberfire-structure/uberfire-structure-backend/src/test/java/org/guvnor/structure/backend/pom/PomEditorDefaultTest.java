@@ -38,6 +38,7 @@ public class PomEditorDefaultTest {
     private final String POM = "pom.xml";
     private PomEditor editor;
     private Path tmpRoot, tmp;
+    private static String fileSeparator = "/";
 
     @Before
     public void setUp() throws Exception {
@@ -62,16 +63,16 @@ public class PomEditorDefaultTest {
                                                             "",
                                                             "");
         boolean result = editor.addDependency(dep,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
     @Test
     public void addNullDepTest() {
         boolean result = editor.addDependency(null,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
@@ -82,8 +83,8 @@ public class PomEditorDefaultTest {
                                                             "4.12",
                                                             "");
         boolean result = editor.addDependency(dep,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
@@ -94,8 +95,8 @@ public class PomEditorDefaultTest {
                                                             "4.12",
                                                             "");
         boolean result = editor.addDependency(dep,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
@@ -106,8 +107,8 @@ public class PomEditorDefaultTest {
                                                             "4.12",
                                                             "");
         boolean result = editor.addDependency(dep,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isTrue();
     }
 
@@ -119,8 +120,8 @@ public class PomEditorDefaultTest {
                                                             "");
         List<DynamicPomDependency> deps = Arrays.asList(dep);
         boolean result = editor.addDependencies(deps,
-                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                    tmp.toUri().toString() + File.separator + POM));
+                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                    tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isTrue();
     }
 
@@ -131,8 +132,8 @@ public class PomEditorDefaultTest {
                                                             TestUtil.VERSION_ID_TEST,
                                                             "");
         boolean result = editor.addDependency(dep,
-                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                  tmp.toUri().toString() + File.separator + POM));
+                                              PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                  tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
@@ -148,12 +149,12 @@ public class PomEditorDefaultTest {
                                                             "");
         List<DynamicPomDependency> deps = Arrays.asList(dep);
         boolean result = editor.addDependencies(deps,
-                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                    tmp.toUri().toString() + File.separator + POM));
+                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                    tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isTrue();
 
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
+        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + fileSeparator + POM))));
         Dependency changedDep = getDependency(model.getDependencies(),
                                               "javax.persistence",
                                               "javax.persistence-api");
@@ -184,8 +185,8 @@ public class PomEditorDefaultTest {
                                                             "");
         List<DynamicPomDependency> deps = Arrays.asList(dep);
         boolean result = editor.addDependencies(deps,
-                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                    tmp.toUri().toString() + File.separator + POM));
+                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                    tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isFalse();
     }
 
@@ -206,12 +207,12 @@ public class PomEditorDefaultTest {
         List<DynamicPomDependency> deps = Arrays.asList(dep,
                                                         depTwo);
         boolean result = editor.addDependencies(deps,
-                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + File.separator + POM,
-                                                                    tmp.toUri().toString() + File.separator + POM));
+                                                PathFactory.newPath(tmp.toAbsolutePath().toString() + fileSeparator + POM,
+                                                                    tmp.toUri().toString() + fileSeparator + POM));
         assertThat(result).isTrue();
 
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
+        Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + fileSeparator + POM))));
         Dependency changedDep = getDependency(model.getDependencies(),
                                               "javax.persistence",
                                               "javax.persistence-api");

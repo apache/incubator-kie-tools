@@ -56,8 +56,12 @@ public class ArchiverTest {
             @Override
             public InputStream newInputStream(Path path,
                                               OpenOption... openOptions) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+                String resourcePath = path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length());
+                if (resourcePath.startsWith("\\")) {
+                    resourcePath = resourcePath.replaceAll("\\\\", "/");
+                }
                 return getClass().getResourceAsStream(
-                        path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length()));
+                        resourcePath);
             }
         });
 
