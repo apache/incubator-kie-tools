@@ -91,36 +91,6 @@ export function iframeFullscreenContainer(container: HTMLElement) {
   return element();
 }
 
-export function waitUntil(halt: () => boolean, times: { interval: number; timeout: number }) {
-  return new Promise((res, rej) => {
-    asyncLoop(halt, times.interval, times.timeout, new Date().getTime(), res, rej);
-  });
-}
-
-function asyncLoop(
-  halt: () => boolean,
-  interval: number,
-  timeout: number,
-  start: number,
-  onHalt: () => void,
-  onTimeout: (...args: any[]) => void
-) {
-  //timeout check
-  if (new Date().getTime() - start >= timeout) {
-    onTimeout("async loop timeout");
-    return;
-  }
-
-  //check condition
-  if (halt()) {
-    onHalt();
-    return;
-  }
-
-  //loop
-  setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
-}
-
 export function extractOpenFileExtension(url: string) {
   const splitLocationHref = url.split(".").pop();
   if (!splitLocationHref) {

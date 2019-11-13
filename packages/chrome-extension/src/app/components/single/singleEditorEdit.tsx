@@ -54,17 +54,23 @@ export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: s
 
   ReactDOM.render(
     <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
-      <SingleEditorApp
-        readonly={false}
-        openFileExtension={openFileExtension}
-        getFileContents={getFileContents}
-        iframeContainer={iframeContainer()}
-        toolbarContainer={toolbarContainer()}
-        githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
-      />
+      <SingleEditorViewApp openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()),
     () => args.logger.log("Mounted.")
+  );
+}
+
+function SingleEditorViewApp(props: { openFileExtension: string }) {
+  return (
+    <SingleEditorApp
+      readonly={false}
+      openFileExtension={props.openFileExtension}
+      getFileContents={getFileContents}
+      iframeContainer={iframeContainer()}
+      toolbarContainer={toolbarContainer()}
+      githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
+    />
   );
 }
 

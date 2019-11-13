@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
@@ -52,22 +52,25 @@ export function SingleEditorApp(props: {
 
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
-  const exitFullScreen = () => {
+
+  const IsolatedEditorComponent = (
+    <IsolatedEditor
+      getFileContents={props.getFileContents}
+      openFileExtension={props.openFileExtension}
+      textMode={textMode}
+      readonly={props.readonly}
+      keepRenderedEditorInTextMode={true}
+    />
+  );
+
+  const exitFullScreen = useCallback(() => {
     setFullscreen(false);
     setTextModeEnabled(false);
-  };
+  }, []);
 
-  function IsolatedEditorComponent() {
-    return (
-      <IsolatedEditor
-        getFileContents={props.getFileContents}
-        openFileExtension={props.openFileExtension}
-        textMode={textMode}
-        readonly={props.readonly}
-        keepRenderedEditorInTextMode={true}
-      />
-    );
-  }
+  const deactivateTextMode = useCallback(() => setTextMode(false), []);
+  const activateTextMode = useCallback(() => setTextMode(true), []);
+  const goFullScreen = useCallback(() => setFullscreen(true), []);
 
   return (
     <>
@@ -80,18 +83,18 @@ export function SingleEditorApp(props: {
       >
         {!fullscreen && (
           <>
-            {ReactDOM.createPortal(<IsolatedEditorComponent />, props.iframeContainer)}
             {ReactDOM.createPortal(
               <SingleEditorToolbar
                 textMode={textMode}
                 textModeEnabled={textModeEnabled}
-                onSeeAsDiagram={() => setTextMode(false)}
-                onSeeAsSource={() => setTextMode(true)}
-                onFullScreen={() => setFullscreen(true)}
+                onSeeAsDiagram={deactivateTextMode}
+                onSeeAsSource={activateTextMode}
+                onFullScreen={goFullScreen}
                 readonly={props.readonly}
               />,
               props.toolbarContainer
             )}
+            {ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
           </>
         )}
 
@@ -101,7 +104,7 @@ export function SingleEditorApp(props: {
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
               iframeFullscreenContainer(dependencies__.all.body())
             )}
-            {ReactDOM.createPortal(<IsolatedEditorComponent />, iframeFullscreenContainer(dependencies__.all.body()))}
+            {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(dependencies__.all.body()))}
           </>
         )}
       </IsolatedEditorContext.Provider>
