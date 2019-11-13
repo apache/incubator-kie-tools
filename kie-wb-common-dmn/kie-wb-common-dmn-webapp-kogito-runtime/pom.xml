@@ -193,12 +193,6 @@
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.workbench</groupId>
-          <artifactId>kie-wb-common-dmn-backend</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>

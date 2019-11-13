@@ -38,21 +38,26 @@ public class BindingPropertyConverter {
         if (Objects.isNull(dmn)) {
             return null;
         }
-        final InformationItem convertedParameter = InformationItemPropertyConverter.wbFromDMN(dmn.getParameter());
-        final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn.getExpression()));
-        final Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
-                                                                                     Js.uncheckedCast(dmn),
-                                                                                     hasComponentWidthsConsumer);
+        final InformationItem parameter = InformationItemPropertyConverter.wbFromDMN(dmn.getParameter());
+
+        Expression expression = null;
+        final JSITExpression jsiWrapped = dmn.getExpression();
+        if (Objects.nonNull(jsiWrapped)) {
+            final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiWrapped));
+            expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
+                                                               Js.uncheckedCast(dmn),
+                                                               hasComponentWidthsConsumer);
+        }
 
         final Binding result = new Binding();
-        if (Objects.nonNull(convertedParameter)) {
-            convertedParameter.setParent(result);
+        if (Objects.nonNull(parameter)) {
+            parameter.setParent(result);
         }
-        result.setParameter(convertedParameter);
-        if (Objects.nonNull(convertedExpression)) {
-            convertedExpression.setParent(result);
+        result.setParameter(parameter);
+        if (Objects.nonNull(expression)) {
+            expression.setParent(result);
         }
-        result.setExpression(convertedExpression);
+        result.setExpression(expression);
         return result;
     }
 

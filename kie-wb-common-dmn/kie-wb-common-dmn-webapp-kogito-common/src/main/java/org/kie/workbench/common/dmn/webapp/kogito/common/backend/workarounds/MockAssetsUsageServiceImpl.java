@@ -18,21 +18,17 @@ package org.kie.workbench.common.dmn.webapp.kogito.common.backend.workarounds;
 
 import java.util.List;
 
-import javax.enterprise.inject.Specializes;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.refactoring.backend.server.query.assetUsages.AssetsUsageServiceImpl;
+import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.backend.vfs.Path;
 
 @Service
-@Specializes
-public class MockAssetsUsageServiceImpl extends AssetsUsageServiceImpl {
-
-    public MockAssetsUsageServiceImpl() {
-        super(null, null);
-    }
+@ApplicationScoped
+public class MockAssetsUsageServiceImpl implements AssetsUsageService {
 
     @Override
     public List<Path> getAssetUsages(final String resourceFQN,

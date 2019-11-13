@@ -21,6 +21,7 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
@@ -50,7 +51,9 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
@@ -86,6 +89,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public abstract class BaseDMNDiagramEditorTest {
+
+    protected static final String ROOT = "default://master@system/stunner/diagrams";
 
     @Mock
     protected AbstractCanvasHandler canvasHandler;
@@ -215,16 +220,11 @@ public abstract class BaseDMNDiagramEditorTest {
     protected RefreshFormPropertiesEvent refreshFormPropertiesEvent;
 
     @Mock
-    protected Diagram diagram;
-
-    @Mock
-    protected Metadata metadata;
-
-    @Mock
     protected Path root;
 
-    @Mock
-    protected Path path;
+    protected Diagram diagram;
+
+    protected Metadata metadata;
 
     protected BaseDMNDiagramEditor editor;
 
@@ -233,6 +233,9 @@ public abstract class BaseDMNDiagramEditorTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        metadata = new MetadataImpl.MetadataImplBuilder(DMNDefinitionSet.class.getName()).setTitle("dmn").setRoot(root).build();
+        diagram = new DiagramImpl("dmn", metadata);
+
         sessionEditorPresenters = new ManagedInstanceStub<>(editorPresenter);
         sessionViewerPresenters = new ManagedInstanceStub<>(viewerPresenter);
         when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
@@ -244,6 +247,8 @@ public abstract class BaseDMNDiagramEditorTest {
         when(editorPresenter.displayNotifications(any())).thenReturn(editorPresenter);
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getExpressionEditor()).thenReturn(expressionEditor);
+
+        when(root.toURI()).thenReturn(ROOT);
 
         doAnswer((invocation) -> {
             final Diagram diagram = (Diagram) invocation.getArguments()[0];
@@ -351,11 +356,6 @@ public abstract class BaseDMNDiagramEditorTest {
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(editorPresenter.getInstance()).thenReturn(session);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getRoot()).thenReturn(root);
-        when(metadata.getPath()).thenReturn(path);
-        when(metadata.getTitle()).thenReturn("dmn");
-        when(root.toURI()).thenReturn("dmn-file");
 
         editor.open(diagram);
 

@@ -19,15 +19,13 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Specializes;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
-import org.kie.workbench.common.dmn.backend.editors.types.DataObjectsServiceImpl;
+import org.kie.workbench.common.dmn.api.editors.types.DataObjectsService;
 
-@Specializes
 @ApplicationScoped
-public class MockDataObjectsServiceImpl extends DataObjectsServiceImpl {
+public class MockDataObjectsServiceImpl implements DataObjectsService {
 
     @Override
     public List<DataObject> loadDataObjects(final WorkspaceProject workspaceProject) {

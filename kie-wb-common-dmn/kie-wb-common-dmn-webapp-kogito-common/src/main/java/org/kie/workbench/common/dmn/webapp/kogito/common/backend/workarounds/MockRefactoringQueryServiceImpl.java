@@ -19,19 +19,19 @@ package org.kie.workbench.common.dmn.webapp.kogito.common.backend.workarounds;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.Specializes;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.paging.PageResponse;
 
 @Service
-@Specializes
-public class MockRefactoringQueryServiceImpl extends RefactoringQueryServiceImpl {
+@ApplicationScoped
+public class MockRefactoringQueryServiceImpl implements RefactoringQueryService {
 
     @Override
     public int queryHitCount(final RefactoringPageRequest request) {

@@ -54,10 +54,16 @@ public class FunctionDefinitionPropertyConverter {
         final Id id = IdPropertyConverter.wbFromDMN(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
-        final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn.getExpression()));
-        final Expression expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
-                                                                            Js.uncheckedCast(dmn),
-                                                                            hasComponentWidthsConsumer);
+
+        Expression expression = null;
+        final JSITExpression jsiWrapped = dmn.getExpression();
+        if (Objects.nonNull(jsiWrapped)) {
+            final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiWrapped));
+            expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
+                                                               Js.uncheckedCast(dmn),
+                                                               hasComponentWidthsConsumer);
+        }
+
         final FunctionDefinition result = new FunctionDefinition(id,
                                                                  description,
                                                                  typeRef,

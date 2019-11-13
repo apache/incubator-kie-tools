@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import elemental2.promise.Promise;
 import jsinterop.base.Js;
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.factory.DMNDiagramFactory;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.DMNMarshalle
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.DMNMarshallerKogitoUnmarshaller;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.utils.JsonVerifier;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -55,7 +53,6 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
-import org.kie.workbench.common.stunner.kogito.api.service.KogitoDiagramService;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
@@ -71,13 +68,10 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
 
     private DMNMarshallerKogitoUnmarshaller dmnMarshallerKogitoUnmarshaller;
     private DMNMarshallerKogitoMarshaller dmnMarshallerKogitoMarshaller;
-    private Caller<KogitoDiagramService> kogitoDiagramServiceCaller;
     private FactoryManager factoryManager;
     private DefinitionManager definitionManager;
     private DMNDiagramFactory dmnDiagramFactory;
     private Promises promises;
-    // TODO {gcardosi} only for developing/debugging purpose - to be removed
-    private JSITDefinitions unmarshalledDefinitions;
 
     public DMNClientDiagramServiceImpl() {
         //CDI proxy
@@ -86,14 +80,12 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
     @Inject
     public DMNClientDiagramServiceImpl(final DMNMarshallerKogitoUnmarshaller dmnMarshallerKogitoUnmarshaller,
                                        final DMNMarshallerKogitoMarshaller dmnMarshallerKogitoMarshaller,
-                                       final Caller<KogitoDiagramService> kogitoDiagramServiceCaller,
                                        final FactoryManager factoryManager,
                                        final DefinitionManager definitionManager,
                                        final DMNDiagramFactory dmnDiagramFactory,
                                        final Promises promises) {
         this.dmnMarshallerKogitoUnmarshaller = dmnMarshallerKogitoUnmarshaller;
         this.dmnMarshallerKogitoMarshaller = dmnMarshallerKogitoMarshaller;
-        this.kogitoDiagramServiceCaller = kogitoDiagramServiceCaller;
         this.factoryManager = factoryManager;
         this.definitionManager = definitionManager;
         this.dmnDiagramFactory = dmnDiagramFactory;
@@ -115,7 +107,6 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
     private void doNewDiagram(final ServiceCallback<Diagram> callback) {
         final String title = UUID.uuid();
         final Metadata metadata = buildMetadataInstance();
-        metadata.setTitle(title);
 
         try {
             final String defSetId = BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class);
@@ -157,19 +148,16 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
 
             final DMN12UnmarshallCallback jsCallback = dmn12 -> {
                 final JSITDefinitions definitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
-                unmarshalledDefinitions = definitions;
                 final Graph graph = dmnMarshallerKogitoUnmarshaller.unmarshall(metadata, definitions);
                 final Node<Definition<DMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, DMNDiagram.class);
                 final String title = diagramNode.getContent().getDefinition().getDefinitions().getName().getValue();
-                metadata.setTitle(title);
-
                 final Diagram diagram = dmnDiagramFactory.build(title, metadata, graph);
                 updateClientShapeSetId(diagram);
 
                 callback.onSuccess(diagram);
             };
-            //TODO {gcardosi} retrieve correct "xmlns" namespace
-            MainJs.unmarshall(xml, "UNKNOWN", jsCallback);
+
+            MainJs.unmarshall(xml, "", jsCallback);
         } catch (Exception e) {
             GWT.log(e.getMessage(), e);
             callback.onError(new ClientRuntimeError(new DiagramParsingException(metadata, xml)));
@@ -179,45 +167,61 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
     @Override
     public Promise<String> transform(final KogitoDiagramResourceImpl resource) {
         if (resource.getType() == DiagramType.PROJECT_DIAGRAM) {
-            return promises.promisify(kogitoDiagramServiceCaller,
-                                      s -> {
-                                          resource.projectDiagram().ifPresent(diagram -> testClientSideMarshaller(diagram.getGraph()));
-                                          return s.transform(resource.projectDiagram().orElseThrow(() -> new IllegalStateException("DiagramType is PROJECT_DIAGRAM however no instance present")));
-                                      });
+            return promises.create((resolveCallbackFn, rejectCallbackFn) -> {
+                if (resource.projectDiagram().isPresent()) {
+                    final Diagram diagram = resource.projectDiagram().get();
+                    marshall(diagram,
+                             resolveCallbackFn,
+                             rejectCallbackFn);
+                } else {
+                    rejectCallbackFn.onInvoke(new IllegalStateException("DiagramType is PROJECT_DIAGRAM however no instance present"));
+                }
+            });
         }
         return promises.resolve(resource.xmlDiagram().orElse("DiagramType is XML_DIAGRAM however no instance present"));
     }
 
     @SuppressWarnings("unchecked")
-    private void testClientSideMarshaller(final Graph graph) {
+    private void marshall(final Diagram diagram,
+                          final Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> resolveCallbackFn,
+                          final Promise.PromiseExecutorCallbackFn.RejectCallbackFn rejectCallbackFn) {
+        if (Objects.isNull(diagram)) {
+            return;
+        }
+        final Graph graph = diagram.getGraph();
         if (Objects.isNull(graph)) {
             return;
         }
 
-        final DMN12MarshallCallback jsCallback = xml -> {
-            String breakpoint = xml;
-            if (!breakpoint.startsWith("<?xml version=\"1.0\" ?>")) {
-                breakpoint = "<?xml version=\"1.0\" ?>" + breakpoint;
+        final DMN12MarshallCallback jsCallback = result -> {
+            String xml = result;
+            if (!xml.startsWith("<?xml version=\"1.0\" ?>")) {
+                xml = "<?xml version=\"1.0\" ?>" + xml;
             }
+            resolveCallbackFn.onInvoke(xml);
         };
+
         try {
             final JSITDefinitions jsitDefinitions = dmnMarshallerKogitoMarshaller.marshall(graph);
-            final JSIName jsiName = JSITDefinitions.getJSIName();
-            jsiName.setPrefix("dmn");
-            jsiName.setLocalPart("definitions");
-            final String key = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getLocalPart();
-            jsiName.setKey(key);
-            final String keyString = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getPrefix() + ":" + jsiName.getLocalPart();
-            jsiName.setString(keyString);
-            if (!Objects.isNull(unmarshalledDefinitions)) {
-                JsonVerifier.compareJSITDefinitions(unmarshalledDefinitions, jsitDefinitions);
-            }
             final DMN12 dmn12 = Js.uncheckedCast(JsUtils.newWrappedInstance());
-            JsUtils.setNameOnWrapped(dmn12, jsiName);
+            JsUtils.setNameOnWrapped(dmn12, makeJSINameForDMN12());
             JsUtils.setValueOnWrapped(dmn12, jsitDefinitions);
+
             MainJs.marshall(dmn12, jsitDefinitions.getNamespace(), jsCallback);
         } catch (Exception e) {
             GWT.log(e.getMessage(), e);
+            rejectCallbackFn.onInvoke(e);
         }
+    }
+
+    private JSIName makeJSINameForDMN12() {
+        final org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName jsiName = JSITDefinitions.getJSIName();
+        jsiName.setPrefix("dmn");
+        jsiName.setLocalPart("definitions");
+        final String key = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getLocalPart();
+        final String keyString = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getPrefix() + ":" + jsiName.getLocalPart();
+        jsiName.setKey(key);
+        jsiName.setString(keyString);
+        return jsiName;
     }
 }

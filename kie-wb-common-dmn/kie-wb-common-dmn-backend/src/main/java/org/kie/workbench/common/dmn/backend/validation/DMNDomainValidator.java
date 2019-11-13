@@ -52,8 +52,6 @@ import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.Paths;
 
@@ -61,8 +59,6 @@ import org.uberfire.java.nio.file.Paths;
 public class DMNDomainValidator implements DomainValidator {
 
     static final String DEFAULT_UUID = "uuid";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DMNDomainValidator.class);
 
     private DMNValidator dmnValidator;
 
@@ -126,9 +122,6 @@ public class DMNDomainValidator implements DomainValidator {
                     .theseModels(dmnXMLReaders.toArray(aDMNXMLReaders));
 
             resultConsumer.accept(convert(messages));
-        } catch (IOException ioe) {
-            LOGGER.error("Error while converting diagram with UUID [" + diagram.getName() + "] to XML.",
-                         ioe);
         } finally {
             dmnXMLReaders.forEach(reader -> {
                 try {

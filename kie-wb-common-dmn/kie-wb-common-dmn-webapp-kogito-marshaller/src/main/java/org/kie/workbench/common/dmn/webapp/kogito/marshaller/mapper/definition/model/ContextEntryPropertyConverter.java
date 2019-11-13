@@ -36,10 +36,15 @@ public class ContextEntryPropertyConverter {
     public static ContextEntry wbFromDMN(final JSITContextEntry dmn,
                                          final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         final InformationItem variable = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
-        final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn.getExpression()));
-        final Expression expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
-                                                                            Js.uncheckedCast(dmn),
-                                                                            hasComponentWidthsConsumer);
+
+        Expression expression = null;
+        final JSITExpression jsiWrapped = dmn.getExpression();
+        if (Objects.nonNull(jsiWrapped)) {
+            final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiWrapped));
+            expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
+                                                               Js.uncheckedCast(dmn),
+                                                               hasComponentWidthsConsumer);
+        }
 
         final ContextEntry result = new ContextEntry();
         if (Objects.nonNull(variable)) {

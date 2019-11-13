@@ -102,10 +102,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
-      <artifactId>kie-wb-common-dmn-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-client</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -134,6 +130,10 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-m2repo-editor-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -190,10 +190,6 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-refactoring-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-refactoring-backend</artifactId>
     </dependency>
 
     <!-- Required by uberfire-project -->

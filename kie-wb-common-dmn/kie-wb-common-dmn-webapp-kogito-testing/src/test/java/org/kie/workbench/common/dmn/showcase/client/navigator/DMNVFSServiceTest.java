@@ -40,6 +40,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DMNVFSServiceTest {
 
+    private final String FILE_NAME = "fileName.dmn";
+
     private final String CONTENT = "xml-content-of-dmn-file";
 
     @Mock
@@ -74,6 +76,7 @@ public class DMNVFSServiceTest {
                                                vfsServiceCaller);
 
         when(vfsServiceCaller.call(any(RemoteCallback.class))).thenReturn(vfsService);
+        when(path.getFileName()).thenReturn(FILE_NAME);
     }
 
     @Test
@@ -83,7 +86,8 @@ public class DMNVFSServiceTest {
         verify(placeManager).goTo(placeRequestArgumentCaptor.capture());
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
-        assertThat(placeRequest.getParameters()).isEmpty();
+        assertThat(placeRequest.getParameters()).hasSize(1);
+        assertThat(placeRequest.getParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, "")).isNotBlank();
     }
 
     @Test
@@ -101,6 +105,8 @@ public class DMNVFSServiceTest {
         verify(placeManager).goTo(placeRequestArgumentCaptor.capture());
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
+        assertThat(placeRequest.getParameters()).hasSize(2);
+        assertThat(placeRequest.getParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, "")).isEqualTo(FILE_NAME);
         assertThat(placeRequest.getParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, "")).isEqualTo(CONTENT);
     }
 

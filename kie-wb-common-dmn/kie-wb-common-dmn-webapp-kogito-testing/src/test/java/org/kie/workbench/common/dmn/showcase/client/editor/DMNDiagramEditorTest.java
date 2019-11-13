@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
@@ -37,6 +38,8 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.URIUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -50,6 +53,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
+
+    private final String FILE_NAME = "file name.dmn";
 
     private final String CONTENT = "xml-content-of-dmn-file";
 
@@ -84,6 +89,9 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
 
     @Captor
     private ArgumentCaptor<ServiceCallback<String>> serviceCallbackArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Path> pathArgumentCaptor;
 
     @Override
     public void setup() {
@@ -137,6 +145,12 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
                                     clientDiagramService,
                                     vfsService,
                                     promises) {
+
+            @Override
+            protected PlaceRequest getPlaceRequest() {
+                return place;
+            }
+
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;
@@ -192,9 +206,13 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
 
         command.execute();
 
-        verify(vfsService).saveFile(eq(path),
+        verify(vfsService).saveFile(pathArgumentCaptor.capture(),
                                     eq(CONTENT),
                                     serviceCallbackArgumentCaptor.capture());
+
+        final Path path = pathArgumentCaptor.getValue();
+        assertThat(path).isNotNull();
+        assertThat(path).isEqualTo(metadata.getPath());
 
         final ServiceCallback<String> serviceCallback = serviceCallbackArgumentCaptor.getValue();
         assertThat(serviceCallback).isNotNull();
@@ -204,5 +222,17 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
         verify(editor).resetContentHash();
         verify(notificationEventSourceMock).fire(any(NotificationEvent.class));
         verify(view).hideBusyIndicator();
+    }
+
+    @Override
+    protected void openDiagram() {
+        place.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, FILE_NAME);
+
+        super.openDiagram();
+
+        final Path path = metadata.getPath();
+        assertThat(path).isNotNull();
+        assertThat(path.getFileName()).isEqualTo(FILE_NAME);
+        assertThat(path.toURI()).isEqualTo(ROOT + "/" + URIUtil.encode(FILE_NAME));
     }
 }

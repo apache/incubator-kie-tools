@@ -52,13 +52,18 @@ public class InvocationPropertyConverter {
         result.setDescription(description);
         result.setTypeRef(typeRef);
 
-        final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn.getExpression()));
-        final Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
-                                                                                     Js.uncheckedCast(dmn),
-                                                                                     hasComponentWidthsConsumer);
-        result.setExpression(convertedExpression);
-        if (Objects.nonNull(convertedExpression)) {
-            convertedExpression.setParent(result);
+        Expression expression = null;
+        final JSITExpression jsiWrapped = dmn.getExpression();
+        if (Objects.nonNull(jsiWrapped)) {
+            final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiWrapped));
+            expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
+                                                               Js.uncheckedCast(dmn),
+                                                               hasComponentWidthsConsumer);
+        }
+
+        result.setExpression(expression);
+        if (Objects.nonNull(expression)) {
+            expression.setParent(result);
         }
 
         final List<JSITBinding> jsiBindings = dmn.getBinding();

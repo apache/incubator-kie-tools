@@ -34,9 +34,9 @@ import org.kie.workbench.common.dmn.backend.editors.included.query.AllModelsValu
 import org.kie.workbench.common.dmn.backend.editors.included.query.PMMLValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueFileExtensionIndexTerm;
 import org.kie.workbench.common.dmn.backend.editors.types.query.DMNValueRepositoryRootIndexTerm;
-import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.uberfire.apache.commons.io.FilenameUtils;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -54,7 +54,7 @@ public class DMNPathsHelperImpl implements DMNPathsHelper {
 
     static final String STANDALONE_FILE_NAME = "diagrams";
 
-    private final RefactoringQueryServiceImpl refactoringQueryService;
+    private final RefactoringQueryService refactoringQueryService;
 
     private final DMNImportTypesHelper importTypesHelper;
 
@@ -65,7 +65,7 @@ public class DMNPathsHelperImpl implements DMNPathsHelper {
     }
 
     @Inject
-    public DMNPathsHelperImpl(final RefactoringQueryServiceImpl refactoringQueryService,
+    public DMNPathsHelperImpl(final RefactoringQueryService refactoringQueryService,
                               final DMNImportTypesHelper importTypesHelper,
                               final @Named("ioStrategy") IOService ioService) {
         this.refactoringQueryService = refactoringQueryService;

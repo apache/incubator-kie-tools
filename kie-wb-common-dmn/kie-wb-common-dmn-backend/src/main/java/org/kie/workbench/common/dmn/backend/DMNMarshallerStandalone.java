@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -38,7 +39,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
-import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.dmndi.Bounds;
@@ -174,19 +174,6 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
         this.knowledgeSourceConverter = new KnowledgeSourceConverter(factoryManager);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager);
         this.decisionServiceConverter = new DecisionServiceConverter(factoryManager);
-    }
-
-    @Deprecated
-    public Graph unmarshallFromStunnerJSON(final Metadata metadata,
-                                           final InputStream input) throws IOException {
-        Graph result = (Graph) ServerMarshalling.fromJSON(input);
-        return result;
-    }
-
-    @Deprecated
-    public String marshallFromStunnerToJSON(final Diagram<Graph, Metadata> diagram) throws IOException {
-        String result = ServerMarshalling.toJSON(diagram.getGraph());
-        return result;
     }
 
     private static Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> findDMNDiagram(final org.kie.dmn.model.api.Definitions dmnXml) {
@@ -423,18 +410,16 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
             //This condition is required because a node with ComponentsWidthsExtension
             //can be imported from another diagram but the extension is not imported or present in this diagram.
             if (componentsWidthsExtension.getComponentsWidths() != null) {
-                hasComponentWidthsMap.entrySet().forEach(es -> {
-                    componentsWidthsExtension
-                            .getComponentsWidths()
-                            .stream()
-                            .filter(componentWidths -> componentWidths.getDmnElementRef().getLocalPart().equals(es.getKey()))
-                            .findFirst()
-                            .ifPresent(componentWidths -> {
-                                final List<Double> widths = es.getValue().getComponentWidths();
-                                widths.clear();
-                                widths.addAll(componentWidths.getWidths());
-                            });
-                });
+                hasComponentWidthsMap.forEach((uuid, hasComponentWidths) -> componentsWidthsExtension
+                        .getComponentsWidths()
+                        .stream()
+                        .filter(componentWidths -> componentWidths.getDmnElementRef().getLocalPart().equals(uuid))
+                        .findFirst()
+                        .ifPresent(componentWidths -> {
+                            final List<Double> widths = hasComponentWidths.getComponentWidths();
+                            widths.clear();
+                            widths.addAll(componentWidths.getWidths());
+                        }));
             }
         });
 
@@ -449,11 +434,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
             return;
         }
 
-        drgElements.removeIf(element -> !dmnShapes.stream()
-                .filter(s -> Objects.equals(s.getDmnElementRef().getLocalPart(), element.getId()))
-                .findFirst()
-                .isPresent()
-        );
+        drgElements.removeIf(element -> dmnShapes.stream().noneMatch(s -> Objects.equals(s.getDmnElementRef().getLocalPart(), element.getId())));
     }
 
     void updateIDsWithAlias(final HashMap<String, String> indexByUri,
@@ -467,11 +448,9 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
         for (org.kie.dmn.model.api.DRGElement element : importedDrgElements) {
             final String namespaceAttribute = element.getAdditionalAttributes().getOrDefault(namespace, "");
-            if (!StringUtils.isEmpty(namespaceAttribute)) {
-                if (indexByUri.containsKey(namespaceAttribute)) {
-                    final String alias = indexByUri.get(namespaceAttribute);
-                    changeAlias(alias, element);
-                }
+            if (!StringUtils.isEmpty(namespaceAttribute) && indexByUri.containsKey(namespaceAttribute)) {
+                final String alias = indexByUri.get(namespaceAttribute);
+                changeAlias(alias, element);
             }
         }
     }
@@ -531,8 +510,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     Optional<org.kie.dmn.model.api.DRGElement> getReference(final List<org.kie.dmn.model.api.DRGElement> importedDRGElements,
                                                             final String dmnElementRef) {
-        final Optional<org.kie.dmn.model.api.DRGElement> element = importedDRGElements.stream().filter(drgElement -> dmnElementRef.equals(drgElement.getId())).findFirst();
-        return element;
+        return importedDRGElements.stream().filter(drgElement -> dmnElementRef.equals(drgElement.getId())).findFirst();
     }
 
     String getDmnElementRef(final DMNShape dmnShape) {
@@ -630,15 +608,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     Node setAllowOnlyVisualChange(final List<org.kie.dmn.model.api.DRGElement> importedDrgElements,
                                   final Node node) {
-
-        getDRGElement(node).ifPresent(drgElement -> {
-            if (isImportedDRGElement(importedDrgElements, drgElement)) {
-                drgElement.setAllowOnlyVisualChange(true);
-            } else {
-                drgElement.setAllowOnlyVisualChange(false);
-            }
-        });
-
+        getDRGElement(node).ifPresent(drgElement -> drgElement.setAllowOnlyVisualChange(isImportedDRGElement(importedDrgElements, drgElement)));
         return node;
     }
 
@@ -796,7 +766,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     @Override
     @SuppressWarnings("unchecked")
-    public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
+    public String marshall(final Diagram<Graph, Metadata> diagram) {
         final Graph<?, Node<View, ?>> g = diagram.getGraph();
 
         final Map<String, org.kie.dmn.model.api.DRGElement> nodes = new HashMap<>();
@@ -835,9 +805,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
         final ComponentsWidthsExtension componentsWidthsExtension = new ComponentsWidthsExtension();
         dmnDDDMNDiagram.getExtension().getAny().add(componentsWidthsExtension);
 
-        final Consumer<ComponentWidths> componentWidthsConsumer = (cw) -> {
-            componentsWidthsExtension.getComponentsWidths().add(cw);
-        };
+        final Consumer<ComponentWidths> componentWidthsConsumer = cw -> componentsWidthsExtension.getComponentsWidths().add(cw);
 
         //Iterate Graph processing nodes..
         for (Node<?, ?> node : g.nodes()) {
@@ -966,7 +934,8 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
         final Bound lrBound = lowerRightBound(content);
         if (content.getDefinition() instanceof Decision) {
             final Decision d = (Decision) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(),
+            internalAugment(drgShapeStream,
+                            d.getId(),
                             ulBound,
                             d.getDimensionsSet(),
                             lrBound,
@@ -1017,7 +986,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                             lrBound,
                             d.getBackgroundSet(),
                             d::setFontSet,
-                            (dividerLineY) -> d.setDividerLineY(new DecisionServiceDividerLineY(dividerLineY - ulBound.getY())));
+                            dividerLineY -> d.setDividerLineY(new DecisionServiceDividerLineY(dividerLineY - ulBound.getY())));
         }
     }
 
@@ -1036,7 +1005,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                         lrBound,
                         bgset,
                         fontSetSetter,
-                        (line) -> {/*NOP*/});
+                        line -> {/*NOP*/});
     }
 
     @SuppressWarnings("unchecked")
@@ -1047,7 +1016,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                                  final Bound lrBound,
                                  final BackgroundSet bgset,
                                  final Consumer<FontSet> fontSetSetter,
-                                 final Consumer<Double> decisionServiceDividerLineYSetter) {
+                                 final DoubleConsumer decisionServiceDividerLineYSetter) {
         final Optional<DMNShape> drgShapeOpt = drgShapeStream.filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id.getValue())).findFirst();
         if (!drgShapeOpt.isPresent()) {
             return;
@@ -1224,7 +1193,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                 throw new UnsupportedOperationException("Unsupported node type detected.");
             }
         }
-        throw new RuntimeException("wrong diagram structure to marshall");
+        throw new IllegalStateException("wrong diagram structure to marshall");
     }
 
     @Override

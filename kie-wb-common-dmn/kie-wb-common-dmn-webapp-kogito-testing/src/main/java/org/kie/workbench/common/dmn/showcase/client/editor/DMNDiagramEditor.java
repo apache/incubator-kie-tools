@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.editor;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
@@ -33,16 +35,19 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEv
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -54,6 +59,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
@@ -62,6 +68,7 @@ import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagra
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
@@ -72,6 +79,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.URIUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -83,6 +91,7 @@ import static org.uberfire.ext.editor.commons.client.resources.i18n.CommonConsta
 public class DMNDiagramEditor extends BaseDMNDiagramEditor {
 
     public static final String CONTENT_PARAMETER_NAME = "content";
+    public static final String FILE_NAME_PARAMETER_NAME = "fileName";
 
     private final Event<NotificationEvent> notificationEvent;
     private final DMNVFSService vfsService;
@@ -178,6 +187,37 @@ public class DMNDiagramEditor extends BaseDMNDiagramEditor {
     //AppFormer does not generate menus when the @WorkbenchMenu annotation is on the super class
     public void getMenus(final Consumer<Menus> menusConsumer) {
         super.getMenus(menusConsumer);
+    }
+
+    @Override
+    public void initialiseKieEditorForSession(final Diagram diagram) {
+        final String title = getPlaceRequest().getParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, "");
+        diagram.getMetadata().setTitle(title);
+
+        super.initialiseKieEditorForSession(diagram);
+    }
+
+    @Override
+    public void onDiagramLoad() {
+        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
+
+        canvasHandler.ifPresent(c -> {
+            final Metadata metadata = c.getDiagram().getMetadata();
+            metadata.setPath(makeMetadataPath(metadata));
+
+            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
+            expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
+            decisionNavigatorDock.setupCanvasHandler(c);
+            dataTypesPage.reload();
+            includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
+        });
+    }
+
+    private Path makeMetadataPath(final Metadata metadata) {
+        final Path root = metadata.getRoot();
+        final String fileName = metadata.getTitle();
+        final String uri = root.toURI();
+        return PathFactory.newPath(fileName, uri + "/" + URIUtil.encode(fileName));
     }
 
     @SuppressWarnings("unchecked")

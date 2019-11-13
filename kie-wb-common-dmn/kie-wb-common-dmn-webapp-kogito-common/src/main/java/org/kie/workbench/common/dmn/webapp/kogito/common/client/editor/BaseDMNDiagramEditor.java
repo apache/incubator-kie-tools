@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -45,7 +44,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -56,7 +54,6 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
@@ -65,8 +62,6 @@ import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocu
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
@@ -101,25 +96,25 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
     //Editor tabs: [0] Main editor, [1] Documentation, [2] Data-Types, [3] Imported Models
     public static final int DATA_TYPES_PAGE_INDEX = 2;
 
-    private final SessionManager sessionManager;
-    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    protected final SessionManager sessionManager;
+    protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
-    private final DecisionNavigatorDock decisionNavigatorDock;
-    private final DiagramEditorPropertiesDock diagramPropertiesDock;
-    private final PreviewDiagramDock diagramPreviewAndExplorerDock;
+    protected final DecisionNavigatorDock decisionNavigatorDock;
+    protected final DiagramEditorPropertiesDock diagramPropertiesDock;
+    protected final PreviewDiagramDock diagramPreviewAndExplorerDock;
 
-    private final LayoutHelper layoutHelper;
-    private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
+    protected final LayoutHelper layoutHelper;
+    protected final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
 
-    private final DataTypesPage dataTypesPage;
-    private final IncludedModelsPage includedModelsPage;
-    private final IncludedModelsPageStateProviderImpl importsPageProvider;
+    protected final DataTypesPage dataTypesPage;
+    protected final IncludedModelsPage includedModelsPage;
+    protected final IncludedModelsPageStateProviderImpl importsPageProvider;
 
-    private final DMNEditorSearchIndex editorSearchIndex;
-    private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
+    protected final DMNEditorSearchIndex editorSearchIndex;
+    protected final SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
-    private final KogitoClientDiagramService diagramServices;
+    protected final KogitoClientDiagramService diagramServices;
 
     public BaseDMNDiagramEditor(final View view,
                                 final FileMenuBuilder fileMenuBuilder,
@@ -275,28 +270,6 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
 
     void superOnClose() {
         super.doClose();
-    }
-
-    @Override
-    public void onDiagramLoad() {
-        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-
-        canvasHandler.ifPresent(c -> {
-            final Metadata metadata = c.getDiagram().getMetadata();
-            metadata.setPath(makeMetadataPath(metadata.getRoot(), metadata.getTitle()));
-
-            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
-            expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
-            decisionNavigatorDock.setupCanvasHandler(c);
-            dataTypesPage.reload();
-            includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
-        });
-    }
-
-    private Path makeMetadataPath(final Path root,
-                                  final String title) {
-        final String uri = root.toURI();
-        return PathFactory.newPath(title, uri + "/" + title + ".dmn");
     }
 
     @OnFocus

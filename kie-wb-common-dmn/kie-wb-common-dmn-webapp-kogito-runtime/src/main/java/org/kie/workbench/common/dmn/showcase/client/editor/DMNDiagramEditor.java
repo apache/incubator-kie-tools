@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.editor;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -23,6 +25,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
@@ -31,15 +34,18 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEv
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -128,6 +134,19 @@ public class DMNDiagramEditor extends BaseDMNDiagramEditor {
               includedModelsPage,
               importsPageProvider,
               diagramServices);
+    }
+
+    @Override
+    public void onDiagramLoad() {
+        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
+
+        canvasHandler.ifPresent(c -> {
+            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
+            expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
+            decisionNavigatorDock.setupCanvasHandler(c);
+            dataTypesPage.reload();
+            includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
+        });
     }
 
     @Override

@@ -80,10 +80,16 @@ public class DecisionConverter implements NodeConverter<JSITDecision, org.kie.wo
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());
         final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable(), dmn);
-        final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn.getExpression()));
-        final Expression expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
-                                                                            Js.uncheckedCast(dmn),
-                                                                            hasComponentWidthsConsumer);
+
+        Expression expression = null;
+        final JSITExpression jsiWrapped = dmn.getExpression();
+        if (Objects.nonNull(jsiWrapped)) {
+            final JSITExpression jsiExpression = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiWrapped));
+            expression = ExpressionPropertyConverter.wbFromDMN(jsiExpression,
+                                                               Js.uncheckedCast(dmn),
+                                                               hasComponentWidthsConsumer);
+        }
+
         final Decision decision = new Decision(id,
                                                description,
                                                name,

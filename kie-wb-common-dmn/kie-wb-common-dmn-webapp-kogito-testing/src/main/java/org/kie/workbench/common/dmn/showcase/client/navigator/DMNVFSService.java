@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.uuid.UUID;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -47,12 +48,14 @@ public class DMNVFSService {
 
     public void newFile() {
         final PlaceRequest placeRequest = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+        placeRequest.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, UUID.uuid() + ".dmn");
         placeManager.goTo(placeRequest);
     }
 
     public void openFile(final Path path) {
         vfsServiceCaller.call((String xml) -> {
             final PlaceRequest placeRequest = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+            placeRequest.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, path.getFileName());
             placeRequest.addParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, xml);
             placeManager.goTo(placeRequest);
         }).readAllString(path);
