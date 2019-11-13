@@ -58,55 +58,49 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
-        include: [
-          path.resolve(__dirname, "src"), 
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")
-        ],
+        include: [path.resolve(__dirname, "src"), path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")],
         use: ["style-loader", "css-loader", "sass-loader"]
       },
       {
         test: /\.css$/,
-        include: [
-          path.resolve(__dirname, "src"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")
-        ],
+        include: [path.resolve(__dirname, "src"), path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")],
         use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(woff)$/,
         include: [
           path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText"),
+          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
         ],
         use: {
-          loader: 'file-loader',
+          loader: "file-loader",
           options: {
             limit: 244,
-            outputPath: 'fonts',
-            name: '[name].[ext]',
+            outputPath: "fonts",
+            name: "[name].[ext]"
           }
         }
       },
       {
         test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,
-        loader: 'null-loader',
+        loader: "null-loader"
       },
       {
         test: /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/,
-        loader: 'null-loader',
+        loader: "null-loader"
       },
       {
         test: /pficon\.(woff2?|ttf|eot|otf|svg)/,
-        loader: 'null-loader',
+        loader: "null-loader"
       },
       {
         test: /fa-solid-900\.(woff2?|ttf|eot|otf|svg)/,
-        loader: 'null-loader',
+        loader: "null-loader"
       },
       {
         test: /pfbg_.*\.jpg$/,
-        loader: 'null-loader',
-      },
+        loader: "null-loader"
+      }
     ]
   },
   resolve: {

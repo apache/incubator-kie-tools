@@ -65,8 +65,6 @@ module.exports = async (env, argv) => {
     devServer: {
       contentBase: [path.join(__dirname, "..", "kie-bc-editors-unpacked")],
       compress: true,
-      hot: false,
-      liveReload: false,
       watchContentBase: true,
       https: true,
       port: 9000

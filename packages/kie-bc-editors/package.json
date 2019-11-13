@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.2.4",
-    "@kogito-tooling/microeditor-envelope": "0.2.4",
-    "prettify-xml": "1.2.0"
+    "@kogito-tooling/microeditor-envelope": "0.2.4"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -26,8 +25,8 @@
   },
   "babel": {
     "presets": [
-      "env",
-      "react"
+      "@babel/env",
+      "@babel/react"
     ]
   },
   "jest-junit": {
