@@ -44,6 +44,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
 import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree.Type;
 
 @ApplicationScoped
@@ -53,11 +54,11 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
     protected DMNTypeService dmnTypeService;
 
     @Override
-    public Simulation createSimulation(Path context, String dmnFilePath) throws Exception {
+    public Simulation createSimulation(Path context, String dmnFilePath) {
         final FactModelTuple factModelTuple = getFactModelTuple(context, dmnFilePath);
         Simulation toReturn = new Simulation();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, ScenarioWithIndex.class);
+        ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, ScenarioWithIndex::new);
 
         AtomicInteger id = new AtomicInteger(1);
         final Collection<FactModelTree> visibleFactTrees = factModelTuple.getVisibleFacts().values();
@@ -66,7 +67,8 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
         visibleFactTrees.stream().sorted((a, b) -> {
             Type aType = a.getType();
             Type bType = b.getType();
-            return aType.equals(bType) ? 0 : (Type.INPUT.equals(aType) ? -1 : 1);
+            int inputFirstOrder = Type.INPUT.equals(aType) ? -1 : 1;
+            return aType.equals(bType) ? 0 : inputFirstOrder;
         }).forEach(factModelTree -> {
             FactIdentifier factIdentifier = new FactIdentifier(factModelTree.getFactName(), factModelTree.getFactName());
             FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier, scenarioWithIndex.getIndex(), id, convert(factModelTree.getType()), simulationDescriptor, scenarioWithIndex.getScesimData());
@@ -79,7 +81,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
     }
 
     @Override
-    public Settings createSettings(Path context, String dmnFilePath) throws Exception {
+    public Settings createSettings(Path context, String dmnFilePath) {
         Settings toReturn = new Settings();
         toReturn.setType(ScenarioSimulationModel.Type.DMN);
         toReturn.setDmnFilePath(dmnFilePath);
@@ -137,14 +139,14 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
     }
 
     // Indirection for test
-    protected FactModelTuple getFactModelTuple(Path context, String dmnFilePath) throws Exception {
+    protected FactModelTuple getFactModelTuple(Path context, String dmnFilePath) {
         return dmnTypeService.retrieveFactModelTuple(context, dmnFilePath);
     }
 
     protected void addFactMapping(FactMappingExtractor factMappingExtractor,
-                                 FactModelTree factModelTree,
-                                 List<String> previousSteps,
-                                 Map<String, FactModelTree> hiddenValues) {
+                                  FactModelTree factModelTree,
+                                  List<String> previousSteps,
+                                  Map<String, FactModelTree> hiddenValues) {
         internalAddToScenario(factMappingExtractor,
                               factModelTree,
                               previousSteps,
@@ -162,8 +164,8 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
         // if is a simple type it generates a single column
         if (factModelTree.isSimple()) {
 
-            String factType = factModelTree.getSimpleProperties().get("value");
-            factMappingExtractor.getFactMapping(factModelTree, "value", previousSteps, factType);
+            String factType = factModelTree.getSimpleProperties().get(VALUE);
+            factMappingExtractor.getFactMapping(factModelTree, VALUE, previousSteps, factType);
         }
         // otherwise it adds a column for each simple properties direct or nested
         else {
@@ -216,7 +218,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
 
         public FactMapping getFactMapping(FactModelTree factModelTree, String propertyName, List<String> previousSteps, String factType) {
 
-            String factAlias = previousSteps.size() > 0 ? previousSteps.get(0) : factModelTree.getFactName();
+            String factAlias = !previousSteps.isEmpty() ? previousSteps.get(0) : factModelTree.getFactName();
 
             ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create(row + "|" + id.getAndIncrement(), type);
             final FactMapping factMapping = simulationDescriptor.addFactMapping(factAlias, factIdentifier, expressionIdentifier);
@@ -228,7 +230,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
                                                          localPreviousStep.subList(1, localPreviousStep.size()) :
                                                          localPreviousStep);
             factMapping.setExpressionAlias(expressionAlias);
-            factMapping.setGenericTypes(factModelTree.getGenericTypeInfo("value"));
+            factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(VALUE));
 
             previousSteps.forEach(step -> factMapping.addExpressionElement(step, factType));
 
@@ -241,7 +243,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
         }
     }
 
-    static private FactMappingType convert(Type modelTreeType) {
+    private static FactMappingType convert(Type modelTreeType) {
         switch (modelTreeType) {
             case INPUT:
                 return GIVEN;

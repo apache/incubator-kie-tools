@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -30,6 +31,7 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.AbstractScenarioRunner;
 import org.drools.scenariosimulation.backend.runner.ScenarioRunnerProvider;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.guvnor.common.services.shared.test.Failure;
@@ -66,7 +68,8 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
                                                entry.getKey(),
                                                simulation.getScesimModelDescriptor(),
                                                simulation.getScenarioWithIndex(),
-                                               settings)
+                                               settings,
+                                               entry.getValue().getBackground())
                                                .getTestResultMessage());
             }
         }
@@ -79,10 +82,12 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
                                        final Path path,
                                        final ScesimModelDescriptor simulationDescriptor,
                                        final List<ScenarioWithIndex> scenarios,
-                                       final Settings settings) {
+                                       final Settings settings,
+                                       final Background background) {
         final KieContainer kieContainer = getKieContainer(path);
-        final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor, settings.getType())
-                .create(kieContainer, simulationDescriptor, scenarios, settings);
+        final ScenarioRunnerDTO scenarioRunnerDTO = new ScenarioRunnerDTO(simulationDescriptor, scenarios, null, settings, background);
+        final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(settings.getType())
+                .create(kieContainer, scenarioRunnerDTO);
 
         final List<Failure> failures = new ArrayList<>();
 
@@ -91,6 +96,7 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
         final Result result = runWithJunit(path, scenarioRunner, failures, failureDetails);
 
         return new SimulationRunResult(scenarios,
+                                       background.getBackgroundDataWithIndex(),
                                        scenarioRunner.getLastRunResultMetadata()
                                                .orElseThrow(() -> new IllegalStateException("SimulationRunMetadata should be available after a run")),
                                        new TestResultMessage(
@@ -100,7 +106,7 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
                                                failures));
     }
 
-    public ScenarioRunnerProvider getOrCreateRunnerSupplier(ScesimModelDescriptor simulationDescriptor, ScenarioSimulationModel.Type type) {
+    public ScenarioRunnerProvider getOrCreateRunnerSupplier(ScenarioSimulationModel.Type type) {
         if (runnerSupplier != null) {
             return runnerSupplier;
         }

@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.List;
 
+import org.drools.scenariosimulation.api.model.BackgroundDataWithIndex;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -30,6 +31,8 @@ public class SimulationRunResult {
 
     protected List<ScenarioWithIndex> scenarioWithIndex;
 
+    protected List<BackgroundDataWithIndex> backgroundDataWithIndex;
+
     protected SimulationRunMetadata simulationRunMetadata;
 
     private TestResultMessage testResultMessage;
@@ -39,15 +42,21 @@ public class SimulationRunResult {
     }
 
     public SimulationRunResult(List<ScenarioWithIndex> scenarioWithIndex,
+                               List<BackgroundDataWithIndex> backgroundDataWithIndex,
                                SimulationRunMetadata simulationRunMetadata,
                                TestResultMessage testResultMessage) {
         this.scenarioWithIndex = scenarioWithIndex;
+        this.backgroundDataWithIndex = backgroundDataWithIndex;
         this.simulationRunMetadata = simulationRunMetadata;
         this.testResultMessage = testResultMessage;
     }
 
     public List<ScenarioWithIndex> getScenarioWithIndex() {
         return scenarioWithIndex;
+    }
+
+    public List<BackgroundDataWithIndex> getBackgroundDataWithIndex() {
+        return backgroundDataWithIndex;
     }
 
     public SimulationRunMetadata getSimulationRunMetadata() {

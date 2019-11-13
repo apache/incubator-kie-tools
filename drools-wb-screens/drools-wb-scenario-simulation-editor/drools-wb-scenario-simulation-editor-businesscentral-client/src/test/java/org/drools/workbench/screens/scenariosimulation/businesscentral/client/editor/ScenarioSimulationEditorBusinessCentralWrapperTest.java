@@ -276,9 +276,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         scenarioWithIndexLocal.add(new ScenarioWithIndex(3, new Scenario()));
         RemoteCallback<SimulationRunResult> remoteCallback = mock(RemoteCallback.class);
         ScenarioSimulationHasBusyIndicatorDefaultErrorCallback errorCallback = mock(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class);
-        scenarioSimulationEditorBusinessClientWrapper.onRunScenario(remoteCallback, errorCallback, simulationDescriptorMock, settingsLocal, scenarioWithIndexLocal);
+        scenarioSimulationEditorBusinessClientWrapper.onRunScenario(remoteCallback, errorCallback, simulationDescriptorMock, settingsLocal, scenarioWithIndexLocal, backgroundLocal);
         verify(scenarioSimulationCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
-        verify(scenarioSimulationServiceMock, times(1)).runScenario(eq(observablePathMock), eq(simulationDescriptorMock), eq(scenarioWithIndexLocal), eq(settingsLocal));
+        verify(scenarioSimulationServiceMock, times(1)).runScenario(eq(observablePathMock), eq(simulationDescriptorMock), eq(scenarioWithIndexLocal), eq(settingsLocal), eq(backgroundLocal));
     }
 
     @Test

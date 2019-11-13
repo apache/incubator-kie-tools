@@ -324,14 +324,16 @@ public class ScenarioSimulationServiceImplTest {
         final Path path = mock(Path.class);
         Simulation simulation = new Simulation();
         Settings settings = new Settings();
+        Background background = new Background();
 
-        service.runScenario(path, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), settings);
+        service.runScenario(path, simulation.getScesimModelDescriptor(), simulation.getScenarioWithIndex(), settings, background);
 
         verify(scenarioRunnerServiceMock).runTest("test userMock",
                                                   path,
                                                   simulation.getScesimModelDescriptor(),
                                                   simulation.getScenarioWithIndex(),
-                                                  settings);
+                                                  settings,
+                                                  background);
     }
 
     @Test

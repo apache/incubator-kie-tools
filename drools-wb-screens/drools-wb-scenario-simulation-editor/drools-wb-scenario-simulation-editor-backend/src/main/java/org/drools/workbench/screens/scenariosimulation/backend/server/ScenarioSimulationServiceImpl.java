@@ -31,6 +31,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -151,12 +152,14 @@ public class ScenarioSimulationServiceImpl
     public SimulationRunResult runScenario(final Path path,
                                            final ScesimModelDescriptor simulationDescriptor,
                                            final List<ScenarioWithIndex> scenarios,
-                                           final Settings settings) {
+                                           final Settings settings,
+                                           final Background background) {
         return scenarioRunnerService.runTest(user.getIdentifier(),
                                              path,
                                              simulationDescriptor,
                                              scenarios,
-                                             settings);
+                                             settings,
+                                             background);
     }
 
     @Override

@@ -25,6 +25,8 @@ import java.util.function.Supplier;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.scenariosimulation.api.model.BackgroundData;
+import org.drools.scenariosimulation.api.model.BackgroundDataWithIndex;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -184,6 +186,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(contextMock.getStatus()).thenReturn(statusMock);
         when(contextMock.getSettings()).thenReturn(scenarioSimulationContextLocal.getSettings());
         when(statusMock.getSimulation()).thenReturn(simulationMock);
+        when(statusMock.getBackground()).thenReturn(backgroundMock);
         when(simulationMock.getUnmodifiableData()).thenReturn(Arrays.asList(new Scenario()));
         when(testRunnerReportingPanelMock.asWidget()).thenReturn(testRunnerReportingPanelWidgetMock);
 
@@ -380,9 +383,11 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenter.init(scenarioSimulationEditorWrapperMock, observablePathMock);
         presenter.onRunScenario(indexList);
         verify(scenarioGridWidgetSpy, times(1)).resetErrors();
+        verify(backgroundGridWidgetSpy, times(1)).resetErrors();
         verify(scenarioSimulationModelMock, times(1)).setSimulation(simulationMock);
+        verify(scenarioSimulationModelMock, times(1)).setBackground(backgroundMock);
         verify(scenarioSimulationViewMock, times(1)).showBusyIndicator(anyString());
-        verify(scenarioSimulationEditorWrapperMock, times(1)).onRunScenario(any(), any(), any(), eq(settingsLocal), scenarioWithIndexCaptor.capture());
+        verify(scenarioSimulationEditorWrapperMock, times(1)).onRunScenario(any(), any(), any(), eq(settingsLocal), scenarioWithIndexCaptor.capture(), any());
 
         List<ScenarioWithIndex> capturedValue = scenarioWithIndexCaptor.getValue();
         assertEquals(2, capturedValue.size());
@@ -614,19 +619,30 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Test
     public void refreshModelContent() {
         when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationMock);
-        List<ScenarioWithIndex> entries = new ArrayList<>();
+        List<ScenarioWithIndex> scenarioWithIndex = new ArrayList<>();
         int scenarioNumber = 1;
         int scenarioIndex = scenarioNumber - 1;
         Scenario scenario = mock(Scenario.class);
-        entries.add(new ScenarioWithIndex(scenarioNumber, scenario));
+        scenarioWithIndex.add(new ScenarioWithIndex(scenarioNumber, scenario));
+
+        List<BackgroundDataWithIndex> backgroundDataWithIndex = new ArrayList<>();
+        BackgroundData backgroundData = mock(BackgroundData.class);
+        backgroundDataWithIndex.add(new BackgroundDataWithIndex(scenarioNumber, backgroundData));
 
         assertNull(presenter.lastRunResult);
         TestResultMessage testResultMessage = mock(TestResultMessage.class);
-        presenter.refreshModelContent(new SimulationRunResult(entries, new SimulationRunMetadata(), testResultMessage));
+        presenter.refreshModelContent(new SimulationRunResult(scenarioWithIndex, backgroundDataWithIndex, new SimulationRunMetadata(), testResultMessage));
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
+
         verify(simulationMock, times(1)).replaceData(eq(scenarioIndex), eq(scenario));
-        assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioGridWidgetSpy, times(1)).refreshContent(eq(simulationMock));
+        verify(statusMock, times(1)).setSimulation(eq(simulationMock));
+
+        verify(backgroundMock, times(1)).replaceData(eq(scenarioIndex), eq(backgroundData));
+        verify(backgroundGridWidgetSpy, times(1)).refreshContent(eq(backgroundMock));
+        verify(statusMock, times(1)).setBackground(eq(backgroundMock));
+
+        assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioSimulationDocksHandlerMock, times(1)).expandTestResultsDock();
         verify(dataManagementStrategyMock, times(1)).setModel(eq(scenarioSimulationModelMock));
         verify(testRunnerReportingPanelMock, times(1)).onTestRun(eq(testResultMessage));

@@ -23,7 +23,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
+import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
+import static org.drools.scenariosimulation.api.model.FactMappingType.OTHER;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class RULESimulationSettingsCreationStrategyTest {
 
@@ -42,6 +46,10 @@ public class RULESimulationSettingsCreationStrategyTest {
     public void createBackground() throws Exception {
         final Background retrieved = ruleSimulationSettingsCreationStrategy.createBackground(pathMock, value);
         assertNotNull(retrieved);
+        assertFalse(retrieved.getScesimModelDescriptor().getUnmodifiableFactMappings().stream()
+                            .anyMatch(elem -> OTHER.equals(elem.getExpressionIdentifier().getType())));
+        assertTrue(retrieved.getScesimModelDescriptor().getUnmodifiableFactMappings().stream()
+                           .allMatch(elem -> GIVEN.equals(elem.getExpressionIdentifier().getType())));
     }
 
     @Test

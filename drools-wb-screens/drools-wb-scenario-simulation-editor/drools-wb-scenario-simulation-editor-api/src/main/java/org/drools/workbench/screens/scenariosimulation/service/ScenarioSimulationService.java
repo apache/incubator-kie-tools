@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.service;
 
 import java.util.List;
 
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -49,7 +50,8 @@ public interface ScenarioSimulationService
     SimulationRunResult runScenario(Path path,
                                     ScesimModelDescriptor simulationDescriptor,
                                     List<ScenarioWithIndex> scenarios,
-                                    Settings settings);
+                                    Settings settings,
+                                    Background background);
 
     Path create(final Path context,
                 final String fileName,

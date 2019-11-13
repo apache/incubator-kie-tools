@@ -33,7 +33,7 @@ public class ScenarioSimulationBuilder {
     @Inject
     protected DMNSimulationSettingsCreationStrategy dmnSimulationCreationStrategy;
 
-    public Simulation createSimulation(Path context, ScenarioSimulationModel.Type type, String value) throws Exception {
+    public Simulation createSimulation(Path context, ScenarioSimulationModel.Type type, String value) {
         switch (type) {
             case RULE:
                 return ruleSimulationCreationStrategy.createSimulation(context, value);
@@ -44,7 +44,7 @@ public class ScenarioSimulationBuilder {
         }
     }
 
-    public Background createBackground(Path context, ScenarioSimulationModel.Type type, String value) throws Exception {
+    public Background createBackground(Path context, ScenarioSimulationModel.Type type, String value) {
         switch (type) {
             case RULE:
                 return ruleSimulationCreationStrategy.createBackground(context, value);
@@ -55,7 +55,7 @@ public class ScenarioSimulationBuilder {
         }
     }
 
-    public Settings createSettings(Path context, ScenarioSimulationModel.Type type, String value) throws Exception {
+    public Settings createSettings(Path context, ScenarioSimulationModel.Type type, String value) {
         switch (type) {
             case RULE:
                 return ruleSimulationCreationStrategy.createSettings(context,value);

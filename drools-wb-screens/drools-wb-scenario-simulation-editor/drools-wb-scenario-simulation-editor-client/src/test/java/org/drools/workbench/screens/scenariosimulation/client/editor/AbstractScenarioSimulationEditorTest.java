@@ -120,6 +120,7 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         modelLocal.setSettings(settingsLocal);
         settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         settingsLocal.setDmoSession(null);
+        modelLocal.setBackground(backgroundLocal);
         this.content = new ScenarioSimulationModelContent(modelLocal,
                                                           overviewMock,
                                                           packageDataModelOracleBaselinePayload);

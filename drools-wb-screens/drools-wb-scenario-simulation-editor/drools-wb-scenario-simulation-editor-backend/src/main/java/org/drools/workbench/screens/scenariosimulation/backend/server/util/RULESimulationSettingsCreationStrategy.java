@@ -31,10 +31,10 @@ import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 public class RULESimulationSettingsCreationStrategy implements SimulationSettingsCreationStrategy {
 
     @Override
-    public Simulation createSimulation(Path context, String value) throws Exception {
+    public Simulation createSimulation(Path context, String value) {
         Simulation toReturn = new Simulation();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, ScenarioWithIndex.class);
+        ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, ScenarioWithIndex::new);
 
         // Add GIVEN Fact
         createEmptyColumn(simulationDescriptor,
@@ -53,7 +53,7 @@ public class RULESimulationSettingsCreationStrategy implements SimulationSetting
     }
 
     @Override
-    public Settings createSettings(Path context, String dmoSession) throws Exception {
+    public Settings createSettings(Path context, String dmoSession) {
         Settings toReturn = new Settings();
         toReturn.setType(ScenarioSimulationModel.Type.RULE);
         toReturn.setDmoSession(dmoSession);

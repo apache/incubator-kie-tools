@@ -55,6 +55,7 @@ import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 import static org.drools.scenariosimulation.api.model.FactMappingType.OTHER;
 import static org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree.Type.DECISION;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -114,6 +115,10 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
                 any(Settings.class),
                 eq(pathMock),
                 eq(dmnFilePath));
+        assertFalse(retrieved.getScesimModelDescriptor().getUnmodifiableFactMappings().stream()
+                            .anyMatch(elem -> OTHER.equals(elem.getExpressionIdentifier().getType())));
+        assertTrue(retrieved.getScesimModelDescriptor().getUnmodifiableFactMappings().stream()
+                           .allMatch(elem -> GIVEN.equals(elem.getExpressionIdentifier().getType())));
     }
 
     @Test
@@ -156,9 +161,9 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
         hiddenFacts.put("recursive", factModelTree);
 
         dmnSimulationCreationStrategy.addFactMapping(factMappingExtractorMock,
-                                                    factModelTree,
-                                                    new ArrayList<>(),
-                                                    hiddenFacts);
+                                                     factModelTree,
+                                                     new ArrayList<>(),
+                                                     hiddenFacts);
 
         verify(factMappingExtractorMock, times(1))
                 .getFactMapping(

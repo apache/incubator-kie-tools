@@ -46,17 +46,17 @@ public class SimulationSettingsCreationStrategyTest {
         int columnIndex = 0;
         SimulationSettingsCreationStrategy simulationSettingsCreationStrategy = new SimulationSettingsCreationStrategy() {
             @Override
-            public Simulation createSimulation(Path context, String value) throws Exception {
+            public Simulation createSimulation(Path context, String value) {
                 return null;
             }
 
             @Override
-            public Background createBackground(Path context, String dmnFilePath) throws Exception {
+            public Background createBackground(Path context, String dmnFilePath) {
                 return null;
             }
 
             @Override
-            public Settings createSettings(Path context, String value) throws Exception {
+            public Settings createSettings(Path context, String value) {
                 return null;
             }
         };
