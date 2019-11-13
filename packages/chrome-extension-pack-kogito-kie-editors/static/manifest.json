@@ -21,5 +21,6 @@
     "tabs",
     "declarativeContent",
     "background"
-  ]
+  ],
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'"
 }
