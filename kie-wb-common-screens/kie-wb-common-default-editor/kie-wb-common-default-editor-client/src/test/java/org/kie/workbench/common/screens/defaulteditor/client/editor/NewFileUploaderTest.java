@@ -134,7 +134,7 @@ public class NewFileUploaderTest {
     @Test
     public void testCreateFileNameWithoutExtension() {
         uploader.create(pkg,
-                        "file",
+                        "this & that",
                         presenter);
 
         verify(moduleService,
@@ -142,7 +142,7 @@ public class NewFileUploaderTest {
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));
         verify(options,
-               times(1)).setFileName("file.txt");
+               times(1)).setFileName("this+%26+that.txt");
         verify(options,
                times(1)).upload(any(Consumer.class),
                                 any(Consumer.class));
