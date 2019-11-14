@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestRuleFlowGroupDataEvent;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RuleFlowGroupDataEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -32,6 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,6 +68,14 @@ public class RuleFlowGroupDataServiceTest {
         verify(dataChangedEvent, times(1)).fire(ec.capture());
         RuleFlowGroupDataEvent event = ec.getValue();
         assertRightRuleFlowGroupNames(event.getGroupNames());
+    }
+
+
+    @Test
+    public void testRuleFlowGroupDataService() {
+        RuleFlowGroupDataService tested = spy(new RuleFlowGroupDataService(queryService, dataChangedEvent));
+        tested.onRequestRuleFlowGroupDataEvent(new RequestRuleFlowGroupDataEvent());
+        verify(tested).fireData();
     }
 
     private static void assertRightRuleFlowGroupNames(String[] names) {

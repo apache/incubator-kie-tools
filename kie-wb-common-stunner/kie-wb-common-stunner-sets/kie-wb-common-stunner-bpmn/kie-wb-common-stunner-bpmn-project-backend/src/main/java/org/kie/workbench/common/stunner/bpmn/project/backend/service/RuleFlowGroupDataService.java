@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestRuleFlowGroupDataEvent;
@@ -42,7 +43,7 @@ public class RuleFlowGroupDataService {
         return queryService.getRuleFlowGroupNames();
     }
 
-    void onRequestRuleFlowGroupDataEvent(final RequestRuleFlowGroupDataEvent event) {
+    void onRequestRuleFlowGroupDataEvent(@Observes final RequestRuleFlowGroupDataEvent event) {
         fireData();
     }
 
