@@ -365,6 +365,11 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         // Do nothing
     }
 
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
+
     public void putMapping(String index,
                            String type,
                            MetaObject metaObject) {

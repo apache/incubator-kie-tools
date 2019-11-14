@@ -281,6 +281,11 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
+    public boolean isAlive() {
+        return this.provider.isAlive();
+    }
+
+    @Override
     public int priority() {
         return 50;
     }

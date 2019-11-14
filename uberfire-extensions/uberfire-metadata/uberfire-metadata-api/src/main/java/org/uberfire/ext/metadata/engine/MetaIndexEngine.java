@@ -47,4 +47,6 @@ public interface MetaIndexEngine extends PriorityDisposable {
     void abort(final KCluster cluster);
 
     void beforeDispose(final Runnable callback);
+
+    boolean isAlive();
 }

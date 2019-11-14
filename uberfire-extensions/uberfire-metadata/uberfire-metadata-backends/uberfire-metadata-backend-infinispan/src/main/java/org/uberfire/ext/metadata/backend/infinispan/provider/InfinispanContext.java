@@ -34,6 +34,7 @@ import org.infinispan.client.hotrod.configuration.AuthenticationConfigurationBui
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.client.hotrod.configuration.SaslQop;
 import org.infinispan.client.hotrod.exceptions.HotRodClientException;
+import org.infinispan.client.hotrod.impl.RemoteCacheImpl;
 import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
 import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.protostream.BaseMarshaller;
@@ -71,6 +72,7 @@ public class InfinispanContext implements Disposable {
     private static final String ORG_KIE = "org.kie.";
     public static final String SASL_MECHANISM = "DIGEST-MD5";
     private static final String CACHE_PREFIX = "appformer_";
+    private final InfinispanPingService pingService;
     private RemoteCacheManager cacheManager;
     private KieProtostreamMarshaller marshaller = new KieProtostreamMarshaller();
     private SchemaGenerator schemaGenerator;
@@ -118,6 +120,8 @@ public class InfinispanContext implements Disposable {
         schemaGenerator = new SchemaGenerator();
 
         cacheManager = this.createRemoteCache(properties);
+
+        this.pingService = new InfinispanPingService((RemoteCacheImpl) this.cacheManager.getCache());
 
         createBaseIndex();
 
@@ -178,6 +182,8 @@ public class InfinispanContext implements Disposable {
                     .addServer()
                     .host(host)
                     .port(Integer.parseInt(port))
+                    .connectionTimeout(5)
+                    .maxRetries(1)
                     .marshaller(new ProtoStreamMarshaller())
                     .marshaller(marshaller);
             return new RemoteCacheManager(builder.build());
@@ -342,6 +348,7 @@ public class InfinispanContext implements Disposable {
     public void dispose() {
         if (this.cacheManager.isStarted()) {
             this.cacheManager.stop();
+            this.pingService.stop();
         }
     }
 
@@ -366,6 +373,27 @@ public class InfinispanContext implements Disposable {
     private RemoteCache<Object, Object> getSchemaCache() {
         this.createBaseIndex();
         return this.cacheManager.getCache(getSchemaCacheName());
+    }
+
+    public boolean isAlive() {
+
+        RemoteCacheImpl remoteCache = (RemoteCacheImpl) this.cacheManager.getCache();
+
+        try {
+            boolean isStarted = remoteCache.ping().isSuccess();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Infinispan server is not started");
+            }
+            return isStarted;
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.error("Infinispan server is not started");
+            }
+            if (logger.isTraceEnabled()) {
+                logger.error("Infinispan server is not started", e);
+            }
+            return false;
+        }
     }
 
     public void observeInitialization(Runnable runnable) {

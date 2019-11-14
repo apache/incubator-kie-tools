@@ -33,7 +33,7 @@ public class Retry {
         this.runnable = runnable;
     }
 
-    public void run() {
+    public Retry run() {
         int maxRetries = retries;
         while (retries > 0 && !finished) {
             try {
@@ -47,6 +47,8 @@ public class Retry {
                 }
             }
         }
+
+        return this;
     }
 
     public boolean isFinished() {

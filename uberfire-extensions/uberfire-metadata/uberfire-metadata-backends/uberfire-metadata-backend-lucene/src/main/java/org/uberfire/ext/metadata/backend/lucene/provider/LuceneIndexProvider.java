@@ -209,6 +209,11 @@ public class LuceneIndexProvider implements IndexProvider {
         // Do nothing
     }
 
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
+
     public ScoreDoc[] findRawByQuery(List<String> indices,
                                      Query query,
                                      Sort sort,

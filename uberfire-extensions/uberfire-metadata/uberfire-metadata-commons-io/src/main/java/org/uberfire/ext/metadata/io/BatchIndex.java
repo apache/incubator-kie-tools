@@ -78,6 +78,12 @@ public final class BatchIndex {
     }
 
     public void runAsync(final FileSystem fs) {
+
+        if(!this.indexEngine.isAlive()){
+            return;
+        }
+
+
         if (fs != null && fs.getRootDirectories().iterator().hasNext()) {
             executorService.execute(new DescriptiveRunnable() {
                 @Override

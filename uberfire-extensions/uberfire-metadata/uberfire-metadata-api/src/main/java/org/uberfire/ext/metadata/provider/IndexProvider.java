@@ -65,4 +65,6 @@ public interface IndexProvider extends Disposable {
     List<String> getIndices();
 
     void observerInitialization(Runnable runnable);
+
+    boolean isAlive();
 }
