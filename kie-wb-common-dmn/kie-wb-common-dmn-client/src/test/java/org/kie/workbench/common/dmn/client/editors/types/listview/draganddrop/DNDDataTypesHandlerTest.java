@@ -277,4 +277,30 @@ public class DNDDataTypesHandlerTest {
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("'DNDDataTypesHandler' must be initialized with a 'DNDListComponent' instance.");
     }
+
+    @Test
+    public void testDeleteKeepingReferences() {
+
+        final DataType existing = mock(DataType.class);
+        final DataTypeListItem dtListItem = mock(DataTypeListItem.class);
+        final Optional<DataTypeListItem> item = Optional.of(dtListItem);
+        when(dataTypeList.findItem(existing)).thenReturn(item);
+
+        handler.deleteKeepingReferences(existing);
+
+        verify(dtListItem).destroyWithoutDependentTypes();
+    }
+
+    @Test
+    public void testDeleteKeepingReferencesItemNotPresent() {
+
+        final DataType existing = mock(DataType.class);
+        final DataTypeListItem dtListItem = mock(DataTypeListItem.class);
+        final Optional<DataTypeListItem> item = Optional.empty();
+        when(dataTypeList.findItem(existing)).thenReturn(item);
+
+        handler.deleteKeepingReferences(existing);
+
+        verify(dtListItem, never()).destroyWithoutDependentTypes();
+    }
 }

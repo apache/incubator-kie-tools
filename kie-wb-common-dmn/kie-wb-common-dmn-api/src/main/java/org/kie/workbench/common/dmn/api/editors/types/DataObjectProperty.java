@@ -24,6 +24,11 @@ public class DataObjectProperty {
     private String type;
     private String property;
 
+    public DataObjectProperty() {
+        this.type = "";
+        this.property = "";
+    }
+
     public String getProperty() {
         return property;
     }

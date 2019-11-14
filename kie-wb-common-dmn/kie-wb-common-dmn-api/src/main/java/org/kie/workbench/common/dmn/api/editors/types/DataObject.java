@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.editors.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -33,6 +34,7 @@ public class DataObject {
 
     public DataObject(final String classType) {
         this.classType = classType;
+        this.properties = new ArrayList<>();
     }
 
     public String getClassType() {

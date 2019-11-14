@@ -91,6 +91,28 @@ public class DataTypeCreateHandlerTest {
     }
 
     @Test
+    public void testAppendWhenNameIsSet() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType updatedDataType = mock(DataType.class);
+        final DataTypeManager withDataType = mock(DataTypeManager.class);
+
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final List<DataType> expectedAffectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        final String existingName = "existing name";
+
+        when(dataType.getName()).thenReturn(existingName);
+        when(dataTypeManager.withDataType(dataType)).thenReturn(withDataType);
+        when(recordEngine.update(updatedDataType)).thenReturn(expectedAffectedDataTypes);
+        doReturn(updatedDataType).when(handler).updateDataTypeProperties(dataType, TOP_LEVEL_PARENT_UUID, itemDefinition);
+
+        final List<DataType> actualAffectedDataTypes = handler.append(dataType, itemDefinition);
+
+        assertEquals(expectedAffectedDataTypes, actualAffectedDataTypes);
+    }
+
+    @Test
     public void testInsertNotNested() {
 
         final DataType dataType = mock(DataType.class);

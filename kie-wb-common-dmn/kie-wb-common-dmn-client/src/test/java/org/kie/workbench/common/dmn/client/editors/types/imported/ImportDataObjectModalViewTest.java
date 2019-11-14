@@ -135,9 +135,33 @@ public class ImportDataObjectModalViewTest {
     @Test
     public void testOnButtonImportClicked() {
 
+        final List<DataObject> selectedItems = mock(List.class);
+        doReturn(selectedItems).when(view).getSelectedItems();
         view.onButtonImportClicked(null);
 
-        verify(presenter).hide();
+        verify(presenter).hide(selectedItems);
+    }
+
+    @Test
+    public void testGetSelectedItems() {
+
+        final TreeListItem listItem1 = mock(TreeListItem.class);
+        final DataObject dataObject1 = mock(DataObject.class);
+        final TreeListItem listItem2 = mock(TreeListItem.class);
+        final DataObject dataObject2 = mock(DataObject.class);
+
+        when(listItem1.getDataSource()).thenReturn(dataObject1);
+        when(listItem2.getDataSource()).thenReturn(dataObject2);
+
+        final List<TreeListItem> selectedItems = Arrays.asList(listItem1, listItem2);
+
+        when(treeList.getSelectedItems()).thenReturn(selectedItems);
+
+        final List<DataObject> actual = view.getSelectedItems();
+
+        assertEquals(2, actual.size());
+        assertTrue(actual.contains(dataObject1));
+        assertTrue(actual.contains(dataObject2));
     }
 
     @Test

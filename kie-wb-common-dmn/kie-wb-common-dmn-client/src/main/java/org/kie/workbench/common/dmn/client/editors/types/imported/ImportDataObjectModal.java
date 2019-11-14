@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.imported;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -33,11 +34,38 @@ public class ImportDataObjectModal extends Elemental2Modal<ImportDataObjectModal
 
     private final DMNClientServicesProxy client;
 
+    private Consumer<List<DataObject>> dataObjectsConsumer;
+
     @Inject
     public ImportDataObjectModal(final View view,
                                  final DMNClientServicesProxy client) {
         super(view);
         this.client = client;
+    }
+
+    public Consumer<List<DataObject>> getDataObjectsConsumer() {
+        return dataObjectsConsumer;
+    }
+
+    public void setup(final Consumer<List<DataObject>> dataObjectsConsumer) {
+        this.dataObjectsConsumer = dataObjectsConsumer;
+        callSuperSetup();
+    }
+
+    void callSuperSetup(){
+        super.setup();
+    }
+
+    public void hide(final List<DataObject> importedDataObjects) {
+
+        if (!Objects.isNull(getDataObjectsConsumer())) {
+            getDataObjectsConsumer().accept(importedDataObjects);
+        }
+        superHide();
+    }
+
+    void superHide() {
+        super.hide();
     }
 
     @Override

@@ -105,6 +105,14 @@ public class DNDDataTypesHandler {
         });
     }
 
+    public void deleteKeepingReferences(final DataType existing) {
+
+        final Optional<DataTypeListItem> currentItem = getDataTypeList().findItem(existing);
+        currentItem.ifPresent(item -> {
+            item.destroyWithoutDependentTypes();
+        });
+    }
+
     boolean isTopLevelShiftOperation(final DataType dataType,
                                      final DNDDataTypesHandlerShiftStrategy shiftStrategy) {
         final boolean isCurrentTopLevel = dataType.isTopLevel();

@@ -17,7 +17,9 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -32,6 +34,10 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
+import org.kie.workbench.common.dmn.api.editors.types.DataObjectProperty;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
@@ -45,6 +51,8 @@ import static java.util.Collections.singletonList;
 
 @ApplicationScoped
 public class DataTypeList {
+
+    static final String NAME_SEPARATOR = "-";
 
     private final View view;
 
@@ -66,6 +74,10 @@ public class DataTypeList {
 
     private DataTypeListItem currentEditingItem;
 
+    private Map<String, Integer> importedNamesOccurrencesCount;
+
+    private Map<String, String> renamedImportedDataTypes;
+
     @Inject
     public DataTypeList(final View view,
                         final ManagedInstance<DataTypeListItem> listItems,
@@ -81,6 +93,8 @@ public class DataTypeList {
         this.dndListComponent = dndListComponent;
         this.dataTypeStackHash = dataTypeStackHash;
         this.dndDataTypesHandler = dndDataTypesHandler;
+        this.importedNamesOccurrencesCount = new HashMap<>();
+        this.renamedImportedDataTypes = new HashMap<>();
     }
 
     @PostConstruct
@@ -227,17 +241,22 @@ public class DataTypeList {
     }
 
     void addDataType() {
+        addDataType(dataTypeManager.fromNew().get(), true);
+    }
+
+    void addDataType(final DataType dataType, boolean enableEditMode) {
 
         resetSearchBar();
 
-        final DataType dataType = dataTypeManager.fromNew().get();
         final DataTypeListItem listItem = makeListItem(dataType);
 
         dataType.create();
 
         showListItems();
         listItem.refresh();
-        listItem.enableEditMode();
+        if (enableEditMode) {
+            listItem.enableEditMode();
+        }
         refreshItemsCSSAndHTMLPosition();
     }
 
@@ -358,6 +377,129 @@ public class DataTypeList {
 
     private void refreshSearchBar() {
         searchBar.refresh();
+    }
+
+    public void importDataObjects(final List<DataObject> selectedDataObjects) {
+
+        removeFullQualifiedNames(selectedDataObjects);
+        for (final DataObject dataObject : selectedDataObjects) {
+            final DataType newDataType = createNewDataType(dataObject);
+            final Optional<DataType> existing = findDataTypeByName(dataObject.getClassType());
+            if (existing.isPresent()) {
+                replace(existing.get(), newDataType);
+            } else {
+                insert(newDataType);
+            }
+            insertProperties(dataObject);
+        }
+    }
+
+    void removeFullQualifiedNames(final List<DataObject> imported) {
+
+        final Map<String, Integer> namesCount = getImportedNamesOccurrencesCount();
+        final Map<String, String> renamed = getRenamedImportedDataTypes();
+        namesCount.clear();
+        renamed.clear();
+
+        for (final DataObject dataObject : imported) {
+            final String nameCandidate = extractName(dataObject.getClassType());
+            final String newName = buildName(nameCandidate, namesCount);
+            renamed.put(dataObject.getClassType(), newName);
+            dataObject.setClassType(newName);
+        }
+
+        updatePropertiesReferences(imported, renamed);
+    }
+
+    Map<String, Integer> getImportedNamesOccurrencesCount() {
+        return importedNamesOccurrencesCount;
+    }
+
+    Map<String, String> getRenamedImportedDataTypes() {
+        return renamedImportedDataTypes;
+    }
+
+    void updatePropertiesReferences(final List<DataObject> imported,
+                                    final Map<String, String> renamed) {
+
+        for (final DataObject dataObject : imported) {
+            for (final DataObjectProperty property : dataObject.getProperties()) {
+                String propertyType = renamed.getOrDefault(property.getType(), property.getType());
+                if (!isPropertyTypePresent(propertyType, imported)) {
+                    propertyType = BuiltInType.ANY.getName();
+                }
+                property.setType(propertyType);
+            }
+        }
+    }
+
+    boolean isPropertyTypePresent(final String type, final List<DataObject> imported) {
+        return BuiltInTypeUtils.isBuiltInType(type)
+                || imported.stream().anyMatch(dataObject -> Objects.equals(dataObject.getClassType(), type));
+    }
+
+    String buildName(final String nameCandidate, final Map<String, Integer> namesCount) {
+
+        if (namesCount.containsKey(nameCandidate)) {
+            final Integer occurrences = namesCount.get(nameCandidate);
+            namesCount.replace(nameCandidate, occurrences + 1);
+            return nameCandidate + NAME_SEPARATOR + occurrences;
+        }
+
+        namesCount.put(nameCandidate, 1);
+
+        return nameCandidate;
+    }
+
+    String extractName(final String fullQualifiedName) {
+
+        int lastIndex = 0;
+        if (fullQualifiedName.contains(".")) {
+            lastIndex = fullQualifiedName.lastIndexOf('.') + 1;
+        }
+
+        return fullQualifiedName.substring(lastIndex);
+    }
+
+    void insertProperties(final DataObject dataObject) {
+
+        final Optional<DataType> existing = findDataTypeByName(dataObject.getClassType());
+        existing.ifPresent(dataType -> {
+            findItem(dataType).ifPresent(item -> {
+                for (final DataObjectProperty property : dataObject.getProperties()) {
+                    final DataType newDataType = createNewDataType(property);
+                    item.insertNestedField(newDataType);
+                }
+            });
+        });
+    }
+
+    void insert(final DataType newDataType) {
+        addDataType(newDataType, false);
+    }
+
+    void replace(final DataType existing, final DataType newDataType) {
+
+        dndDataTypesHandler.deleteKeepingReferences(existing);
+        insert(newDataType);
+    }
+
+    DataType createNewDataType(final DataObjectProperty dataProperty) {
+
+        final DataType newDataType = dataTypeManager.fromNew().withType(dataProperty.getType()).get();
+        newDataType.setName(dataProperty.getProperty());
+        return newDataType;
+    }
+
+    DataType createNewDataType(final DataObject dataObject) {
+
+        final DataType newDataType = dataTypeManager.fromNew().withType(dataTypeManager.structure()).get();
+        newDataType.setName(dataObject.getClassType());
+        return newDataType;
+    }
+
+    Optional<DataType> findDataTypeByName(final String name) {
+        return dataTypeManager.getTopLevelDataTypeWithName(name);
     }
 
     public interface View extends UberElemental<DataTypeList>,

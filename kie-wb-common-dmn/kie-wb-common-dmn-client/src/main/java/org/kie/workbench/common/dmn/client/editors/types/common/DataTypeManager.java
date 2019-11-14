@@ -450,4 +450,14 @@ public class DataTypeManager {
     private Optional<ItemDefinition> findByName(final String typeName) {
         return itemDefinitionUtils.findByName(typeName);
     }
+
+    public Optional<DataType> getTopLevelDataTypeWithName(final String typeName) {
+        return findTopLevelDataTypeWithName(typeName);
+    }
+
+    Optional<DataType> findTopLevelDataTypeWithName(final String typeName) {
+        return dataTypeStore.getTopLevelDataTypes().stream()
+                .filter(data -> Objects.equals(data.getName(), typeName))
+                .findFirst();
+    }
 }

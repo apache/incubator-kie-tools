@@ -35,6 +35,7 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
@@ -142,8 +143,12 @@ public class DataTypeListView implements DataTypeList.View {
         this.presenter = presenter;
 
         setupSearchBar();
-        importDataObjectModal.setup();
+        importDataObjectModal.setup(this::importDataObjects);
         setupListElement();
+    }
+
+    void importDataObjects(final List<DataObject> imported) {
+        presenter.importDataObjects(imported);
     }
 
     private void setupSearchBar() {

@@ -32,6 +32,7 @@ import elemental2.dom.NodeList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
@@ -610,6 +611,16 @@ public class DataTypeListViewTest {
         view.showReadOnlyMessage(false);
 
         verify(readOnlyMessage.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testImportDataObjects() {
+
+        final List<DataObject> imported = mock(List.class);
+
+        view.importDataObjects(imported);
+
+        verify(presenter).importDataObjects(imported);
     }
 
     private HTMLElement makeHTMLElement() {

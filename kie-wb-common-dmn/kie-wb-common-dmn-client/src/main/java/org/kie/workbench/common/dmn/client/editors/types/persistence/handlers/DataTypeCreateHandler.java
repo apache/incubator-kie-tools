@@ -24,6 +24,7 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.common.base.Strings;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
@@ -44,7 +45,14 @@ public class DataTypeCreateHandler extends DataTypeHandler {
 
     public List<DataType> append(final DataType dataType,
                                  final ItemDefinition itemDefinition) {
-        final DataType updateDataType = updateDataTypeProperties(withNoName(dataType), TOP_LEVEL_PARENT_UUID, itemDefinition);
+        final DataType named;
+        if (Strings.isNullOrEmpty(dataType.getName())) {
+            named = withNoName(dataType);
+        } else {
+            named = dataType;
+        }
+
+        final DataType updateDataType = updateDataTypeProperties(named, TOP_LEVEL_PARENT_UUID, itemDefinition);
         return recordEngine.update(updateDataType);
     }
 

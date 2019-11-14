@@ -23,6 +23,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.Node;
+import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.uberfire.client.mvp.UberElemental;
 
 @Dependent
@@ -32,6 +33,7 @@ public class TreeListItem {
     private final List<TreeListSubItem> subItems;
     private String description;
     private boolean isSelected;
+    private DataObject dataSource;
 
     @Inject
     public TreeListItem(final View view) {
@@ -74,6 +76,14 @@ public class TreeListItem {
 
     public boolean getIsSelected() {
         return isSelected;
+    }
+
+    public void setDataSource(final DataObject dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public DataObject getDataSource() {
+        return this.dataSource;
     }
 
     public interface View extends UberElemental<TreeListItem> {

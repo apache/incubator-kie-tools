@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -87,5 +88,44 @@ public class ImportDataObjectModalTest {
         verify(view).clear();
         verify(view).addItems(items);
         verify(modal).superShow();
+    }
+
+    @Test
+    public void testSetup() {
+
+        final Consumer<List<DataObject>> consumer = mock(Consumer.class);
+        doNothing().when(modal).callSuperSetup();
+        modal.setup(consumer);
+
+        verify(modal).callSuperSetup();
+        assertEquals(consumer, modal.getDataObjectsConsumer());
+    }
+
+    @Test
+    public void testHide() {
+
+        final List<DataObject> importedObjects = mock(List.class);
+        final Consumer<List<DataObject>> consumer = mock(Consumer.class);
+        doNothing().when(modal).callSuperSetup();
+        doNothing().when(modal).superHide();
+        modal.setup(consumer);
+
+        modal.hide(importedObjects);
+
+        verify(consumer).accept(importedObjects);
+        verify(modal).superHide();
+    }
+
+    @Test
+    public void testHideWhenThereIsNotConsumer() {
+
+        final List<DataObject> importedObjects = mock(List.class);
+
+        doNothing().when(modal).callSuperSetup();
+        doNothing().when(modal).superHide();
+
+        modal.hide(importedObjects);
+
+        verify(modal).superHide();
     }
 }
