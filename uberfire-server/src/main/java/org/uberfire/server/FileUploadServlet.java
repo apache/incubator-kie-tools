@@ -19,6 +19,7 @@ package org.uberfire.server;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
@@ -29,14 +30,11 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.server.util.FileServletUtil;
+
+import static org.uberfire.server.UploadUriProvider.getTargetLocation;
 
 public class FileUploadServlet
         extends BaseUploadServlet {
-
-    private static final String PARAM_PATH = "path";
-    private static final String PARAM_FOLDER = "folder";
-    private static final String PARAM_FILENAME = "fileName";
 
     private static final String RESPONSE_OK = "OK";
     private static final String RESPONSE_FAIL = "FAIL";
@@ -51,29 +49,11 @@ public class FileUploadServlet
                           HttpServletResponse response) throws ServletException, IOException {
 
         try {
-            if (request.getParameter(PARAM_PATH) != null) {
 
-                //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-                final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter(PARAM_PATH));
-                final URI uri = new URI(encodedPath);
-
-                final FileItem fileItem = getFileItem(request);
-
-                finalizeResponse(response,
-                                 fileItem,
-                                 uri);
-            } else if (request.getParameter(PARAM_FOLDER) != null) {
-
-                //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-                final String encodedFileName = FileServletUtil.encodeFileName(request.getParameter(PARAM_FILENAME));
-                final URI uri = new URI(request.getParameter(PARAM_FOLDER).replaceAll("\\s", "%20") + "/" + encodedFileName);
-
-                final FileItem fileItem = getFileItem(request);
-
-                finalizeResponse(response,
-                                 fileItem,
-                                 uri);
-            }
+            URI targetLocation = getTargetLocation(request);
+            finalizeResponse(response,
+                             getFileItem(request),
+                             targetLocation);
         } catch (FileUploadException e) {
             logError(e);
             writeResponse(response,
@@ -114,12 +94,5 @@ public class FileUploadServlet
 
         writeResponse(response,
                       RESPONSE_OK);
-    }
-
-    private String getExtension(final String originalFileName) {
-        if (originalFileName.contains(".")) {
-            return "." + originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
-        }
-        return "";
     }
 }

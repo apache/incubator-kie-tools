@@ -23,9 +23,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.util.URIUtil;
 
 public class DefaultEditorFileUpload
         extends DefaultEditorFileUploadBase {
+
+    private static final String DEFAULT_EDITOR = "defaulteditor/download?path=";
+    private static final String PATH_PARAMETER = "path";
 
     private Path path;
 
@@ -33,8 +37,8 @@ public class DefaultEditorFileUpload
     protected Map<String, String> getParameters() {
         HashMap<String, String> parameters = new HashMap<String, String>();
 
-        parameters.put("path",
-                       path.toURI());
+        parameters.put(PATH_PARAMETER,
+                       URIUtil.encodeQueryString(URIUtil.decode(path.toURI())));
 
         return parameters;
     }
@@ -51,6 +55,6 @@ public class DefaultEditorFileUpload
     }
 
     private String getFileDownloadURL() {
-        return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + path.toURI();
+        return GWT.getModuleBaseURL() + DEFAULT_EDITOR + URIUtil.encodeQueryString(URIUtil.decode(path.toURI()));
     }
 }

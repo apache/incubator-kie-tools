@@ -27,6 +27,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
 import org.uberfire.mvp.Command;
+import org.uberfire.util.URIUtil;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -34,6 +35,8 @@ import org.uberfire.workbench.model.menu.MenuItem;
 public class DownloadMenuItemBuilder {
 
     private TranslationService translationService;
+
+    private static final String DEFAULT_EDITOR = "defaulteditor/download?path=";
 
     @Inject
     public DownloadMenuItemBuilder(final TranslationService translationService) {
@@ -74,6 +77,6 @@ public class DownloadMenuItemBuilder {
     }
 
     private String getFileDownloadURL(final Supplier<Path> pathSupplier) {
-        return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
+        return GWT.getModuleBaseURL() + DEFAULT_EDITOR + URIUtil.encodeQueryString(URIUtil.decode(pathSupplier.get().toURI()));
     }
 }
