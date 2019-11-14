@@ -398,6 +398,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
         final ConditionCol52 condition1 = spy(ageEqualsCondition());
+        condition1.setHeader("$a age is");
 
         modelSynchronizer.appendColumn(pattern,
                                        condition1);
@@ -411,12 +412,13 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         final ConditionCol52 editedCondition = ageEqualsCondition();
         editedCondition.setWidth(condition2.getWidth());
+        editedCondition.setHeader("$a2 age is");
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
                                                                          condition1,
                                                                          editedPattern,
                                                                          editedCondition);
-        assertEquals(1,
+        assertEquals(2,
                      diffs.size());
         verify(pattern).diff(editedPattern);
         verify(condition1).diff(editedCondition);
@@ -1850,13 +1852,13 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         column1p2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         column1p2.setFactField("state");
         column1p2.setOperator("==");
-        column1p2.setHeader("state");
+        column1p2.setHeader("state $d");
 
         final ConditionCol52 column2p2 = new ConditionCol52();
         column2p2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         column2p2.setFactField("country");
         column2p2.setOperator("==");
-        column2p2.setHeader("country");
+        column2p2.setHeader("country $d");
 
         modelSynchronizer.appendColumn(pattern2,
                                        column1p2);
@@ -1869,13 +1871,13 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         column1p3.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         column1p3.setFactField("state");
         column1p3.setOperator("==");
-        column1p3.setHeader("state");
+        column1p3.setHeader("state $d2");
 
         final ConditionCol52 column2p3 = new ConditionCol52();
         column2p3.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         column2p3.setFactField("country");
         column2p3.setOperator("==");
-        column2p3.setHeader("country");
+        column2p3.setHeader("country $d2");
 
         modelSynchronizer.appendColumn(pattern3,
                                        column1p3);

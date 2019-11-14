@@ -108,7 +108,9 @@ public class DecisionTableAnalyzerTest {
     public void testInsertActionColumn() throws Exception {
 
         ActionCol52 a = new ActionCol52();
+        a.setHeader("A");
         ActionCol52 b = new ActionCol52();
+        b.setHeader("B");
         actionColumns.add(a);
         actionColumns.add(b);
         model.setActionCols(actionColumns);
@@ -122,7 +124,9 @@ public class DecisionTableAnalyzerTest {
     public void testInsertBRLConditionColumn() throws Exception {
         BRLConditionColumn brlConditionOne = new BRLConditionColumn();
         BRLConditionVariableColumn a = new BRLConditionVariableColumn();
+        a.setHeader("A");
         BRLConditionVariableColumn b = new BRLConditionVariableColumn();
+        b.setHeader("B");
 
         BRLConditionColumn brlConditionTwo = new BRLConditionColumn();
         BRLConditionVariableColumn c = new BRLConditionVariableColumn();
@@ -159,12 +163,16 @@ public class DecisionTableAnalyzerTest {
     @Test
     public void testInsertBRLVariableColumn() throws Exception {
         ConditionCol52 a = new ConditionCol52();
+        a.setHeader("A");
         ConditionCol52 b = new ConditionCol52();
+        b.setHeader("B");
         pattern.setChildColumns(Arrays.asList(a, b));
 
         BRLConditionColumn brlCondition = new BRLConditionColumn();
         BRLConditionVariableColumn c = new BRLConditionVariableColumn();
+        c.setHeader("C");
         BRLConditionVariableColumn d = new BRLConditionVariableColumn();
+        d.setHeader("D");
         brlCondition.setChildColumns(Arrays.asList(c, d));
 
         model.getConditions().addAll(Arrays.asList(pattern, brlCondition));
@@ -176,7 +184,9 @@ public class DecisionTableAnalyzerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInsertNonExistingColumn() throws Exception {
         ConditionCol52 a = new ConditionCol52();
+        a.setHeader("A");
         ConditionCol52 b = new ConditionCol52();
+        b.setHeader("B");
         pattern.setChildColumns(Arrays.asList(a));
 
         BRLConditionColumn brlCondition = new BRLConditionColumn();
