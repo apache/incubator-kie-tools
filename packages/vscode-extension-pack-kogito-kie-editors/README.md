@@ -1,7 +1,7 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.3 (alpha)
+## Release notes - 0.2.4 (alpha)
 
 ### Features and fixes included on this release 
 - [KOGITO-541](https://issues.jboss.org/browse/KOGITO-541): Format the output XML
