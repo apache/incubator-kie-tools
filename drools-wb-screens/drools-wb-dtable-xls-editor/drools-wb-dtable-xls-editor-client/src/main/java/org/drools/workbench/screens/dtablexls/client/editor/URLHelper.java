@@ -17,9 +17,9 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.URL;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.util.URIUtil;
 
 /**
  * Utility to get the Servlet URL
@@ -34,7 +34,7 @@ public class URLHelper {
 
     public static String getDownloadUrl( final Path path,
                                          final String clientId ) {
-        return URLHelper.getServletUrl( clientId ) + "&" + FileManagerFields.FORM_FIELD_PATH + "=" + URL.encode( path.toURI() );
+        return URLHelper.getServletUrl(clientId) + "&" + FileManagerFields.FORM_FIELD_PATH + "=" + URIUtil.encodeQueryString(path.toURI());
     }
 
     private static String getServletUrl() {
