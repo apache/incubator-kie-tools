@@ -17,13 +17,25 @@
 
 package org.kie.workbench.common.screens.examples.service;
 
+import java.util.List;
 import java.util.Set;
 
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 
 public interface ImportService extends PriorityDisposable {
 
-    Set<ImportProject> getProjects(final ExampleRepository repository);
+    Set<ImportProject> getProjects(final OrganizationalUnit targetOu, final ExampleRepository repository);
+
+    WorkspaceProjectContextChangeEvent importProjects(final OrganizationalUnit activeOU,
+                                                      final List<ImportProject> projects);
+
+    WorkspaceProject importProject(final OrganizationalUnit activeOU,
+                                   final ImportProject projects);
+
+    boolean exist(OrganizationalUnit ou, ImportProject importProject);
 }

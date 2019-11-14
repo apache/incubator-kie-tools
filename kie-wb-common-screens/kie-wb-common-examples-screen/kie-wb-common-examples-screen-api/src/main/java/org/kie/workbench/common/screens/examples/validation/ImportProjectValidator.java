@@ -21,8 +21,9 @@ import java.util.Optional;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -33,15 +34,13 @@ public abstract class ImportProjectValidator {
     public static final String POM_XML = "pom.xml";
     private Logger logger = LoggerFactory.getLogger(ImportProjectValidator.class);
 
-    public Optional<ExampleProjectError> validate(ImportProject importProject) {
+    public Optional<ExampleProjectError> validate(OrganizationalUnit organizationalUnit, ImportProject importProject) {
         if (logger.isDebugEnabled()) {
             logger.debug("Validation project [{}]",
                          importProject.getName());
         }
 
-        Path rootPath = importProject.getRoot();
-
-        Optional<ExampleProjectError> error = this.getError(rootPath);
+        Optional<ExampleProjectError> error = this.getError(organizationalUnit, importProject);
 
         if (logger.isDebugEnabled() && error.isPresent()) {
             logger.debug("Error found [{} - {} - {}]",
@@ -53,7 +52,7 @@ public abstract class ImportProjectValidator {
         return error;
     }
 
-    protected abstract Optional<ExampleProjectError> getError(Path projectPath);
+    protected abstract Optional<ExampleProjectError> getError(OrganizationalUnit organizationalUnit, ImportProject importProject);
 
     protected POM getPom(POMService pomService,
                          Path rootPath) {

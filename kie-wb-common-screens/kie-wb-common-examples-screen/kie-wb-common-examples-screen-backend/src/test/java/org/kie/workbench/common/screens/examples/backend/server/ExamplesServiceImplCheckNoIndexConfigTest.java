@@ -18,17 +18,18 @@ package org.kie.workbench.common.screens.examples.backend.server;
 
 import java.util.ArrayList;
 import java.util.Map;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.EnvironmentParameters;
-import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +47,12 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
@@ -66,9 +71,6 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Mock
     private MetadataService metadataService;
-
-    @Mock
-    private RepositoryCopier repositoryCopier;
 
     @Mock
     private WorkspaceProjectService projectService;
@@ -96,6 +98,9 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     @Captor
     private ArgumentCaptor<Map<String, Object>> captor;
 
+    @Mock
+    private OrganizationalUnit ou;
+
     private ExamplesServiceImpl service;
 
     @Mock
@@ -110,7 +115,6 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
@@ -118,7 +122,9 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
                                               projectScreenService,
                                               validators,
                                               spaceConfigStorageRegistry,
-                                              systemFS));
+                                              systemFS,
+                                              null,
+                                              null));
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
     }
@@ -126,7 +132,7 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     @Test
     public void testCheckRepositoryConfig_NoIndex() {
 
-        service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        service.getProjects(ou, new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
 
         verify(service).createConfigGroup(eq("examples-guvnorng-playground"),
                                           captor.capture());

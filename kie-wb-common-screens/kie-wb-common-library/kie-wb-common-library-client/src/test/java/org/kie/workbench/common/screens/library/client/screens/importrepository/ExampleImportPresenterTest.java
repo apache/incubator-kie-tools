@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.screens.samples;
+package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -97,6 +98,9 @@ public class ExampleImportPresenterTest {
     @Mock
     private ImportProjectsPreferences importProjectsPreferences;
 
+    @Mock
+    private OrganizationalUnit organizationalUnit;
+
     private ImportPresenter importPresenter;
 
     @Before
@@ -108,6 +112,8 @@ public class ExampleImportPresenterTest {
                                                   exampleProjectErrorPresenter,
                                                   branchSelectorPopUpPresenter));
 
+        doReturn("space1").when(organizationalUnit).getName();
+
         doReturn(tileWidget).when(tileWidgets).get();
 
         doAnswer(invocationOnMock -> spy(new ExampleProjectWidget(mock(ExampleProjectWidget.View.class),
@@ -115,21 +121,24 @@ public class ExampleImportPresenterTest {
                                                                   exampleProjectErrorPresenter,
                                                                   branchSelectorPopUpPresenter))).when(tileWidgets).get();
 
-        importPresenter = new ExamplesImportPresenter(view,
-                                                      libraryPlaces,
-                                                      tileWidgets,
-                                                      examplesServiceCaller,
-                                                      mock(WorkspaceProjectContext.class),
-                                                      notificationEvent,
-                                                      projectContextChangeEvent,
-                                                      new Elemental2DomUtil(),
-                                                      mock(TranslationService.class),
-                                                      importProjectsPreferences,
-                                                      libraryServiceCaller);
+        importPresenter = spy(new ExamplesImportPresenter(view,
+                                                          libraryPlaces,
+                                                          tileWidgets,
+                                                          examplesServiceCaller,
+                                                          mock(WorkspaceProjectContext.class),
+                                                          notificationEvent,
+                                                          projectContextChangeEvent,
+                                                          new Elemental2DomUtil(),
+                                                          mock(TranslationService.class),
+                                                          importProjectsPreferences,
+                                                          libraryServiceCaller));
+
+        doReturn(organizationalUnit).when(importPresenter).activeOrganizationalUnit();
     }
 
     @Test
     public void onStartupWithoutProjectsTest() {
+        doReturn(organizationalUnit).when(importPresenter).activeOrganizationalUnit();
         doReturn(false).when(libraryService).isClustered();
         doAnswer(invocationOnMock -> {
             invocationOnMock.getArgumentAt(0,
@@ -160,7 +169,7 @@ public class ExampleImportPresenterTest {
                                                 any(ParameterizedCommand.class));
 
         Set<ImportProject> projects = getImportProjects();
-        doReturn(projects).when(examplesService).getExampleProjects();
+        doReturn(projects).when(examplesService).getExampleProjects(any());
 
         Map<String, String> params = new HashMap<>();
         params.put("repositoryUrl",

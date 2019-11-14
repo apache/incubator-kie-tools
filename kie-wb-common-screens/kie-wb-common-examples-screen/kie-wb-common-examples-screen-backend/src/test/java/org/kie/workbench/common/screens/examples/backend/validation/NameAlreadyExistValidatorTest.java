@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,72 +12,68 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.kie.workbench.common.screens.examples.backend.validation;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
-import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.examples.service.ProjectImportService;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CheckModulesValidationTest {
+public class NameAlreadyExistValidatorTest {
 
-    private CheckModulesValidator validator;
+    private NameAlreadyExistValidator validator;
+
+    private Logger logger = LoggerFactory.getLogger(NameAlreadyExistValidatorTest.class);
 
     @Mock
-    private POMService pomService;
+    private ProjectImportService projectImportService;
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private OrganizationalUnit ou;
 
     @Mock
     private ImportProject importProject;
 
-    @Mock
-    private POM pom;
-
     @Before
     public void setUp() {
-        Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("/");
-        when(this.importProject.getRoot()).thenReturn(path);
-        when(this.pomService.load(any())).thenReturn(this.pom);
 
-        this.validator = new CheckModulesValidator(this.pomService);
+        when(importProject.getName()).thenReturn("project1");
+        when(ou.getSpace().getName()).thenReturn("space1");
+
+        this.validator = new NameAlreadyExistValidator(this.projectImportService);
     }
 
     @Test
-    public void testProjectHasNoModules() {
-        when(this.pom.getModules()).thenReturn(Collections.EMPTY_LIST);
-        Optional<ExampleProjectError> error = this.validator.validate(ou, importProject);
-        assertFalse(error.isPresent());
-    }
-
-    @Test
-    public void testProjectHasModules() {
-        when(this.pom.getModules()).thenReturn(Arrays.asList("aModule"));
-
+    public void testNameAlreadyExist() {
+        when(this.projectImportService.exist(any(), any())).thenReturn(true);
         Optional<ExampleProjectError> error = this.validator.validate(ou, importProject);
         assertTrue(error.isPresent());
-        assertEquals(CheckModulesValidator.class.getCanonicalName(),
-                     error.get().getId());
+        logger.info(error.get().getDescription());
+    }
+
+    @Test
+    public void testProjectDoesNotExist() {
+        when(this.projectImportService.exist(any(), any())).thenReturn(false);
+        Optional<ExampleProjectError> error = this.validator.validate(ou, importProject);
+        assertFalse(error.isPresent());
     }
 }

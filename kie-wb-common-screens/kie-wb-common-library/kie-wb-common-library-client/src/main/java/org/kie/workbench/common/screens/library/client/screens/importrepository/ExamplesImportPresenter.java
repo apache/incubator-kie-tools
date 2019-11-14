@@ -2,6 +2,7 @@ package org.kie.workbench.common.screens.library.client.screens.importrepository
 
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -63,7 +64,7 @@ public class ExamplesImportPresenter extends ImportPresenter {
                                 RemoteCallback<Set<ImportProject>> callback) {
         view.showBusyIndicator(view.getLoadingMessage());
         examplesService.call(callback,
-                             loadingErrorCallback()).getExampleProjects();
+                             loadingErrorCallback()).getExampleProjects(activeOrganizationalUnit());
     }
 
     @Override

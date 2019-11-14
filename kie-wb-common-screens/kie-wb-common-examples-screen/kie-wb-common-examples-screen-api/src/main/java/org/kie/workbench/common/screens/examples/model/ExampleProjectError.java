@@ -17,6 +17,8 @@
 
 package org.kie.workbench.common.screens.examples.model;
 
+import java.util.Arrays;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -25,11 +27,18 @@ public class ExampleProjectError {
 
     private final String id;
     private final String description;
+    private Object[] values;
 
     public ExampleProjectError(final @MapsTo("id") String id,
-                               final @MapsTo("description") String description) {
+                               final @MapsTo("description") String description,
+                               final @MapsTo("value") Object... values) {
         this.id = id;
         this.description = description;
+        if (values == null) {
+            this.values = new Object[0];
+        } else {
+            this.values = values;
+        }
     }
 
     public String getId() {
@@ -38,6 +47,10 @@ public class ExampleProjectError {
 
     public String getDescription() {
         return description;
+    }
+
+    public Object[] getValues() {
+        return values;
     }
 
     @Override
@@ -52,7 +65,8 @@ public class ExampleProjectError {
         ExampleProjectError that = (ExampleProjectError) o;
 
         return id.equals(that.id) &&
-                description.equals(that.description);
+                description.equals(that.description) &&
+                values == that.values;
     }
 
     @Override
@@ -60,6 +74,8 @@ public class ExampleProjectError {
         int result = (id != null ? id.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (values != null ? Arrays.hashCode(values) : 0);
         result = ~~result;
         return result;
     }

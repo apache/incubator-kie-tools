@@ -33,9 +33,11 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,9 +60,9 @@ public class ImportRepositoryPopUpPresenterTest {
     @Before
     public void setup() {
         importServiceCaller = new CallerMock<>(libraryService);
-        presenter = new ImportRepositoryPopUpPresenter(view,
-                                                       libraryPlaces,
-                                                       importServiceCaller);
+        presenter = spy(new ImportRepositoryPopUpPresenter(view,
+                                                           libraryPlaces,
+                                                           importServiceCaller));
     }
 
     @Test
@@ -81,7 +83,7 @@ public class ImportRepositoryPopUpPresenterTest {
     public void importRepositoryTest() {
         String repoUrl = "repoUrl";
         doReturn(repoUrl).when(view).getRepositoryURL();
-        when(libraryService.getProjects(any())).thenReturn(singleton(mock(ImportProject.class)));
+        when(libraryService.getProjects(any(), any())).thenReturn(singleton(mock(ImportProject.class)));
 
         presenter.importRepository();
 
@@ -102,12 +104,12 @@ public class ImportRepositoryPopUpPresenterTest {
 
         presenter.importRepository();
 
-        verify(libraryService).getProjects(repository);
+        verify(libraryService).getProjects(any(), eq(repository));
     }
 
     @Test
     public void importInvalidRepositoryTest() {
-        doThrow(new RuntimeException()).when(libraryService).getProjects(any());
+        doThrow(new RuntimeException()).when(libraryService).getProjects(any(), any());
         doReturn("repoUrl").when(view).getRepositoryURL();
 
         presenter.importRepository();
@@ -119,7 +121,7 @@ public class ImportRepositoryPopUpPresenterTest {
 
     @Test
     public void importEmptyRepositoryTest() {
-        when(libraryService.getProjects(any())).thenReturn(emptySet());
+        when(libraryService.getProjects(any(), any())).thenReturn(emptySet());
         doReturn("repoUrl").when(view).getRepositoryURL();
 
         presenter.importRepository();

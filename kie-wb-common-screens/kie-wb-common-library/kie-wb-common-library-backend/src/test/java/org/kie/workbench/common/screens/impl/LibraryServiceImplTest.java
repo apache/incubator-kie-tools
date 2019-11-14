@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
@@ -390,7 +391,6 @@ public class LibraryServiceImplTest {
                                      pom,
                                      DeploymentMode.VALIDATED);
 
-
         final List<Contributor> updatedSpaceContributors = new ArrayList<>();
         updatedSpaceContributors.add(new Contributor("user1", ContributorType.OWNER));
         updatedSpaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
@@ -656,9 +656,9 @@ public class LibraryServiceImplTest {
 
         final Set<ImportProject> importProjects = new HashSet<>();
         importProjects.add(mock(ImportProject.class));
-        doReturn(importProjects).when(examplesService).getProjects(new ExampleRepository("importProjectsUrl"));
+        doReturn(importProjects).when(examplesService).getProjects(any(), eq(new ExampleRepository("importProjectsUrl")));
 
-        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects();
+        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects(mock(OrganizationalUnit.class));
 
         assertEquals(importProjects,
                      loadedImportProjects);
@@ -674,9 +674,9 @@ public class LibraryServiceImplTest {
 
         final Set<ImportProject> importProjects = new HashSet<>();
         importProjects.add(mock(ImportProject.class));
-        doReturn(importProjects).when(examplesService).getProjects(playgroundRepository);
+        doReturn(importProjects).when(examplesService).getProjects(any(), eq(playgroundRepository));
 
-        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects();
+        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects(ou1);
 
         assertEquals(importProjects,
                      loadedImportProjects);

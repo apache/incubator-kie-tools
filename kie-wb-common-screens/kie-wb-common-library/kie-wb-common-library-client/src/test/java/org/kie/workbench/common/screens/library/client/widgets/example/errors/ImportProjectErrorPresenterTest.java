@@ -32,10 +32,11 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ImportProjectErrorPresenterTest {
 
-    public static final String VALIDATOR = "Validator";
-    public static final String VALIDATOR_ID = "org.id.with.dots." + VALIDATOR;
-    public static final String TRANSLATED_MESSAGE = "A nice translated message";
-    public static final String DESCRIPTION = "description";
+    private static final String VALIDATOR = "Validator";
+    private static final String VALIDATOR_ID = "org.id.with.dots." + VALIDATOR;
+    private static final String TRANSLATED_MESSAGE = "A nice translated message";
+    private static final String DESCRIPTION = "description";
+    private static final Object[] VALUES = new Object[0];
     @Mock
     private TranslationService ts;
 
@@ -48,7 +49,7 @@ public class ImportProjectErrorPresenterTest {
     public void setUp() {
 
         when(ts.format(eq(VALIDATOR),
-                       eq(DESCRIPTION))).thenReturn(TRANSLATED_MESSAGE);
+                       eq(VALUES))).thenReturn(TRANSLATED_MESSAGE);
         when(ts.getTranslation(eq(VALIDATOR))).thenReturn(TRANSLATED_MESSAGE);
 
         this.presenter = new ExampleProjectErrorPresenter(view,
@@ -69,7 +70,8 @@ public class ImportProjectErrorPresenterTest {
     @Test
     public void testTranslateError() {
         ExampleProjectError error = new ExampleProjectError(VALIDATOR_ID,
-                                                            DESCRIPTION);
+                                                            DESCRIPTION,
+                                                            VALUES);
         String translatedMessager = this.presenter.translateError(error);
         assertEquals("- " + TRANSLATED_MESSAGE,
                      translatedMessager);

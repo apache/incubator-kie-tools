@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -40,5 +41,5 @@ public interface ExamplesService extends ImportService,
     WorkspaceProjectContextChangeEvent setupExamples(final ExampleOrganizationalUnit exampleTargetOU,
                                                      final List<ImportProject> importProjects);
 
-    Set<ImportProject> getExampleProjects();
+    Set<ImportProject> getExampleProjects(OrganizationalUnit targetOu);
 }

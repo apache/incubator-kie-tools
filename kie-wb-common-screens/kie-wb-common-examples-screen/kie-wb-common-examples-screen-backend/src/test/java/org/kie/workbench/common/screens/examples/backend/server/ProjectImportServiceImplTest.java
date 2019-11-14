@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
@@ -58,7 +59,9 @@ import org.kie.workbench.common.screens.examples.validation.ImportProjectValidat
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -70,9 +73,24 @@ import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.spaces.Space;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.same;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectImportServiceImplTest {
@@ -126,6 +144,9 @@ public class ProjectImportServiceImplTest {
     @Mock
     private Space space;
 
+    @Captor
+    private ArgumentCaptor<RepositoryEnvironmentConfigurations> configurations;
+
     @Before
     public void setup() {
         service = spy(new ProjectImportServiceImpl(ioService,
@@ -147,11 +168,16 @@ public class ProjectImportServiceImplTest {
         when(organizationalUnit.getName()).thenReturn("ou");
         when(organizationalUnit.getSpace()).thenReturn(space);
         when(space.getName()).thenReturn("ou");
+
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(service).getProjectRoot(any(ImportProject.class));
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
+
+        doReturn(emptyList()).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any());
     }
 
     @Test
     public void testGetProjects_NullRepository() {
-        final Set<ImportProject> modules = service.getProjects(null);
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, null);
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -159,7 +185,7 @@ public class ProjectImportServiceImplTest {
 
     @Test
     public void testGetProjects_NullRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(null));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(null));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -167,7 +193,7 @@ public class ProjectImportServiceImplTest {
 
     @Test
     public void testGetProjects_EmptyRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(""));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(""));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -175,7 +201,7 @@ public class ProjectImportServiceImplTest {
 
     @Test
     public void testGetProjects_WhiteSpaceRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository("   "));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository("   "));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -201,7 +227,7 @@ public class ProjectImportServiceImplTest {
                                                                                 any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -238,7 +264,7 @@ public class ProjectImportServiceImplTest {
                                                                                 any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -276,7 +302,7 @@ public class ProjectImportServiceImplTest {
                                                                                 any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -363,7 +389,6 @@ public class ProjectImportServiceImplTest {
 
         verify(spaceConfigStorage).startBatch();
         verify(spaceConfigStorage).endBatch();
-
     }
 
     @Test
@@ -376,6 +401,16 @@ public class ProjectImportServiceImplTest {
         final String password = "fakePassword";
         final List<String> branches = Arrays.asList("master");
 
+        ImportProject importProject = mock(ImportProject.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(importProject.getCredentials().getUsername()).thenReturn(username);
+        when(importProject.getCredentials().getPassword()).thenReturn(password);
+        when(importProject.getOrigin()).thenReturn(repositoryURL);
+        when(importProject.getSelectedBranches()).thenReturn(branches);
+
+        org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
+        doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
+        when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
+
         final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
         when(repoService.createRepository(any(),
@@ -386,10 +421,7 @@ public class ProjectImportServiceImplTest {
         when(projectService.resolveProject(any(Repository.class))).thenReturn(project);
 
         final WorkspaceProject observedProject = service.importProject(organizationalUnit,
-                                                                       repositoryURL,
-                                                                       username,
-                                                                       password,
-                                                                       branches);
+                                                                       importProject);
 
         verify(repoService).createRepository(same(organizationalUnit),
                                              eq(GitRepository.SCHEME.toString()),
@@ -434,11 +466,12 @@ public class ProjectImportServiceImplTest {
         service.importProject(organizationalUnit,
                               importProject);
 
-        verify(service).importProject(organizationalUnit,
-                                      origin,
-                                      username,
-                                      password,
-                                      branches);
+        verify(repoService).createRepository(eq(organizationalUnit),
+                                             any(),
+                                             any(),
+                                             configurations.capture());
+
+        assertEquals(username, configurations.getValue().getUserName());
     }
 
     @Test
@@ -466,11 +499,6 @@ public class ProjectImportServiceImplTest {
         service.importProject(organizationalUnit,
                               importProject);
 
-        verify(service).importProject(organizationalUnit,
-                                      origin,
-                                      username,
-                                      password,
-                                      branches);
         verify(repoService).createRepository(any(),
                                              any(),
                                              any(),
@@ -492,6 +520,16 @@ public class ProjectImportServiceImplTest {
 
         final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
+        ImportProject importProject = mock(ImportProject.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(importProject.getCredentials().getUsername()).thenReturn(username);
+        when(importProject.getCredentials().getPassword()).thenReturn(password);
+        when(importProject.getOrigin()).thenReturn(repositoryURL);
+        when(importProject.getSelectedBranches()).thenReturn(branches);
+
+        org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
+        doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
+        when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
+
         when(repoService.createRepository(any(),
                                           any(),
                                           any(),
@@ -499,10 +537,7 @@ public class ProjectImportServiceImplTest {
         when(projectService.resolveProject(any(Repository.class))).thenReturn(project);
 
         final WorkspaceProject observedProject = service.importProject(organizationalUnit,
-                                                                       repositoryURL,
-                                                                       username,
-                                                                       password,
-                                                                       branches);
+                                                                       importProject);
 
         verify(repoService).createRepository(same(organizationalUnit),
                                              eq(GitRepository.SCHEME.toString()),
@@ -587,7 +622,7 @@ public class ProjectImportServiceImplTest {
                                                               "description",
                                                               repoURL,
                                                               emptyList());
-
+        doReturn(emptyList()).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any());
         when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
 
         final Repository repository = new GitRepository("example",
@@ -665,10 +700,11 @@ public class ProjectImportServiceImplTest {
                                                                          mock(Path.class)),
                                                               new Module());
         when(projectService.resolveProject(repository)).thenReturn(project);
-        when(repoService.createRepository(same(organizationalUnit),
-                                          eq(GitRepository.SCHEME.toString()),
-                                          any(),
-                                          any())).thenReturn(repository);
+
+        doReturn(repository).when(repoService).createRepository(same(organizationalUnit),
+                                                                eq(GitRepository.SCHEME.toString()),
+                                                                any(),
+                                                                any());
 
         final WorkspaceProject importedProject = service.importProject(organizationalUnit,
                                                                        importProject);

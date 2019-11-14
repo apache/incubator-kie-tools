@@ -42,9 +42,9 @@ import javax.inject.Named;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -52,7 +52,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryCopier;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -68,7 +68,6 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
@@ -89,11 +88,8 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
     private static final String DONE_MARKER_NAME = ".done";
     private static final String DEFAULT_GROUP_ID = "org.kie.playground";
     private static final String PLAYGROUND_DIRECTORY = ".kie-wb-playground";
-    private WorkspaceProjectService projectService;
     private RepositoryFactory repositoryFactory;
-    private RepositoryCopier repositoryCopier;
     private OrganizationalUnitService ouService;
-    private Event<NewProjectEvent> newProjectEvent;
     private final FileSystem systemFS;
     private ExampleRepository playgroundRepository;
     protected String md5;
@@ -104,7 +100,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
     public ExamplesServiceImpl(final @Named("ioStrategy") IOService ioService,
                                final RepositoryFactory repositoryFactory,
                                final KieModuleService moduleService,
-                               final RepositoryCopier repositoryCopier,
                                final OrganizationalUnitService ouService,
                                final WorkspaceProjectService projectService,
                                final MetadataService metadataService,
@@ -112,7 +107,9 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
                                final ProjectScreenService projectScreenService,
                                final ImportProjectValidators validators,
                                final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
-                               final @Named("systemFS") FileSystem systemFS) {
+                               final @Named("systemFS") FileSystem systemFS,
+                               final PathUtil pathUtil,
+                               final RepositoryService repoService) {
 
         super(ioService,
               metadataService,
@@ -120,16 +117,17 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
               moduleService,
               projectService,
               projectScreenService,
-              spaceConfigStorageRegistry);
+              spaceConfigStorageRegistry,
+              pathUtil,
+              repoService,
+              newProjectEvent);
 
         this.ioService = ioService;
         this.repositoryFactory = repositoryFactory;
         this.moduleService = moduleService;
-        this.repositoryCopier = repositoryCopier;
         this.ouService = ouService;
         this.projectService = projectService;
         this.metadataService = metadataService;
-        this.newProjectEvent = newProjectEvent;
         this.projectScreenService = projectScreenService;
         this.validators = validators;
         this.systemFS = systemFS;
@@ -402,9 +400,9 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
     }
 
     @Override
-    public Set<ImportProject> getExampleProjects() {
+    public Set<ImportProject> getExampleProjects(OrganizationalUnit targetOu) {
         ExampleRepository repos = this.getPlaygroundRepository();
-        return this.getProjects(repos);
+        return this.getProjects(targetOu, repos);
     }
 
     protected OrganizationalUnit getOrganizationalUnit(String targetOUName) {
@@ -435,45 +433,13 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
         this.playgroundRepository = playgroundRepository;
     }
 
-    protected WorkspaceProjectContextChangeEvent importProjects(OrganizationalUnit targetOU,
-                                                                List<ImportProject> projects) {
-
-        return spaceConfigStorageRegistry.getBatch(targetOU.getSpace().getName())
-                .run(context -> {
-
-                    WorkspaceProject firstExampleProject = null;
-
-                    for (final ImportProject importProject : projects) {
-                        try {
-                            final Repository targetRepository = repositoryCopier.copy(targetOU,
-                                                                                      "example-" + importProject.getName(),
-                                                                                      importProject.getRoot());
-
-                            // Signal creation of new Project (Creation of OU and Repository, if applicable,
-                            // are already handled in the corresponding services).
-                            WorkspaceProject project = projectService.resolveProject(targetRepository);
-                            project = renameIfNecessary(targetOU,
-                                                        project);
-                            newProjectEvent.fire(new NewProjectEvent(project));
-
-                            //Store first new example project
-                            if (firstExampleProject == null) {
-                                firstExampleProject = project;
-                            }
-                        } catch (IOException ioe) {
-                            logger.error("Unable to create Example(s).",
-                                         ioe);
-                        }
-                    }
-
-                    return new WorkspaceProjectContextChangeEvent(firstExampleProject,
-                                                                  firstExampleProject.getMainModule());
-                });
+    protected boolean existSpace(String space) {
+        return this.existSpace(space, getNiogitPath());
     }
 
-    protected boolean existSpace(String space) {
+    protected boolean existSpace(String space, java.nio.file.Path path) {
         try {
-            DirectoryStream<Path> spaces = Files.newDirectoryStream(getNiogitPath());
+            DirectoryStream<Path> spaces = Files.newDirectoryStream(path);
             return StreamSupport.stream(spaces.spliterator(), false)
                     .filter(s -> s.getFileName().toString().equalsIgnoreCase(space))
                     .findFirst()

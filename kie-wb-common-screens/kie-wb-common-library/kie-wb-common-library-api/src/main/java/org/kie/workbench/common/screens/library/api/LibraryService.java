@@ -62,7 +62,7 @@ public interface LibraryService {
 
     Boolean hasAssets(final WorkspaceProject project);
 
-    Set<ImportProject> getExampleProjects();
+    Set<ImportProject> getExampleProjects(OrganizationalUnit organizationalUnit);
 
     List<OrganizationalUnit> getOrganizationalUnits();
 

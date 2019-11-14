@@ -11,8 +11,6 @@
 
   <inherits name="org.kie.workbench.common.screens.library.LibraryAPI"/>
 
-  <inherits name="org.kie.workbench.common.screens.examples.KieWorkbenchCommonExamplesClient" />
-
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <inherits name="org.dashbuilder.DisplayerAPI"/>

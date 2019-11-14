@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,50 +12,45 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.kie.workbench.common.screens.examples.backend.validation;
 
+import java.text.MessageFormat;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidator;
 
-/**
- * Validates if Project POM contains any module. No modules should be found to be a valid project.
- */
 @ApplicationScoped
-public class CheckModulesValidator extends ImportProjectValidator {
+public class NameAlreadyExistValidator extends ImportProjectValidator {
 
-    private POMService pomService;
+    private ProjectImportService projectImportService;
 
-    public CheckModulesValidator() {
+    public NameAlreadyExistValidator() {
     }
 
     @Inject
-    public CheckModulesValidator(POMService pomService) {
-        this.pomService = pomService;
+    public NameAlreadyExistValidator(ProjectImportService projectImportService) {
+
+        this.projectImportService = projectImportService;
     }
 
     @Override
     protected Optional<ExampleProjectError> getError(OrganizationalUnit ou, ImportProject importProject) {
-
-        POM pom = this.getPom(pomService,
-                              importProject.getRoot());
-
-        if (pom.getModules() == null || pom.getModules().isEmpty()) {
-            return Optional.empty();
+        if (this.projectImportService.exist(ou, importProject)) {
+            String errorPattern = "Project <{1}> already exists in space <{0}>";
+            return Optional.of(new ExampleProjectError(NameAlreadyExistValidator.class.getCanonicalName(),
+                                                       errorPattern,
+                                                       ou.getSpace().getName(), importProject.getName()));
         } else {
-            return Optional.of(new ExampleProjectError(CheckModulesValidator.class.getCanonicalName(),
-                                                       ""));
+            return Optional.empty();
         }
     }
 }

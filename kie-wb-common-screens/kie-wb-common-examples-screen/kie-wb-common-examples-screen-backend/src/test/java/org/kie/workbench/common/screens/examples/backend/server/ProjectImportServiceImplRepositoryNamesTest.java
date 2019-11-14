@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
@@ -45,6 +46,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.exception.ProjectAlreadyExistException;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -63,11 +65,18 @@ import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectImportServiceImplRepositoryNamesTest {
@@ -240,6 +249,10 @@ public class ProjectImportServiceImplRepositoryNamesTest {
         String module1 = "module1";
         String module1_1 = "module1 [1]";
 
+        doCallRealMethod().when(service).importProject(any(), any());
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(service).getProjectRoot(any(ImportProject.class));
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(pathUtil).convert(any(Path.class));
+
         WorkspaceProject project1 = mock(WorkspaceProject.class,
                                          Answers.RETURNS_DEEP_STUBS.get());
         doReturn(module1).when(project1).getName();
@@ -248,68 +261,19 @@ public class ProjectImportServiceImplRepositoryNamesTest {
         projects.add(project1);
         projects.add(project1);
 
-        doReturn(project1).when(service).importProject(eq(organizationalUnit),
-                                                       any());
-
         doReturn(projects).when(projectService).getAllWorkspaceProjectsByName(any(),
                                                                               eq(module1));
 
         doReturn(module1_1).when(projectService).createFreshProjectName(any(),
                                                                         eq(module1));
 
-        service.importProjects(organizationalUnit,
-                               importProjects);
-
-        verify(projectScreenService).save(any(),
-                                          modelCapture.capture(),
-                                          any());
-        final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals(module1_1,
-                     model.getPOM().getName());
-    }
-
-    @Test
-    public void evenTheSecundaryNameIsTaken() {
-        String module = "module1";
-        String module_1 = "module1 [1]";
-        String module_2 = "module1 [2]";
-
-        doReturn(module_2).when(projectService).createFreshProjectName(any(),
-                                                                       eq(module));
-
-        WorkspaceProject project1 = mock(WorkspaceProject.class,
-                                         Answers.RETURNS_DEEP_STUBS.get());
-        doReturn(module).when(project1).getName();
-        when(project1.getMainModule().getPomXMLPath()).thenReturn(mock(Path.class));
-        List<WorkspaceProject> projects1 = new ArrayList<>();
-        projects1.add(project1);
-        projects1.add(project1);
-
-        doReturn(project1).when(service).importProject(eq(organizationalUnit),
-                                                       eq(exProject1));
-
-        doReturn(projects1).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                               eq(module));
-
-        WorkspaceProject project2 = mock(WorkspaceProject.class,
-                                         Answers.RETURNS_DEEP_STUBS.get());
-        doReturn(module_1).when(project2).getName();
-        when(project2.getMainModule().getPomXMLPath()).thenReturn(mock(Path.class));
-        List<WorkspaceProject> projects2 = new ArrayList<>();
-        projects2.add(project2);
-        doReturn(projects2).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                               eq(module_1));
-
-        service.importProjects(organizationalUnit,
-                               importProjects);
-
-        verify(projectScreenService).save(any(),
-                                          modelCapture.capture(),
-                                          any());
-        final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals(module_2, model.getPOM().getName());
-
-        verify(spaceConfigStorage).startBatch();
-        verify(spaceConfigStorage).endBatch();
+        try {
+            service.importProjects(organizationalUnit,
+                                   importProjects);
+            fail("An exception should be rise");
+        } catch (ProjectAlreadyExistException ex) {
+            assertNotNull(ex);
+            System.out.println(ex.getMessage());
+        }
     }
 }

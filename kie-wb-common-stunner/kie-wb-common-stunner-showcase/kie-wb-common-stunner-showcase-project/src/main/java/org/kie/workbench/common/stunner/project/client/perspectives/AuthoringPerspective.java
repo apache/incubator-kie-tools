@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -66,9 +65,6 @@ public class AuthoringPerspective {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private ExamplesWizard wizard;
-
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
@@ -88,9 +84,6 @@ public class AuthoringPerspective {
 
     private Menus buildMenuBarWithExamples() {
         return MenuFactory
-                .newTopLevelMenu(AppConstants.INSTANCE.Examples())
-                .respondsWith(() -> wizard.start())
-                .endMenu()
                 .newTopLevelMenu(AppConstants.INSTANCE.Explore())
                 .withItems(getExploreMenuItems())
                 .endMenu()

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -99,7 +100,8 @@ public class ImportRepositoryPopUpPresenter {
                                view.hideBusyIndicator();
                                view.showError(view.getNoProjectsToImportMessage());
                                return false;
-                           }).getProjects(new ExampleRepository(repositoryUrl.trim(),
+                           }).getProjects(this.libraryPlaces.getActiveSpace(),
+                                          new ExampleRepository(repositoryUrl.trim(),
                                                                 new Credentials(
                                                                         view.getUserName(),
                                                                         view.getPassword())));

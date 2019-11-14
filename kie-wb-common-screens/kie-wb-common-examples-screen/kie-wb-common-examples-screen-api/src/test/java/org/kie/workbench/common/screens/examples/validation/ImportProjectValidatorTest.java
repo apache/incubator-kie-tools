@@ -20,19 +20,23 @@ package org.kie.workbench.common.screens.examples.validation;
 import java.util.Optional;
 
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImportProjectValidatorTest {
@@ -82,7 +86,7 @@ public class ImportProjectValidatorTest {
     private class TestValidator extends ImportProjectValidator {
 
         @Override
-        protected Optional<ExampleProjectError> getError(Path projectPath) {
+        protected Optional<ExampleProjectError> getError(OrganizationalUnit ou, ImportProject importProject) {
             return Optional.empty();
         }
     }

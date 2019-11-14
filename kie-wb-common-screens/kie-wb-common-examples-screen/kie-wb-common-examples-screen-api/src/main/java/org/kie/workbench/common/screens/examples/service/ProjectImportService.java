@@ -17,28 +17,11 @@
 
 package org.kie.workbench.common.screens.examples.service;
 
-import java.util.List;
-
-import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 
 @Remote
 public interface ProjectImportService extends ImportService,
                                               PriorityDisposable {
 
-    WorkspaceProjectContextChangeEvent importProjects(final OrganizationalUnit activeOU,
-                                                      final List<ImportProject> projects);
-
-    WorkspaceProject importProject(final OrganizationalUnit activeOU,
-                                   final ImportProject projects);
-
-    WorkspaceProject importProject(final OrganizationalUnit targetOU,
-                                   final String repositoryURL,
-                                   final String username,
-                                   final String password,
-                                   final List<String> branches);
 }

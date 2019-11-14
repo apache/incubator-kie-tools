@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -38,6 +39,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.RepositoryCopier;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
@@ -47,6 +49,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.exception.ProjectAlreadyExistException;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
@@ -89,9 +92,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
 
     @Mock
     private KieModuleService moduleService;
-
-    @Mock
-    private RepositoryCopier repositoryCopier;
 
     @Mock
     private OrganizationalUnitService ouService;
@@ -143,8 +143,13 @@ public class ExamplesServiceImplRepositoryNamesTest {
     @Mock
     private ImportProjectValidators validators;
 
+    private PathUtil pathUtil = new PathUtil();
+
     @Mock
     private FileSystem systemFS;
+
+    @Mock
+    private RepositoryService repositoryService;
 
     @Before
     public void setup() {
@@ -158,7 +163,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
@@ -166,7 +170,9 @@ public class ExamplesServiceImplRepositoryNamesTest {
                                               projectScreenService,
                                               validators,
                                               spaceConfigStorageRegistry,
-                                              systemFS));
+                                              systemFS,
+                                              pathUtil,
+                                              repositoryService));
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
 
@@ -218,12 +224,11 @@ public class ExamplesServiceImplRepositoryNamesTest {
 
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(ou);
 
-        doReturn("module1").when(repository1).getAlias();
-        doReturn(repository1).when(repositoryCopier).copy(eq(ou),
-                                                          anyString(),
-                                                          eq(module1Root));
-
         final WorkspaceProject project = spy(new WorkspaceProject());
+        doReturn("module1").when(repository1).getAlias();
+        doReturn(project).when(service).importProject(eq(ou),
+                                                      eq(exProject1));
+
         doReturn(repository1.getAlias()).when(project).getName();
         doReturn(mock(Module.class)).when(project).getMainModule();
         doReturn(ou).when(project).getOrganizationalUnit();
@@ -240,9 +245,8 @@ public class ExamplesServiceImplRepositoryNamesTest {
         service.setupExamples(exampleOrganizationalUnit,
                               importProjects);
 
-        verify(repositoryCopier).copy(any(OrganizationalUnit.class),
-                                      eq("example-module1"),
-                                      any(Path.class));
+        verify(service).importProject(any(OrganizationalUnit.class),
+                                      any(ImportProject.class));
         verify(projectScreenService,
                never()).save(any(),
                              any(),
@@ -253,6 +257,8 @@ public class ExamplesServiceImplRepositoryNamesTest {
     public void nameIsTaken() {
         String module1 = "module1";
         String module1_1 = "module1 [1]";
+
+        doCallRealMethod().when(service).importProject(any(), any());
 
         WorkspaceProject project1 = mock(WorkspaceProject.class);
         doReturn(module1).when(project1).getName();
@@ -265,49 +271,12 @@ public class ExamplesServiceImplRepositoryNamesTest {
         doReturn(module1_1).when(projectService).createFreshProjectName(any(),
                                                                         eq(module1));
 
-        service.setupExamples(exampleOrganizationalUnit,
-                              importProjects);
-
-        verify(projectScreenService).save(any(),
-                                          modelCapture.capture(),
-                                          any());
-        final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals(module1_1,
-                     model.getPOM().getName());
-    }
-
-    @Test
-    public void evenTheSecundaryNameIsTaken() {
-        String module = "module1";
-        String module_1 = "module1 [1]";
-        String module_2 = "module1 [2]";
-
-        doReturn(module_2).when(projectService).createFreshProjectName(any(),
-                                                                       eq(module));
-
-        WorkspaceProject project1 = mock(WorkspaceProject.class);
-        doReturn(module).when(project1).getName();
-        List<WorkspaceProject> projects1 = new ArrayList<>();
-        projects1.add(project1);
-        projects1.add(project1);
-        doReturn(projects1).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                               eq(module));
-
-        WorkspaceProject project2 = mock(WorkspaceProject.class);
-        doReturn(module_1).when(project2).getName();
-        List<WorkspaceProject> projects2 = new ArrayList<>();
-        projects2.add(project2);
-        doReturn(projects2).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                               eq(module_1));
-
-        service.setupExamples(exampleOrganizationalUnit,
-                              importProjects);
-
-        verify(projectScreenService).save(any(),
-                                          modelCapture.capture(),
-                                          any());
-        final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals(module_2,
-                     model.getPOM().getName());
+        try {
+            service.setupExamples(exampleOrganizationalUnit,
+                                  importProjects);
+            fail("Should raise exception");
+        } catch (ProjectAlreadyExistException ex) {
+            assertNotNull(ex);
+        }
     }
 }

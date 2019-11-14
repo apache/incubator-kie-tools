@@ -34,7 +34,6 @@
   <modules>
     <module>kie-wb-common-examples-screen-api</module>
     <module>kie-wb-common-examples-screen-backend</module>
-    <module>kie-wb-common-examples-screen-client</module>
   </modules>
 
 

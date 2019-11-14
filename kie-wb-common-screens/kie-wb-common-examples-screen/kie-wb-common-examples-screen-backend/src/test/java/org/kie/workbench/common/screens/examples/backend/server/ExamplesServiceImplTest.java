@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.examples.backend.server;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 
 import org.apache.commons.io.FileUtils;
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
@@ -46,7 +48,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.RepositoryCopier;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -77,6 +79,7 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -104,9 +107,6 @@ public class ExamplesServiceImplTest {
 
     @Mock
     private KieModuleService moduleService;
-
-    @Mock
-    private RepositoryCopier repositoryCopier;
 
     @Mock
     private OrganizationalUnitService ouService;
@@ -159,6 +159,11 @@ public class ExamplesServiceImplTest {
     @Mock
     private FileSystem systemFS;
 
+    private PathUtil pathUtil = new PathUtil();
+
+    @Mock
+    private RepositoryService repositoryService;
+
     @Before
     public void setup() throws Exception {
 
@@ -172,7 +177,6 @@ public class ExamplesServiceImplTest {
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
@@ -180,7 +184,9 @@ public class ExamplesServiceImplTest {
                                               projectScreenService,
                                               validators,
                                               spaceConfigStorageRegistry,
-                                              systemFS));
+                                              systemFS,
+                                              pathUtil,
+                                              repositoryService));
 
         FileUtils.deleteDirectory(new File(".kie-wb-playground"));
 
@@ -259,7 +265,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_NullRepository() {
-        final Set<ImportProject> modules = service.getProjects(null);
+        final Set<ImportProject> modules = service.getProjects(ou, null);
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -267,7 +273,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_NullRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(null));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository(null));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -275,7 +281,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_EmptyRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(""));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository(""));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -283,7 +289,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_WhiteSpaceRepositoryUrl() {
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository("   "));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository("   "));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -308,7 +314,7 @@ public class ExamplesServiceImplTest {
         service.setPlaygroundRepository(mock(ExampleRepository.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -342,7 +348,7 @@ public class ExamplesServiceImplTest {
         }});
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -377,7 +383,7 @@ public class ExamplesServiceImplTest {
         }});
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
+        final Set<ImportProject> modules = service.getProjects(ou, new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
@@ -432,10 +438,11 @@ public class ExamplesServiceImplTest {
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(null);
         when(ouService.createOrganizationalUnit(eq("ou"),
                                                 eq(""))).thenReturn(ou);
-        when(repositoryCopier.copy(eq(ou),
-                                   anyString(),
-                                   eq(moduleRoot))).thenReturn(repository);
         final WorkspaceProject project = spy(new WorkspaceProject());
+
+        doReturn(project).when(service).importProject(eq(ou),
+                                                      eq(exModule));
+
         doReturn("project").when(project).getName();
         doReturn(project).when(projectService).resolveProject(repository);
 
@@ -449,10 +456,9 @@ public class ExamplesServiceImplTest {
         verify(ouService,
                times(1)).createOrganizationalUnit(eq("ou"),
                                                   eq(""));
-        verify(repositoryCopier,
-               times(1)).copy(eq(ou),
-                              anyString(),
-                              eq(moduleRoot));
+        verify(service,
+               times(1)).importProject(eq(ou),
+                                       eq(exModule));
         verify(newProjectEvent,
                times(1)).fire(any(NewProjectEvent.class));
     }
@@ -491,31 +497,29 @@ public class ExamplesServiceImplTest {
 
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(ou);
 
-        doReturn(repository1).when(repositoryCopier).copy(eq(ou),
-                                                          anyString(),
-                                                          eq(module1Root));
-
-        doReturn(repository1).when(repositoryCopier).copy(eq(ou),
-                                                          anyString(),
-                                                          eq(module2Root));
         final WorkspaceProject project = spy(new WorkspaceProject());
+
+        doReturn(project).when(service).importProject(eq(ou),
+                                                      eq(exProject1));
+
+        doReturn(project).when(service).importProject(eq(ou),
+                                                      eq(exProject2));
         doReturn("project").when(project).getName();
         doReturn(project).when(projectService).resolveProject(repository1);
 
         final WorkspaceProjectContextChangeEvent event = service.setupExamples(exOU,
                                                                                exProjects);
 
-        assertNull(event.getOrganizationalUnit());
-        assertEquals(project,
-                     event.getWorkspaceProject());
+        assertNull(event.getWorkspaceProject());
+        assertEquals(ou,
+                     event.getOrganizationalUnit());
 
         verify(ouService,
                never()).createOrganizationalUnit(eq("ou"),
                                                  eq(""));
-        verify(repositoryCopier,
-               times(2)).copy(eq(ou),
-                              anyString(),
-                              any(Path.class));
+        verify(service,
+               times(2)).importProject(eq(ou),
+                                       any(ImportProject.class));
 
         verify(newProjectEvent,
                times(2)).fire(any(NewProjectEvent.class));
@@ -563,6 +567,13 @@ public class ExamplesServiceImplTest {
         OrganizationalUnit ou1 = mock(OrganizationalUnit.class);
         when(ou1.getName()).thenReturn(".playground-1234");
         assertTrue(service.isOldPlayground(ou1));
+    }
+
+    @Test
+    public void testExistSpace() {
+        java.nio.file.Path path = Paths.get("src/test/resources/niogit-test");
+        assertTrue(service.existSpace(".playground-hidden", path));
+        assertFalse(service.existSpace(".playground-1235", path));
     }
 }
 

@@ -369,13 +369,13 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public Set<ImportProject> getExampleProjects() {
+    public Set<ImportProject> getExampleProjects(OrganizationalUnit organizationalUnit) {
         final String importProjectsUrl = getCustomImportProjectsUrl();
         final ExampleRepository repository = importProjectsUrl == null || importProjectsUrl.isEmpty()
                 ? examplesService.getPlaygroundRepository()
                 : new ExampleRepository(importProjectsUrl);
 
-        final Set<ImportProject> projects = examplesService.getProjects(repository);
+        final Set<ImportProject> projects = examplesService.getProjects(organizationalUnit, repository);
 
         return projects;
     }
@@ -403,7 +403,7 @@ public class LibraryServiceImpl implements LibraryService {
                                                                                      Integer.MAX_VALUE)).getResults();
             return users.stream().map(User::getIdentifier).collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error while searching all users: " + e.getClass().getCanonicalName() );
+            log.error("Error while searching all users: " + e.getClass().getCanonicalName());
             return Collections.emptyList();
         }
     }

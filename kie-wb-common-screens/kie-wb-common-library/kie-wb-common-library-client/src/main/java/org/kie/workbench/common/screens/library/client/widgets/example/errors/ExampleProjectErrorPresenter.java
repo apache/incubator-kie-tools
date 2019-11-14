@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.library.client.widgets.example.errors;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
@@ -54,11 +55,11 @@ public class ExampleProjectErrorPresenter {
     protected String translateError(ExampleProjectError error) {
         String id = error.getId();
         String message;
-        if (error.getDescription() == null || error.getDescription().isEmpty()) {
+        if (error.getValues().length == 0) {
             message = this.ts.getTranslation(getId(id));
         } else {
             message = this.ts.format(getId(id),
-                                     error.getDescription());
+                                     error.getValues());
         }
         return "- " + (message == null ? error.getId() : message);
     }

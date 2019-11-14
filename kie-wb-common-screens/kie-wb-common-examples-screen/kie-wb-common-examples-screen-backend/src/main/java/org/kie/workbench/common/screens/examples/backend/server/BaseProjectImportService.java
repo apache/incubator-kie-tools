@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +26,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import javax.enterprise.event.Event;
+
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -38,19 +46,27 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.examples.exception.ProjectAlreadyExistException;
+import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ImportService;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidator;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
-import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 import static java.util.stream.Collectors.toList;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
@@ -67,6 +83,9 @@ public abstract class BaseProjectImportService implements ImportService {
     protected WorkspaceProjectService projectService;
     protected ProjectScreenService projectScreenService;
     protected SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+    private PathUtil pathUtil;
+    private RepositoryService repoService;
+    private Event<NewProjectEvent> newProjectEvent;
 
     public BaseProjectImportService(final IOService ioService,
                                     final MetadataService metadataService,
@@ -74,7 +93,10 @@ public abstract class BaseProjectImportService implements ImportService {
                                     final KieModuleService moduleService,
                                     final WorkspaceProjectService projectService,
                                     final ProjectScreenService projectScreenService,
-                                    final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
+                                    final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
+                                    final PathUtil pathUtil,
+                                    final RepositoryService repoService,
+                                    final Event<NewProjectEvent> newProjectEvent) {
         this.ioService = ioService;
 
         this.metadataService = metadataService;
@@ -83,6 +105,9 @@ public abstract class BaseProjectImportService implements ImportService {
         this.projectService = projectService;
         this.projectScreenService = projectScreenService;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
+        this.pathUtil = pathUtil;
+        this.repoService = repoService;
+        this.newProjectEvent = newProjectEvent;
     }
 
     protected String getRepositoryAlias(String url) {
@@ -149,12 +174,12 @@ public abstract class BaseProjectImportService implements ImportService {
         return description;
     }
 
-    protected Set<ImportProject> validateProjects(Set<ImportProject> projects) {
+    protected Set<ImportProject> validateProjects(OrganizationalUnit targetOu, Set<ImportProject> projects) {
         return projects
                 .stream()
                 .map(project -> {
                     List<ExampleProjectError> errors = getValidators().stream()
-                            .map(exampleProjectValidation -> exampleProjectValidation.validate(project))
+                            .map(exampleProjectValidation -> exampleProjectValidation.validate(targetOu, project))
                             .filter(Optional::isPresent)
                             .map(Optional::get)
                             .collect(toList());
@@ -214,33 +239,29 @@ public abstract class BaseProjectImportService implements ImportService {
         }};
     }
 
-    protected WorkspaceProject renameIfNecessary(final OrganizationalUnit ou,
-                                                 final WorkspaceProject project) {
-
+    @Override
+    public boolean exist(final OrganizationalUnit ou,
+                         final ImportProject project) {
         String name = project.getName();
         Collection<WorkspaceProject> projectsWithSameName = projectService.getAllWorkspaceProjectsByName(ou,
                                                                                                          name);
+        return !projectsWithSameName.isEmpty();
+    }
 
-        if (projectsWithSameName.size() > 1) {
-            name = this.projectService.createFreshProjectName(ou,
-                                                              project.getName());
+    public void checkIfProjectAlreadyExist(final OrganizationalUnit ou,
+                                           final ImportProject project) {
+
+        if (this.exist(ou, project)) {
+            String message = "Space [{0}] already contains a project with name [{1}]. " +
+                    "Please delete existing project or create a new one with a different name";
+            throw new ProjectAlreadyExistException(MessageFormat.format(message,
+                                                                        ou.getSpace().getName(),
+                                                                        project.getName()));
         }
-
-        if (!name.equals(project.getName())) {
-            final Path pomXMLPath = project.getMainModule().getPomXMLPath();
-            final ProjectScreenModel model = projectScreenService.load(pomXMLPath);
-            model.getPOM().setName(name);
-            projectScreenService.save(pomXMLPath,
-                                      model,
-                                      "");
-            return projectService.resolveProject(pomXMLPath);
-        }
-
-        return project;
     }
 
     @Override
-    public Set<ImportProject> getProjects(final ExampleRepository repository) {
+    public Set<ImportProject> getProjects(final OrganizationalUnit target, final ExampleRepository repository) {
 
         if (repository == null) {
             return Collections.emptySet();
@@ -258,11 +279,146 @@ public abstract class BaseProjectImportService implements ImportService {
 
         Set<ImportProject> importProjects = convert(gitRepository.getBranch("master").get(),
                                                     repository);
-        return validateProjects(importProjects);
+        return validateProjects(target, importProjects);
     }
 
     protected List<ImportProjectValidator> getValidators() {
         return this.validators.getValidators();
+    }
+
+    @Override
+    public WorkspaceProject importProject(OrganizationalUnit organizationalUnit, ImportProject importProject) {
+        this.checkIfProjectAlreadyExist(organizationalUnit,
+                                        importProject);
+        final org.uberfire.java.nio.file.Path rootPath = getProjectRoot(importProject);
+        String origin = importProject.getOrigin();
+        final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+        configurations.setInit(false);
+        configurations.setOrigin(origin);
+        configurations.setBranches(getBranches(importProject,
+                                               rootPath));
+        Credentials credentials = importProject.getCredentials();
+        if (credentials != null && credentials.getUsername() != null && credentials.getPassword() != null) {
+            configurations.setUserName(credentials.getUsername());
+            configurations.setPassword(credentials.getPassword());
+        }
+        configurations.setMirror(false);
+
+        String projectName = importProject.getName();
+        if (!pathUtil.convert(importProject.getRoot()).equals(rootPath)) {
+            final String subdirectoryPath = pathUtil.stripRepoNameAndSpace(pathUtil.stripProtocolAndBranch(importProject.getRoot().toURI()));
+            configurations.setSubdirectory(subdirectoryPath);
+        } else {
+            projectName = inferProjectName(importProject.getOrigin());
+        }
+
+        final Repository importedRepo = repoService.createRepository(organizationalUnit,
+                                                                     GitRepository.SCHEME.toString(),
+                                                                     projectName,
+                                                                     configurations);
+
+        // Signal creation of new Project (Creation of OU and Repository, if applicable,
+        // are already handled in the corresponding services).
+        WorkspaceProject project = projectService.resolveProject(importedRepo);
+        return project;
+    }
+
+    protected List<String> getBranches(final org.uberfire.java.nio.file.Path rootPath,
+                                       final org.uberfire.backend.vfs.Path projectPath) {
+        final FileSystem fs = rootPath.getFileSystem();
+        final String exampleRootPath = pathUtil.stripRepoNameAndSpace(pathUtil.stripProtocolAndBranch(projectPath.toURI()));
+        return StreamSupport.stream(fs.getRootDirectories().spliterator(),
+                                    false)
+                .filter(root -> exists(root.resolve(exampleRootPath)))
+                .map(pathUtil::convert)
+                .map(root -> pathUtil.extractBranch(root.toURI()))
+                .flatMap(oBranch -> oBranch.map(Stream::of).orElse(Stream.empty()))
+                .collect(toList());
+    }
+
+    protected List<String> getBranches(final ImportProject importProject,
+                                       final org.uberfire.java.nio.file.Path rootPath) {
+        if (importProject.getSelectedBranches() == null || importProject.getSelectedBranches().isEmpty()) {
+            return getBranches(rootPath,
+                               importProject.getRoot());
+        }
+
+        return importProject.getSelectedBranches();
+    }
+
+    protected org.uberfire.java.nio.file.Path getProjectRoot(final ImportProject importProject) {
+        return getProjectRoot(importProject.getRoot());
+    }
+
+    protected org.uberfire.java.nio.file.Path getProjectRoot(final org.uberfire.backend.vfs.Path rootPath) {
+        return Stream.iterate(pathUtil.convert(rootPath),
+                              p -> p.getParent())
+                .filter(p -> p != null && p.getParent() == null)
+                .findFirst()
+                .get();
+    }
+
+    private boolean exists(org.uberfire.java.nio.file.Path path) {
+        try {
+            final FileSystemProvider provider = path.getFileSystem().provider();
+            provider.readAttributes(path,
+                                    BasicFileAttributes.class);
+
+            return true;
+        } catch (NoSuchFileException nfe) {
+            return false;
+        }
+    }
+
+    @Override
+    public WorkspaceProjectContextChangeEvent importProjects(OrganizationalUnit activeOU,
+                                                             List<ImportProject> projects) {
+
+        PortablePreconditions.checkNotNull("activeOU",
+                                           activeOU);
+        PortablePreconditions.checkNotNull("projects",
+                                           projects);
+        PortablePreconditions.checkCondition("Must have at least one Project",
+                                             projects.size() > 0);
+
+        return spaceConfigStorageRegistry.getBatch(activeOU.getSpace().getName())
+                .run(context -> {
+                    List<WorkspaceProject> importedProjects = projects.stream()
+                            .map(exampleProject -> {
+                                WorkspaceProject project = this.importProject(activeOU,
+                                                                              exampleProject);
+
+                                newProjectEvent.fire(new NewProjectEvent(project));
+
+                                return project;
+                            })
+                            .collect(Collectors.toList());
+
+                    if (importedProjects.size() == 1) {
+                        final WorkspaceProject importedProject = importedProjects.get(0);
+                        return new WorkspaceProjectContextChangeEvent(importedProject,
+                                                                      importedProject.getMainModule());
+                    } else {
+                        return new WorkspaceProjectContextChangeEvent(activeOU);
+                    }
+                });
+    }
+
+    protected String inferProjectName(String repositoryURL) {
+        repositoryURL = repositoryURL.replaceAll("\\\\",
+                                                 "/");
+        if (repositoryURL.endsWith(".git")) {
+            repositoryURL = repositoryURL.substring(0,
+                                                    repositoryURL.length() - 4);
+        }
+        if (repositoryURL.endsWith("/")) {
+            repositoryURL = repositoryURL.substring(0,
+                                                    repositoryURL.length() - 1);
+        }
+        if (repositoryURL.lastIndexOf('/') < 0) {
+            return "new-project";
+        }
+        return repositoryURL.substring(repositoryURL.lastIndexOf('/') + 1);
     }
 
     protected abstract Repository resolveGitRepository(final ExampleRepository exampleRepository);
