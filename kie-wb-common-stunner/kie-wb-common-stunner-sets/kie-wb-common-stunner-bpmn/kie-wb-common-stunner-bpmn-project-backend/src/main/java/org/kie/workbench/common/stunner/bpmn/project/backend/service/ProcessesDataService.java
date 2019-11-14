@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestProcessD
 import org.kie.workbench.common.stunner.bpmn.project.backend.query.FindBpmnProcessIdsQuery;
 import org.uberfire.backend.vfs.Path;
 
-@ApplicationScoped
+@Dependent
 public class ProcessesDataService {
 
     private final RefactoringQueryService queryService;
