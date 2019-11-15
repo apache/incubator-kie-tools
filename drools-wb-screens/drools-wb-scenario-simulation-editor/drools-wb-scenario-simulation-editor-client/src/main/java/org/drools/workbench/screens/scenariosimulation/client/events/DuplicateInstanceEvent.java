@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DuplicateInstanceEventHandler;
 
 /**
@@ -25,18 +26,26 @@ public class DuplicateInstanceEvent extends GwtEvent<DuplicateInstanceEventHandl
 
     public static final Type<DuplicateInstanceEventHandler> TYPE = new Type<>();
 
-    private int columnIndex;
+    private final GridWidget gridWidget;
+    private final int columnIndex;
 
     /**
+     *
+     * @param gridWidget
      * @param columnIndex
      */
-    public DuplicateInstanceEvent(int columnIndex) {
+    public DuplicateInstanceEvent(GridWidget gridWidget, int columnIndex) {
+        this.gridWidget = gridWidget;
         this.columnIndex = columnIndex;
     }
 
     @Override
     public Type<DuplicateInstanceEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public int getColumnIndex() {

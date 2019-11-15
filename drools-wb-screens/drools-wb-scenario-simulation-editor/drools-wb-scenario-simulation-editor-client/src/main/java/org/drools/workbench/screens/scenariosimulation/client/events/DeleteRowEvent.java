@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteRowEventHandler;
 
 /**
@@ -25,15 +26,26 @@ public class DeleteRowEvent extends GwtEvent<DeleteRowEventHandler> {
 
     public static final Type<DeleteRowEventHandler> TYPE = new Type<>();
 
-    private int rowIndex;
+    private final GridWidget gridWidget;
+    private final int rowIndex;
 
-    public DeleteRowEvent(int rowIndex) {
+    /**
+     *
+     * @param gridWidget
+     * @param rowIndex
+     */
+    public DeleteRowEvent(GridWidget gridWidget, int rowIndex) {
+        this.gridWidget = gridWidget;
         this.rowIndex = rowIndex;
     }
 
     @Override
     public Type<DeleteRowEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public int getRowIndex() {

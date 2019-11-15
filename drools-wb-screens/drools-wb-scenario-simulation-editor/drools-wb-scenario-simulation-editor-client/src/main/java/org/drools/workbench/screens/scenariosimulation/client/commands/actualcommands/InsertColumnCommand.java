@@ -17,7 +17,9 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import javax.enterprise.context.Dependent;
 
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
@@ -26,6 +28,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
  */
 @Dependent
 public class InsertColumnCommand extends AbstractSelectedColumnCommand {
+
+    public InsertColumnCommand(GridWidget gridWidget) {
+        super(gridWidget, FactMappingValueType.NOT_EXPRESSION);
+    }
+
+    private InsertColumnCommand() {
+        // CDI
+    }
 
     @Override
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
@@ -36,7 +46,7 @@ public class InsertColumnCommand extends AbstractSelectedColumnCommand {
         if (context.getStatus().isAsProperty()) {
             columnPosition = context.getStatus().isRight() ? context.getStatus().getColumnIndex() + 1 : context.getStatus().getColumnIndex();
         } else {
-            GridData.Range instanceRange = context.getSelectedScenarioGridModel().getInstanceLimits(context.getStatus().getColumnIndex());
+            GridData.Range instanceRange = context.getAbstractScesimGridModelByGridWidget(gridWidget).getInstanceLimits(context.getStatus().getColumnIndex());
             columnPosition = context.getStatus().isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
         }
         boolean cloneInstance = context.getStatus().isAsProperty() && selectedColumn.isInstanceAssigned();

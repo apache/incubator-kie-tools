@@ -15,9 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
-import org.drools.workbench.screens.scenariosimulation.client.events.AppendColumnEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
-
+import com.google.gwt.dom.client.LIElement;
 /**
  * This class is meant to provide common methods to <b>group-specific</b> menus {@link HeaderExpectedContextMenu} and {@link HeaderGivenContextMenu}
  * It is provided to avoid code duplication in concrete implementations
@@ -31,17 +29,16 @@ public abstract class AbstractHeaderGroupMenuPresenter extends AbstractHeaderMen
     protected String HEADERCONTEXTMENU_LABEL;
     protected String HEADERCONTEXTMENU_I18N;
 
-
-    protected AppendColumnEvent appendColumnEvent;
-    protected PrependColumnEvent prependColumnEvent;
-
+    protected LIElement appendColumnElement;
+    protected LIElement prependColumnElement;
     /**
      * This method set <b>group-specific</b> menu items and common <b>SCENARIO</b> menu items
      */
+    @Override
     public void initMenu() {
         addMenuItem(HEADERCONTEXTMENU_GROUP, HEADERCONTEXTMENU_LABEL, HEADERCONTEXTMENU_I18N);
-        addExecutableMenuItem(HEADERCONTEXTMENU_INSERT_COLUMN_LEFT, constants.insertLeftmostColumn(), "insertLeftmostColumn", prependColumnEvent);
-        addExecutableMenuItem(HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT, constants.insertRightmostColumn(), "insertRightmostColumn", appendColumnEvent);
+        prependColumnElement = addExecutableMenuItem(HEADERCONTEXTMENU_INSERT_COLUMN_LEFT, constants.insertLeftmostColumn(), "insertLeftmostColumn");
+        appendColumnElement = addExecutableMenuItem(HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT, constants.insertRightmostColumn(), "insertRightmostColumn");
         super.initMenu();
     }
 }

@@ -79,16 +79,16 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
             return false;
         }
         /* If the mouse position is the same of the previous one and the popover is already open, it does nothing.
-        * It returns true because the click happened on an column of a grid row */
+         * It returns true because the click happened on an column of a grid row */
         if (uiRowIndex.equals(currentlyShownBodyRowIndex) &&
                 uiColumnIndex.equals(currentlyShownBodyColumnIndex) &&
                 errorReportPopupPresenter.isShown()) {
             return true;
         }
-        final Optional<AbstractScesimModel<? extends AbstractScesimData>> abstractScesimModel = scenarioGrid.getModel().getAbstractScesimModel();
-        final AbstractScesimModel<? extends AbstractScesimData> simulation = abstractScesimModel.orElseThrow(IllegalStateException::new);
-        final AbstractScesimData scenarioByIndex = simulation.getDataByIndex(uiRowIndex);
-        final FactMapping factMapping = simulation.getScesimModelDescriptor().getFactMappingByIndex(uiColumnIndex);
+        final Optional<AbstractScesimModel<? extends AbstractScesimData>> optionalAbstractScesimModel = scenarioGrid.getModel().getAbstractScesimModel();
+        final AbstractScesimModel<? extends AbstractScesimData> scesimModel = optionalAbstractScesimModel.orElseThrow(IllegalStateException::new);
+        final AbstractScesimData scenarioByIndex = scesimModel.getDataByIndex(uiRowIndex);
+        final FactMapping factMapping = scesimModel.getScesimModelDescriptor().getFactMappingByIndex(uiColumnIndex);
         final Optional<FactMappingValue> factMappingValueOptional = scenarioByIndex.getFactMappingValue(factMapping);
         factMappingValueOptional.ifPresent(factMappingValue -> {
             /* If an error is present in the FactMappingValue, it calculates the coordinates for Popover and show it */
@@ -122,11 +122,12 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
                     errorReportPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
                                                    ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(
                                                            expectedValue != null ? expectedValue.toString() : NULL,
-                                                           errorValue  != null ? errorValue.toString() : NULL),
+                                                           errorValue != null ? errorValue.toString() : NULL),
                                                    ScenarioSimulationEditorConstants.INSTANCE.keep(),
                                                    ScenarioSimulationEditorConstants.INSTANCE.apply(),
                                                    () -> scenarioGrid.getEventBus().fireEvent(
-                                                           new SetGridCellValueEvent(uiRowIndex,
+                                                           new SetGridCellValueEvent(scenarioGrid.getGridWidget(),
+                                                                                     uiRowIndex,
                                                                                      uiColumnIndex,
                                                                                      errorValue != null ? errorValue.toString() : NULL)),
                                                    xPosition,
@@ -150,5 +151,4 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
     protected Point2D retrieveCellMiddleXYPosition(GridColumn<?> column, int uiRowIndex) {
         return ScenarioSimulationUtils.getMiddleXYCell(scenarioGrid, column, false, uiRowIndex, (GridLayer) scenarioGrid.getLayer());
     }
-
 }

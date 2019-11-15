@@ -26,13 +26,13 @@ import javax.enterprise.context.Dependent;
 public class OtherContextMenu extends AbstractHeaderMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String OTHERCONTEXTMENU_SCENARIO = "othercontextmenu-scenario";
-    private final String OTHERCONTEXTMENU_INSERT_ROW_ABOVE = "othercontextmenu-insert-row-above";
+    private static final String OTHERCONTEXTMENU_GRID_TITLE = "othercontextmenu-grid-title";
+    private static final String OTHERCONTEXTMENU_INSERT_ROW_ABOVE = "othercontextmenu-insert-row-above";
 
     @PostConstruct
     @Override
     public void initMenu() {
-        HEADERCONTEXTMENU_SCENARIO = OTHERCONTEXTMENU_SCENARIO;
+        HEADERCONTEXTMENU_GRID_TITLE = OTHERCONTEXTMENU_GRID_TITLE;
         HEADERCONTEXTMENU_PREPEND_ROW = OTHERCONTEXTMENU_INSERT_ROW_ABOVE;
         super.initMenu();
     }

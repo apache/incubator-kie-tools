@@ -26,7 +26,9 @@ import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 
@@ -38,9 +40,17 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
 
     public static final String COPY_LABEL = "_copy_";
 
+    public DuplicateInstanceCommand(GridWidget gridWidget) {
+        super(gridWidget, FactMappingValueType.NOT_EXPRESSION);
+    }
+
+    private DuplicateInstanceCommand() {
+        // CDI
+    }
+
     @Override
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
-        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> selectedScenarioGridModel = context.getSelectedScenarioGridModel();
+        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> selectedScenarioGridModel = context.getAbstractScesimGridModelByGridWidget(gridWidget);
         /* Generating the new instance alias with following schema: <original instance name> + '_copy_' + <number of existing instances> */
         int instancesCount = selectedScenarioGridModel.getInstancesCount(selectedColumn.getFactIdentifier().getClassName());
         String alias = selectedColumn.getInformationHeaderMetaData().getTitle().split(COPY_LABEL)[0] + COPY_LABEL + instancesCount;
@@ -76,5 +86,4 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
                     }
                 });
     }
-
 }

@@ -34,13 +34,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class CollectionEditorDOMElement extends BaseDOMElement<String, CollectionViewImpl> implements TakesValue<String>,
-                                                                                                            Focusable {
+                                                                                                      Focusable {
 
     protected ScenarioGridCell scenarioGridCell;
 
-
     /**
-     *
      * @param widget
      * @param gridLayer
      * @param gridWidget
@@ -74,13 +72,13 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
         final Style widgetContainerElementStyle = widgetContainerElement.getStyle();
 
         widgetContainerElementStyle.setPaddingLeft(5,
-                                                         Style.Unit.PX);
+                                                   Style.Unit.PX);
         widgetContainerElementStyle.setPaddingRight(5,
-                                                          Style.Unit.PX);
+                                                    Style.Unit.PX);
         widgetContainerElementStyle.setPaddingTop(5,
-                                                        Style.Unit.PX);
+                                                  Style.Unit.PX);
         widgetContainerElementStyle.setPaddingBottom(5,
-                                                           Style.Unit.PX);
+                                                     Style.Unit.PX);
 
         widgetContainer.setWidget(widget);
     }
@@ -113,18 +111,23 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
     }
 
     @Override
-    public void setValue(final String value) {
-        getWidget().setValue(value);
-    }
-
-    @Override
     public String getValue() {
         return getWidget().getValue();
     }
 
     @Override
+    public void setValue(final String value) {
+        getWidget().setValue(value);
+    }
+
+    @Override
     public int getTabIndex() {
         return getWidget().getTabIndex();
+    }
+
+    @Override
+    public void setTabIndex(final int index) {
+        getWidget().setTabIndex(index);
     }
 
     @Override
@@ -135,11 +138,6 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
     @Override
     public void setFocus(final boolean focused) {
         getWidget().setFocus(focused);
-    }
-
-    @Override
-    public void setTabIndex(final int index) {
-        getWidget().setTabIndex(index);
     }
 
     @Override
@@ -160,6 +158,6 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
     protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(rowIndex, columnIndex, value));
+        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(((ScenarioGrid) gridWidget).getGridWidget(), rowIndex, columnIndex, value));
     }
 }

@@ -16,19 +16,24 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 
 /**
  * <code>Command</code> to <b>prepend</b> (i.e. put in the first position) a row
  */
-public class PrependRowCommand extends AbstractScenarioSimulationCommand {
+public class PrependRowCommand extends AbstractScenarioGridCommand {
 
-    public PrependRowCommand() {
-        super(true);
+    public PrependRowCommand(GridWidget gridWidget) {
+        super(gridWidget);
+    }
+
+    private PrependRowCommand() {
+        // CDI
     }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getSelectedScenarioGridModel().insertRow(0, new ScenarioGridRow());
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).insertRow(0, new ScenarioGridRow());
     }
 }

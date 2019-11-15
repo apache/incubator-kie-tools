@@ -24,7 +24,7 @@ import org.uberfire.client.mvp.PlaceStatus;
 public class TestToolsMenuCommand extends AbstractScenarioSimulationCommand {
 
     public TestToolsMenuCommand() {
-        super(false);
+        //CDI
     }
 
     @Override

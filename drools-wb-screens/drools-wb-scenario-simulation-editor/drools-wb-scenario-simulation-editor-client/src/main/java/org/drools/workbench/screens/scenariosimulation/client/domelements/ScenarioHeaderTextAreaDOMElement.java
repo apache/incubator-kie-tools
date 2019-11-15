@@ -70,7 +70,7 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
         try {
             boolean isInstanceHeader = scenarioHeaderMetaData != null && Objects.equals(scenarioHeaderMetaData.getMetadataType(), ScenarioHeaderMetaData.MetadataType.INSTANCE);
             boolean isPropertyHeader = scenarioHeaderMetaData != null && Objects.equals(scenarioHeaderMetaData.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY);
-            ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetHeaderCellValueEvent(rowIndex, columnIndex, value, isInstanceHeader, isPropertyHeader));
+            ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetHeaderCellValueEvent(((ScenarioGrid) gridWidget).getGridWidget(), rowIndex, columnIndex, value, isInstanceHeader, isPropertyHeader));
             ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new ReloadTestToolsEvent(true));
         } catch (Exception e) {
             throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)

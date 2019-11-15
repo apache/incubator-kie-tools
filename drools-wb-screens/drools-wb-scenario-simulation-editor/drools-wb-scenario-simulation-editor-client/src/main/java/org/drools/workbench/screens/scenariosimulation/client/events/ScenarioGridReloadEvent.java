@@ -16,14 +16,25 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridReloadEventHandler;
 
 /**
- * <code>GwtEvent</code> to <b>reload</b> a griod
+ * <code>GwtEvent</code> to <b>reload</b> a grid
  */
 public class ScenarioGridReloadEvent extends GwtEvent<ScenarioGridReloadEventHandler> {
 
     public static final Type<ScenarioGridReloadEventHandler> TYPE = new Type<>();
+
+    private final GridWidget gridWidget;
+
+    public ScenarioGridReloadEvent(GridWidget gridWidget) {
+        this.gridWidget = gridWidget;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
+    }
 
     @Override
     public Type<ScenarioGridReloadEventHandler> getAssociatedType() {

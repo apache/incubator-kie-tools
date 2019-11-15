@@ -21,6 +21,7 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -28,12 +29,23 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 public class BackgroundGridModel extends AbstractScesimGridModel<Background, BackgroundData> {
 
-    public BackgroundGridModel() {
+    private BackgroundGridModel() {
     }
 
     public BackgroundGridModel(boolean isMerged) {
         super(isMerged);
     }
+
+    @Override
+    public GridWidget getGridWidget() {
+        return GridWidget.BACKGROUND;
+    }
+
+    @Override
+    public Range getInstanceLimits(int columnIndex) {
+        return getInstanceLimits(columnIndex, 0);
+    }
+
 
     /**
      * This method <i>insert</i> a row to the grid and populate it with values taken from given <code>Scenario</code>
@@ -63,6 +75,10 @@ public class BackgroundGridModel extends AbstractScesimGridModel<Background, Bac
                 throw new UnsupportedOperationException("Only string is supported at the moment");
             }
         });
-        updateIndexColumn();
+    }
+
+    @Override
+    protected void commonAddRow(int rowIndex) {
+        commonAddRow(rowIndex, 0);
     }
 }

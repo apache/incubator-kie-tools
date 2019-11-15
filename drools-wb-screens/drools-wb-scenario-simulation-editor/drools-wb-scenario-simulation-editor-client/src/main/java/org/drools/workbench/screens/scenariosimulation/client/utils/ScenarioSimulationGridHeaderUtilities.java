@@ -24,11 +24,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.types.Point2D;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
@@ -160,9 +160,9 @@ public class ScenarioSimulationGridHeaderUtilities {
     }
 
     public static List<String> getPropertyNameElements(final AbstractScesimGridModel abstractScesimGridModel, final int columnIndex) {
-        final Optional<Simulation> optionalSimulation = abstractScesimGridModel.getAbstractScesimModel();
-        return optionalSimulation.map(simulation -> {
-            final FactMapping factMapping = simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
+        final Optional<AbstractScesimModel> optionalScesimModel = abstractScesimGridModel.getAbstractScesimModel();
+        return optionalScesimModel.map(abstractScesimModel -> {
+            final FactMapping factMapping = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
             if (FactMappingValueType.EXPRESSION.equals(factMapping.getFactMappingValueType())) {
                 return Arrays.asList(ConstantHolder.EXPRESSION);
             }
@@ -170,7 +170,7 @@ public class ScenarioSimulationGridHeaderUtilities {
                     FactMappingValueType.NOT_EXPRESSION.equals(factMapping.getFactMappingValueType())) {
                 return Arrays.asList(ConstantHolder.VALUE);
             }
-            return Collections.unmodifiableList(simulation.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+            return Collections.unmodifiableList(abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                         .stream()
                                                         .map(ExpressionElement::getStep)
                                                         .collect(Collectors.toList()));

@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
@@ -68,8 +67,6 @@ abstract class AbstractSettingsTest {
 
     protected InputElement statelessMock;
 
-    protected ButtonElement saveButtonMock;
-
     protected SettingsView settingsViewMock;
 
     protected void setup() {
@@ -95,6 +92,5 @@ abstract class AbstractSettingsTest {
         dmnNameMock = settingsViewMock.getDmnName();
         skipFromBuildMock = settingsViewMock.getSkipFromBuild();
         statelessMock = settingsViewMock.getStateless();
-        saveButtonMock = settingsViewMock.getSaveButton();
     }
 }

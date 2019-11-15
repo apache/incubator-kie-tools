@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -26,7 +27,6 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_ID;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -34,12 +34,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class InsertColumnCommandTest extends AbstractSelectedColumnCommandTest {
+public class InsertColumnCommandTest extends AbstractScenarioGridCommandTest {
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new InsertColumnCommand() {
+        commandSpy = spy(new InsertColumnCommand(GridWidget.SIMULATION) {
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup,
                                                                     FactMappingType factMappingType, ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader,
@@ -47,7 +47,6 @@ public class InsertColumnCommandTest extends AbstractSelectedColumnCommandTest {
                 return gridColumnMock;
             }
         });
-        assertTrue(command.isUndoable());
         scenarioSimulationContextLocal.getStatus().setColumnId(COLUMN_ID);
         scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
     }
@@ -77,9 +76,9 @@ public class InsertColumnCommandTest extends AbstractSelectedColumnCommandTest {
     protected void commonTest(boolean right, boolean asProperty, int expectedIndex) {
         scenarioSimulationContextLocal.getStatus().setRight(right);
         scenarioSimulationContextLocal.getStatus().setAsProperty(asProperty);
-        ((InsertColumnCommand)command).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
+        ((InsertColumnCommand) commandSpy).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
         boolean cloneInstance = scenarioSimulationContextLocal.getStatus().isAsProperty() && gridColumnMock.isInstanceAssigned();
-        verify((InsertColumnCommand) command, times(1)).insertNewColumn(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(expectedIndex), eq(cloneInstance));
+        verify((InsertColumnCommand) commandSpy, times(1)).insertNewColumn(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(expectedIndex), eq(cloneInstance));
     }
 
 }

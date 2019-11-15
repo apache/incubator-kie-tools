@@ -18,7 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.workbench.screens.scenariosimulation.backend.server.importexport.ScenarioCsvImportExport;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
@@ -32,11 +33,11 @@ public class ImportExportServiceImpl implements ImportExportService {
     protected ScenarioCsvImportExport scenarioCsvImportExport = new ScenarioCsvImportExport();
 
     @Override
-    public Object exportSimulation(ImportExportType type, Simulation simulation) {
+    public Object exportScesimModel(ImportExportType type, AbstractScesimModel<? extends AbstractScesimData> scesimModel) {
         try {
             switch (type) {
                 case CSV:
-                    return scenarioCsvImportExport.exportData(simulation);
+                    return scenarioCsvImportExport.exportData(scesimModel);
                 default:
                     throw new IllegalArgumentException("Impossible to parse " + type);
             }
@@ -46,11 +47,11 @@ public class ImportExportServiceImpl implements ImportExportService {
     }
 
     @Override
-    public Simulation importSimulation(ImportExportType type, Object raw, Simulation originalSimulation) {
+    public <T extends AbstractScesimData> AbstractScesimModel<T> importScesimModel(ImportExportType type, Object raw, AbstractScesimModel<T> originalScesimModel) {
         try {
             switch (type) {
                 case CSV:
-                    return scenarioCsvImportExport.importData((String) raw, originalSimulation);
+                    return scenarioCsvImportExport.importData((String) raw, originalScesimModel);
                 default:
                     throw new IllegalArgumentException("Impossible to parse " + type);
             }

@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetInstanceHeaderEventHandler;
 
 /**
@@ -25,16 +26,18 @@ public class SetInstanceHeaderEvent extends GwtEvent<SetInstanceHeaderEventHandl
 
     public static final Type<SetInstanceHeaderEventHandler> TYPE = new Type<>();
 
-    private String fullPackage;
-    private String className;
+    private final GridWidget gridWidget;
+    private final String fullPackage;
+    private final String className;
 
     /**
      * Use this constructor to modify the <i>instance</i> level header
-     *
+     * @param gridWidget
      * @param fullPackage
      * @param className
      */
-    public SetInstanceHeaderEvent(String fullPackage, String className) {
+    public SetInstanceHeaderEvent(GridWidget gridWidget, String fullPackage, String className) {
+        this.gridWidget = gridWidget;
         this.fullPackage = fullPackage;
         this.className = className;
     }
@@ -42,6 +45,10 @@ public class SetInstanceHeaderEvent extends GwtEvent<SetInstanceHeaderEventHandl
     @Override
     public Type<SetInstanceHeaderEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public String getFullPackage() {

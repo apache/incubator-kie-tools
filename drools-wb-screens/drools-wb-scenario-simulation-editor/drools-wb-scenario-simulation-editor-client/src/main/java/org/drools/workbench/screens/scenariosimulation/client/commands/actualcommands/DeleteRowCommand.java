@@ -18,23 +18,28 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 
 /**
  * <code>Command</code> to <b>delete</b> a row.
  */
 @Dependent
-public class DeleteRowCommand extends AbstractScenarioSimulationCommand {
+public class DeleteRowCommand extends AbstractScenarioGridCommand {
 
-    public DeleteRowCommand() {
-        super(true);
+    public DeleteRowCommand(GridWidget gridWidget) {
+        super(gridWidget);
+    }
+
+    private DeleteRowCommand() {
+        // CDI
     }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getSelectedScenarioGridModel().deleteRow(context.getStatus().getRowIndex());
-        if (context.getSelectedScenarioGridModel().getRows().isEmpty()) {
-            context.getSelectedScenarioGridModel().insertRow(0, new ScenarioGridRow());
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).deleteRow(context.getStatus().getRowIndex());
+        if (context.getAbstractScesimGridModelByGridWidget(gridWidget).getRows().isEmpty()) {
+            context.getAbstractScesimGridModelByGridWidget(gridWidget).insertRow(0, new ScenarioGridRow());
         }
     }
 }

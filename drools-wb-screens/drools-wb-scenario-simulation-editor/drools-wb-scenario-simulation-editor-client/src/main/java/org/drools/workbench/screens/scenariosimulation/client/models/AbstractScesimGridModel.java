@@ -44,6 +44,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
@@ -96,6 +97,8 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         super(isMerged);
         setHeaderRowCount(HEADER_ROW_COUNT);
     }
+
+    public abstract GridWidget getGridWidget();
 
     /**
      * Method to bind the data serialized inside backend <code>AbstractScesimModel</code>
@@ -370,7 +373,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
             scenarioByIndex.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, cellValue);
         } catch (Exception e) {
             toReturn = super.deleteCell(rowIndex, columnIndex);
-            eventBus.fireEvent(new ScenarioGridReloadEvent());
+            eventBus.fireEvent(new ScenarioGridReloadEvent(getGridWidget()));
         }
         return toReturn;
     }
@@ -402,7 +405,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @param columnIndex
      * @return
      */
-    public Range getInstanceLimits(int columnIndex) {
+    public abstract Range getInstanceLimits(int columnIndex);/* {
         final ScenarioGridColumn column = (ScenarioGridColumn) columns.get(columnIndex);
         final String originalColumnGroup = column.getInformationHeaderMetaData().getColumnGroup();
         final ScenarioHeaderMetaData selectedInformationHeaderMetaData = column.getInformationHeaderMetaData();
@@ -416,7 +419,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
             rightPosition++;
         }
         return new Range(leftPosition, rightPosition);
-    }
+    }*/
 
     /**
      * This methods returns the <code>List&lt;ScenarioGridColumn&gt;</code> of a <b>single</b> block of columns of the same instance/data object.
@@ -629,10 +632,8 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @return
      */
     public boolean isColumnEmpty(int columnIndex) {
-        return !IntStream.range(0, getRowCount())
-                .filter(rowIndex -> getCellValue(getCell(rowIndex, columnIndex)).isPresent())
-                .findFirst()
-                .isPresent();
+        return IntStream.range(0, getRowCount())
+                .noneMatch(rowIndex -> getCellValue(getCell(rowIndex, columnIndex)).isPresent());
     }
 
     /**
@@ -850,7 +851,31 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     }
 
     public boolean isSimpleType(String factClassName) {
-        return simpleJavaTypeInstancesName.contains(factClassName);
+        return simpleJavaTypeInstancesName != null && simpleJavaTypeInstancesName.contains(factClassName);
+    }
+
+    /**
+     * This methods returns the <code>Range</code> of a <b>single</b> block of columns of the same instance/data object.
+     * A <code>single</code> block is made of all the columns immediately to the left and right of the selected one with the same "label".
+     * If there is another column with the same "label" but separated by a different column, it is not part of the group.
+     * @param columnIndex
+     * @param columnIndexStart the leftmost index to consider when evaluating the range
+     * @return
+     */
+    protected Range getInstanceLimits(int columnIndex, int columnIndexStart) {
+        final ScenarioGridColumn column = (ScenarioGridColumn) columns.get(columnIndex);
+        final String originalColumnGroup = column.getInformationHeaderMetaData().getColumnGroup();
+        final ScenarioHeaderMetaData selectedInformationHeaderMetaData = column.getInformationHeaderMetaData();
+        String originalColumnTitle = selectedInformationHeaderMetaData.getTitle();
+        int leftPosition = columnIndex;
+        while (leftPosition > columnIndexStart && ((ScenarioGridColumn) columns.get(leftPosition - 1)).getInformationHeaderMetaData().getColumnGroup().equals(originalColumnGroup) && ((ScenarioGridColumn) columns.get(leftPosition - 1)).getInformationHeaderMetaData().getTitle().equals(originalColumnTitle)) {
+            leftPosition--;
+        }
+        int rightPosition = columnIndex;
+        while (rightPosition < columns.size() - 1 && ((ScenarioGridColumn) columns.get(rightPosition + 1)).getInformationHeaderMetaData().getColumnGroup().equals(originalColumnGroup) && ((ScenarioGridColumn) columns.get(rightPosition + 1)).getInformationHeaderMetaData().getTitle().equals(originalColumnTitle)) {
+            rightPosition++;
+        }
+        return new Range(leftPosition, rightPosition);
     }
 
     /**
@@ -925,7 +950,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                     .forEach(currentIndex -> simulationDescriptor.getFactMappingByIndex(currentIndex).setFactAlias(createdFactMapping.getFactAlias()));
         } catch (Exception e) {
             eventBus.fireEvent(new ScenarioNotificationEvent("Error during column creation: " + e.getMessage(), NotificationEvent.NotificationType.ERROR));
-            eventBus.fireEvent(new ScenarioGridReloadEvent());
+            eventBus.fireEvent(new ScenarioGridReloadEvent(getGridWidget()));
             return;
         }
 
@@ -935,10 +960,12 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                 .forEach(rowIndex -> setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder))));
     }
 
-    protected void commonAddRow(int rowIndex) {
+    protected abstract void commonAddRow(int rowIndex);
+
+    protected void commonAddRow(int rowIndex, int columnIndexStart)  {
         E scesimData = abstractScesimModel.addData(rowIndex);
         final ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
-        IntStream.range(1, getColumnCount()).forEach(columnIndex -> {
+        IntStream.range(columnIndexStart, getColumnCount()).forEach(columnIndex -> {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             scesimData.addMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier(), null);
             ScenarioGridColumn column = ((ScenarioGridColumn) columns.get(columnIndex));
@@ -954,7 +981,6 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                 return newCell;
             });
         });
-        updateIndexColumn();
     }
 
     protected void updateIndexColumn() {

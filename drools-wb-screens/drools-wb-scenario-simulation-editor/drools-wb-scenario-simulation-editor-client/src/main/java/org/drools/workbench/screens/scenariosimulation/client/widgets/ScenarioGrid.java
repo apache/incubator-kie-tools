@@ -23,12 +23,14 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
+import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
@@ -79,6 +81,10 @@ public class ScenarioGrid extends BaseGridWidget {
         appendRows(abstractScesimModel);
         ((AbstractScesimGridModel) model).loadFactMappingsWidth();
         ((AbstractScesimGridModel) model).forceRefreshWidth();
+    }
+
+    public GridWidget getGridWidget() {
+        return ((AbstractScesimGridModel) model).getGridWidget();
     }
 
     public EventBus getEventBus() {
@@ -165,7 +171,7 @@ public class ScenarioGrid extends BaseGridWidget {
 
     protected void setHeaderColumns(AbstractScesimModel abstractScesimModel, ScenarioSimulationModel.Type type) {
         final List<FactMapping> factMappings = abstractScesimModel.getScesimModelDescriptor().getUnmodifiableFactMappings();
-        boolean editableHeaders = !type.equals(ScenarioSimulationModel.Type.DMN);
+        boolean editableHeaders = !(ScenarioSimulationModel.Type.DMN.equals(type) || (abstractScesimModel instanceof Background));
         IntStream.range(0, factMappings.size())
                 .forEach(columnIndex -> setHeaderColumn(columnIndex, factMappings.get(columnIndex), editableHeaders));
     }

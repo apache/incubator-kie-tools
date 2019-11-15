@@ -22,16 +22,21 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 
 /**
  * <code>Command</code> to <b>delete</b> a column. <b>Eventually</b> add a ne column if the deleted one is the last of its group.
  */
 @Dependent
-public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
+public class DeleteColumnCommand extends AbstractScenarioGridCommand {
 
-    public DeleteColumnCommand() {
-        super(true);
+    public DeleteColumnCommand(GridWidget gridWidget) {
+        super(gridWidget);
+    }
+
+    private DeleteColumnCommand() {
+        // CDI
     }
 
     @Override
@@ -39,11 +44,11 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         int newColumnPosition = -1;
         if (status.isAsProperty()) {
-            context.getSelectedScenarioGridModel().deleteColumn(status.getColumnIndex());
+            context.getAbstractScesimGridModelByGridWidget(gridWidget).deleteColumn(status.getColumnIndex());
             newColumnPosition = status.getColumnIndex();
         } else {
-            newColumnPosition = context.getSelectedScenarioGridModel().getInstanceLimits(status.getColumnIndex()).getMinRowIndex();
-            context.getSelectedScenarioGridModel().deleteInstance(status.getColumnIndex());
+            newColumnPosition = context.getAbstractScesimGridModelByGridWidget(gridWidget).getInstanceLimits(status.getColumnIndex()).getMinRowIndex();
+            context.getAbstractScesimGridModelByGridWidget(gridWidget).deleteInstance(status.getColumnIndex());
         }
         createColumnIfEmptyGroup(context, status, newColumnPosition);
         new ReloadTestToolsCommand().execute(context);
@@ -57,19 +62,19 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
      * @param newColumnPosition
      */
     protected void createColumnIfEmptyGroup(ScenarioSimulationContext context, ScenarioSimulationContext.Status status, int newColumnPosition) {
-        if (context.getSelectedScenarioGridModel().getGroupSize(status.getColumnGroup()) < 1) {
+        if (context.getAbstractScesimGridModelByGridWidget(gridWidget).getGroupSize(status.getColumnGroup()) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
-            Map.Entry<String, String> validPlaceholders = context.getSelectedScenarioGridModel().getValidPlaceholders();
+            Map.Entry<String, String> validPlaceholders = context.getAbstractScesimGridModelByGridWidget(gridWidget).getValidPlaceholders();
             String instanceTitle = validPlaceholders.getKey();
             String propertyTitle = validPlaceholders.getValue();
-            context.getSelectedScenarioGridModel().insertColumn(newColumnPosition, getScenarioGridColumnLocal(instanceTitle,
-                                                                                                              propertyTitle,
-                                                                                                              String.valueOf(new Date().getTime()),
-                                                                                                              status.getColumnGroup(),
-                                                                                                              factMappingType,
-                                                                                                              context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
-                                                                                                              context.getScenarioCellTextAreaSingletonDOMElementFactory(),
-                                                                                                              ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+            context.getAbstractScesimGridModelByGridWidget(gridWidget).insertColumn(newColumnPosition, getScenarioGridColumnLocal(instanceTitle,
+                                                                                                                                  propertyTitle,
+                                                                                                                                  String.valueOf(new Date().getTime()),
+                                                                                                                                  status.getColumnGroup(),
+                                                                                                                                  factMappingType,
+                                                                                                                                  context.getScenarioHeaderTextBoxSingletonDOMElementFactory(gridWidget),
+                                                                                                                                  context.getScenarioCellTextAreaSingletonDOMElementFactory(gridWidget),
+                                                                                                                                  ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
     }
 }

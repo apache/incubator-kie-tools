@@ -26,28 +26,28 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.api.model.Scenario;
-import org.drools.scenariosimulation.api.model.Simulation;
 
 public class ScenarioCsvImportExport {
 
     public static final int HEADER_SIZE = 3;
 
-    public String exportData(Simulation simulation) throws IOException {
+    public String exportData(AbstractScesimModel<? extends AbstractScesimData> scesimModel) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        List<FactMapping> factMappings = simulation.getScesimModelDescriptor().getUnmodifiableFactMappings();
+        List<FactMapping> factMappings = scesimModel.getScesimModelDescriptor().getUnmodifiableFactMappings();
 
         CSVPrinter printer = new CSVPrinter(stringBuilder, CSVFormat.DEFAULT);
 
         generateHeader(factMappings, printer);
 
-        for (Scenario scenario : simulation.getUnmodifiableData()) {
+        for (AbstractScesimData scesimData : scesimModel.getUnmodifiableData()) {
             List<Object> values = new ArrayList<>();
             for (FactMapping factMapping : factMappings) {
-                Optional<FactMappingValue> factMappingValue = scenario.getFactMappingValue(factMapping.getFactIdentifier(),
+                Optional<FactMappingValue> factMappingValue = scesimData.getFactMappingValue(factMapping.getFactIdentifier(),
                                                                                            factMapping.getExpressionIdentifier());
                 values.add(factMappingValue.map(FactMappingValue::getRawValue).orElse(""));
             }
@@ -59,11 +59,11 @@ public class ScenarioCsvImportExport {
         return stringBuilder.toString();
     }
 
-    public Simulation importData(String raw, Simulation originalSimulation) throws IOException {
+    public <T extends AbstractScesimData> AbstractScesimModel<T> importData(String raw, AbstractScesimModel<T> originalScesimModel) throws IOException {
 
         CSVParser csvParser = CSVFormat.DEFAULT.parse(new StringReader(raw));
 
-        Simulation toReturn = originalSimulation.cloneModel();
+        AbstractScesimModel<T> toReturn = originalScesimModel.cloneModel();
         toReturn.clearDatas();
 
         List<FactMapping> factMappings = toReturn.getScesimModelDescriptor().getUnmodifiableFactMappings();
@@ -75,14 +75,14 @@ public class ScenarioCsvImportExport {
         csvRecords = csvRecords.subList(HEADER_SIZE, csvRecords.size());
 
         for (CSVRecord csvRecord : csvRecords) {
-            Scenario scenarioToFill = toReturn.addData();
+            T scesimDataToFill = toReturn.addData();
             if (csvRecord.size() != factMappings.size()) {
                 throw new IllegalArgumentException("Malformed row " + csvRecord);
             }
             for (int i = 0; i < factMappings.size(); i += 1) {
                 FactMapping factMapping = factMappings.get(i);
                 String valueToImport = "".equals(csvRecord.get(i)) ? null : csvRecord.get(i);
-                scenarioToFill.addMappingValue(factMapping.getFactIdentifier(),
+                scesimDataToFill.addMappingValue(factMapping.getFactIdentifier(),
                                                factMapping.getExpressionIdentifier(),
                                                valueToImport);
             }

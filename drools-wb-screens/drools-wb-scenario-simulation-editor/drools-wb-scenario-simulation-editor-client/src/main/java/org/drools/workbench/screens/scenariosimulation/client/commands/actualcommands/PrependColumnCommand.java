@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 
 /**
  * <code>Command</code> to <b>prepend</b> (i.e. put in the first position) a column to a given <i>group</i>
@@ -25,10 +26,18 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 @Dependent
 public class PrependColumnCommand extends AbstractInsertColumnCommand {
 
+    public PrependColumnCommand(GridWidget gridWidget) {
+        super(gridWidget);
+    }
+
+    private PrependColumnCommand() {
+        // CDI
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        final int index = context.getSelectedScenarioGridModel().getFirstIndexLeftOfGroup(status.getColumnGroup());
+        final int index = context.getAbstractScesimGridModelByGridWidget(gridWidget).getFirstIndexLeftOfGroup(status.getColumnGroup());
         commonInsertColumnCommand(context, status, index);
     }
 }

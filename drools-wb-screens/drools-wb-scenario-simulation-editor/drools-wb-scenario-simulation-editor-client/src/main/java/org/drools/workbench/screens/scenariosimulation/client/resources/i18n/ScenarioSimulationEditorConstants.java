@@ -160,6 +160,8 @@ public interface ScenarioSimulationEditorConstants
 
     String scenario();
 
+    String background();
+
     String given();
 
     String insertRowAbove();
@@ -343,4 +345,6 @@ public interface ScenarioSimulationEditorConstants
     String backgroundTabTitle();
 
     String export();
+
+    String backgroundErrorNotification();
 }

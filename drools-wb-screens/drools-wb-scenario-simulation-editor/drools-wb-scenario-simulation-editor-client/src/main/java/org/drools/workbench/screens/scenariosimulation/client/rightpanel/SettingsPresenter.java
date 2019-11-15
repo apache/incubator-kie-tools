@@ -50,8 +50,6 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
 
     protected SettingsScenarioSimulationDropdown settingsScenarioSimulationDropdown;
 
-    protected boolean saveEnabled = true;
-
     public SettingsPresenter() {
         //Zero argument constructor for CDI
         title = ScenarioSimulationEditorConstants.INSTANCE.settings();
@@ -78,7 +76,6 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getScenarioType().setInnerText(scenarioType.name());
         view.getFileName().setValue(fileName);
         view.getSkipFromBuild().setChecked(settings.isSkipFromBuild());
-        view.getSaveButton().setDisabled(false);
         switch (scenarioType) {
             case RULE:
                 setRuleSettings(settings);
@@ -92,55 +89,14 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     @Override
-    public void setSaveCommand(Command saveCommand) {
-        this.saveCommand = saveCommand;
-    }
-
-    @Override
-    public void setSaveEnabled(boolean toSet) {
-        saveEnabled = toSet;
-        if (!saveEnabled) {
-            view.removeSaveButton();
-        } else {
-            view.restoreSaveButton();
-        }
-    }
-
-    @Override
-    public void onSaveButton(String scenarioType) {
-        if (saveCommand != null) {
-            settings.setSkipFromBuild(view.getSkipFromBuild().isChecked());
-            switch (ScenarioSimulationModel.Type.valueOf(scenarioType)) {
-                case RULE:
-                    saveRuleSettings();
-                    break;
-                case DMN:
-                    saveDMNSettings();
-                    break;
-                default:
-                    // nop
-            }
-            saveCommand.execute();
-        }
-    }
-
-    @Override
     public void reset() {
         view.reset();
-        if (!saveEnabled) {
-            view.removeSaveButton();
-        }
         settingsScenarioSimulationDropdown.clear();
-    }
-
-    public boolean isSaveEnabled() {
-        return saveEnabled;
     }
 
     public SettingsView getView() {
         return view;
     }
-
 
     protected void setRuleSettings(Settings settings) {
         view.getDmnSettings().getStyle().setDisplay(Style.Display.NONE);
@@ -162,15 +118,30 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         settingsScenarioSimulationDropdown.loadAssets(settings.getDmnFilePath());
     }
 
-    protected void saveRuleSettings() {
+    @Override
+    public void syncDmoSession() {
         settings.setDmoSession(getCleanValue(() -> view.getDmoSession().getValue()));
+    }
+
+    @Override
+    public void syncRuleFlowGroup() {
         settings.setRuleFlowGroup(getCleanValue(() -> view.getRuleFlowGroup().getValue()));
+    }
+
+    @Override
+    public void syncStateless() {
         settings.setStateless(view.getStateless().isChecked());
     }
 
-    protected void saveDMNSettings() {
-       String value = settingsScenarioSimulationDropdown.getValue().map(KieAssetsDropdownItem::getValue).orElse("");
-       settings.setDmnFilePath(getCleanValue(() -> value));
+    @Override
+    public void syncDmnFilePath() {
+        String value = settingsScenarioSimulationDropdown.getValue().map(KieAssetsDropdownItem::getValue).orElse("");
+        settings.setDmnFilePath(getCleanValue(() -> value));
+    }
+
+    @Override
+    public void syncSkipFromBuild() {
+        settings.setSkipFromBuild(view.getSkipFromBuild().isChecked());
     }
 
     /**
@@ -181,7 +152,6 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.INLINE);
         view.getDmnFilePathErrorLabel().setInnerText(
                 ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorLabel(settings.getDmnFilePath()));
-        view.getSaveButton().setDisabled(true);
     }
 
     /**
@@ -196,11 +166,10 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         if (!isValid) {
             view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.INLINE);
             view.getDmnFilePathErrorLabel().setInnerText(ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset());
-            view.getSaveButton().setDisabled(true);
         } else {
+            this.syncDmnFilePath();
             view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
             view.getDmnFilePathErrorLabel().setInnerText("");
-            view.getSaveButton().setDisabled(false);
         }
     }
 

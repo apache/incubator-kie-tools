@@ -37,9 +37,6 @@ public class CloseCompositeEvent extends DomEvent<CloseCompositeEventHandler> {
         return TYPE;
     }
 
-    public CloseCompositeEvent() {
-    }
-
     @Override
     public Type<CloseCompositeEventHandler> getAssociatedType() {
         return TYPE;

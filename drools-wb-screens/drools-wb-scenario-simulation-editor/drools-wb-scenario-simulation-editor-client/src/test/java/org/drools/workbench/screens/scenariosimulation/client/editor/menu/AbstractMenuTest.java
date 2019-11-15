@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -50,7 +51,8 @@ public abstract class AbstractMenuTest {
     protected LIElement menuItemMock;
     @Mock
     protected LIElement executableMenuItemMock;
-
+    @Mock
+    protected LIElement gridTitleElementMock;
     @Mock
     protected NodeList<Element> elementsByTagNameMock;
     @Mock
@@ -60,14 +62,18 @@ public abstract class AbstractMenuTest {
     protected void setup() {
         when(elementsByTagNameMock.getItem(0)).thenReturn(itemMock);
         doReturn(menuItemMock).when(menuItemPresenterMock).getLabelMenuElement(anyString(), anyString());
+        doReturn(gridTitleElementMock).when(menuItemPresenterMock).getLabelMenuElement(anyString(), eq("scenario"));
         doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), anyString(), isA(Event.class));
         doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), anyString());
+        //doReturn(du).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), eq("duplicateInstance"));
+
         when(menuItemMock.getElementsByTagName("span")).thenReturn(elementsByTagNameMock);
         when(executableMenuItemMock.getElementsByTagName("span")).thenReturn(elementsByTagNameMock);
         when(viewMock.getContextMenuDropdown()).thenReturn(contextMenuDropdownMock);
         abstractColumnMenuPresenter.menuItemPresenter = menuItemPresenterMock;
         abstractColumnMenuPresenter.executableMenuItemPresenter = executableMenuItemPresenterMock;
         abstractColumnMenuPresenter.view = viewMock;
+        abstractColumnMenuPresenter.gridTitleElement = gridTitleElementMock;
         abstractColumnMenuPresenterSpy = spy(abstractColumnMenuPresenter);
     }
 

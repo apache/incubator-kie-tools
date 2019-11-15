@@ -39,12 +39,12 @@ import static org.mockito.Mockito.when;
 public class ImportExportServiceImplTest {
 
     @Mock
-    ScenarioCsvImportExport scenarioCsvImportExportMock;
+    private ScenarioCsvImportExport scenarioCsvImportExportMock;
 
     @Mock
-    Simulation simulationMock;
+    private Simulation simulationMock;
 
-    ImportExportServiceImpl importExportService;
+    private ImportExportServiceImpl importExportService;
 
     @Before
     public void setup() {
@@ -56,25 +56,25 @@ public class ImportExportServiceImplTest {
     }
 
     @Test
-    public void exportSimulation() throws IOException {
-        importExportService.exportSimulation(ImportExportType.CSV, simulationMock);
+    public void exportScesimModel() throws IOException {
+        importExportService.exportScesimModel(ImportExportType.CSV, simulationMock);
         verify(scenarioCsvImportExportMock, times(1)).exportData(eq(simulationMock));
 
         when(scenarioCsvImportExportMock.exportData(any())).thenThrow(new IllegalStateException());
         assertThatThrownBy(() -> importExportService
-                .exportSimulation(ImportExportType.CSV, simulationMock))
+                .exportScesimModel(ImportExportType.CSV, simulationMock))
                 .isInstanceOf(GenericPortableException.class);
     }
 
     @Test
-    public void importSimulation() throws IOException {
+    public void importScesimModel() throws IOException {
         String raw = "";
-        importExportService.importSimulation(ImportExportType.CSV, raw, simulationMock);
+        importExportService.importScesimModel(ImportExportType.CSV, raw, simulationMock);
         verify(scenarioCsvImportExportMock, times(1)).importData(eq(raw), eq(simulationMock));
 
         when(scenarioCsvImportExportMock.importData(anyString(), any())).thenThrow(new IllegalStateException());
         assertThatThrownBy(() -> importExportService
-                .importSimulation(ImportExportType.CSV, raw, simulationMock))
+                .importScesimModel(ImportExportType.CSV, raw, simulationMock))
                 .isInstanceOf(GenericPortableException.class);
     }
 }

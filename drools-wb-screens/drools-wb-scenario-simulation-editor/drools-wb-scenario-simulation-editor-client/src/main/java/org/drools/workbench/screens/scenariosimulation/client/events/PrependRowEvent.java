@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependRowEventHandler;
 
 /**
@@ -25,9 +26,19 @@ public class PrependRowEvent extends GwtEvent<PrependRowEventHandler> {
 
     public static final Type<PrependRowEventHandler> TYPE = new Type<>();
 
+    private final GridWidget gridWidget;
+
+    public PrependRowEvent(GridWidget gridWidget) {
+        this.gridWidget = gridWidget;
+    }
+
     @Override
     public Type<PrependRowEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     @Override

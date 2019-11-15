@@ -26,7 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 public class ReloadTestToolsCommand extends AbstractScenarioSimulationCommand {
 
     public ReloadTestToolsCommand() {
-        super(false);
+        // CDI
     }
 
     @Override

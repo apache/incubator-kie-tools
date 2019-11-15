@@ -18,6 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -27,7 +29,6 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE_ELEMENTS;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -39,7 +40,7 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
     @Before
     public void setup() {
         super.setup();
-        command = spy(new SetPropertyHeaderCommand() {
+        commandSpy = spy(new SetPropertyHeaderCommand(GridWidget.SIMULATION, FactMappingValueType.NOT_EXPRESSION) {
 
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup,
@@ -47,18 +48,16 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
                                                                     ScenarioCellTextAreaSingletonDOMElementFactory factoryCell, String placeHolder) {
                 return gridColumnMock;
             }
-
         });
-        assertTrue(command.isUndoable());
-     }
+    }
 
     @Test
     public void executeIfSelected() {
-        ((SetPropertyHeaderCommand) command).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
-        verify((SetPropertyHeaderCommand) command, times(1)).setPropertyHeader(eq(scenarioSimulationContextLocal),
-                                                                                                      eq(gridColumnMock),
-                                                                                                      eq(MULTIPART_VALUE_ELEMENTS),
-                                                                                                      eq(VALUE_CLASS_NAME));
+        ((SetPropertyHeaderCommand) commandSpy).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
+        verify((SetPropertyHeaderCommand) commandSpy, times(1)).setPropertyHeader(eq(scenarioSimulationContextLocal),
+                                                                                  eq(gridColumnMock),
+                                                                                  eq(MULTIPART_VALUE_ELEMENTS),
+                                                                                  eq(VALUE_CLASS_NAME));
     }
 
     @Test
@@ -77,12 +76,12 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
     }
 
     @Test
-    public void getMatchingExpressionAlias(){
+    public void getMatchingExpressionAlias() {
         super.getMatchingExpressionAlias();
     }
 
     @Test
-    public void navigateComplexObject(){
+    public void navigateComplexObject() {
         super.navigateComplexObject();
     }
 

@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
@@ -237,11 +238,11 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Test
     public void onImport() {
         String FILE_CONTENT = "FILE_CONTENT";
-        RemoteCallback<Simulation> remoteCallback = mock(RemoteCallback.class);
+        RemoteCallback<AbstractScesimModel> remoteCallback = mock(RemoteCallback.class);
         ErrorCallback<Object> errorCallBack = mock(ErrorCallback.class);
         scenarioSimulationEditorBusinessClientWrapper.onImport(FILE_CONTENT, remoteCallback, errorCallBack, simulationMock);
         verify(importExportCaller, times(1)).call(eq(remoteCallback), eq(errorCallBack));
-        verify(importExportServiceMock, times(1)).importSimulation(eq(ImportExportType.CSV), eq(FILE_CONTENT), eq(simulationMock));
+        verify(importExportServiceMock, times(1)).importScesimModel(eq(ImportExportType.CSV), eq(FILE_CONTENT), eq(simulationMock));
     }
 
     @Test
@@ -250,7 +251,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         ScenarioSimulationHasBusyIndicatorDefaultErrorCallback errorCallback = mock(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class);
         scenarioSimulationEditorBusinessClientWrapper.onExportToCsv(remoteCallback, errorCallback, simulationMock);
         verify(importExportCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
-        verify(importExportServiceMock, times(1)).exportSimulation(eq(ImportExportType.CSV), eq(simulationMock));
+        verify(importExportServiceMock, times(1)).exportScesimModel(eq(ImportExportType.CSV), eq(simulationMock));
     }
 
     @Test
@@ -390,9 +391,47 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     }
 
     @Test
+    public void onImportsTabSelected() {
+        scenarioSimulationEditorBusinessClientWrapper.onImportsTabSelected();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).onImportsTabSelected();
+    }
+
+    @Test
     public void addBackgroundPage() {
         scenarioSimulationEditorBusinessClientWrapper.addBackgroundPage(scenarioGridWidgetSpy);
         verify(multiPageEditorMock, times(1)).addPage(eq(BACKGROUND_TAB_INDEX), isA(PageImpl.class));
+    }
+
+    @Test
+    public void addImportsTab() {
+        scenarioSimulationEditorBusinessClientWrapper.addImportsTab(mock(IsWidget.class));
+        verify(multiPageEditorMock, times(1)).addPage(isA(PageImpl.class));
+    }
+
+    @Test
+    public void selectSimulationTabWithoutItem() {
+        when(navTabsMock.getWidget(SIMULATION_TAB_INDEX)).thenReturn(null);
+        scenarioSimulationEditorBusinessClientWrapper.selectSimulationTab();
+        verify(simulationTabListItemMock, never()).showTab(eq(false));
+    }
+
+    @Test
+    public void selectSimulationTabWithItem() {
+        scenarioSimulationEditorBusinessClientWrapper.selectSimulationTab();
+        verify(simulationTabListItemMock, times(1)).showTab(eq(false));
+    }
+
+    @Test
+    public void selectBackgroundTabWithoutItem() {
+        when(navTabsMock.getWidget(BACKGROUND_TAB_INDEX)).thenReturn(null);
+        scenarioSimulationEditorBusinessClientWrapper.selectBackgroundTab();
+        verify(backgroundTabListItemMock, never()).showTab(eq(false));
+    }
+
+    @Test
+    public void selectBackgroundTabWithItem() {
+        scenarioSimulationEditorBusinessClientWrapper.selectBackgroundTab();
+        verify(backgroundTabListItemMock, times(1)).showTab(eq(false));
     }
 
     @Test

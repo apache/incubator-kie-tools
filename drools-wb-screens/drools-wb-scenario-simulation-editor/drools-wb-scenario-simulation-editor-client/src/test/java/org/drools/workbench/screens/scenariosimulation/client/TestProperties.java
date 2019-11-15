@@ -186,6 +186,8 @@ public class TestProperties {
     public static final String DMN_FILE_PATH = "DMN_FILE_PATH";
     public static final String DMN_NAMESPACE = "DMN_NAMESPACE";
     public static final String DMN_NAME = "DMN_NAME";
+    public static final boolean STATELESS = true;
+    public static final boolean SKIP_FROM_BUILD = true;
 
     public static final String FACT_PACKAGE = "test.scesim.package";
     public static final String GRID_COLUMN_TITLE = "GRID_COLUMN_TITLE";

@@ -29,7 +29,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 public class RunSingleScenarioCommand extends AbstractScenarioSimulationCommand {
 
     public RunSingleScenarioCommand() {
-        super(false);
+        // CDI
     }
 
     @Override

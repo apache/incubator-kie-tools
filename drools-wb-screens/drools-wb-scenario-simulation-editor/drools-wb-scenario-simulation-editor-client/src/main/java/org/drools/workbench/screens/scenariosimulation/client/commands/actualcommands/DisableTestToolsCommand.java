@@ -26,7 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 public class DisableTestToolsCommand extends AbstractScenarioSimulationCommand {
 
     public DisableTestToolsCommand() {
-        super(false);
+        // CDI
     }
 
     @Override

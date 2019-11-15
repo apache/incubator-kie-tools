@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -44,25 +45,17 @@ import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.
 public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> implements TestToolsView.Presenter {
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.TestTools";
-
-    private ListGroupItemPresenter listGroupItemPresenter;
-
     protected Map<String, FactModelTree> dataObjectFieldsMap = new TreeMap<>();
-
     protected Map<String, FactModelTree> simpleJavaTypeFieldsMap = new TreeMap<>();
-
     protected Map<String, FactModelTree> instanceFieldsMap = new TreeMap<>();
-
     protected Map<String, FactModelTree> simpleJavaInstanceFieldsMap = new TreeMap<>();
-
     protected Map<String, FactModelTree> hiddenFieldsMap = new TreeMap<>();
-
     protected EventBus eventBus;
-
+    protected GridWidget gridWidget;
     protected boolean editingColumnEnabled = false;
-
     protected ListGroupItemView selectedListGroupItemView;
     protected FieldItemView selectedFieldItemView;
+    private ListGroupItemPresenter listGroupItemPresenter;
 
     public TestToolsPresenter() {
         //Zero argument constructor for CDI
@@ -142,7 +135,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
 
     @Override
     public void updateInstanceListSeparator() {
-        if (view.getInstanceListContainer().getChildCount() == 0) {
+        if (view.getInstanceListContainer().getChildCount() < 1 || GridWidget.BACKGROUND.equals(gridWidget)) {
             view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
         } else {
             view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
@@ -151,7 +144,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
 
     @Override
     public void updateSimpleJavaInstanceFieldListSeparator() {
-        if (view.getSimpleJavaInstanceListContainer().getChildCount() == 0) {
+        if (view.getSimpleJavaInstanceListContainer().getChildCount() < 1 || GridWidget.BACKGROUND.equals(gridWidget)) {
             view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
         } else {
             view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
@@ -224,9 +217,9 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void hideProperties(Map<String, List<List<String>>> propertiesToHide) {
         listGroupItemPresenter.showAll();
         propertiesToHide.entrySet().stream().forEach(
-                stringListEntry -> stringListEntry.getValue().forEach(propertyParts -> {
-                    listGroupItemPresenter.hideProperty(stringListEntry.getKey(), propertyParts);
-                })
+                stringListEntry -> stringListEntry.getValue()
+                        .forEach(propertyParts ->
+                                         listGroupItemPresenter.hideProperty(stringListEntry.getKey(), propertyParts))
         );
     }
 
@@ -238,6 +231,21 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     @Override
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    @Override
+    public void setGridWidget(GridWidget gridWidget) {
+        this.gridWidget = gridWidget;
+        switch (gridWidget) {
+            case BACKGROUND:
+                hideInstances();
+                break;
+            case SIMULATION:
+                showInstances();
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+        }
     }
 
     @Override
@@ -253,16 +261,18 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 .stream()
                 .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
                 .forEach(filteredEntry -> addSimpleJavaTypeListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-        instanceFieldsMap
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
-                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-        simpleJavaInstanceFieldsMap
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
-                .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+//        if (GridWidget.SIMULATION.equals(gridWidget)) {
+            instanceFieldsMap
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                    .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+            simpleJavaInstanceFieldsMap
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                    .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+//        }
         updateSeparators();
     }
 
@@ -279,16 +289,18 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 .stream()
                 .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
                 .forEach(filteredEntry -> addSimpleJavaTypeListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-        instanceFieldsMap
-                .entrySet()
-                .stream()
-                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
-                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-        simpleJavaInstanceFieldsMap
-                .entrySet()
-                .stream()
-                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
-                .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+//        if (GridWidget.SIMULATION.equals(gridWidget)) {
+            instanceFieldsMap
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                    .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+            simpleJavaInstanceFieldsMap
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                    .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+//        }
         updateSeparators();
     }
 
@@ -385,7 +397,8 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
             if (selectedListGroupItemView != null) {
                 String className = selectedListGroupItemView.getActualClassName();
                 getFullPackage(className).ifPresent(fullPackage -> eventBus.fireEvent(
-                            new SetPropertyHeaderEvent(fullPackage,
+                            new SetPropertyHeaderEvent(gridWidget,
+                                                       fullPackage,
                                                        Arrays.asList(className),
                                                        fullPackage + "." + className,
                                                        FactMappingValueType.EXPRESSION)));
@@ -395,7 +408,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                         selectedFieldItemView.getFullPath() :
                         selectedFieldItemView.getFullPath() + "." + selectedFieldItemView.getFieldName();
                 List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(value.split("\\.")));
-                getFullPackage(baseClass).ifPresent(fullPackage -> eventBus.fireEvent(new SetPropertyHeaderEvent(fullPackage,
+                getFullPackage(baseClass).ifPresent(fullPackage -> eventBus.fireEvent(new SetPropertyHeaderEvent(gridWidget, fullPackage,
                                                                                                                  propertyNameElements,
                                                                                                                  selectedFieldItemView.getClassName(),
                                                                                                                  FactMappingValueType.NOT_EXPRESSION)));
@@ -407,6 +420,25 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void reset() {
         listGroupItemPresenter.reset();
         view.reset();
+    }
+
+    /**
+     * Method to hide all the <b>instance-related</b> html
+     */
+    @Override
+    public void hideInstances() {
+        clearInstanceList();
+        clearSimpleJavaInstanceFieldList();
+        view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
+        view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
+    }
+
+    /**
+     * Method to show all the <b>instance-related</b> html
+     */
+    protected void showInstances() {
+        view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
+        view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
     }
 
     /**

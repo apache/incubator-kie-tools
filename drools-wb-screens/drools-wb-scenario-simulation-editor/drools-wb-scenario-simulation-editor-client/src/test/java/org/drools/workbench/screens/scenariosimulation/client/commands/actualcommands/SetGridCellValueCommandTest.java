@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,6 @@ import org.junit.runner.RunWith;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
@@ -33,13 +33,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class SetGridCellValueCommandTest extends AbstractScenarioSimulationCommandTest {
+public class SetGridCellValueCommandTest extends AbstractScenarioGridCommandTest {
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new SetGridCellValueCommand());
-        assertTrue(command.isUndoable());
+        commandSpy = spy(new SetGridCellValueCommand(GridWidget.SIMULATION));
     }
 
     @Test
@@ -47,7 +46,7 @@ public class SetGridCellValueCommandTest extends AbstractScenarioSimulationComma
         scenarioSimulationContextLocal.getStatus().setRowIndex(ROW_INDEX);
         scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
         scenarioSimulationContextLocal.getStatus().setGridCellValue(MULTIPART_VALUE);
-        command.execute(scenarioSimulationContextLocal);
+        commandSpy.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).setCellValue(eq(ROW_INDEX), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
         verify(scenarioGridModelMock, times(1)).resetError(eq(ROW_INDEX), eq(COLUMN_INDEX));
     }

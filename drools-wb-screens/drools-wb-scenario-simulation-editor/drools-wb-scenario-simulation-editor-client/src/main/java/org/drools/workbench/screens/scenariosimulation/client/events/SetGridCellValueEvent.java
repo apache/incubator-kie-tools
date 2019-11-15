@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetGridCellValueEventHandler;
 
 /**
@@ -25,17 +26,20 @@ public class SetGridCellValueEvent extends GwtEvent<SetGridCellValueEventHandler
 
     public static final Type<SetGridCellValueEventHandler> TYPE = new Type<>();
 
-    private int rowIndex;
-    private int columnIndex;
-    private String cellValue;
+    private final GridWidget gridWidget;
+    private final int rowIndex;
+    private final int columnIndex;
+    private final String cellValue;
 
     /**
-     * 
+     *
+     * @param gridWidget
      * @param rowIndex
      * @param columnIndex
      * @param cellValue
      */
-    public SetGridCellValueEvent(int rowIndex, int columnIndex, String cellValue) {
+    public SetGridCellValueEvent(GridWidget gridWidget, int rowIndex, int columnIndex, String cellValue) {
+        this.gridWidget = gridWidget;
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
         this.cellValue = cellValue;
@@ -44,6 +48,10 @@ public class SetGridCellValueEvent extends GwtEvent<SetGridCellValueEventHandler
     @Override
     public Type<SetGridCellValueEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public int getRowIndex() {

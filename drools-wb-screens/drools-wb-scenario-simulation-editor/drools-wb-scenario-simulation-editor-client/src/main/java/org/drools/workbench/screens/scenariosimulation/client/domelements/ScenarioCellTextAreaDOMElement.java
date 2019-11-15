@@ -81,18 +81,23 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     }
 
     @Override
-    public void setValue(final String value) {
-        getWidget().setValue(value);
-    }
-
-    @Override
     public String getValue() {
         return getWidget().getValue();
     }
 
     @Override
+    public void setValue(final String value) {
+        getWidget().setValue(value);
+    }
+
+    @Override
     public int getTabIndex() {
         return getWidget().getTabIndex();
+    }
+
+    @Override
+    public void setTabIndex(final int index) {
+        getWidget().setTabIndex(index);
     }
 
     @Override
@@ -103,11 +108,6 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     @Override
     public void setFocus(final boolean focused) {
         getWidget().setFocus(focused);
-    }
-
-    @Override
-    public void setTabIndex(final int index) {
-        getWidget().setTabIndex(index);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(rowIndex, columnIndex, value));
+        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(((ScenarioGrid) gridWidget).getGridWidget(), rowIndex, columnIndex, value));
     }
 
     @Override

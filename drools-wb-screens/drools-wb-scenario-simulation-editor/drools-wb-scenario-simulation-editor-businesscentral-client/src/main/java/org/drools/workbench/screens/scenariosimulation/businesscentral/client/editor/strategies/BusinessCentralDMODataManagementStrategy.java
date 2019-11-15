@@ -21,6 +21,7 @@ import java.util.SortedMap;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMODataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -93,17 +94,19 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
                                                          final int expectedElementsCounts,
                                                          final SortedMap<String, FactModelTree> factTypeFieldsMap,
                                                          final ScenarioSimulationContext context,
-                                                         final List<String> simpleJavaTypes) {
-        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElementsCounts, factTypeFieldsMap, context, result, simpleJavaTypes);
+                                                         final List<String> simpleJavaTypes,
+                                                         final GridWidget gridWidget) {
+        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElementsCounts, factTypeFieldsMap, context, result, simpleJavaTypes, gridWidget);
     }
 
     @Override
     protected void manageDataObjects(List<String> dataObjectsTypes, final TestToolsView.Presenter testToolsPresenter,  int expectedElements,
                                      final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
                                      final ScenarioSimulationContext context,
-                                     final List<String> simpleJavaTypes) {
+                                     final List<String> simpleJavaTypes,
+                                     final GridWidget gridWidget) {
         // Instantiate the aggregator callback
-        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes);
+        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes, gridWidget);
         // Iterate over all dataObjects to retrieve their modelfields
         dataObjectsTypes.forEach(factType ->
                                          oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));

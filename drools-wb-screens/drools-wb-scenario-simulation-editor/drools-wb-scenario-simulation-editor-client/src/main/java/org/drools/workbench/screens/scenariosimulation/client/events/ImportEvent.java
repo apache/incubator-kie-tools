@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ImportEventHandler;
 
 /**
@@ -25,9 +26,23 @@ public class ImportEvent extends GwtEvent<ImportEventHandler> {
 
     public static final Type<ImportEventHandler> TYPE = new Type<>();
 
+    private final GridWidget gridWidget;
+
+    /**
+     *
+     * @param gridWidget
+     */
+    public ImportEvent(GridWidget gridWidget) {
+        this.gridWidget = gridWidget;
+    }
+
     @Override
     public Type<ImportEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     @Override

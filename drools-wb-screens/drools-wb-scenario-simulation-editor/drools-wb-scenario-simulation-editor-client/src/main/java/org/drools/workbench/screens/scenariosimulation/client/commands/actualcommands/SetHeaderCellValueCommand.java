@@ -23,25 +23,26 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 /**
  * <code>Command</code> to to set the <i>value</i> of a header' cell
  */
 @Dependent
-public class SetHeaderCellValueCommand extends AbstractScenarioSimulationCommand {
+public class SetHeaderCellValueCommand extends AbstractScenarioGridCommand {
 
     protected boolean isInstanceHeader;
     protected boolean isPropertyHeader;
 
-    public SetHeaderCellValueCommand() {
-        this(false, false);
-    }
-
-    public SetHeaderCellValueCommand(boolean isInstanceHeader, boolean isPropertyHeader) {
-        super(true);
+    public SetHeaderCellValueCommand(GridWidget gridWidget, boolean isInstanceHeader, boolean isPropertyHeader) {
+        super(gridWidget);
         this.isInstanceHeader = isInstanceHeader;
         this.isPropertyHeader = isPropertyHeader;
+    }
+
+    private SetHeaderCellValueCommand() {
+        // CDI
     }
 
     @Override
@@ -53,22 +54,22 @@ public class SetHeaderCellValueCommand extends AbstractScenarioSimulationCommand
         } else if (isPropertyHeader) {
             validatePropertyHeader(context, headerCellValue, status.getColumnIndex());
         }
-        context.getSelectedScenarioGridModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), headerCellValue);
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).updateHeader(status.getColumnIndex(), status.getRowIndex(), headerCellValue);
     }
 
     protected void validateInstanceHeader(ScenarioSimulationContext context, String headerCellValue, int columnIndex) throws Exception {
         List<String> instanceNameElements = Collections.unmodifiableList(Arrays.asList(headerCellValue.split("\\.")));
         boolean isADataType = !headerCellValue.endsWith(".") && instanceNameElements.size() == 1 && context.getDataObjectFieldsMap().containsKey(instanceNameElements.get(0));
-        context.getSelectedScenarioGridModel().validateInstanceHeaderUpdate(headerCellValue, columnIndex, isADataType);
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).validateInstanceHeaderUpdate(headerCellValue, columnIndex, isADataType);
     }
 
     protected void validatePropertyHeader(ScenarioSimulationContext context, String headerCellValue, int columnIndex) throws Exception {
         List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(headerCellValue.split("\\.")));
-        final FactMapping factMappingByIndex = context.getStatus().getSimulation().getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
+        final FactMapping factMappingByIndex = context.getAbstractScesimModelByGridWidget(gridWidget).getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
         String className = factMappingByIndex.getFactIdentifier().getClassNameWithoutPackage();
         final FactModelTree factModelTree = context.getDataObjectFieldsMap().get(className);
         boolean isPropertyType = !headerCellValue.endsWith(".") && factModelTree != null && recursivelyFindIsPropertyType(context, factModelTree, propertyNameElements);
-        context.getSelectedScenarioGridModel().validatePropertyHeaderUpdate(headerCellValue, columnIndex, isPropertyType);
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).validatePropertyHeaderUpdate(headerCellValue, columnIndex, isPropertyType);
     }
 
     protected boolean recursivelyFindIsPropertyType(ScenarioSimulationContext context, FactModelTree factModelTree, List<String> propertyNameElements) {

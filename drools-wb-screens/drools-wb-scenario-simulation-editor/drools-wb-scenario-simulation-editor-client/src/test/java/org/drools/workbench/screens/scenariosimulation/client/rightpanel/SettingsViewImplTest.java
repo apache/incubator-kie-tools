@@ -17,16 +17,15 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCENARIO_TYPE;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +34,12 @@ import static org.mockito.Mockito.verify;
 public class SettingsViewImplTest extends AbstractSettingsTest {
 
     private SettingsViewImpl settingsView;
+
+    @Mock
+    private ChangeEvent changeEventMock;
+
+    @Mock
+    private BlurEvent blurEventMock;
 
     @Mock
     private SettingsPresenter settingsPresenterMock;
@@ -62,28 +67,9 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
                 this.dmnName = dmnNameMock;
                 this.skipFromBuild = skipFromBuildMock;
                 this.stateless = statelessMock;
-                this.saveButton = saveButtonMock;
             }
         });
         settingsView.init(settingsPresenterMock);
-    }
-
-    @Test
-    public void removeSaveButton() {
-        settingsView.removeSaveButton();
-        verify(saveButtonMock, times(1)).removeFromParent();
-    }
-
-    @Test
-    public void restoreSaveButton() {
-        settingsView.restoreSaveButton();
-        verify(kieSettingsContentMock, times(1)).appendChild(eq(saveButtonMock));
-    }
-
-    @Test
-    public void onSaveButtonClickEvent() {
-        settingsView.onSaveButtonClickEvent(mock(ClickEvent.class));
-        verify(settingsPresenterMock, times(1)).onSaveButton(SCENARIO_TYPE);
     }
 
     @Test
@@ -99,6 +85,29 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
         verify(statelessMock, times(1)).setChecked(eq(false));
         verify(ruleSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(dmnSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
-        verify(saveButtonMock, times(1)).setDisabled(eq(false));
+    }
+
+    @Test
+    public void syncDmoSession() {
+        settingsView.syncDmoSession(blurEventMock);
+        verify(settingsPresenterMock, times(1)).syncDmoSession();
+    }
+
+    @Test
+    public void syncRuleFlowGroup() {
+        settingsView.syncRuleFlowGroup(blurEventMock);
+        verify(settingsPresenterMock, times(1)).syncRuleFlowGroup();
+    }
+
+    @Test
+    public void syncStateless() {
+        settingsView.syncStateless(changeEventMock);
+        verify(settingsPresenterMock, times(1)).syncStateless();
+    }
+
+    @Test
+    public void syncSkipFromBuild() {
+        settingsView.syncSkipFromBuild(changeEventMock);
+        verify(settingsPresenterMock, times(1)).syncSkipFromBuild();
     }
 }

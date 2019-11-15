@@ -64,6 +64,17 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
         LIElement addExecutableMenuItem(String id, String label, String i18n);
 
         /**
+         * Add an <i>executable</i> menu voice in form of <code>LIElement</code> to the underlying view <b>after</b> another one
+         * It is an <b>overload</b> of {@link #addExecutableMenuItem(String, String, String, Event)} to dynamically provide
+         * an event at runtime
+         * @param id
+         * @param label
+         * @param i18n
+         * @param previous the <code>LIElement</code> after which append the newly created one
+         */
+        LIElement addExecutableMenuItemAfter(String id, String label, String i18n, LIElement previous);
+
+        /**
          * Remove a menu voice from the given menu
          * @param toRemove
          */

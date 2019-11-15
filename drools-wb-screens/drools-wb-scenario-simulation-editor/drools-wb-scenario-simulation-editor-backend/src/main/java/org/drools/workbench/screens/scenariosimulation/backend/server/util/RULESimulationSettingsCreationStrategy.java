@@ -17,6 +17,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
+import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -34,6 +36,8 @@ public class RULESimulationSettingsCreationStrategy implements SimulationSetting
     public Simulation createSimulation(Path context, String value) {
         Simulation toReturn = new Simulation();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
+        simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
+        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
         ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, simulationDescriptor, ScenarioWithIndex::new);
 
         // Add GIVEN Fact

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.businesscentral.client.e
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMNDataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.jboss.errai.common.client.api.Caller;
@@ -33,10 +34,11 @@ public class BusinessCentralDMNDataManagementStrategy extends AbstractDMNDataMan
     }
 
     @Override
-    protected void retrieveFactModelTuple(TestToolsView.Presenter testToolsPresenter,
-                                          ScenarioSimulationContext context,
+    protected void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
+                                          final ScenarioSimulationContext context,
+                                          final GridWidget gridWidget,
                                           String dmnFilePath) {
-        dmnTypeService.call(getSuccessCallback(testToolsPresenter, context),
+        dmnTypeService.call(getSuccessCallback(testToolsPresenter, context, gridWidget),
                             getErrorCallback(testToolsPresenter))
                 .retrieveFactModelTuple(currentPath, dmnFilePath);
     }

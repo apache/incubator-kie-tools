@@ -19,18 +19,23 @@ import java.util.Map;
 
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 
-public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimulationCommand {
+public abstract class AbstractInsertColumnCommand extends AbstractScenarioGridCommand {
 
     public AbstractInsertColumnCommand() {
-        super(true);
+        // CDI
+    }
+
+    public AbstractInsertColumnCommand(GridWidget gridWidget) {
+        super(gridWidget);
     }
 
     public void commonInsertColumnCommand(ScenarioSimulationContext context, ScenarioSimulationContext.Status status, int index) {
         FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
-        Map.Entry<String, String> validPlaceholders = context.getSelectedScenarioGridModel().getValidPlaceholders();
+        Map.Entry<String, String> validPlaceholders = context.getAbstractScesimGridModelByGridWidget(gridWidget).getValidPlaceholders();
         String instanceTitle = validPlaceholders.getKey();
         String propertyTitle = validPlaceholders.getValue();
         final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
@@ -38,9 +43,9 @@ public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimula
                                                                                       status.getColumnId(),
                                                                                       status.getColumnGroup(),
                                                                                       factMappingType,
-                                                                                      context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
-                                                                                      context.getScenarioCellTextAreaSingletonDOMElementFactory(),
+                                                                                      context.getScenarioHeaderTextBoxSingletonDOMElementFactory(gridWidget),
+                                                                                      context.getScenarioCellTextAreaSingletonDOMElementFactory(gridWidget),
                                                                                       ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
-        context.getSelectedScenarioGridModel().insertColumn(index, scenarioGridColumnLocal);
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).insertColumn(index, scenarioGridColumnLocal);
     }
 }

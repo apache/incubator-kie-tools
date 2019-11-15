@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -39,7 +38,6 @@ public class EnableTestToolsCommandTest extends AbstractScenarioSimulationComman
     public void setup() {
         super.setup();
         command = spy(new EnableTestToolsCommand());
-        assertFalse(command.isUndoable());
     }
 
     @Test

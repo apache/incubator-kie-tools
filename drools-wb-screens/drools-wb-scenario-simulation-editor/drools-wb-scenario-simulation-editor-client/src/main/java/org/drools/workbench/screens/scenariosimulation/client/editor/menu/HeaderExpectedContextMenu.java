@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 
@@ -30,27 +31,32 @@ import org.drools.workbench.screens.scenariosimulation.client.events.PrependColu
 public class HeaderExpectedContextMenu extends AbstractHeaderGroupMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String HEADEREXPECTCONTEXTMENU_EXPECT = "headerexpectcontextmenu-expect";
-    private final String HEADEREXPECTCONTEXTMENU_SCENARIO = "headerexpectcontextmenu-scenario";
-    private final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_LEFT = "headerexpectcontextmenu-insert-column-left";
-    private final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT = "headerexpectcontextmenu-insert-column-right";
-    private final String HEADEREXPECTCONTEXTMENU_DELETE_COLUMN = "headerexpectcontextmenu-delete-column";
-    private final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_ABOVE = "headerexpectcontextmenu-insert-row-above";
-    private final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_BELOW = "headerexpectcontextmenu-insert-row-below";
+    private static final String HEADEREXPECTCONTEXTMENU_EXPECT = "headerexpectcontextmenu-expect";
+    private static final String HEADEREXPECTCONTEXTMENU_GRID_TITLE = "headerexpectcontextmenu-grid-title";
+    private static final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_LEFT = "headerexpectcontextmenu-insert-column-left";
+    private static final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT = "headerexpectcontextmenu-insert-column-right";
+    private static final String HEADEREXPECTCONTEXTMENU_DELETE_COLUMN = "headerexpectcontextmenu-delete-column";
+    private static final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_ABOVE = "headerexpectcontextmenu-insert-row-above";
+    private static final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_BELOW = "headerexpectcontextmenu-insert-row-below";
 
     @PostConstruct
     @Override
     public void initMenu() {
         HEADERCONTEXTMENU_GROUP = HEADEREXPECTCONTEXTMENU_EXPECT;
-        HEADERCONTEXTMENU_SCENARIO = HEADEREXPECTCONTEXTMENU_SCENARIO;
+        HEADERCONTEXTMENU_GRID_TITLE = HEADEREXPECTCONTEXTMENU_GRID_TITLE;
         HEADERCONTEXTMENU_INSERT_COLUMN_LEFT = HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_LEFT;
         HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT = HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT;
         HEADERCONTEXTMENU_DELETE_COLUMN = HEADEREXPECTCONTEXTMENU_DELETE_COLUMN;
         HEADERCONTEXTMENU_PREPEND_ROW = HEADEREXPECTCONTEXTMENU_INSERT_ROW_ABOVE;
         HEADERCONTEXTMENU_LABEL = constants.expect().toUpperCase();
         HEADERCONTEXTMENU_I18N = "expect";
-        appendColumnEvent = new AppendColumnEvent("EXPECT");
-        prependColumnEvent = new PrependColumnEvent("EXPECT");
         super.initMenu();
+    }
+
+    @Override
+    public void show(final GridWidget gridWidget, int mx, int my) {
+        super.show(gridWidget, mx, my);
+        mapEvent(appendColumnElement, new AppendColumnEvent(gridWidget, "EXPECT"));
+        mapEvent(prependColumnElement, new PrependColumnEvent(gridWidget, "EXPECT"));
     }
 }

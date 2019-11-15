@@ -37,9 +37,6 @@ public class SaveEditorEvent extends DomEvent<SaveEditorEventHandler> {
         return TYPE;
     }
 
-    public SaveEditorEvent() {
-    }
-
     @Override
     public Type<SaveEditorEventHandler> getAssociatedType() {
         return TYPE;

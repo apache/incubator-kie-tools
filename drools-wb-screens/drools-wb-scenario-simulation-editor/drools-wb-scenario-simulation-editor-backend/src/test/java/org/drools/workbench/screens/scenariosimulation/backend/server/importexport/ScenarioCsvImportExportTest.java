@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -38,14 +39,14 @@ import static org.junit.Assert.assertNull;
 
 public class ScenarioCsvImportExportTest {
 
-    static String instanceName = "instanceName";
-    static String propertyName = "propertyName";
+    private static String instanceName = "instanceName";
+    private static String propertyName = "propertyName";
 
-    CSVPrinter printer;
+    private CSVPrinter printer;
 
-    ScenarioCsvImportExport scenarioCsvImportExport;
+    private ScenarioCsvImportExport scenarioCsvImportExport;
 
-    StringBuilder output;
+    private StringBuilder output;
 
     @Before
     public void setup() throws IOException {
@@ -76,13 +77,13 @@ public class ScenarioCsvImportExportTest {
                 "Index,Description,property1,property2,property3\r\n" +
                 "1,My Scenario,value1,value2,";
 
-        Simulation simulation = scenarioCsvImportExport.importData(rawCSV, originalSimulation);
+        AbstractScesimModel retrieved = scenarioCsvImportExport.importData(rawCSV, originalSimulation);
 
-        assertEquals(1, simulation.getUnmodifiableData().size());
+        assertEquals(1, retrieved.getUnmodifiableData().size());
 
-        assertEquals("value1", simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(2)).get().getRawValue());
-        assertEquals("value2", simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(3)).get().getRawValue());
-        assertNull(simulation.getDataByIndex(0).getFactMappingValue(simulation.getScesimModelDescriptor().getFactMappingByIndex(4)).get().getRawValue());
+        assertEquals("value1", retrieved.getDataByIndex(0).getFactMappingValue(retrieved.getScesimModelDescriptor().getFactMappingByIndex(2)).get().getRawValue());
+        assertEquals("value2", retrieved.getDataByIndex(0).getFactMappingValue(retrieved.getScesimModelDescriptor().getFactMappingByIndex(3)).get().getRawValue());
+        assertNull(retrieved.getDataByIndex(0).getFactMappingValue(retrieved.getScesimModelDescriptor().getFactMappingByIndex(4)).get().getRawValue());
 
         assertThatThrownBy(() -> scenarioCsvImportExport.importData("", originalSimulation))
                 .isInstanceOf(IllegalArgumentException.class)

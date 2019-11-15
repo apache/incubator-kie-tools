@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -46,7 +47,7 @@ public interface DataManagementStrategy {
             new AbstractMap.SimpleEntry<>(LOCALDATE_SIMPLE_NAME, new SimpleClassEntry(LOCALDATE_SIMPLE_NAME, LOCALDATE_CANONICAL_NAME))).
             collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
-    void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioSimulationContext context);
+    void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioSimulationContext context, final GridWidget gridWidget);
 
     void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage);
 

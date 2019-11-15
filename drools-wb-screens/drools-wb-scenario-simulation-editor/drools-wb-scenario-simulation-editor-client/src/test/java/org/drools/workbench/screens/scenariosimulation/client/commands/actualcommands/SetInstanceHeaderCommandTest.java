@@ -24,6 +24,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -36,7 +37,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationCommandTest {
+public class SetInstanceHeaderCommandTest extends AbstractScenarioGridCommandTest {
 
     @Mock
     private List<GridColumn<?>> mockGridColumns;
@@ -56,7 +56,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
         super.setup();
         when(mockGridColumns.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
         when(scenarioGridModelMock.getColumns()).thenReturn(mockGridColumns);
-        command = spy(new SetInstanceHeaderCommand() {
+        commandSpy = spy(new SetInstanceHeaderCommand(GridWidget.SIMULATION) {
 
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader, ScenarioCellTextAreaSingletonDOMElementFactory factoryCell, String placeHolder) {
@@ -68,15 +68,14 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
                 return Optional.empty();
             }
         });
-        assertTrue(command.isUndoable());
         settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
     }
 
     @Test
     public void executeNoColumn() {
         gridColumnMock = null;
-        command.execute(scenarioSimulationContextLocal);
-        verify((SetInstanceHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
+        commandSpy.execute(scenarioSimulationContextLocal);
+        verify((SetInstanceHeaderCommand) commandSpy, never()).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
         scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
         settingsLocal.setType(ScenarioSimulationModel.Type.DMN);
-        command.execute(scenarioSimulationContextLocal);
+        commandSpy.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(false));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
         verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));
@@ -98,7 +97,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
         scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
         settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
-        command.execute(scenarioSimulationContextLocal);
+        commandSpy.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
         verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));

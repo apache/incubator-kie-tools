@@ -44,8 +44,6 @@ public interface SimulationSettingsCreationStrategy {
     Settings createSettings(Path context, String value);
 
     default <T extends AbstractScesimData, E extends ScesimDataWithIndex<T>> E createScesimDataWithIndex(AbstractScesimModel<T> abstractScesimModel, ScesimModelDescriptor simulationDescriptor, BiFunction<Integer, T, E> producer) {
-        simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
-        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
         T scenario = abstractScesimModel.addData();
         scenario.setDescription(null);
         int index = abstractScesimModel.getUnmodifiableData().indexOf(scenario) + 1;

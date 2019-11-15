@@ -48,6 +48,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.actualcom
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioExpressionCellTextAreaSingletonDOMElementFactory;
@@ -343,6 +344,8 @@ public abstract class AbstractScenarioSimulationTest {
         when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
         when(scenarioGridMock.getLayer()).thenReturn(scenarioGridLayerMock);
         when(scenarioGridMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        when(scenarioGridMock.getGridWidget()).thenReturn(GridWidget.SIMULATION);
+
         when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
         when(scenarioGridPanelMock.getScenarioGridLayer()).thenReturn(scenarioGridLayerMock);
         when(scenarioGridPanelMock.getScenarioGrid()).thenReturn(scenarioGridMock);
@@ -351,6 +354,8 @@ public abstract class AbstractScenarioSimulationTest {
         when(backgroundGridMock.getModel()).thenReturn(backgroundGridModelMock);
         when(backgroundGridMock.getLayer()).thenReturn(backgroundGridLayerMock);
         when(backgroundGridMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        when(backgroundGridMock.getGridWidget()).thenReturn(GridWidget.BACKGROUND);
+        when(backgroundGridModelMock.getGridWidget()).thenReturn(GridWidget.BACKGROUND);
         when(backgroundGridLayerMock.getScenarioGrid()).thenReturn(backgroundGridMock);
         when(backgroundGridPanelMock.getScenarioGridLayer()).thenReturn(backgroundGridLayerMock);
         when(backgroundGridPanelMock.getScenarioGrid()).thenReturn(backgroundGridMock);
@@ -364,9 +369,13 @@ public abstract class AbstractScenarioSimulationTest {
         scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         scenarioSimulationContextLocal.getStatus().setSimulation(simulationMock);
         scenarioSimulationContextLocal.getStatus().setBackground(backgroundMock);
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         scenarioSimulationContextLocal.setDataObjectFieldsMap(dataObjectFieldsMapMock);
         scenarioSimulationContextLocal.setSettings(settingsLocal);
+        when(backgroundGridWidgetSpy.getScenarioSimulationContext()).thenReturn(scenarioSimulationContextLocal);
+        when(scenarioGridWidgetSpy.getScenarioSimulationContext()).thenReturn(scenarioSimulationContextLocal);
+
         when(scenarioSimulationEditorPresenterMock.getView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationEditorPresenterMock.getModel()).thenReturn(scenarioSimulationModelMock);
         scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
@@ -383,7 +392,7 @@ public abstract class AbstractScenarioSimulationTest {
         when(scenarioCommandRegistryMock.undo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
         when(scenarioCommandRegistryMock.redo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
 
-        appendRowCommandMock = spy(new AppendRowCommand() {
+        appendRowCommandMock = spy(new AppendRowCommand(GridWidget.SIMULATION) {
 
             {
                 this.restorableStatus = scenarioSimulationContextLocal.getStatus();

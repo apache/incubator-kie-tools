@@ -30,12 +30,15 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import elemental2.dom.DomGlobal;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.BackgroundDataWithIndex;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
-import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -44,6 +47,7 @@ import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
@@ -66,7 +70,6 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestRun
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
@@ -120,13 +123,13 @@ public class ScenarioSimulationEditorPresenter {
     protected MenuItem exportToCSVMenuItem;
     protected MenuItem importMenuItem;
     protected MenuItem downloadMenuItem;
+    protected ScenarioSimulationEditorWrapper scenarioSimulationEditorWrapper;
     private ScenarioSimulationResourceType type;
     private ScenarioSimulationView view;
     private Command populateTestToolsCommand;
     private TextFileExport textFileExport;
     private ConfirmPopupPresenter confirmPopupPresenter;
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
-    protected ScenarioSimulationEditorWrapper scenarioSimulationEditorWrapper;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -176,7 +179,6 @@ public class ScenarioSimulationEditorPresenter {
 
     public void setSaveEnabled(boolean toSet) {
         saveEnabled = toSet;
-        getSettingsPresenter(getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER)).ifPresent(presenter -> presenter.setSaveEnabled(toSet));
     }
 
     public void setPackageName(String packageName) {
@@ -284,7 +286,7 @@ public class ScenarioSimulationEditorPresenter {
         redoMenuItem.setEnabled(enabled);
     }
 
-    public void setItemMenuForMainGridEnabled(boolean enabled) {
+    public void setItemMenuEnabled(boolean enabled) {
         runScenarioMenuItem.setEnabled(enabled);
         importMenuItem.setEnabled(enabled);
         exportToCSVMenuItem.setEnabled(enabled);
@@ -302,8 +304,17 @@ public class ScenarioSimulationEditorPresenter {
         return dataManagementStrategy;
     }
 
-    public void onImport(String fileContents) {
-        scenarioSimulationEditorWrapper.onImport(fileContents, getImportCallBack(), getImportErrorCallback(), context.getStatus().getSimulation());
+    public void onImport(String fileContents, GridWidget gridWidget) {
+        switch (gridWidget) {
+            case SIMULATION:
+                scenarioSimulationEditorWrapper.onImport(fileContents, getImportCallBack(), getImportErrorCallback(), context.getStatus().getSimulation());
+                break;
+            case BACKGROUND:
+                scenarioSimulationEditorWrapper.onImport(fileContents, getImportCallBack(), getImportErrorCallback(), context.getStatus().getBackground());
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+        }
     }
 
     public EventBus getEventBus() {
@@ -360,13 +371,21 @@ public class ScenarioSimulationEditorPresenter {
         context.getStatus().setSimulation(simulation);
 
         // refresh background data
+        boolean hasBackgroundError = false;
         Background background = this.model.getBackground();
         for (BackgroundDataWithIndex backgroundDataWithIndex : newData.getBackgroundDataWithIndex()) {
             int index = backgroundDataWithIndex.getIndex() - 1;
-            background.replaceData(index, backgroundDataWithIndex.getScesimData());
+            BackgroundData scesimData = backgroundDataWithIndex.getScesimData();
+            background.replaceData(index, scesimData);
+            hasBackgroundError |= scesimData.getUnmodifiableFactMappingValues().stream().anyMatch(elem -> !FactMappingValueStatus.SUCCESS.equals(elem.getStatus()));
         }
         scenarioBackgroundGridWidget.refreshContent(background);
         context.getStatus().setBackground(background);
+
+        if (hasBackgroundError) {
+            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.backgroundErrorNotification(), NotificationEvent.NotificationType.ERROR));
+            selectBackgroundTab();
+        }
 
         scenarioSimulationDocksHandler.expandTestResultsDock();
         testRunnerReportingPanel.onTestRun(newData.getTestResultMessage());
@@ -431,7 +450,7 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     public void onEditTabSelected() {
-        setItemMenuForMainGridEnabled(true);
+        setItemMenuEnabled(true);
         scenarioMainGridWidget.clearSelections();
         scenarioMainGridWidget.select();
         scenarioBackgroundGridWidget.deselect();
@@ -439,7 +458,7 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     public void onBackgroundTabSelected() {
-        setItemMenuForMainGridEnabled(false);
+        setItemMenuEnabled(true);
         scenarioBackgroundGridWidget.clearSelections();
         scenarioBackgroundGridWidget.select();
         scenarioMainGridWidget.deselect();
@@ -447,7 +466,7 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     public void onOverviewSelected() {
-        setItemMenuForMainGridEnabled(false);
+        setItemMenuEnabled(false);
         scenarioMainGridWidget.clearSelections();
         scenarioMainGridWidget.deselect();
         scenarioBackgroundGridWidget.clearSelections();
@@ -455,11 +474,19 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     public void onImportsTabSelected() {
-        setItemMenuForMainGridEnabled(false);
+        setItemMenuEnabled(false);
         scenarioMainGridWidget.clearSelections();
         scenarioMainGridWidget.deselect();
         scenarioBackgroundGridWidget.clearSelections();
         scenarioBackgroundGridWidget.deselect();
+    }
+
+    public void selectSimulationTab() {
+        scenarioSimulationEditorWrapper.selectSimulationTab();
+    }
+
+    public void selectBackgroundTab() {
+        scenarioSimulationEditorWrapper.selectBackgroundTab();
     }
 
     protected void onDownload(final Supplier<Path> pathSupplier) {
@@ -472,11 +499,15 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     protected void showImportDialog() {
-        eventBus.fireEvent(new ImportEvent());
+        context.getSelectedGridWidget().ifPresent(gridWidget -> eventBus.fireEvent(new ImportEvent(gridWidget)));
     }
 
     protected void onExportToCsv() {
-        scenarioSimulationEditorWrapper.onExportToCsv(getExportCallBack(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view), context.getStatus().getSimulation());
+        context.getSelectedGridWidget().ifPresent(gridWidget ->
+                                                          scenarioSimulationEditorWrapper
+                                                                  .onExportToCsv(getExportCallBack(),
+                                                                                 new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view),
+                                                                                 context.getAbstractScesimModelByGridWidget(gridWidget)));
     }
 
     protected RemoteCallback<Object> getExportCallBack() {
@@ -487,13 +518,20 @@ public class ScenarioSimulationEditorPresenter {
         };
     }
 
-    protected RemoteCallback<Simulation> getImportCallBack() {
-        return simulation -> {
-            cleanReadOnlyColumn(simulation);
-            model.setSimulation(simulation);
-            scenarioMainGridWidget.setContent(model.getSimulation(), context.getSettings().getType());
-            context.getStatus().setSimulation(model.getSimulation());
-            scenarioMainGridWidget.onResize();
+    protected RemoteCallback<AbstractScesimModel> getImportCallBack() {
+        return scesimModel -> {
+            cleanReadOnlyColumn(scesimModel);
+            if (scesimModel instanceof Simulation) {
+                model.setSimulation((Simulation) scesimModel);
+                scenarioMainGridWidget.setContent(model.getSimulation(), context.getSettings().getType());
+                context.getStatus().setSimulation(model.getSimulation());
+                scenarioMainGridWidget.onResize();
+            } else if (scesimModel instanceof Background) {
+                model.setBackground((Background) scesimModel);
+                scenarioBackgroundGridWidget.setContent(model.getBackground(), context.getSettings().getType());
+                context.getStatus().setBackground(model.getBackground());
+                scenarioBackgroundGridWidget.onResize();
+            }
         };
     }
 
@@ -535,16 +573,16 @@ public class ScenarioSimulationEditorPresenter {
 
     /**
      * Read only columns should not contains any values
-     * @param simulation
+     * @param abstractScesimModel
      */
-    protected void cleanReadOnlyColumn(Simulation simulation) {
-        ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
-        for (int i = 0; i < simulation.getUnmodifiableData().size(); i += 1) {
-            Scenario scenario = simulation.getDataByIndex(i);
-            for (FactMapping factMapping : simulationDescriptor.getUnmodifiableFactMappings()) {
+    protected void cleanReadOnlyColumn(AbstractScesimModel abstractScesimModel) {
+        ScesimModelDescriptor scesimModelDescriptor = abstractScesimModel.getScesimModelDescriptor();
+        for (int i = 0; i < abstractScesimModel.getUnmodifiableData().size(); i += 1) {
+            AbstractScesimData abstractScesimData = abstractScesimModel.getDataByIndex(i);
+            for (FactMapping factMapping : scesimModelDescriptor.getUnmodifiableFactMappings()) {
                 if (isColumnReadOnly(factMapping)) {
-                    scenario.getFactMappingValue(factMapping.getFactIdentifier(),
-                                                 factMapping.getExpressionIdentifier())
+                    abstractScesimData.getFactMappingValue(factMapping.getFactIdentifier(),
+                                                           factMapping.getExpressionIdentifier())
                             .ifPresent(fmv -> fmv.setRawValue(null));
                 }
             }
@@ -600,6 +638,7 @@ public class ScenarioSimulationEditorPresenter {
         populateRightDocks(SettingsPresenter.IDENTIFIER);
         scenarioMainGridWidget.setContent(model.getSimulation(), context.getSettings().getType());
         context.getStatus().setSimulation(model.getSimulation());
+        context.getStatus().setBackground(model.getBackground());
         CustomBusyPopup.close();
         // check if structure is valid
         getValidateCommand().execute();
@@ -612,7 +651,9 @@ public class ScenarioSimulationEditorPresenter {
     protected void setTestTools(TestToolsView.Presenter presenter) {
         context.setTestToolsPresenter(presenter);
         presenter.setEventBus(eventBus);
-        dataManagementStrategy.populateTestTools(presenter, context);
+        GridWidget gridWidget = scenarioBackgroundGridWidget.isSelected() ? GridWidget.BACKGROUND : GridWidget.SIMULATION;
+        presenter.setGridWidget(gridWidget);
+        dataManagementStrategy.populateTestTools(presenter, context, gridWidget);
     }
 
     protected void clearTestToolsStatus() {
@@ -627,12 +668,6 @@ public class ScenarioSimulationEditorPresenter {
     protected void setSettings(SettingsView.Presenter presenter) {
         Type modelType = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         presenter.setScenarioType(modelType, context.getSettings(), path.getFileName());
-        if (saveEnabled) {
-            presenter.setSaveCommand(getSaveCommand());
-            presenter.setSaveEnabled(true);
-        } else {
-            presenter.setSaveEnabled(false);
-        }
     }
 
     protected void setCoverageReport(CoverageReportView.Presenter presenter) {
@@ -666,10 +701,6 @@ public class ScenarioSimulationEditorPresenter {
     protected Optional<CoverageReportView.Presenter> getCoverageReportPresenter(PlaceRequest placeRequest) {
         final Optional<CoverageReportView> coverageReportViewMap = getCoverageReportView(placeRequest);
         return coverageReportViewMap.map(CoverageReportView::getPresenter);
-    }
-
-    protected Command getSaveCommand() {
-        return () -> scenarioSimulationEditorWrapper.wrappedSave(ConstantHolder.SAVE);
     }
 
     protected Command getDownloadReportCommand(AuditLog auditLog) {

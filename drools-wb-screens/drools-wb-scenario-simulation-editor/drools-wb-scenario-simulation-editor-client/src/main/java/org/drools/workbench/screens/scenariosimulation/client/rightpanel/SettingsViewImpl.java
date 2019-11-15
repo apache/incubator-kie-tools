@@ -18,7 +18,6 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -26,7 +25,8 @@ import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -94,9 +94,6 @@ public class SettingsViewImpl
     @DataField("skipFromBuildLabel")
     protected SpanElement skipFromBuildLabel = Document.get().createSpanElement();
 
-    @DataField("saveButton")
-    protected ButtonElement saveButton = Document.get().createButtonElement();
-
     @DataField("stateless")
     protected InputElement stateless = Document.get().createCheckInputElement();
 
@@ -130,7 +127,6 @@ public class SettingsViewImpl
         stateless.setChecked(false);
         dmnSettings.getStyle().setDisplay(Style.Display.NONE);
         ruleSettings.getStyle().setDisplay(Style.Display.NONE);
-        saveButton.setDisabled(false);
     }
 
     @Override
@@ -223,23 +219,23 @@ public class SettingsViewImpl
         return stateless;
     }
 
-    @Override
-    public ButtonElement getSaveButton() {
-        return saveButton;
+    @EventHandler("dmoSession")
+    public void syncDmoSession(BlurEvent event) {
+        presenter.syncDmoSession();
     }
 
-    @Override
-    public void removeSaveButton() {
-        saveButton.removeFromParent();
+    @EventHandler("ruleFlowGroup")
+    public void syncRuleFlowGroup(BlurEvent event) {
+        presenter.syncRuleFlowGroup();
     }
 
-    @Override
-    public void restoreSaveButton() {
-        kieSettingsContent.appendChild(saveButton);
+    @EventHandler("stateless")
+    public void syncStateless(ChangeEvent event) {
+        presenter.syncStateless();
     }
 
-    @EventHandler("saveButton")
-    public void onSaveButtonClickEvent(ClickEvent event) {
-        presenter.onSaveButton(scenarioType.getInnerText());
+    @EventHandler("skipFromBuild")
+    public void syncSkipFromBuild(ChangeEvent event) {
+        presenter.syncSkipFromBuild();
     }
 }

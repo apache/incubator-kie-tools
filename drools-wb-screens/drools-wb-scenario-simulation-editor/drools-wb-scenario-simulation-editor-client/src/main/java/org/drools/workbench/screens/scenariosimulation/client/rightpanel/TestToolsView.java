@@ -24,6 +24,7 @@ import java.util.SortedMap;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
@@ -145,7 +146,14 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
         void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 
+        /**
+         * Method to hide all the <b>instance-related</b> html
+         */
+        void hideInstances();
+
         void setEventBus(EventBus eventBus);
+
+        void setGridWidget(GridWidget gridWidget);
 
         Optional<FactModelTree> getFactModelTreeFromFactTypeMap(String factName);
 
@@ -199,5 +207,6 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
          * @param selected
          */
         void setSelectedElement(FieldItemView selected);
+
     }
 }

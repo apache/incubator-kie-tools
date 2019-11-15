@@ -15,30 +15,31 @@
  */
 package org.drools.workbench.screens.scenariosimulation.service;
 
-import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
- * This interface define the service to export and import data from a scenario
+ * This interface define the service to export and import data from a <code>AbstractScesimModel</code>
  */
 @Remote
 public interface ImportExportService {
 
     /**
-     * This method export the given simulation to the requested type
+     * This method export the given <code>AbstractScesimModel</code> to the requested type
      * @param type
-     * @param simulation
+     * @param scesimModel
      * @return
      */
-    Object exportSimulation(ImportExportType type, Simulation simulation);
+    Object exportScesimModel(ImportExportType type, AbstractScesimModel<? extends AbstractScesimData> scesimModel);
 
     /**
-     * This method parse the raw value and return a new simulation. The originalSimulation can be used to retrieve
+     * This method parse the raw value and return a new <code>AbstractScesimModel</code>. The <b>originalSimulation</b> can be used to retrieve
      * some metadata not available in the export (i.e. FactMapping)
      * @param type
      * @param raw
-     * @param originalSimulation
+     * @param originalScesimModel
      * @return
      */
-    Simulation importSimulation(ImportExportType type, Object raw, Simulation originalSimulation);
+    <T extends AbstractScesimData> AbstractScesimModel<T> importScesimModel(ImportExportType type, Object raw, AbstractScesimModel<T> originalScesimModel);
 }

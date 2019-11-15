@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.Settings;
@@ -32,8 +33,6 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Scenario
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioExpressionCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.models.BackgroundGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
@@ -51,15 +50,31 @@ public class ScenarioSimulationContext {
     private static final AtomicLong COUNTER_ID = new AtomicLong();
     private static final AtomicLong STATUS_COUNTER_ID = new AtomicLong();
 
-    final protected ScenarioGridWidget simulationGridWidget;
-    final protected ScenarioGridWidget backgroundGridWidget;
+    protected final ScenarioGridWidget simulationGridWidget;
+    protected final ScenarioGridWidget backgroundGridWidget;
+    /**
+     * Auto-generated incremental identifier used  to uniquely identify each context
+     */
+    private final long id;
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
     protected TestToolsView.Presenter testToolsPresenter;
     protected SortedMap<String, FactModelTree> dataObjectFieldsMap;
     protected Set<String> dataObjectsInstancesName;
     protected Settings settings;
-
     protected Status status = new Status();
+    protected PlaceManager placeManager;
+    protected PlaceRequest testToolsRequest;
+
+    /**
+     * This constructor set the <b>Simulation</b> and <b>Background</b> <code>ScenarioGridWidget</code>s
+     * @param simulationGridWidget
+     * @param backgroundGridWidget
+     */
+    public ScenarioSimulationContext(ScenarioGridWidget simulationGridWidget, ScenarioGridWidget backgroundGridWidget) {
+        this.simulationGridWidget = simulationGridWidget;
+        this.backgroundGridWidget = backgroundGridWidget;
+        id = COUNTER_ID.getAndIncrement();
+    }
 
     /**
      * Get the current <code>Status</code>
@@ -75,26 +90,6 @@ public class ScenarioSimulationContext {
      */
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    protected PlaceManager placeManager;
-
-    protected PlaceRequest testToolsRequest;
-
-    /**
-     * Auto-generated incremental identifier used  to uniquely identify each context
-     */
-    private final long id;
-
-    /**
-     * This constructor set the <b>Simulation</b> and <b>Background</b> <code>ScenarioGridWidget</code>s
-     * @param simulationGridWidget
-     * @param backgroundGridWidget
-     */
-    public ScenarioSimulationContext(ScenarioGridWidget simulationGridWidget, ScenarioGridWidget backgroundGridWidget) {
-        this.simulationGridWidget = simulationGridWidget;
-        this.backgroundGridWidget = backgroundGridWidget;
-        id = COUNTER_ID.getAndIncrement();
     }
 
     public ScenarioSimulationEditorPresenter getScenarioSimulationEditorPresenter() {
@@ -137,16 +132,15 @@ public class ScenarioSimulationContext {
         this.dataObjectsInstancesName = dataObjectsInstancesName;
     }
 
-    public ScenarioGridWidget getSelectedScenarioGridWidget() {
+    public Optional<ScenarioGridWidget> getSelectedScenarioGridWidget() {
         if (backgroundGridWidget.isSelected() && simulationGridWidget.isSelected()) {
             throw new IllegalStateException("Simulation and Background grids can not be selected at the same time");
         }
         if (!backgroundGridWidget.isSelected() && !simulationGridWidget.isSelected()) {
-            // let set the simulation grid as default
-            return simulationGridWidget;
+            return Optional.empty();
         }
         // return the actually selected grid
-        return backgroundGridWidget.isSelected() ? backgroundGridWidget : simulationGridWidget;
+        return backgroundGridWidget.isSelected() ? Optional.of(backgroundGridWidget) : Optional.of(simulationGridWidget);
     }
 
     public ScenarioGrid getSimulationGrid() {
@@ -157,26 +151,53 @@ public class ScenarioSimulationContext {
         return backgroundGridWidget.getScenarioGridPanel().getScenarioGrid();
     }
 
-    public ScenarioGridPanel getSelectedScenarioGridPanel() {
-        return getSelectedScenarioGridWidget().getScenarioGridPanel();
+    public Optional<ScenarioGridPanel> getSelectedScenarioGridPanel() {
+        return getSelectedScenarioGridWidget().map(ScenarioGridWidget::getScenarioGridPanel);
     }
 
-    public AbstractScesimGridModel getSelectedScenarioGridModel() {
-        return getSelectedScenarioGridLayer().getScenarioGrid().getModel();
-    }
-
-    public ScenarioGridLayer getSelectedScenarioGridLayer() {
-        return getSelectedScenarioGridPanel().getScenarioGridLayer();
-    }
-
-    public Optional<GridWidget> getSelectedGRID_WIDGET() {
-        if (getSelectedScenarioGridModel() instanceof ScenarioGridModel) {
-            return Optional.of(GridWidget.SIMULATION);
-        } else if (getSelectedScenarioGridModel() instanceof BackgroundGridModel) {
-            return Optional.of(GridWidget.BACKGROUND);
-        } else {
-            return Optional.empty();
+    public ScenarioGridPanel getScenarioGridPanelByGridWidget(GridWidget gridWidget) {
+        switch (gridWidget) {
+            case SIMULATION:
+                return simulationGridWidget.getScenarioGridPanel();
+            case BACKGROUND:
+                return backgroundGridWidget.getScenarioGridPanel();
+            default:
+                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
         }
+    }
+
+    public AbstractScesimGridModel getAbstractScesimGridModelByGridWidget(GridWidget gridWidget) {
+        switch (gridWidget) {
+            case SIMULATION:
+                return simulationGridWidget.getModel();
+            case BACKGROUND:
+                return backgroundGridWidget.getModel();
+            default:
+                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+        }
+    }
+
+    public <T extends AbstractScesimData> AbstractScesimModel<T> getAbstractScesimModelByGridWidget(GridWidget gridWidget) {
+        switch (gridWidget) {
+            case SIMULATION:
+                return (AbstractScesimModel<T>) status.getSimulation();
+            case BACKGROUND:
+                return (AbstractScesimModel<T>) status.getBackground();
+            default:
+                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+        }
+    }
+
+    public Optional<AbstractScesimGridModel> getSelectedScenarioGridModel() {
+        return getSelectedScenarioGridLayer().map(ScenarioGridLayer::getScenarioGrid).map(ScenarioGrid::getModel);
+    }
+
+    public Optional<ScenarioGridLayer> getSelectedScenarioGridLayer() {
+        return getSelectedScenarioGridPanel().map(ScenarioGridPanel::getScenarioGridLayer);
+    }
+
+    public Optional<GridWidget> getSelectedGridWidget() {
+        return getSelectedScenarioGridModel().map(AbstractScesimGridModel::getGridWidget);
     }
 
     public PlaceManager getPlaceManager() {
@@ -202,7 +223,7 @@ public class ScenarioSimulationContext {
     public void setStatusSimulationIfEmpty() throws IllegalStateException {
         if (status.getSimulation() == null) {
             final Optional<AbstractScesimModel> abstractScesimModel = simulationGridWidget.getModel().getAbstractScesimModel();
-            status.setSimulation((Simulation)abstractScesimModel.orElseThrow(IllegalStateException::new));
+            status.setSimulation((Simulation) abstractScesimModel.orElseThrow(IllegalStateException::new));
         }
         if (status.getBackground() == null) {
             final Optional<AbstractScesimModel> abstractScesimModel = backgroundGridWidget.getModel().getAbstractScesimModel();
@@ -214,20 +235,20 @@ public class ScenarioSimulationContext {
         return id;
     }
 
-    public CollectionEditorSingletonDOMElementFactory getCollectionEditorSingletonDOMElementFactory() {
-        return getSelectedScenarioGridModel().getCollectionEditorSingletonDOMElementFactory();
+    public CollectionEditorSingletonDOMElementFactory getCollectionEditorSingletonDOMElementFactory(GridWidget gridWidget) {
+        return getAbstractScesimGridModelByGridWidget(gridWidget).getCollectionEditorSingletonDOMElementFactory();
     }
 
-    public ScenarioCellTextAreaSingletonDOMElementFactory getScenarioCellTextAreaSingletonDOMElementFactory() {
-        return getSelectedScenarioGridModel().getScenarioCellTextAreaSingletonDOMElementFactory();
+    public ScenarioCellTextAreaSingletonDOMElementFactory getScenarioCellTextAreaSingletonDOMElementFactory(GridWidget gridWidget) {
+        return getAbstractScesimGridModelByGridWidget(gridWidget).getScenarioCellTextAreaSingletonDOMElementFactory();
     }
 
-    public ScenarioHeaderTextBoxSingletonDOMElementFactory getScenarioHeaderTextBoxSingletonDOMElementFactory() {
-        return getSelectedScenarioGridModel().getScenarioHeaderTextBoxSingletonDOMElementFactory();
+    public ScenarioHeaderTextBoxSingletonDOMElementFactory getScenarioHeaderTextBoxSingletonDOMElementFactory(GridWidget gridWidget){
+        return getAbstractScesimGridModelByGridWidget(gridWidget).getScenarioHeaderTextBoxSingletonDOMElementFactory();
     }
 
-    public ScenarioExpressionCellTextAreaSingletonDOMElementFactory getScenarioExpressionCellTextAreaSingletonDOMElementFactory() {
-        return getSelectedScenarioGridModel().getScenarioExpressionCellTextAreaSingletonDOMElementFactory();
+    public ScenarioExpressionCellTextAreaSingletonDOMElementFactory getScenarioExpressionCellTextAreaSingletonDOMElementFactory(GridWidget gridWidget) {
+        return getAbstractScesimGridModelByGridWidget(gridWidget).getScenarioExpressionCellTextAreaSingletonDOMElementFactory();
     }
 
     /**

@@ -20,6 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -64,8 +65,6 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
     @Mock
     private Path currentPathMock;
 
-
-
     @Before
     public void setup() {
         super.setup();
@@ -83,7 +82,7 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
             }
 
             @Override
-            public RemoteCallback<FactModelTuple> getSuccessCallback(TestToolsView.Presenter testToolsPresenter, ScenarioSimulationContext context) {
+            public RemoteCallback<FactModelTuple> getSuccessCallback(TestToolsView.Presenter testToolsPresenter, ScenarioSimulationContext context, GridWidget gridWidget) {
                 return remoteCallbackMock;
             }
 
@@ -92,13 +91,12 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
                 return errorCallbackMock;
             }
         });
-
     }
 
     @Test
     public void retrieveFactModelTuple() {
-        businessCentralDmnDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, "DMN_FILE_PATH");
-        verify(businessCentralDmnDataManagementStrategySpy, times(1)).getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal));
+        businessCentralDmnDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION, "DMN_FILE_PATH");
+        verify(businessCentralDmnDataManagementStrategySpy, times(1)).getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
         verify(dmnTypeServiceMock, times(1)).retrieveFactModelTuple(eq(currentPathMock), eq("DMN_FILE_PATH"));
     }
 }

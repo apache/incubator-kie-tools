@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client;
 
-import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
@@ -29,6 +28,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILE_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCENARIO_TYPE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SKIP_FROM_BUILD;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.STATELESS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -52,9 +53,8 @@ public class MockProducer {
         doReturn(dmnNamespaceMock()).when(toReturn).getDmnNamespace();
         when(toReturn.getDmnNameLabel()).thenReturn(dmnNameLabelMock());
         doReturn(dmnNameMock()).when(toReturn).getDmnName();
-        when(toReturn.getSkipFromBuild()).thenReturn(skipFromBuildMock());
-        when(toReturn.getSaveButton()).thenReturn(saveButtonMock());
-        when(toReturn.getStateless()).thenReturn(statelessMock());
+        doReturn(skipFromBuildMock()).when(toReturn).getSkipFromBuild();
+        doReturn(statelessMock()).when(toReturn).getStateless();
         return toReturn;
     }
 
@@ -85,15 +85,15 @@ public class MockProducer {
     }
 
     public static InputElement statelessMock() {
-        return mock(InputElement.class);
-    }
-
-    public static ButtonElement saveButtonMock() {
-        return mock(ButtonElement.class);
+        InputElement toReturn = mock(InputElement.class);
+        when(toReturn.isChecked()).thenReturn(STATELESS);
+        return toReturn;
     }
 
     public static InputElement skipFromBuildMock() {
-        return mock(InputElement.class);
+        InputElement toReturn = mock(InputElement.class);
+        when(toReturn.isChecked()).thenReturn(SKIP_FROM_BUILD);
+        return toReturn;
     }
 
     public static InputElement dmnNameMock() {

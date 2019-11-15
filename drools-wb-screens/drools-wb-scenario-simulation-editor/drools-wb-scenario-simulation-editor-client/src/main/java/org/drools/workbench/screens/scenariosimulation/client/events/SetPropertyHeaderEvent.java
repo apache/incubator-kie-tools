@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 
 /**
@@ -28,20 +29,23 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     public static final Type<SetPropertyHeaderEventHandler> TYPE = new Type<>();
 
-    private String fullPackage;
-    private List<String> propertyNameElements;
-    private String valueClassName;
+    private final GridWidget gridWidget;
+    private final String fullPackage;
+    private final List<String> propertyNameElements;
+    private final String valueClassName;
     private FactMappingValueType factMappingValueType;
 
     /**
      * Use this constructor to modify the <i>property</i> level header
      *
+     * @param gridWidget
      * @param fullPackage
      * @param propertyNameElements
      * @param valueClassName
      * @param factMappingValueType
      */
-    public SetPropertyHeaderEvent(String fullPackage, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
+    public SetPropertyHeaderEvent(GridWidget gridWidget, String fullPackage, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
+        this.gridWidget = gridWidget;
         this.fullPackage = fullPackage;
         this.propertyNameElements = propertyNameElements;
         this.valueClassName = valueClassName;
@@ -51,6 +55,10 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     @Override
     public Type<SetPropertyHeaderEventHandler> getAssociatedType() {
         return TYPE;
+    }
+
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public String getFullPackage() {

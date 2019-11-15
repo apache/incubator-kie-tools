@@ -29,6 +29,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.Header
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
+import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationGridHandlerTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,7 +102,8 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                 .as("Click to [0,0] header cell")
                 .isTrue();
         verify(scenarioGridMock, times(1)).clearSelections();
-        verify(expectedContextMenuMock).show(clickPointX,
+        verify(expectedContextMenuMock).show(GridWidget.SIMULATION,
+                                             clickPointX,
                                              clickPointy,
                                              0,
                                              COLUMN_GROUP, false,
@@ -136,7 +138,7 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                 .as("Context menu according to column title")
                 .isTrue();
 
-        verify(headerExpectedContextMenuMock).show(clickPointX, clickPointY);
+        verify(headerExpectedContextMenuMock).show(eq(GridWidget.SIMULATION),  eq(clickPointX), eq(clickPointY));
         verifyZeroInteractions(expectedContextMenuMock);
     }
 
@@ -157,7 +159,8 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                 .as("Click to expect/given body cell")
                 .isTrue();
         verify(scenarioGridMock, times(1)).clearSelections();
-        verify(gridContextMenuMock).show(clickPointX,
+        verify(gridContextMenuMock).show(GridWidget.SIMULATION,
+                                         clickPointX,
                                          clickPointY,
                                          0);
         verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
@@ -181,6 +184,6 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                 .as("Click to row number/description body cell")
                 .isTrue();
 
-        verify(unmodifiableColumnGridContextMenuMock).show(clickPointX, clickPointY, 0);
+        verify(unmodifiableColumnGridContextMenuMock).show(GridWidget.SIMULATION, clickPointX, clickPointY, 0);
     }
 }
