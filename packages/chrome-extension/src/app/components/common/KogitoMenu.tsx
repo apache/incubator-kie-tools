@@ -162,9 +162,13 @@ export function KogitoMenu() {
 }
 
 function obfuscate(token: string) {
+  if (token.length <= 8) {
+    return token;
+  }
+
   const stars = new Array(token.length - 8).join("*");
   const pieceToObfuscate = token.substring(4, token.length - 4);
-  return token.length > 8 ? token.replace(pieceToObfuscate, stars) : token;
+  return token.replace(pieceToObfuscate, stars);
 }
 
 async function tokenIsValid(token?: string) {
