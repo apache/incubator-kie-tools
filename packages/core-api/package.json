@@ -21,7 +21,7 @@
     "test": "echo 'No tests to run'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production"
+    "build:prod": "yarn run build --mode production --devtool none"
   },
   "babel": {
     "presets": [

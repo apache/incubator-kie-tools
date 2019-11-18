@@ -102,7 +102,7 @@ jobs:
 
       - name: "Build :: prod"
         if: success()
-        run: npx lerna run --stream build:fast -- --mode production
+        run: npx lerna run --stream build:fast -- --mode production --devtool none
 
       - name: Run integration tests
         run: npx lerna run test:it --stream
