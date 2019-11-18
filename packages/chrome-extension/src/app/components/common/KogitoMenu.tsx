@@ -119,7 +119,8 @@ export function KogitoMenu() {
                     </p>
                     <p>
                       <b>
-                        <u>NOTE: </u>
+                        <u>NOTE:</u>
+                        &nbsp;
                       </b>
                       <b>For public repositories, no special permissions are required</b>. In fact, you can generate a
                       Token without ticking any checkbox. For private repositories, however, you should provide a Token
