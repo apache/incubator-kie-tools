@@ -79,6 +79,8 @@ export function KogitoMenu() {
     setWholeMenuOpen(!isWholeMenuOpen);
   }, [isWholeMenuOpen]);
 
+  const tokenToDisplay = obfuscate(gitHubApi.token || potentialToken);
+
   return (
     <>
       {isWholeMenuOpen && (
@@ -102,7 +104,7 @@ export function KogitoMenu() {
                 </a>
                 {isInfoPopOverOpen && (
                   <div className={"info-popover"}>
-                    <h3>Tokens are stored locally as cookies.</h3>
+                    <h3>Tokens are only stored locally as cookies.</h3>
                     <p>We never store or share your token with anyone.</p>
                     <hr />
                     <p>
@@ -131,7 +133,7 @@ export function KogitoMenu() {
               autoFocus={true}
               ref={inputRef}
               disabled={isAuthenticated}
-              value={gitHubApi.token || potentialToken}
+              value={tokenToDisplay}
               onPaste={onPaste}
               onChange={() => {
                 /**/
@@ -152,6 +154,12 @@ export function KogitoMenu() {
       />
     </>
   );
+}
+
+function obfuscate(tkn: string) {
+  const stars = new Array(tkn.length - 8).join("*");
+  const pieceToObfuscate = tkn.substring(4, tkn.length - 4);
+  return tkn.length > 8 ? tkn.replace(pieceToObfuscate, stars) : tkn;
 }
 
 async function tokenIsValid(token?: string) {

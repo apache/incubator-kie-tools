@@ -27,7 +27,7 @@ export function fetchFile(octokit: Octokit, org: string, repo: string, ref: stri
     })
     .then(res => atob((res.data as any).content))
     .catch(e => {
-      console.debug(`Error fetching ${path} with Octokit. Falliback is 'raw.githubusercontent.com'.`);
+      console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
       return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(res =>
         res.ok ? res.text() : Promise.resolve(undefined)
       );
