@@ -16,16 +16,8 @@
 
 import * as React from "react";
 
-export interface IsolatedEditorContextType {
+export const IsolatedEditorContext = React.createContext<{
   textMode: boolean;
   fullscreen: boolean;
   onEditorReady?: () => void;
-}
-
-export const IsolatedEditorContext = React.createContext<IsolatedEditorContextType>({
-  textMode: false,
-  fullscreen: false,
-  onEditorReady: () => {
-    /**/
-  }
-});
+}>({} as any);

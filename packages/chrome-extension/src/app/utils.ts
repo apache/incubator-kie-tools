@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
+import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID, KOGITO_MENU_CONTAINER_ID } from "./constants";
 import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {
@@ -88,6 +88,17 @@ export function iframeFullscreenContainer(container: HTMLElement) {
       `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
     );
   }
+  return element();
+}
+
+export function kogitoMenuContainer(container: HTMLElement) {
+  const div = `<div id="${KOGITO_MENU_CONTAINER_ID}" class="Header-item"></div>`;
+  const element = () => document.getElementById(KOGITO_MENU_CONTAINER_ID)!;
+
+  if (!element()) {
+    container.insertAdjacentHTML("beforebegin", div);
+  }
+
   return element();
 }
 

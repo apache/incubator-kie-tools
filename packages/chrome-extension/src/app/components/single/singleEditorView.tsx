@@ -25,12 +25,12 @@ import * as ReactDOM from "react-dom";
 import { Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
-import { GlobalContext } from "../common/GlobalContext";
 import { fetchFile } from "../../github/api";
+import { useGitHubApi } from "../common/GitHubContext";
 
 export interface FileInfo {
   repo: string;
@@ -77,16 +77,10 @@ export function renderSingleEditorReadonlyApp(args: {
 }
 
 function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
-  const globalContext = useContext(GlobalContext);
+  const githubApi = useGitHubApi();
   const getFileContents = useCallback(
     () =>
-      fetchFile(
-        globalContext.octokit,
-        props.fileInfo.org,
-        props.fileInfo.repo,
-        props.fileInfo.gitRef,
-        props.fileInfo.path
-      ),
+      fetchFile(githubApi.octokit, props.fileInfo.org, props.fileInfo.repo, props.fileInfo.gitRef, props.fileInfo.path),
     []
   );
 

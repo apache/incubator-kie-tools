@@ -23,3 +23,4 @@ export const KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID = "kogito-iframe-fullscreen-c
 export const KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS = "kogito-view-original-link-container-pr";
 export const KOGITO_TOOLBAR_CONTAINER_PR_CLASS = "kogito-toolbar-container-pr";
 export const KOGITO_IFRAME_CONTAINER_PR_CLASS = "kogito-iframe-container-pr";
+export const KOGITO_MENU_CONTAINER_ID = "kogito-menu-container";

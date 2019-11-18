@@ -37,8 +37,8 @@ export function startExtension(args: { name: string; editorIndexPath: string; ro
 
   const runInit = () => init({ logger, editorIndexPath: args.editorIndexPath, router: args.router });
 
-  runAfterUriChange(logger, () => setImmediate(runInit));
-  setImmediate(runInit);
+  runAfterUriChange(logger, () => setTimeout(runInit, 0));
+  setTimeout(runInit, 0);
 }
 
 function init(args: { logger: Logger; editorIndexPath: string; router: Router }) {

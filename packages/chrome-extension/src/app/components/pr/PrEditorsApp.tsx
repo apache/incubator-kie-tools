@@ -15,18 +15,16 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../common/GlobalContext";
+import { useEffect, useState } from "react";
+import { useGlobals } from "../common/GlobalContext";
 import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
 export function PrEditorsApp(props: { prInfo: PrInfo }) {
-  const globalContext = useContext(GlobalContext);
-  const [prFileContainers, setPrFileContainers] = useState(
-    supportedPrFileElements(globalContext.logger, globalContext.router)
-  );
+  const globals = useGlobals();
+  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globals.logger, globals.router));
 
   useMutationObserverEffect(
     new MutationObserver(mutations => {
@@ -36,9 +34,9 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
         return;
       }
 
-      const newContainers = supportedPrFileElements(globalContext.logger, globalContext.router);
+      const newContainers = supportedPrFileElements(globals.logger, globals.router);
       if (newContainers.length !== prFileContainers.length) {
-        globalContext.logger.log("Found new containers...");
+        globals.logger.log("Found new containers...");
         setPrFileContainers(newContainers);
       }
     }),

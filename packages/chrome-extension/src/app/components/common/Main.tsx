@@ -18,31 +18,32 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import { Logger } from "../../../Logger";
-import * as Octokit from "@octokit/rest";
+import { GitHubContextProvider } from "./GitHubContext";
+import * as ReactDOM from "react-dom";
+import { KogitoMenu } from "./KogitoMenu";
+import * as dependencies__ from "../../dependencies";
+import { kogitoMenuContainer } from "../../utils";
 
-interface Props {
+export const Main: React.FunctionComponent<{
   router: Router;
   logger: Logger;
   editorIndexPath: string;
-}
-
-export class Main extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-  }
-
-  public render() {
-    return (
-      <GlobalContext.Provider
-        value={{
-          logger: this.props.logger,
-          router: this.props.router,
-          octokit: new Octokit(),
-          editorIndexPath: this.props.editorIndexPath
-        }}
-      >
-        {this.props.children}
-      </GlobalContext.Provider>
-    );
-  }
-}
+}> = props => {
+  return (
+    <GlobalContext.Provider
+      value={{
+        logger: props.logger,
+        router: props.router,
+        editorIndexPath: props.editorIndexPath
+      }}
+    >
+      <GitHubContextProvider>
+        {ReactDOM.createPortal(
+          <KogitoMenu />,
+          kogitoMenuContainer(dependencies__.all.notificationIndicator()!.parentElement!)
+        )}
+        <>{props.children}</>
+      </GitHubContextProvider>
+    </GlobalContext.Provider>
+  );
+};

@@ -17,18 +17,13 @@
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { Logger } from "../../../Logger";
-import * as Octokit from "@octokit/rest";
 
-export interface GlobalContextType {
+export const GlobalContext = React.createContext<{
   router: Router;
-  octokit: Octokit;
   logger: Logger;
   editorIndexPath: string;
-}
+}>({} as any);
 
-export const GlobalContext = React.createContext<GlobalContextType>({
-  router: undefined as any,
-  logger: undefined as any,
-  octokit: undefined as any,
-  editorIndexPath: "envelope/index.html"
-});
+export function useGlobals() {
+  return React.useContext(GlobalContext);
+}

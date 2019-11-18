@@ -17,6 +17,7 @@
 import * as React from "react";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
+import { useGitHubApi } from "./GitHubContext";
 
 interface Props {
   getFileContents: () => Promise<string | undefined>;
@@ -28,11 +29,13 @@ interface Props {
 
 const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
   const shouldRenderIframe = (props.keepRenderedEditorInTextMode && props.textMode) || !props.textMode;
+  const githubApi = useGitHubApi();
 
   return (
     <>
       {shouldRenderIframe && (
         <KogitoEditorIframe
+          key={githubApi.token}
           ref={forwardedRef}
           openFileExtension={props.openFileExtension}
           getFileContents={props.getFileContents}

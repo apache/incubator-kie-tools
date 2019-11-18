@@ -53,6 +53,9 @@ export const prView = {
 //
 
 export const all = {
+  notificationIndicator: () => {
+    return document.querySelector(".notification-indicator") as HTMLElement | null;
+  },
   body: () => {
     return document.body;
   },

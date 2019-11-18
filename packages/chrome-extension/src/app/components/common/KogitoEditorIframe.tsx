@@ -19,7 +19,7 @@ import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "rea
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../../utils";
-import { GlobalContext } from "./GlobalContext";
+import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
@@ -36,87 +36,81 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   forwardedRef
 ) => {
   const ref = useRef<HTMLIFrameElement>(null);
-  const { router, editorIndexPath, logger } = useContext(GlobalContext);
+  const { router, editorIndexPath, logger } = useGlobals();
   const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
 
-  const envelopeBusOuterMessageHandler = useMemo(
-    () => {
-      return new EnvelopeBusOuterMessageHandler(
-        {
-          postMessage: msg => {
-            if (ref.current && ref.current.contentWindow) {
-              ref.current.contentWindow.postMessage(msg, router.getTargetOrigin());
-            }
+  const envelopeBusOuterMessageHandler = useMemo(() => {
+    return new EnvelopeBusOuterMessageHandler(
+      {
+        postMessage: msg => {
+          if (ref.current && ref.current.contentWindow) {
+            ref.current.contentWindow.postMessage(msg, router.getTargetOrigin());
           }
+        }
+      },
+      self => ({
+        pollInit() {
+          self.request_initResponse(window.location.origin);
         },
-        self => ({
-          pollInit() {
-            self.request_initResponse(window.location.origin);
-          },
-          receive_languageRequest() {
-            self.respond_languageRequest(router.getLanguageData(props.openFileExtension));
-          },
-          receive_contentResponse(content: string) {
-            if (props.readonly) {
-              return;
-            }
-
-            //keep line breaks
-            content = content.split("\n").join("\\n");
-
-            runScriptOnPage(
-              `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
-            );
-          },
-          receive_contentRequest() {
-            props.getFileContents().then(c => self.respond_contentRequest(c || ""));
-          },
-          receive_setContentError() {
-            //TODO: Display a nice message with explanation why "setContent" failed
-            logger.log("Set content error");
-          },
-          receive_dirtyIndicatorChange(isDirty: boolean) {
-            //TODO: Perhaps show window.alert to warn that the changes were not saved?
-            logger.log(`Dirty indicator changed to ${isDirty}`);
-          },
-          receive_ready() {
-            logger.log(`Editor is ready`);
-            if (onEditorReady) {
-              onEditorReady();
-            }
+        receive_languageRequest() {
+          self.respond_languageRequest(router.getLanguageData(props.openFileExtension));
+        },
+        receive_contentResponse(content: string) {
+          if (props.readonly) {
+            return;
           }
-        })
-      );
-    },
-    [ref, router]
-  );
 
-  useEffect(
-    () => {
-      if (textMode) {
-        envelopeBusOuterMessageHandler.request_contentResponse();
-        return;
-      }
+          //keep line breaks
+          content = content.split("\n").join("\\n");
 
-      if (props.readonly) {
-        return;
-      }
-
-      let task: number;
-      Promise.resolve()
-        .then(() => props.getFileContents())
-        .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
-        .then(() => {
-          task = window.setInterval(
-            () => envelopeBusOuterMessageHandler.request_contentResponse(),
-            GITHUB_EDITOR_SYNC_POLLING_INTERVAL
+          runScriptOnPage(
+            `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
           );
-        });
+        },
+        receive_contentRequest() {
+          props.getFileContents().then(c => self.respond_contentRequest(c || ""));
+        },
+        receive_setContentError() {
+          //TODO: Display a nice message with explanation why "setContent" failed
+          logger.log("Set content error");
+        },
+        receive_dirtyIndicatorChange(isDirty: boolean) {
+          //TODO: Perhaps show window.alert to warn that the changes were not saved?
+          logger.log(`Dirty indicator changed to ${isDirty}`);
+        },
+        receive_ready() {
+          logger.log(`Editor is ready`);
+          if (onEditorReady) {
+            onEditorReady();
+          }
+        }
+      })
+    );
+  }, [router]);
 
-      return () => clearInterval(task);
-    },
-    [textMode, envelopeBusOuterMessageHandler]
-  );
+  useEffect(() => {
+    if (textMode) {
+      envelopeBusOuterMessageHandler.request_contentResponse();
+      return;
+    }
+
+    if (props.readonly) {
+      return;
+    }
+
+    let task: number;
+    Promise.resolve()
+      .then(() => props.getFileContents())
+      .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
+      .then(() => {
+        task = window.setInterval(
+          () => envelopeBusOuterMessageHandler.request_contentResponse(),
+          GITHUB_EDITOR_SYNC_POLLING_INTERVAL
+        );
+      });
+
+    return () => clearInterval(task);
+  }, [textMode, envelopeBusOuterMessageHandler]);
 
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
@@ -143,7 +137,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         }
       };
     },
-    [ref]
+    []
   );
 
   return (

@@ -82,3 +82,55 @@
 .hidden {
   display: none;
 }
+
+.breadcrumb {
+  align-items: flex-end !important;
+}
+
+.kogito-menu-icon {
+  cursor: pointer;
+  margin-left: 16px;
+  filter: grayscale(1);
+}
+
+.kogito-menu-icon.authenticated {
+  filter: none;
+}
+
+.kogito-menu-icon.authenticated:hover {
+  opacity: 0.75;
+}
+
+.kogito-github-token-input {
+  margin-right: 6px;
+  width: 320px;
+  font-family: monospace;
+  font-weight: 100;
+}
+.kogito-github-token-input.authenticated {
+  color: #959595;
+}
+
+/* icons */
+
+b.icon {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  width: 1em;
+  height: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+b.icon.tick:before {
+  content: "✔";
+  font-size: 0.8em;
+  filter: brightness(1.5) invert(0.7) sepia(0.5) hue-rotate(100deg) saturate(5); /*that turns black into green*/
+}
+
+b.icon.cross:before {
+  content: "❌";
+  font-size: 0.6em;
+}

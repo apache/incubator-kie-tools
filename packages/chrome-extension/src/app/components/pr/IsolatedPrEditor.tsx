@@ -16,7 +16,7 @@
 
 import * as dependencies__ from "../../dependencies";
 import * as React from "react";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import {
   useEffectAfterFirstRender,
@@ -34,9 +34,9 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
-import { GlobalContext } from "../common/GlobalContext";
 import * as Octokit from "@octokit/rest";
 import { fetchFile } from "../../github/api";
+import { useGitHubApi } from "../common/GitHubContext";
 
 export interface PrInfo {
   repo: string;
@@ -53,6 +53,8 @@ export function IsolatedPrEditor(props: {
   githubTextEditorToReplace: HTMLElement;
   unprocessedFilePath: string;
 }) {
+  const githubApi = useGitHubApi();
+
   const [showOriginal, setShowOriginal] = useState(false);
   const [textMode, setTextMode] = useState(true);
   const [editorReady, setEditorReady] = useState(false);
@@ -65,19 +67,16 @@ export function IsolatedPrEditor(props: {
   useIsolatedEditorTogglingEffect(textMode, iframeContainer(props.prFileContainer), props.githubTextEditorToReplace);
 
   useInitialAsyncCallEffect(() => {
-    return discoverFileStatusOnPr(globalContext.octokit, props.prInfo, originalFilePath, modifiedFilePath);
+    return discoverFileStatusOnPr(githubApi.octokit, props.prInfo, originalFilePath, modifiedFilePath);
   }, setFileStatusOnPr);
 
-  useEffectAfterFirstRender(
-    () => {
-      getFileContents().then(c => {
-        if (isolatedEditorRef.current) {
-          isolatedEditorRef.current.setContent(c || "");
-        }
-      });
-    },
-    [showOriginal]
-  );
+  useEffectAfterFirstRender(() => {
+    getFileContents().then(c => {
+      if (isolatedEditorRef.current) {
+        isolatedEditorRef.current.setContent(c || "");
+      }
+    });
+  }, [showOriginal]);
 
   const closeDiagram = useCallback(() => {
     setTextMode(true);
@@ -86,13 +85,11 @@ export function IsolatedPrEditor(props: {
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
-      ? () => getOriginalFileContents(globalContext.octokit, props.prInfo, originalFilePath)
-      : () => getModifiedFileContents(globalContext.octokit, props.prInfo, modifiedFilePath);
+      ? () => getOriginalFileContents(githubApi.octokit, props.prInfo, originalFilePath)
+      : () => getModifiedFileContents(githubApi.octokit, props.prInfo, modifiedFilePath);
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
-
-  const globalContext = useContext(GlobalContext);
 
   return (
     <IsolatedEditorContext.Provider
@@ -119,9 +116,10 @@ export function IsolatedPrEditor(props: {
           closeDiagram={closeDiagram}
           onSeeAsDiagram={() => setTextMode(false)}
         />,
-        toolbarContainer(props.prFileContainer, dependencies__.prView.toolbarContainerTarget(
-          props.prFileContainer
-        ) as HTMLElement)
+        toolbarContainer(
+          props.prFileContainer,
+          dependencies__.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
+        )
       )}
 
       {ReactDOM.createPortal(
