@@ -125,12 +125,12 @@ export function KogitoMenu() {
           )}
           <label style={{ position: "relative" }}>
             <input
+              className={"kogito-github-token-input form-control input-sm " + (isAuthenticated ? "authenticated" : "")}
+              placeholder={"Paste your token here..."}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               autoFocus={true}
               ref={inputRef}
               disabled={isAuthenticated}
-              className={"kogito-github-token-input form-control input-sm " + (isAuthenticated ? "authenticated" : "")}
-              placeholder={"Paste your token here..."}
               value={gitHubApi.token || potentialToken}
               onPaste={onPaste}
               onChange={() => {
@@ -146,9 +146,9 @@ export function KogitoMenu() {
         </>
       )}
       <img
-        onClick={toggleMenu}
         className={`kogito-menu-icon ${isAuthenticated ? "authenticated" : ""}`}
         src={"https://karinavarelame.files.wordpress.com/2019/08/kogito_icon_rgb_color_default_256px-1.png?w=30"}
+        onClick={toggleMenu}
       />
     </>
   );
