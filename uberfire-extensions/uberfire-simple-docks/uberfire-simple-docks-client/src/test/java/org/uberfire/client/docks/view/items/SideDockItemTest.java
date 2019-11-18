@@ -29,6 +29,7 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
@@ -57,12 +58,16 @@ public class SideDockItemTest {
         dockWithFontIcon = new UberfireDock(UberfireDockPosition.EAST,
                                             "BRIEFCASE",
                                             placeRequest,
-                                            "").withSize(450).withLabel("dock");
+                                            "")
+                .withSize(450)
+                .withLabel("dock");
         dockWithImageIcon = new UberfireDock(UberfireDockPosition.EAST,
                                              imageResource,
                                              imageResourceFocused,
                                              placeRequest,
-                                             "").withSize(450).withLabel("dock");
+                                             "")
+                .withSize(450)
+                .withLabel("dock");
 
         sideDockWithFontIcon = spy(new SideDockItem(dockWithFontIcon,
                                                     emptyCommand,
@@ -133,6 +138,36 @@ public class SideDockItemTest {
 
     @Test
     public void createSideDockItemWithTooltipTest() {
+        final String dock_screenID = "SCREEN_ID";
+        final String dock_label = "DOCK TITLE";
+        final String dock_tooltip = "DOCK TOOLTIP";
+
+        UberfireDock dock1 = new UberfireDock(UberfireDockPosition.EAST,
+                                              "BRIEFCASE",
+                                              placeRequest,
+                                              "")
+                .withLabel(dock_label)
+                .withTooltip(dock_tooltip);
+        SideDockItem tested1 = spy(new SideDockItem(dock1, emptyCommand, emptyCommand));
+        tested1.createButton();
+        verify(tested1).configureTooltip(any(Tooltip.class), eq(dock_tooltip));
+
+        UberfireDock dock2 = new UberfireDock(UberfireDockPosition.EAST,
+                                              "BRIEFCASE",
+                                              placeRequest,
+                                              "")
+                .withLabel(dock_label);
+        SideDockItem tested2 = spy(new SideDockItem(dock2, emptyCommand, emptyCommand));
+        tested2.createButton();
+        verify(tested2).configureTooltip(any(Tooltip.class), eq(dock_label));
+
+        UberfireDock dock3 = new UberfireDock(UberfireDockPosition.EAST,
+                                              "BRIEFCASE",
+                                              new DefaultPlaceRequest(dock_screenID),
+                                              "");
+        SideDockItem tested3 = spy(new SideDockItem(dock3, emptyCommand, emptyCommand));
+        tested3.createButton();
+        verify(tested3).configureTooltip(any(Tooltip.class), eq(dock_screenID));
 
         Tooltip tooltip = new Tooltip();
         sideDockWithImageIcon.configureTooltip(tooltip, sideDockWithImageIcon.getLabel());

@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.docks;
 
+import java.util.Objects;
+
 import com.google.gwt.resources.client.ImageResource;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -32,6 +34,8 @@ public class UberfireDock {
     private Double size;
 
     private String label;
+
+    private String tooltip;
 
     private ImageResource imageIcon;
 
@@ -86,6 +90,11 @@ public class UberfireDock {
         return this;
     }
 
+    public UberfireDock withTooltip(String tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
+
     public UberfireDock withSize(double size) {
         this.size = size;
         return this;
@@ -119,6 +128,10 @@ public class UberfireDock {
         return label;
     }
 
+    public String getTooltip() {
+        return tooltip;
+    }
+
     public String getIconType() {
         return iconType;
     }
@@ -142,36 +155,35 @@ public class UberfireDock {
 
         UberfireDock that = (UberfireDock) o;
 
-        if (placeRequest != null ? !placeRequest.equals(that.placeRequest) : that.placeRequest != null) {
-            return false;
-        }
-        if (iconType != that.iconType) {
-            return false;
-        }
-        if (uberfireDockPosition != that.uberfireDockPosition) {
-            return false;
-        }
-        if (associatedPerspective != null ? !associatedPerspective.equals(that.associatedPerspective) : that.associatedPerspective != null) {
-            return false;
-        }
-        if (size != null ? !size.equals(that.size) : that.size != null) {
-            return false;
-        }
-        return !(label != null ? !label.equals(that.label) : that.label != null);
+        return Objects.equals(uberfireDockPosition, that.uberfireDockPosition) &&
+                Objects.equals(iconType, that.iconType) &&
+                Objects.equals(imageIcon, that.imageIcon) &&
+                Objects.equals(imageIconFocused, that.imageIconFocused) &&
+                Objects.equals(placeRequest, that.placeRequest) &&
+                Objects.equals(associatedPerspective, that.associatedPerspective) &&
+                Objects.equals(size, that.size) &&
+                Objects.equals(label, that.label) &&
+                Objects.equals(tooltip, that.tooltip);
     }
 
     @Override
     public int hashCode() {
-        int result = placeRequest != null ? placeRequest.hashCode() : 0;
+        int result = placeRequest.hashCode();
+        result = 31 * result + (uberfireDockPosition != null ? uberfireDockPosition.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (iconType != null ? iconType.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + (uberfireDockPosition != null ? uberfireDockPosition.hashCode() : 0);
+        result = 31 * result + (imageIcon != null ? imageIcon.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (imageIconFocused != null ? imageIconFocused.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (associatedPerspective != null ? associatedPerspective.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (size != null ? size.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (tooltip != null ? tooltip.hashCode() : 0);
         result = ~~result;
         return result;
     }

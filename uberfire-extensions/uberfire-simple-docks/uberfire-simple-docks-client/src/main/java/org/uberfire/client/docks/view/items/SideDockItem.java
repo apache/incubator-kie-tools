@@ -62,7 +62,13 @@ public class SideDockItem extends AbstractSideDockItem {
         itemButton.setSize(ButtonSize.SMALL);
         itemButton.setType(ButtonType.LINK);
         configureIcon(itemButton, getDock().getImageIcon());
-        configureTooltip(itemTooltip, getDock().getLabel());
+
+        String tooltip = getDock().getTooltip();
+        if (tooltip == null) {
+            tooltip = getDock().getLabel();
+        }
+
+        configureTooltip(itemTooltip, tooltip);
 
         itemButton.addStyleName(CSS.CSS().sideDockItem());
         itemButton.addClickHandler(new ClickHandler() {
