@@ -22,8 +22,6 @@ export const GitHubContext = React.createContext<{
   octokit: Octokit;
   setToken: (token: string) => void;
   token?: string;
-  isAuthenticated: boolean;
-  setAuthenticated: (x: boolean) => void;
 }>({} as any);
 
 export function useGitHubApi() {
@@ -55,14 +53,12 @@ export function getCookie(name: string) {
 export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
   const [octokit, setOctokit] = useState(new Octokit());
-  const [isAuthenticated, setAuthenticated] = useState(false);
   const [token, setToken] = useState("");
 
   useEffect(() => {
     const value = getCookie("github-auth-token");
     if (value) {
       setOctokit(new Octokit({ auth: value }));
-      setAuthenticated(true);
       setToken(value);
       console.info("Token is " + value);
     } else {
@@ -74,18 +70,14 @@ export const GitHubContextProvider: React.FC<{}> = props => {
   useEffect(() => {
     if (!token) {
       setCookie("github-auth-token", "");
-      setAuthenticated(false);
       setOctokit(new Octokit());
     } else {
       setCookie("github-auth-token", token);
       setOctokit(new Octokit({ auth: token }));
-      setAuthenticated(true);
     }
   }, [token]);
 
   return (
-    <GitHubContext.Provider value={{ token, setToken, octokit, isAuthenticated, setAuthenticated }}>
-      {ready && props.children}
-    </GitHubContext.Provider>
+    <GitHubContext.Provider value={{ token, setToken, octokit }}>{ready && props.children}</GitHubContext.Provider>
   );
 };

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import * as Octokit from "@octokit/rest";
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
+import * as Octokit from "@octokit/rest";
+
+const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
 export function KogitoMenu() {
   const gitHubApi = useGitHubApi();
@@ -25,9 +27,9 @@ export function KogitoMenu() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [isWholeMenuOpen, setWholeMenuOpen] = useState(!isAuthenticated);
+  const [isInfoPopOverOpen, setInfoPopOverOpen] = useState(false);
   const [potentialToken, setPotentialToken] = useState("");
-
-  const [isOpen, setOpen] = useState(!isAuthenticated);
 
   async function updateToken(token?: string) {
     const validToken = await tokenIsValid(token);
@@ -37,7 +39,7 @@ export function KogitoMenu() {
       setPotentialToken("");
     } else {
       gitHubApi.setToken("");
-      setOpen(true);
+      setWholeMenuOpen(true);
     }
 
     return validToken;
@@ -50,12 +52,12 @@ export function KogitoMenu() {
   }, []);
 
   const onPaste = useCallback(e => {
-    const token = e.clipboardData.getData("text/plain").slice(0, 40);
+    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
     setTimeout(async () => {
       const wasValid = await updateToken(token);
       if (wasValid) {
-        setTimeout(() => setOpen(false), 2000);
+        setTimeout(() => setWholeMenuOpen(false), 2000);
       }
       inputRef.current!.setSelectionRange(0, 0);
     }, 0);
@@ -69,26 +71,61 @@ export function KogitoMenu() {
     }, 0);
   }, []);
 
+  const toggleInfoPopOver = useCallback(() => {
+    setInfoPopOverOpen(!isInfoPopOverOpen);
+  }, [isInfoPopOverOpen]);
+
   const toggleMenu = useCallback(() => {
-    setOpen(!isOpen);
-  }, [isOpen]);
+    setWholeMenuOpen(!isWholeMenuOpen);
+  }, [isWholeMenuOpen]);
 
   return (
     <>
-      {isOpen && (
+      {isWholeMenuOpen && (
         <>
           {!isAuthenticated && (
-            <a
-              target={"blank"}
-              className="Header-link mr-0 mr-lg-3 py-2 py-lg-0 border-top border-lg-top-0 border-white-fade-15"
-              href="https://github.com/settings/tokens"
-            >
-              Create token
-            </a>
+            <>
+              <a
+                target={"blank"}
+                className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
+                href="https://github.com/settings/tokens"
+              >
+                Create token
+              </a>
+              <div style={{ position: "relative" }}>
+                <a
+                  className="info-icon-container Header-link mr-0 mr-lg-3 py-2 py-lg-0"
+                  href="#"
+                  onClick={toggleInfoPopOver}
+                >
+                  i
+                </a>
+                {isInfoPopOverOpen && (
+                  <div className={"info-popover"}>
+                    <h3>Tokens are stored locally as cookies.</h3>
+                    <p>We never store or share your token with anyone.</p>
+                    <hr />
+                    <p>
+                      We use your GitHub OAuth Token to provide a better experience while using custom editors. The
+                      official GitHub API has a throttling mechanism with a fairly low threshold for unauthenticated
+                      requests.
+                    </p>
+                    <p>
+                      By authenticating with your OAuth Token we are able to avoid delays when fetching recently updated
+                      files and also provide features that need to read from your repositories, like Work Item
+                      Definitions on BPMN diagrams.
+                    </p>
+                    <p>
+                      <b>NOTE:</b> For private repositories you should provide a Token with the <b>repo</b> permission.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
           )}
           <label style={{ position: "relative" }}>
             <input
-              maxLength={40}
+              maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               autoFocus={true}
               ref={inputRef}
               disabled={isAuthenticated}
