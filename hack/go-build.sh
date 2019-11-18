@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,8 +41,8 @@ if [[ -z ${CI} ]]; then
         MD5=$(md5sum ${TAR} | awk {'print $1'})
         rm ${TAR}
 
-        echo ${CFLAGS}
-        cekit build ${CFLAGS} \
+        echo "${CFLAGS}"
+        cekit build "${CFLAGS}" \
             --overrides "{'artifacts': [{'name': 'kogito-cloud-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
     fi
 else

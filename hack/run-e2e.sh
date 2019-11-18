@@ -27,7 +27,7 @@ if [ -z "$namespace" ]; then
 fi
 
 # creates the namespace
-oc create namespace ${namespace}
+oc create namespace "${namespace}"
 
 if [ -z "$tag" ]; then
   echo "-------- tag is empty, assuming default from the Operator"
@@ -41,9 +41,9 @@ else
   echo "-------- using local operator code for testing"
 
   # gives permissions
-  oc create -f deploy/role.yaml -n ${namespace}
-  oc create -f deploy/service_account.yaml -n ${namespace}
-  oc create -f deploy/role_binding.yaml -n ${namespace}
+  oc create -f deploy/role.yaml -n "${namespace}"
+  oc create -f deploy/service_account.yaml -n "${namespace}"
+  oc create -f deploy/role_binding.yaml -n "${namespace}"
 
   E2E_PARAMS="${E2E_PARAMS} --up-local"
 fi
@@ -51,7 +51,7 @@ fi
 echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, maven_mirror=${maven_mirror} and image=${image}"
 
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} MAVEN_MIRROR_URL=${maven_mirror} TESTS=${tests} operator-sdk test local ./test/e2e $E2E_PARAMS --namespace ${namespace} --debug --verbose --go-test-flags "-timeout 120m"
+DEBUG=true KOGITO_IMAGE_TAG=${tag} MAVEN_MIRROR_URL=${maven_mirror} TESTS=${tests} operator-sdk test local ./test/e2e "$E2E_PARAMS" --namespace "${namespace}" --debug --verbose --go-test-flags "-timeout 120m"
 
 # clean up
-oc delete namespace ${namespace}
+oc delete namespace "${namespace}"

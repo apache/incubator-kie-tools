@@ -46,7 +46,7 @@ fi
 # performs the test
 echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, native=${native} and maven_mirror=${maven_mirror}"
 
-./build/_output/bin/kogito use-project ${namespace}
+./build/_output/bin/kogito use-project "${namespace}"
 ./build/_output/bin/kogito install operator #should exist on OCP 4, on OCP 3 will install it, so no error
 
 echo "-------- Deploying the Kogito app"
@@ -54,7 +54,7 @@ echo "-------- Deploying the Kogito app"
 
 count=0
 echo "-------- Waiting for deployment to finish"
-until desired=$(oc get dc/kogito-example -n ${namespace} | grep kogito-example | awk '{ print $4 }'); [ "${desired}" == "1" ]
+until desired=$(oc get dc/kogito-example -n "${namespace}" | grep kogito-example | awk '{ print $4 }'); [ "${desired}" == "1" ]
   do
     if [ $count -eq 40 ]; then
       echo "-------- Failed to deploy the application within the time frame of ${count} minutes"
@@ -66,7 +66,7 @@ until desired=$(oc get dc/kogito-example -n ${namespace} | grep kogito-example |
 done
 
 echo "-------- Deployment seems to be finished"
-route=$(oc get route/kogito-example -n ${namespace} | grep http | awk '{ print $2 }')
+route=$(oc get route/kogito-example -n "${namespace}" | grep http | awk '{ print $2 }')
 
 echo "-------- Route is ${route}"
 response=$(curl "http://${route}/hello")
@@ -83,13 +83,13 @@ echo "------- Waiting a couple seconds to finish the clean up"
 sleep 5
 
 echo "------- Checking if the resources were actually cleaned"
-found=$(oc get dc/kogito-example -n ${namespace} 2> >(grep -m 1  -i notfound) | wc -l)
+found=$(oc get dc/kogito-example -n "${namespace}" 2> >(grep -m 1  -i notfound) | wc -l)
 if [ "$found" != "1" ]; then
   echo "Failed to clean the application the DC stills in the cluster!"
   exit 1
 fi
 
-found=$(oc get bc/kogito-example -n ${namespace} 2> >(grep -m 1  -i notfound) | wc -l)
+found=$(oc get bc/kogito-example -n "${namespace}" 2> >(grep -m 1  -i notfound) | wc -l)
 if [ "$found" != "1" ]; then
   echo "Failed to clean the application the BC stills in the cluster!"
   exit 1

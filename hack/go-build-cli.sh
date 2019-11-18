@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BASEDIR=`pwd`
+BASEDIR=$(pwd)
 KOGITO_CMD_DIR="cmd/kogito"
 
 function packTemplateFiles(){
-  cd ${BASEDIR}/${KOGITO_CMD_DIR} && packr2 -v
-  cd ${BASEDIR}
+  cd "${BASEDIR}"/"${KOGITO_CMD_DIR}" && packr2 -v
+  cd "${BASEDIR}"
 }
 
 function cleanTemplateFiles(){
-  cd ${BASEDIR}/${KOGITO_CMD_DIR} && packr2 clean -v
-  cd ${BASEDIR}
+  cd "${BASEDIR}"/"${KOGITO_CMD_DIR}" && packr2 clean -v
+  cd "${BASEDIR}"
 }
 
 release=$1
@@ -53,7 +53,7 @@ if [ "$release" = "true" ]; then
     CGO_ENABLED=0 GOOS="${i}" GOARCH="${arch}" go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
     if [ $? -ne 0 ]; then
       echo "Failed to build for OS ${i} and Architecture ${arch}"
-      cleanTemplateFiles 
+      cleanTemplateFiles
       exit 1
     fi
     cleanTemplateFiles
