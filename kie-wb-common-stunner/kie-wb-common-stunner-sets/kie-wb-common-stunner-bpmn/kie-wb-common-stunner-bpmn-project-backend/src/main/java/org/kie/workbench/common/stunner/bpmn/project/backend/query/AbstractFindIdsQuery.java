@@ -34,11 +34,14 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringMapPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.paging.PageResponse;
 
 public abstract class AbstractFindIdsQuery extends FindResourcesQuery implements NamedQuery {
@@ -81,6 +84,8 @@ public abstract class AbstractFindIdsQuery extends FindResourcesQuery implements
 
     public static class BpmnProcessIdsResponseBuilder implements ResponseBuilder {
 
+        protected static Logger LOGGER = LoggerFactory.getLogger(BpmnProcessIdsResponseBuilder.class);
+
         private IOService ioService;
 
         private ResourceType processIdResourceType;
@@ -88,7 +93,8 @@ public abstract class AbstractFindIdsQuery extends FindResourcesQuery implements
         public BpmnProcessIdsResponseBuilder() {
         }
 
-        public BpmnProcessIdsResponseBuilder(IOService ioService, ResourceType processIdResourceType) {
+        public BpmnProcessIdsResponseBuilder(IOService ioService,
+                                             ResourceType processIdResourceType) {
             this.ioService = ioService;
             this.processIdResourceType = processIdResourceType;
         }
@@ -124,13 +130,18 @@ public abstract class AbstractFindIdsQuery extends FindResourcesQuery implements
                 for (KProperty property : kObject.getProperties()) {
                     if (property.getName().equals(processIdResourceType.toString())) {
                         String bpmnProcessId = (String) property.getValue();
-                        final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
-                        Map<String, Path> map = new HashMap<String, Path>();
-                        map.put(bpmnProcessId,
-                                path);
-                        RefactoringMapPageRow row = new RefactoringMapPageRow();
-                        row.setValue(map);
-                        result.add(row);
+                        URI uri = URI.create(kObject.getKey());
+                        try {
+                            final Path path = Paths.convert(ioService.get(uri));
+                            Map<String, Path> map = new HashMap<String, Path>();
+                            map.put(bpmnProcessId,
+                                    path);
+                            RefactoringMapPageRow row = new RefactoringMapPageRow();
+                            row.setValue(map);
+                            result.add(row);
+                        } catch (FileSystemNotFoundException ex) {
+                            LOGGER.error(ex.toString());
+                        }
                     }
                 }
             }
