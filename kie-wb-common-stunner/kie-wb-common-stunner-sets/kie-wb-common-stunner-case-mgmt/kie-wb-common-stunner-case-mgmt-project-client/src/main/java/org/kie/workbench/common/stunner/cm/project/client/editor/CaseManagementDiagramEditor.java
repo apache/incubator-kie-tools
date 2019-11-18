@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.project.client.editor;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,6 +50,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
+import org.kie.workbench.common.stunner.project.client.docks.StunnerDocksHandler;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
@@ -60,6 +63,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
@@ -83,6 +88,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     private final SwitchViewControl switchViewControl;
     private AtomicBoolean switchedToProcess;
     private OptionalInt switchSessionHash;
+    private final UberfireDocks uberfireDocks;
+    private final StunnerDocksHandler stunnerDocksHandler;
 
     @Inject
     public CaseManagementDiagramEditor(final AbstractProjectDiagramEditor.View view,
@@ -101,7 +108,9 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final ClientTranslationService translationService,
                                        final ClientProjectDiagramService projectDiagramServices,
                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
-                                       final Caller<CaseManagementSwitchViewService> caseManagementSwitchViewService) {
+                                       final Caller<CaseManagementSwitchViewService> caseManagementSwitchViewService,
+                                       final UberfireDocks uberfireDocks,
+                                       final StunnerDocksHandler stunnerDocksHandler) {
         super(view,
               xmlEditorView,
               editorSessionPresenterInstances,
@@ -122,6 +131,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
         this.switchedToProcess = new AtomicBoolean();
         this.switchViewControl = initSwitchViewControl();
         this.switchSessionHash = OptionalInt.empty();
+        this.uberfireDocks = uberfireDocks;
+        this.stunnerDocksHandler = stunnerDocksHandler;
     }
 
     private SwitchViewControl initSwitchViewControl() {
@@ -178,6 +189,11 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
 
     @OnOpen
     public void onOpen() {
+        String currentPerspectiveIdentifier = perspectiveManager.getCurrentPerspective().getIdentifier();
+        Collection<UberfireDock> stunnerDocks = stunnerDocksHandler.provideDocks(currentPerspectiveIdentifier);
+        stunnerDocks.stream()
+                .filter(dock -> dock.getPlaceRequest().getIdentifier().compareTo(DiagramEditorPropertiesScreen.SCREEN_ID) == 0)
+                .forEach(uberfireDocks::open);
         super.doOpen();
     }
 

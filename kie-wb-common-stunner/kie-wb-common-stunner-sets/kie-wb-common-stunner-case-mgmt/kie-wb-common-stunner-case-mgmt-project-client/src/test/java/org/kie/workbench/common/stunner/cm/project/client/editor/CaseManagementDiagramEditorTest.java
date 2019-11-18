@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.stunner.cm.project.client.editor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
@@ -30,11 +33,18 @@ import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDia
 import org.kie.workbench.common.stunner.cm.project.service.CaseManagementSwitchViewService;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
+import org.kie.workbench.common.stunner.project.client.docks.StunnerDocksHandler;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.mockito.Mock;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.mockito.Matchers.any;
@@ -48,6 +58,33 @@ import static org.mockito.Mockito.when;
 @Ignore
 @RunWith(GwtMockitoTestRunner.class)
 public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEditorTest {
+
+    @Mock
+    private UberfireDocks uberfireDocks;
+
+    @Mock
+    private UberfireDock propertiesDock;
+
+    @Mock
+    private PlaceRequest propertiesPlace;
+
+    @Mock
+    private UberfireDock explorerDock;
+
+    @Mock
+    private PlaceRequest explorerPlace;
+
+    @Mock
+    private StunnerDocksHandler stunnerDocksHandler;
+
+    @Mock
+    private PerspectiveActivity currentPerspective;
+
+    @Mock
+    private ProjectMetadata projectMetadata;
+
+    @Mock
+    private Overview projectOverview;
 
     @Mock
     private CaseManagementProjectEditorMenuSessionItems cmMenuSessionItems;
@@ -108,7 +145,9 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
                                                      translationService,
                                                      clientProjectDiagramService,
                                                      projectDiagramResourceServiceCaller,
-                                                     caseManagementSwitchViewServiceCaller) {
+                                                     caseManagementSwitchViewServiceCaller,
+                                                     uberfireDocks,
+                                                     stunnerDocksHandler) {
             {
                 {
                     docks = defaultEditorDock;
@@ -167,5 +206,28 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
         verify(view, times(1)).hideBusyIndicator();
         verify(sessionEditorPresenter, times(1)).destroy();
         verify(sessionEditorPresenter, times(1)).open(any(ProjectDiagram.class), any(SessionPresenter.SessionPresenterCallback.class));
+    }
+
+    @Test
+    public void testOnOpen() {
+        Collection<UberfireDock> stunnerDocks = new ArrayList<>();
+        stunnerDocks.add(propertiesDock);
+        stunnerDocks.add(explorerDock);
+
+        String perspectiveIdentifier = "Test Perspective ID";
+
+        when(perspectiveManagerMock.getCurrentPerspective()).thenReturn(currentPerspective);
+        when(currentPerspective.getIdentifier()).thenReturn(perspectiveIdentifier);
+
+        when(stunnerDocksHandler.provideDocks(perspectiveIdentifier)).thenReturn(stunnerDocks);
+
+        when(propertiesDock.getPlaceRequest()).thenReturn(propertiesPlace);
+        when(propertiesPlace.getIdentifier()).thenReturn(DiagramEditorPropertiesScreen.SCREEN_ID);
+
+        when(explorerDock.getPlaceRequest()).thenReturn(explorerPlace);
+        when(explorerPlace.getIdentifier()).thenReturn(DiagramEditorExplorerScreen.SCREEN_ID);
+
+        tested.onOpen();
+        verify(uberfireDocks, times(1)).open(propertiesDock);
     }
 }

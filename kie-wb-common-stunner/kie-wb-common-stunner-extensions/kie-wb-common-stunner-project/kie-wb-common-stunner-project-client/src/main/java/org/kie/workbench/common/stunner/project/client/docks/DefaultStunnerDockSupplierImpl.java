@@ -33,20 +33,40 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @Dependent
 public class DefaultStunnerDockSupplierImpl implements StunnerDockSupplier {
 
-    protected DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
+    private static final DefaultWorkbenchConstants CONSTANTS = DefaultWorkbenchConstants.INSTANCE;
+
+    static final UberfireDockPosition DOCK_POSITION = UberfireDockPosition.EAST;
+    static final Double SIZE = 450.0;
+
+    static final String PROPERTIES_DOCK_SCREEN_ID = DiagramEditorPropertiesScreen.SCREEN_ID;
+    static final String PROPERTIES_ICON_TYPE = "PENCIL_SQUARE_O";
+    static final String PROPERTIES_LABEL = CONSTANTS.DocksStunnerPropertiesTitle();
+
+    static final String EXPLORER_DOCK_SCREEN_ID = DiagramEditorExplorerScreen.SCREEN_ID;
+    static final String EXPLORER_ICON_TYPE = "EYE";
+    static final String EXPLORER_LABEL = CONSTANTS.DocksStunnerExplorerTitle();
 
     @Override
     public Collection<UberfireDock> getDocks(String perspectiveIdentifier) {
         List<UberfireDock> result = new ArrayList<>();
 
-        result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                    "PENCIL_SQUARE_O",
-                                    new DefaultPlaceRequest(DiagramEditorPropertiesScreen.SCREEN_ID),
-                                    perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle()));
-        result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                    "EYE",
-                                    new DefaultPlaceRequest(DiagramEditorExplorerScreen.SCREEN_ID),
-                                    perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle()));
+        final UberfireDock propertiesDock = new UberfireDock(DOCK_POSITION,
+                                                             PROPERTIES_ICON_TYPE,
+                                                             new DefaultPlaceRequest(PROPERTIES_DOCK_SCREEN_ID),
+                                                             perspectiveIdentifier)
+                .withSize(SIZE)
+                .withLabel(PROPERTIES_LABEL);
+
+        final UberfireDock explorerDock = new UberfireDock(DOCK_POSITION,
+                                                           EXPLORER_ICON_TYPE,
+                                                           new DefaultPlaceRequest(EXPLORER_DOCK_SCREEN_ID),
+                                                           perspectiveIdentifier)
+                .withSize(SIZE)
+                .withLabel(EXPLORER_LABEL);
+
+        result.add(propertiesDock);
+        result.add(explorerDock);
+
         return result;
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -40,6 +41,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
+import org.kie.workbench.common.stunner.project.client.docks.StunnerDocksHandler;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
@@ -50,6 +53,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
@@ -71,8 +76,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     public static final String EDITOR_ID = "BPMNDiagramEditor";
 
     private final IntegrationHandlerProvider integrationHandlerProvider;
-    private boolean isMigrating = false;
+    private final UberfireDocks uberfireDocks;
+    private final StunnerDocksHandler stunnerDocksHandler;
+
     private Consumer<Boolean> saveCallback;
+    private boolean isMigrating = false;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -91,7 +99,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ClientTranslationService translationService,
                              final ClientProjectDiagramService projectDiagramServices,
                              final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
-                             final IntegrationHandlerProvider integrationHandlerProvider) {
+                             final IntegrationHandlerProvider integrationHandlerProvider,
+                             final UberfireDocks uberfireDocks,
+                             final StunnerDocksHandler stunnerDocksHandler) {
         super(view,
               xmlEditorView,
               editorPresenter,
@@ -109,6 +119,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               projectDiagramServices,
               projectDiagramResourceServiceCaller);
         this.integrationHandlerProvider = integrationHandlerProvider;
+        this.uberfireDocks = uberfireDocks;
+        this.stunnerDocksHandler = stunnerDocksHandler;
     }
 
     @Override
@@ -131,6 +143,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @OnOpen
     public void onOpen() {
+        String currentPerspectiveIdentifier = perspectiveManager.getCurrentPerspective().getIdentifier();
+        Collection<UberfireDock> stunnerDocks = stunnerDocksHandler.provideDocks(currentPerspectiveIdentifier);
+        stunnerDocks.stream()
+                .filter(dock -> dock.getPlaceRequest().getIdentifier().compareTo(DiagramEditorPropertiesScreen.SCREEN_ID) == 0)
+                .forEach(uberfireDocks::open);
         super.doOpen();
     }
 
