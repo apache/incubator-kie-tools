@@ -118,7 +118,12 @@ export function KogitoMenu() {
                       Definitions on BPMN diagrams.
                     </p>
                     <p>
-                      <b>NOTE:</b> For private repositories you should provide a Token with the <b>repo</b> permission.
+                      <b>
+                        <u>NOTE: </u>
+                      </b>
+                      <b>For public repositories, no special permissions are required</b>. In fact, you can generate a
+                      Token without ticking any checkbox. For private repositories, however, you should provide a Token
+                      with the <b>'repo'</b> permission.
                     </p>
                   </div>
                 )}
@@ -156,10 +161,10 @@ export function KogitoMenu() {
   );
 }
 
-function obfuscate(tkn: string) {
-  const stars = new Array(tkn.length - 8).join("*");
-  const pieceToObfuscate = tkn.substring(4, tkn.length - 4);
-  return tkn.length > 8 ? tkn.replace(pieceToObfuscate, stars) : tkn;
+function obfuscate(token: string) {
+  const stars = new Array(token.length - 8).join("*");
+  const pieceToObfuscate = token.substring(4, token.length - 4);
+  return token.length > 8 ? token.replace(pieceToObfuscate, stars) : token;
 }
 
 async function tokenIsValid(token?: string) {
