@@ -1,8 +1,10 @@
 @quay.io/kiegroup/kogito-quarkus-ubi8-s2i
 Feature: kogito-quarkus-ubi8-s2i image tests
 
-  Scenario: Verify if the s2i build is finished as expected
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+  Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port
+    Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+      | variable       | value                     |
+      | LIMIT_MEMORY   | 2147483648                |
     Then check that page is served
       | property        | value                    |
       | port            | 8080                     |
@@ -10,6 +12,9 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner should exist
+    And file /home/kogito/ssl-libs/libsunec.so should exist
+    And file /home/kogito/cacerts should exist
+    And s2i build log should contain -J-Xmx1717986918
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
@@ -52,18 +57,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner.jar should exist
 
-  Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
-    Then check that page is served
-      | property        | value                    |
-      | port            | 8080                     |
-      | path            | /hello                   |
-      | wait            | 80                       |
-      | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner should exist
-    And file /home/kogito/ssl-libs/libsunec.so should exist
-    And file /home/kogito/cacerts should exist
-
   Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.5.1
       | variable          | value                  |
@@ -77,19 +70,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | NATIVE            | false    |
     Then s2i build log should contain Expanding artifacts from incremental build...
     And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
-
-  Scenario: Verify if the memory limit is correctly applied
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.5.1 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
-      | variable       | value       |
-      | LIMIT_MEMORY   | 2147483648  |
-    Then check that page is served
-      | property        | value                    |
-      | port            | 8080                     |
-      | path            | /hello                   |
-      | wait            | 80                       |
-      | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner should exist
-    And s2i build log should contain -J-Xmx1717986918
 
   Scenario: verify if all labels are correctly set.
     Given image is built
@@ -120,3 +100,4 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | NATIVE            | false                           |
       | KOGITO_VERSION    | 8.0.0-SNAPSHOT                  |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist
+

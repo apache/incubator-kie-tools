@@ -70,7 +70,6 @@ Business assets are:
 - process definition - bpmn2
 - rule definition - drl
 - decision definition - dmn
-- etc
 
 Upon build these assets will be copied to generated kjar maven project and build with maven to produce the runnable binary.
 
