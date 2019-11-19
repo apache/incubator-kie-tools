@@ -73,7 +73,7 @@ export function IsolatedPrEditor(props: {
   );
 
   useInitialAsyncCallEffect(() => {
-    return discoverFileStatusOnPr(githubApi.octokit, props.prInfo, originalFilePath, modifiedFilePath);
+    return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
   }, setFileStatusOnPr);
 
   useEffectAfterFirstRender(() => {
@@ -91,8 +91,8 @@ export function IsolatedPrEditor(props: {
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
-      ? () => getOriginalFileContents(githubApi.octokit, props.prInfo, originalFilePath)
-      : () => getModifiedFileContents(githubApi.octokit, props.prInfo, modifiedFilePath);
+      ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
+      : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;

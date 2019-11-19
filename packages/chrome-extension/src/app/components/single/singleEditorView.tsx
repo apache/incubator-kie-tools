@@ -81,7 +81,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
   const globals = useGlobals();
   const getFileContents = useCallback(
     () =>
-      fetchFile(githubApi.octokit, props.fileInfo.org, props.fileInfo.repo, props.fileInfo.gitRef, props.fileInfo.path),
+      fetchFile(githubApi.octokit(), props.fileInfo.org, props.fileInfo.repo, props.fileInfo.gitRef, props.fileInfo.path),
     []
   );
 

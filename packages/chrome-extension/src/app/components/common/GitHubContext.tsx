@@ -16,10 +16,10 @@
 
 import * as Octokit from "@octokit/rest";
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
 
 export const GitHubContext = React.createContext<{
-  octokit: Octokit;
+  octokit: () => Octokit;
   setToken: (token: string) => void;
   token?: string;
 }>({} as any);
@@ -52,16 +52,15 @@ export function getCookie(name: string) {
 
 const cookieName = "github-auth-token";
 
+let octokitInstance = new Octokit();
+
 export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
-  const [octokit, setOctokit] = useState(new Octokit());
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(getCookie(cookieName));
 
   useEffect(() => {
-    const value = getCookie(cookieName);
-    if (value) {
-      setOctokit(new Octokit({ auth: value }));
-      setToken(value);
+    if (token) {
+      octokitInstance = new Octokit({ auth: token });
       console.info("Token found");
     } else {
       console.info("No token.");
@@ -69,15 +68,19 @@ export const GitHubContextProvider: React.FC<{}> = props => {
     setReady(true);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!token) {
       setCookie(cookieName, "");
-      setOctokit(new Octokit());
+      octokitInstance = new Octokit();
     } else {
       setCookie(cookieName, token);
-      setOctokit(new Octokit({ auth: token }));
+      octokitInstance = new Octokit({ auth: token });
     }
   }, [token]);
+
+  const octokit = useCallback(() => {
+    return octokitInstance;
+  }, []);
 
   return (
     <GitHubContext.Provider value={{ token, setToken, octokit }}>{ready && props.children}</GitHubContext.Provider>
