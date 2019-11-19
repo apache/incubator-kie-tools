@@ -29,7 +29,7 @@ import { useCallback } from "react";
 import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
-import {useGlobals} from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
 
 export interface FileInfo {
   repo: string;
@@ -46,10 +46,6 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
     return;
   }
 
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
-
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
     args.logger.log(`Unable to determine file extension from URL`);
@@ -60,6 +56,10 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
     args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
+
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
 
   ReactDOM.render(
     <Main
@@ -82,7 +82,13 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
   const globals = useGlobals();
   const getFileContents = useCallback(
     () =>
-      fetchFile(githubApi.octokit(), props.fileInfo.org, props.fileInfo.repo, props.fileInfo.gitRef, props.fileInfo.path),
+      fetchFile(
+        githubApi.octokit(),
+        props.fileInfo.org,
+        props.fileInfo.repo,
+        props.fileInfo.gitRef,
+        props.fileInfo.path
+      ),
     []
   );
 

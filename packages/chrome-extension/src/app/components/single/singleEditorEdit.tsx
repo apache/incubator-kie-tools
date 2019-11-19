@@ -36,10 +36,6 @@ export function renderSingleEditorApp(args: Globals) {
     return;
   }
 
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
-
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
     args.logger.log(`Unable to determine file extension from URL.`);
@@ -50,6 +46,10 @@ export function renderSingleEditorApp(args: Globals) {
     args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
+
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
 
   ReactDOM.render(
     <Main
