@@ -30,10 +30,11 @@ import { PrInfo } from "./IsolatedPrEditor";
 export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
+  cleanup(args.id);
 
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
       extensionIconUrl={args.extensionIconUrl}
@@ -41,7 +42,7 @@ export function renderPrEditorsApp(args: Globals) {
     >
       <PrEditorsApp prInfo={parsePrInfo()} />
     </Main>,
-    createAndGetMainContainer(dependencies__.all.body()),
+    createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
@@ -73,16 +74,16 @@ function parsePrInfo(): PrInfo {
   };
 }
 
-function cleanup() {
-  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`)).forEach(e => {
+function cleanup(id: string) {
+  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`)).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`)).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 }

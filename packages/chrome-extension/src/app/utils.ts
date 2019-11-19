@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID, KOGITO_MENU_CONTAINER_ID } from "./constants";
+import {
+  KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS,
+  KOGITO_MAIN_CONTAINER_CLASS,
+  KOGITO_MENU_CONTAINER_CLASS
+} from "./constants";
 import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {
@@ -69,34 +73,36 @@ export function removeAllChildren(node: Node) {
   }
 }
 
-export function mainContainer(container: HTMLElement) {
-  return container.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
+export function mainContainer(id: string, container: HTMLElement) {
+  return container.querySelector(`.${KOGITO_MAIN_CONTAINER_CLASS}.${id}`);
 }
 
-export function createAndGetMainContainer(container: HTMLElement) {
-  if (!mainContainer(container)) {
-    container.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+export function createAndGetMainContainer(id: string, container: HTMLElement) {
+  if (!mainContainer(id, container)) {
+    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`);
   }
-  return mainContainer(container)!;
+  return mainContainer(id, container)!;
 }
 
-export function iframeFullscreenContainer(container: HTMLElement) {
-  const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
+export function iframeFullscreenContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`)!;
   if (!element()) {
     container.insertAdjacentHTML(
       "afterbegin",
-      `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
+      `<div class="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS} ${id}" class="hidden"></div>`
     );
   }
   return element();
 }
 
-export function kogitoMenuContainer(container: HTMLElement) {
-  const div = `<div id="${KOGITO_MENU_CONTAINER_ID}" class="Header-item"></div>`;
-  const element = () => document.getElementById(KOGITO_MENU_CONTAINER_ID)!;
+export function kogitoMenuContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    container.insertAdjacentHTML("beforebegin", div);
+    container.insertAdjacentHTML(
+      "beforebegin",
+      `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`
+    );
   }
 
   return element();

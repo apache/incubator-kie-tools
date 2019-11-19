@@ -25,6 +25,7 @@ import * as dependencies__ from "../../dependencies";
 import { kogitoMenuContainer } from "../../utils";
 
 export interface Globals {
+  id: string;
   router: Router;
   logger: Logger;
   extensionIconUrl: string;
@@ -35,6 +36,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
   return (
     <GlobalContext.Provider
       value={{
+        id: props.id,
         logger: props.logger,
         router: props.router,
         extensionIconUrl: props.extensionIconUrl,
@@ -44,7 +46,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
       <GitHubContextProvider>
         {ReactDOM.createPortal(
           <KogitoMenu />,
-          kogitoMenuContainer(dependencies__.all.notificationIndicator()!.parentElement!)
+          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
         )}
         <>{props.children}</>
       </GitHubContextProvider>

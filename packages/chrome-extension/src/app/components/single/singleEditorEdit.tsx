@@ -25,7 +25,8 @@ import {
 import { SingleEditorApp } from "./SingleEditorApp";
 import { Globals, Main } from "../common/Main";
 import * as dependencies__ from "../../dependencies";
-import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
+import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
+import { useGlobals } from "../common/GlobalContext";
 
 export function renderSingleEditorApp(args: Globals) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
@@ -37,7 +38,7 @@ export function renderSingleEditorApp(args: Globals) {
 
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
+  cleanup(args.id);
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
@@ -52,6 +53,7 @@ export function renderSingleEditorApp(args: Globals) {
 
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
       extensionIconUrl={args.extensionIconUrl}
@@ -59,54 +61,60 @@ export function renderSingleEditorApp(args: Globals) {
     >
       <SingleEditorViewApp openFileExtension={openFileExtension} />
     </Main>,
-    createAndGetMainContainer(dependencies__.all.body()),
+    createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
 function SingleEditorViewApp(props: { openFileExtension: string }) {
+  const globals = useGlobals();
   return (
     <SingleEditorApp
       readonly={false}
       openFileExtension={props.openFileExtension}
       getFileContents={getFileContents}
-      iframeContainer={iframeContainer()}
-      toolbarContainer={toolbarContainer()}
+      iframeContainer={iframeContainer(globals.id)}
+      toolbarContainer={toolbarContainer(globals.id)}
       githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
     />
   );
 }
 
-function cleanup() {
+function cleanup(id: string) {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer());
-  removeAllChildren(toolbarContainer());
-  removeAllChildren(iframeFullscreenContainer(dependencies__.all.body()));
-  removeAllChildren(createAndGetMainContainer(dependencies__.all.body()));
+  removeAllChildren(iframeContainer(id));
+  removeAllChildren(toolbarContainer(id));
+  removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
 }
 
 function getFileContents() {
   return Promise.resolve(dependencies__.all.edit__githubTextAreaWithFileContents()!.value);
 }
 
-function toolbarContainer() {
-  const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`;
-  const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+function toolbarContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleEdit.toolbarContainerTarget()!.insertAdjacentHTML("beforeend", div);
+    dependencies__.singleEdit
+      .toolbarContainerTarget()!
+      .insertAdjacentHTML(
+        "beforeend",
+        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} edit d-flex flex-column flex-items-start flex-md-row"></div>`
+      );
   }
 
-  return element();
+  return element() as HTMLElement;
 }
 
-function iframeContainer() {
-  const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
-  const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+function iframeContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleEdit.iframeContainerTarget()!.insertAdjacentHTML("afterend", div);
+    dependencies__.singleEdit
+      .iframeContainerTarget()!
+      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} edit"></div>`);
   }
 
-  return element();
+  return element() as HTMLElement;
 }

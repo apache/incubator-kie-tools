@@ -26,9 +26,10 @@ import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
 import { useCallback } from "react";
-import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
+import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
+import {useGlobals} from "../common/GlobalContext";
 
 export interface FileInfo {
   repo: string;
@@ -47,7 +48,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
 
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
+  cleanup(args.id);
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
@@ -62,6 +63,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
 
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
       extensionIconUrl={args.extensionIconUrl}
@@ -69,13 +71,14 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
     >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
-    createAndGetMainContainer(dependencies__.all.body()!),
+    createAndGetMainContainer(args.id, dependencies__.all.body()!),
     () => args.logger.log("Mounted.")
   );
 }
 
 function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
   const githubApi = useGitHubApi();
+  const globals = useGlobals();
   const getFileContents = useCallback(
     () =>
       fetchFile(githubApi.octokit, props.fileInfo.org, props.fileInfo.repo, props.fileInfo.gitRef, props.fileInfo.path),
@@ -87,39 +90,44 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       readonly={true}
       openFileExtension={props.openFileExtension}
       getFileContents={getFileContents}
-      iframeContainer={iframeContainer()}
-      toolbarContainer={toolbarContainer()}
+      iframeContainer={iframeContainer(globals.id)}
+      toolbarContainer={toolbarContainer(globals.id)}
       githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
     />
   );
 }
 
-function cleanup() {
+function cleanup(id: string) {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer());
-  removeAllChildren(toolbarContainer());
-  removeAllChildren(iframeFullscreenContainer(dependencies__.all.body()));
-  removeAllChildren(createAndGetMainContainer(dependencies__.all.body()));
+  removeAllChildren(iframeContainer(id));
+  removeAllChildren(toolbarContainer(id));
+  removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
 }
 
-function toolbarContainer() {
-  const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="view d-flex flex-column flex-items-start flex-md-row"></div>`;
-  const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+function toolbarContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleView.toolbarContainerTarget()!.insertAdjacentHTML("beforebegin", div);
+    dependencies__.singleView
+      .toolbarContainerTarget()!
+      .insertAdjacentHTML(
+        "beforebegin",
+        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} view d-flex flex-column flex-items-start flex-md-row"></div>`
+      );
   }
 
-  return element();
+  return element() as HTMLElement;
 }
 
-function iframeContainer() {
-  const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
-  const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+function iframeContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleView.iframeContainerTarget()!.insertAdjacentHTML("afterend", div);
+    dependencies__.singleView
+      .iframeContainerTarget()!
+      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
   }
 
-  return element();
+  return element() as HTMLElement;
 }

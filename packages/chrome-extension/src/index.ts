@@ -43,8 +43,8 @@ export function startExtension(args: {
 
   const runInit = () =>
     init({
-      name,
-      logger,
+      id: chrome.runtime.id,
+      logger: logger,
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
       router: args.router
@@ -54,11 +54,11 @@ export function startExtension(args: {
   setTimeout(runInit, 0);
 }
 
-function init(args: Globals & { name: string }) {
+function init(args: Globals) {
   args.logger.log(`---`);
   args.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.name, args.logger);
+  unmountPreviouslyRenderedFeatures(args.id, args.logger);
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
@@ -68,6 +68,7 @@ function init(args: Globals & { name: string }) {
 
   if (pageType === GitHubPageType.EDIT) {
     renderSingleEditorApp({
+      id: args.id,
       logger: args.logger,
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
@@ -79,6 +80,7 @@ function init(args: Globals & { name: string }) {
   if (pageType === GitHubPageType.VIEW) {
     const split = window.location.pathname.split("/");
     renderSingleEditorReadonlyApp({
+      id: args.id,
       logger: args.logger,
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
@@ -90,6 +92,7 @@ function init(args: Globals & { name: string }) {
 
   if (pageType === GitHubPageType.PR) {
     renderPrEditorsApp({
+      id: args.id,
       logger: args.logger,
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
@@ -125,10 +128,10 @@ function discoverCurrentGitHubPageType() {
   return GitHubPageType.ANY;
 }
 
-function unmountPreviouslyRenderedFeatures(name: string, logger: Logger) {
+function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
   try {
-    if (mainContainer(dependencies__.all.body())) {
-      ReactDOM.unmountComponentAtNode(mainContainer(dependencies__.all.body())!);
+    if (mainContainer(id, dependencies__.all.body())) {
+      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies__.all.body())!);
       logger.log("Unmounted previous features.");
     }
   } catch (e) {

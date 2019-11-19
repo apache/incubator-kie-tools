@@ -37,6 +37,7 @@ import {
 import * as Octokit from "@octokit/rest";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
+import { useGlobals } from "../common/GlobalContext";
 
 export interface PrInfo {
   repo: string;
@@ -54,6 +55,7 @@ export function IsolatedPrEditor(props: {
   unprocessedFilePath: string;
 }) {
   const githubApi = useGitHubApi();
+  const globals = useGlobals();
 
   const [showOriginal, setShowOriginal] = useState(false);
   const [textMode, setTextMode] = useState(true);
@@ -64,7 +66,11 @@ export function IsolatedPrEditor(props: {
   const originalFilePath = getOriginalFilePath(props.unprocessedFilePath);
   const modifiedFilePath = getModifiedFilePath(props.unprocessedFilePath);
 
-  useIsolatedEditorTogglingEffect(textMode, iframeContainer(props.prFileContainer), props.githubTextEditorToReplace);
+  useIsolatedEditorTogglingEffect(
+    textMode,
+    iframeContainer(globals.id, props.prFileContainer),
+    props.githubTextEditorToReplace
+  );
 
   useInitialAsyncCallEffect(() => {
     return discoverFileStatusOnPr(githubApi.octokit, props.prInfo, originalFilePath, modifiedFilePath);
@@ -101,6 +107,7 @@ export function IsolatedPrEditor(props: {
             View original file
           </a>,
           viewOriginalFileLinkContainer(
+            globals.id,
             props.prFileContainer,
             dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
           )
@@ -117,6 +124,7 @@ export function IsolatedPrEditor(props: {
           onSeeAsDiagram={() => setTextMode(false)}
         />,
         toolbarContainer(
+          globals.id,
           props.prFileContainer,
           dependencies__.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
         )
@@ -131,7 +139,7 @@ export function IsolatedPrEditor(props: {
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,
-        iframeContainer(dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
+        iframeContainer(globals.id, dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
       )}
     </IsolatedEditorContext.Provider>
   );
@@ -177,34 +185,34 @@ export function getModifiedFilePath(path: string) {
   }
 }
 
-function viewOriginalFileLinkContainer(prFileContainer: HTMLElement, container: HTMLElement) {
-  const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
+function viewOriginalFileLinkContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
+  const element = () => prFileContainer.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()) {
-    container.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML(
+      "afterend",
+      `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS} ${id}"></div>`
+    );
   }
 
   return element()!;
 }
 
-function toolbarContainer(prFileContainer: HTMLElement, container: HTMLElement) {
-  const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
+function toolbarContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
+  const element = () => prFileContainer.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()) {
-    container.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML("afterend", `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS} ${id}"></div>`);
   }
 
   return element()!;
 }
 
-function iframeContainer(container: HTMLElement) {
-  const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
+function iframeContainer(id: string, container: HTMLElement) {
+  const element = () => container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()!) {
-    container.insertAdjacentHTML("beforeend", div);
+    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS} ${id}"></div>`);
   }
 
   return element() as HTMLElement;

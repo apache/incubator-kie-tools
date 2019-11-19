@@ -24,14 +24,16 @@ import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
 import { IsolatedEditor } from "../common/IsolatedEditor";
 import * as dependencies__ from "../../dependencies";
+import {useGlobals} from "../common/GlobalContext";
 
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
+    const globals = useGlobals();
   useLayoutEffect(
     () => {
       if (!fullscreen) {
-        iframeFullscreenContainer(dependencies__.all.body()).classList.add("hidden");
+        iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.add("hidden");
       } else {
-        iframeFullscreenContainer(dependencies__.all.body()).classList.remove("hidden");
+        iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.remove("hidden");
       }
     },
     [fullscreen]
@@ -49,6 +51,7 @@ export function SingleEditorApp(props: {
   const [textMode, setTextMode] = useState(false);
   const [textModeEnabled, setTextModeEnabled] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const globals = useGlobals();
 
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
@@ -102,9 +105,9 @@ export function SingleEditorApp(props: {
           <>
             {ReactDOM.createPortal(
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
-              iframeFullscreenContainer(dependencies__.all.body())
+              iframeFullscreenContainer(globals.id, dependencies__.all.body())
             )}
-            {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(dependencies__.all.body()))}
+            {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(globals.id, dependencies__.all.body()))}
           </>
         )}
       </IsolatedEditorContext.Provider>

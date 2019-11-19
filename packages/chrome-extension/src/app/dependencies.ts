@@ -62,9 +62,6 @@ export const all = {
   edit__githubTextAreaWithFileContents: () => {
     return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
   },
-  view__rawUrlLink: () => {
-    return document.getElementById("raw-url") as HTMLAnchorElement | null;
-  },
   pr__mutationObserverTarget: () => {
     return document.getElementById("files") as HTMLElement | null;
   },

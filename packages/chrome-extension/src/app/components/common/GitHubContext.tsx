@@ -50,17 +50,19 @@ export function getCookie(name: string) {
   }
 }
 
+const cookieName = "github-auth-token";
+
 export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
   const [octokit, setOctokit] = useState(new Octokit());
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    const value = getCookie("github-auth-token");
+    const value = getCookie(cookieName);
     if (value) {
       setOctokit(new Octokit({ auth: value }));
       setToken(value);
-      console.info("Token is " + value);
+      console.info("Token found");
     } else {
       console.info("No token.");
     }
@@ -69,10 +71,10 @@ export const GitHubContextProvider: React.FC<{}> = props => {
 
   useEffect(() => {
     if (!token) {
-      setCookie("github-auth-token", "");
+      setCookie(cookieName, "");
       setOctokit(new Octokit());
     } else {
-      setCookie("github-auth-token", token);
+      setCookie(cookieName, token);
       setOctokit(new Octokit({ auth: token }));
     }
   }, [token]);

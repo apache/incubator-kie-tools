@@ -19,6 +19,7 @@ import { Router } from "@kogito-tooling/core-api";
 import { Logger } from "../../../Logger";
 
 export const GlobalContext = React.createContext<{
+  id: string,
   router: Router;
   logger: Logger;
   extensionIconUrl: string;
