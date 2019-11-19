@@ -27,6 +27,7 @@ import { kogitoMenuContainer } from "../../utils";
 export const Main: React.FunctionComponent<{
   router: Router;
   logger: Logger;
+  extensionIconUrl: string;
   editorIndexPath: string;
 }> = props => {
   return (
@@ -34,6 +35,7 @@ export const Main: React.FunctionComponent<{
       value={{
         logger: props.logger,
         router: props.router,
+        extensionIconUrl: props.extensionIconUrl,
         editorIndexPath: props.editorIndexPath
       }}
     >

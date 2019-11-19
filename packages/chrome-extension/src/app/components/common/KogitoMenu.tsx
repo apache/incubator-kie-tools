@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
+import {useGlobals} from "./GlobalContext";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -80,6 +81,7 @@ export function KogitoMenu() {
   }, [isWholeMenuOpen]);
 
   const tokenToDisplay = obfuscate(gitHubApi.token || potentialToken);
+  const globals = useGlobals();
 
   return (
     <>
@@ -155,7 +157,7 @@ export function KogitoMenu() {
       )}
       <img
         className={`kogito-menu-icon ${isAuthenticated ? "authenticated" : ""}`}
-        src={"https://karinavarelame.files.wordpress.com/2019/08/kogito_icon_rgb_color_default_256px-1.png?w=30"}
+        src={globals.extensionIconUrl}
         onClick={toggleMenu}
       />
     </>

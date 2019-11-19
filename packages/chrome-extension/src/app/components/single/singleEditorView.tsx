@@ -42,6 +42,7 @@ export interface FileInfo {
 export function renderSingleEditorReadonlyApp(args: {
   logger: Logger;
   editorIndexPath: string;
+  extensionIconUrl: string;
   router: Router;
   fileInfo: FileInfo;
 }) {
@@ -68,7 +69,12 @@ export function renderSingleEditorReadonlyApp(args: {
   }
 
   ReactDOM.render(
-    <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
+    <Main
+      router={args.router}
+      logger={args.logger}
+      extensionIconUrl={args.extensionIconUrl}
+      editorIndexPath={args.editorIndexPath}
+    >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()!),

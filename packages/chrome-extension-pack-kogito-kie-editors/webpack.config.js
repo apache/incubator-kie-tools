@@ -70,10 +70,7 @@ module.exports = async (env, argv) => {
       port: 9000
     },
     plugins: [
-      new CopyPlugin([
-        { from: "./static/manifest.json" },
-        { from: "./static/envelope", to: "./envelope" }
-      ]),
+      new CopyPlugin([{ from: "./static" }]),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist"

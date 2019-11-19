@@ -29,7 +29,12 @@ import * as dependencies__ from "../../dependencies";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
 import { Logger } from "../../../Logger";
 
-export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+export function renderSingleEditorApp(args: {
+  logger: Logger;
+  editorIndexPath: string;
+  extensionIconUrl: string;
+  router: Router;
+}) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleEdit.githubTextEditorToReplaceElement()) {
@@ -53,7 +58,12 @@ export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: s
   }
 
   ReactDOM.render(
-    <Main router={args.router} logger={args.logger} editorIndexPath={args.editorIndexPath}>
+    <Main
+      router={args.router}
+      logger={args.logger}
+      extensionIconUrl={args.extensionIconUrl}
+      editorIndexPath={args.editorIndexPath}
+    >
       <SingleEditorViewApp openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()),

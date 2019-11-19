@@ -32,16 +32,27 @@ import { Logger } from "./Logger";
  *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
  *  @param args.router The Router to be used to find resources for each language.
  */
-export function startExtension(args: { name: string; editorIndexPath: string; router: Router }) {
+export function startExtension(args: {
+  name: string;
+  editorIndexPath: string;
+  extensionIconUrl: string;
+  router: Router;
+}) {
   const logger = new Logger(args.name);
 
-  const runInit = () => init({ logger, editorIndexPath: args.editorIndexPath, router: args.router });
+  const runInit = () =>
+    init({
+      logger,
+      editorIndexPath: args.editorIndexPath,
+      extensionIconUrl: args.extensionIconUrl,
+      router: args.router
+    });
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
   setTimeout(runInit, 0);
 }
 
-function init(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+function init(args: { logger: Logger; editorIndexPath: string; extensionIconUrl: string; router: Router }) {
   args.logger.log(`---`);
   args.logger.log(`Starting GitHub extension.`);
 
@@ -54,7 +65,12 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
   }
 
   if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    renderSingleEditorApp({
+      logger: args.logger,
+      router: args.router,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath
+    });
     return;
   }
 
@@ -63,6 +79,7 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
     renderSingleEditorReadonlyApp({
       logger: args.logger,
       router: args.router,
+      extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
       fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") }
     });
@@ -70,7 +87,12 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
   }
 
   if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    renderPrEditorsApp({
+      logger: args.logger,
+      router: args.router,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath
+    });
     return;
   }
 

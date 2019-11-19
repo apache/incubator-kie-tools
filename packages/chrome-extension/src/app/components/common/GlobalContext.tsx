@@ -21,6 +21,7 @@ import { Logger } from "../../../Logger";
 export const GlobalContext = React.createContext<{
   router: Router;
   logger: Logger;
+  extensionIconUrl: string;
   editorIndexPath: string;
 }>({} as any);
 

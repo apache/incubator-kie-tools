@@ -21,5 +21,6 @@ import { startExtension } from "@kogito-tooling/chrome-extension";
 startExtension({
   name: "Kogito :: BPMN and DMN editors",
   editorIndexPath: "envelope/index.html",
-  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" }))
+  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" })),
+  extensionIconUrl: chrome.extension.getURL("/resources/kogito-icon.png")
 });
