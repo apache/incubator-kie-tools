@@ -22,13 +22,11 @@ import {
   removeAllChildren
 } from "../../utils";
 import * as ReactDOM from "react-dom";
-import { Main } from "../common/Main";
+import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
 import { useCallback } from "react";
-import { Router } from "@kogito-tooling/core-api";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
-import { Logger } from "../../../Logger";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 
@@ -39,13 +37,7 @@ export interface FileInfo {
   gitRef: string;
 }
 
-export function renderSingleEditorReadonlyApp(args: {
-  logger: Logger;
-  editorIndexPath: string;
-  extensionIconUrl: string;
-  router: Router;
-  fileInfo: FileInfo;
-}) {
+export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {

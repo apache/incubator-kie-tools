@@ -18,8 +18,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
 import { createAndGetMainContainer, removeAllChildren } from "../../utils";
-import { Router } from "@kogito-tooling/core-api";
-import { Main } from "../common/Main";
+import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
@@ -27,15 +26,19 @@ import {
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
-import { Logger } from "../../../Logger";
 
-export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: string; extensionIconUrl:string, router: Router }) {
+export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup();
 
   ReactDOM.render(
-    <Main router={args.router} logger={args.logger} extensionIconUrl={args.extensionIconUrl} editorIndexPath={args.editorIndexPath}>
+    <Main
+      router={args.router}
+      logger={args.logger}
+      extensionIconUrl={args.extensionIconUrl}
+      editorIndexPath={args.editorIndexPath}
+    >
       <PrEditorsApp prInfo={parsePrInfo()} />
     </Main>,
     createAndGetMainContainer(dependencies__.all.body()),

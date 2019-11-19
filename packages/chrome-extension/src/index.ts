@@ -24,6 +24,7 @@ import * as ReactDOM from "react-dom";
 import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
+import { Globals } from "./app/components/common/Main";
 
 /**
  * Starts a Kogito extension.
@@ -42,6 +43,7 @@ export function startExtension(args: {
 
   const runInit = () =>
     init({
+      name,
       logger,
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
@@ -52,11 +54,11 @@ export function startExtension(args: {
   setTimeout(runInit, 0);
 }
 
-function init(args: { logger: Logger; editorIndexPath: string; extensionIconUrl: string; router: Router }) {
+function init(args: Globals & { name: string }) {
   args.logger.log(`---`);
   args.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.logger);
+  unmountPreviouslyRenderedFeatures(args.name, args.logger);
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
@@ -123,7 +125,7 @@ function discoverCurrentGitHubPageType() {
   return GitHubPageType.ANY;
 }
 
-function unmountPreviouslyRenderedFeatures(logger: Logger) {
+function unmountPreviouslyRenderedFeatures(name: string, logger: Logger) {
   try {
     if (mainContainer(dependencies__.all.body())) {
       ReactDOM.unmountComponentAtNode(mainContainer(dependencies__.all.body())!);

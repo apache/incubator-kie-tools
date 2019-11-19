@@ -24,12 +24,14 @@ import { KogitoMenu } from "./KogitoMenu";
 import * as dependencies__ from "../../dependencies";
 import { kogitoMenuContainer } from "../../utils";
 
-export const Main: React.FunctionComponent<{
+export interface Globals {
   router: Router;
   logger: Logger;
   extensionIconUrl: string;
   editorIndexPath: string;
-}> = props => {
+}
+
+export const Main: React.FunctionComponent<Globals> = props => {
   return (
     <GlobalContext.Provider
       value={{

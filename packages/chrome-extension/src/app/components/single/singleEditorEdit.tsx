@@ -23,18 +23,11 @@ import {
   removeAllChildren
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
-import { Main } from "../common/Main";
-import { Router } from "@kogito-tooling/core-api";
+import { Globals, Main } from "../common/Main";
 import * as dependencies__ from "../../dependencies";
 import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
-import { Logger } from "../../../Logger";
 
-export function renderSingleEditorApp(args: {
-  logger: Logger;
-  editorIndexPath: string;
-  extensionIconUrl: string;
-  router: Router;
-}) {
+export function renderSingleEditorApp(args: Globals) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleEdit.githubTextEditorToReplaceElement()) {
