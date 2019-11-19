@@ -76,15 +76,13 @@ fi
 
 if [ "${NATIVE^^}" == "FALSE" ]; then
     echo "---> Installing jar file"
-    cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
+    cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin/
     echo "---> Copying application libraries"
     cp -r $artifactDir/lib/ $KOGITO_HOME/bin/
 else
     echo "---> Installing application binaries"
-    cp -v $artifactDir/*-runner $KOGITO_HOME/bin
+    cp -v $artifactDir/*-runner $KOGITO_HOME/bin/
     chmod +x $KOGITO_HOME/bin/*-runner
-    echo "---> Copy native java libraries for ssl handling..."
-    cp -v $GRAALVM_HOME/jre/lib/amd64/libsunec.so $KOGITO_HOME/bin
 fi
 
 

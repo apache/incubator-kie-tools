@@ -25,6 +25,8 @@ modules:
   install:
   - name: install-rpm-dependencies
   - name: add-kogito-user
+  - name: graalvm-binary
+    version: "19.2.1"
   - name: kogito-quarkus-ubi8
 
 

@@ -5,7 +5,6 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 
-mkdir ${KOGITO_HOME}/bin
 mv ${SOURCES_DIR}/data-index-service-*-runner.jar ${KOGITO_HOME}/bin/
 mv ${ADDED_DIR}/* ${KOGITO_HOME}/bin/
 

@@ -1,5 +1,5 @@
 schema_version: 1
-name: graalvm
+name: graalvm-binary
 version: "19.2.1"
 
 envs:

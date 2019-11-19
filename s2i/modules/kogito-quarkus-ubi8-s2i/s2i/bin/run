@@ -6,4 +6,6 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
+exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 \
+    -Dquarkus.http.port=8080 -Djava.library.path=$KOGITO_HOME/ssl-libs \
+    -Djavax.net.ssl.trustStore=$KOGITO_HOME/cacerts

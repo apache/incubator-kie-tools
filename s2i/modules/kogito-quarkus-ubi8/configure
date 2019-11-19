@@ -8,3 +8,8 @@ chmod 755 /usr/local/s2i/*
 chown -R 1001:0 ${KOGITO_HOME}
 chmod -R ug+rwX ${KOGITO_HOME}
 
+rm -rf  ${KOGITO_HOME}/launch/memory-limit.sh
+rm -rf /usr/share/graalvm
+
+unset JAVA_HOME
+unset GRAALVM_HOME

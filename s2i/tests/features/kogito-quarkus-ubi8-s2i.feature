@@ -61,6 +61,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.5.1-runner should exist
+    And file /home/kogito/ssl-libs/libsunec.so should exist
+    And file /home/kogito/cacerts should exist
 
   Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.5.1
@@ -98,6 +100,11 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And the image should contain label io.k8s.description with value Platform for building Kogito based on Quarkus
     And the image should contain label io.k8s.display-name with value Kogito based on Quarkus
     And the image should contain label io.openshift.tags with value builder,kogito,quarkus
+
+  Scenario: verify java cacerts and libsunec are available in the given container.
+    When container is started with command bash
+    Then  file /home/kogito/ssl-libs/libsunec.so should exist
+    And file /home/kogito/cacerts should exist
 
   Scenario: verify if the maven and graal vm settings are correct
     When container is started with command bash

@@ -13,3 +13,7 @@ Feature: Kogito-quarkus-ubi8 feature.
      And the image should contain label io.openshift.tags with value builder,runtime,kogito,quarkus,native
      And the image should contain label io.openshift.s2i.assemble-input-files with value /home/kogito/bin
 
+  Scenario: verify java cacerts and libsunec are available in the given container.
+    When container is started with command bash
+    Then  file /home/kogito/ssl-libs/libsunec.so should exist
+    And file /home/kogito/cacerts should exist

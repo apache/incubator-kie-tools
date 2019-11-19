@@ -30,8 +30,9 @@ modules:
   - name: install-rpm-dependencies
   - name: add-kogito-user
   - name: kogito-launch
-  - name: graalvm
+  - name: graalvm-binary
     version: "19.2.1"
+  - name: graalvm
   - name: maven
     version: "3.6.0"
   - name: kogito-quarkus-ubi8-s2i
