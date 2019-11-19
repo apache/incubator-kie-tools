@@ -52,7 +52,7 @@ export function getCookie(name: string) {
 
 const cookieName = "github-auth-token";
 
-let octokitInstance = new Octokit();
+let octokitInstance: Octokit;
 
 export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
@@ -63,7 +63,8 @@ export const GitHubContextProvider: React.FC<{}> = props => {
       octokitInstance = new Octokit({ auth: token });
       console.info("Token found");
     } else {
-      console.info("No token.");
+      octokitInstance = new Octokit();
+      console.info("Token not found.");
     }
     setReady(true);
   }, []);
