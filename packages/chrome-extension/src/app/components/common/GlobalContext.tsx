@@ -20,6 +20,7 @@ import { Logger } from "../../../Logger";
 
 export const GlobalContext = React.createContext<{
   id: string,
+  githubAuthTokenCookieName: string,
   router: Router;
   logger: Logger;
   extensionIconUrl: string;

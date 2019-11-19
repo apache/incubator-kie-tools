@@ -28,6 +28,7 @@ export interface Globals {
   id: string;
   router: Router;
   logger: Logger;
+  githubAuthTokenCookieName: string;
   extensionIconUrl: string;
   editorIndexPath: string;
 }
@@ -39,6 +40,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
         id: props.id,
         logger: props.logger,
         router: props.router,
+        githubAuthTokenCookieName: props.githubAuthTokenCookieName,
         extensionIconUrl: props.extensionIconUrl,
         editorIndexPath: props.editorIndexPath
       }}

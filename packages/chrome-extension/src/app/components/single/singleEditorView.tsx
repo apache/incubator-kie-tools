@@ -66,6 +66,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
       id={args.id}
       router={args.router}
       logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
     >

@@ -37,6 +37,7 @@ export function startExtension(args: {
   name: string;
   editorIndexPath: string;
   extensionIconUrl: string;
+  githubAuthTokenCookieName: string;
   router: Router;
 }) {
   const logger = new Logger(args.name);
@@ -45,6 +46,7 @@ export function startExtension(args: {
     init({
       id: chrome.runtime.id,
       logger: logger,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
       router: args.router
@@ -71,6 +73,7 @@ function init(args: Globals) {
       id: args.id,
       logger: args.logger,
       router: args.router,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath
     });
@@ -83,6 +86,7 @@ function init(args: Globals) {
       id: args.id,
       logger: args.logger,
       router: args.router,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
       fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") }
@@ -92,6 +96,7 @@ function init(args: Globals) {
 
   if (pageType === GitHubPageType.PR) {
     renderPrEditorsApp({
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       id: args.id,
       logger: args.logger,
       router: args.router,

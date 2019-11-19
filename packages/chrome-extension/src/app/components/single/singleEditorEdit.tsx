@@ -56,6 +56,7 @@ export function renderSingleEditorApp(args: Globals) {
       id={args.id}
       router={args.router}
       logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
     >
