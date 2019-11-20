@@ -28,7 +28,7 @@ public class DecisionTableDefaultValueUtilities {
 
     public static final String INPUT_CLAUSE_PREFIX = "input-";
 
-    public static final String INPUT_CLAUSE_UNARY_TEST_TEXT = "";
+    public static final String INPUT_CLAUSE_UNARY_TEST_TEXT = "-";
 
     public static final String OUTPUT_CLAUSE_PREFIX = "output-";
 
