@@ -286,7 +286,11 @@ public abstract class KieEditor<T>
                                 () -> overviewWidget.refresh(versionRecordManager.getVersion()));
     }
 
-    private void resetMetadata(final Overview overview) {
+    protected void resetEditorPagesOnLoadError(final Overview overview) {
+        resetEditorPages(overview);
+    }
+
+    protected void resetMetadata(final Overview overview) {
 
         this.metadata = overview.getMetadata();
 
@@ -477,14 +481,14 @@ public abstract class KieEditor<T>
             save(commitMessage);
             concurrentUpdateSessionInfo = null;
         };
-        
+
         if (saveWithComments) {
             savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
                                     command);
         } else {
             command.execute("");
         }
-       
+
         concurrentUpdateSessionInfo = null;
     }
 

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -87,5 +88,9 @@ public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Pr
     @Override
     public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
         view.setOnClosedByKeyboardCallback(callback);
+    }
+
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
+        hide();
     }
 }

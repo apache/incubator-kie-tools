@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.BrowserEvents;
@@ -416,9 +415,5 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
 
     boolean isEnter(final KeyDownEvent event) {
         return Objects.equals(event.getNativeKeyCode(), KeyCodes.KEY_ENTER);
-    }
-
-    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
-        hide();
     }
 }

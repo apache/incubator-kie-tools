@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import elemental2.dom.HTMLElement;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHand
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
@@ -435,7 +437,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnDataTypePageNavTabActiveEvent() {
         diagramEditor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
-        verify(multiPage).selectPage(3);
+        verify(multiPage).selectPage(DATA_TYPES_PAGE_INDEX);
     }
 
     @Test
@@ -546,5 +548,22 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnRefreshFormPropertiesEvent() {
         diagramEditor.onRefreshFormPropertiesEvent(mock(RefreshFormPropertiesEvent.class));
         verify(searchBarComponent).disableSearch();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTabContentOrdering() {
+        when(documentationView.isEnabled()).thenReturn(Boolean.TRUE);
+        when(documentationView.initialize(diagram)).thenReturn(documentationView);
+        when(kieView.getMultiPage()).thenReturn(multiPage);
+
+        open();
+
+        final InOrder inOrder = inOrder(kieView, multiPage);
+        inOrder.verify(kieView).addMainEditorPage(view);
+        inOrder.verify(kieView).addPage(any(DocumentationPage.class));
+        inOrder.verify(multiPage).addPage(dataTypesPage);
+        inOrder.verify(multiPage).addPage(includedModelsPage);
+        inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), any(Command.class));
     }
 }

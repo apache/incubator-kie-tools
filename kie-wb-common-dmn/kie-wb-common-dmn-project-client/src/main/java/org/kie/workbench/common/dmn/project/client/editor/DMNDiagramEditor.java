@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -112,8 +113,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
 
-    //Editor tabs: [0] Main editor, [1] Overview, [2] Documentation, [3] Data-Types, [4] Imported Models
-    protected static final int DATA_TYPES_PAGE_INDEX = 3;
+    //Editor tabs: [0] Main editor, [1] Documentation, [2] Data-Types, [3] Imported Models, [4] Overview
+    protected static final int DATA_TYPES_PAGE_INDEX = 2;
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -259,7 +260,30 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         kieView.getMultiPage().addPage(dataTypesPage);
         kieView.getMultiPage().addPage(includedModelsPage);
 
+        kieView.addOverviewPage(overviewWidget,
+                                () -> overviewWidget.refresh(versionRecordManager.getVersion()));
+
         setupSearchComponent();
+    }
+
+    void superInitialiseKieEditorForSession(final ProjectDiagram diagram) {
+        super.initialiseKieEditorForSession(diagram);
+    }
+
+    @Override
+    protected void resetEditorPages(final Overview overview) {
+        overviewWidget.setContent(overview,
+                                  versionRecordManager.getPathToLatest());
+
+        resetMetadata(overview);
+
+        kieView.clear();
+        kieView.addMainEditorPage(baseView);
+    }
+
+    @Override
+    protected void resetEditorPagesOnLoadError(final Overview overview) {
+        super.resetEditorPages(overview);
     }
 
     @Override
@@ -316,10 +340,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
         kieView.getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
-    }
-
-    void superInitialiseKieEditorForSession(final ProjectDiagram diagram) {
-        super.initialiseKieEditorForSession(diagram);
     }
 
     @Override

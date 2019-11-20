@@ -574,15 +574,6 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
-    public void testOnDataTypePageNavTabActiveEvent() {
-        doNothing().when(view).hide(true);
-
-        view.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
-
-        verify(view).hide();
-    }
-
-    @Test
     public void testOnClosedByKeyboard() {
         final Consumer consumer = mock(Consumer.class);
         final Optional opt = Optional.of(consumer);

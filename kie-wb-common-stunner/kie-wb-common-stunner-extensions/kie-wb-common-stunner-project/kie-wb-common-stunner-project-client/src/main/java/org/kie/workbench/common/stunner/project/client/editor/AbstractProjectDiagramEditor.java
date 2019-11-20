@@ -222,7 +222,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
                 setOriginalHash(xml.hashCode());
                 updateTitle(metadata.getTitle());
-                resetEditorPages(((ProjectMetadata) metadata).getOverview());
+                resetEditorPagesOnLoadError(((ProjectMetadata) metadata).getOverview());
                 menuSessionItems.setEnabled(false);
 
                 getXMLEditorView().setReadOnly(isReadOnly);

@@ -30,6 +30,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +51,7 @@ public class NameAndDataTypePopoverImplTest {
     @Mock
     private QName typeRef;
 
-    private NameAndDataTypePopoverView.Presenter editor;
+    private NameAndDataTypePopoverImpl editor;
 
     @Before
     public void setup() {
@@ -116,11 +117,27 @@ public class NameAndDataTypePopoverImplTest {
     }
 
     @Test
-    public void testSetOnClosedByKeyboardCallback(){
+    public void testSetOnClosedByKeyboardCallback() {
         final Consumer callback = mock(Consumer.class);
 
         editor.setOnClosedByKeyboardCallback(callback);
 
         verify(view).setOnClosedByKeyboardCallback(callback);
+    }
+
+    @Test
+    public void testOnDataTypePageNavTabActiveEvent_WhenBound() {
+        editor.bind(bound, 0, 0);
+
+        editor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
+
+        verify(view).hide();
+    }
+
+    @Test
+    public void testOnDataTypePageNavTabActiveEvent_WhenNotBound() {
+        editor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
+
+        verify(view, never()).hide();
     }
 }
