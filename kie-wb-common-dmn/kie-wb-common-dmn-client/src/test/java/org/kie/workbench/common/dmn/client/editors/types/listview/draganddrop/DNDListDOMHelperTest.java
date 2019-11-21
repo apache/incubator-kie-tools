@@ -59,6 +59,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.setCSSPaddingLeft;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.setCSSTop;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.setCSSWidth;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -159,11 +160,11 @@ public class DNDListDOMHelperTest {
         final NodeList<Element> nodeList = spy(new NodeList<>());
 
         nodeList.length = 3;
-        when(nodeList.getAt(0)).thenReturn(element0);
-        when(nodeList.getAt(1)).thenReturn(element1);
-        when(nodeList.getAt(2)).thenReturn(element2);
+        doReturn(element0).when(nodeList).getAt(0);
+        doReturn(element1).when(nodeList).getAt(1);
+        doReturn(element2).when(nodeList).getAt(2);
 
-        when(element.querySelectorAll(selector)).thenReturn(nodeList);
+        doReturn(nodeList).when(element).querySelectorAll(selector);
 
         final List<HTMLElement> actualElements = querySelector(element).getDraggableElements();
         final List<HTMLElement> expectElements = asList(element0, element1, element2);
@@ -181,14 +182,14 @@ public class DNDListDOMHelperTest {
         final NodeList<Element> nodeList = spy(new NodeList<>());
 
         nodeList.length = 3;
-        when(nodeList.getAt(0)).thenReturn(element0);
-        when(nodeList.getAt(1)).thenReturn(element1);
-        when(nodeList.getAt(2)).thenReturn(element2);
-        when(element0.getAttribute(DATA_Y_POSITION)).thenReturn("1");
-        when(element1.getAttribute(DATA_Y_POSITION)).thenReturn("0");
-        when(element2.getAttribute(DATA_Y_POSITION)).thenReturn("-1");
+        doReturn(element0).when(nodeList).getAt(0);
+        doReturn(element1).when(nodeList).getAt(1);
+        doReturn(element2).when(nodeList).getAt(2);
+        doReturn("1").when(element0).getAttribute(DATA_Y_POSITION);
+        doReturn("0").when(element1).getAttribute(DATA_Y_POSITION);
+        doReturn("-1").when(element2).getAttribute(DATA_Y_POSITION);
 
-        when(element.querySelectorAll(selector)).thenReturn(nodeList);
+        doReturn(nodeList).when(element).querySelectorAll(selector);
 
         final List<HTMLElement> actualElements = querySelector(element).getSortedDraggableElements();
         final List<HTMLElement> expectElements = asList(element2, element1, element0);
@@ -206,14 +207,14 @@ public class DNDListDOMHelperTest {
         final NodeList<Element> nodeList = spy(new NodeList<>());
 
         nodeList.length = 3;
-        when(nodeList.getAt(0)).thenReturn(element0);
-        when(nodeList.getAt(1)).thenReturn(element1);
-        when(nodeList.getAt(2)).thenReturn(element2);
-        when(element0.getAttribute(DATA_Y_POSITION)).thenReturn("1");
-        when(element1.getAttribute(DATA_Y_POSITION)).thenReturn("0");
-        when(element2.getAttribute(DATA_Y_POSITION)).thenReturn("-1");
+        doReturn(element0).when(nodeList).getAt(0);
+        doReturn(element1).when(nodeList).getAt(1);
+        doReturn(element2).when(nodeList).getAt(2);
+        doReturn("1").when(element0).getAttribute(DATA_Y_POSITION);
+        doReturn("0").when(element1).getAttribute(DATA_Y_POSITION);
+        doReturn("-1").when(element2).getAttribute(DATA_Y_POSITION);
 
-        when(element.querySelectorAll(selector)).thenReturn(nodeList);
+        doReturn(nodeList).when(element).querySelectorAll(selector);
 
         final List<HTMLElement> actualElements = querySelector(element).getVisibleDraggableElements();
         final List<HTMLElement> expectElements = asList(element0, element1);
@@ -231,14 +232,14 @@ public class DNDListDOMHelperTest {
         final NodeList<Element> nodeList = spy(new NodeList<>());
 
         nodeList.length = 3;
-        when(nodeList.getAt(0)).thenReturn(element0);
-        when(nodeList.getAt(1)).thenReturn(element1);
-        when(nodeList.getAt(2)).thenReturn(element2);
-        when(element0.getAttribute(DATA_Y_POSITION)).thenReturn("1");
-        when(element1.getAttribute(DATA_Y_POSITION)).thenReturn("0");
-        when(element2.getAttribute(DATA_Y_POSITION)).thenReturn("-1");
+        doReturn(element0).when(nodeList).getAt(0);
+        doReturn(element1).when(nodeList).getAt(1);
+        doReturn(element2).when(nodeList).getAt(2);
+        doReturn("1").when(element0).getAttribute(DATA_Y_POSITION);
+        doReturn("0").when(element1).getAttribute(DATA_Y_POSITION);
+        doReturn("-1").when(element2).getAttribute(DATA_Y_POSITION);
 
-        when(element.querySelectorAll(selector)).thenReturn(nodeList);
+        doReturn(nodeList).when(element).querySelectorAll(selector);
 
         final List<HTMLElement> actualElements = querySelector(element).getVisibleAndSortedDraggableElements();
         final List<HTMLElement> expectElements = asList(element1, element0);

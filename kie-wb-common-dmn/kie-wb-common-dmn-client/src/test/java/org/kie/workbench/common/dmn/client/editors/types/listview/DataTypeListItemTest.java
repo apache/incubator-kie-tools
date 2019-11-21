@@ -1298,14 +1298,14 @@ public class DataTypeListItemTest {
         final Element element0 = mock(Element.class);
         final Element element1 = mock(Element.class);
 
-        when(tooltips.getAt(0)).thenReturn(element0);
-        when(tooltips.getAt(1)).thenReturn(element1);
+        doReturn(element0).when(tooltips).getAt(0);
+        doReturn(element1).when(tooltips).getAt(1);
         tooltips.length = 2;
         element0.parentNode = listItems;
         element1.parentNode = listItems;
 
-        when(dataTypeList.getListItems()).thenReturn(listItems);
-        when(listItems.querySelectorAll(".tooltip")).thenReturn(tooltips);
+        doReturn(listItems).when(dataTypeList).getListItems();
+        doReturn(tooltips).when(listItems).querySelectorAll(".tooltip");
 
         listItem.hideTooltips();
 
