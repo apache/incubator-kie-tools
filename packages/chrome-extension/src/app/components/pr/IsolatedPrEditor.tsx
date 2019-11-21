@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ResolvedDomDependency } from "../../dependencies";
+import * as dependencies__ from "../../dependencies";
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import {
   useEffectAfterFirstRender,
@@ -25,7 +25,6 @@ import {
 } from "../common/customEffects";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
-import { Feature } from "../common/Feature";
 import * as ReactDOM from "react-dom";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditor } from "../common/IsolatedEditor";
@@ -35,22 +34,29 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
+import * as Octokit from "@octokit/rest";
+import { fetchFile } from "../../github/api";
+import { useGitHubApi } from "../common/GitHubContext";
+import { useGlobals } from "../common/GlobalContext";
 
-export interface PrInformation {
-  repository: string;
-  targetOrganization: string;
-  targetGitReference: string;
-  organization: string;
-  gitReference: string;
+export interface PrInfo {
+  repo: string;
+  targetOrg: string;
+  targetGitRef: string;
+  org: string;
+  gitRef: string;
 }
 
 export function IsolatedPrEditor(props: {
-  prInfo: PrInformation;
-  prFileContainer: ResolvedDomDependency;
+  prInfo: PrInfo;
+  prFileContainer: HTMLElement;
   fileExtension: string;
-  githubTextEditorToReplace: ResolvedDomDependency;
+  githubTextEditorToReplace: HTMLElement;
   unprocessedFilePath: string;
 }) {
+  const githubApi = useGitHubApi();
+  const globals = useGlobals();
+
   const [showOriginal, setShowOriginal] = useState(false);
   const [textMode, setTextMode] = useState(true);
   const [editorReady, setEditorReady] = useState(false);
@@ -62,35 +68,31 @@ export function IsolatedPrEditor(props: {
 
   useIsolatedEditorTogglingEffect(
     textMode,
-    iframeContainer(props.prFileContainer),
-    props.githubTextEditorToReplace.element
+    iframeContainer(globals.id, props.prFileContainer),
+    props.githubTextEditorToReplace
   );
 
-  useInitialAsyncCallEffect(
-    () => discoverFileStatusOnPr(props.prInfo, originalFilePath, modifiedFilePath),
-    setFileStatusOnPr
-  );
+  useInitialAsyncCallEffect(() => {
+    return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
+  }, setFileStatusOnPr);
 
-  useEffectAfterFirstRender(
-    () => {
-      getFileContents().then(c => {
-        if (isolatedEditorRef.current) {
-          isolatedEditorRef.current.setContent(c || "");
-        }
-      });
-    },
-    [showOriginal]
-  );
+  useEffectAfterFirstRender(() => {
+    getFileContents().then(c => {
+      if (isolatedEditorRef.current) {
+        isolatedEditorRef.current.setContent(c || "");
+      }
+    });
+  }, [showOriginal]);
 
-  const closeDiagram = () => {
+  const closeDiagram = useCallback(() => {
     setTextMode(true);
     setEditorReady(false);
-  };
+  }, []);
 
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
-      ? () => getOriginalFileContents(props.prInfo, originalFilePath)
-      : () => getModifiedFileContents(props.prInfo, modifiedFilePath);
+      ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
+      : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
@@ -99,66 +101,58 @@ export function IsolatedPrEditor(props: {
     <IsolatedEditorContext.Provider
       value={{ textMode: textMode, fullscreen: false, onEditorReady: () => setEditorReady(true) }}
     >
-      {shouldAddLinkToOriginalFile && (
-        <Feature
-          name={"Link to original PR file"}
-          dependencies={deps => ({
-            container: () => deps.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)
-          })}
-          component={resolved =>
-            ReactDOM.createPortal(
-              <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
-                View original file
-              </a>,
-              viewOriginalFileLinkContainer(props.prFileContainer, resolved.container as ResolvedDomDependency)
-            )
-          }
-        />
+      {shouldAddLinkToOriginalFile &&
+        ReactDOM.createPortal(
+          <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
+            View original file
+          </a>,
+          viewOriginalFileLinkContainer(
+            globals.id,
+            props.prFileContainer,
+            dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+          )
+        )}
+
+      {ReactDOM.createPortal(
+        <PrToolbar
+          showOriginalChangesToggle={editorReady}
+          fileStatusOnPr={fileStatusOnPr}
+          textMode={textMode}
+          originalDiagram={showOriginal}
+          toggleOriginal={() => setShowOriginal(prev => !prev)}
+          closeDiagram={closeDiagram}
+          onSeeAsDiagram={() => setTextMode(false)}
+        />,
+        toolbarContainer(
+          globals.id,
+          props.prFileContainer,
+          dependencies__.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
+        )
       )}
 
-      <Feature
-        name={"PR editor toolbar"}
-        dependencies={deps => ({ container: () => deps.common.toolbarContainerTarget(props.prFileContainer) })}
-        component={resolved =>
-          ReactDOM.createPortal(
-            <PrToolbar
-              showOriginalChangesToggle={editorReady}
-              fileStatusOnPr={fileStatusOnPr}
-              textMode={textMode}
-              originalDiagram={showOriginal}
-              toggleOriginal={() => setShowOriginal(prev => !prev)}
-              closeDiagram={closeDiagram}
-              onSeeAsDiagram={() => setTextMode(false)}
-            />,
-            toolbarContainer(props.prFileContainer, resolved.container as ResolvedDomDependency)
-          )
-        }
-      />
-
-      <Feature
-        name={`PR Editor for ${props.unprocessedFilePath}`}
-        dependencies={deps => ({ container: () => deps.common.iframeContainerTarget(props.prFileContainer) })}
-        component={resolved =>
-          ReactDOM.createPortal(
-            <IsolatedEditor
-              ref={isolatedEditorRef}
-              textMode={textMode}
-              getFileContents={getFileContents}
-              openFileExtension={props.fileExtension}
-              readonly={true}
-              keepRenderedEditorInTextMode={false}
-            />,
-            iframeContainer(resolved.container as ResolvedDomDependency)
-          )
-        }
-      />
+      {ReactDOM.createPortal(
+        <IsolatedEditor
+          ref={isolatedEditorRef}
+          textMode={textMode}
+          getFileContents={getFileContents}
+          openFileExtension={props.fileExtension}
+          readonly={true}
+          keepRenderedEditorInTextMode={false}
+        />,
+        iframeContainer(globals.id, dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
+      )}
     </IsolatedEditorContext.Provider>
   );
 }
 
-async function discoverFileStatusOnPr(prInfo: PrInformation, originalFilePath: string, modifiedFilePath: string) {
-  const hasOriginal = await getOriginalFileContents(prInfo, originalFilePath);
-  const hasModified = await getModifiedFileContents(prInfo, modifiedFilePath);
+async function discoverFileStatusOnPr(
+  octokit: Octokit,
+  prInfo: PrInfo,
+  originalFilePath: string,
+  modifiedFilePath: string
+) {
+  const hasOriginal = await getOriginalFileContents(octokit, prInfo, originalFilePath);
+  const hasModified = await getModifiedFileContents(octokit, prInfo, modifiedFilePath);
 
   if (hasOriginal && hasModified) {
     return FileStatusOnPr.CHANGED;
@@ -191,61 +185,51 @@ export function getModifiedFilePath(path: string) {
   }
 }
 
-function viewOriginalFileLinkContainer(prFileContainer: ResolvedDomDependency, container: ResolvedDomDependency) {
-  const div = `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.element.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`);
+function viewOriginalFileLinkContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
+  const element = () => prFileContainer.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()) {
-    container.element.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML(
+      "afterend",
+      `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS} ${id}"></div>`
+    );
   }
 
   return element()!;
 }
 
-function toolbarContainer(prFileContainer: ResolvedDomDependency, container: ResolvedDomDependency) {
-  const div = `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.element.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`);
+function toolbarContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
+  const element = () => prFileContainer.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()) {
-    container.element.insertAdjacentHTML("afterend", div);
+    container.insertAdjacentHTML("afterend", `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS} ${id}"></div>`);
   }
 
   return element()!;
 }
 
-function iframeContainer(container: ResolvedDomDependency) {
-  const div = `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => container.element.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`);
+function iframeContainer(id: string, container: HTMLElement) {
+  const element = () => container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()!) {
-    container.element.insertAdjacentHTML("beforeend", div);
+    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS} ${id}"></div>`);
   }
 
   return element() as HTMLElement;
 }
 
-function getModifiedFileContents(prInfo: PrInformation, modifiedFilePath: string) {
-  const org = prInfo.organization;
-  const repo = prInfo.repository;
-  const branch = prInfo.gitReference;
-  return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${modifiedFilePath}`).then(res => {
-    return res.ok ? res.text() : Promise.resolve(undefined);
-  });
+function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFilePath: string) {
+  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath);
 }
 
-function getOriginalFileContents(prInfo: PrInformation, originalFilePath: string) {
-  const org = prInfo.targetOrganization;
-  const repo = prInfo.repository;
-  const branch = prInfo.targetGitReference;
-  return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${branch}/${originalFilePath}`).then(res => {
-    return res.ok ? res.text() : Promise.resolve(undefined);
-  });
+function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
+  return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath);
 }
 
-function viewOriginalFileHref(prInfo: PrInformation, originalFilePath: string) {
-  const org = prInfo.targetOrganization;
-  const repo = prInfo.repository;
-  const branch = prInfo.targetGitReference;
+function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {
+  const org = prInfo.targetOrg;
+  const repo = prInfo.repo;
+  const branch = prInfo.targetGitRef;
 
   return `/${org}/${repo}/blob/${branch}/${originalFilePath}`;
 }

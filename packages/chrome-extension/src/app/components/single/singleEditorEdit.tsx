@@ -23,25 +23,18 @@ import {
   removeAllChildren
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
-import { Main } from "../common/Main";
-import { Router } from "@kogito-tooling/core-api";
+import { Globals, Main } from "../common/Main";
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependency } from "../../dependencies";
-import { Feature } from "../common/Feature";
-import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
-import { Logger } from "../../../Logger";
+import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
+import { useGlobals } from "../common/GlobalContext";
 
-export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+export function renderSingleEditorApp(args: Globals) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleEdit.githubTextEditorToReplaceElement()) {
     args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
     return;
   }
-
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
@@ -54,68 +47,75 @@ export function renderSingleEditorApp(args: { logger: Logger; editorIndexPath: s
     return;
   }
 
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
+
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+      extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
-      commonDependencies={dependencies__.singleEdit}
     >
-      <Feature
-        name={"Editable editor"}
-        dependencies={deps => ({
-          fileContents: () => deps.all.edit__githubTextAreaWithFileContents(),
-          iframeContainerTarget: () => deps.common.iframeContainerTarget(),
-          toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
-          githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
-        })}
-        component={resolved => (
-          <SingleEditorApp
-            readonly={false}
-            openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(resolved.fileContents as ResolvedDomDependency)}
-            iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
-            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
-            githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
-          />
-        )}
-      />
+      <SingleEditorViewApp openFileExtension={openFileExtension} />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function cleanup() {
+function SingleEditorViewApp(props: { openFileExtension: string }) {
+  const globals = useGlobals();
+  return (
+    <SingleEditorApp
+      readonly={false}
+      openFileExtension={props.openFileExtension}
+      getFileContents={getFileContents}
+      iframeContainer={iframeContainer(globals.id)}
+      toolbarContainer={toolbarContainer(globals.id)}
+      githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
+    />
+  );
+}
+
+function cleanup(id: string) {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer({ name: "", element: dependencies__.singleEdit.iframeContainerTarget()! }));
-  removeAllChildren(toolbarContainer({ name: "", element: dependencies__.singleEdit.toolbarContainerTarget()! }));
-  removeAllChildren(iframeFullscreenContainer({ name: "", element: dependencies__.all.body() }));
-  removeAllChildren(createAndGetMainContainer({ name: "", element: dependencies__.all.body() }));
+  removeAllChildren(iframeContainer(id));
+  removeAllChildren(toolbarContainer(id));
+  removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
 }
 
-function getFileContents(domDependency: ResolvedDomDependency) {
-  return Promise.resolve((domDependency.element as HTMLTextAreaElement).value);
+function getFileContents() {
+  return Promise.resolve(dependencies__.all.edit__githubTextAreaWithFileContents()!.value);
 }
 
-function toolbarContainer(domDependency: ResolvedDomDependency) {
-  const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="edit d-flex flex-column flex-items-start flex-md-row"></div>`;
-  const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+function toolbarContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("beforeend", div);
+    dependencies__.singleEdit
+      .toolbarContainerTarget()!
+      .insertAdjacentHTML(
+        "beforeend",
+        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} edit d-flex flex-column flex-items-start flex-md-row"></div>`
+      );
   }
 
-  return element();
+  return element() as HTMLElement;
 }
 
-function iframeContainer(domDependency: ResolvedDomDependency) {
-  const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="edit"></div>`;
-  const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+function iframeContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("afterend", div);
+    dependencies__.singleEdit
+      .iframeContainerTarget()!
+      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} edit"></div>`);
   }
 
-  return element();
+  return element() as HTMLElement;
 }

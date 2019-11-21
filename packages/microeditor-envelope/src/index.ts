@@ -27,9 +27,9 @@ export * from "./EnvelopeBusInnerMessageHandler";
 
 class ReactDomRenderer implements Renderer {
   public render(element: ReactElement, container: HTMLElement, callback: () => void) {
-    setImmediate(() => {
+    setTimeout(() => {
       ReactDOM.render(element, container, callback);
-    });
+    }, 0);
   }
 }
 

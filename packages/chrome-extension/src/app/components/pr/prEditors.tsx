@@ -18,46 +18,38 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
 import { createAndGetMainContainer, removeAllChildren } from "../../utils";
-import { Router } from "@kogito-tooling/core-api";
-import { Main } from "../common/Main";
+import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependencyArray } from "../../dependencies";
-import { Feature } from "../common/Feature";
-import { PrInformation } from "./IsolatedPrEditor";
-import { Logger } from "../../../Logger";
+import { PrInfo } from "./IsolatedPrEditor";
 
-export function renderPrEditorsApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
+  cleanup(args.id);
 
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+      extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
-      commonDependencies={dependencies__.prView}
     >
-      <Feature
-        name={"Editors directly on PR screen"}
-        dependencies={deps => ({ prInfoContainer: () => deps.all.array.pr__prInfoContainer() })}
-        component={resolved => (
-          <PrEditorsApp prInfo={parsePrInfo(resolved.prInfoContainer as ResolvedDomDependencyArray)} />
-        )}
-      />
+      <PrEditorsApp prInfo={parsePrInfo()} />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function parsePrInfo(prInfoContainer: ResolvedDomDependencyArray): PrInformation {
-  const prInfos = prInfoContainer.element.map(e => e.textContent!);
+function parsePrInfo(): PrInfo {
+  const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];
@@ -65,34 +57,34 @@ function parsePrInfo(prInfoContainer: ResolvedDomDependencyArray): PrInformation
   // PR is within the same organization
   if (prInfos.length < 6) {
     return {
-      repository: repository,
-      targetOrganization: targetOrganization,
-      targetGitReference: prInfos[1],
-      organization: targetOrganization,
-      gitReference: prInfos[3]
+      repo: repository,
+      targetOrg: targetOrganization,
+      targetGitRef: prInfos[1],
+      org: targetOrganization,
+      gitRef: prInfos[3]
     };
   }
 
   // PR is from a fork to an upstream
   return {
-    repository: repository,
-    targetOrganization: targetOrganization,
-    targetGitReference: prInfos[2],
-    organization: prInfos[4],
-    gitReference: prInfos[5]
+    repo: repository,
+    targetOrg: targetOrganization,
+    targetGitRef: prInfos[2],
+    org: prInfos[4],
+    gitRef: prInfos[5]
   };
 }
 
-function cleanup() {
-  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}`)).forEach(e => {
+function cleanup(id: string) {
+  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}`)).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}`)).forEach(e => {
+  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
     removeAllChildren(e);
   });
 }

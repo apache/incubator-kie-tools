@@ -41,7 +41,7 @@ export function SingleEditorToolbar(props: {
 
   return (
     <>
-      <div>
+      <div style={{ display: "flex" }}>
         {!props.textMode && (
           <button disabled={!props.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
             See as source
@@ -58,13 +58,12 @@ export function SingleEditorToolbar(props: {
           </button>
         )}
       </div>
-      {props.readonly &&
-        !props.textMode && (
-          <>
-            {/* TODO: Add "info" icon with hint explaining how to edit the file */}
-            <h4>🔸️ This is a readonly visualization</h4>
-          </>
-        )}
+      {props.readonly && !props.textMode && (
+        <>
+          {/* TODO: Add "info" icon with hint explaining how to edit the file */}
+          <h4>🔸️ This is a readonly visualization</h4>
+        </>
+      )}
     </>
   );
 }

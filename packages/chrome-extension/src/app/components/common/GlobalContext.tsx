@@ -16,19 +16,17 @@
 
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
-import { GlobalDomDependencies } from "../../dependencies";
 import { Logger } from "../../../Logger";
 
-export interface GlobalContextType {
+export const GlobalContext = React.createContext<{
+  id: string,
+  githubAuthTokenCookieName: string,
   router: Router;
   logger: Logger;
+  extensionIconUrl: string;
   editorIndexPath: string;
-  dependencies: GlobalDomDependencies;
-}
+}>({} as any);
 
-export const GlobalContext = React.createContext<GlobalContextType>({
-  router: undefined as any,
-  logger: undefined as any,
-  editorIndexPath: "envelope/index.html",
-  dependencies: {} as any
-});
+export function useGlobals() {
+  return React.useContext(GlobalContext);
+}

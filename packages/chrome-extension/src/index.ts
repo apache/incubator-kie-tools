@@ -24,6 +24,7 @@ import * as ReactDOM from "react-dom";
 import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
+import { Globals } from "./app/components/common/Main";
 
 /**
  * Starts a Kogito extension.
@@ -32,20 +33,34 @@ import { Logger } from "./Logger";
  *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
  *  @param args.router The Router to be used to find resources for each language.
  */
-export function startExtension(args: { name: string; editorIndexPath: string; router: Router }) {
+export function startExtension(args: {
+  name: string;
+  editorIndexPath: string;
+  extensionIconUrl: string;
+  githubAuthTokenCookieName: string;
+  router: Router;
+}) {
   const logger = new Logger(args.name);
 
-  const runInit = () => init({ logger, editorIndexPath: args.editorIndexPath, router: args.router });
+  const runInit = () =>
+    init({
+      id: chrome.runtime.id,
+      logger: logger,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+      editorIndexPath: args.editorIndexPath,
+      extensionIconUrl: args.extensionIconUrl,
+      router: args.router
+    });
 
-  runAfterUriChange(logger, () => setImmediate(runInit));
-  setImmediate(runInit);
+  runAfterUriChange(logger, () => setTimeout(runInit, 0));
+  setTimeout(runInit, 0);
 }
 
-function init(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+function init(args: Globals) {
   args.logger.log(`---`);
   args.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.logger);
+  unmountPreviouslyRenderedFeatures(args.id, args.logger);
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
@@ -54,17 +69,40 @@ function init(args: { logger: Logger; editorIndexPath: string; router: Router })
   }
 
   if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    renderSingleEditorApp({
+      id: args.id,
+      logger: args.logger,
+      router: args.router,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath
+    });
     return;
   }
 
   if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    const split = window.location.pathname.split("/");
+    renderSingleEditorReadonlyApp({
+      id: args.id,
+      logger: args.logger,
+      router: args.router,
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath,
+      fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") }
+    });
     return;
   }
 
   if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({ logger: args.logger, router: args.router, editorIndexPath: args.editorIndexPath });
+    renderPrEditorsApp({
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+      id: args.id,
+      logger: args.logger,
+      router: args.router,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath
+    });
     return;
   }
 
@@ -95,10 +133,10 @@ function discoverCurrentGitHubPageType() {
   return GitHubPageType.ANY;
 }
 
-function unmountPreviouslyRenderedFeatures(logger: Logger) {
+function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
   try {
-    if (mainContainer({ name: "", element: dependencies__.all.body() })) {
-      ReactDOM.unmountComponentAtNode(mainContainer({ name: "", element: dependencies__.all.body() })!);
+    if (mainContainer(id, dependencies__.all.body())) {
+      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies__.all.body())!);
       logger.log("Unmounted previous features.");
     }
   } catch (e) {

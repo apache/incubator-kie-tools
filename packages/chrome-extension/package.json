@@ -15,7 +15,8 @@
   "dependencies": {
     "@kogito-tooling/microeditor-envelope": "0.2.5",
     "@kogito-tooling/microeditor-envelope-protocol": "0.2.5",
-    "@types/chrome": "0.0.81"
+    "@types/chrome": "0.0.81",
+    "@octokit/rest": "16.35.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

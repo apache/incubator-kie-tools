@@ -14,6 +14,8 @@
   "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
   "permissions": [
+    "cookies",
+    "*://*.github.com",
     "webRequestBlocking",
     "webRequest",
     "https://*/*",

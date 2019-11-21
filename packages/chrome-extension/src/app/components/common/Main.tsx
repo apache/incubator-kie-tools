@@ -17,37 +17,41 @@
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
-import * as dependencies__ from "../../dependencies";
-import { GlobalCommonDomDependencies } from "../../dependencies";
 import { Logger } from "../../../Logger";
+import { GitHubContextProvider } from "./GitHubContext";
+import * as ReactDOM from "react-dom";
+import { KogitoMenu } from "./KogitoMenu";
+import * as dependencies__ from "../../dependencies";
+import { kogitoMenuContainer } from "../../utils";
 
-interface Props {
+export interface Globals {
+  id: string;
   router: Router;
   logger: Logger;
-  commonDependencies: GlobalCommonDomDependencies;
+  githubAuthTokenCookieName: string;
+  extensionIconUrl: string;
   editorIndexPath: string;
 }
 
-export class Main extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-  }
-
-  public render() {
-    return (
-      <GlobalContext.Provider
-        value={{
-          logger: this.props.logger,
-          router: this.props.router,
-          editorIndexPath: this.props.editorIndexPath,
-          dependencies: {
-            all: dependencies__.all,
-            common: this.props.commonDependencies
-          }
-        }}
-      >
-        {this.props.children}
-      </GlobalContext.Provider>
-    );
-  }
-}
+export const Main: React.FunctionComponent<Globals> = props => {
+  return (
+    <GlobalContext.Provider
+      value={{
+        id: props.id,
+        logger: props.logger,
+        router: props.router,
+        githubAuthTokenCookieName: props.githubAuthTokenCookieName,
+        extensionIconUrl: props.extensionIconUrl,
+        editorIndexPath: props.editorIndexPath
+      }}
+    >
+      <GitHubContextProvider>
+        {ReactDOM.createPortal(
+          <KogitoMenu />,
+          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
+        )}
+        <>{props.children}</>
+      </GitHubContextProvider>
+    </GlobalContext.Provider>
+  );
+};

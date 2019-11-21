@@ -15,7 +15,6 @@
  */
 
 import * as dependencies__ from "../../dependencies";
-import { ResolvedDomDependency } from "../../dependencies";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -23,25 +22,29 @@ import {
   removeAllChildren
 } from "../../utils";
 import * as ReactDOM from "react-dom";
-import { Main } from "../common/Main";
-import { Feature } from "../common/Feature";
+import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { KOGITO_IFRAME_CONTAINER_ID, KOGITO_TOOLBAR_CONTAINER_ID } from "../../constants";
-import { Logger } from "../../../Logger";
+import { useCallback } from "react";
+import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
+import { fetchFile } from "../../github/api";
+import { useGitHubApi } from "../common/GitHubContext";
+import { useGlobals } from "../common/GlobalContext";
 
-export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorIndexPath: string; router: Router }) {
+export interface FileInfo {
+  repo: string;
+  org: string;
+  path: string;
+  gitRef: string;
+}
+
+export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
     args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
     return;
   }
-
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup();
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
   if (!openFileExtension) {
@@ -54,68 +57,84 @@ export function renderSingleEditorReadonlyApp(args: { logger: Logger; editorInde
     return;
   }
 
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
+
   ReactDOM.render(
     <Main
+      id={args.id}
       router={args.router}
       logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+      extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
-      commonDependencies={dependencies__.singleView}
     >
-      <Feature
-        name={"Readonly editor"}
-        dependencies={deps => ({
-          rawUrl: () => deps.all.view__rawUrlLink(),
-          iframeContainerTarget: () => deps.common.iframeContainerTarget(),
-          toolbarContainerTarget: () => deps.common.toolbarContainerTarget(),
-          githubTextEditorToReplace: () => deps.common.githubTextEditorToReplaceElement()
-        })}
-        component={resolved => (
-          <SingleEditorApp
-            readonly={true}
-            openFileExtension={openFileExtension}
-            getFileContents={() => getFileContents(resolved.rawUrl as ResolvedDomDependency)}
-            iframeContainer={iframeContainer(resolved.iframeContainerTarget as ResolvedDomDependency)}
-            toolbarContainer={toolbarContainer(resolved.toolbarContainerTarget as ResolvedDomDependency)}
-            githubTextEditorToReplace={resolved.githubTextEditorToReplace as ResolvedDomDependency}
-          />
-        )}
-      />
+      <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
-    createAndGetMainContainer({ name: "", element: dependencies__.all.body() }),
+    createAndGetMainContainer(args.id, dependencies__.all.body()!),
     () => args.logger.log("Mounted.")
   );
 }
 
-function cleanup() {
+function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
+  const githubApi = useGitHubApi();
+  const globals = useGlobals();
+  const getFileContents = useCallback(
+    () =>
+      fetchFile(
+        githubApi.octokit(),
+        props.fileInfo.org,
+        props.fileInfo.repo,
+        props.fileInfo.gitRef,
+        props.fileInfo.path
+      ),
+    []
+  );
+
+  return (
+    <SingleEditorApp
+      readonly={true}
+      openFileExtension={props.openFileExtension}
+      getFileContents={getFileContents}
+      iframeContainer={iframeContainer(globals.id)}
+      toolbarContainer={toolbarContainer(globals.id)}
+      githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
+    />
+  );
+}
+
+function cleanup(id: string) {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer({ name: "", element: dependencies__.singleView.iframeContainerTarget()! }));
-  removeAllChildren(toolbarContainer({ name: "", element: dependencies__.singleView.toolbarContainerTarget()! }));
-  removeAllChildren(iframeFullscreenContainer({ name: "", element: dependencies__.all.body() }));
-  removeAllChildren(createAndGetMainContainer({ name: "", element: dependencies__.all.body() }));
+  removeAllChildren(iframeContainer(id));
+  removeAllChildren(toolbarContainer(id));
+  removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
+  removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
 }
 
-function getFileContents(domDependency: ResolvedDomDependency) {
-  return fetch((domDependency.element as HTMLAnchorElement).href).then(res => res.text());
-}
-
-function toolbarContainer(domDependency: ResolvedDomDependency) {
-  const div = `<div id="${KOGITO_TOOLBAR_CONTAINER_ID}" class="view d-flex flex-column flex-items-start flex-md-row"></div>`;
-  const element = () => document.getElementById(KOGITO_TOOLBAR_CONTAINER_ID)!;
+function toolbarContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("beforebegin", div);
+    dependencies__.singleView
+      .toolbarContainerTarget()!
+      .insertAdjacentHTML(
+        "beforebegin",
+        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} view d-flex flex-column flex-items-start flex-md-row"></div>`
+      );
   }
 
-  return element();
+  return element() as HTMLElement;
 }
 
-function iframeContainer(domDependency: ResolvedDomDependency) {
-  const div = `<div id="${KOGITO_IFRAME_CONTAINER_ID}" class="view"></div>`;
-  const element = () => document.getElementById(KOGITO_IFRAME_CONTAINER_ID)!;
+function iframeContainer(id: string) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    domDependency.element.insertAdjacentHTML("afterend", div);
+    dependencies__.singleView
+      .iframeContainerTarget()!
+      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
   }
 
-  return element();
+  return element() as HTMLElement;
 }

@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID, KOGITO_MAIN_CONTAINER_ID } from "./constants";
-import { ResolvedDomDependency } from "./dependencies";
+import {
+  KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS,
+  KOGITO_MAIN_CONTAINER_CLASS,
+  KOGITO_MENU_CONTAINER_CLASS
+} from "./constants";
 import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {
@@ -70,56 +73,39 @@ export function removeAllChildren(node: Node) {
   }
 }
 
-export function mainContainer(container: ResolvedDomDependency) {
-  return container.element.querySelector(`#${KOGITO_MAIN_CONTAINER_ID}`);
+export function mainContainer(id: string, container: HTMLElement) {
+  return container.querySelector(`.${KOGITO_MAIN_CONTAINER_CLASS}.${id}`);
 }
 
-export function createAndGetMainContainer(container: ResolvedDomDependency) {
-  if (!mainContainer(container)) {
-    container.element.insertAdjacentHTML("beforeend", `<div id="${KOGITO_MAIN_CONTAINER_ID}"></div>`);
+export function createAndGetMainContainer(id: string, container: HTMLElement) {
+  if (!mainContainer(id, container)) {
+    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`);
   }
-  return mainContainer(container)!;
+  return mainContainer(id, container)!;
 }
 
-export function iframeFullscreenContainer(container: ResolvedDomDependency) {
-  const element = () => document.getElementById(KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID)!;
+export function iframeFullscreenContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`)!;
   if (!element()) {
-    container.element.insertAdjacentHTML(
+    container.insertAdjacentHTML(
       "afterbegin",
-      `<div id="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_ID}" class="hidden"></div>`
+      `<div class="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS} ${id}" class="hidden"></div>`
     );
   }
   return element();
 }
 
-export function waitUntil(halt: () => boolean, times: { interval: number; timeout: number }) {
-  return new Promise((res, rej) => {
-    asyncLoop(halt, times.interval, times.timeout, new Date().getTime(), res, rej);
-  });
-}
+export function kogitoMenuContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
-function asyncLoop(
-  halt: () => boolean,
-  interval: number,
-  timeout: number,
-  start: number,
-  onHalt: () => void,
-  onTimeout: (...args: any[]) => void
-) {
-  //timeout check
-  if (new Date().getTime() - start >= timeout) {
-    onTimeout("async loop timeout");
-    return;
+  if (!element()) {
+    container.insertAdjacentHTML(
+      "beforebegin",
+      `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`
+    );
   }
 
-  //check condition
-  if (halt()) {
-    onHalt();
-    return;
-  }
-
-  //loop
-  setTimeout(() => asyncLoop(halt, interval, timeout, start, onHalt, onTimeout), interval);
+  return element();
 }
 
 export function extractOpenFileExtension(url: string) {
