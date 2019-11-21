@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-for FILE in deploy/crds/app.kiegroup.org_kogitoapps_crd.yaml deploy/crds/app.kiegroup.org_kogitodataindices_crd.yaml deploy/role.yaml deploy/service_account.yaml deploy/role_binding.yaml deploy/operator.yaml
+all_files=()
+for file in deploy/crds/*crd.yaml; do all_files=( "${all_files[@]}" "${file}") ; done
+for file in deploy/*.yaml; do all_files=( "${all_files[@]}" "${file}") ; done
+
+for FILE in "${all_files[@]}"
 do
-	oc apply -f ${FILE}
+  oc apply -f ${FILE}
 done
