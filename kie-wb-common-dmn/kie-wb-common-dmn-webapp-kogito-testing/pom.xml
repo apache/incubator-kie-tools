@@ -32,7 +32,7 @@
   <properties>
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-    <gwt.helper.includes>Marshaller</gwt.helper.includes>
+    <gwt.helper.includes>DMNClient,Marshaller</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
   </properties>
 

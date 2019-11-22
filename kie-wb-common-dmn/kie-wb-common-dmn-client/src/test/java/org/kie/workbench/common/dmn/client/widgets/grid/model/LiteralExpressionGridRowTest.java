@@ -19,73 +19,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow.DEFAULT_HEIGHT;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 public class LiteralExpressionGridRowTest {
 
-    private static final double TEXT_LINE_HEIGHT = 10.0;
+    private static final double CELL_HEIGHT = DEFAULT_HEIGHT * 2;
+
+    private static class MockHasDynamicHeightCell<T> extends BaseGridCell<T> implements HasDynamicHeight {
+
+        private MockHasDynamicHeightCell(final GridCellValue<T> value) {
+            super(value);
+        }
+
+        @Override
+        public double getHeight() {
+            return CELL_HEIGHT;
+        }
+    }
 
     @Test
-    public void testEmptyRow() throws Exception {
-        final GridRow row = new LiteralExpressionGridRow(TEXT_LINE_HEIGHT);
+    public void testEmptyRow() {
+        final GridRow row = new LiteralExpressionGridRow();
         assertThat(row.getHeight()).isEqualTo(DEFAULT_HEIGHT);
     }
 
     @Test
-    public void testGetHeightWithEmptyExpressionText() {
-        assertRowHeight("",
-                        LiteralExpressionGridRow.DEFAULT_HEIGHT);
-    }
-
-    private void assertRowHeight(final String value,
-                                 final double expectedHeight) {
-        final GridRow row = spy(new LiteralExpressionGridRow(TEXT_LINE_HEIGHT));
+    public void testGetHeightWithHasDynamicHeightCell() {
+        final GridRow row = spy(new LiteralExpressionGridRow());
         final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
-            put(0, new BaseGridCell<>(new BaseGridCellValue<>(value)));
+            put(0, new MockHasDynamicHeightCell<>(new BaseGridCellValue<>("cheese")));
+            put(1, new BaseGridCell<>(new BaseGridCellValue<>("cheese")));
         }};
 
         doReturn(cells).when(row).getCells();
-        assertThat(row.getHeight()).isEqualTo(expectedHeight);
+        assertThat(row.getHeight()).isEqualTo(CELL_HEIGHT);
     }
 
     @Test
-    public void testGetHeightWithMultiLineExpressionText() {
-        //Lines [1,2,3,4]
-        assertRowHeight("1\n2\n3\n4",
-                        4 * TEXT_LINE_HEIGHT
-                                + (RendererUtils.EXPRESSION_TEXT_PADDING * 3));
-    }
+    public void testGetHeightWithoutHasDynamicHeightCell() {
+        final GridRow row = spy(new LiteralExpressionGridRow());
+        final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
+            put(0, new BaseGridCell<>(new BaseGridCellValue<>("cheese")));
+        }};
 
-    @Test
-    public void testGetHeightWithEmptyLinesExpressionText() {
-        //Lines [1,2,<empty>,<empty>,3,4]
-        assertRowHeight("1\n2\n\n\n3\n4",
-                        6 * TEXT_LINE_HEIGHT
-                                + (RendererUtils.EXPRESSION_TEXT_PADDING * 3));
-    }
-
-    @Test
-    public void testGetHeightWithDifferentEndOfLinesExpressionText() {
-        //Lines [1,2, ,3,4 ,<empty>]
-        assertRowHeight("1\n2\r\n \n3\n4 \r\n",
-                        6 * TEXT_LINE_HEIGHT
-                                + (RendererUtils.EXPRESSION_TEXT_PADDING * 3));
-    }
-
-    @Test
-    public void testGetHeightEndingWithEmptyLineExpressionText() {
-        //Lines [1,2,3,<empty>]
-        assertRowHeight("1\n2\r\n3\n",
-                        4 * TEXT_LINE_HEIGHT
-                                + (RendererUtils.EXPRESSION_TEXT_PADDING * 3));
+        doReturn(cells).when(row).getCells();
+        assertThat(row.getHeight()).isEqualTo(DEFAULT_HEIGHT);
     }
 }

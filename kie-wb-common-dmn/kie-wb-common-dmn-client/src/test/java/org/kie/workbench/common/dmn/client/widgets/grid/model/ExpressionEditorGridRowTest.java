@@ -16,23 +16,24 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow.DEFAULT_HEIGHT;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorGridRowTest {
@@ -41,32 +42,66 @@ public class ExpressionEditorGridRowTest {
     private BaseExpressionGrid view;
 
     @Test
-    public void testEmptyRow() throws Exception {
+    public void testEmptyRow() {
         final GridRow row = new ExpressionEditorGridRow();
-        Assertions.assertThat(row.getHeight()).isEqualTo(DEFAULT_HEIGHT);
+        assertThat(row.getHeight()).isEqualTo(DEFAULT_HEIGHT);
     }
 
     @Test
-    public void testRowNoHigherThanDefault() throws Exception {
-        final GridRow row = Mockito.spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
-            Mockito.doReturn(DEFAULT_HEIGHT - 1).when(view).getHeight();
-            put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));
-        }};
+    @SuppressWarnings("unchecked")
+    public void testRowLowerThanDefault() {
+        when(view.getHeight()).thenReturn(DEFAULT_HEIGHT - 1);
 
-        Mockito.doReturn(cells).when(row).getCells();
-        Assertions.assertThat(row.getHeight()).isBetween(0D, DEFAULT_HEIGHT);
+        final GridRow row = spy(ExpressionEditorGridRow.class);
+        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
+                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
+                .build();
+
+        when(row.getCells()).thenReturn(cells);
+        assertThat(row.getHeight()).isBetween(0D, DEFAULT_HEIGHT);
     }
 
     @Test
-    public void testRowHigherThanDefault() throws Exception {
-        final GridRow row = Mockito.spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
-            Mockito.doReturn(DEFAULT_HEIGHT + 1).when(view).getHeight();
-            put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));
-        }};
+    @SuppressWarnings("unchecked")
+    public void testRowHigherThanDefault() {
+        when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
 
-        Mockito.doReturn(cells).when(row).getCells();
-        Assertions.assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
+        final GridRow row = spy(ExpressionEditorGridRow.class);
+        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
+                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
+                .build();
+
+        when(row.getCells()).thenReturn(cells);
+        assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRowHigherThanDefaultWithNullCell() {
+        when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
+
+        final GridRow row = spy(ExpressionEditorGridRow.class);
+        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
+                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
+                .put(1, null)
+                .build();
+
+        when(row.getCells()).thenReturn(cells);
+        assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRowHigherThanDefaultWithNullCellValue() {
+        when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
+
+        final GridRow row = spy(ExpressionEditorGridRow.class);
+        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
+                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
+                .put(1, new BaseGridCell<>(null))
+                .build();
+
+        when(row.getCells()).thenReturn(cells);
+        assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
     }
 }

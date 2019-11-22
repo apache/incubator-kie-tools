@@ -33,10 +33,12 @@ public class LiteralExpressionPMMLUIModelMapper extends LiteralExpressionUIModel
     public LiteralExpressionPMMLUIModelMapper(final Supplier<GridData> uiModel,
                                               final Supplier<Optional<LiteralExpression>> dmnModel,
                                               final ListSelectorView.Presenter listSelector,
+                                              final double lineHeight,
                                               final String placeHolder) {
         super(uiModel,
               dmnModel,
-              listSelector);
+              listSelector,
+              lineHeight);
         this.placeHolder = placeHolder;
     }
 

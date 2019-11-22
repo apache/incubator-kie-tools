@@ -58,6 +58,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
+import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.getExpressionTextLineHeight;
+
 public abstract class LiteralExpressionPMMLGrid extends LiteralExpressionGrid {
 
     public LiteralExpressionPMMLGrid(final GridCellTuple parent,
@@ -116,6 +118,7 @@ public abstract class LiteralExpressionPMMLGrid extends LiteralExpressionGrid {
         return new LiteralExpressionPMMLUIModelMapper(this::getModel,
                                                       getExpression(),
                                                       listSelector,
+                                                      getExpressionTextLineHeight(getRenderer().getTheme()),
                                                       getPlaceHolder());
     }
 

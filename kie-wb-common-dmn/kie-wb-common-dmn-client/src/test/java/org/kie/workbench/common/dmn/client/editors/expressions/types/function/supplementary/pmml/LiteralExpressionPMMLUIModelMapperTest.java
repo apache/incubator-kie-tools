@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.Lit
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 
 public class LiteralExpressionPMMLUIModelMapperTest extends LiteralExpressionUIModelMapperTest {
 
@@ -32,6 +33,7 @@ public class LiteralExpressionPMMLUIModelMapperTest extends LiteralExpressionUIM
         return new LiteralExpressionPMMLUIModelMapper(() -> uiModel,
                                                       () -> Optional.of(literalExpression),
                                                       listSelector,
+                                                      DEFAULT_HEIGHT,
                                                       "placeholder");
     }
 

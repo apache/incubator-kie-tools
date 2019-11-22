@@ -289,7 +289,6 @@ public class ExpressionEditorViewImplTest {
                      0.0);
 
         verify(gridPanel).addKeyDownHandler(any(BaseGridWidgetKeyboardHandler.class));
-        verify(gridPanel).add(gridLayer);
         verify(gridPanelContainer).clear();
         verify(gridPanelContainer).setWidget(gridPanel);
 

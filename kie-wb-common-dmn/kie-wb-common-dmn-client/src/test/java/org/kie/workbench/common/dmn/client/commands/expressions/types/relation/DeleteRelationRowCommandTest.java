@@ -45,6 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -94,7 +95,8 @@ public class DeleteRelationRowCommandTest {
 
         this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
                                                        () -> Optional.of(relation),
-                                                       listSelector);
+                                                       listSelector,
+                                                       DEFAULT_HEIGHT);
 
         makeCommand(0);
         doReturn(ruleManager).when(handler).getRuleManager();

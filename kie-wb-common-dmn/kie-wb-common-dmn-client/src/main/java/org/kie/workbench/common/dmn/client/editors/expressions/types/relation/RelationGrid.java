@@ -130,7 +130,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     public RelationUIModelMapper makeUiModelMapper() {
         return new RelationUIModelMapper(this::getModel,
                                          getExpression(),
-                                         listSelector);
+                                         listSelector,
+                                         getExpressionTextLineHeight(getRenderer().getTheme()));
     }
 
     @Override
@@ -169,14 +170,10 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         return relationColumn;
     }
 
-    private GridRow makeRelationRow() {
-        return new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()));
-    }
-
     @Override
     public void initialiseUiRows() {
         getExpression().get().ifPresent(e -> {
-            e.getRow().forEach(r -> model.appendRow(makeRelationRow()));
+            e.getRow().forEach(r -> model.appendRow(new LiteralExpressionGridRow()));
         });
     }
 
@@ -303,7 +300,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     void addRow(final int index) {
         getExpression().get().ifPresent(relation -> {
-            final GridRow relationRow = makeRelationRow();
+            final GridRow relationRow = new LiteralExpressionGridRow();
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationRowCommand(relation,
                                                                     new List(),

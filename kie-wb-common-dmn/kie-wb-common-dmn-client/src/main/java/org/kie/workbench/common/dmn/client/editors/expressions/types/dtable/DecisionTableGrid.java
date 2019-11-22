@@ -174,7 +174,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     public DecisionTableUIModelMapper makeUiModelMapper() {
         return new DecisionTableUIModelMapper(this::getModel,
                                               getExpression(),
-                                              listSelector);
+                                              listSelector,
+                                              getExpressionTextLineHeight(getRenderer().getTheme()));
     }
 
     @Override
@@ -246,10 +247,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                  getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
                                                                  this);
         return column;
-    }
-
-    private GridRow makeDecisionTableRow() {
-        return new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()));
     }
 
     private Supplier<List<GridColumn.HeaderMetaData>> outputClauseHeaderMetaData(final OutputClause oc) {
@@ -392,7 +389,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     @Override
     public void initialiseUiRows() {
         getExpression().get().ifPresent(e -> {
-            e.getRule().forEach(r -> model.appendRow(makeDecisionTableRow()));
+            e.getRule().forEach(r -> model.appendRow(new LiteralExpressionGridRow()));
         });
     }
 
@@ -654,7 +651,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     void addDecisionRule(final int index) {
         getExpression().get().ifPresent(dtable -> {
-            final GridRow decisionTableRow = makeDecisionTableRow();
+            final GridRow decisionTableRow = new LiteralExpressionGridRow();
             final DecisionRule decisionRule = DecisionRuleFactory.makeDecisionRule(dtable);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddDecisionRuleCommand(dtable,
@@ -679,7 +676,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     void duplicateDecisionRule(final int index) {
         getExpression().get().ifPresent(dtable -> {
-            final GridRow decisionTableRow = makeDecisionTableRow();
+            final GridRow decisionTableRow = new LiteralExpressionGridRow();
             final DecisionRule decisionRule = DecisionRuleFactory.duplicateDecisionRule(index, dtable);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddDecisionRuleCommand(dtable,

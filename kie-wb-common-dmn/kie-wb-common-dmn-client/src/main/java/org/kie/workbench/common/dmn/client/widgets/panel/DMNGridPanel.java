@@ -34,15 +34,14 @@ public class DMNGridPanel extends GridLienzoPanel {
 
     public static final int LIENZO_PANEL_HEIGHT = 450;
 
-    private DMNGridLayer gridLayer;
     private RestrictedMousePanMediator mousePanMediator;
 
     public DMNGridPanel(final DMNGridLayer gridLayer,
                         final RestrictedMousePanMediator mousePanMediator,
                         final ContextMenuHandler contextMenuHandler) {
         super(LIENZO_PANEL_WIDTH,
-              LIENZO_PANEL_HEIGHT);
-        this.gridLayer = gridLayer;
+              LIENZO_PANEL_HEIGHT,
+              gridLayer);
         this.mousePanMediator = mousePanMediator;
 
         getDomElementContainer().addDomHandler(destroyDOMElements(),
@@ -52,7 +51,7 @@ public class DMNGridPanel extends GridLienzoPanel {
     }
 
     private MouseWheelHandler destroyDOMElements() {
-        return (event) -> gridLayer
+        return (event) -> getDefaultGridLayer()
                 .getGridWidgets()
                 .forEach(gridWidget -> gridWidget
                         .getModel()
@@ -70,10 +69,10 @@ public class DMNGridPanel extends GridLienzoPanel {
             refreshScrollPosition();
 
             final TransformMediator restriction = mousePanMediator.getTransformMediator();
-            final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),
-                                                           gridLayer.getVisibleBounds());
-            gridLayer.getViewport().setTransform(transform);
-            gridLayer.batch();
+            final Transform transform = restriction.adjust(getDefaultGridLayer().getViewport().getTransform(),
+                                                           getDefaultGridLayer().getVisibleBounds());
+            getDefaultGridLayer().getViewport().setTransform(transform);
+            getDefaultGridLayer().batch();
         });
     }
 

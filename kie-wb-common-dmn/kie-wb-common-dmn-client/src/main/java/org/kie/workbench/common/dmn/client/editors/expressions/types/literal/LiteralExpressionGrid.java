@@ -139,7 +139,8 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
     public LiteralExpressionUIModelMapper makeUiModelMapper() {
         return new LiteralExpressionUIModelMapper(this::getModel,
                                                   getExpression(),
-                                                  listSelector);
+                                                  listSelector,
+                                                  getExpressionTextLineHeight(getRenderer().getTheme()));
     }
 
     @Override
@@ -166,7 +167,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
 
     @Override
     public void initialiseUiRows() {
-        getExpression().get().ifPresent(e -> model.appendRow(new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()))));
+        getExpression().get().ifPresent(e -> model.appendRow(new LiteralExpressionGridRow()));
     }
 
     @Override

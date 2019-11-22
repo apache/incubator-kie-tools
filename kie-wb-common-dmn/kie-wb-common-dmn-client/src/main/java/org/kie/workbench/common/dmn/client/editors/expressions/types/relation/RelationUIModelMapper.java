@@ -32,13 +32,16 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
 
     private final ListSelectorView.Presenter listSelector;
+    private final double lineHeight;
 
     public RelationUIModelMapper(final Supplier<GridData> uiModel,
                                  final Supplier<Optional<Relation>> dmnModel,
-                                 final ListSelectorView.Presenter listSelector) {
+                                 final ListSelectorView.Presenter listSelector,
+                                 final double lineHeight) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;
+        this.lineHeight = lineHeight;
     }
 
     @Override
@@ -51,7 +54,8 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           () -> new RelationGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
-                                                                       listSelector));
+                                                                       listSelector,
+                                                                       lineHeight));
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
@@ -69,7 +73,8 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
                                               () -> new RelationGridCell<>(new BaseGridCellValue<>(le.getText().getValue()),
-                                                                           listSelector));
+                                                                           listSelector,
+                                                                           lineHeight));
                     });
             }
         });

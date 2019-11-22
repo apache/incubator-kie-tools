@@ -16,7 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.INativeContext2D;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +46,24 @@ public class DMNGridPanelControlImplTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private DivElement gridLayerDivElement;
+
+    @Mock
+    private Style gridLayerDivElementStyle;
+
+    @Mock
+    private CanvasElement gridLayerCanvasElement;
+
+    @Mock
+    private Node gridLayerNode;
+
+    @Mock
+    private Context2D context2D;
+
+    @Mock
+    private INativeContext2D nativeContext2D;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
@@ -48,12 +72,20 @@ public class DMNGridPanelControlImplTest {
     private DMNGridPanelControlImpl control;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         this.control = new DMNGridPanelControlImpl();
 
         when(session.getGridLayer()).thenReturn(gridLayer);
         when(session.getCellEditorControls()).thenReturn(cellEditorControls);
         when(session.getMousePanMediator()).thenReturn(mousePanMediator);
+
+        when(gridLayer.getElement()).thenReturn(gridLayerDivElement);
+        when(gridLayerDivElement.getStyle()).thenReturn(gridLayerDivElementStyle);
+        when(gridLayer.getCanvasElement()).thenReturn(gridLayerCanvasElement);
+        when(gridLayer.getContext()).thenReturn(context2D);
+        when(gridLayer.asNode()).thenReturn(gridLayerNode);
+        when(context2D.getNativeContext()).thenReturn(nativeContext2D);
     }
 
     @Test

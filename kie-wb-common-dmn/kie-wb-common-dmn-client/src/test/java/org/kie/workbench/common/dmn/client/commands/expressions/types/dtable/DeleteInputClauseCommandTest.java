@@ -46,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -103,7 +104,8 @@ public class DeleteInputClauseCommandTest {
 
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable),
-                                                            listSelector);
+                                                            listSelector,
+                                                            DEFAULT_HEIGHT);
 
         makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 

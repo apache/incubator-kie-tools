@@ -32,13 +32,16 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable> {
 
     private final ListSelectorView.Presenter listSelector;
+    private final double lineHeight;
 
     public DecisionTableUIModelMapper(final Supplier<GridData> uiModel,
                                       final Supplier<Optional<DecisionTable>> dmnModel,
-                                      final ListSelectorView.Presenter listSelector) {
+                                      final ListSelectorView.Presenter listSelector,
+                                      final double lineHeight) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;
+        this.lineHeight = lineHeight;
     }
 
     @Override
@@ -52,7 +55,8 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
-                                                                            listSelector));
+                                                                            listSelector,
+                                                                            lineHeight));
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
@@ -61,20 +65,23 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText().getValue()),
-                                                                            listSelector));
+                                                                            listSelector,
+                                                                            lineHeight));
                     break;
                 case OUTPUT_CLAUSES:
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText().getValue()),
-                                                                            listSelector));
+                                                                            listSelector,
+                                                                            lineHeight));
                     break;
                 case DESCRIPTION:
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getDescription().getValue()),
-                                                                            listSelector));
+                                                                            listSelector,
+                                                                            lineHeight));
                     break;
             }
         });

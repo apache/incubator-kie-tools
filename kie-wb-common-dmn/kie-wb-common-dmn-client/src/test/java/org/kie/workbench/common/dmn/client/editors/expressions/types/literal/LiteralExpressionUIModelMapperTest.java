@@ -31,6 +31,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,7 +65,8 @@ public class LiteralExpressionUIModelMapperTest {
     protected LiteralExpressionUIModelMapper getMapper() {
         return new LiteralExpressionUIModelMapper(() -> uiModel,
                                                   () -> Optional.of(literalExpression),
-                                                  listSelector);
+                                                  listSelector,
+                                                  DEFAULT_HEIGHT);
     }
 
     @Test

@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCellTest;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.HasDynamicHeight;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -27,7 +28,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DecisionTableGridCellTest {
+public class DecisionTableGridCellTest extends BaseHasDynamicHeightCellTest<DecisionTableGridCell> {
 
     @Mock
     private GridCellValue<String> value;
@@ -35,15 +36,25 @@ public class DecisionTableGridCellTest {
     @Mock
     private ListSelectorView.Presenter listSelector;
 
-    private DecisionTableGridCell cell;
+    @Override
+    public DecisionTableGridCell makeCell() {
+        return makeCell(LINE_HEIGHT);
+    }
 
-    @Before
-    public void setup() {
-        this.cell = new DecisionTableGridCell<>(value,
-                                                listSelector);
+    @Override
+    protected DecisionTableGridCell makeCell(final double lineHeight) {
+        return new DecisionTableGridCell<>(value,
+                                           listSelector,
+                                           lineHeight);
     }
 
     @Test
+    public void testIsAHasDynamicHeightSubclass() {
+        assertThat(cell).isInstanceOf(HasDynamicHeight.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testGetEditor() {
         assertThat(cell.getEditor()).isNotEmpty();
         assertThat(cell.getEditor().get()).isSameAs(listSelector);

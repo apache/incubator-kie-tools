@@ -20,6 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.HasRowDragRestrict
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseMoveHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class DelegatingGridWidgetDndMouseMoveHandler extends GridWidgetDnDMouseMoveHandler {
@@ -32,9 +33,11 @@ public class DelegatingGridWidgetDndMouseMoveHandler extends GridWidgetDnDMouseM
 
     @Override
     protected void findMovableRows(final GridWidget view,
+                                   final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                    final double cx,
                                    final double cy) {
         super.findMovableRows(view,
+                              renderingInformation,
                               cx,
                               cy);
         if (view instanceof HasRowDragRestrictions) {

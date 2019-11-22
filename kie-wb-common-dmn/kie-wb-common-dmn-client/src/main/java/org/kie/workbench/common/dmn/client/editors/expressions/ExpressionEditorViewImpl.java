@@ -38,7 +38,6 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -132,10 +131,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
     }
 
-    Optional<BaseExpressionGrid> getExistingEditor() {
-        return expressionContainerGrid.getExistingEditor();
-    }
-
     @Override
     public void init(final ExpressionEditorView.Presenter presenter) {
         this.presenter = presenter;
@@ -157,7 +152,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         final Transform transform = new Transform().scale(VP_SCALE);
         gridPanel.getElement().setId("dmn_container_" + com.google.gwt.dom.client.Document.get().createUniqueId());
         gridPanel.getViewport().setTransform(transform);
-        gridPanel.add(gridLayer);
 
         final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(gridLayer);
         addKeyboardOperation(handler, new KeyboardOperationEditCell(gridLayer));

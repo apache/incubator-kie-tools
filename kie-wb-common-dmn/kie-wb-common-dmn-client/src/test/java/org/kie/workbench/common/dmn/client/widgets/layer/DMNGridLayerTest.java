@@ -148,6 +148,8 @@ public class DMNGridLayerTest {
 
     @Test
     public void testBatchDelegatesToDoBatch() {
+        when(gridLayer.doBatch()).thenCallRealMethod();
+
         gridLayer.batch();
 
         verify(gridLayer).batch(drawCommand.capture());

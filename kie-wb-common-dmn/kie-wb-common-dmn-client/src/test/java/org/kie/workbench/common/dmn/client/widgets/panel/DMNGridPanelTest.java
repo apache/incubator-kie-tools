@@ -16,10 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.INativeContext2D;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,19 +36,39 @@ import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DMNGridPanelTest {
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private DivElement gridLayerDivElement;
+
+    @Mock
+    private Style gridLayerDivElementStyle;
+
+    @Mock
+    private CanvasElement gridLayerCanvasElement;
+
+    @Mock
+    private Node gridLayerNode;
+
+    @Mock
+    private Context2D context2D;
+
+    @Mock
+    private INativeContext2D nativeContext2D;
 
     @Mock
     private RestrictedMousePanMediator mousePanMediator;
@@ -65,7 +91,15 @@ public class DMNGridPanelTest {
     private DMNGridPanel gridPanel;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
+        when(gridLayer.getElement()).thenReturn(gridLayerDivElement);
+        when(gridLayerDivElement.getStyle()).thenReturn(gridLayerDivElementStyle);
+        when(gridLayer.getCanvasElement()).thenReturn(gridLayerCanvasElement);
+        when(gridLayer.getContext()).thenReturn(context2D);
+        when(gridLayer.asNode()).thenReturn(gridLayerNode);
+        when(context2D.getNativeContext()).thenReturn(nativeContext2D);
+
         this.gridPanel = spy(new DMNGridPanel(gridLayer,
                                               mousePanMediator,
                                               contextMenuHandler));
@@ -77,11 +111,15 @@ public class DMNGridPanelTest {
         doNothing().when(gridPanel).updatePanelSize();
         doNothing().when(gridPanel).refreshScrollPosition();
 
-        doReturn(viewport).when(gridLayer).getViewport();
-        doReturn(transform).when(viewport).getTransform();
-        doReturn(transformMediator).when(mousePanMediator).getTransformMediator();
-        doReturn(newTransform).when(transformMediator).adjust(eq(transform),
-                                                              any(Bounds.class));
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
+        when(mousePanMediator.getTransformMediator()).thenReturn(transformMediator);
+        when(transformMediator.adjust(eq(transform), any(Bounds.class))).thenReturn(newTransform);
+    }
+
+    @Test
+    public void testDefaultGridLayer() {
+        assertThat(gridPanel.getDefaultGridLayer()).isEqualTo(gridLayer);
     }
 
     @Test
@@ -91,6 +129,7 @@ public class DMNGridPanelTest {
         verify(gridPanel).updatePanelSize();
         verify(gridPanel).refreshScrollPosition();
         verify(viewport).setTransform(eq(newTransform));
-        verify(gridLayer).batch();
+        //GridLayer.batch() is called once during DMNGridPanel construction and once during resize.
+        verify(gridLayer, times(2)).batch();
     }
 }

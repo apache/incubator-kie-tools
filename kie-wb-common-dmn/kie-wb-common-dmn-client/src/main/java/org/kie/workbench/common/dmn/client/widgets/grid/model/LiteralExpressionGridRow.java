@@ -15,46 +15,25 @@
  */
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 
 public class LiteralExpressionGridRow extends BaseGridRow {
 
-    public static final double DEFAULT_HEIGHT = 48.0;
-
-    private final double lineHeight;
-
-    public LiteralExpressionGridRow(final double lineHeight) {
+    public LiteralExpressionGridRow() {
         super(DEFAULT_HEIGHT);
-        this.lineHeight = lineHeight;
     }
 
     @Override
     public double getHeight() {
-        final double defaultHeight = super.getHeight();
-        final double requiredHeight = getExpressionTextHeight();
-        return Math.max(defaultHeight, requiredHeight);
-    }
-
-    private double getExpressionTextHeight() {
-        final int maxExpressionLineCount = getMaxExpressionLineCount();
-        return maxExpressionLineCount * lineHeight + (RendererUtils.EXPRESSION_TEXT_PADDING * 3);
-    }
-
-    private int getMaxExpressionLineCount() {
-        return this.getCells()
-                .values()
-                .stream()
-                .filter(cell -> cell != null && cell.getValue() != null)
-                .map(GridCell::getValue)
-                .filter(value -> value instanceof BaseGridCellValue)
-                .map(value -> (BaseGridCellValue) value)
-                .filter(value -> value.getValue() != null)
-                .map(value -> value.getValue().toString())
-                .map(value -> value.split("\\r?\\n", -1).length)
-                .reduce(Integer::max)
-                .orElse(0);
+        double height = DEFAULT_HEIGHT;
+        for (GridCell<?> cell : this.getCells().values()) {
+            if (cell instanceof HasDynamicHeight) {
+                height = Math.max(((HasDynamicHeight) cell).getHeight(), height);
+            }
+        }
+        return height;
     }
 }

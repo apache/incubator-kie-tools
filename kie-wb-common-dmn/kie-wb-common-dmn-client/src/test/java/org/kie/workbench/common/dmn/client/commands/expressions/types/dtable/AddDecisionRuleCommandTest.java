@@ -49,6 +49,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -101,7 +102,8 @@ public class AddDecisionRuleCommandTest {
         this.uiModelRow = new BaseGridRow();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable),
-                                                            listSelector);
+                                                            listSelector,
+                                                            DEFAULT_HEIGHT);
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumn).getIndex();

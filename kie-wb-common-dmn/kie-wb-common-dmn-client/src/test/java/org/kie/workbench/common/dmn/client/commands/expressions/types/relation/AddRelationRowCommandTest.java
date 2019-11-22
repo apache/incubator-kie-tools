@@ -46,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -96,7 +97,8 @@ public class AddRelationRowCommandTest {
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
                                                        () -> Optional.of(relation),
-                                                       listSelector);
+                                                       listSelector,
+                                                       DEFAULT_HEIGHT);
 
         makeCommand(0);
 

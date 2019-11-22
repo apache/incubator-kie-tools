@@ -29,13 +29,16 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExpression> {
 
     private final ListSelectorView.Presenter listSelector;
+    private final double lineHeight;
 
     public LiteralExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                           final Supplier<Optional<LiteralExpression>> dmnModel,
-                                          final ListSelectorView.Presenter listSelector) {
+                                          final ListSelectorView.Presenter listSelector,
+                                          final double lineHeight) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;
+        this.lineHeight = lineHeight;
     }
 
     @Override
@@ -45,7 +48,8 @@ public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExp
             uiModel.get().setCell(rowIndex,
                                   columnIndex,
                                   () -> new LiteralExpressionCell<>(new BaseGridCellValue<>(literalExpression.getText().getValue()),
-                                                                    listSelector));
+                                                                    listSelector,
+                                                                    lineHeight));
         });
     }
 

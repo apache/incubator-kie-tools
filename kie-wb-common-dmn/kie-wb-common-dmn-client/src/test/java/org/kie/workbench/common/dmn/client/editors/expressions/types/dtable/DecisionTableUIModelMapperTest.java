@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
@@ -40,6 +38,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,8 +62,6 @@ public class DecisionTableUIModelMapperTest {
     private BaseGridData uiModel;
 
     private DecisionTable dtable;
-
-    private Supplier<Optional<GridCellValue<?>>> cellValueSupplier;
 
     private DecisionTableUIModelMapper mapper;
 
@@ -111,8 +108,8 @@ public class DecisionTableUIModelMapperTest {
 
         this.mapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                      () -> Optional.of(dtable),
-                                                     listSelector);
-        this.cellValueSupplier = Optional::empty;
+                                                     listSelector,
+                                                     DEFAULT_HEIGHT);
     }
 
     @Test

@@ -40,6 +40,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -99,7 +100,8 @@ public class RelationUIModelMapperTest {
 
         this.mapper = new RelationUIModelMapper(() -> uiModel,
                                                 () -> Optional.of(relation),
-                                                listSelector);
+                                                listSelector,
+                                                DEFAULT_HEIGHT);
         this.cellValueSupplier = Optional::empty;
     }
 

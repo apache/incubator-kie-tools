@@ -19,16 +19,17 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
-public class RelationGridCell<T> extends DMNGridCell<T> {
+public class RelationGridCell<T> extends BaseHasDynamicHeightCell<T> {
 
     private final ListSelectorView.Presenter listSelector;
 
     public RelationGridCell(final GridCellValue<T> value,
-                            final ListSelectorView.Presenter listSelector) {
-        super(value);
+                            final ListSelectorView.Presenter listSelector,
+                            final double lineHeight) {
+        super(value, lineHeight);
         this.listSelector = listSelector;
     }
 
