@@ -27,7 +27,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
   receive_resourceContentRequest(uri: string): void;
-  receive_resourceListRequest(pattern: string): void;
+  receive_resourceListRequest(globPattern: string): void;
   receive_ready(): void;
 }
 

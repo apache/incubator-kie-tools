@@ -64,6 +64,7 @@ export class ResourceContentEditorCoordinator {
         return new Promise((success, failure) => {
           const previousCallback = pendingResourceListRequests.get(pattern);
           pendingResourceListRequests.set(pattern, (value: string[]) => {
+            value.sort();
             if (previousCallback) {
               previousCallback(value);
             }

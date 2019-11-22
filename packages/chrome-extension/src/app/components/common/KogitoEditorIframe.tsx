@@ -21,7 +21,7 @@ import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-enve
 import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
-import { ChromeResourceContentService } from "./ChromeResourceContentService";
+import { resourceContentServiceFactory } from "./ChromeResourceContentService";
 import { useGitHubApi } from "../common/GitHubContext";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
@@ -37,8 +37,8 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   props,
   forwardedRef
 ) => {
-  const githubAPI = useGitHubApi();
-  const resourceContentService = new ChromeResourceContentService(githubAPI.octokit());
+  const githubApi = useGitHubApi();
+  const resourceContentService = resourceContentServiceFactory.create(githubApi.octokit());
   const ref = useRef<HTMLIFrameElement>(null);
   const { router, editorIndexPath, logger } = useGlobals();
   const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
@@ -89,7 +89,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           }
         },
         receive_resourceContentRequest(uri: string) {
-          console.log(`Trying to read content from ${uri}`);
+          console.debug(`Trying to read content from ${uri}`);
           resourceContentService.read(uri).then(r => {
             self.respond_resourceContent(r!);
           });

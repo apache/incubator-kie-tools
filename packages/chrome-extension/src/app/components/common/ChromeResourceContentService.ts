@@ -44,7 +44,7 @@ class RepoInfo {
   public gitref: string;
 }
 
-export class ChromeResourceContentService implements ResourceContentService {
+class ChromeResourceContentService implements ResourceContentService {
 
   private octokit: Octokit;
 
@@ -105,3 +105,13 @@ export class ChromeResourceContentService implements ResourceContentService {
   }
 
 }
+
+const resourceContentServiceFactory = {
+  create: (octokit : Octokit) => {
+
+    return new ChromeResourceContentService(octokit);
+  
+  }
+}
+
+export { resourceContentServiceFactory };
