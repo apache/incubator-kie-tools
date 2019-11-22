@@ -36,6 +36,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
+import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -73,7 +74,8 @@ public class MigrationRepositoryServiceImpl extends RepositoryServiceImpl {
                                           final User user,
                                           final SpacesAPI spacesAPI,
                                           final SpaceConfigStorageRegistry spaceConfigStorage,
-                                          final Event<RepositoryContributorsUpdatedEvent> projectContributorsUpdatedEvent) {
+                                          final Event<RepositoryContributorsUpdatedEvent> projectContributorsUpdatedEvent,
+                                          final PasswordService secureService) {
         super(ioService,
               metadataStore,
               configurationService,
@@ -88,7 +90,8 @@ public class MigrationRepositoryServiceImpl extends RepositoryServiceImpl {
               user,
               spacesAPI,
               spaceConfigStorage,
-              projectContributorsUpdatedEvent);
+              projectContributorsUpdatedEvent,
+              secureService);
         this.ioService = ioService;
         this.spaceConfigStorage = spaceConfigStorage;
     }
