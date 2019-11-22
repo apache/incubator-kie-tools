@@ -46,11 +46,11 @@ import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
 import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 import org.uberfire.spaces.SpacesAPI;
 
+import static org.guvnor.structure.repositories.EnvironmentParameters.SECURE_PREFIX;
 import static org.uberfire.backend.server.util.Paths.convert;
 
 public class GitRepositoryBuilder {
 
-    private static final String SECURE_PREFIX = "secure:";
     public static final String PROTOCOL_SEPARATOR = "://";
     private final IOService ioService;
     private final PasswordService secureService;
@@ -132,7 +132,7 @@ public class GitRepositoryBuilder {
         for (final Map.Entry<String, Object> item : items.entrySet()) {
             String key = item.getKey();
             if (key.startsWith(SECURE_PREFIX)) {
-                repo.addEnvironmentParameter(key.substring(key.indexOf(SECURE_PREFIX)),
+                repo.addEnvironmentParameter(key.substring(SECURE_PREFIX.length()),
                                              secureService.decrypt(item.getValue().toString()));
             } else {
                 repo.addEnvironmentParameter(key,

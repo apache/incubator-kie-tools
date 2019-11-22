@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import org.assertj.core.api.Assertions;
 import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.contributors.Contributor;
@@ -23,6 +24,9 @@ import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.GitMetadataStore;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
+import org.guvnor.structure.server.config.PasswordService;
+import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +36,11 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -60,6 +67,15 @@ public class RepositoryServiceImplTest {
 
     @Mock
     private OrganizationalUnitService organizationalUnitService;
+
+    @Mock
+    private SpacesAPI spacesAPI;
+
+    @Mock
+    private PasswordService passwordService;
+
+    @Mock
+    private RepositoryFactory repositoryFactory;
 
     @InjectMocks
     @Spy
@@ -186,5 +202,48 @@ public class RepositoryServiceImplTest {
 
         inOrder.verify(this.organizationalUnitService).removeRepository(any(), any());
         inOrder.verify(notification).accept(repository);
+    }
+
+    @Test
+    public void testCreateRepositoryConfiguration() {
+
+        final String space = "space";
+        final String scheme = "git";
+        final String repoName = "test";
+        final String userName = "user";
+        final String password = "pass";
+
+        OrganizationalUnit orgUnit = mock(OrganizationalUnit.class);
+        when(orgUnit.getName()).thenReturn(space);
+
+        final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
+        when(registry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+
+        when(spacesAPI.getSpace(anyString())).thenAnswer((Answer<Space>) invocationOnMock -> new Space(invocationOnMock.getArguments()[0].toString()));
+        when(passwordService.encrypt(anyString())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0].toString());
+
+        RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+        configurations.setUserName(userName);
+        configurations.setPassword(password);
+        configurations.setOrigin("https://github.com/kiegroup/appformer.git");
+
+        repositoryService.createRepository(orgUnit, scheme, repoName, configurations, Collections.emptyList());
+
+        verify(passwordService, times(1)).encrypt(eq(password));
+
+        ArgumentCaptor<RepositoryInfo> captor = ArgumentCaptor.forClass(RepositoryInfo.class);
+        verify(repositoryFactory).newRepository(captor.capture());
+
+        RepositoryInfo info = captor.getValue();
+
+        Assertions.assertThat(info)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", repoName)
+                .hasFieldOrPropertyWithValue("deleted", false);
+
+        assertEquals(scheme, info.getScheme());
+        assertEquals(space, info.getSpace());
+        assertEquals(userName, info.getConfiguration().get(String.class, "username"));
+        assertEquals(password, info.getConfiguration().get(String.class, "secure:password"));
     }
 }

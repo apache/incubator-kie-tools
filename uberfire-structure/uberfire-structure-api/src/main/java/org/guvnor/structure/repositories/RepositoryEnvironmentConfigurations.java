@@ -28,7 +28,7 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.INIT;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MANAGED;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
 import static org.guvnor.structure.repositories.EnvironmentParameters.ORIGIN;
-import static org.guvnor.structure.repositories.EnvironmentParameters.PASSWORD;
+import static org.guvnor.structure.repositories.EnvironmentParameters.CRYPT_PASSWORD;
 import static org.guvnor.structure.repositories.EnvironmentParameters.SPACE;
 import static org.guvnor.structure.repositories.EnvironmentParameters.SUBDIRECTORY;
 import static org.guvnor.structure.repositories.EnvironmentParameters.USER_NAME;
@@ -79,7 +79,7 @@ public class RepositoryEnvironmentConfigurations {
     }
 
     public void setPassword(final String password) {
-        configurationMap.put(PASSWORD,
+        configurationMap.put(CRYPT_PASSWORD,
                              password);
     }
 
@@ -97,7 +97,7 @@ public class RepositoryEnvironmentConfigurations {
     }
 
     public Object getPassword() {
-        return configurationMap.get(PASSWORD);
+        return configurationMap.get(CRYPT_PASSWORD);
     }
 
     public Object getOrigin() {

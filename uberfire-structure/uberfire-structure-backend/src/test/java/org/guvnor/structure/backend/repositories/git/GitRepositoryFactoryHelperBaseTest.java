@@ -29,7 +29,7 @@ import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
-import org.junit.Ignore;
+import org.guvnor.structure.server.config.PasswordService;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -75,12 +75,17 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
     @Mock
     protected BranchAccessAuthorizer branchAccessAuthorizer;
 
+    @Mock
+    private PasswordService passwordService;
+
     protected GitRepositoryFactoryHelper helper;
 
     protected ArrayList<Path> rootDirectories;
     protected SpacesAPI spacesAPI;
 
     public void init() {
+
+        when(passwordService.decrypt(anyString())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0].toString());
 
         spacesAPI = new SpacesAPIImpl();
 
@@ -89,7 +94,8 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
                                                 spacesAPI,
                                                 repositoryExternalUpdate,
                                                 postCommitNotificationService,
-                                                branchAccessAuthorizer);
+                                                branchAccessAuthorizer,
+                                                passwordService);
 
         if (Mode.INDEXED.equals(mode)) {
             initServices(indexed,
@@ -149,6 +155,8 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
         when(service.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
         helper.newRepository(repositoryInfo);
+
+        verify(passwordService).decrypt(anyString());
 
         verify(service,
                times(1)).delete(any(Path.class));
@@ -237,14 +245,10 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
 
     protected RepositoryConfiguration getConfig() {
         RepositoryConfiguration repositoryConfiguration = new RepositoryConfiguration();
-        {
-            repositoryConfiguration.add(EnvironmentParameters.SCHEME,
-                                        "git");
-        }
-        {
-            repositoryConfiguration.add(EnvironmentParameters.SPACE,
-                                        "space");
-        }
+        repositoryConfiguration.add(EnvironmentParameters.USER_NAME, "user");
+        repositoryConfiguration.add(EnvironmentParameters.SECURE_PREFIX + EnvironmentParameters.PASSWORD, "pass");
+        repositoryConfiguration.add(EnvironmentParameters.SCHEME, "git");
+        repositoryConfiguration.add(EnvironmentParameters.SPACE, "space");
 
         return repositoryConfiguration;
     }

@@ -15,12 +15,9 @@
 
 package org.guvnor.structure.repositories;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Magic Strings for common environment parameter names
  */
-@Portable
 public class EnvironmentParameters {
 
     public static final String SCHEME = "scheme";
@@ -37,7 +34,13 @@ public class EnvironmentParameters {
 
     public static final String USER_NAME = "username";
 
-    public static final String PASSWORD = "crypt:password";
+    public static final String PASSWORD = "password";
+
+    public static final String SECURE_PREFIX = "secure:";
+
+    public static final String CRYPT_PREFIX = "crypt:";
+
+    public static final String CRYPT_PASSWORD = CRYPT_PREFIX + PASSWORD;
 
     public static final String INIT = "init";
 

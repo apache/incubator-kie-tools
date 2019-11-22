@@ -16,9 +16,6 @@
 
 package org.guvnor.structure.backend.repositories.git;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.junit.Before;
@@ -37,14 +34,7 @@ public class GitRepositoryFactoryHelperNoIndexTest extends GitRepositoryFactoryH
 
     protected RepositoryConfiguration getConfig() {
         RepositoryConfiguration repositoryConfiguration = super.getConfig();
-        {
-
-            Map<String, Object> config = new HashMap<>();
-            config.put(EnvironmentParameters.AVOID_INDEX,
-                       true);
-            repositoryConfiguration.add(EnvironmentParameters.AVOID_INDEX,
-                                        true);
-        }
+        repositoryConfiguration.add(EnvironmentParameters.AVOID_INDEX, true);
 
         return repositoryConfiguration;
     }
