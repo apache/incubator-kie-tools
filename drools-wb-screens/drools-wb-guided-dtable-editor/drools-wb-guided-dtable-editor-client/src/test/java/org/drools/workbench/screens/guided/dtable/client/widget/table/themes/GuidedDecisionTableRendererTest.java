@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.themes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,10 +46,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingBlockInformation;
 import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 
@@ -95,19 +94,14 @@ public class GuidedDecisionTableRendererTest {
         this.renderer = spy(new GuidedDecisionTableRenderer(uiModel,
                                                             new GuidedDecisionTable52()));
 
-        doReturn(new ArrayList<Double>() {{
-            add(20.0);
-        }}).when(renderingInformation).getVisibleRowOffsets();
-        doReturn(new ArrayList<GridColumn<?>>() {{
-            add(uiColumn);
-        }}).when(context).getBlockColumns();
-        doReturn(bodyBlockInformation).when(renderingInformation).getBodyBlockInformation();
-        doReturn(new ArrayList<GridColumn<?>>() {{
-            add(uiColumn);
-        }}).when(bodyBlockInformation).getColumns();
-        doReturn(floatingBlockInformation).when(renderingInformation).getFloatingBlockInformation();
-        doReturn(Collections.emptyList()).when(floatingBlockInformation).getColumns();
-        doReturn(renderer).when(context).getRenderer();
+        when(renderingInformation.getVisibleRowOffsets()).thenReturn(Collections.singletonList(20.0));
+        when(renderingInformation.getAllRowHeights()).thenReturn(Collections.singletonList(20.0));
+        when(context.getBlockColumns()).thenReturn(Collections.singletonList(uiColumn));
+        when(renderingInformation.getBodyBlockInformation()).thenReturn(bodyBlockInformation);
+        when(bodyBlockInformation.getColumns()).thenReturn(Collections.singletonList(uiColumn));
+        when(renderingInformation.getFloatingBlockInformation()).thenReturn(floatingBlockInformation);
+        when(floatingBlockInformation.getColumns()).thenReturn(Collections.emptyList());
+        when(context.getRenderer()).thenReturn(renderer);
     }
 
     @Test

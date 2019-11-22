@@ -182,6 +182,7 @@ public class GuidedDecisionTableViewImplTest {
                                                                0,
                                                                1,
                                                                Collections.singletonList(0.0),
+                                                               Collections.singletonList(0.0),
                                                                false,
                                                                false,
                                                                1,
