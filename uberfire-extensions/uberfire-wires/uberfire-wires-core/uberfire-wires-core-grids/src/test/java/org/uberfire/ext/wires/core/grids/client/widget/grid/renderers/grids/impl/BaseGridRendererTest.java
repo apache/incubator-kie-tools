@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,6 +75,9 @@ public abstract class BaseGridRendererTest {
 
     @Mock
     protected BaseGridRendererHelper rendererHelper;
+
+    @Mock
+    protected RenderingInformation renderingInformation;
 
     @Mock
     protected Group parent;
@@ -147,9 +151,11 @@ public abstract class BaseGridRendererTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testMakeCellHighlight() {
         final int rowIndex = 1;
         final int visibleRowIndex = 2;
+        final List<Double> allRowHeights = new ArrayList<>();
         final GridData model = mock(GridData.class);
         final GridRendererTheme theme = mock(GridRendererTheme.class);
         final Rectangle rectangle = mock(Rectangle.class);
@@ -159,12 +165,13 @@ public abstract class BaseGridRendererTest {
 
         doNothing().when(renderer).setCellHighlightX(rectangle, context, rendererHelper);
         doNothing().when(renderer).setCellHighlightY(rectangle, rendererHelper, visibleRowIndex, model);
-        doNothing().when(renderer).setCellHighlightSize(rectangle, model, column, rowIndex);
+        doNothing().when(renderer).setCellHighlightSize(rectangle, model, column, allRowHeights, rowIndex);
 
         final Rectangle current = renderer.makeCellHighlight(rowIndex,
                                                              visibleRowIndex,
                                                              model,
                                                              rendererHelper,
+                                                             renderingInformation,
                                                              column,
                                                              context);
 
@@ -252,11 +259,10 @@ public abstract class BaseGridRendererTest {
         final GridRow row = mock(GridRow.class);
         final double height = 20;
         when(column.getWidth()).thenReturn(width);
-        when(row.getHeight()).thenReturn(height);
         when(model.getRow(rowIndex)).thenReturn(row);
         doReturn(1).when(renderer).getMergedCellsCount(model, rowIndex);
 
-        renderer.setCellHighlightSize(rectangle, model, column, rowIndex);
+        renderer.setCellHighlightSize(rectangle, model, column, Collections.nCopies(5, height), rowIndex);
 
         verify(rectangle).setWidth(width);
         verify(rectangle).setHeight(height);
@@ -318,12 +324,14 @@ public abstract class BaseGridRendererTest {
                                                              visibleRowIndex,
                                                              dataModel,
                                                              rendererHelper,
+                                                             renderingInformation,
                                                              column,
                                                              context);
 
         final GridRenderer.RendererCommand cmd = renderer.getRendererCommand(dataModel,
                                                                              context,
                                                                              rendererHelper,
+                                                                             renderingInformation,
                                                                              column,
                                                                              visibleRowIndex);
 

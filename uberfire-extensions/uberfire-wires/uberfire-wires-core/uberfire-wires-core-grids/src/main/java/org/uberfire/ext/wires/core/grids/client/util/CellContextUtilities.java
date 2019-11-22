@@ -50,7 +50,7 @@ public class CellContextUtilities {
         final double clipMinY = getClipMinY(gridWidget);
 
         final double blockCellWidth = column.getWidth();
-        final double blockCellHeight = gridRow.getHeight();
+        final double blockCellHeight = ri.getAllRowHeights().get(uiRowIndex);
 
         return new GridBodyCellEditContext(cellX,
                                            cellY,

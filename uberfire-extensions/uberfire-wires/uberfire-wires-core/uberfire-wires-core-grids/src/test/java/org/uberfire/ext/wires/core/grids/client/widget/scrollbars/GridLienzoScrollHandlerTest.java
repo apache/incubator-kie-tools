@@ -33,6 +33,7 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -484,16 +485,32 @@ public class GridLienzoScrollHandlerTest {
     }
 
     @Test
+    public void testEmptyLayerReuse() {
+        Assertions.assertThat(gridLienzoScrollHandler.emptyLayer()).isEqualTo(gridLienzoScrollHandler.emptyLayer());
+    }
+
+    @Test
+    public void testScrollBarsReuse() {
+        Assertions.assertThat(gridLienzoScrollHandler.scrollBars()).isEqualTo(gridLienzoScrollHandler.scrollBars());
+    }
+
+    @Test
+    public void testScrollPositionReuse() {
+        Assertions.assertThat(gridLienzoScrollHandler.scrollPosition()).isEqualTo(gridLienzoScrollHandler.scrollPosition());
+    }
+
+    @Test
+    public void testScrollBoundsReuse() {
+        Assertions.assertThat(gridLienzoScrollHandler.scrollBounds()).isEqualTo(gridLienzoScrollHandler.scrollBounds());
+    }
+
+    @Test
     public void testGetDefaultGridLayerWhenLienzoGridLayerIsNotNull() {
-
-        final DefaultGridLayer expectedLayer = mock(DefaultGridLayer.class);
-
-        doReturn(expectedLayer).when(gridLienzoPanel).getDefaultGridLayer();
-        doCallRealMethod().when(gridLienzoScrollHandler).getDefaultGridLayer();
-
         final DefaultGridLayer actualLayer = gridLienzoScrollHandler.getDefaultGridLayer();
 
-        assertEquals(expectedLayer,
+        verify(gridLienzoScrollHandler, never()).emptyLayer();
+
+        assertEquals(defaultGridLayer,
                      actualLayer);
     }
 

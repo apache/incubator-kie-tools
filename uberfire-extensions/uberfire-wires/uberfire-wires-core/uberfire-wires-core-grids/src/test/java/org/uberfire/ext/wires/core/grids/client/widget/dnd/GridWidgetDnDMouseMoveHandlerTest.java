@@ -19,7 +19,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
@@ -168,6 +167,11 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                                                                                                2,
                                                                                                                new ArrayList<Double>() {{
                                                                                                                    add(20.0);
+                                                                                                                   add(20.0);
+                                                                                                                   add(20.0);
+                                                                                                               }},
+                                                                                                               new ArrayList<Double>() {{
+                                                                                                                   add(20.0);
                                                                                                                    add(40.0);
                                                                                                                    add(60.0);
                                                                                                                }},
@@ -201,16 +205,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                never()).findMovableColumns(any(GridWidget.class),
+                                           any(BaseGridRendererHelper.RenderingInformation.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class));
         verify(handler,
                never()).findMovableRows(any(GridWidget.class),
+                                        any(BaseGridRendererHelper.RenderingInformation.class),
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
                never()).findResizableColumn(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class));
     }
 
@@ -218,9 +225,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findGridColumnWithInvisibleGridWidgets() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(false);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         handler.onNodeMouseMove(event);
 
@@ -229,16 +234,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                never()).findMovableColumns(any(GridWidget.class),
+                                           any(BaseGridRendererHelper.RenderingInformation.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class));
         verify(handler,
                never()).findMovableRows(any(GridWidget.class),
+                                        any(BaseGridRendererHelper.RenderingInformation.class),
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
                never()).findResizableColumn(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class));
     }
 
@@ -246,9 +254,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findMovableGridWhenNoColumnOrRowOperationIsDetected() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
         when(event.getX()).thenReturn(100);
@@ -261,16 +267,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                times(1)).findMovableColumns(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class),
                                             any(Double.class),
                                             any(Double.class),
                                             any(Double.class));
         verify(handler,
                never()).findMovableRows(any(GridWidget.class),
+                                        any(BaseGridRendererHelper.RenderingInformation.class),
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
                never()).findResizableColumn(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class));
 
         verify(state,
@@ -283,9 +292,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findMovableGridWhenNoColumnOrRowOperationIsDetectedAndGridIsPinned() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
         when(layer.isGridPinned()).thenReturn(true);
 
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
@@ -336,9 +343,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         when(gridWidget.isVisible()).thenReturn(true);
         when(gridWidget.onDragHandle(any(INodeXYEvent.class))).thenReturn(true);
         when(layer.isGridPinned()).thenReturn(isPinned);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
         when(event.getX()).thenReturn(100);
@@ -356,9 +361,8 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findMovableColumns() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
         //This location is in the GridWidget's header; within a column move hot-spot, but not within a column resize or row move hot-spot
         when(event.getX()).thenReturn(160);
         when(event.getY()).thenReturn(100);
@@ -370,16 +374,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                times(1)).findMovableColumns(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class),
                                             any(Double.class),
                                             any(Double.class),
                                             any(Double.class));
         verify(handler,
                never()).findMovableRows(any(GridWidget.class),
+                                        any(BaseGridRendererHelper.RenderingInformation.class),
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
                never()).findResizableColumn(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
                                             any(Double.class));
 
         verify(state,
@@ -400,9 +407,8 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findResizableColumns() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
         //This location is in the GridWidget's body; within a column resize hot-spot, but not within a column move or row move hot-spot
         when(event.getX()).thenReturn(246);
         when(event.getY()).thenReturn(180);
@@ -414,16 +420,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                never()).findMovableColumns(any(GridWidget.class),
+                                           any(BaseGridRendererHelper.RenderingInformation.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class));
         verify(handler,
                times(1)).findMovableRows(any(GridWidget.class),
+                                         any(BaseGridRendererHelper.RenderingInformation.class),
                                          any(Double.class),
                                          any(Double.class));
         verify(handler,
                times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(BaseGridRendererHelper.RenderingInformation.class),
                                              any(Double.class));
 
         verify(state,
@@ -444,12 +453,13 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     public void findMovableRows() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
-        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
-            add(gridWidget);
-        }});
-        //This location is in the GridWidget's body; within row 0's move hot-spot, but not within a column move or resize hot-spot
-        when(event.getX()).thenReturn(125);
-        when(event.getY()).thenReturn(180);
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
+        //This location is in the GridWidget's body; within row 1's move hot-spot, but not within a column move or resize hot-spot
+        final int eventX = (int) (gridWidget.getComputedLocation().getX() + uiColumn1.getWidth() / 2);
+        final int eventY = (int) (gridWidget.getComputedLocation().getY() + renderer.getHeaderHeight() + uiModel.getRow(0).getHeight() + uiModel.getRow(1).getHeight() / 2);
+        when(event.getX()).thenReturn(eventX);
+        when(event.getY()).thenReturn(eventY);
 
         handler.onNodeMouseMove(event);
 
@@ -458,16 +468,19 @@ public class GridWidgetDnDMouseMoveHandlerTest {
 
         verify(handler,
                never()).findMovableColumns(any(GridWidget.class),
+                                           any(BaseGridRendererHelper.RenderingInformation.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class),
                                            any(Double.class));
         verify(handler,
                times(1)).findMovableRows(any(GridWidget.class),
+                                         any(BaseGridRendererHelper.RenderingInformation.class),
                                          any(Double.class),
                                          any(Double.class));
         verify(handler,
                times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(BaseGridRendererHelper.RenderingInformation.class),
                                              any(Double.class));
 
         verify(state,
@@ -481,7 +494,41 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         assertNotNull(uiRows);
         assertEquals(1,
                      uiRows.size());
-        assertTrue(uiRows.contains(uiModel.getRow(0)));
+        assertTrue(uiRows.contains(uiModel.getRow(1)));
+    }
+
+    @Test
+    public void handleRowMove() {
+        final List<GridRow> existingRowOrder = new ArrayList<>(uiModel.getRows());
+        final GridWidgetDnDProxy highlight = mock(GridWidgetDnDProxy.class);
+        when(state.getEventColumnHighlight()).thenReturn(highlight);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
+        //This location is in the GridWidget's body; within row 0's move hot-spot, but not within a column move or resize hot-spot
+        final int eventX = (int) (gridWidget.getComputedLocation().getX() + uiColumn1.getWidth() / 2);
+        final int eventY = (int) (gridWidget.getComputedLocation().getY() + renderer.getHeaderHeight() + uiModel.getRow(0).getHeight() / 2);
+        when(event.getX()).thenReturn(eventX);
+        when(event.getY()).thenReturn(eventY);
+
+        //Mouse is moved over row and viable rows recorded
+        handler.onNodeMouseMove(event);
+
+        //Emulate row drag starting on a MouseDownEvent (see GridWidgetDnDMouseDownHandler)
+        //This location is in the GridWidget's body; within row 1's move hot-spot
+        final int eventNewY = (int) (gridWidget.getComputedLocation().getY() + renderer.getHeaderHeight() + uiModel.getRow(0).getHeight() + uiModel.getRow(1).getHeight() / 2);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.ROW_MOVE);
+        when(event.getY()).thenReturn(eventNewY);
+
+        handler.onNodeMouseMove(event);
+
+        verify(highlight).setY(gridWidget.getComputedLocation().getY() + renderer.getHeaderHeight());
+        verify(layer).batch();
+
+        assertEquals(existingRowOrder.get(0), uiModel.getRow(1));
+        assertEquals(existingRowOrder.get(1), uiModel.getRow(0));
+        assertEquals(existingRowOrder.get(2), uiModel.getRow(2));
     }
 
     @Test

@@ -465,7 +465,8 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                                                                                            uiColumnIndex,
                                                                                                            rendererHelper);
         final double cellHeight = getCellHeight(uiRowIndex,
-                                                uiColumnIndex);
+                                                uiColumnIndex,
+                                                renderingInformation);
 
         final Group header = gridWidget.getHeader();
         final double clipMinX = gridWidgetComputedLocation.getX() + floatingX + floatingWidth;
@@ -514,38 +515,43 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     }
 
     private double getCellHeight(final int uiRowIndex,
-                                 final int uiColumnIndex) {
-        final GridCell<?> cell = gridModel.getCell(uiRowIndex,
-                                                   uiColumnIndex);
+                                 final int uiColumnIndex,
+                                 final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
+        final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
         if (cell == null) {
-            return gridModel.getRow(uiRowIndex).getHeight();
+            return allRowHeights.get(uiRowIndex);
         }
         if (cell.getMergedCellCount() == 1) {
-            return gridModel.getRow(uiRowIndex).getHeight();
+            return allRowHeights.get(uiRowIndex);
         } else if (cell.getMergedCellCount() > 1) {
             return getMergedCellHeight(uiRowIndex,
-                                       uiColumnIndex);
+                                       uiColumnIndex,
+                                       renderingInformation);
         } else {
             return getClippedMergedCellHeight(uiRowIndex,
-                                              uiColumnIndex);
+                                              uiColumnIndex,
+                                              renderingInformation);
         }
     }
 
     private double getMergedCellHeight(final int uiRowIndex,
-                                       final int uiColumnIndex) {
+                                       final int uiColumnIndex,
+                                       final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         double height = 0;
-        final GridCell<?> cell = gridModel.getCell(uiRowIndex,
-                                                   uiColumnIndex);
+        final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
+        final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
         for (int i = uiRowIndex; i < uiRowIndex + cell.getMergedCellCount(); i++) {
-            height = height + gridModel.getRow(i).getHeight();
+            height = height + allRowHeights.get(i);
         }
         return height;
     }
 
     private double getClippedMergedCellHeight(final int uiRowIndex,
-                                              final int uiColumnIndex) {
-        final GridCell<?> cell = gridModel.getCell(uiRowIndex,
-                                                   uiColumnIndex);
+                                              final int uiColumnIndex,
+                                              final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
+        final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
         GridCell<?> _cell = cell;
         int _uiRowIndex = uiRowIndex;
         while (_cell.getMergedCellCount() == 0) {
@@ -555,7 +561,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         }
         double height = 0;
         for (int i = _uiRowIndex; i < _uiRowIndex + _cell.getMergedCellCount(); i++) {
-            height = height + gridModel.getRow(i).getHeight();
+            height = height + allRowHeights.get(i);
         }
         return height;
     }

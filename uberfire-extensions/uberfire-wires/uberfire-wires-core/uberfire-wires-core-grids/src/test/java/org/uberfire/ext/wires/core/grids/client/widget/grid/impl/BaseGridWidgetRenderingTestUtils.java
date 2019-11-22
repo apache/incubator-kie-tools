@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +64,10 @@ public class BaseGridWidgetRenderingTestUtils {
                                                                 final int headerRowCount,
                                                                 final double headerRowHeight,
                                                                 final double headerRowsHeight) {
+        final List<Double> rowHeights = new ArrayList<>();
+        for (int rowIndex = 0; rowIndex < rowOffsets.size(); rowIndex++) {
+            rowHeights.add(20.0);
+        }
         return new RenderingInformation(mock(Bounds.class),
                                         model.getColumns(),
                                         new BaseGridRendererHelper.RenderingBlockInformation(model.getColumns(),
@@ -77,6 +82,7 @@ public class BaseGridWidgetRenderingTestUtils {
                                                                                              0.0),
                                         0,
                                         rowOffsets.size() - 1,
+                                        rowHeights,
                                         rowOffsets,
                                         false,
                                         false,

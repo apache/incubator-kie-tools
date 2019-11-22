@@ -36,6 +36,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
@@ -53,6 +55,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -771,5 +774,102 @@ public class BaseCellSelectionManagerTest {
         assertFalse(editContext.getRelativeLocation().isPresent());
 
         cellSelectionManager.startEditingCell(new Point2D(10, HEADER_HEIGHT + 1));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGridBodyCellEditContextConstruction() {
+        final GridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+
+        gridWidgetData.setCell(0, 1, () -> cell);
+
+        cellSelectionManager.startEditingCell(0, 1);
+
+        verify(col2).edit(eq(cell),
+                          editContextArgumentCaptor.capture(),
+                          any(Consumer.class));
+
+        assertGridBodyCellEditContext(editContextArgumentCaptor.getValue(),
+                                      0,
+                                      1,
+                                      ROW_HEIGHT,
+                                      col2.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      GRID_ABSOLUTE_X + col1.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      visibleBounds.getX());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGridBodyCellEditContextConstructionWithMergedCells() {
+        final GridCell<String> cell1 = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+        final GridCell<String> cell2 = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+
+        gridWidgetData.setMerged(true);
+        gridWidgetData.setCell(0, 1, () -> cell1);
+        gridWidgetData.setCell(1, 1, () -> cell2);
+
+        cellSelectionManager.startEditingCell(0, 1);
+
+        verify(col2).edit(eq(cell1),
+                          editContextArgumentCaptor.capture(),
+                          any(Consumer.class));
+
+        assertGridBodyCellEditContext(editContextArgumentCaptor.getValue(),
+                                      0,
+                                      1,
+                                      ROW_HEIGHT * 2,
+                                      col2.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      GRID_ABSOLUTE_X + col1.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      visibleBounds.getX());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGridBodyCellEditContextConstructionWithMergedCellsProgrammaticEditingCollapsedCell() {
+        final GridCell<String> cell1 = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+        final GridCell<String> cell2 = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+
+        gridWidgetData.setMerged(true);
+        gridWidgetData.setCell(0, 1, () -> cell1);
+        gridWidgetData.setCell(1, 1, () -> cell2);
+
+        cellSelectionManager.startEditingCell(1, 1);
+
+        verify(col2).edit(eq(cell2),
+                          editContextArgumentCaptor.capture(),
+                          any(Consumer.class));
+
+        assertGridBodyCellEditContext(editContextArgumentCaptor.getValue(),
+                                      1,
+                                      1,
+                                      ROW_HEIGHT * 2,
+                                      col2.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      GRID_ABSOLUTE_X + col1.getWidth(),
+                                      GRID_ABSOLUTE_Y + HEADER_HEIGHT,
+                                      visibleBounds.getX());
+    }
+
+    private void assertGridBodyCellEditContext(final GridBodyCellEditContext context,
+                                               final int expectedUiRowIndex,
+                                               final int expectedUiColumnIndex,
+                                               final double expectedCellHeight,
+                                               final double expectedCellWidth,
+                                               final double expectedAbsoluteCellY,
+                                               final double expectedAbsoluteCellX,
+                                               final double expectedClipMinY,
+                                               final double expectedClipMinX) {
+        assertEquals(expectedUiRowIndex, context.getRowIndex());
+        assertEquals(expectedUiColumnIndex, context.getColumnIndex());
+        assertEquals(expectedCellHeight, context.getCellHeight(), 0.0);
+        assertEquals(expectedCellWidth, context.getCellWidth(), 0.0);
+        assertEquals(expectedAbsoluteCellY, context.getAbsoluteCellY(), 0.0);
+        assertEquals(expectedAbsoluteCellX, context.getAbsoluteCellX(), 0.0);
+        assertEquals(expectedClipMinY, context.getClipMinY(), 0.0);
+        assertEquals(expectedClipMinX, context.getClipMinX(), 0.0);
     }
 }

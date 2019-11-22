@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.scrollbars;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -39,19 +39,24 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 
 public class GridLienzoScrollHandler {
 
-    private final GridLienzoPanel panel;
-
-    private final GridLienzoScrollBounds gridLienzoScrollBounds;
-
     static final int DEFAULT_INTERNAL_SCROLL_HEIGHT = 1;
 
     static final int DEFAULT_INTERNAL_SCROLL_WIDTH = 1;
+
+    private final GridLienzoScrollBars scrollBars = new GridLienzoScrollBars(this);
+
+    private final GridLienzoScrollPosition scrollPosition = new GridLienzoScrollPosition(this);
+
+    private final GridLienzoScrollBounds scrollBounds = new GridLienzoScrollBounds(this);
+
+    private final GridLienzoPanel panel;
+
+    private DefaultGridLayer emptyLayer;
 
     private RestrictedMousePanMediator mousePanMediator;
 
     public GridLienzoScrollHandler(final GridLienzoPanel panel) {
         this.panel = panel;
-        this.gridLienzoScrollBounds = new GridLienzoScrollBounds(this);
     }
 
     public void init() {
@@ -224,7 +229,9 @@ public class GridLienzoScrollHandler {
     }
 
     DefaultGridLayer getDefaultGridLayer() {
-        return Optional.ofNullable(panel.getDefaultGridLayer()).orElse(emptyLayer());
+        //Do not use Optional.ofNullable(..).orElse(..) as the _else_ expression is *always* invoked
+        final DefaultGridLayer defaultGridLayer = panel.getDefaultGridLayer();
+        return Objects.nonNull(defaultGridLayer) ? defaultGridLayer : emptyLayer();
     }
 
     Viewport getViewport() {
@@ -232,19 +239,22 @@ public class GridLienzoScrollHandler {
     }
 
     DefaultGridLayer emptyLayer() {
-        return new DefaultGridLayer();
+        if (Objects.isNull(emptyLayer)) {
+            emptyLayer = new DefaultGridLayer();
+        }
+        return emptyLayer;
     }
 
     GridLienzoScrollBars scrollBars() {
-        return new GridLienzoScrollBars(this);
+        return scrollBars;
     }
 
     GridLienzoScrollPosition scrollPosition() {
-        return new GridLienzoScrollPosition(this);
+        return scrollPosition;
     }
 
     GridLienzoScrollBounds scrollBounds() {
-        return gridLienzoScrollBounds;
+        return scrollBounds;
     }
 
     public void setBounds(final Bounds bounds) {

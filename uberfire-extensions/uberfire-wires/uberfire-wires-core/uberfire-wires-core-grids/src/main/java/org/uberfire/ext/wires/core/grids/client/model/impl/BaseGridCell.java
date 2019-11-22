@@ -41,7 +41,7 @@ public class BaseGridCell<T> implements GridCell<T> {
     }
 
     //This is not part of the GridCell interface as we don't want to expose this for general use
-    void setValue(final GridCellValue<T> value) {
+    protected void setValue(final GridCellValue<T> value) {
         this.value = value;
     }
 

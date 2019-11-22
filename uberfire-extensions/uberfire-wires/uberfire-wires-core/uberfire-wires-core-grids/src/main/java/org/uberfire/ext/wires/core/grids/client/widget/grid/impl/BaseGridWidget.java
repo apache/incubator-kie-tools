@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -58,10 +59,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
+import static org.uberfire.ext.wires.core.grids.client.util.Logging.log;
+
 /**
  * The base of all GridWidgets.
  */
 public class BaseGridWidget extends Group implements GridWidget {
+
+    private static final Logger LOGGER = Logger.getLogger(BaseGridWidget.class.getName());
 
     protected final SelectionsTransformer bodyTransformer;
     protected final SelectionsTransformer floatingColumnsTransformer;
@@ -244,6 +249,14 @@ public class BaseGridWidget extends Group implements GridWidget {
         return height;
     }
 
+    private double getHeight(final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        double height = renderer.getHeaderHeight();
+        for (double h : renderingInformation.getAllRowHeights()) {
+            height = height + h;
+        }
+        return height;
+    }
+
     @Override
     public void select() {
         isSelected = true;
@@ -289,19 +302,28 @@ public class BaseGridWidget extends Group implements GridWidget {
         //Clear existing content
         this.removeAll();
 
+        long currentTimeMillis;
         if (!isSelectionLayer) {
             //If there's no RenderingInformation the GridWidget is not visible
+            currentTimeMillis = log(LOGGER, " - Pre- prepare()");
             this.renderingInformation = prepare();
+            log(LOGGER, " - Post- prepare()", currentTimeMillis);
             if (renderingInformation == null) {
                 destroyDOMElementResources();
                 return;
             }
+            currentTimeMillis = log(LOGGER, " - Pre- makeRenderingCommands()");
             makeRenderingCommands();
+            log(LOGGER, " - Post- makeRenderingCommands()", currentTimeMillis);
         }
 
+        currentTimeMillis = log(LOGGER, " - Pre- layerRenderGroups()");
         layerRenderGroups();
+        log(LOGGER, " - Post- layerRenderGroups()", currentTimeMillis);
 
+        currentTimeMillis = log(LOGGER, " - Pre- executeRenderQueueCommands()");
         executeRenderQueueCommands(isSelectionLayer);
+        log(LOGGER, " - Post- executeRenderQueueCommands()", currentTimeMillis);
 
         //Signal columns to free any unused resources
         if (!isSelectionLayer) {
@@ -313,9 +335,11 @@ public class BaseGridWidget extends Group implements GridWidget {
         }
 
         //Then render to the canvas
+        currentTimeMillis = log(LOGGER, " - Pre- super.drawWithoutTransforms()");
         super.drawWithoutTransforms(context,
                                     alpha,
                                     bb);
+        log(LOGGER, " - Post- super.drawWithoutTransforms()", currentTimeMillis);
     }
 
     private BaseGridRendererHelper.RenderingInformation prepare() {
@@ -335,7 +359,9 @@ public class BaseGridWidget extends Group implements GridWidget {
         this.renderQueue.clear();
 
         //If there's no RenderingInformation the GridWidget is not visible
+        long currentTimeMillis = log(LOGGER, " - Pre- getRenderingInformation()");
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
+        log(LOGGER, " - Post- getRenderingInformation()", currentTimeMillis);
         if (renderingInformation == null) {
             return null;
         }
@@ -694,7 +720,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
         final double y = headerRowsYOffset + headerYOffset;
 
-        final double height = getHeight() - headerRowsYOffset - headerYOffset;
+        final double height = getHeight(renderingInformation) - headerRowsYOffset - headerYOffset;
         double width = rendererHelper.getWidth(allColumns);
         if (!floatingColumns.isEmpty()) {
             width = width - (floatingBlockInformation.getX() + rendererHelper.getWidth(floatingColumns) - bodyBlockInformation.getX());

@@ -142,6 +142,7 @@ public class CellContextUtilitiesTest {
         final double headerRowsHeight = 100.0;
         final BaseGridRow row = new BaseGridRow();
         final List<GridColumn<?>> allColumns = new ArrayList<>();
+        final List<Double> allRowHeights = Collections.singletonList(row.getHeight());
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(60.0);
         final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
@@ -152,6 +153,7 @@ public class CellContextUtilitiesTest {
 
         doReturn(allColumns).when(ri).getAllColumns();
         doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
+        doReturn(allRowHeights).when(ri).getAllRowHeights();
         doReturn(uiColumn2).when(ci).getColumn();
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(1).when(ci).getUiColumnIndex();
@@ -178,18 +180,21 @@ public class CellContextUtilitiesTest {
         final BaseGridRow row2 = new BaseGridRow();
         final BaseGridRow row3 = new BaseGridRow();
         final List<GridColumn<?>> allColumns = new ArrayList<>();
+        final List<Double> allRowHeights = Collections.nCopies(3, row1.getHeight());
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(60.0);
         final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
         allColumns.add(uiColumn1);
         allColumns.add(uiColumn2);
         allColumns.add(uiColumn3);
+
         gridWidget.getModel().appendRow(row1);
         gridWidget.getModel().appendRow(row2);
         gridWidget.getModel().appendRow(row3);
 
         doReturn(allColumns).when(ri).getAllColumns();
         doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
+        doReturn(allRowHeights).when(ri).getAllRowHeights();
         doReturn(uiColumn3).when(ci).getColumn();
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(3).when(ci).getUiColumnIndex();

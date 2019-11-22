@@ -27,7 +27,6 @@ import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -49,6 +48,7 @@ public class ColumnRenderingStrategyFlattened {
         final double clipMinX = context.getClipMinX();
         final int minVisibleRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = context.getMaxVisibleRowIndex();
+        final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
         final List<Double> visibleRowOffsets = renderingInformation.getVisibleRowOffsets();
         final boolean isFloating = context.isFloating();
         final GridData model = context.getModel();
@@ -56,7 +56,7 @@ public class ColumnRenderingStrategyFlattened {
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
         final double columnWidth = column.getWidth();
-        final double columnHeight = visibleRowOffsets.get(maxVisibleRowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0) + model.getRow(maxVisibleRowIndex).getHeight();
+        final double columnHeight = visibleRowOffsets.get(maxVisibleRowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0) + allRowHeights.get(maxVisibleRowIndex);
 
         final List<GridRenderer.RendererCommand> commands = new ArrayList<>();
 
@@ -93,8 +93,7 @@ public class ColumnRenderingStrategyFlattened {
                 final int columnIndex = model.getColumns().indexOf(column);
                 for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
                     final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
-                    final GridRow row = model.getRow(rowIndex);
-                    final double rowHeight = row.getHeight();
+                    final double rowHeight = allRowHeights.get(rowIndex);
                     final GridBodyCellRenderContext cellContext = new GridBodyCellRenderContext(absoluteColumnX,
                                                                                                 absoluteGridY + renderer.getHeaderHeight() + visibleRowOffsets.get(rowIndex - minVisibleRowIndex),
                                                                                                 columnWidth,

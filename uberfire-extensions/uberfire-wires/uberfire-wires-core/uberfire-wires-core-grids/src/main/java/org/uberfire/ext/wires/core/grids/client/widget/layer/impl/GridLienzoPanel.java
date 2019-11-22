@@ -83,7 +83,39 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
                         height);
     }
 
-    private GridLienzoPanel(final LienzoPanel lienzoPanel) {
+    public GridLienzoPanel(final DefaultGridLayer defaultGridLayer) {
+        this(new LienzoPanel() {
+                 @Override
+                 public void onResize() {
+                     // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
+                     // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
+                     // is adopted by another Widget LienzoPanel's onAttach() is called before its children
+                     // have been attached. Should redraw require children to be attached errors arise.
+                 }
+             },
+             defaultGridLayer);
+    }
+
+    public GridLienzoPanel(final int width,
+                           final int height,
+                           final DefaultGridLayer defaultGridLayer) {
+        this(new LienzoPanel(width,
+                             height) {
+                 @Override
+                 public void onResize() {
+                     // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
+                     // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
+                     // is adopted by another Widget LienzoPanel's onAttach() is called before its children
+                     // have been attached. Should redraw require children to be attached errors arise.
+                 }
+             },
+             defaultGridLayer);
+
+        updatePanelSize(width,
+                        height);
+    }
+
+    protected GridLienzoPanel(final LienzoPanel lienzoPanel) {
         this.lienzoPanel = lienzoPanel;
         this.gridLienzoScrollHandler = new GridLienzoScrollHandler(this);
 
@@ -92,7 +124,19 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         setupDefaultHandlers();
     }
 
-    void setupPanels() {
+    protected GridLienzoPanel(final LienzoPanel lienzoPanel,
+                              final DefaultGridLayer defaultGridLayer) {
+        this.lienzoPanel = lienzoPanel;
+        this.gridLienzoScrollHandler = new GridLienzoScrollHandler(this);
+
+        add(defaultGridLayer);
+
+        setupPanels();
+        setupScrollHandlers();
+        setupDefaultHandlers();
+    }
+
+    protected void setupPanels() {
         setupScrollPanel();
         setupDomElementContainer();
         setupRootPanel();
@@ -101,29 +145,29 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         getElement().getStyle().setOutlineStyle(Style.OutlineStyle.NONE);
     }
 
-    void setupScrollPanel() {
+    protected void setupScrollPanel() {
         getScrollPanel().add(getInternalScrollPanel());
     }
 
-    void setupDomElementContainer() {
+    protected void setupDomElementContainer() {
         getDomElementContainer().add(getLienzoPanel());
     }
 
-    void setupRootPanel() {
+    protected void setupRootPanel() {
         getRootPanel().add(getDomElementContainer());
         getRootPanel().add(getScrollPanel());
     }
 
-    void setupScrollHandlers() {
+    protected void setupScrollHandlers() {
         getGridLienzoScrollHandler().init();
         addMouseUpHandler();
     }
 
-    void addMouseUpHandler() {
+    protected void addMouseUpHandler() {
         addMouseUpHandler((e) -> refreshScrollPosition());
     }
 
-    private void setupDefaultHandlers() {
+    protected void setupDefaultHandlers() {
         //Prevent DOMElements scrolling into view when they receive the focus
         domElementContainer.addDomHandler(new ScrollHandler() {
 
@@ -153,7 +197,7 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         });
     }
 
-    void scheduleDeferred(final Scheduler.ScheduledCommand scheduledCommand) {
+    protected void scheduleDeferred(final Scheduler.ScheduledCommand scheduledCommand) {
         Scheduler.get().scheduleDeferred(scheduledCommand);
     }
 
@@ -178,8 +222,8 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
                                   height);
     }
 
-    private void updateInternalPanelsSizes(final int width,
-                                           final int height) {
+    protected void updateInternalPanelsSizes(final int width,
+                                             final int height) {
         final Integer scrollbarWidth = getGridLienzoScrollHandler().scrollbarWidth();
         final Integer scrollbarHeight = getGridLienzoScrollHandler().scrollbarHeight();
 
@@ -194,8 +238,8 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         propagateNewPanelSize(visibleWidth, visibleHeight);
     }
 
-    private void updateScrollPanelSize(final int width,
-                                       final int height) {
+    protected void updateScrollPanelSize(final int width,
+                                         final int height) {
         getScrollPanel().setPixelSize(width,
                                       height);
     }
@@ -234,7 +278,7 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         return lienzoPanel;
     }
 
-    private DefaultGridLayer setupDefaultGridLayer(final DefaultGridLayer layer) {
+    protected DefaultGridLayer setupDefaultGridLayer(final DefaultGridLayer layer) {
         layer.addOnEnterPinnedModeCommand(this::refreshScrollPosition);
         layer.addOnExitPinnedModeCommand(this::refreshScrollPosition);
 
@@ -265,11 +309,11 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         return defaultGridLayer;
     }
 
-    AbsolutePanel getRootPanel() {
+    protected AbsolutePanel getRootPanel() {
         return rootPanel;
     }
 
-    GridLienzoScrollHandler getGridLienzoScrollHandler() {
+    protected GridLienzoScrollHandler getGridLienzoScrollHandler() {
         return gridLienzoScrollHandler;
     }
 }

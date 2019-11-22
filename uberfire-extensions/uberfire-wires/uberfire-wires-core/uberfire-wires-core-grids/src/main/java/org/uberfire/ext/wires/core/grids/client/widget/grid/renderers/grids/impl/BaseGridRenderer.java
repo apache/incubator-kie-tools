@@ -349,9 +349,10 @@ public class BaseGridRenderer implements GridRenderer {
         final GridRenderer renderer = context.getRenderer();
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
+        final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
         final List<Double> visibleRowOffsets = renderingInformation.getVisibleRowOffsets();
 
-        final double columnHeight = visibleRowOffsets.get(maxVisibleRowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0) + model.getRow(maxVisibleRowIndex).getHeight();
+        final double columnHeight = visibleRowOffsets.get(maxVisibleRowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0) + allRowHeights.get(maxVisibleRowIndex);
 
         //Column backgrounds
         double cx = 0;
@@ -487,14 +488,18 @@ public class BaseGridRenderer implements GridRenderer {
 
         final int visibleRowIndex = getHighlightCellRowIndex() - renderingInformation.getMinVisibleRowIndex();
 
-        final RendererCommand renderCommand = getRendererCommand(model, context, rendererHelper, column, visibleRowIndex);
-
-        return renderCommand;
+        return getRendererCommand(model,
+                                  context,
+                                  rendererHelper,
+                                  renderingInformation,
+                                  column,
+                                  visibleRowIndex);
     }
 
     RendererCommand getRendererCommand(final GridData model,
                                        final GridBodyRenderContext context,
                                        final BaseGridRendererHelper rendererHelper,
+                                       final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                        final GridColumn<?> column,
                                        final int visibleRowIndex) {
         return (rc) -> {
@@ -505,6 +510,7 @@ public class BaseGridRenderer implements GridRenderer {
                                                         visibleRowIndex,
                                                         model,
                                                         rendererHelper,
+                                                        renderingInformation,
                                                         column,
                                                         context));
                 }
@@ -516,13 +522,14 @@ public class BaseGridRenderer implements GridRenderer {
                                 final int visibleRowIndex,
                                 final GridData model,
                                 final BaseGridRendererHelper rendererHelper,
+                                final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                 final GridColumn<?> column,
                                 final GridBodyRenderContext context) {
 
         final Rectangle r = getTheme().getHighlightedCellBackground().setListening(false);
         setCellHighlightX(r, context, rendererHelper);
         setCellHighlightY(r, rendererHelper, visibleRowIndex, model);
-        setCellHighlightSize(r, model, column, rowIndex);
+        setCellHighlightSize(r, model, column, renderingInformation.getAllRowHeights(), rowIndex);
         return r;
     }
 
@@ -565,16 +572,18 @@ public class BaseGridRenderer implements GridRenderer {
     void setCellHighlightSize(final Rectangle rectangle,
                               final GridData model,
                               final GridColumn<?> column,
+                              final List<Double> allRowHeights,
                               final int rowIndex) {
 
         final double width = column.getWidth();
         rectangle.setWidth(width);
 
         final int mergedCellsCount = getMergedCellsCount(model, rowIndex);
-        rectangle.setHeight(model.getRow(rowIndex).getHeight() * mergedCellsCount);
+        rectangle.setHeight(allRowHeights.get(rowIndex) * mergedCellsCount);
     }
 
-    int getMergedCellsCount(final GridData model, final int rowIndex) {
+    int getMergedCellsCount(final GridData model,
+                            final int rowIndex) {
 
         int currentIndex = rowIndex;
         GridCell<?> cell = model.getCell(rowIndex, getHighlightCellColumnIndex());
