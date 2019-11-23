@@ -96,7 +96,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_SSH_OVER_HTTP = "false";
     public static final String DEFAULT_SSH_OVER_HTTPS = "false";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
-    public static final String DEFAULT_DAEMON_DEFAULT_ENABLED = "true";
+    public static final String DEFAULT_DAEMON_DEFAULT_ENABLED = "false";
     public static final String DEFAULT_DAEMON_DEFAULT_PORT = "9418";
     public static final String DEFAULT_SSH_ENABLED = "true";
     public static final String DEFAULT_HTTP_ENABLED = "true";

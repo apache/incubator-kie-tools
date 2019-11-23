@@ -25,9 +25,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,17 +32,11 @@ import java.util.zip.Deflater;
 
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.JGitText;
-import org.eclipse.jgit.internal.ketch.KetchLeader;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
-import org.eclipse.jgit.internal.ketch.KetchPreReceive;
-import org.eclipse.jgit.internal.ketch.KetchText;
-import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
-import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.UploadPack;
-import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
@@ -78,8 +69,6 @@ public class Daemon {
     private volatile RepositoryResolver<DaemonClient> repositoryResolver;
 
     private volatile UploadPackFactory<DaemonClient> uploadPackFactory;
-
-    private volatile ReceivePackFactory<DaemonClient> receivePackFactory;
 
     private ServerSocket listenSock = null;
 
@@ -127,50 +116,6 @@ public class Daemon {
             return up;
         };
 
-        final ReceivePackFactory<DaemonClient> factory = (req, db) -> {
-            final ReceivePack rp = new KetchCustomReceivePack(db);
-
-            final InetAddress peer = req.getRemoteAddress();
-            String host = peer.getCanonicalHostName();
-            if (host == null) {
-                host = peer.getHostAddress();
-            }
-            final String name = "anonymous";
-            final String email = name + "@" + host;
-            rp.setRefLogIdent(new PersonIdent("system",
-                                              "system",
-                                              new Date(1L),
-                                              TimeZone.getDefault()));
-            rp.setTimeout(getTimeout());
-
-            rp.setPreReceiveHook((rp12, commands) ->
-                                         System.out.println("[" + addr.getHostString() + "]" + " onPreReceive!"));
-            rp.setPostReceiveHook((rp1, commands) ->
-                                          System.out.println("[" + addr.getHostString() + "]" + " onPostReceive!"));
-
-            return rp;
-        };
-
-//        if ( leaders == null ) {
-        if (true) {
-            receivePackFactory = factory;
-        } else {
-            receivePackFactory = (req, repo) -> {
-                final ReceivePack rp = factory.create(req,
-                                                      repo);
-                final KetchLeader leader;
-                try {
-                    leader = leaders.get(repo);
-                } catch (URISyntaxException err) {
-                    throw new ServiceNotEnabledException(
-                            KetchText.get().invalidFollowerUri,
-                            err);
-                }
-                rp.setPreReceiveHook(new KetchPreReceive(leader));
-                return rp;
-            };
-        }
-
         services = new DaemonService[]{new DaemonService("upload-pack",
                                                          "uploadpack") {
             {
@@ -193,7 +138,7 @@ public class Daemon {
         }, new DaemonService("receive-pack",
                              "receivepack") {
             {
-                setEnabled(true);
+                setEnabled(false);
             }
 
             @Override
@@ -201,13 +146,7 @@ public class Daemon {
                                    final Repository db) throws IOException,
                     ServiceNotEnabledException,
                     ServiceNotAuthorizedException {
-                final ReceivePack rp = receivePackFactory.create(dc,
-                                                                 db);
-                final InputStream in = dc.getInputStream();
-                final OutputStream out = dc.getOutputStream();
-                rp.receive(in,
-                           out,
-                           null);
+                throw new ServiceNotAuthorizedException();
             }
         }};
     }
