@@ -230,7 +230,8 @@ public class AdminPageImpl implements AdminPage {
                         breadcrumbs.clearBreadcrumbs(PreferencesCentralPerspective.IDENTIFIER);
                         breadcrumbs.addBreadCrumb(PreferencesCentralPerspective.IDENTIFIER,
                                                   translationService.format(Constants.Admin),
-                                                  new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER));
+                                                  new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER),
+                                                  () -> placeManager.goTo(AdminPagePerspective.IDENTIFIER));
                         breadcrumbs.addBreadCrumb(PreferencesCentralPerspective.IDENTIFIER,
                                                   title,
                                                   accessCommand);

@@ -355,7 +355,8 @@ public class AdminPageImplTest {
         verify(uberfireBreadcrumbs).clearBreadcrumbs(PreferencesCentralPerspective.IDENTIFIER);
         verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),
                                                   anyString(),
-                                                  eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER)));
+                                                  eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER)),
+                                                  any(Command.class));
         verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),
                                                   anyString(),
                                                   any(Command.class));
