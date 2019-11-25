@@ -399,7 +399,8 @@ public class DefaultAdminPageHelper {
         breadcrumbs.clearBreadcrumbs(perspective);
         breadcrumbs.addBreadCrumb(perspective,
                                   constants.Admin(),
-                                  new DefaultPlaceRequest(ADMIN));
+                                  new DefaultPlaceRequest(ADMIN),
+                                  () -> placeManager.goTo(PerspectiveIds.ADMIN));
         breadcrumbs.addBreadCrumb(perspective,
                                   label,
                                   accessCommand);
