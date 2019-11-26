@@ -36,8 +36,12 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
@@ -100,6 +104,16 @@ public class FormPropertiesWidget implements IsElement,
             public void clearAll(String graphUuid) {
                 formsContainer.clearDiagramDisplayers(graphUuid);
             }
+
+            @Override
+            public void resetCache() {
+                resetLastElementRenderedCache();
+            }
+
+            @Override
+            public boolean areLastPositionsSameForElement(final Element element) {
+                return areLastPositionsForSameElementSame(element);
+            }
         });
         view.init(this);
     }
@@ -148,13 +162,33 @@ public class FormPropertiesWidget implements IsElement,
 
     @SuppressWarnings("unchecked")
     public void show(final Command callback) {
+        resetLastElementRenderedCache();
         formSessionHandler.show(callback);
+    }
+
+    private Element lastElement = null;
+    private Point2D lastPosition = null;
+
+    public void resetLastElementRenderedCache() {
+        lastElement = null;
+        lastPosition = null;
+    }
+
+    public boolean areLastPositionsForSameElementSame(final Element element) {
+        final Point2D computedPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+        return (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && computedPosition.equals(lastPosition));
     }
 
     private void show(final String graphUuid,
                       final Element<? extends Definition<?>> element,
                       final Command callback) {
         if (element != null) {
+
+            if (lastElement != null && lastElement.getUUID().equals(element.getUUID())) {
+                lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+                return;
+            }
+
             final String uuid = element.getUUID();
             final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
             if (Objects.isNull(diagram)) {
@@ -170,6 +204,7 @@ public class FormPropertiesWidget implements IsElement,
                 return;
             }
             final Object definition = content.getDefinition();
+
             final RenderMode renderMode = formSessionHandler.getSession() instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.READ_ONLY_MODE;
 
             formsContainer.render(graphUuid,
@@ -191,6 +226,8 @@ public class FormPropertiesWidget implements IsElement,
                                   }, renderMode);
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
+            lastElement = element;
+            lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
         }
     }
 

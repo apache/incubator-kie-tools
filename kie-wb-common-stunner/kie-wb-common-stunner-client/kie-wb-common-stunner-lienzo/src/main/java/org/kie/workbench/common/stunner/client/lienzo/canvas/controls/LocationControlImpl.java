@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -110,6 +109,10 @@ public class LocationControlImpl
         this.selectionEvent = selectionEvent;
     }
 
+    public Collection<String> getSelectedIDs() {
+        return selectedIDs;
+    }
+
     @Override
     public void bind(final EditorSession session) {
         // Keyboard event handling.
@@ -125,8 +128,7 @@ public class LocationControlImpl
         handleArrowKeys(keys);
     }
 
-    private void handleArrowKeys(final KeyboardEvent.Key... keys) {
-
+    public void handleArrowKeys(final KeyboardEvent.Key... keys) {
         final int selectedIDsCount = selectedIDs.size();
 
         if (selectedIDsCount == 0) {
@@ -231,20 +233,16 @@ public class LocationControlImpl
                     final DragHandler dragHandler = new DragHandler() {
                         @Override
                         public void start(DragEvent event) {
-                            if (Objects.nonNull(selectionEvent)) {
-                                //select the moving shape, if not
-                                selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, shape.getUUID()));
-                            }
+                            // Instead of firing the event on Drag start, now will be fired at the end, hence improving performance
                         }
 
                         @Override
                         public void end(DragEvent event) {
-
+                            selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, shape.getUUID()));
                         }
 
                         @Override
                         public void handle(DragEvent event) {
-
                         }
                     };
 

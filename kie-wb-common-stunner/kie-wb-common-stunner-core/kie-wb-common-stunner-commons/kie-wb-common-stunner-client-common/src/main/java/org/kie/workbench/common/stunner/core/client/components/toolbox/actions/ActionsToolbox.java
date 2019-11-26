@@ -88,8 +88,17 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
         return canvasHandlerSupplier.get().getCanvas().getShape(uuid);
     }
 
+    private String lastToolBoxRendered = "";
+
     @Override
     public ActionsToolbox show() {
+
+        if (lastToolBoxRendered.equals(this.uuid)) {
+            return this;
+        }
+
+        lastToolBoxRendered = this.uuid;
+
         getView().show();
         return this;
     }

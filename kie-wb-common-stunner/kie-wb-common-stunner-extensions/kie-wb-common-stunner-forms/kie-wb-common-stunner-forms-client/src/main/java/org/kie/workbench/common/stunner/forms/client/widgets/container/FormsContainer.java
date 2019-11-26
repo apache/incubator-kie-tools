@@ -65,7 +65,6 @@ public class FormsContainer implements IsElement {
                        final Path diagramPath,
                        final FieldChangeHandler changeHandler,
                        final RenderMode renderMode) {
-
         FormDisplayer displayer = getDisplayer(graphUuid, domainObjectUUID);
 
         displayer.render(domainObjectUUID, domainObject, diagramPath, changeHandler, renderMode);

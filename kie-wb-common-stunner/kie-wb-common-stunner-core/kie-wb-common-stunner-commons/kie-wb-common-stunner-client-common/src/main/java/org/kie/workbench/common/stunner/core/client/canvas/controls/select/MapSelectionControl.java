@@ -82,6 +82,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                     final String canvasRootUUID = getRootUUID();
                     fireCanvasClear();
                     if (null != canvasRootUUID) {
+                        lastSelected = "";
                         selectionEventConsumer.accept(new CanvasSelectionEvent(canvasHandler,
                                                                                canvasRootUUID));
                     }
@@ -254,6 +255,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         }
         if (getCanvas().equals(shapeRemovedEvent.getCanvas())) {
             items.remove(shapeRemovedEvent.getShape().getUUID());
+            lastSelected = "";
         }
     }
 
@@ -263,6 +265,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         if (null == canvasHandler) {
             return;
         }
+
         final boolean isSameCtxt = canvasHandler.equals(event.getCanvasHandler());
         final boolean isSingleSelection = event.getIdentifiers().size() == 1;
         final boolean isCanvasRoot = isSingleSelection &&
@@ -301,9 +304,21 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         return canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
     }
 
+    private String lastSelected = "";
+
     private void fireSelectedItemsEvent() {
         final Collection<String> selectedItems = getSelectedItems();
         if (!selectedItems.isEmpty()) {
+            if (selectedItems.size() == 1) {
+
+                final String next = selectedItems.iterator().next();
+
+                if (lastSelected.equals(next)) {
+                    return;
+                }
+
+                lastSelected = next;
+            }
             selectionEventConsumer.accept(new CanvasSelectionEvent(canvasHandler,
                                                                    selectedItems));
         }

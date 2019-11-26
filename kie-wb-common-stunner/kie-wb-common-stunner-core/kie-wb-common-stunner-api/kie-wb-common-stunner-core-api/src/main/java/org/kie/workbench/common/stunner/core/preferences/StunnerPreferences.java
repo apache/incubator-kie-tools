@@ -31,7 +31,7 @@ public class StunnerPreferences implements BasePreference<StunnerPreferences>,
     @Override
     public StunnerPreferences defaultValue(final StunnerPreferences defaultValue) {
         defaultValue.diagramEditorPreferences.setAutoHidePalettePanel(false);
-        defaultValue.diagramEditorPreferences.setEnableHiDPI(false);
+        defaultValue.diagramEditorPreferences.setEnableHiDPI(true);
         return defaultValue;
     }
 

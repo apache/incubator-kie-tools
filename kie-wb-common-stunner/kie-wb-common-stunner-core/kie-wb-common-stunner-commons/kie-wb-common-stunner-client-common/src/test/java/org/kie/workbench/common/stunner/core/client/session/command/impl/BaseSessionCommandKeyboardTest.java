@@ -67,9 +67,9 @@ public abstract class BaseSessionCommandKeyboardTest {
 
     @Before
     public void setup() {
-        this.command = spy(getCommand());
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
+        this.command = spy(getCommand());
     }
 
     @Test

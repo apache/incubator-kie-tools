@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -33,7 +35,7 @@ import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
-import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * The default canvas command manager implementation.
@@ -101,20 +103,46 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
 
     private CommandResult<CanvasViolation> runInContext(final AbstractCanvasHandler context,
                                                         final Supplier<CommandResult<CanvasViolation>> function) {
-        final ContextualGraphCommandExecutionContext graphExecutionContext = newGraphExecutionContext(context);
-        context.setGraphExecutionContext(() -> newGraphExecutionContext(context));
+
+        final List<Element> queue = new ArrayList<>();
+        final List<QueueGraphExecutionContext> contextsCreated = new ArrayList<>();
+
+        context.setGraphExecutionContext(() -> {
+            final QueueGraphExecutionContext queueGraphExecutionContext2 = newQueueGraphExecutionContext(context);
+            contextsCreated.add(queueGraphExecutionContext2);
+            return queueGraphExecutionContext2;
+        });
+
         final CommandResult<CanvasViolation> result = function.get();
-        graphExecutionContext.clear();
+
+        boolean multipleSubqueues = false;
+        for (QueueGraphExecutionContext contexts : contextsCreated) {
+            if (!queue.isEmpty()) {
+                multipleSubqueues = true;
+                break;
+            }
+            queue.addAll(contexts.getUpdatedElements());
+        }
+
+        if (!queue.isEmpty() && !multipleSubqueues) { // Only send updates to first queue
+            context.doBatchUpdate(queue);
+        }
+
+        for (QueueGraphExecutionContext contexts : contextsCreated) {
+            contexts.resetUpdatedElements();
+            contexts.clear();
+        }
+
         context.setGraphExecutionContext(() -> null);
         return result;
     }
 
-    private ContextualGraphCommandExecutionContext newGraphExecutionContext(final AbstractCanvasHandler context) {
-        return new ContextualGraphCommandExecutionContext(context.getDefinitionManager(),
-                                                          clientFactoryManager,
-                                                          context.getRuleManager(),
-                                                          context.getGraphIndex(),
-                                                          context.getRuleSet());
+    public QueueGraphExecutionContext newQueueGraphExecutionContext(final AbstractCanvasHandler context) {
+        return new QueueGraphExecutionContext(context.getDefinitionManager(),
+                                              clientFactoryManager,
+                                              context.getRuleManager(),
+                                              context.getGraphIndex(),
+                                              context.getRuleSet());
     }
 
     @SuppressWarnings("unchecked")

@@ -124,6 +124,8 @@ public abstract class AbstractCanvasGraphCommand
         getCanvasCommand(context);
         // Obtain the graph execution context and execute the graph command updates.
         final GraphCommandExecutionContext graphContext = context.getGraphExecutionContext();
+        context.setStaticContext(graphContext);
+
         if (Objects.isNull(graphContext)) {
             //skipping command in case there is no graph execution context
             return CanvasCommandResultBuilder.SUCCESS;

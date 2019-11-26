@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneConnectorCommand;
@@ -155,7 +156,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     private CloneConnectorCommand cloneConnectorCommand;
 
     @Mock
-    private CopySelectionSessionCommand copySelectionSessionCommand;
+    private SessionManager sessionManager;
 
     @Mock
     private org.uberfire.mvp.Command statusCallback;
@@ -200,6 +201,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         when(clone2.getUUID()).thenReturn(CLONE2_UUID);
         when(session.getClipboardControl()).thenReturn(clipboardControl);
         when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
+        when(sessionManager.getCurrentSession()).thenReturn(session);
 
         cloneMap = new HashMap() {{
             put(node, clone);
@@ -233,6 +235,8 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         //same parent
         clipboardControl.set(graphInstance.startNode);
         when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(node.getUUID()));
+        CopySelectionSessionCommand.getInstance(sessionManager).bind(session);
+
         pasteSelectionSessionCommand.execute(callback);
         verify(canvasCommandFactory, times(1))
                 .cloneNode(eq(node), eq(graphInstance.parentNode.getUUID()), eq(new Point2D(X, DEFAULT_PADDING + Y + NODE_SIZE)), any());
@@ -314,6 +318,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         //Executing the command
         clipboardControl.set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
         when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(graphInstance.startNode.getUUID(), graphInstance.edge1.getUUID(), graphInstance.intermNode.getUUID()));
+        CopySelectionSessionCommand.getInstance(sessionManager).bind(session);
 
         pasteSelectionSessionCommand.execute(callback);
 
@@ -392,6 +397,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         //Executing the command
         clipboardControl.set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
         when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(graphInstance.startNode.getUUID(), graphInstance.edge1.getUUID(), graphInstance.intermNode.getUUID()));
+        CopySelectionSessionCommand.getInstance(sessionManager).bind(session);
         pasteSelectionSessionCommand.execute(callback);
         verify(canvasCommandFactory, times(1))
                 .cloneNode(eq(graphInstance.startNode), eq(graphInstance.parentNode.getUUID()), eq(new Point2D(X, DEFAULT_PADDING + Y + NODE_SIZE)), any());
@@ -459,8 +465,8 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     @Override
     protected PasteSelectionSessionCommand getCommand() {
         return new PasteSelectionSessionCommand(sessionCommandManager, canvasCommandFactoryInstance,
-                                                selectionEvent, copySelectionSessionCommand,
-                                                definitionUtils);
+                                                selectionEvent,
+                                                definitionUtils, sessionManager);
     }
 
     @Override

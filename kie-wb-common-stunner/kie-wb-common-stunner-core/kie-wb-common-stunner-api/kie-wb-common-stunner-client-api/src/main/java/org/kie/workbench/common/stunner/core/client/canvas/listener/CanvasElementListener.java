@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.listener;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -25,5 +27,12 @@ public interface CanvasElementListener extends CanvasListener<CanvasHandler, Ele
      * An element has been updated on the canvas.
      */
     default void update(Element item) {
+    }
+
+    /**
+     * Batch Updates Elements
+     * @param queue Queue of Items to be updated
+     */
+    default void  updateBatch(final List<Element> queue) {
     }
 }

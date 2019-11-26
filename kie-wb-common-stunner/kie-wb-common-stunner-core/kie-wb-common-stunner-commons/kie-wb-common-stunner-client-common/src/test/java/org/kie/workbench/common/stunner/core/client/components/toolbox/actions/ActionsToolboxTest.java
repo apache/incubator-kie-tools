@@ -130,6 +130,14 @@ public class ActionsToolboxTest {
     }
 
     @Test
+    public void testShowOnlyOnce() {
+        tested.show();
+        tested.show();
+        verify(view,
+               times(1)).show();
+    }
+
+    @Test
     public void testHide() {
         tested.hide();
         verify(view,

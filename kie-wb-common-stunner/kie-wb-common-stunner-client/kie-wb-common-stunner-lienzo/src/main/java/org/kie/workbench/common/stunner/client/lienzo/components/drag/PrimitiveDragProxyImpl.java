@@ -50,7 +50,7 @@ public class PrimitiveDragProxyImpl implements PrimitiveDragProxy<Layer, IPrimit
                                                                                               item,
                                                                                               x,
                                                                                               y,
-                                                                                              200,
+                                                                                              1,
                                                                                               new org.kie.workbench.common.stunner.lienzo.primitive.PrimitiveDragProxy.Callback() {
 
                                                                                                   @Override
@@ -63,6 +63,7 @@ public class PrimitiveDragProxyImpl implements PrimitiveDragProxy<Layer, IPrimit
                                                                                                   @Override
                                                                                                   public void onMove(final int x,
                                                                                                                      final int y) {
+
                                                                                                       callback.onMove(x,
                                                                                                                       y);
                                                                                                   }

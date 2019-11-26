@@ -28,6 +28,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
@@ -69,19 +70,36 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
         this(null,
              null,
              null,
-             null);
+             null,
+             null
+        );
     }
 
     @Inject
     public DeleteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                          final Event<CanvasClearSelectionEvent> clearSelectionEvent,
-                                         final DefinitionUtils definitionUtils) {
+                                         final DefinitionUtils definitionUtils,
+                                         final SessionManager sessionmanager) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactoryInstance = canvasCommandFactoryInstance;
         this.clearSelectionEvent = clearSelectionEvent;
         this.definitionUtils = definitionUtils;
+        SessionSingletonCommandsFactory.createOrPut(this, sessionmanager);
+    }
+
+    public static DeleteSelectionSessionCommand getInstance(SessionManager sessionManager) {
+        return SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager);
+    }
+
+    public static DeleteSelectionSessionCommand getInstance(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                                            final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
+                                                            final Event<CanvasClearSelectionEvent> clearSelectionEvent,
+                                                            final DefinitionUtils definitionUtils,
+                                                            final SessionManager sessionmanager) {
+
+        return SessionSingletonCommandsFactory.getInstanceDelete(sessionCommandManager, canvasCommandFactoryInstance, clearSelectionEvent, definitionUtils, sessionmanager);
     }
 
     @Override
@@ -101,7 +119,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
-        if (null != getSession().getSelectionControl()) {
+        if (null != getSession() && null != getSession().getSelectionControl()) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
@@ -117,6 +135,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
                                                                                           .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
                                                                                           .filter(Objects::nonNull)
                                                                                           .collect(Collectors.toList())));
+
                 // Check the results.
                 if (!CommandUtils.isError(result)) {
                     callback.onSuccess();

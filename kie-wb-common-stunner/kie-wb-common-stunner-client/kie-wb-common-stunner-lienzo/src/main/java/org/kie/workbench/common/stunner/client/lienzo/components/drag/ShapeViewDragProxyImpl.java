@@ -72,21 +72,25 @@ public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas
                                     y);
             }
         };
+
         if (item instanceof WiresShape) {
+
             final WiresShape wiresShape = (WiresShape) item;
             this.proxy = new WiresShapeDragProxy(getLayer().getLienzoLayer(),
                                                  wiresShape,
                                                  x,
                                                  y,
-                                                 100,
+                                                 1,
                                                  c);
         } else if (item instanceof WiresConnector) {
+
             final WiresConnector wiresConnector = (WiresConnector) item;
+
             this.proxy = new WiresConnectorDragProxy(getLayer().getLienzoLayer(),
                                                      wiresConnector,
                                                      x,
                                                      y,
-                                                     100,
+                                                     1,
                                                      c);
         }
         return this;

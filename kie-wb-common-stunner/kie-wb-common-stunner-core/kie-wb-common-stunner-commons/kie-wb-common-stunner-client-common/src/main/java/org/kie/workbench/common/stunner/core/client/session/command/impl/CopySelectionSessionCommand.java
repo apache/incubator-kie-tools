@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
@@ -57,13 +58,23 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     public CopySelectionSessionCommand() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public CopySelectionSessionCommand(final Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent) {
+    public CopySelectionSessionCommand(final Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent, final SessionManager sessionManager) {
         super(true);
         this.commandExecutedEvent = commandExecutedEvent;
+        SessionSingletonCommandsFactory.createOrPut(this, sessionManager);
+    }
+
+    public static CopySelectionSessionCommand getInstance(SessionManager sessionManager) {
+
+        return SessionSingletonCommandsFactory.getInstanceCopy(null, sessionManager);
+    }
+
+    public static CopySelectionSessionCommand getInstance(final Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent, SessionManager sessionManager) {
+        return SessionSingletonCommandsFactory.getInstanceCopy(commandExecutedEvent, sessionManager);
     }
 
     @Override
@@ -94,7 +105,7 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
 
     @Override
     public <V> void execute(final Callback<V> callback) {
-        if (null != getSession().getSelectionControl()) {
+        if (getSession() != null && null != getSession().getSelectionControl()) {
             try {
                 //for now just copy Nodes not Edges
                 final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();

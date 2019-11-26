@@ -89,7 +89,6 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
                           final RenderMode renderMode) {
 
         final List<String> previousExpandedCollapses = new ArrayList<>();
-
         if (renderer.isInitialized()) {
             // Collecting expanded collapses from current form to synchronize the new form collapses
             renderer.getCurrentForm().getFields()

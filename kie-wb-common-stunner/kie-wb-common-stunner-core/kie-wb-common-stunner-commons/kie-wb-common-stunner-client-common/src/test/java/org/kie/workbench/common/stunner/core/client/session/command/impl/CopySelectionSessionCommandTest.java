@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
@@ -38,6 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -54,6 +55,9 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
     @Mock
     private EventSourceMock<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent;
 
+    @Mock
+    private SessionManager sessionManager;
+
     private ArgumentCaptor<CopySelectionSessionCommandExecutedEvent> eventArgumentCaptor;
 
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
@@ -68,13 +72,12 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
 
     private TestingGraphInstanceBuilder.TestGraph2 graphInstance;
 
-    @Before
-    public void setUp() throws Exception {
+    @Override
+    public void setup() {
+        super.setup();
+        when(sessionManager.getCurrentSession()).thenReturn(session);
         eventArgumentCaptor = ArgumentCaptor.forClass(CopySelectionSessionCommandExecutedEvent.class);
         clipboardControl = spy(new LocalClipboardControl());
-
-        super.setup();
-
         TestingGraphMockHandler graphMockHandler = new TestingGraphMockHandler();
         this.graphInstance = TestingGraphInstanceBuilder.newGraph2(graphMockHandler);
         this.copySelectionSessionCommand = getCommand();
@@ -191,9 +194,28 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
         assertEquals(0, clipboardControl.getEdgeMap().size());
     }
 
+    @Test
+    public void testExecuteNullSessionAndNullSelectionControl() {
+        copySelectionSessionCommand.execute(callback);
+        // if session null, then it should never copy items
+        verify(clipboardControl, never()).set(any(), any(), any());
+
+        copySelectionSessionCommand.bind(session);
+        when(session.getSelectionControl()).thenReturn(null);
+        copySelectionSessionCommand.execute(callback);
+        // if session null, then it should never copy items
+        verify(clipboardControl, never()).set(any(), any(), any());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    @SuppressWarnings("unchecked")
+    public void testEmptyConstructor() {
+        CopySelectionSessionCommand copy = new CopySelectionSessionCommand(null, null);
+    }
+
     @Override
     protected CopySelectionSessionCommand getCommand() {
-        return new CopySelectionSessionCommand(commandExecutedEvent);
+        return CopySelectionSessionCommand.getInstance(commandExecutedEvent, sessionManager);
     }
 
     @Override

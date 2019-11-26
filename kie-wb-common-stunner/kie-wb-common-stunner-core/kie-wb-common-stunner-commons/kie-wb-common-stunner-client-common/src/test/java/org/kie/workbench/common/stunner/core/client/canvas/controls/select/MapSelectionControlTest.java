@@ -238,6 +238,30 @@ public class MapSelectionControlTest {
     }
 
     @Test
+    public void testSelectOnlyOnce() {
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.select(element.getUUID());
+        tested.select(element.getUUID());
+
+        assertEquals(1, tested.getSelectedItems().size());
+        assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
+        verify(shape, times(2)).applyState(eq(ShapeState.SELECTED));
+        verify(shape, never()).applyState(eq(ShapeState.NONE));
+        verify(shape, never()).applyState(eq(ShapeState.INVALID));
+        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(canvas, times(2)).focus();
+        final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
+                ArgumentCaptor.forClass(CanvasSelectionEvent.class);
+        // Verify it has only been fired once
+        verify(elementSelectedEvent,
+               times(1)).fire(elementSelectedEventArgumentCaptor.capture());
+        final CanvasSelectionEvent event = elementSelectedEventArgumentCaptor.getValue();
+        assertEquals(1, event.getIdentifiers().size());
+        assertEquals(ELEMENT_UUID, event.getIdentifiers().iterator().next());
+    }
+
+    @Test
     public void testSelectReadOnly() {
         tested.init(canvasHandler);
         tested.register(element);

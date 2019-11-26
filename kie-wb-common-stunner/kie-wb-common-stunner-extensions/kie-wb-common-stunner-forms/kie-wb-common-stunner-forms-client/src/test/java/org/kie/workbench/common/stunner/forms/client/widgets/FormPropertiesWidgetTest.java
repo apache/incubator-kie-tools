@@ -54,9 +54,11 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -69,6 +71,7 @@ public class FormPropertiesWidgetTest {
     private static final String GRAPH_UUID = "graph1";
     private static final String DIAGRAM_NAME = "diagram1";
     private static final String ROOT_UUID = "root1";
+    private static final String NODE2_UUID = "node2";
     private static final String DOMAIN_OBJECT_UUID = "domainObject1";
     private static final String DOMAIN_OBJECT_TRANSLATION_KEY = "domainObjectTranslationKey";
 
@@ -100,6 +103,8 @@ public class FormPropertiesWidgetTest {
     private Metadata metadata;
     @Mock
     private NodeImpl node;
+    @Mock
+    private NodeImpl node2;
     @Mock
     private Definition nodeContent;
     @Mock
@@ -143,6 +148,8 @@ public class FormPropertiesWidgetTest {
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
+        when(node2.getUUID()).thenReturn(NODE2_UUID);
+        when(node2.getContent()).thenReturn(nodeContent);
         BindableProxyFactory.addBindableProxy(Object.class,
                                               proxyProvider);
         when(proxyProvider.getBindableProxy()).thenReturn((BindableProxy) proxy);
@@ -267,5 +274,42 @@ public class FormPropertiesWidgetTest {
 
         verify(formsContainer, never()).render(any(), any(), any(), any(), any(), any());
         verify(command, never()).execute();
+    }
+
+    @Test
+    public void testShowElement() {
+        tested.init();
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+
+        final Command command = mock(Command.class);
+        when(formsCanvasSessionHandler.getDiagram()).thenReturn(diagram);
+
+        formRenderer.render(GRAPH_UUID, node, command);
+        formRenderer.render(GRAPH_UUID, node, command);
+
+        verify(formsCanvasSessionHandler, never()).executeUpdateProperty(any(), any(), any());
+        // Verify it is only rendered once, since the same item was already rendered
+        verify(formsContainer, atMost(1)).render(any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void testAreElementsPositionSame() {
+        tested.init();
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+
+        final Command command = mock(Command.class);
+        when(formsCanvasSessionHandler.getDiagram()).thenReturn(diagram);
+
+        formRenderer.render(GRAPH_UUID, node, command);
+
+        assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), true);
+
+        formRenderer.render(GRAPH_UUID, node2, command);
+        assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), false);
+        assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node2), true);
     }
 }

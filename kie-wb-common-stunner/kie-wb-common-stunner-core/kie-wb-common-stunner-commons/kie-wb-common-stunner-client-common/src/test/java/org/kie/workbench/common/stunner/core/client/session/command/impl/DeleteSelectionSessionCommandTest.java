@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -34,7 +35,10 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +47,9 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
 
     @Mock
     private Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
+
+    @Mock
+    private SessionManager sessionManager;
 
     @Mock
     private ClientSessionCommand.Callback callback;
@@ -60,10 +67,11 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
 
     @Override
     public void setup() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
         super.setup();
 
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
-        when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
+        when(definitionUtils.getQualifier(anyString())).thenReturn(qualifier);
         when(canvasCommandFactoryInstance.select(eq(qualifier))).thenReturn(canvasCommandFactoryInstance);
         when(canvasCommandFactoryInstance.isUnsatisfied()).thenReturn(false);
         when(canvasCommandFactoryInstance.get()).thenReturn(canvasCommandFactory);
@@ -71,21 +79,43 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
 
     @Override
     protected AbstractClientSessionCommand<EditorSession> getCommand() {
-        return new DeleteSelectionSessionCommand(sessionCommandManager,
-                                                 canvasCommandFactoryInstance,
-                                                 canvasClearSelectionEventEvent,
-                                                 definitionUtils);
+        return DeleteSelectionSessionCommand.getInstance(sessionCommandManager,
+                                                         canvasCommandFactoryInstance,
+                                                         canvasClearSelectionEventEvent,
+                                                         definitionUtils, sessionManager);
     }
 
     @Test
     public void testClearSessionInvoked() {
         DeleteSelectionSessionCommand deleteCommand = (DeleteSelectionSessionCommand) this.command;
 
+        when(definitionUtils.getQualifier(anyString())).thenReturn(qualifier);
+
         deleteCommand.bind(session);
 
         deleteCommand.execute(callback);
 
         verify(selectionControl).clearSelection();
+    }
+
+    @Test
+    public void testExecuteNullSessionAndNullSelectionControl() {
+        DeleteSelectionSessionCommand deleteCommand = (DeleteSelectionSessionCommand) this.command;
+        deleteCommand.execute(callback);
+        // if session null, then it should never fire event
+
+        verify(canvasClearSelectionEventEvent, never()).fire(any());
+
+        deleteCommand.bind(session);
+        when(session.getSelectionControl()).thenReturn(null);
+        deleteCommand.execute(callback);
+        // if session null, then it should never fire event
+        verify(canvasClearSelectionEventEvent, never()).fire(any());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEmptyConstructor() {
+        DeleteSelectionSessionCommand del = new DeleteSelectionSessionCommand();
     }
 
     @Override

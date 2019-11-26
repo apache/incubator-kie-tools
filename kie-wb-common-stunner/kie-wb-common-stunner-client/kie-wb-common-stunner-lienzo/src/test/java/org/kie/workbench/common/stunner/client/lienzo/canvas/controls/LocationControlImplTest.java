@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactoryStub;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -140,6 +141,12 @@ public class LocationControlImplTest {
 
     @Mock
     private Node element;
+
+    @Mock
+    private Node<View<?>, Edge> node;
+
+    @Mock
+    private View nodeContent;
 
     @Mock
     private View elementContent;
@@ -234,6 +241,8 @@ public class LocationControlImplTest {
         ArgumentCaptor<DragHandler> dragHandlerArgumentCaptor = forClass(DragHandler.class);
         verify(shapeEventHandler).addHandler(eq(ViewEventType.DRAG), dragHandlerArgumentCaptor.capture());
         dragHandlerArgumentCaptor.getValue().start(mock(DragEvent.class));
+        dragHandlerArgumentCaptor.getValue().end(mock(DragEvent.class));
+
         ArgumentCaptor<CanvasSelectionEvent> canvasSelectionEventArgumentCaptor = forClass(CanvasSelectionEvent.class);
         verify(canvasSelectionEvent).fire(canvasSelectionEventArgumentCaptor.capture());
         assertTrue(canvasSelectionEventArgumentCaptor.getValue().getIdentifiers().contains(element.getUUID()));
@@ -325,6 +334,19 @@ public class LocationControlImplTest {
         UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) command.getCommands().get(0);
         assertEquals(element, updateElementPositionCommand.getElement());
         assertEquals(new Point2D(40d, 50d), updateElementPositionCommand.getLocation());
+    }
+
+    @Test
+    public void testHandleKeys() {
+        tested.init(canvasHandler);
+        tested.register(element);
+
+        when (canvasHandler.getGraphIndex().getNode(any())).thenReturn(element);
+
+        tested.getSelectedIDs().add(element.getUUID());
+        tested.handleArrowKeys(KeyboardEvent.Key.ARROW_DOWN);
+
+        verify(commandManager, atLeastOnce()).execute(any(), any());
     }
 
     @Test

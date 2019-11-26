@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElemen
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasDomainObjectListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.QueueGraphExecutionContext;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -396,12 +397,39 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
     }
 
+    private GraphCommandExecutionContext graphContext = null;
+
+    /**
+     * Sets the Graphic Context to be used for multiple operations
+     * @param graphContext Graph context to be set
+     */
+    public void setStaticContext(GraphCommandExecutionContext graphContext) {
+        this.graphContext = graphContext;
+    }
+
     /**
      * Notifies an element updated to the listeners.
      */
     public void notifyCanvasElementUpdated(final Element candidate) {
+
+        if (graphContext != null) {
+            if (graphContext instanceof QueueGraphExecutionContext) {
+                ((QueueGraphExecutionContext) graphContext).addElement(candidate);
+            } else {
+                for (final CanvasElementListener instance : listeners) {
+                    instance.update(candidate);
+                }
+            }
+        }
+    }
+
+    /**
+     * Does Batch update
+     * @param queue Queue to be sent to be updated
+     */
+    public void doBatchUpdate(final List<Element> queue) {
         for (final CanvasElementListener instance : listeners) {
-            instance.update(candidate);
+            instance.updateBatch(queue);
         }
     }
 

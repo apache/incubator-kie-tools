@@ -76,6 +76,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
+
         checkNotNull("callback",
                      callback);
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();

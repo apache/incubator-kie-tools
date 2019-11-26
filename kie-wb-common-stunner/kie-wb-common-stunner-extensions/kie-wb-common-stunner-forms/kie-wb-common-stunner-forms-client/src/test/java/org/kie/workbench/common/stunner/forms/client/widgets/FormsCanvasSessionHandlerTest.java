@@ -15,9 +15,13 @@
  */
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import com.google.gwt.user.client.Timer;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
@@ -51,11 +54,12 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class FormsCanvasSessionHandlerTest {
 
     private static final String GRAPH_UUID = "graph-uuid";
@@ -211,10 +215,14 @@ public class FormsCanvasSessionHandlerTest {
         handler.bind(session);
 
         canvasSelectionEvent = new CanvasSelectionEvent(abstractCanvasHandler, UUID);
-
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        verify(formRenderer).render(anyString(), eq(element), any(Command.class));
+        new Timer() {
+            @Override
+            public void run() {
+                verify(formRenderer).render(anyString(), eq(element), any(Command.class));
+            }
+        }.schedule(200);
     }
 
     @Test
@@ -226,6 +234,52 @@ public class FormsCanvasSessionHandlerTest {
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
         verify(formRenderer, never()).render(anyString(), any(Element.class), any(Command.class));
+    }
+
+    @Test
+    public void testOnCanvasBatchUpdateMultiple() {
+        handler.bind(session);
+        when(formRenderer.areLastPositionsSameForElement(any())).thenReturn(true);
+
+        final List<Element> queue = new ArrayList<>();
+
+        queue.add(mock(Element.class));
+        queue.add(mock(Element.class));
+        queue.add(mock(Element.class));
+
+        handler.getFormsCanvasListener().updateBatch(queue);
+
+        // Will action on the very last item
+        verify(formRenderer, times(1)).resetCache();
+        // Render will be called
+    }
+
+    @Test
+    public void testOnCanvasBatchUpdateEmpty() {
+        handler.bind(session);
+        when(formRenderer.areLastPositionsSameForElement(any())).thenReturn(true);
+
+        final List<Element> queue = new ArrayList<>();
+
+        handler.getFormsCanvasListener().updateBatch(queue);
+
+        verify(formRenderer, never()).resetCache();
+    }
+
+    @Test
+    public void testOnCanvasBatchUpdateOne() {
+        handler.bind(session);
+        when(formRenderer.areLastPositionsSameForElement(any())).thenReturn(true);
+
+        final List<Element> queue = new ArrayList<>();
+
+        queue.add(mock(Element.class));
+
+        handler.getFormsCanvasListener().updateBatch(queue);
+
+        // Will action on the very last item
+        verify(formRenderer, times(1)).resetCache();
+        // Render will be calleds
     }
 
     @Test

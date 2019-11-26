@@ -126,6 +126,21 @@ public class ToolboxControlTest {
     }
 
     @Test
+    public void testElementSelectedEventCache() {
+        final String uuid = "uuid1";
+        when(element.getUUID()).thenReturn(uuid);
+        final CanvasSelectionEvent event = new CanvasSelectionEvent(canvasHandler,
+                                                                    element.getUUID());
+        tested.onCanvasSelectionEvent(event);
+        tested.onCanvasSelectionEvent(event);
+        // Verify it has onl been selected once and called show
+        verify(delegated,
+               times(1)).show(eq(uuid));
+        verify(delegated,
+               never()).destroy();
+    }
+
+    @Test
     public void testClearSelectionEvent() {
         final CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
         tested.onCanvasClearSelectionEvent(event);
