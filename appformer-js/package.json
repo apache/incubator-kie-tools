@@ -20,7 +20,8 @@
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
     "init": "yarn --force",
-    "build": "yarn run lint && yarn test && webpack --mode production"
+    "build": "yarn run lint && yarn test && webpack --mode production",
+    "locktt": "locktt"
   },
   "babel": {
     "presets": [
@@ -55,6 +56,7 @@
     "watch": "1.0.2",
     "webpack": "4.15.1",
     "webpack-cli": "3.0.8",
-    "babel-jest": "23.0.0"
+    "babel-jest": "23.0.0",
+    "lock-treatment-tool": "^0.4.1"
   }
 }
