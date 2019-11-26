@@ -23,9 +23,11 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -57,8 +59,14 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     @DataField("faAngleRight")
     protected SpanElement faAngleRight = Document.get().createSpanElement();
 
+    @DataField("listGroupElement")
+    protected DivElement listGroupElement = Document.get().createDivElement();
+
     @DataField("fullClassName")
-    protected DivElement fullClassName = Document.get().createDivElement();
+    protected SpanElement fullClassName = Document.get().createSpanElement();
+
+    @DataField("checkElement")
+    protected SpanElement checkElement = Document.get().createSpanElement();
 
     @DataField("factProperties")
     protected UListElement factProperties = Document.get().createULElement();
@@ -85,10 +93,11 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
         return parentPath.isEmpty() ? factName : parentPath + "." + factName;
     }
 
-    @EventHandler("fullClassName")
+    @EventHandler("listGroupElement")
     public void onFullClassNameClick(ClickEvent event) {
-        if (!fullClassName.getClassName().contains("disabled")) {
-            listGroupItem.addClassName("selected");
+        if (!listGroupElement.getClassName().contains(ConstantHolder.DISABLED)) {
+            checkElement.getStyle().setDisplay(Style.Display.BLOCK);
+            listGroupItem.addClassName(ConstantHolder.SELECTED);
             presenter.onSelectedElement(this);
         }
     }
@@ -115,7 +124,22 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
 
     @Override
     public void unselect() {
-        listGroupItem.removeClassName("selected");
+        listGroupItem.removeClassName(ConstantHolder.SELECTED);
+        showCheck(false);
+    }
+
+    @Override
+    public void showCheck(boolean show) {
+        if (show) {
+            checkElement.getStyle().setDisplay(Style.Display.BLOCK);
+        } else {
+            checkElement.getStyle().setDisplay(Style.Display.NONE);
+        }
+    }
+
+    @Override
+    public boolean isCheckShown() {
+        return !Objects.equals(Style.Display.NONE.getCssName(), checkElement.getStyle().getDisplay());
     }
 
     @Override
@@ -147,9 +171,9 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     public void setParentPath(String parentPath) {
         this.parentPath = this.parentPath.isEmpty() ? parentPath : this.parentPath + "." + parentPath;
         if (this.parentPath.isEmpty()) {
-            fullClassName.removeClassName("disabled");
+            listGroupElement.removeClassName(ConstantHolder.DISABLED);
         } else {
-            fullClassName.addClassName("disabled");
+            listGroupElement.addClassName(ConstantHolder.DISABLED);
         }
     }
 

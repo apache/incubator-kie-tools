@@ -18,12 +18,16 @@
 <!-- TEST TOOLS -->
 <div id="testtools-panel" class="uf-scroll-panel">
     <div id="kieTestToolsContent" class="tab-pane kie-tab-pane--scesim-panel">
-        <p>To create a test template, define the "Given" and "Expect" columns by using the expression editor below.</p>
-
-        <label for="kie-search">Select Data Object</label>
+        <p data-field="testToolsDescriptionElement"></p>
+        <div>
+            <label data-field="testToolObjectSelectionTitleElement" for="kie-search"></label>
+            <a href="#">
+                <span data-field="infoSelectDataObjectElement" class="pficon pficon-info kie-test-tools-info__icon" data-toggle="tooltip" data-placement="left" title=""></span>
+            </a>
+        </div>
         <div id="kie-search" class="kie-test-tools-content__box"><!-- outlined data object box -->
             <!-- search box -->
-            <div class="search-pf has-button">
+            <div class="search-pf has-button kie-test-tools-search__box">
                 <div class="form-group has-clear">
                     <div class="search-pf-input-group">
                         <input id="search1" type="search" class="form-control" data-field="inputSearch" placeholder="Search">
@@ -40,46 +44,28 @@
             <!-- end search box -->
 
             <!-- data object list expansion -->
-            <label data-field="dataObjectListContainer-separator" style="display: none"></label>
-            <div id="data-object-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="dataObjectListContainer"></div>
+            <div id="data-object-pf-list-simple-expansion" class="tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="dataObjectListContainer"></div>
             <!-- end list expansion -->
             <!-- simple java type list expansion -->
-            <label data-field="simpleJavaTypeListContainer-separator" style="display: none"></label>
-            <div id="simple-java-type-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaTypeListContainer"></div>
+            <div id="simple-java-type-pf-list-simple-expansion" class="tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaTypeListContainer"></div>
             <!-- end list expansion -->
             <!-- instance list expansion -->
-            <label data-field="instanceListContainer-separator" style="display: none"></label>
-            <div id="instance-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="instanceListContainer"></div>
+            <span data-field="instanceListContainer-separator" class="kie-test-tools-instances-list__label"></span>
+            <div id="instance-pf-list-simple-expansion" class="tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="instanceListContainer"></div>
             <!-- end list expansion -->
             <!-- instance list expansion -->
-            <label data-field="simpleJavaInstanceListContainer-separator" style="display: none"></label>
-            <div id="simple-java-instance-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaInstanceListContainer"></div>
+            <div id="simple-java-instance-pf-list-simple-expansion" class="tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaInstanceListContainer"></div>
             <!-- end list expansion -->
 
         </div><!-- end outlined data object box -->
-
-        <div>
-            <label for="kie-name" style="display: none">Name Field</label>
-            <input id="kie-name" type="text" class="form-control" placeholder="Name" data-field="nameField" style="display: none">
-
-            <br/>
-
-            <label for="kieDropdownConditions" style="display: none">Set Conditions</label>
-            <div class="dropdown" style="display: none">
-                <button class="btn btn-default dropdown-toggle" type="button" id="kieDropdownConditions" data-toggle="dropdown" data-field="conditionsButton">
-                    Condition
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="kieDropdownConditions" data-field="conditionsDropdown">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Required</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Preferred</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other options here</a></li>
-                </ul>
-            </div>
-
-            <hr/>
-            <div style="margin-bottom: 10px;" data-field="addButtonLabel"></div>
-            <button class="btn btn-lg btn-primary" type="button" data-field="addButton">Insert Data Object</button>
+        <div class="kie-tab-pane--scesim-panel-footer">
+             <span>
+                 <button class="btn btn-lg btn-primary" type="button" data-field="addButton"></button>
+                 <span>
+                     <a class="kie-test-tools-clear-selection" data-field="clearSelectionElement" href="#"></a>
+                 </span>
+             </span>
+            <div class="kie-test-tools-insert-object-label" data-field="addButtonLabel"></div>
         </div>
     </div>
 </div>

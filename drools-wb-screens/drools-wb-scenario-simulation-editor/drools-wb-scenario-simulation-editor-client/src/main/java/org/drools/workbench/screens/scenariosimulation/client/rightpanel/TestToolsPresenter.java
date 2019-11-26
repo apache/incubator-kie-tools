@@ -27,8 +27,6 @@ import java.util.TreeMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -85,70 +83,38 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
-    public void onClearNameField() {
-        view.clearNameField();
-    }
-
-    @Override
     public void onClearStatus() {
         onClearSearch();
-        onClearNameField();
     }
 
     @Override
     public void clearDataObjectList() {
-        view.getDataObjectListContainer().removeAllChildren();
+        view.clearDataObjectList();
     }
 
     @Override
     public void clearSimpleJavaTypeList() {
-        view.getSimpleJavaTypeListContainer().removeAllChildren();
+        view.clearSimpleJavaTypeList();
     }
 
     @Override
     public void clearInstanceList() {
-        view.getInstanceListContainer().removeAllChildren();
+        view.clearInstanceList();
     }
 
     @Override
     public void clearSimpleJavaInstanceFieldList() {
-        view.getSimpleJavaInstanceListContainer().removeAllChildren();
-    }
-
-    @Override
-    public void updateDataObjectListSeparator() {
-        if (view.getDataObjectListContainer().getChildCount() == 0) {
-            view.getDataObjectListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-        } else {
-            view.getDataObjectListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
-        }
-    }
-
-    @Override
-    public void updateSimpleJavaTypeListSeparator() {
-        if (view.getSimpleJavaTypeListContainer().getChildCount() == 0) {
-            view.getSimpleJavaTypeListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-        } else {
-            view.getSimpleJavaTypeListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
-        }
+        view.clearSimpleJavaInstanceFieldList();
     }
 
     @Override
     public void updateInstanceListSeparator() {
-        if (view.getInstanceListContainer().getChildCount() < 1 || GridWidget.BACKGROUND.equals(gridWidget)) {
-            view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-        } else {
-            view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
-        }
+        view.updateInstanceListSeparator(GridWidget.SIMULATION.equals(gridWidget));
     }
 
     @Override
-    public void updateSimpleJavaInstanceFieldListSeparator() {
-        if (view.getSimpleJavaInstanceListContainer().getChildCount() < 1 || GridWidget.BACKGROUND.equals(gridWidget)) {
-            view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-        } else {
-            view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
-        }
+    public void showInstanceListContainerSeparator(boolean show) {
+        view.showInstanceListContainerSeparator(show);
     }
 
     @Override
@@ -181,7 +147,6 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         clearDataObjectList();
         this.dataObjectFieldsMap = dataObjectFieldsMap;
         this.dataObjectFieldsMap.forEach(this::addDataObjectListGroupItemView);
-        updateDataObjectListSeparator();
     }
 
     @Override
@@ -189,7 +154,6 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         clearSimpleJavaTypeList();
         this.simpleJavaTypeFieldsMap = simpleJavaTypeFieldsMap;
         this.simpleJavaTypeFieldsMap.forEach(this::addSimpleJavaTypeListGroupItemView);
-        updateSimpleJavaTypeListSeparator();
     }
 
     @Override
@@ -205,7 +169,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         clearSimpleJavaInstanceFieldList();
         this.simpleJavaInstanceFieldsMap = simpleJavaInstanceFieldsMap;
         this.simpleJavaInstanceFieldsMap.forEach(this::addSimpleJavaInstanceListGroupItemView);
-        updateSimpleJavaInstanceFieldListSeparator();
+        updateInstanceListSeparator();
     }
 
     @Override
@@ -241,7 +205,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 hideInstances();
                 break;
             case SIMULATION:
-                showInstances();
+                showInstanceListContainerSeparator(true);
                 break;
             default:
                 throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
@@ -261,19 +225,17 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 .stream()
                 .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
                 .forEach(filteredEntry -> addSimpleJavaTypeListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-//        if (GridWidget.SIMULATION.equals(gridWidget)) {
-            instanceFieldsMap
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
-                    .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-            simpleJavaInstanceFieldsMap
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
-                    .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-//        }
-        updateSeparators();
+        instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        simpleJavaInstanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        updateInstanceListSeparator();
     }
 
     @Override
@@ -289,43 +251,37 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 .stream()
                 .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
                 .forEach(filteredEntry -> addSimpleJavaTypeListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-//        if (GridWidget.SIMULATION.equals(gridWidget)) {
-            instanceFieldsMap
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
-                    .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-            simpleJavaInstanceFieldsMap
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
-                    .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
-//        }
-        updateSeparators();
+        instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        simpleJavaInstanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                .forEach(filteredEntry -> addSimpleJavaInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        updateInstanceListSeparator();
     }
 
     @Override
     public void addDataObjectListGroupItemView(String factName, FactModelTree factModelTree) {
-        DivElement toAdd = listGroupItemPresenter.getDivElement(factName, factModelTree);
-        view.getDataObjectListContainer().appendChild(toAdd);
+        view.addDataObjectListGroupItem(listGroupItemPresenter.getDivElement(factName, factModelTree));
     }
 
     @Override
     public void addSimpleJavaTypeListGroupItemView(String factName, FactModelTree factModelTree) {
-        DivElement toAdd = listGroupItemPresenter.getDivElement(factName, factModelTree);
-        view.getSimpleJavaTypeListContainer().appendChild(toAdd);
+        view.addSimpleJavaTypeListGroupItem(listGroupItemPresenter.getDivElement(factName, factModelTree));
     }
 
     @Override
     public void addInstanceListGroupItemView(String instanceName, FactModelTree factModelTree) {
-        DivElement toAdd = listGroupItemPresenter.getDivElement(instanceName, factModelTree);
-        view.getInstanceListContainer().appendChild(toAdd);
+        view.addInstanceListGroupItem(listGroupItemPresenter.getDivElement(instanceName, factModelTree));
     }
 
     @Override
     public void addSimpleJavaInstanceListGroupItemView(String instanceName, FactModelTree factModelTree) {
-        DivElement toAdd = listGroupItemPresenter.getDivElement(instanceName, factModelTree);
-        view.getSimpleJavaInstanceListContainer().appendChild(toAdd);
+        view.addSimpleJavaInstanceListGroupItem(listGroupItemPresenter.getDivElement(instanceName, factModelTree));
     }
 
     @Override
@@ -384,11 +340,24 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         selectedListGroupItemView = null;
         String factName = selectedFieldItemView.getFullPath().split("\\.")[0];
         boolean isFactNameAssigned = listGroupItemPresenter.isInstanceAssigned(factName);
-        if (filterTerm(factName, listGroupItemPresenter.getFilterTerm(), isFactNameAssigned)) {
+        /* If the check is not shown, the item was not selected by an user but automatically. If it's shown,
+           then it checks if the related instance is already assigned or not. */
+        if (!selectedFieldItemView.isCheckShown() ||
+                filterTerm(factName, listGroupItemPresenter.getFilterTerm(), isFactNameAssigned)) {
             view.disableAddButton();
         } else {
             view.enableAddButton();
         }
+    }
+
+    @Override
+    public void clearSelection() {
+        if (selectedFieldItemView != null) {
+            selectedFieldItemView.showCheck(false);
+        } else if (selectedListGroupItemView != null) {
+            selectedListGroupItemView.showCheck(false);
+        }
+        view.disableAddButton();
     }
 
     @Override
@@ -429,16 +398,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void hideInstances() {
         clearInstanceList();
         clearSimpleJavaInstanceFieldList();
-        view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-        view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
-    }
-
-    /**
-     * Method to show all the <b>instance-related</b> html
-     */
-    protected void showInstances() {
-        view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
-        view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.BLOCK);
+        showInstanceListContainerSeparator(false);
     }
 
     /**
@@ -479,13 +439,6 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         clearSimpleJavaTypeList();
         clearInstanceList();
         clearSimpleJavaInstanceFieldList();
-    }
-
-    protected void updateSeparators() {
-        updateDataObjectListSeparator();
-        updateSimpleJavaTypeListSeparator();
-        updateInstanceListSeparator();
-        updateSimpleJavaInstanceFieldListSeparator();
     }
 
     /**

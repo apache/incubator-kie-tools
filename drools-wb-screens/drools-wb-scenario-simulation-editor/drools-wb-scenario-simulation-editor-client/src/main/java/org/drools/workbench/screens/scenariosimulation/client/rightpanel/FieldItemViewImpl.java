@@ -20,8 +20,10 @@ import java.util.Objects;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -34,6 +36,12 @@ public class FieldItemViewImpl implements FieldItemView {
 
     @DataField("fieldElement")
     protected LIElement fieldElement = Document.get().createLIElement();
+
+    @DataField("fieldNameElement")
+    protected SpanElement fieldNameElement = Document.get().createSpanElement();
+
+    @DataField("checkElement")
+    protected SpanElement checkElement = Document.get().createSpanElement();
 
     private Presenter fieldItemPresenter;
 
@@ -51,11 +59,11 @@ public class FieldItemViewImpl implements FieldItemView {
                 .append(className)
                 .append("]")
                 .toString();
-        fieldElement.setInnerHTML(innerHtml);
-        fieldElement.setAttribute("id", "fieldElement-" + factName + "-" + fieldName);
-        fieldElement.setAttribute("fieldName", fieldName);
-        fieldElement.setAttribute("className", className);
-        fieldElement.setAttribute("fullPath", fullPath);
+        fieldNameElement.setInnerHTML(innerHtml);
+        fieldNameElement.setAttribute("id", "fieldElement-" + factName + "-" + fieldName);
+        fieldNameElement.setAttribute("fieldName", fieldName);
+        fieldNameElement.setAttribute("className", className);
+        fieldNameElement.setAttribute("fullPath", fullPath);
         this.factName = factName;
         this.fieldName = fieldName;
         this.className = className;
@@ -98,14 +106,35 @@ public class FieldItemViewImpl implements FieldItemView {
     }
 
     @Override
+    public void onFieldElementSelected() {
+        fieldElement.addClassName(ConstantHolder.SELECTED);
+        fieldItemPresenter.onFieldElementClick(this);
+    }
+
     public void onFieldElementClick() {
-        fieldElement.addClassName("selected");
+        fieldElement.addClassName(ConstantHolder.SELECTED);
+        showCheck(true);
         fieldItemPresenter.onFieldElementClick(this);
     }
 
     @Override
+    public void showCheck(boolean show) {
+        if (show) {
+            checkElement.getStyle().setDisplay(Style.Display.BLOCK);
+        } else {
+            checkElement.getStyle().setDisplay(Style.Display.NONE);
+        }
+    }
+
+    @Override
+    public boolean isCheckShown() {
+        return !Objects.equals(Style.Display.NONE.getCssName(), checkElement.getStyle().getDisplay());
+    }
+
+    @Override
     public void unselect() {
-        fieldElement.removeClassName("selected");
+        fieldElement.removeClassName(ConstantHolder.SELECTED);
+        showCheck(false);
     }
 
     @Override

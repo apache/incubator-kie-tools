@@ -286,6 +286,8 @@ public interface ScenarioSimulationEditorConstants
 
     String complexTypes();
 
+    String dataObjectInstances();
+
     String complexCustomInstances();
 
     String simpleCustomInstances();
@@ -347,4 +349,12 @@ public interface ScenarioSimulationEditorConstants
     String export();
 
     String backgroundErrorNotification();
+
+    String testToolsDescription();
+
+    String testToolObjectSelectionTitle();
+
+    String testToolObjectSelectionTooltip();
+
+    String testToolClearSelection();
 }

@@ -52,7 +52,10 @@ public interface FieldItemView {
 
     void setPresenter(FieldItemView.Presenter fieldItemPresenter);
 
-    void onFieldElementClick();
+    /**
+     * It manages the fieldElement when is <b>automatically</b> selected.
+     */
+    void onFieldElementSelected();
 
     /**
      * @param fullPath The parent path (empty if the properties belongs to a <b>top-level</b> element)
@@ -63,6 +66,10 @@ public interface FieldItemView {
     void setFieldData(String fullPath, String factName, String fieldName, String className);
 
     LIElement getLIElement();
+
+    void showCheck(boolean show);
+
+    boolean isCheckShown();
 
     void unselect();
 

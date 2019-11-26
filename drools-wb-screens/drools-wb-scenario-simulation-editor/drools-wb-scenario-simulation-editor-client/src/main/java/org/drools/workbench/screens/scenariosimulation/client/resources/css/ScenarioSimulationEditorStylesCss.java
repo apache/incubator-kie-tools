@@ -78,4 +78,37 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     @ClassName("kie-tab-pane--scesim-panel")
     String kieTabPaneScesimPanel();
+
+    @ClassName("kie-tab-pane--scesim-panel-footer")
+    String kieTabPaneScesimPanelFooter();
+
+    @ClassName("kie-test-tools-content__box")
+    String kieTestToolsContentBox();
+
+    @ClassName("kie-test-tools-info__icon")
+    String kieTestToolsInfoIcon();
+
+    @ClassName("kie-test-tools-search__box")
+    String kieTestToolsSearchBox();
+
+    @ClassName("kie-test-tools-instances-list__label")
+    String kieTestToolsInstancesListLabel();
+
+    @ClassName("kie-test-tools-clear-selection")
+    String kieTestToolsClearSelection();
+
+    @ClassName("kie-list-view-pf-main-field-element")
+    String kieListViewPfMainFieldElement();
+
+    @ClassName("kie-list-view-pf-main-info__check")
+    String kieListViewPfMainInfoCheck();
+
+    @ClassName("kie-list-view-pf-main-info__text")
+    String kieListViewPfMainInfoText();
+
+    @ClassName("kie-test-tools-insert-object-label")
+    String kieTestToolsInsertObjectLabel();
+
+    @ClassName("list-group-item-container-fact-property")
+    String listGroupItemContainerFactProperty();
 }

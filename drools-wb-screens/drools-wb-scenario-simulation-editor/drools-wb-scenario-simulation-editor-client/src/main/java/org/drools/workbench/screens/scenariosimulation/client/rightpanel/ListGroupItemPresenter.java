@@ -86,7 +86,7 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         }
         key = factName + "." + String.join(".", propertyParts);
         if (fieldItemPresenter.fieldItemMap.containsKey(key)) {
-            fieldItemPresenter.fieldItemMap.get(key).onFieldElementClick();
+            fieldItemPresenter.fieldItemMap.get(key).onFieldElementSelected();
         }
     }
 
