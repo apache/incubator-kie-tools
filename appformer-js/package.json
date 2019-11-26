@@ -19,7 +19,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
-    "init": "yarn --force",
+    "init": "yarn install --force",
     "build": "yarn run lint && yarn test && webpack --mode production",
     "locktt": "locktt"
   },
