@@ -84,9 +84,16 @@ public class CellContextUtilitiesTest {
     private Point2D rp = new Point2D(0, 0);
     private Point2D computedLocation = new Point2D(0, 0);
     private BaseGridRendererHelper gridRendererHelper;
+    private BaseGridRow row1;
+    private BaseGridRow row2;
+    private BaseGridRow row3;
 
     @Before
     public void setup() {
+        row1 = new BaseGridRow();
+        row2 = new BaseGridRow();
+        row3 = new BaseGridRow();
+
         gridRendererHelper = spy(new BaseGridRendererHelper(gridWidget));
 
         doReturn(computedLocation).when(gridWidget).getComputedLocation();
@@ -139,20 +146,17 @@ public class CellContextUtilitiesTest {
 
     @Test
     public void testMakeCellRenderContextOneRow() {
-        final double headerRowsHeight = 100.0;
-        final BaseGridRow row = new BaseGridRow();
         final List<GridColumn<?>> allColumns = new ArrayList<>();
-        final List<Double> allRowHeights = Collections.singletonList(row.getHeight());
+        final List<Double> allRowHeights = Collections.singletonList(row1.getHeight());
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(60.0);
         final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
         allColumns.add(uiColumn1);
         allColumns.add(uiColumn2);
         allColumns.add(uiColumn3);
-        gridWidget.getModel().appendRow(row);
+        gridWidget.getModel().appendRow(row1);
 
         doReturn(allColumns).when(ri).getAllColumns();
-        doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
         doReturn(allRowHeights).when(ri).getAllRowHeights();
         doReturn(uiColumn2).when(ci).getColumn();
         doReturn(25.0).when(ci).getOffsetX();
@@ -170,15 +174,52 @@ public class CellContextUtilitiesTest {
 
         assertThat(context.getAbsoluteCellY())
                 .as("Should be headers height")
-                .isEqualTo(headerRowsHeight);
+                .isEqualTo(HEADER_HEIGHT);
     }
 
     @Test
     public void testMakeCellRenderContextThreeRows() {
-        final double headerRowsHeight = 100.0;
-        final BaseGridRow row1 = new BaseGridRow();
-        final BaseGridRow row2 = new BaseGridRow();
-        final BaseGridRow row3 = new BaseGridRow();
+        setupThreeRowGrid();
+
+        final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           2);
+
+        assertNotNull(context);
+        assertThat(context.getAbsoluteCellX())
+                .as("Should be column offset")
+                .isEqualTo(25.0);
+
+        assertThat(context.getAbsoluteCellY())
+                .as("Should be sum of header height plus preceding row heights")
+                .isEqualTo(HEADER_HEIGHT + row1.getHeight() + row2.getHeight());
+    }
+
+    @Test
+    public void testMakeCellRenderContextThreeRowsWhenScrolled() {
+        setupThreeRowGrid();
+
+        final Point2D gridComputedLocation = new Point2D(0, -row1.getHeight());
+
+        doReturn(gridComputedLocation).when(gridWidget).getComputedLocation();
+
+        final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           2);
+
+        assertNotNull(context);
+        assertThat(context.getAbsoluteCellX())
+                .as("Should be column offset")
+                .isEqualTo(25.0);
+
+        assertThat(context.getAbsoluteCellY())
+                .as("Should be sum of header height plus preceding visible row heights")
+                .isEqualTo(HEADER_HEIGHT + row2.getHeight());
+    }
+
+    private void setupThreeRowGrid() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final List<Double> allRowHeights = Collections.nCopies(3, row1.getHeight());
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
@@ -193,25 +234,10 @@ public class CellContextUtilitiesTest {
         gridWidget.getModel().appendRow(row3);
 
         doReturn(allColumns).when(ri).getAllColumns();
-        doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
         doReturn(allRowHeights).when(ri).getAllRowHeights();
         doReturn(uiColumn3).when(ci).getColumn();
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(3).when(ci).getUiColumnIndex();
-
-        final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(gridWidget,
-                                                                                           ri,
-                                                                                           ci,
-                                                                                           2);
-
-        assertNotNull(context);
-        assertThat(context.getAbsoluteCellX())
-                .as("Should be column offset")
-                .isEqualTo(25.0);
-
-        assertThat(context.getAbsoluteCellY())
-                .as("Should be sum of header height plus preceding row heights")
-                .isEqualTo(headerRowsHeight + row1.getHeight() + row2.getHeight());
     }
 
     @Test
@@ -543,8 +569,8 @@ public class CellContextUtilitiesTest {
         doReturn(0).when(gridColumn).getIndex();
 
         gridWidget.getModel().appendColumn(gridColumn);
-        gridWidget.getModel().appendRow(new BaseGridRow());
-        gridWidget.getModel().appendRow(new BaseGridRow());
+        gridWidget.getModel().appendRow(row1);
+        gridWidget.getModel().appendRow(row2);
         gridWidget.getModel().selectCell(1, 0);
 
         CellContextUtilities.editSelectedCell(gridWidget);
@@ -565,7 +591,7 @@ public class CellContextUtilitiesTest {
 
         gridWidget.getModel().appendColumn(gridColumnOne);
         gridWidget.getModel().appendColumn(gridColumnTwo);
-        gridWidget.getModel().appendRow(new BaseGridRow());
+        gridWidget.getModel().appendRow(row1);
         gridWidget.getModel().selectCell(0, 1);
 
         CellContextUtilities.editSelectedCell(gridWidget);

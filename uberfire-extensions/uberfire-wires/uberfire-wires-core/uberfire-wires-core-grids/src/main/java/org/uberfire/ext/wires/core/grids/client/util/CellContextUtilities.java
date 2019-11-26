@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -38,12 +37,9 @@ public class CellContextUtilities {
                                                                 final int uiRowIndex) {
         final GridColumn<?> column = ci.getColumn();
         final GridRenderer renderer = gridWidget.getRenderer();
-        final GridRow gridRow = gridWidget.getModel().getRow(uiRowIndex);
-        final double headerRowsHeight = ri.getHeaderRowsHeight();
-        final double rowYOffset = gridWidget.getRendererHelper().getRowOffset(gridRow);
 
         final double cellX = getCellX(gridWidget, ci);
-        final double cellY = getHeaderY(gridWidget, ri) + headerRowsHeight + rowYOffset;
+        final double cellY = getCellY(gridWidget, uiRowIndex);
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = ri.getFloatingBlockInformation();
         final double clipMinX = getClipMinX(gridWidget, floatingBlockInformation);
@@ -166,6 +162,13 @@ public class CellContextUtilities {
     private static double getCellX(final GridWidget gridWidget,
                                    final BaseGridRendererHelper.ColumnInformation ci) {
         return gridWidget.getComputedLocation().getX() + ci.getOffsetX();
+    }
+
+    private static double getCellY(final GridWidget gridWidget,
+                                   final int uiRowIndex) {
+        final GridRenderer renderer = gridWidget.getRenderer();
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        return gridWidget.getComputedLocation().getY() + renderer.getHeaderHeight() + rendererHelper.getRowOffset(uiRowIndex);
     }
 
     private static double getHeaderY(final GridWidget gridWidget,
