@@ -20,14 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.server.controller.impl.KieServerHealthCheckControllerImpl;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerDynamicFeature;
@@ -62,99 +59,88 @@ public abstract class AbstractControllerIT {
     protected static final String USER = "admin";
     protected static final String PASSWORD = "admin";
     protected static final String SERVER_TEMPLATE_ID = "it-test-kie-server";
-    
-    private static File[] getLibraries(){
-        final File[] libraries = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
-                .importRuntimeDependencies()
-                .resolve(
-                        "org.kie.workbench.screens:kie-wb-common-workbench-backend",
-                        "org.kie.workbench.services:kie-wb-common-services-backend",
-                        "org.uberfire:uberfire-nio2-fs",
-                        "org.uberfire:uberfire-nio2-jgit",
-                        "org.uberfire:uberfire-ssh-api",
-                        "org.uberfire:uberfire-ssh-backend",
-                        "org.uberfire:uberfire-servlet-security",
-                        "org.uberfire:uberfire-rest-backend",
-                        "org.uberfire:uberfire-backend-server",
-                        "org.uberfire:uberfire-backend-cdi",
-                        "org.jboss.errai:errai-jboss-as-support",
-                        "org.jboss.errai:errai-security-server",
-                        "org.jboss.errai:errai-cdi-server",
-                        "org.mockito:mockito-core",
-                        "org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api"
-                ).using(new CombinedStrategy(TransitiveStrategy.INSTANCE, new RejectDependenciesStrategy(false,
-                                                                                                         "log4j:log4j",
-                                                                                                         "mysql:mysql-connector-java",
-                                                                                                         "javax.mail:mail"))).asFile();
-        return libraries;
+
+    private static File[] getLibraries() {
+        String targetDir = System.getProperty("project.build.directory");
+        File baseLib = new File(targetDir + File.separator + "web-lib");
+        return Arrays.asList(baseLib.listFiles())
+                     // for some reason it adds itself to the assembly
+                     .stream().filter(e -> !e.getName().startsWith("kie-wb-common-server-ui-backend"))
+                     .toArray(File[]::new);
     }
 
     public static WebArchive createWorkbenchWar() {
-        File[] libraries = getLibraries();
+        try {
+            File[] libraries = getLibraries();
 
-        final URL extension = Thread.currentThread().getContextClassLoader().getResource("META-INF/services/javax.enterprise.inject.spi.Extension");
+            final URL extension = Thread.currentThread().getContextClassLoader().getResource("META-INF/services/javax.enterprise.inject.spi.Extension");
 
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "workbench.war")
-                .addClass(StandaloneControllerDynamicFeature.class)
-                .addClass(StandaloneControllerFilter.class)
+            final WebArchive archive = ShrinkWrap.create(WebArchive.class, "workbench.war")
+                                                 .addClass(StandaloneControllerDynamicFeature.class)
+                                                 .addClass(StandaloneControllerFilter.class)
 
-                .addClass(AsyncKieServerInstanceManager.class)
+                                                 .addClass(AsyncKieServerInstanceManager.class)
 
-                .addClass(EmbeddedNotificationService.class)
-                .addClass(RuleCapabilitiesServiceCDI.class)
-                .addClass(RuntimeManagementServiceCDI.class)
-                .addClass(SpecManagementServiceCDI.class)
+                                                 .addClass(EmbeddedNotificationService.class)
+                                                 .addClass(RuleCapabilitiesServiceCDI.class)
+                                                 .addClass(RuntimeManagementServiceCDI.class)
+                                                 .addClass(SpecManagementServiceCDI.class)
 
-                .addClass(ServerTemplateVFSStorage.class)
-                .addClass(ServerTemplateOCPStorage.class)
-                .addClass(ServerTemplateMigration.class)
+                                                 .addClass(ServerTemplateVFSStorage.class)
+                                                 .addClass(ServerTemplateOCPStorage.class)
+                                                 .addClass(ServerTemplateMigration.class)
 
-                .addClass(ControllerExtension.class)
-                .addClass(ControllerUtils.class)
-                .addClass(EmbeddedController.class)
-                .addClass(StandaloneController.class)
+                                                 .addClass(ControllerExtension.class)
+                                                 .addClass(ControllerUtils.class)
+                                                 .addClass(EmbeddedController.class)
+                                                 .addClass(StandaloneController.class)
 
-                .addClass(StandaloneControllerApplicationConfig.class)
-                .addClass(StandaloneNotificationService.class)
+                                                 .addClass(StandaloneControllerApplicationConfig.class)
+                                                 .addClass(StandaloneNotificationService.class)
 
-                .addClass(KieServerEmbeddedControllerProducer.class)
-                .addClass(KieServerStandaloneControllerProducer.class)
+                                                 .addClass(KieServerEmbeddedControllerProducer.class)
+                                                 .addClass(KieServerStandaloneControllerProducer.class)
 
-                .addClass(MockTestService.class)
-                .addClass(MVELEvaluatorProducer.class)
+                                                 .addClass(MockTestService.class)
+                                                 .addClass(MVELEvaluatorProducer.class)
 
-                .addClass(AbstractControllerIT.class)
-                .addClass(AbstractAutoControllerIT.class)
-                .addClass(KieServerHealthCheckControllerImpl.class)
-                .addClass(HealthCheckControllerBootstrap.class)
+                                                 .addClass(AbstractControllerIT.class)
+                                                 .addClass(AbstractAutoControllerIT.class)
+                                                 .addClass(KieServerHealthCheckControllerImpl.class)
+                                                 .addClass(HealthCheckControllerBootstrap.class)
 
-                .addClass(AppSetup.class)
+                                                 .addClass(AppSetup.class)
 
-                .addAsLibraries(libraries)
+                                                 .addAsLibraries(libraries)
 
-                .addAsResource(extension,
-                               "META-INF/services/javax.enterprise.inject.spi.Extension")
-                .addAsResource("META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider")
-                .addAsResource("security-policy.properties")
+                                                 .addAsResource(extension,
+                                                                "META-INF/services/javax.enterprise.inject.spi.Extension")
+                                                 .addAsResource("META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider")
+                                                 .addAsResource("security-policy.properties")
 
-                .addAsManifestResource("jboss-all.xml")
+                                                 .addAsManifestResource("jboss-all.xml")
 
-                .addAsWebInfResource("META-INF/beans.xml",
-                                     "beans.xml")
-                .addAsWebInfResource("web.xml")
-                .addAsWebInfResource("jboss-web.xml");
+                                                 .addAsWebInfResource("META-INF/beans.xml",
+                                                                      "beans.xml")
+                                                 .addAsWebInfResource("web.xml")
+                                                 .addAsWebInfResource("jboss-web.xml");
 
-        LOGGER.debug("Workbench archive contents:\n{}", archive.toString(true));
-        return archive;
+            LOGGER.debug("Workbench archive contents:\n{}", archive.toString(true));
+            return archive;
+        } catch (Throwable e) {
+            LOGGER.error("Workbench archive contents:\n", e);
+            throw new RuntimeException(e);
+        }
     }
 
     public static WebArchive createKieServerWar() {
         // copy resources 
         String targetDir = System.getProperty("project.build.directory");
-        try (InputStream file = new FileInputStream(targetDir + File.separator + "kie-server.war")) {
-            return ShrinkWrap.create(ZipImporter.class, "kie-server.war").importFrom(file).as(WebArchive.class);
+        File file = new File(targetDir + File.separator + "kie-server.war");
+        try (InputStream is = new FileInputStream(file)) {
+            return ShrinkWrap.create(ZipImporter.class, "kie-server.war").importFrom(is).as(WebArchive.class);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("failed during archive creation", ex);
             throw new RuntimeException(ex);
         }
     }
@@ -187,6 +173,5 @@ public abstract class AbstractControllerIT {
         assertEquals(1, serverTemplateList.getServerTemplates().length);
         assertEquals(SERVER_TEMPLATE_ID, serverTemplateList.getServerTemplates()[0].getId());
     }
-
 
 }

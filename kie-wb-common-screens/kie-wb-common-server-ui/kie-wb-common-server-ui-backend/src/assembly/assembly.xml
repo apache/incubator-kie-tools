@@ -1,0 +1,41 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+  <id>java-archive</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <scope>test</scope>
+      <includes>
+        <include>org.kie.workbench.screens:kie-wb-common-workbench-backend</include>
+        <include>org.kie.workbench.services:kie-wb-common-services-backend</include>
+        <include>org.uberfire:uberfire-nio2-fs</include>
+        <include>org.uberfire:uberfire-nio2-jgit</include>
+        <include>org.uberfire:uberfire-ssh-api</include>
+        <include>org.uberfire:uberfire-ssh-backend</include>
+        <include>org.uberfire:uberfire-servlet-security</include>
+        <include>org.uberfire:uberfire-rest-backend</include>
+        <include>org.uberfire:uberfire-backend-server</include>
+        <include>org.uberfire:uberfire-backend-cdi</include>
+        <include>org.jboss.errai:errai-jboss-as-support</include>
+        <include>org.jboss.errai:errai-security-server</include>
+        <include>org.jboss.errai:errai-cdi-server</include>
+        <include>org.mockito:mockito-core</include>
+        <include>org.uberfire:uberfire-metadata-backend-lucene</include>
+        <include>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</include>
+      </includes>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+    </dependencySet>
+    <dependencySet>
+      <scope>runtime</scope>
+      <includes />
+    </dependencySet>
+  </dependencySets>
+
+</assembly>
