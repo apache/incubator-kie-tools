@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditorTest;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
+public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     private final String FILE_NAME = "file name.dmn";
 
@@ -113,7 +113,7 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
     }
 
     @Override
-    protected BaseDMNDiagramEditor getEditor() {
+    protected AbstractDMNDiagramEditor getEditor() {
         return new DMNDiagramEditor(view,
                                     fileMenuBuilder,
                                     placeManager,
@@ -225,11 +225,24 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
     }
 
     @Override
+    public void testSetContentSuccess() {
+        place.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, FILE_NAME);
+
+        super.testSetContentSuccess();
+
+        assertMetadataPath();
+    }
+
+    @Override
     protected void openDiagram() {
         place.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, FILE_NAME);
 
         super.openDiagram();
 
+        assertMetadataPath();
+    }
+
+    private void assertMetadataPath() {
         final Path path = metadata.getPath();
         assertThat(path).isNotNull();
         assertThat(path.getFileName()).isEqualTo(FILE_NAME);

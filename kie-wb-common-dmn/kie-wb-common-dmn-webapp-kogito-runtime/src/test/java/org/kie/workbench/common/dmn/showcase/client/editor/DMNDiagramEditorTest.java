@@ -22,14 +22,14 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditorTest;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
 import org.uberfire.workbench.model.menu.impl.DefaultMenus;
 
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
+public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Override
     public void setup() {
@@ -39,7 +39,7 @@ public class DMNDiagramEditorTest extends BaseDMNDiagramEditorTest {
     }
 
     @Override
-    protected BaseDMNDiagramEditor getEditor() {
+    protected AbstractDMNDiagramEditor getEditor() {
         return new DMNDiagramEditor(view,
                                     fileMenuBuilder,
                                     placeManager,

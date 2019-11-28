@@ -47,6 +47,8 @@ import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelp
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -56,12 +58,16 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.stunner.kogito.api.editor.KogitoDiagramResource;
+import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.editor.DiagramEditorCore;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
@@ -76,19 +82,23 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
-import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor.PERSPECTIVE_ID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
+import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor.PERSPECTIVE_ID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public abstract class BaseDMNDiagramEditorTest {
+public abstract class AbstractDMNDiagramEditorTest {
+
+    protected static final String CONTENT = "content";
 
     protected static final String ROOT = "default://master@system/stunner/diagrams";
 
@@ -222,11 +232,20 @@ public abstract class BaseDMNDiagramEditorTest {
     @Mock
     protected Path root;
 
+    @Mock
+    protected ClientRuntimeError clientRuntimeError;
+
+    @Captor
+    protected ArgumentCaptor<KogitoDiagramResourceImpl> kogitoDiagramResourceArgumentCaptor;
+
+    @Captor
+    protected ArgumentCaptor<ServiceCallback<Diagram>> serviceCallbackArgumentCaptor;
+
     protected Diagram diagram;
 
     protected Metadata metadata;
 
-    protected BaseDMNDiagramEditor editor;
+    protected AbstractDMNDiagramEditor editor;
 
     protected PlaceRequest place = new DefaultPlaceRequest();
 
@@ -248,6 +267,10 @@ public abstract class BaseDMNDiagramEditorTest {
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getExpressionEditor()).thenReturn(expressionEditor);
 
+        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(editorPresenter.getInstance()).thenReturn(session);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(root.toURI()).thenReturn(ROOT);
 
         doAnswer((invocation) -> {
@@ -264,7 +287,7 @@ public abstract class BaseDMNDiagramEditorTest {
         editor = spy(getEditor());
     }
 
-    protected abstract BaseDMNDiagramEditor getEditor();
+    protected abstract AbstractDMNDiagramEditor getEditor();
 
     @Test
     public void testOnStartup() {
@@ -349,6 +372,103 @@ public abstract class BaseDMNDiagramEditorTest {
         verify(searchBarComponent).disableSearch();
     }
 
+    @Test
+    public void testOnClose() {
+        openDiagram();
+
+        editor.onClose();
+
+        verify(dmnEditorMenuSessionItems).destroy();
+        verify(editorPresenter).destroy();
+
+        verify(decisionNavigatorDock).destroy();
+        verify(decisionNavigatorDock).resetContent();
+
+        verify(diagramPropertiesDock).destroy();
+        verify(diagramPreviewDock).destroy();
+
+        verify(dataTypesPage).disableShortcuts();
+    }
+
+    @Test
+    public void testOnFocus() {
+        openDiagram();
+
+        //Setting focus activates the diagram identically to opening a diagram; so reset applicable mocks.
+        reset(decisionNavigatorDock, diagramPropertiesDock, diagramPreviewDock, dataTypesPage, includedModelsPage);
+
+        editor.onFocus();
+
+        verify(editorPresenter).focus();
+        verify(dataTypesPage).onFocus();
+        verify(dataTypesPage).enableShortcuts();
+
+        assertOnDiagramLoad();
+    }
+
+    @Test
+    public void testOnLostFocus() {
+        openDiagram();
+
+        editor.onLostFocus();
+
+        verify(editorPresenter).lostFocus();
+        verify(dataTypesPage).onLostFocus();
+    }
+
+    @Test
+    public void testGetContent() {
+        openDiagram();
+
+        editor.getContent();
+
+        verify(clientDiagramService).transform(kogitoDiagramResourceArgumentCaptor.capture());
+
+        final KogitoDiagramResource resource = kogitoDiagramResourceArgumentCaptor.getValue();
+        assertThat(resource).isNotNull();
+        assertThat(resource.projectDiagram().isPresent()).isTrue();
+        assertThat(resource.projectDiagram().get()).isEqualTo(diagram);
+    }
+
+    @Test
+    public void testSetContentSuccess() {
+        editor.setContent(CONTENT);
+
+        verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
+
+        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
+        assertThat(serviceCallback).isNotNull();
+        serviceCallback.onSuccess(diagram);
+
+        assertOnDiagramLoad();
+    }
+
+    @Test
+    public void testSetContentFailure() {
+        editor.setContent(CONTENT);
+
+        verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
+
+        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
+        assertThat(serviceCallback).isNotNull();
+        serviceCallback.onError(clientRuntimeError);
+
+        verify(diagramClientErrorHandler).handleError(eq(clientRuntimeError), any());
+    }
+
+    @Test
+    public void testResetContentHash() {
+        openDiagram();
+
+        editor.setOriginalContentHash(diagram.hashCode() + 1);
+
+        assertThat(editor.isDirty()).isTrue();
+
+        editor.resetContentHash();
+
+        assertThat(editor.isDirty()).isFalse();
+    }
+
     protected void openDiagram() {
         editor.onStartup(place);
 
@@ -359,6 +479,10 @@ public abstract class BaseDMNDiagramEditorTest {
 
         editor.open(diagram);
 
+        assertOnDiagramLoad();
+    }
+
+    protected void assertOnDiagramLoad() {
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
         verify(dataTypesPage).reload();
         verify(includedModelsPage).setup(importsPageProvider);

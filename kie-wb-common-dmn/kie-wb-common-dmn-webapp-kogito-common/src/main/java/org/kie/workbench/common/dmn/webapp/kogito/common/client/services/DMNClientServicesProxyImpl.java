@@ -65,7 +65,8 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     }
 
     @Override
-    public void loadItemDefinitionsByNamespace(final String modelName, String namespace,
+    public void loadItemDefinitionsByNamespace(final String modelName,
+                                               final String namespace,
                                                final ServiceCallback<List<ItemDefinition>> callback) {
         callback.onSuccess(Collections.emptyList());
     }

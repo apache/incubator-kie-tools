@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -72,8 +72,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @DiagramEditor
 @ApplicationScoped
-@WorkbenchClientEditor(identifier = BaseDMNDiagramEditor.EDITOR_ID)
-public class DMNDiagramEditor extends BaseDMNDiagramEditor {
+@WorkbenchClientEditor(identifier = AbstractDMNDiagramEditor.EDITOR_ID)
+public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     @Inject
     public DMNDiagramEditor(final View view,

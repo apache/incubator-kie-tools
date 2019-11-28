@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -59,12 +60,14 @@ public class DMNEditorMenuSessionItems extends AbstractDiagramEditorMenuSessionI
     }
 
     MenuItem newPerformAutomaticLayout() {
-        final MenuUtils.HasEnabledIsWidget buttonWrapper = MenuUtils.buildHasEnabledWidget(new Button() {{
-            setSize(ButtonSize.SMALL);
-            setTitle(getTranslationService().getValue(CoreTranslationMessages.PERFORM_AUTOMATIC_LAYOUT));
-            setIcon(IconType.SITEMAP);
-            addClickHandler(clickEvent -> ((DMNEditorSessionCommands) getCommands()).getPerformAutomaticLayoutCommand().execute());
-        }});
+        final Button button = GWT.create(Button.class);
+        button.setSize(ButtonSize.SMALL);
+        button.setTitle(getTranslationService().getValue(CoreTranslationMessages.PERFORM_AUTOMATIC_LAYOUT));
+        button.setIcon(IconType.SITEMAP);
+        button.addClickHandler(clickEvent -> ((DMNEditorSessionCommands) getCommands()).getPerformAutomaticLayoutCommand().execute());
+
+        final MenuUtils.HasEnabledIsWidget buttonWrapper = MenuUtils.buildHasEnabledWidget(button);
+
         return MenuUtils.buildItem(buttonWrapper);
     }
 

@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.showcase.client.perspectives;
 import java.util.Set;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
@@ -42,6 +42,6 @@ public class AuthoringPerspectiveTest {
         assertThat(parts).hasSize(1);
         final PartDefinition part = parts.iterator().next();
         assertThat(part.getPlace()).isInstanceOf(DefaultPlaceRequest.class);
-        assertThat(part.getPlace().getIdentifier()).isEqualTo(BaseDMNDiagramEditor.EDITOR_ID);
+        assertThat(part.getPlace().getIdentifier()).isEqualTo(AbstractDMNDiagramEditor.EDITOR_ID);
     }
 }

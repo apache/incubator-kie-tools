@@ -87,7 +87,7 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static elemental2.dom.DomGlobal.setTimeout;
 
-public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
+public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     public static final String PERSPECTIVE_ID = "AuthoringPerspective";
 
@@ -116,35 +116,35 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
 
     protected final KogitoClientDiagramService diagramServices;
 
-    public BaseDMNDiagramEditor(final View view,
-                                final FileMenuBuilder fileMenuBuilder,
-                                final PlaceManager placeManager,
-                                final MultiPageEditorContainerView multiPageEditorContainerView,
-                                final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                final Event<NotificationEvent> notificationEvent,
-                                final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                                final TextEditorView xmlEditorView,
-                                final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                final DMNEditorMenuSessionItems menuSessionItems,
-                                final ErrorPopupPresenter errorPopupPresenter,
-                                final DiagramClientErrorHandler diagramClientErrorHandler,
-                                final ClientTranslationService translationService,
-                                final DocumentationView<Diagram> documentationView,
-                                final DMNEditorSearchIndex editorSearchIndex,
-                                final SearchBarComponent<DMNSearchableElement> searchBarComponent,
-                                final SessionManager sessionManager,
-                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
-                                final DecisionNavigatorDock decisionNavigatorDock,
-                                final DiagramEditorPropertiesDock diagramPropertiesDock,
-                                final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                                final LayoutHelper layoutHelper,
-                                final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
-                                final DataTypesPage dataTypesPage,
-                                final IncludedModelsPage includedModelsPage,
-                                final IncludedModelsPageStateProviderImpl importsPageProvider,
-                                final KogitoClientDiagramService diagramServices) {
+    public AbstractDMNDiagramEditor(final View view,
+                                    final FileMenuBuilder fileMenuBuilder,
+                                    final PlaceManager placeManager,
+                                    final MultiPageEditorContainerView multiPageEditorContainerView,
+                                    final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
+                                    final Event<NotificationEvent> notificationEvent,
+                                    final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
+                                    final TextEditorView xmlEditorView,
+                                    final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
+                                    final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
+                                    final DMNEditorMenuSessionItems menuSessionItems,
+                                    final ErrorPopupPresenter errorPopupPresenter,
+                                    final DiagramClientErrorHandler diagramClientErrorHandler,
+                                    final ClientTranslationService translationService,
+                                    final DocumentationView<Diagram> documentationView,
+                                    final DMNEditorSearchIndex editorSearchIndex,
+                                    final SearchBarComponent<DMNSearchableElement> searchBarComponent,
+                                    final SessionManager sessionManager,
+                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
+                                    final DecisionNavigatorDock decisionNavigatorDock,
+                                    final DiagramEditorPropertiesDock diagramPropertiesDock,
+                                    final PreviewDiagramDock diagramPreviewAndExplorerDock,
+                                    final LayoutHelper layoutHelper,
+                                    final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
+                                    final DataTypesPage dataTypesPage,
+                                    final IncludedModelsPage includedModelsPage,
+                                    final IncludedModelsPageStateProviderImpl importsPageProvider,
+                                    final KogitoClientDiagramService diagramServices) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -405,7 +405,7 @@ public abstract class BaseDMNDiagramEditor extends AbstractDiagramEditor {
 
                                       @Override
                                       public void onError(final ClientRuntimeError error) {
-                                          BaseDMNDiagramEditor.this.getEditor().onLoadError(error);
+                                          AbstractDMNDiagramEditor.this.getEditor().onLoadError(error);
                                       }
                                   });
     }

@@ -38,7 +38,7 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.BaseDMNDiagramEditor;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -87,8 +87,8 @@ import static org.uberfire.ext.editor.commons.client.resources.i18n.CommonConsta
 
 @Dependent
 @DiagramEditor
-@WorkbenchScreen(identifier = BaseDMNDiagramEditor.EDITOR_ID)
-public class DMNDiagramEditor extends BaseDMNDiagramEditor {
+@WorkbenchScreen(identifier = AbstractDMNDiagramEditor.EDITOR_ID)
+public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     public static final String CONTENT_PARAMETER_NAME = "content";
     public static final String FILE_NAME_PARAMETER_NAME = "fileName";

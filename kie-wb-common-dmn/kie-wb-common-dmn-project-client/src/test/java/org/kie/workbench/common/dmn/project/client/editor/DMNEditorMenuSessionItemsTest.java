@@ -21,6 +21,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.DMNEditorSessionCommands;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToRawFormatSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.Mock;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -69,10 +84,23 @@ public class DMNEditorMenuSessionItemsTest {
     private void testMenu(final boolean enabled) {
 
         final DMNEditorMenuSessionItems menuItems = spy(new DMNEditorMenuSessionItems(builder, sessionCommands));
-        doNothing().when(menuItems).superSetEnabled(enabled);
 
         menuItems.setEnabled(enabled);
-
+        verify(menuItems).setItemEnabled(ClearSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(VisitGraphSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(SwitchGridSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ValidateSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ExportToJpgSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ExportToPngSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ExportToSvgSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ExportToPdfSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(ExportToRawFormatSessionCommand.class, enabled);
+        verify(menuItems).setItemEnabled(DeleteSelectionSessionCommand.class, false);
+        verify(menuItems).setItemEnabled(UndoSessionCommand.class, false);
+        verify(menuItems).setItemEnabled(RedoSessionCommand.class, false);
+        verify(menuItems).setItemEnabled(CopySelectionSessionCommand.class, false);
+        verify(menuItems).setItemEnabled(CutSelectionSessionCommand.class, false);
+        verify(menuItems).setItemEnabled(PasteSelectionSessionCommand.class, false);
         verify(menuItems).setItemEnabled(DMNPerformAutomaticLayoutCommand.class, enabled);
     }
 }
