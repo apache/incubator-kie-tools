@@ -34,6 +34,8 @@ public class PatternFlyBootstrapper {
 
     private static boolean isMomentLoaded = false;
 
+    private static boolean isMomentTimeZoneLoaded = false;
+
     private static boolean isPatternFlyLoaded = false;
 
     private static boolean isD3Loaded = false;
@@ -89,6 +91,15 @@ public class PatternFlyBootstrapper {
             isMomentLoaded = true;
         }
         setMomentLocale();
+    }
+
+    public static void ensureMomentTimeZoneIsAvailable() {
+        if (!isMomentTimeZoneLoaded) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.momentTimeZone().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+            isMomentTimeZoneLoaded = true;
+        }
     }
 
     public static void ensureBootstrapDateRangePickerIsAvailable() {
