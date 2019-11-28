@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
@@ -36,6 +37,13 @@ import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
+
+    private TimeZonesProvider timeZonesProvider;
+
+    @Inject
+    public DMNClientServicesProxyImpl(final TimeZonesProvider timeZonesProvider) {
+        this.timeZonesProvider = timeZonesProvider;
+    }
 
     @Override
     public void loadModels(final Path path,
@@ -82,7 +90,7 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
 
     @Override
     public void getTimeZones(final ServiceCallback<List<DMNSimpleTimeZone>> callback) {
-        callback.onSuccess(Collections.emptyList());
+        callback.onSuccess(timeZonesProvider.getTimeZones());
     }
 
     @Override

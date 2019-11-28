@@ -31,6 +31,14 @@ public class DMNSimpleTimeZone {
         this.offsetString = "";
     }
 
+    public DMNSimpleTimeZone(final String id,
+                             final double offset,
+                             final String offsetString) {
+        this.id = id;
+        this.offset = offset;
+        this.offsetString = offsetString;
+    }
+
     public String getId() {
         return id;
     }
