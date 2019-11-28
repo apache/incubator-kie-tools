@@ -73,17 +73,6 @@
       <groupId>com.google.jsinterop</groupId>
       <artifactId>base</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench</groupId>
-      <artifactId>kie-wb-common-dmn-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-core-api</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>

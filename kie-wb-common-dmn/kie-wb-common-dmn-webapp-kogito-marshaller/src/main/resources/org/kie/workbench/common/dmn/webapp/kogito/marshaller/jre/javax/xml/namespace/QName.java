@@ -23,8 +23,6 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 /**
  * GWT Super-source version of javax.xml.namespace.QName.
@@ -84,7 +82,8 @@ public class QName {
 
         //jsonix JSON properties
         setKey(toString());
-        final String usedPrefix = !StringUtils.isEmpty(getPrefix()) ? getPrefix() + ":" : "";
+        String retrievedPrefix = getPrefix();
+        final String usedPrefix = (retrievedPrefix == null || retrievedPrefix.trim().isEmpty()) ?  "" : retrievedPrefix + ":";
         final String string = "{" + getNamespaceURI() + "}" + usedPrefix + getLocalPart();
         setString(string);
     }
@@ -121,8 +120,7 @@ public class QName {
      */
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(getNamespaceURI().hashCode(),
-                                         getLocalPart().hashCode());
+        return Objects.hash(getNamespaceURI(), getLocalPart());
     }
 
     public static QName valueOf(final String qNameAsString) {
