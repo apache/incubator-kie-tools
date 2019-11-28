@@ -26,14 +26,12 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -42,8 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -85,18 +81,10 @@ public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
         final Node<Definition<BPMNDiagram>, Edge> diagramNode =
                 (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDefinitionId(getDiagramType()));
 
-        final ServiceTask milestone = serviceTaskFactory.buildItem("Milestone");
-        final DefinitionAdapter<Object> adapter =
-                definitionManager.adapters().registry().getDefinitionAdapter(milestone.getClass());
-
-        final Node<View<ServiceTask>, Edge> firstElement =
-                (Node<View<ServiceTask>, Edge>) factoryManager.newElement(UUID.uuid(), adapter.getId(milestone).value());
-
         final AdHoc adHoc = diagramNode.getContent().getDefinition().getDiagramSet().getAdHoc();
         final String adHocPropertyId = definitionManager.adapters().forProperty().getId(adHoc);
 
         commands.add(graphCommandFactory.addNode(diagramNode));
-        commands.add(graphCommandFactory.addChildNode(diagramNode, firstElement, new Point2D(START_X, START_Y)));
         commands.add(graphCommandFactory.updatePropertyValue(diagramNode, adHocPropertyId, true));
         return commands;
     }

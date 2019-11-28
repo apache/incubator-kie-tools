@@ -76,4 +76,10 @@ public interface StunnerWidgetsConstants {
 
     @TranslationKey(defaultValue = "Info")
     String MarshallingResponsePopup_UnknownMessageLabel = "MarshallingResponsePopup.UnknownMessageLabel";
+
+    @TranslationKey(defaultValue = "Info")
+    String SessionCardinalityStateHandler_EmptyStateCaption = "SessionCardinalityStateHandler.EmptyStateCaption";
+
+    @TranslationKey(defaultValue = "Info")
+    String SessionCardinalityStateHandler_EmptyStateMessage = "SessionCardinalityStateHandler.EmptyStateMessage";
 }

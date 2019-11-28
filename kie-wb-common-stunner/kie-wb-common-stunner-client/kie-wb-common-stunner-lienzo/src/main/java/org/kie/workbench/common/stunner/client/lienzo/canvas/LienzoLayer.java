@@ -67,9 +67,25 @@ public class LienzoLayer {
     }
 
     public Layer getTopLayer() {
-        return null != layer.getScene() ?
+        return isReady() ?
                 layer.getScene().getTopLayer() :
                 null;
+    }
+
+    public void add(final Layer layer) {
+        if (isReady()) {
+            this.layer.getScene().add(layer);
+        }
+    }
+
+    public boolean isReady() {
+        return null != layer.getScene();
+    }
+
+    public void remove(final Layer layer) {
+        if (isReady()) {
+            this.layer.getScene().remove(layer);
+        }
     }
 
     public void destroy() {

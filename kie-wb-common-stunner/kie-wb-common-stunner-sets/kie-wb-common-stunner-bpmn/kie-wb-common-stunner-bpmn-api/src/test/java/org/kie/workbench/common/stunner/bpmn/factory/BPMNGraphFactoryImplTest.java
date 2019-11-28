@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -108,18 +107,13 @@ public class BPMNGraphFactoryImplTest {
         final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
         verify(graphCommandFactory,
                times(1)).addNode(eq(diagramNode));
-        verify(graphCommandFactory,
-               times(1)).addChildNode(eq(diagramNode),
-                                      eq(startEventNode),
-                                      eq(new Point2D(BPMNGraphFactoryImpl.START_X,
-                                                     BPMNGraphFactoryImpl.START_Y)));
         verify(graphCommandManager,
                times(1)).execute(any(GraphCommandExecutionContext.class),
                                  commandCaptor.capture());
         final Command command = commandCaptor.getValue();
         assertTrue(command instanceof CompositeCommand);
         final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertEquals(2,
+        assertEquals(1,
                      compositeCommand.size());
     }
 }

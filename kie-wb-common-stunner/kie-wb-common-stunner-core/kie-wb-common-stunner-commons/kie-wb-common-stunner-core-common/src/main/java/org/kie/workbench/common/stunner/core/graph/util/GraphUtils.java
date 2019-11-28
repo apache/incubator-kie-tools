@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -159,6 +161,34 @@ public class GraphUtils {
                     labelsCount.put(role,
                                     null != i ? i + 1 : 1);
                 });
+    }
+
+    public enum CardinalityCountState {
+        EMPTY,
+        SINGLE_NODE,
+        MULTIPLE_NODES
+    }
+
+    public static CardinalityCountState computeCardinalityState(final Diagram diagram) {
+        final String rootUUID = diagram.getMetadata().getCanvasRootUUID();
+        final Graph graph = diagram.getGraph();
+        final Iterator nodes = graph.nodes().iterator();
+        final Node firstElement = nodes.hasNext() ? ((Element) nodes.next()).asNode() : null;
+        final Node secondElement = null != firstElement && nodes.hasNext() ? ((Element) nodes.next()).asNode() : null;
+        final Node thirdElement = null != secondElement && nodes.hasNext() ? ((Element) nodes.next()).asNode() : null;
+        if (null != thirdElement) {
+            return CardinalityCountState.MULTIPLE_NODES;
+        }
+        if (null != secondElement && secondElement.getUUID().equals(rootUUID)) {
+            return CardinalityCountState.SINGLE_NODE;
+        }
+        if (null != firstElement && firstElement.getUUID().equals(rootUUID)) {
+            return null != secondElement ? CardinalityCountState.SINGLE_NODE : CardinalityCountState.EMPTY;
+        }
+        if (null != firstElement && null != secondElement) {
+            return CardinalityCountState.MULTIPLE_NODES;
+        }
+        return null != firstElement ? CardinalityCountState.SINGLE_NODE : CardinalityCountState.EMPTY;
     }
 
     public static Set<String> getLabels(final Element<? extends Definition<?>> element) {

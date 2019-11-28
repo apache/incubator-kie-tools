@@ -32,6 +32,8 @@ import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -45,6 +47,8 @@ public class LienzoLayerTest {
 
     @Mock
     private Layer layer;
+    @Mock
+    private Layer emptyLayer;
     @Mock
     private Scene scene;
     @Mock
@@ -73,6 +77,9 @@ public class LienzoLayerTest {
     public void testAdd() {
         tested.add(shape);
         verify(layer, times(1)).add(eq(shape));
+
+        tested.add(emptyLayer);
+        verify(scene, times(1)).add(eq(emptyLayer));
     }
 
     @Test
@@ -89,9 +96,29 @@ public class LienzoLayerTest {
     }
 
     @Test
+    public void testRemove() {
+        tested.remove(emptyLayer);
+        verify(scene, times(1)).remove(eq(emptyLayer));
+    }
+
+    @Test
     public void testClear() {
         tested.clear();
         verify(layer, times(1)).clear();
+    }
+
+    @Test
+    public void testIsReady() {
+        Layer layer1 = mock(Layer.class);
+        LienzoLayer tested1 = new LienzoLayer(layer1);
+        when(layer1.getScene()).thenReturn(scene);
+
+        Layer layer2 = mock(Layer.class);
+        LienzoLayer tested2 = new LienzoLayer(layer2);
+        when(layer2.getScene()).thenReturn(null);
+
+        assertTrue(tested1.isReady());
+        assertFalse(tested2.isReady());
     }
 
     @Test

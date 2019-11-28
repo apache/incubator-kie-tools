@@ -45,7 +45,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -134,33 +133,12 @@ public class CaseManagementGraphFactoryImplTest {
         verify(graphCommandFactory,
                times(1)).addNode(eq(diagramNode));
 
-        verify(graphCommandFactory,
-               times(1)).addChildNode(eq(diagramNode), eq(stageNode));
-
-        verify(graphCommandFactory,
-               times(1)).addChildNode(eq(diagramNode), eq(startEventNode));
-
-        verify(graphCommandFactory,
-               times(1)).addChildNode(eq(diagramNode), eq(endEventNode));
-
-        verify(graphCommandFactory,
-               times(1)).setSourceNode(eq(startEventNode), eq(startEventEdge), anyObject());
-
-        verify(graphCommandFactory,
-               times(1)).setTargetNode(eq(stageNode), eq(startEventEdge), anyObject());
-
-        verify(graphCommandFactory,
-               times(1)).setSourceNode(eq(stageNode), eq(endEventEdge), anyObject());
-
-        verify(graphCommandFactory,
-               times(1)).setTargetNode(eq(endEventNode), eq(endEventEdge), anyObject());
-
         verify(graphCommandManager,
                times(1)).execute(any(GraphCommandExecutionContext.class), commandCaptor.capture());
 
         final Command command = commandCaptor.getValue();
         assertTrue(command instanceof CompositeCommand);
         final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertEquals(8, compositeCommand.size());
+        assertEquals(1, compositeCommand.size());
     }
 }

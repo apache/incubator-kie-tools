@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -135,15 +134,9 @@ public class BPMNGraphFactoryImpl
     // Add a BPMN diagram and a start event nodes by default.
     protected List<Command> buildInitialisationCommands() {
         final List<Command> commands = new ArrayList<>();
-        final Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                getDefinitionId(diagramType));
-        final Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                         START_EVENT_ID);
+        final Node<Definition<BPMNDiagram>, Edge> diagramNode =
+                (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDefinitionId(diagramType));
         commands.add(graphCommandFactory.addNode(diagramNode));
-        commands.add(graphCommandFactory.addChildNode(diagramNode,
-                                                      startEventNode,
-                                                      new Point2D(START_X,
-                                                                  START_Y)));
         return commands;
     }
 

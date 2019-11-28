@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
  * <p>
  * It aggregates a custom session viewer type which provides binds the editors's diagram instance and the
  * different editors' controls with the diagram and controls for the given session.
+ *
  * @see <a>org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorImpl</a>
  */
 @Dependent
@@ -67,6 +68,7 @@ public class SessionEditorPresenter<S extends EditorSession>
 
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent;
     private final SessionEditorImpl<S> editor;
+    private final SessionCardinalityStateHandler cardinalityStateHandler;
     private final ManagedInstance<EditorToolbar> toolbars;
 
     @Inject
@@ -74,12 +76,13 @@ public class SessionEditorPresenter<S extends EditorSession>
     public SessionEditorPresenter(final DefinitionUtils definitionUtils,
                                   final SessionManager sessionManager,
                                   final SessionEditorImpl<S> editor,
+                                  final SessionCardinalityStateHandler cardinalityStateHandler,
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                   final @Any ManagedInstance<EditorToolbar> toolbars,
                                   final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  Event<CanvasFocusedEvent> canvasFocusedEvent,
+                                  final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                   final Event<SessionLostFocusEvent> sessionLostFocusEvent,
                                   final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
@@ -94,6 +97,7 @@ public class SessionEditorPresenter<S extends EditorSession>
               canvasLostFocusEventEvent);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = editor;
+        this.cardinalityStateHandler = cardinalityStateHandler;
         this.toolbars = toolbars;
     }
 
@@ -105,6 +109,7 @@ public class SessionEditorPresenter<S extends EditorSession>
     @Override
     protected void onSessionOpened(final S session) {
         super.onSessionOpened(session);
+        cardinalityStateHandler.bind(session);
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
     }
 

@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
-import org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPropertyValueCommand;
@@ -169,15 +168,12 @@ public class CaseGraphFactoryImplTest {
     @Test
     public void buildInitialisationCommands() {
         final List<Command> commands = tested.buildInitialisationCommands();
-        assertEquals(commands.size(), 3);
+        assertEquals(2, commands.size());
 
         final AddNodeCommand addNodeCommand = (AddNodeCommand) commands.get(0);
-        final AddChildNodeCommand addChildNodeCommand = (AddChildNodeCommand) commands.get(1);
-        final UpdateElementPropertyValueCommand updatePropertyCommand = (UpdateElementPropertyValueCommand) commands.get(2);
+        final UpdateElementPropertyValueCommand updatePropertyCommand = (UpdateElementPropertyValueCommand) commands.get(1);
 
         assertEquals(addNodeCommand.getCandidate(), diagramNode);
-        assertEquals(addChildNodeCommand.getCandidate(), milestoneNode);
-        assertEquals(addChildNodeCommand.getParent(), diagramNode);
         assertEquals(updatePropertyCommand.getElement(), diagramNode);
         assertEquals(updatePropertyCommand.getPropertyId(), ADHOC_ID);
         assertEquals(updatePropertyCommand.getValue(), true);

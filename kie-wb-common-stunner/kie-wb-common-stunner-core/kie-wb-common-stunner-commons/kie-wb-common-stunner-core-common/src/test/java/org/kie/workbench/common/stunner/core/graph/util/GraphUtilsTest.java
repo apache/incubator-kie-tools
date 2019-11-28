@@ -26,10 +26,18 @@ import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.TestingSimpleDomainObject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -37,6 +45,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.computeCardinalityState;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -199,6 +208,43 @@ public class GraphUtilsTest {
 
         final OptionalInt index5 = GraphUtils.getChildIndex(graphInstance.parentNode, "node_not_exist");
         assertFalse(index5.isPresent());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testComputeCardinalityState() {
+        String canvasRootUUID = "rootUUID";
+        Node rootNode = new NodeImpl<>(canvasRootUUID);
+        Node node1 = new NodeImpl<>("node1");
+        Node node2 = new NodeImpl<>("node2");
+        Node node3 = new NodeImpl<>("node3");
+        Metadata metadata = new MetadataImpl();
+        metadata.setCanvasRootUUID(canvasRootUUID);
+        Graph graph = new GraphImpl<>("graph1", new GraphNodeStoreImpl());
+        Diagram diagram = new DiagramImpl("diagram1", graph, metadata);
+        assertEquals(GraphUtils.CardinalityCountState.EMPTY, computeCardinalityState(diagram));
+        graph.addNode(rootNode);
+        assertEquals(GraphUtils.CardinalityCountState.EMPTY, computeCardinalityState(diagram));
+        graph.addNode(node1);
+        assertEquals(GraphUtils.CardinalityCountState.SINGLE_NODE, computeCardinalityState(diagram));
+        graph.addNode(node2);
+        assertEquals(GraphUtils.CardinalityCountState.MULTIPLE_NODES, computeCardinalityState(diagram));
+        graph.clear();
+        assertEquals(GraphUtils.CardinalityCountState.EMPTY, computeCardinalityState(diagram));
+        graph.addNode(node1);
+        assertEquals(GraphUtils.CardinalityCountState.SINGLE_NODE, computeCardinalityState(diagram));
+        graph.addNode(rootNode);
+        assertEquals(GraphUtils.CardinalityCountState.SINGLE_NODE, computeCardinalityState(diagram));
+        graph.addNode(node2);
+        assertEquals(GraphUtils.CardinalityCountState.MULTIPLE_NODES, computeCardinalityState(diagram));
+        graph.clear();
+        assertEquals(GraphUtils.CardinalityCountState.EMPTY, computeCardinalityState(diagram));
+        graph.addNode(node1);
+        assertEquals(GraphUtils.CardinalityCountState.SINGLE_NODE, computeCardinalityState(diagram));
+        graph.addNode(node2);
+        assertEquals(GraphUtils.CardinalityCountState.MULTIPLE_NODES, computeCardinalityState(diagram));
+        graph.addNode(node3);
+        assertEquals(GraphUtils.CardinalityCountState.MULTIPLE_NODES, computeCardinalityState(diagram));
     }
 
     private DefinitionManager getDefinitionManager() {
