@@ -25,6 +25,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -41,6 +42,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -305,5 +307,12 @@ public class GridLienzoPanelTest {
         final GridLienzoPanel gridPanel = new GridLienzoPanel(gridLayer);
 
         assertThat(gridPanel.getDefaultGridLayer()).isEqualTo(gridLayer);
+    }
+
+    @Test
+    public void testMouseDownHandlerDoesNotSetFocus() {
+        gridLienzoPanel.setupDefaultHandlers();
+
+        verify(gridLienzoPanel, never()).addMouseDownHandler(any(MouseDownHandler.class));
     }
 }

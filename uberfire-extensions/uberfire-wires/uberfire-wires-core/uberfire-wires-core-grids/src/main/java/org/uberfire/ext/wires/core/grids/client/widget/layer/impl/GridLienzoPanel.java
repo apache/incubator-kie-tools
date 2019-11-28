@@ -186,7 +186,6 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
                 }
             }
         });
-        addMouseDownHandler((e) -> setFocus(true));
     }
 
     @Override
