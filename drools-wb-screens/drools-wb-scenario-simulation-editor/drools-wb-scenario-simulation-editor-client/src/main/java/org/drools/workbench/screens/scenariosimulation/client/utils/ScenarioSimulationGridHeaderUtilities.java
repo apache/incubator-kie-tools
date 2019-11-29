@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +37,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+
+import static java.util.Collections.singletonList;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public class ScenarioSimulationGridHeaderUtilities {
 
@@ -164,11 +166,11 @@ public class ScenarioSimulationGridHeaderUtilities {
         return optionalScesimModel.map(abstractScesimModel -> {
             final FactMapping factMapping = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
             if (FactMappingValueType.EXPRESSION.equals(factMapping.getFactMappingValueType())) {
-                return Arrays.asList(ConstantHolder.EXPRESSION);
+                return singletonList(ConstantHolder.EXPRESSION);
             }
             if (abstractScesimGridModel.isSimpleType(factMapping.getFactAlias()) &&
                     FactMappingValueType.NOT_EXPRESSION.equals(factMapping.getFactMappingValueType())) {
-                return Arrays.asList(ConstantHolder.VALUE);
+                return singletonList(VALUE);
             }
             return Collections.unmodifiableList(abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                         .stream()

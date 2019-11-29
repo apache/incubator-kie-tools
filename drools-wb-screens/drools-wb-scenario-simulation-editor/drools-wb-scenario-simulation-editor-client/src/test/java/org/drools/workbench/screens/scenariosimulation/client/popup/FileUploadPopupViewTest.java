@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -76,7 +77,6 @@ public class FileUploadPopupViewTest extends AbstractScenarioPopupViewTest {
 
     @Test()
     public void onFileChangeEvent() {
-        String VALUE = "VALUE";
         when(fileMock.getValue()).thenReturn(VALUE);
         ChangeEvent changeEventMock = mock(ChangeEvent.class);
         ((FileUploadPopupView) popupView).onFileChangeEvent(changeEventMock);

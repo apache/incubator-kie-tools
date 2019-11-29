@@ -19,8 +19,9 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.LIElement;
 
-public class KeyValueEditingBoxPresenter extends EditingBoxPresenter implements KeyValueEditingBox.Presenter {
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
+public class KeyValueEditingBoxPresenter extends EditingBoxPresenter implements KeyValueEditingBox.Presenter {
 
     @Override
     public LIElement getEditingBox(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap) {
@@ -31,15 +32,14 @@ public class KeyValueEditingBoxPresenter extends EditingBoxPresenter implements 
         mapEditingBox.getEditingBoxTitle().setInnerText("Edit " + propertyName);
         keyPropertyMap.forEach((propertyKey, value) -> mapEditingBox.getKeyContainer().appendChild(propertyPresenter.getEditingPropertyFields("key", propertyKey, ""))
         );
-        valuePropertyMap.forEach((propertyKey, value) -> mapEditingBox.getValueContainer().appendChild(propertyPresenter.getEditingPropertyFields("value", propertyKey, "")));
+        valuePropertyMap.forEach((propertyKey, value) -> mapEditingBox.getValueContainer().appendChild(propertyPresenter.getEditingPropertyFields(VALUE, propertyKey, "")));
         return mapEditingBox.getEditingBox();
     }
 
     @Override
     public void save() {
         Map<String, String> keyPropertiesValues = propertyPresenter.updateProperties("key");
-        Map<String, String> valuePropertiesMap = propertyPresenter.updateProperties("value");
+        Map<String, String> valuePropertiesMap = propertyPresenter.updateProperties(VALUE);
         collectionEditorPresenter.addMapItem(keyPropertiesValues, valuePropertiesMap);
     }
-
 }

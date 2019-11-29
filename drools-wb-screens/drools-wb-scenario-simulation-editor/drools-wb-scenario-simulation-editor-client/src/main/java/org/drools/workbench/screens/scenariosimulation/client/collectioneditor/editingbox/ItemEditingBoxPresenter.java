@@ -22,8 +22,9 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.LIElement;
 
-public class ItemEditingBoxPresenter extends EditingBoxPresenter implements ItemEditingBox.Presenter {
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
+public class ItemEditingBoxPresenter extends EditingBoxPresenter implements ItemEditingBox.Presenter {
 
     protected List<String> nestedPropertiesNamesList = new ArrayList<>(); // Map a given ItemEditingBox' key with its nested properties
 
@@ -37,7 +38,7 @@ public class ItemEditingBoxPresenter extends EditingBoxPresenter implements Item
         nestedPropertiesNamesList.clear();
         for (Map.Entry<String, String> entry : simplePropertiesMap.entrySet()) {
             String propertyKey = entry.getKey();
-            listEditingBox.getPropertiesContainer().appendChild(propertyPresenter.getEditingPropertyFields("value", propertyKey, ""));
+            listEditingBox.getPropertiesContainer().appendChild(propertyPresenter.getEditingPropertyFields(VALUE, propertyKey, ""));
         }
         for (Map.Entry<String, Map<String, String>> entry : expandablePropertiesMap.entrySet()) {
             String nestedPropertyName = entry.getKey();
@@ -49,7 +50,7 @@ public class ItemEditingBoxPresenter extends EditingBoxPresenter implements Item
 
     @Override
     public void save() {
-        Map<String, String> simplePropertiesValues = propertyPresenter.updateProperties("value");
+        Map<String, String> simplePropertiesValues = propertyPresenter.updateProperties(VALUE);
         Map<String, Map<String, String>> expandablePropertiesValues = new HashMap<>();
         for (String nestedPropertyName : nestedPropertiesNamesList) {
             expandablePropertiesValues.put(nestedPropertyName, propertyPresenter.updateProperties(nestedPropertyName));
@@ -58,7 +59,6 @@ public class ItemEditingBoxPresenter extends EditingBoxPresenter implements Item
     }
 
     /**
-     *
      * @param containerItemEditingBox
      * @param propertiesMap
      * @param key
@@ -77,5 +77,4 @@ public class ItemEditingBoxPresenter extends EditingBoxPresenter implements Item
         }
         containerItemEditingBox.getPropertiesContainer().appendChild(listEditingBox.getEditingBox());
     }
-
 }

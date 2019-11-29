@@ -34,6 +34,7 @@ import org.kie.api.runtime.KieContainer;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -62,10 +63,10 @@ public class RULEScenarioValidationTest {
         Simulation test0 = new Simulation();
         test0.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.DESCRIPTION,
-                ExpressionIdentifier.create("value", FactMappingType.OTHER));
+                ExpressionIdentifier.create(VALUE, FactMappingType.OTHER));
         test0.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.EMPTY,
-                ExpressionIdentifier.create("value", FactMappingType.GIVEN));
+                ExpressionIdentifier.create(VALUE, FactMappingType.GIVEN));
 
         List<FactMappingValidationError> errorsTest0 = validation.validate(test0, settingsLocal, kieContainerMock);
         checkResult(errorsTest0);
@@ -74,14 +75,14 @@ public class RULEScenarioValidationTest {
         Simulation test1 = new Simulation();
         test1.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", int.class.getCanonicalName()),
-                ExpressionIdentifier.create("value", FactMappingType.GIVEN));
+                ExpressionIdentifier.create(VALUE, FactMappingType.GIVEN));
 
         List<FactMappingValidationError> errorsTest1 = validation.validate(test1, settingsLocal, kieContainerMock);
         checkResult(errorsTest1);
 
         FactMapping mySimpleType = test1.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", "notValidClass"),
-                ExpressionIdentifier.create("value", FactMappingType.GIVEN));
+                ExpressionIdentifier.create(VALUE, FactMappingType.GIVEN));
         mySimpleType.addExpressionElement("notValidClass", "notValidClass");
 
         errorsTest1 = validation.validate(test1, settingsLocal, kieContainerMock);

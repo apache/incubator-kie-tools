@@ -60,8 +60,6 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
         verify(collectionPresenterMock, times(1)).setValue(eq(testValue));
     }
 
-
-
     @Test
     public void onCloseCollectionEditorButtonClick() {
         collectionEditorViewImpl.onCloseCollectionEditorButtonClick(clickEventMock);
@@ -124,7 +122,7 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
 
     @Test
     public void updateValue() {
-        collectionEditorViewImpl.updateValue("VALUE");
+        collectionEditorViewImpl.updateValue("TEST_VALUE");
         verify(collectionEditorViewImpl, times(1)).fireEvent(isA(SaveEditorEvent.class));
     }
 
@@ -141,5 +139,4 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
         collectionEditorViewImpl.setFixedHeight(value, unit);
         verify(styleMock, times(1)).setHeight(eq(value), eq(unit));
     }
-
 }

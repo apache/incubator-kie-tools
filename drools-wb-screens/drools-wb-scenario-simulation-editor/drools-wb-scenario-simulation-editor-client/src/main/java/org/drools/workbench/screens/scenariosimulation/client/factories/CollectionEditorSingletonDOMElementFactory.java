@@ -40,6 +40,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.isSimpleJavaType;
 
 public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, CollectionViewImpl, CollectionEditorDOMElement> {
@@ -67,12 +68,12 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
 
     @Override
     public CollectionEditorDOMElement createDomElement(final GridLayer gridLayer,
-                                                                                                                     final GridWidget gridWidget) {
+                                                       final GridWidget gridWidget) {
         if (this.widget != null) {
             this.widget.close();
         }
         this.widget = createWidget();
-        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData>  model = ((ScenarioGrid) gridWidget).getModel();
+        final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> model = ((ScenarioGrid) gridWidget).getModel();
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
         final Optional<GridColumn<?>> selectedColumn = model.getColumns().stream()
                 .filter(col -> col.getIndex() == selectedCellsOrigin.getColumnIndex())
@@ -147,7 +148,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         Map<String, String> toReturn;
         if (isSimpleJavaType(typeName)) {
             toReturn = new HashMap<>();
-            toReturn.put("value", typeName);
+            toReturn.put(VALUE, typeName);
         } else {
             toReturn = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getSimpleProperties();
         }

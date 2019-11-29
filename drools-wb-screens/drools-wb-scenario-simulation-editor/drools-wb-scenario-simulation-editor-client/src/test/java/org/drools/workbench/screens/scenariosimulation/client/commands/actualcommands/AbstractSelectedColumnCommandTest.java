@@ -39,6 +39,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
+import static java.util.Collections.singletonList;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_ID;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
@@ -120,23 +122,23 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         this.insertNewColumnCommon(COLUMN_INDEX, true);
     }
 
-    protected void insertNewColumnCommon( int columnIndex, boolean cloneInstance) {
+    protected void insertNewColumnCommon(int columnIndex, boolean cloneInstance) {
         int instanceNum = simulationDescriptorMock.getUnmodifiableFactMappings().size();
         ScenarioGridColumn createdColumn = ((AbstractSelectedColumnCommand) commandSpy).insertNewColumn(scenarioSimulationContextLocal, gridColumnMock, columnIndex, cloneInstance);
         String columnGroup = gridColumnMock.getInformationHeaderMetaData().getColumnGroup();
         String originalInstanceTitle = gridColumnMock.getInformationHeaderMetaData().getTitle();
-        String instanceTitle = cloneInstance ? originalInstanceTitle : "INSTANCE " + instanceNum ;
-        String propertyTitle = "PROPERTY " + instanceNum ;
+        String instanceTitle = cloneInstance ? originalInstanceTitle : "INSTANCE " + instanceNum;
+        String propertyTitle = "PROPERTY " + instanceNum;
         final FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         verify(commandSpy, times(1)).getScenarioGridColumnLocal(
-                                                             eq(instanceTitle),
-                                                             eq(propertyTitle),
-                                                             anyString(),
-                                                             eq(columnGroup),
-                                                             eq(factMappingType),
-                                                             eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest),
-                                                             eq(scenarioCellTextAreaSingletonDOMElementFactoryTest),
-                                                             eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+                eq(instanceTitle),
+                eq(propertyTitle),
+                anyString(),
+                eq(columnGroup),
+                eq(factMappingType),
+                eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest),
+                eq(scenarioCellTextAreaSingletonDOMElementFactoryTest),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         if (cloneInstance) {
             verify(createdColumn, times(1)).setFactIdentifier(eq(gridColumnMock.getFactIdentifier()));
         } else {
@@ -310,16 +312,16 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
 
     protected void getPropertyHeaderTitle_Value() {
         Optional<String> emptyMatching = Optional.empty();
-        doReturn(emptyMatching).when((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(eq(scenarioSimulationContextLocal), eq(Arrays.asList(CLASS_NAME)), eq(factIdentifierMock));
-        String retrieved = ((AbstractSelectedColumnCommand) commandSpy).getPropertyHeaderTitle(scenarioSimulationContextLocal, Arrays.asList(CLASS_NAME), factIdentifierMock);
-        assertEquals(ConstantHolder.VALUE, retrieved);
+        doReturn(emptyMatching).when((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(eq(scenarioSimulationContextLocal), eq(singletonList(CLASS_NAME)), eq(factIdentifierMock));
+        String retrieved = ((AbstractSelectedColumnCommand) commandSpy).getPropertyHeaderTitle(scenarioSimulationContextLocal, singletonList(CLASS_NAME), factIdentifierMock);
+        assertEquals(VALUE, retrieved);
     }
 
     protected void getPropertyHeaderTitle_Expression() {
         Optional<String> emptyMatching = Optional.empty();
-        doReturn(emptyMatching).when((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(eq(scenarioSimulationContextLocal), eq(Arrays.asList(CLASS_NAME)), eq(factIdentifierMock));
+        doReturn(emptyMatching).when((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(eq(scenarioSimulationContextLocal), eq(singletonList(CLASS_NAME)), eq(factIdentifierMock));
         ((AbstractSelectedColumnCommand) commandSpy).factMappingValueType = FactMappingValueType.EXPRESSION;
-        String retrieved = ((AbstractSelectedColumnCommand) commandSpy).getPropertyHeaderTitle(scenarioSimulationContextLocal, Arrays.asList(CLASS_NAME), factIdentifierMock);
+        String retrieved = ((AbstractSelectedColumnCommand) commandSpy).getPropertyHeaderTitle(scenarioSimulationContextLocal, singletonList(CLASS_NAME), factIdentifierMock);
         assertEquals(ConstantHolder.EXPRESSION_INSTANCE_PLACEHOLDER, retrieved);
     }
 

@@ -53,6 +53,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
 import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 import static org.drools.scenariosimulation.api.model.FactMappingType.OTHER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree.Type.DECISION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -274,7 +275,7 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
     private FactModelTree createFactModelTree(String name, String path, DMNType type, SortedMap<String, FactModelTree> hiddenFacts, FactModelTree.Type fmType) {
         Map<String, String> simpleFields = new HashMap<>();
         if (!type.isComposite()) {
-            simpleFields.put("value", type.getName());
+            simpleFields.put(VALUE, type.getName());
             FactModelTree simpleFactModelTree = new FactModelTree(name, "", simpleFields, new HashMap<>(), fmType);
             simpleFactModelTree.setSimple(true);
             return simpleFactModelTree;

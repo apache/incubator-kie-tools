@@ -43,6 +43,7 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.drools.scenariosimulation.api.model.FactMapping.getPropertyPlaceHolder;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getColumnSubGroup;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias;
 
@@ -293,7 +294,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
         final FactMapping factMapping = selectedScenarioGridModel.get().getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
         selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory(gridWidget));
         if (factModelTree.isSimple()) {
-            factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(ConstantHolder.VALUE));
+            factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(VALUE));
         } else {
             final FactModelTree nestedFactModelTree = navigateComplexObject(factModelTree,
                                                                             fullPropertyPathElements,
@@ -323,7 +324,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
     protected String getPropertyHeaderTitle(ScenarioSimulationContext context, List<String> propertyNameElements, FactIdentifier factIdentifier) {
         /* If propertyNameElements contains only one step, it's managing an Expression or a SimpleClass type */
         if (propertyNameElements.size() == 1) {
-            return FactMappingValueType.EXPRESSION.equals(factMappingValueType) ? ConstantHolder.EXPRESSION_INSTANCE_PLACEHOLDER : ConstantHolder.VALUE;
+            return FactMappingValueType.EXPRESSION.equals(factMappingValueType) ? ConstantHolder.EXPRESSION_INSTANCE_PLACEHOLDER : VALUE;
         }
         String propertyPathPart = String.join(".", propertyNameElements.subList(1, propertyNameElements.size()));
         List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements, factIdentifier);

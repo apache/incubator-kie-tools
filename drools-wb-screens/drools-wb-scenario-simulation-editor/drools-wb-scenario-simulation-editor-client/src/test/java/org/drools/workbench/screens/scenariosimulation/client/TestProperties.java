@@ -28,6 +28,8 @@ import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
+
 /**
  * Put all statically defined properties here
  */
@@ -46,7 +48,7 @@ public class TestProperties {
 
     public static final String FULL_PACKAGE = "test.scesim";
 
-    public static final String LOWER_CASE_VALUE = "value";
+    public static final String LOWER_CASE_VALUE = VALUE;
 
     public static final String MULTIPART_VALUE = "MULTIPART.VALUE";
 
