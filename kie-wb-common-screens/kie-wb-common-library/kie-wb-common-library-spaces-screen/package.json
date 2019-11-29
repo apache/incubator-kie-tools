@@ -16,7 +16,8 @@
     "init": "yarn install --force",
     "build:dev": "yarn run lint && yarn test && webpack --mode development --devtool inline-source-map",
     "build:prod": "yarn run lint && yarn test && webpack --mode production --devtool none",
-    "live-reload-on": "sh -c 'mvn clean install -Psourcemaps && find ${0} | grep $npm_package_bundleName | grep -v target | xargs -I{} cp dist/$npm_package_bundleName {}'"
+    "live-reload-on": "sh -c 'mvn clean install -Psourcemaps && find ${0} | grep $npm_package_bundleName | grep -v target | xargs -I{} cp dist/$npm_package_bundleName {}'",
+    "locktt": "locktt"
   },
   "babel": {
     "presets": [
@@ -47,6 +48,7 @@
     "enzyme-to-json": "3.3.5",
     "jest": "23.5.0",
     "jest-junit": "6.3.0",
+    "lock-treatment-tool": "^0.4.1",
     "prettier": "1.14.2",
     "ts-jest": "24.0.2",
     "ts-loader": "4.4.2",

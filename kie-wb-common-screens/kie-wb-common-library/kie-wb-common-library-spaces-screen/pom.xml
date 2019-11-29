@@ -101,7 +101,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run env -- locktt</arguments>
+              <arguments>run locktt -- </arguments>
             </configuration>
           </execution>
           <execution>
