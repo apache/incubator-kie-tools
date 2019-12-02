@@ -222,8 +222,6 @@ public class DataTypeListItem {
 
         dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
 
-        expandOrCollapseSubTypes();
-
         dataTypeList.refreshDragAndDropList();
         view.enableFocusMode();
         view.toggleArrow(!dataTypes.isEmpty());

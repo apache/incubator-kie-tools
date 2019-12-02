@@ -300,7 +300,7 @@ public class DataTypeListItemTest {
         listItem.refreshSubItems(dataTypes);
 
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
-        verify(listItem).expandOrCollapseSubTypes();
+        verify(listItem, never()).expandOrCollapseSubTypes();
         verify(view).enableFocusMode();
         verify(view).toggleArrow(anyBoolean());
     }
