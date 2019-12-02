@@ -225,15 +225,15 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     @Test
     public void setGridWidgetSIMULATION() {
         testToolsPresenterSpy.setGridWidget(GridWidget.SIMULATION);
-        verify(testToolsPresenterSpy, times(1)).showInstanceListContainerSeparator(eq(true));
+        verify(testToolsPresenterSpy, times(1)).onDisableEditorTab();
         verify(testToolsPresenterSpy, never()).hideInstances();
     }
 
     @Test
     public void setGridWidgetBACKGROUND() {
         testToolsPresenterSpy.setGridWidget(GridWidget.BACKGROUND);
+        verify(testToolsPresenterSpy, times(1)).onDisableEditorTab();
         verify(testToolsPresenterSpy, times(1)).hideInstances();
-        verify(testToolsPresenterSpy, never()).showInstanceListContainerSeparator(eq(true));
     }
 
     @Test

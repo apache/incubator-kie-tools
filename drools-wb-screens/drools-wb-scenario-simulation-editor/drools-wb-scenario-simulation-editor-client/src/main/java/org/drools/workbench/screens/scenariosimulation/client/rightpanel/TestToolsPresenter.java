@@ -200,15 +200,9 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     @Override
     public void setGridWidget(GridWidget gridWidget) {
         this.gridWidget = gridWidget;
-        switch (gridWidget) {
-            case BACKGROUND:
-                hideInstances();
-                break;
-            case SIMULATION:
-                showInstanceListContainerSeparator(true);
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+        onDisableEditorTab();
+        if (GridWidget.BACKGROUND.equals(gridWidget)) {
+            hideInstances();
         }
     }
 
