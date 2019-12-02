@@ -140,10 +140,6 @@
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-wires-core-grids</artifactId>
-    </dependency>
 
     <!-- UberFire kogito dependencies -->
     <dependency>
