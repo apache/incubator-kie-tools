@@ -43,6 +43,7 @@ public class CustomGroupItemTest {
 
     public Set<String> styles = new HashSet<String>();
     public List<String> text = new ArrayList<String>();
+    public List<IconType> icon = new ArrayList<IconType>();
     public ClickHandler clickHandler = null;
     final Command command = mock( Command.class );
 
@@ -73,6 +74,14 @@ public class CustomGroupItemTest {
 
             public String getText() {
                 return text.get( 0 );
+            }
+
+            public IconType getIcon() {
+                return icon.get( 0 );
+            }
+
+            public void setIcon(IconType icontype) {
+                icon.add( icontype );
             }
 
             public HandlerRegistration addClickHandler( final ClickHandler handler ) {
