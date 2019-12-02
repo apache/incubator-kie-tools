@@ -297,11 +297,25 @@ public class DataTypeListItemTest {
         final DataType dataType = mock(DataType.class);
         final List<DataType> dataTypes = singletonList(dataType);
 
-        listItem.refreshSubItems(dataTypes);
+        listItem.refreshSubItems(dataTypes, true);
 
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
         verify(listItem, never()).expandOrCollapseSubTypes();
         verify(view).enableFocusMode();
+        verify(view).toggleArrow(anyBoolean());
+    }
+
+    @Test
+    public void testRefreshSubItemsNotSetFocus() {
+
+        final DataType dataType = mock(DataType.class);
+        final List<DataType> dataTypes = singletonList(dataType);
+
+        listItem.refreshSubItems(dataTypes, false);
+
+        verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
+        verify(listItem).expandOrCollapseSubTypes();
+        verify(view, never()).enableFocusMode();
         verify(view).toggleArrow(anyBoolean());
     }
 
@@ -552,7 +566,7 @@ public class DataTypeListItemTest {
         doNothing().when(listItem).setupSelectComponent();
         doNothing().when(listItem).setupListComponent();
         doNothing().when(listItem).setupIndentationLevel();
-        doNothing().when(listItem).refreshSubItems(subDataTypes);
+        doNothing().when(listItem).refreshSubItems(subDataTypes, true);
         doReturn(subDataTypes).when(dataType).getSubDataTypes();
         doReturn(dataType).when(listItem).discardDataTypeProperties();
 
@@ -562,7 +576,7 @@ public class DataTypeListItemTest {
         verify(listItem).setupListComponent();
         verify(listItem).setupSelectComponent();
         verify(listItem).setupConstraintComponent();
-        verify(listItem).refreshSubItems(subDataTypes);
+        verify(listItem).refreshSubItems(subDataTypes, true);
         verify(listItem).setupIndentationLevel();
     }
 

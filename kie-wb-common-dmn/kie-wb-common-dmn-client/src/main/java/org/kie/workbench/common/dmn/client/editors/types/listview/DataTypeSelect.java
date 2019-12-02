@@ -103,7 +103,7 @@ public class DataTypeSelect {
 
     void refreshView(final String typeName) {
         subDataTypes = dataTypeManager.from(getDataType()).makeExternalDataTypes(typeName);
-        listItem.refreshSubItems(subDataTypes);
+        listItem.refreshSubItems(subDataTypes, false);
         listItem.refreshConstraintComponent();
     }
 

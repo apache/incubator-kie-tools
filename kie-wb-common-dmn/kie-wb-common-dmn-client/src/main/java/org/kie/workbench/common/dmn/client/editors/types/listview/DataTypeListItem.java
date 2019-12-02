@@ -218,12 +218,16 @@ public class DataTypeListItem {
         view.collapse();
     }
 
-    void refreshSubItems(final List<DataType> dataTypes) {
+    void refreshSubItems(final List<DataType> dataTypes,
+                         final boolean enableFocusMode) {
 
         dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
 
         dataTypeList.refreshDragAndDropList();
-        view.enableFocusMode();
+
+        if (enableFocusMode) {
+            view.enableFocusMode();
+        }
         view.toggleArrow(!dataTypes.isEmpty());
     }
 
@@ -333,7 +337,7 @@ public class DataTypeListItem {
         setupSelectComponent();
         setupConstraintComponent();
         setupIndentationLevel();
-        refreshSubItems(oldDataType.getSubDataTypes());
+        refreshSubItems(oldDataType.getSubDataTypes(), true);
     }
 
     DataType discardDataTypeProperties() {

@@ -167,7 +167,7 @@ public class DataTypeSelectTest {
         dataTypeSelect.refreshView(typeName);
 
         assertEquals(expectedDataTypes, dataTypeSelect.getSubDataTypes());
-        verify(listItem).refreshSubItems(expectedDataTypes);
+        verify(listItem).refreshSubItems(expectedDataTypes, false);
         verify(listItem).refreshConstraintComponent();
     }
 
