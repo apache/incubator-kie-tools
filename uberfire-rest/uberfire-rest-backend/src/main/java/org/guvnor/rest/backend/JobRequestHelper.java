@@ -227,31 +227,34 @@ public class JobRequestHelper {
 
     public JobResult compileProject(final String jobId,
                                     final String spaceName,
-                                    final String projectName) {
-        JobResult result = new JobResult();
-        result.setJobId(jobId);
+                                    final String projectName,
+                                    final String branchName) {
 
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+            spacesAPI.getSpace(spaceName),
+            projectName,
+            branchName);
 
         if (workspaceProject == null) {
-            result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("Project [" + projectName + "] does not exist");
-            return result;
-        } else {
-            Module module = workspaceProject.getMainModule();
-
-            if (module == null) {
-                result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] has no main module.");
-                return result;
-            }
-
-            BuildResults buildResults = buildService.build(module);
-
-            result.setDetailedResult(buildResultsToDetailedStringMessages(buildResults.getMessages()));
-            result.setStatus(buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-            return result;
+            return projectDoesNotExistError(jobId, projectName);
         }
+
+        Module module = workspaceProject.getMainModule();
+
+        if (module == null) {
+            if (branchName == null) {
+                return projectHasNoMainModuleError(jobId, projectName);
+            }
+            return projectHasNoModuleError(jobId, projectName, branchName);
+        }
+
+        BuildResults buildResults = buildService.build(module);
+
+        JobResult result = new JobResult();
+        result.setJobId(jobId);
+        result.setDetailedResult(buildResultsToDetailedStringMessages(buildResults.getMessages()));
+        result.setStatus(buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
+        return result;
     }
 
     private List<String> buildResultsToDetailedStringMessages(List<BuildMessage> messages) {
@@ -267,7 +270,8 @@ public class JobRequestHelper {
 
     public JobResult installProject(final String jobId,
                                     final String spaceName,
-                                    final String projectName) {
+                                    final String projectName,
+                                    final String branchName) {
 
         PortablePreconditions.checkNotNull("jobId", jobId);
         PortablePreconditions.checkNotNull("spaceName", spaceName);
@@ -282,45 +286,48 @@ public class JobRequestHelper {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
             result.setResult("Space [" + spaceName + "] does not exist");
             return result;
-        } else {
-            final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName),
-                                                                                             projectName);
-            if (workspaceProject == null) {
-                result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] does not exist");
-                return result;
-            }
-
-            final Module module = workspaceProject.getMainModule();
-
-            if (module == null) {
-                result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] has no main module.");
-                return result;
-            }
-
-            BuildResults buildResults = null;
-            try {
-                buildResults = buildService.buildAndDeploy(module);
-
-                result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
-                result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-            } catch (Throwable t) {
-                Optional<GAVAlreadyExistsException> gaeOpt = findCause(t,
-                                                                       GAVAlreadyExistsException.class);
-                if (gaeOpt.isPresent()) {
-                    GAVAlreadyExistsException gae = gaeOpt.get();
-                    result.setStatus(JobStatus.DUPLICATE_RESOURCE);
-                    result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
-                } else {
-                    List<String> errorResult = new ArrayList<>();
-                    errorResult.add(t.getMessage());
-                    result.setDetailedResult(errorResult);
-                    result.setStatus(JobStatus.FAIL);
-                }
-            }
-            return result;
         }
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+            spacesAPI.getSpace(spaceName),
+            projectName,
+            branchName);
+
+        if (workspaceProject == null) {
+            return projectDoesNotExistError(jobId, projectName);
+        }
+
+        final Module module = workspaceProject.getMainModule();
+
+        if (module == null) {
+            if (branchName == null) {
+                return projectHasNoMainModuleError(jobId, projectName);
+            }
+            return projectHasNoModuleError(jobId, projectName, branchName);
+        }
+
+        try {
+            BuildResults buildResults = buildService.buildAndDeploy(module);
+            result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
+            result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
+
+        } catch (Throwable t) {
+            Optional<GAVAlreadyExistsException> gaeOpt = findCause(t, GAVAlreadyExistsException.class);
+
+            if (gaeOpt.isPresent()) {
+                GAVAlreadyExistsException gae = gaeOpt.get();
+                result.setStatus(JobStatus.DUPLICATE_RESOURCE);
+                result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
+
+            } else {
+                List<String> errorResult = new ArrayList<>();
+                errorResult.add(t.getMessage());
+                result.setDetailedResult(errorResult);
+                result.setStatus(JobStatus.FAIL);
+            }
+       }
+
+        return result;
     }
 
     private List<String> deployResultToDetailedStringMessages(final BuildResults deployResult) {
@@ -335,32 +342,35 @@ public class JobRequestHelper {
 
     public JobResult testProject(final String jobId,
                                  final String spaceName,
-                                 final String projectName) {
+                                 final String projectName,
+                                 final String branchName) {
+
         final JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+            spacesAPI.getSpace(spaceName),
+            projectName,
+            branchName);
 
         if (workspaceProject == null) {
-            result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("Project [" + projectName + "] does not exist.");
-            return result;
-        } else {
-            final Module module = workspaceProject.getMainModule();
-
-            if (module == null) {
-                result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] has no main module.");
-                return result;
-            } else {
-
-                testService.runAllTests(
-                        "JobRequestHelper",
-                        module.getPomXMLPath(),
-                        getCustomTestResultEvent(result));
-                return result;
-            }
+            return projectDoesNotExistError(jobId, projectName);
         }
+
+        final Module module = workspaceProject.getMainModule();
+
+        if (module == null) {
+            if (branchName == null) {
+                return projectHasNoMainModuleError(jobId, projectName);
+            }
+            return projectHasNoModuleError(jobId, projectName, branchName);
+        }
+
+        testService.runAllTests("JobRequestHelper",
+                                module.getPomXMLPath(),
+                                getCustomTestResultEvent(result));
+
+        return result;
     }
 
     private Event<TestResultMessage> getCustomTestResultEvent(final JobResult result) {
@@ -388,40 +398,43 @@ public class JobRequestHelper {
 
     public JobResult deployProject(final String jobId,
                                    final String spaceName,
-                                   final String projectName) {
+                                   final String projectName,
+                                   final String branchName) {
+
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+            spacesAPI.getSpace(spaceName),
+            projectName,
+            branchName);
 
         if (workspaceProject == null) {
-            result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("Project [" + projectName + "] does not exist");
-            return result;
-        } else {
-            Module module = workspaceProject.getMainModule();
+            return projectDoesNotExistError(jobId, projectName);
+        }
 
-            if (module == null) {
-                result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] has no main module.");
-                return result;
+        Module module = workspaceProject.getMainModule();
+
+        if (module == null) {
+            if (branchName == null) {
+                return projectHasNoMainModuleError(jobId, projectName);
             }
+            return projectHasNoModuleError(jobId, projectName, branchName);
+        }
 
-            BuildResults buildResults = null;
-            try {
-                buildResults = buildService.buildAndDeploy(module);
+        try {
+            BuildResults buildResults = buildService.buildAndDeploy(module);
+            result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
+            result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
 
-                result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
-                result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-            } catch (RuntimeException ex) {
-                GAVAlreadyExistsException gae = findCause(ex,
-                                                          GAVAlreadyExistsException.class).orElseThrow(() -> ex);
-                result.setStatus(JobStatus.DUPLICATE_RESOURCE);
-                result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
-                return result;
-            }
+        } catch (RuntimeException ex) {
+            GAVAlreadyExistsException gae = findCause(ex, GAVAlreadyExistsException.class).orElseThrow(() -> ex);
+            result.setStatus(JobStatus.DUPLICATE_RESOURCE);
+            result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
             return result;
         }
+
+        return result;
     }
 
     public JobResult removeSpace(final String jobId,
@@ -555,5 +568,33 @@ public class JobRequestHelper {
             return findCause(t.getCause(),
                              causeClass);
         }
+    }
+
+    private JobResult projectDoesNotExistError(final String jobId,
+                                               final String projectName) {
+        JobResult jobResult = new JobResult();
+        jobResult.setJobId(jobId);
+        jobResult.setStatus(JobStatus.RESOURCE_NOT_EXIST);
+        jobResult.setResult("Project [" + projectName + "] does not exist.");
+        return jobResult;
+    }
+
+    private JobResult projectHasNoMainModuleError(final String jobId,
+                                                  final String projectName) {
+        JobResult jobResult = new JobResult();
+        jobResult.setJobId(jobId);
+        jobResult.setStatus(JobStatus.RESOURCE_NOT_EXIST);
+        jobResult.setResult("Project [" + projectName + "] has no main module.");
+        return jobResult;
+    }
+
+    private JobResult projectHasNoModuleError(final String jobId,
+                                              final String projectName,
+                                              final String branchName) {
+        JobResult jobResult = new JobResult();
+        jobResult.setJobId(jobId);
+        jobResult.setStatus(JobStatus.RESOURCE_NOT_EXIST);
+        jobResult.setResult("Project [" + projectName + "] has no module [" + branchName + "].");
+        return jobResult;
     }
 }

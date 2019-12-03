@@ -280,6 +280,30 @@ public class WorkspaceProjectServiceImpl
                               name);
     }
 
+    @Override
+    public WorkspaceProject resolveProject(final Space space,
+                                           final String projectName,
+                                           final String branchName) {
+
+        WorkspaceProject workspaceProject = resolveProject(space, projectName);
+
+        if (workspaceProject == null) {
+            throw new IllegalArgumentException("project " + projectName + " not found.");
+        }
+
+        if (branchName == null) {
+            return workspaceProject;
+        }
+
+        for (final Branch branch : workspaceProject.getRepository().getBranches()) {
+            if (branch.getName().equals(branchName)) {
+                return resolveProject(space, branch);
+            }
+        }
+
+        throw new IllegalArgumentException("branch " + branchName + " not found.");
+    }
+
     private WorkspaceProject resolveProject(OrganizationalUnit ou,
                                             final String name) {
         for (final WorkspaceProject workspaceProject : getAllWorkspaceProjects(ou)) {

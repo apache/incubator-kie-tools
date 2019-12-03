@@ -22,6 +22,7 @@ public class InstallProjectRequest extends JobRequest {
 
     private String spaceName;
     private String projectName;
+    private String branchName;
 
     public String getSpaceName() {
         return spaceName;
@@ -37,5 +38,13 @@ public class InstallProjectRequest extends JobRequest {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getBranchName() {
+        return branchName;
     }
 }

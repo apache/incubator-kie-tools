@@ -16,6 +16,7 @@
 package org.guvnor.rest.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -23,8 +24,12 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestRunnerService;
@@ -69,6 +74,8 @@ public class JobRequestHelperTest {
     @Mock
     private TestRunnerService testService;
     @Mock
+    private BuildService buildService;
+    @Mock
     private RepositoryService repositoryService;
     @Mock
     private ModuleService<MyModule> moduleService;
@@ -84,7 +91,7 @@ public class JobRequestHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        when(workspaceProjectService.resolveProject(eq(space), eq("project"))).thenReturn(workspaceProject);
+        when(workspaceProjectService.resolveProject(eq(space), eq("project"), any())).thenReturn(workspaceProject);
         when(repositoryService.getRepositoryFromSpace(eq(space), eq("repositoryAlias"))).thenReturn(repository);
         when(spaces.getSpace(eq("space"))).thenReturn(space);
     }
@@ -118,6 +125,7 @@ public class JobRequestHelperTest {
     public void resourceDoesNotExist() throws Exception {
         final JobResult jobResult = helper.testProject(null,
                                                        null,
+                                                       null,
                                                        null);
         assertEquals(JobStatus.RESOURCE_NOT_EXIST,
                      jobResult.getStatus());
@@ -139,7 +147,8 @@ public class JobRequestHelperTest {
 
         final JobResult jobResult = helper.testProject(null,
                                                        space.getName(),
-                                                       "project");
+                                                       "project",
+                                                       null);
         assertEquals(JobStatus.RESOURCE_NOT_EXIST,
                      jobResult.getStatus());
     }
@@ -171,11 +180,120 @@ public class JobRequestHelperTest {
                                     JobStatus.FAIL);
     }
 
+    @Test
+    public void testCompileProject() {
+        whenProjectExists();
+
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getMessages()).thenReturn(new ArrayList());
+        when(buildService.build(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.compileProject(null,
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testCompileProjectFail() {
+        whenProjectExists();
+
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getMessages()).thenReturn(new ArrayList());
+        when(buildResults.getErrorMessages()).thenReturn(Arrays.asList(mock(BuildMessage.class)));
+        when(buildService.build(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.compileProject(null,
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.FAIL,
+                     jobResult.getStatus());
+    }
+
+
+    @Test
+    public void testInstallProject() {
+        whenProjectExists();
+
+        doReturn(mock(OrganizationalUnit.class)).when(organizationalUnitService).getOrganizationalUnit("space");
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getGAV()).thenReturn(mock(GAV.class));
+        when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.installProject("job123",
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testInstallProjectFail() {
+        whenProjectExists();
+
+        doReturn(mock(OrganizationalUnit.class)).when(organizationalUnitService).getOrganizationalUnit("space");
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getGAV()).thenReturn(mock(GAV.class));
+        when(buildResults.getErrorMessages()).thenReturn(Arrays.asList(mock(BuildMessage.class)));
+        when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.installProject("job123",
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.FAIL,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testDeployProject() {
+        whenProjectExists();
+
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getGAV()).thenReturn(mock(GAV.class));
+        when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.deployProject(null,
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testDeployProjectFail() {
+        whenProjectExists();
+
+        BuildResults buildResults = mock(BuildResults.class);
+        when(buildResults.getGAV()).thenReturn(mock(GAV.class));
+        when(buildResults.getErrorMessages()).thenReturn(Arrays.asList(mock(BuildMessage.class)));
+        when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
+
+        JobResult jobResult = helper.deployProject(null,
+                                                    space.getName(),
+                                                    "project",
+                                                    null);
+
+        assertEquals(JobStatus.FAIL,
+                     jobResult.getStatus());
+    }
+
     private void thenExpectMessageWithStatus(final TestResultMessage message,
                                              final JobStatus status) {
         final JobResult jobResult = helper.testProject(null,
                                                        space.getName(),
-                                                       "project");
+                                                       "project",
+                                                       null);
 
         verify(testService).runAllTests(eq("JobRequestHelper"),
                                         any(Path.class),

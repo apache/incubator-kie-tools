@@ -43,11 +43,13 @@ public class TestProjectCmd extends AbstractJobCommand {
         try {
             result = helper.testProject(jobRequest.getJobId(),
                                         jobRequest.getSpaceName(),
-                                        jobRequest.getProjectName());
+                                        jobRequest.getProjectName(),
+                                        jobRequest.getBranchName());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("-----testProject--- , project name: {} [{}]",
+            logger.debug("-----testProject--- , project name: {}, branch name: {} [{}]",
                          jobRequest.getProjectName(),
+                         jobRequest.getBranchName(),
                          status);
         }
         return result;

@@ -117,10 +117,76 @@ public class ProjectResourceJobTest {
     }
 
     @Test
+    public void compileProjectNullBranch() throws Exception {
+
+        projectResource.compileProject("spaceName",
+                                       "projectName",
+                                       null);
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void compileProjectMasterBranch() throws Exception {
+
+        projectResource.compileProject("spaceName",
+                                       "projectName",
+                                       "master");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void compileProjectNonExistingBranch() throws Exception {
+
+        projectResource.compileProject("spaceName",
+                                       "projectName",
+                                       "branch123");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
     public void installProject() throws Exception {
 
         projectResource.installProject("spaceName",
                                        "projectName");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void installProjectNullBranch() throws Exception {
+
+        projectResource.installProject("spaceName",
+                                       "projectName",
+                                       null);
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void installProjectMasterBranch() throws Exception {
+
+        projectResource.installProject("spaceName",
+                                       "projectName",
+                                       "master");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void installProjectNonExistingBranch() throws Exception {
+
+        projectResource.installProject("spaceName",
+                                       "projectName",
+                                       "branch123");
 
         verify(jobManager).putJob(jobResultArgumentCaptor.capture());
         assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
@@ -137,10 +203,76 @@ public class ProjectResourceJobTest {
     }
 
     @Test
+    public void testProjectNullBranch() throws Exception {
+
+        projectResource.testProject("spaceName",
+                                    "projectName",
+                                    null);
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void testProjectMasterBranch() throws Exception {
+
+        projectResource.testProject("spaceName",
+                                    "projectName",
+                                    "master");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void testProjectNonExisting() throws Exception {
+
+        projectResource.testProject("spaceName",
+                                    "projectName",
+                                    "branch123");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
     public void deployProject() throws Exception {
 
         projectResource.deployProject("spaceName",
                                       "projectName");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void deployProjectNullBranch() throws Exception {
+
+        projectResource.deployProject("spaceName",
+                                      "projectName",
+                                      null);
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void deployProjectMasterBranch() throws Exception {
+
+        projectResource.deployProject("spaceName",
+                                      "projectName",
+                                      "master");
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
+    public void deployProjectNonExistingBranch() throws Exception {
+
+        projectResource.deployProject("spaceName",
+                                      "projectName",
+                                      "branch123");
 
         verify(jobManager).putJob(jobResultArgumentCaptor.capture());
         assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());

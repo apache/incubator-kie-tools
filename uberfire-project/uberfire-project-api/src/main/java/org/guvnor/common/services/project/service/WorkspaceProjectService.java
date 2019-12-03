@@ -70,5 +70,9 @@ public interface WorkspaceProjectService {
 
     WorkspaceProject resolveProject(final Space space, final String name);
 
+    WorkspaceProject resolveProject(final Space space,
+                                    final String projectName,
+                                    final String branchName);
+
     WorkspaceProject resolveProjectByRepositoryAlias(final Space space, final String repositoryAlias);
 }

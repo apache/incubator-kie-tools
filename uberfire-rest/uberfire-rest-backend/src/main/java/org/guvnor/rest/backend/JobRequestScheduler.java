@@ -131,6 +131,8 @@ public class JobRequestScheduler {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Project",
                    jobRequest.getProjectName());
+        params.put("Branch",
+                   jobRequest.getBranchName());
         params.put("Operation",
                    "compileProject");
 
@@ -144,6 +146,8 @@ public class JobRequestScheduler {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Project",
                    jobRequest.getProjectName());
+        params.put("Branch",
+                   jobRequest.getBranchName());
         params.put("Operation",
                    "installProject");
 
@@ -157,6 +161,8 @@ public class JobRequestScheduler {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Project",
                    jobRequest.getProjectName());
+        params.put("Branch",
+                   jobRequest.getBranchName());
         params.put("Operation",
                    "testProject");
 
@@ -170,6 +176,8 @@ public class JobRequestScheduler {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Project",
                    jobRequest.getProjectName());
+        params.put("Branch",
+                   jobRequest.getBranchName());
         params.put("Operation",
                    "deployProject");
 

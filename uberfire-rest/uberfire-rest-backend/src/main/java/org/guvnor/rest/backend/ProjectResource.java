@@ -320,9 +320,25 @@ public class ProjectResource {
     public Response compileProject(
             @PathParam("spaceName") String spaceName,
             @PathParam("projectName") String projectName) {
-        logger.debug("-----compileProject--- , space name: {}, project name: {}",
+
+        return compileProject(spaceName,
+                      projectName,
+                      null);
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/spaces/{spaceName}/projects/{projectName}/branches/{branchName}/maven/compile")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    public Response compileProject(
+            @PathParam("spaceName") String spaceName,
+            @PathParam("projectName") String projectName,
+            @PathParam("branchName") String branchName) {
+
+        logger.debug("-----compileProject--- , space name: {}, project name: {}, branch name: {}",
                      spaceName,
-                     projectName);
+                     projectName,
+                     branchName);
 
         final String id = newId();
         final CompileProjectRequest jobRequest = new CompileProjectRequest();
@@ -330,6 +346,7 @@ public class ProjectResource {
         jobRequest.setJobId(id);
         jobRequest.setProjectName(projectName);
         jobRequest.setSpaceName(spaceName);
+        jobRequest.setBranchName(branchName);
         addAcceptedJobResult(id);
 
         jobRequestObserver.compileProjectRequest(jobRequest);
@@ -344,8 +361,23 @@ public class ProjectResource {
     public Response installProject(
             @PathParam("spaceName") String spaceName,
             @PathParam("projectName") String projectName) {
-        logger.debug("-----installProject--- , project name: {}",
-                     projectName);
+
+        return installProject(spaceName,
+                              projectName,
+                              null);
+    }
+   @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/spaces/{spaceName}/projects/{projectName}/branches/{branchName}/maven/install")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    public Response installProject(
+            @PathParam("spaceName") String spaceName,
+            @PathParam("projectName") String projectName,
+            @PathParam("branchName") String branchName) {
+
+        logger.debug("-----installProject--- , project name: {}, branch name: {}",
+                     projectName,
+                     branchName);
 
         PortablePreconditions.checkNotNull("spaceName", spaceName);
         PortablePreconditions.checkNotNull("projectName", projectName);
@@ -356,6 +388,7 @@ public class ProjectResource {
         jobRequest.setJobId(id);
         jobRequest.setSpaceName(spaceName);
         jobRequest.setProjectName(projectName);
+        jobRequest.setBranchName(branchName);
         addAcceptedJobResult(id);
 
         jobRequestObserver.installProjectRequest(jobRequest);
@@ -371,8 +404,25 @@ public class ProjectResource {
     public Response testProject(
             @PathParam("spaceName") String spaceName,
             @PathParam("projectName") String projectName) {
-        logger.debug("-----testProject--- , project name: {}",
-                     projectName);
+
+        return testProject(spaceName,
+                           projectName,
+                           null);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/spaces/{spaceName}/projects/{projectName}/branches/{branchName}/maven/test")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    public Response testProject(
+            @PathParam("spaceName") String spaceName,
+            @PathParam("projectName") String projectName,
+            @PathParam("branchName") String branchName) {
+
+        logger.debug("-----testProject--- , project name: {}, branch name: {}",
+                     projectName,
+                     branchName);
 
         final String id = newId();
         final TestProjectRequest jobRequest = new TestProjectRequest();
@@ -380,6 +430,7 @@ public class ProjectResource {
         jobRequest.setJobId(id);
         jobRequest.setProjectName(projectName);
         jobRequest.setSpaceName(spaceName);
+        jobRequest.setBranchName(branchName);
         addAcceptedJobResult(id);
 
         jobRequestObserver.testProjectRequest(jobRequest);
@@ -394,8 +445,24 @@ public class ProjectResource {
     public Response deployProject(
             @PathParam("spaceName") String spaceName,
             @PathParam("projectName") String projectName) {
-        logger.debug("-----deployProject--- , project name: {}",
-                     projectName);
+
+        return deployProject(spaceName,
+                             projectName,
+                             null);
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/spaces/{spaceName}/projects/{projectName}/branches/{branchName}/maven/deploy")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    public Response deployProject(
+            @PathParam("spaceName") String spaceName,
+            @PathParam("projectName") String projectName,
+            @PathParam("branchName") String branchName) {
+
+        logger.debug("-----deployProject--- , project name: {}, branch name: {}",
+                     projectName,
+                     branchName);
 
         final String id = newId();
         final DeployProjectRequest jobRequest = new DeployProjectRequest();
@@ -403,6 +470,7 @@ public class ProjectResource {
         jobRequest.setJobId(id);
         jobRequest.setProjectName(projectName);
         jobRequest.setSpaceName(spaceName);
+        jobRequest.setBranchName(branchName);
         addAcceptedJobResult(id);
 
         jobRequestObserver.deployProjectRequest(jobRequest);

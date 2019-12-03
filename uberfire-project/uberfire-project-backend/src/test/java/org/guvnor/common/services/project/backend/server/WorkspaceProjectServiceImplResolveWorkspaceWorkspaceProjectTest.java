@@ -17,14 +17,19 @@ package org.guvnor.common.services.project.backend.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Date;
+import java.util.Arrays;
 
 import javax.enterprise.inject.Instance;
 
@@ -51,9 +56,12 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
@@ -99,11 +107,13 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
     private Path path;
     private Path branchRoot;
     private Branch masterBranch;
-
+    private IOService ioService;
     private Space space;
 
     @Before
     public void setUp() throws Exception {
+        ioService = new IOServiceDotFileImpl();
+
         path = PathFactory.newPath("testFile",
                                    "file:///files/TestDataObject.java");
         branchRoot = PathFactory.newPath("testFile",
@@ -142,6 +152,7 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
 
     @Test
     public void resolveProjectPath() throws Exception {
+
         final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(space, path);
 
         assertEquals(ou,
@@ -213,5 +224,133 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
                      workspaceProject.getBranch());
         assertEquals(module,
                      workspaceProject.getMainModule());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolveNullProjectAndNullBranch() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                null,
+                null);
+
+        assertNull(workspaceProject);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolveNonExistingProject() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                "project7",
+                null);
+    }
+
+    @Test
+    public void resolveProjectAndNullBranch() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                "project2",
+                null);
+
+        assertNotNull(workspaceProject);
+        assertNotNull(workspaceProject.getBranch());
+        assertEquals("master", workspaceProject.getBranch().getName());
+        assertNotNull(workspaceProject.getMainModule());
+    }
+
+    @Test
+    public void resolveProjectAndMasterBranch() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                "project2",
+                "master");
+
+        assertNotNull(workspaceProject);
+        assertNotNull(workspaceProject.getBranch());
+        assertEquals("master", workspaceProject.getBranch().getName());
+        assertNotNull(workspaceProject.getMainModule());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolveProjectAndNonExistingBranch() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                "project2",
+                "branch7");
+
+        assertNotNull(workspaceProject);
+        assertNotNull(workspaceProject.getBranch());
+        assertEquals("master", workspaceProject.getBranch().getName());
+        assertNull(workspaceProject.getMainModule());
+    }
+
+    @Test
+    public void resolveProjectAndBranch() {
+        mockRepositoriesAndBranches();
+
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
+                space,
+                "project2",
+                "branch4");
+
+        assertNotNull(workspaceProject);
+        assertNotNull(workspaceProject.getBranch());
+        assertEquals("branch4", workspaceProject.getBranch().getName());
+        assertNotNull(workspaceProject.getMainModule());
+    }
+
+    private void mockRepositoriesAndBranches() {
+        Branch branch1 = createBranch("master");
+        Branch branch2 = createBranch("branch2");
+        Branch branch3 = createBranch("master");
+        Branch branch4 = createBranch("branch4");
+        Branch branch5 = createBranch("branch5");
+
+        Repository project1 = mock(Repository.class);
+        when(project1.getAlias()).thenReturn("project1");
+        when(project1.getSpace()).thenReturn(space);
+        when(project1.getDefaultBranch()).thenReturn(Optional.of(branch1));
+        when(project1.getBranches())
+            .thenReturn(Arrays.asList(branch1,
+                                      branch2));
+
+        Repository project2 = mock(Repository.class);
+        when(project2.getAlias()).thenReturn("project2");
+        when(project2.getSpace()).thenReturn(space);
+        when(project2.getDefaultBranch()).thenReturn(Optional.of(branch3));
+        when(project2.getBranches())
+            .thenReturn(Arrays.asList(branch3,
+                                      branch4,
+                                      branch5));
+
+        when(repositoryService.getRepository(any(), any())).thenReturn(project2);
+        when(repositoryService.getAllRepositories(any(), anyBoolean()))
+            .thenReturn(Arrays.asList(project1,
+                                      project2));
+    }
+
+    private Branch createBranch(String name) {
+        Path path = Paths.convert(
+            ioService.newFileSystem(
+                URI.create("git://test/" + name + new Date().getTime()),
+                new HashMap<String, Object>() {{
+                    put("init", Boolean.TRUE);
+            }}).getRootDirectories().iterator().next());
+
+        Branch branch = mock(Branch.class);
+
+        when(branch.getName()).thenReturn(name);
+        when(branch.getPath()).thenReturn(path);
+
+        return branch;
     }
 }

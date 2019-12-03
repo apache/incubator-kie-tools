@@ -43,12 +43,14 @@ public class InstallProjectCmd extends AbstractJobCommand {
         try {
             result = helper.installProject(jobRequest.getJobId(),
                                            jobRequest.getSpaceName(),
-                                           jobRequest.getProjectName());
+                                           jobRequest.getProjectName(),
+                                           jobRequest.getBranchName());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("-----installProject--- , ouName: {}, project name: {} [{}]",
+            logger.debug("-----installProject--- , ouName: {}, project name: {}, branch name: {} [{}]",
                          jobRequest.getSpaceName(),
                          jobRequest.getProjectName(),
+                         jobRequest.getBranchName(),
                          status);
         }
         return result;
