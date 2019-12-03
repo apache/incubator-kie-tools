@@ -54,10 +54,6 @@ class ChromeResourceContentService implements ResourceContentService {
 
   public read(uri: string): Promise<ResourceContent | undefined> {
     const repoInfo = this.repoInfo();
-    const emptyResponse = new ResourceContent(uri, undefined);
-    if (!repoInfo) {
-      return Promise.resolve(emptyResponse);
-    }
 
     return fetchFile(
       this.octokit,
@@ -66,51 +62,50 @@ class ChromeResourceContentService implements ResourceContentService {
       repoInfo.gitref,
       uri
     ).then(assetContent => new ResourceContent(uri, assetContent))
-      .catch(e => emptyResponse); // TODO: better handle this
+      .catch(e => {
+        console.debug(e);
+        console.debug(`Error retrieving content from URI ${uri}`);
+        return undefined;
+      }); 
   }
 
   public list(pattern: string): Promise<ResourcesList> {
     const repoInfo = this.repoInfo();
-    const emptyList = new ResourcesList(pattern, []);
-
-    if (!repoInfo) {
-      return Promise.resolve(emptyList);
-    }
 
     return this.octokit.git.getTree({
       headers: {
         "cache-control": "no-cache"
       },
-      recursive : "1",
+      recursive: "1",
       tree_sha: repoInfo.gitref,
       ...repoInfo
     }).then((v: OctokitResponse) => {
       const filteredPaths = v.data.tree.filter(file => file.type === 'blob').map(file => file.path);
       const result = minimatch.match(filteredPaths, pattern);
       return new ResourcesList(pattern, result);
-    }).catch((e: string) => emptyList); // TODO: better handle this
+    }).catch(e => {
+      console.debug(`Error retrieving file list for pattern ${pattern}`)
+      return new ResourcesList(pattern, []);
+    });
   }
 
-  private repoInfo(): RepoInfo | undefined {
+  private repoInfo(): RepoInfo {
     const info = window.location.pathname.split('/');
-    if (info.length >= 4) {
+    if (info.length >= 5) {
       return {
         owner: info[1],
         repo: info[2],
         gitref: info[4]
       };
     }
-    return undefined;
-
+    throw new Error("Not able to retrieve repository information.");
   }
 
 }
 
 const resourceContentServiceFactory = {
-  create: (octokit : Octokit) => {
-
+  create: (octokit: Octokit) => {
     return new ChromeResourceContentService(octokit);
-  
   }
 }
 

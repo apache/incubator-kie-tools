@@ -49,26 +49,26 @@ export class ResourceContentEditorCoordinator {
     return {
       get(uri: string) {
         messageBus.request_resourceContent(uri);
-        return new Promise((success, failure) => {
+        return new Promise(resolve => {
           const previousCallback = pendingResourceRequests.get(uri);
           pendingResourceRequests.set(uri, (value: string) => {
             if (previousCallback) {
               previousCallback(value);
             }
-            success(value);
+            resolve(value);
           });
         });
       },
       list(pattern: string) {
         messageBus.request_resourceList(pattern);
-        return new Promise((success, failure) => {
+        return new Promise(resolve => {
           const previousCallback = pendingResourceListRequests.get(pattern);
           pendingResourceListRequests.set(pattern, (value: string[]) => {
             value.sort();
             if (previousCallback) {
               previousCallback(value);
             }
-            success(value);
+            resolve(value);
           });
         });
       }

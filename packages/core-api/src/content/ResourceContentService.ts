@@ -21,6 +21,6 @@ export interface ResourceContentService {
 
   read(uri: string): Promise<ResourceContent | undefined>;
 
-  list(pattern: string): Promise<ResourcesList>;
+  list(globPattern: string): Promise<ResourcesList>;
 
 }

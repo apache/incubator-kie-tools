@@ -95,7 +95,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           });
         },
         receive_readResourceContentError(errorMessage: string) {
-          console.log(`Error message retrieving a resource content ${errorMessage}`);
+          console.debug(`Error message retrieving a resource content ${errorMessage}`);
         },
         receive_resourceListRequest(pattern: string) {
           resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
