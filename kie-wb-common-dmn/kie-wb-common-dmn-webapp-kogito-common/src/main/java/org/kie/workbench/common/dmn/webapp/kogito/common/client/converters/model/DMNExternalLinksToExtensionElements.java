@@ -24,6 +24,7 @@ import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.utils.WrapperUtils;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITAttachment;
@@ -66,7 +67,9 @@ class DMNExternalLinksToExtensionElements {
             final JSITAttachment attachment = new JSITAttachment();
             attachment.setName(link.getDescription());
             attachment.setUrl(link.getUrl());
-            elements.addAny(attachment);
+
+            final JSITAttachment wrappedAttachment = WrapperUtils.getWrappedJSITAttachment(attachment);
+            elements.addAny(wrappedAttachment);
         }
         target.setExtensionElements(elements);
     }

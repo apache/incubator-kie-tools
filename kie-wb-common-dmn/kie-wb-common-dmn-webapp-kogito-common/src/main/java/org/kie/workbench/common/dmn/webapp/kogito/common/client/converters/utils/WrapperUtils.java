@@ -50,6 +50,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JS
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNLabel;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNShape;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNStyle;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITAttachment;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITComponentsWidthsExtension;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
@@ -159,6 +160,14 @@ public class WrapperUtils {
         JSIDMNShape toReturn = Js.uncheckedCast(JsUtils.getWrappedElement(unwrappedJSIDMNShape));
         JSIName jsiName = JSIDMNShape.getJSIName();
         updateJSIName(jsiName, "dmndi", "DMNShape");
+        JsUtils.setNameOnWrapped(toReturn, jsiName);
+        return toReturn;
+    }
+
+    public static JSITAttachment getWrappedJSITAttachment(JSITAttachment attachment) {
+        JSITAttachment toReturn = Js.uncheckedCast(JsUtils.getWrappedElement(attachment));
+        JSIName jsiName = JSITAttachment.getJSIName();
+        updateJSIName(jsiName, "kie", "attachment");
         JsUtils.setNameOnWrapped(toReturn, jsiName);
         return toReturn;
     }

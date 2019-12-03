@@ -22,12 +22,8 @@
   </xs:complexType>
 
   <xs:complexType name="tAttachment">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:anyURI" name="url"/>
-        <xs:attribute type="xs:string" name="name"/>
-      </xs:extension>
-    </xs:simpleContent>
+    <xs:attribute type="xs:anyURI" name="url"/>
+    <xs:attribute type="xs:string" name="name"/>
   </xs:complexType>
 
 </xs:schema>
