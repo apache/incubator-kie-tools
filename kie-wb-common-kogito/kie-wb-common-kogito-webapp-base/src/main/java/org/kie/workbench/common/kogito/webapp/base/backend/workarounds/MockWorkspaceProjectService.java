@@ -131,4 +131,11 @@ public class MockWorkspaceProjectService implements WorkspaceProjectService {
                                                             final String repositoryAlias) {
         return PROJECT;
     }
+
+    @Override
+    public WorkspaceProject resolveProject(final Space space,
+                                           final String projectName,
+                                           final String branchName) {
+        return PROJECT;
+    }
 }

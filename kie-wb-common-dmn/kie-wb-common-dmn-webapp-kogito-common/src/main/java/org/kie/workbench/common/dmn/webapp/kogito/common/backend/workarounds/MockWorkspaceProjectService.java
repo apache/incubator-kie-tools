@@ -131,4 +131,11 @@ public class MockWorkspaceProjectService implements WorkspaceProjectService {
                                                             final String repositoryAlias) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
+
+    @Override
+    public WorkspaceProject resolveProject(final Space space,
+                                           final String projectName,
+                                           final String branchName) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
 }
