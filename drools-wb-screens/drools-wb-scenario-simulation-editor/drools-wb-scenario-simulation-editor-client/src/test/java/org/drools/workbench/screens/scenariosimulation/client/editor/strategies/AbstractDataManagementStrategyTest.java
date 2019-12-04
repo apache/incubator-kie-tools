@@ -30,6 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenterData;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -38,6 +39,8 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.jgroups.util.Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.uberfire.backend.vfs.ObservablePath;
 
 import static org.junit.Assert.assertEquals;
@@ -57,6 +60,9 @@ import static org.mockito.Mockito.verify;
 public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
 
     protected AbstractDataManagementStrategy abstractDataManagementStrategySpy;
+
+    @Captor
+    ArgumentCaptor<TestToolsPresenterData> testToolsPresenterDataArgumentCaptor;
 
     public void setup() {
         super.setup();
@@ -141,12 +147,15 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
         doReturn(simulationMock).when(scenarioSimulationContextSpy).getAbstractScesimModelByGridWidget(GridWidget.SIMULATION);
         final FactModelTuple factModelTuple = getFactTuple();
         abstractDataManagementStrategySpy.storeData(factModelTuple, testToolsPresenterMock, scenarioSimulationContextSpy, GridWidget.SIMULATION);
-        verify(testToolsPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setInstanceFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setSimpleJavaInstanceFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setHiddenFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).hideProperties(isA(Map.class));
+        verify(testToolsPresenterMock, times(1)).populateTestTools(testToolsPresenterDataArgumentCaptor.capture());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getDataObjectFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getHiddenFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getInstanceFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getPropertiesToHide());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getSimpleJavaInstanceFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getSimpleJavaTypeFieldsMap());
+        assertEquals(GridWidget.SIMULATION, testToolsPresenterDataArgumentCaptor.getValue().getGridWidget());
         verify(scenarioSimulationContextSpy, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
         verify(scenarioSimulationContextSpy, times(1)).setDataObjectsInstancesName(isA(Set.class));
         verify(scenarioGridModelMock, times(1)).setSimpleJavaTypeInstancesName(isA(Set.class));
@@ -158,12 +167,15 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
         doReturn(backgroundMock).when(scenarioSimulationContextSpy).getAbstractScesimModelByGridWidget(GridWidget.BACKGROUND);
         final FactModelTuple factModelTuple = getFactTuple();
         abstractDataManagementStrategySpy.storeData(factModelTuple, testToolsPresenterMock, scenarioSimulationContextSpy, GridWidget.BACKGROUND);
-        verify(testToolsPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setInstanceFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setSimpleJavaInstanceFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setHiddenFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).hideProperties(isA(Map.class));
+        verify(testToolsPresenterMock, times(1)).populateTestTools(testToolsPresenterDataArgumentCaptor.capture());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getDataObjectFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getHiddenFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getInstanceFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getPropertiesToHide());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getSimpleJavaInstanceFieldsMap());
+        assertNotNull(testToolsPresenterDataArgumentCaptor.getValue().getSimpleJavaTypeFieldsMap());
+        assertEquals(GridWidget.BACKGROUND, testToolsPresenterDataArgumentCaptor.getValue().getGridWidget());
         verify(scenarioSimulationContextSpy, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
         verify(scenarioSimulationContextSpy, never()).setDataObjectsInstancesName(isA(Set.class));
         verify(backgroundGridModelMock, never()).setSimpleJavaTypeInstancesName(isA(Set.class));

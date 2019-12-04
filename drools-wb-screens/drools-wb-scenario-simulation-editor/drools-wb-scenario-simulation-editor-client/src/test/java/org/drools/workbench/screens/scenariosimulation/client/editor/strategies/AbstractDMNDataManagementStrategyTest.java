@@ -43,7 +43,6 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -141,9 +140,7 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
         abstractDMNDataManagementStrategySpy.getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(abstractDMNDataManagementStrategySpy, times(1)).getPropertiesToHide(eq(scenarioGridModelMock));
         verify(abstractDMNDataManagementStrategySpy, times(1)).storeData(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, times(1)).showErrorsAndCleanupState(eq(factModelTupleLocal));
         assertEquals(factModelTupleLocal, factModelTreeHolderlocal.getFactModelTuple());
-        verify(testToolsPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
-        verify(testToolsPresenterMock, times(1)).setHiddenFieldsMap(eq(hiddenFactsLocal));
     }
 }

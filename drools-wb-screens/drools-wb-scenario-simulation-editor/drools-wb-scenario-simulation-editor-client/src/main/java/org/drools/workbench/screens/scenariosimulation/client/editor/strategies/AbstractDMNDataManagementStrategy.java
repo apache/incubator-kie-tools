@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
-import java.util.TreeMap;
-
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -104,9 +102,8 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
         }
     }
 
-    protected ErrorCallback<Message> getErrorCallback(TestToolsView.Presenter testToolsPresenter) {
+    protected ErrorCallback<Message> getErrorCallback() {
         return (error, exception) -> {
-            testToolsPresenter.setDataObjectFieldsMap(new TreeMap<>());
             ErrorPopup.showMessage(exception.getMessage());
             return false;
         };

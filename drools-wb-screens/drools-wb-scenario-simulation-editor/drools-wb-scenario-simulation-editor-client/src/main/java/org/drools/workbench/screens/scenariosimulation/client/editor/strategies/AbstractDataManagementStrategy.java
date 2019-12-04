@@ -36,6 +36,7 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenterData;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -141,34 +142,34 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
-        // Update right panel
-        testToolsPresenter.setDataObjectFieldsMap(complexDataObjects);
-        testToolsPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
-        testToolsPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
-        testToolsPresenter.hideProperties(propertiesToHide);
         // Update context
         SortedMap<String, FactModelTree> dataObjectFieldsMap = new TreeMap<>();
         dataObjectFieldsMap.putAll(visibleFacts);
         dataObjectFieldsMap.putAll(factModelTuple.getHiddenFacts());
         context.setDataObjectFieldsMap(dataObjectFieldsMap);
-        testToolsPresenter.hideInstances();
         // Update model
+        // Avoid Collections.emptySortedMap() due to "The method emptySortedMap() is undefined for the type Collections" error
+        SortedMap<String, FactModelTree> instanceFieldsMap = new TreeMap<>();
+        SortedMap<String, FactModelTree> simpleJavaTypeInstanceFieldsMap = new TreeMap<>();
         if (GridWidget.SIMULATION.equals(gridWidget)) {
-            final SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(complexDataObjects);
-            final SortedMap<String, FactModelTree> simpleJavaTypeInstanceFieldsMap = getInstanceMap(simpleDataObjects);
-            testToolsPresenter.setInstanceFieldsMap(instanceFieldsMap);
-            testToolsPresenter.setSimpleJavaInstanceFieldsMap(simpleJavaTypeInstanceFieldsMap);
+            instanceFieldsMap = getInstanceMap(complexDataObjects);
+            simpleJavaTypeInstanceFieldsMap = getInstanceMap(simpleDataObjects);
             Set<String> dataObjectsInstancesName = new HashSet<>(visibleFacts.keySet());
             dataObjectsInstancesName.addAll(instanceFieldsMap.keySet());
             context.setDataObjectsInstancesName(dataObjectsInstancesName);
             Set<String> simpleJavaTypeInstancesName = new HashSet<>(simpleDataObjects.keySet());
             simpleJavaTypeInstancesName.addAll(simpleJavaTypeInstanceFieldsMap.keySet());
             context.getAbstractScesimGridModelByGridWidget(gridWidget).setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
-        } else {
-            // Avoid Collections.emptySortedMap() due to "The method emptySortedMap() is undefined for the type Collections" error
-            testToolsPresenter.setInstanceFieldsMap(new TreeMap<>());
-            testToolsPresenter.setSimpleJavaInstanceFieldsMap(new TreeMap<>());
         }
+        // Update right panel
+        TestToolsPresenterData testToolsPresenterData = new TestToolsPresenterData(complexDataObjects,
+                                                                                   simpleDataObjects,
+                                                                                   instanceFieldsMap,
+                                                                                   simpleJavaTypeInstanceFieldsMap,
+                                                                                   factModelTuple.getHiddenFacts(),
+                                                                                   propertiesToHide,
+                                                                                   gridWidget);
+        testToolsPresenter.populateTestTools(testToolsPresenterData);
     }
 
     /**

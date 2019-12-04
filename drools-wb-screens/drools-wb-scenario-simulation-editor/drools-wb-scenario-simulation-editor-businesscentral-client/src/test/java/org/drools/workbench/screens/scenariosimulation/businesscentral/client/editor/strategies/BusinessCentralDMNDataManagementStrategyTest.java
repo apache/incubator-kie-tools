@@ -87,7 +87,7 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
             }
 
             @Override
-            protected ErrorCallback<Message> getErrorCallback(TestToolsView.Presenter testToolsPresenter) {
+            protected ErrorCallback<Message> getErrorCallback() {
                 return errorCallbackMock;
             }
         });

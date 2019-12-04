@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -214,6 +217,32 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void onShowClearButton() {
         testToolsPresenterSpy.onShowClearButton();
         verify(testToolsViewMock, times(1)).showClearButton();
+    }
+
+    @Test
+    public void populateTestTools() {
+
+        SortedMap<String, FactModelTree> dataObjects = new TreeMap<>();
+        SortedMap<String, FactModelTree> simpleJava = new TreeMap<>();
+        SortedMap<String, FactModelTree> instanceField = new TreeMap<>();
+        SortedMap<String, FactModelTree> simpleJavaInstance = new TreeMap<>();
+        SortedMap<String, FactModelTree> hiddenFields = new TreeMap<>();
+        Map<String, List<List<String>>> hideProperties = new HashMap<>();
+        TestToolsPresenterData data = new TestToolsPresenterData(dataObjects,
+                                                                 simpleJava,
+                                                                 instanceField,
+                                                                 simpleJavaInstance,
+                                                                 hiddenFields,
+                                                                 hideProperties,
+                                                                 GridWidget.SIMULATION);
+        testToolsPresenterSpy.populateTestTools(data);
+        verify(testToolsPresenterSpy, times(1)).setDataObjectFieldsMap(eq(dataObjects));
+        verify(testToolsPresenterSpy, times(1)).setSimpleJavaTypeFieldsMap(eq(simpleJava));
+        verify(testToolsPresenterSpy, times(1)).setInstanceFieldsMap(eq(instanceField));
+        verify(testToolsPresenterSpy, times(1)).setSimpleJavaInstanceFieldsMap(eq(simpleJavaInstance));
+        verify(testToolsPresenterSpy, times(1)).setHiddenFieldsMap(eq(hiddenFields));
+        verify(testToolsPresenterSpy, times(1)).hideProperties(eq(hideProperties));
+        verify(testToolsPresenterSpy, times(1)).setGridWidget(eq(GridWidget.SIMULATION));
     }
 
     @Test

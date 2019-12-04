@@ -17,13 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.SortedMap;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
@@ -94,6 +91,8 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
         void onClearStatus();
 
+        void populateTestTools(TestToolsPresenterData data);
+
         void onShowClearButton();
 
         /**
@@ -127,26 +126,12 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
         void addSimpleJavaInstanceListGroupItemView(String factName, FactModelTree factModelTree);
 
-        void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap);
-
-        void setSimpleJavaTypeFieldsMap(SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap);
-
-        void setHiddenFieldsMap(SortedMap<String, FactModelTree> hiddenFieldsMap);
-
-        void setInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
-
-        void hideProperties(Map<String, List<List<String>>> propertiesToHide);
-
-        void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
-
         /**
          * Method to hide all the <b>instance-related</b> html
          */
         void hideInstances();
 
         void setEventBus(EventBus eventBus);
-
-        void setGridWidget(GridWidget gridWidget);
 
         void showInstanceListContainerSeparator(boolean show);
 

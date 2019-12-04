@@ -39,7 +39,7 @@ public class BusinessCentralDMNDataManagementStrategy extends AbstractDMNDataMan
                                           final GridWidget gridWidget,
                                           String dmnFilePath) {
         dmnTypeService.call(getSuccessCallback(testToolsPresenter, context, gridWidget),
-                            getErrorCallback(testToolsPresenter))
+                            getErrorCallback())
                 .retrieveFactModelTuple(currentPath, dmnFilePath);
     }
 }

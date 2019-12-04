@@ -143,42 +143,47 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
-    public void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap) {
+    public void populateTestTools(TestToolsPresenterData data) {
+        setDataObjectFieldsMap(data.getDataObjectFieldsMap());
+        setSimpleJavaTypeFieldsMap(data.getSimpleJavaTypeFieldsMap());
+        setInstanceFieldsMap(data.getInstanceFieldsMap());
+        setSimpleJavaInstanceFieldsMap(data.getSimpleJavaInstanceFieldsMap());
+        setHiddenFieldsMap(data.getHiddenFieldsMap());
+        hideProperties(data.getPropertiesToHide());
+        setGridWidget(data.getGridWidget());
+    }
+
+    protected void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap) {
         clearDataObjectList();
         this.dataObjectFieldsMap = dataObjectFieldsMap;
         this.dataObjectFieldsMap.forEach(this::addDataObjectListGroupItemView);
     }
 
-    @Override
-    public void setSimpleJavaTypeFieldsMap(SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap) {
+    protected void setSimpleJavaTypeFieldsMap(SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap) {
         clearSimpleJavaTypeList();
         this.simpleJavaTypeFieldsMap = simpleJavaTypeFieldsMap;
         this.simpleJavaTypeFieldsMap.forEach(this::addSimpleJavaTypeListGroupItemView);
     }
 
-    @Override
-    public void setInstanceFieldsMap(SortedMap<String, FactModelTree> instanceFieldsMap) {
+    protected void setInstanceFieldsMap(SortedMap<String, FactModelTree> instanceFieldsMap) {
         clearInstanceList();
         this.instanceFieldsMap = instanceFieldsMap;
         this.instanceFieldsMap.forEach(this::addInstanceListGroupItemView);
         updateInstanceListSeparator();
     }
 
-    @Override
-    public void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> simpleJavaInstanceFieldsMap) {
+    protected void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> simpleJavaInstanceFieldsMap) {
         clearSimpleJavaInstanceFieldList();
         this.simpleJavaInstanceFieldsMap = simpleJavaInstanceFieldsMap;
         this.simpleJavaInstanceFieldsMap.forEach(this::addSimpleJavaInstanceListGroupItemView);
         updateInstanceListSeparator();
     }
 
-    @Override
-    public void setHiddenFieldsMap(SortedMap<String, FactModelTree> hiddenFieldsMap) {
+    protected void setHiddenFieldsMap(SortedMap<String, FactModelTree> hiddenFieldsMap) {
         this.hiddenFieldsMap = hiddenFieldsMap;
     }
 
-    @Override
-    public void hideProperties(Map<String, List<List<String>>> propertiesToHide) {
+    protected void hideProperties(Map<String, List<List<String>>> propertiesToHide) {
         listGroupItemPresenter.showAll();
         propertiesToHide.entrySet().stream().forEach(
                 stringListEntry -> stringListEntry.getValue()
@@ -197,8 +202,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         this.eventBus = eventBus;
     }
 
-    @Override
-    public void setGridWidget(GridWidget gridWidget) {
+    protected void setGridWidget(GridWidget gridWidget) {
         this.gridWidget = gridWidget;
         onDisableEditorTab();
         if (GridWidget.BACKGROUND.equals(gridWidget)) {
