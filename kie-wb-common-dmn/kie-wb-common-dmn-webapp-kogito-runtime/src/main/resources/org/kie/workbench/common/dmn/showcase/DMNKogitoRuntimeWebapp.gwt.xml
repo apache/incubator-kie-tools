@@ -30,6 +30,9 @@
   <!-- To enable logging -->
   <set-property name="gwt.logging.enabled" value="TRUE"/>
 
+  <!-- Configure Errai to return default values for missing i18n keys -->
+  <set-property name="errai.i18n.default_per_key" value="true"/>
+
   <!-- Specify the paths for translatable code -->
   <source path="client"/>
 

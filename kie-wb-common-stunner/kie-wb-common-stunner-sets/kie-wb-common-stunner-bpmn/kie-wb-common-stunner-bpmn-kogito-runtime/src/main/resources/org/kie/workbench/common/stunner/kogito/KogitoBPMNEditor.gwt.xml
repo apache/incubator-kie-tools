@@ -57,6 +57,9 @@
   <extend-property name="locale" values="zh_CN"/>
   <extend-property name="locale" values="de"/>
 
+  <!-- Configure Errai to return default values for missing i18n keys -->
+  <set-property name="errai.i18n.default_per_key" value="true"/>
+
   <!-- We don't need to support IE10 or older -->
   <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
   <set-property name="user.agent" value="gecko1_8,safari"/>
