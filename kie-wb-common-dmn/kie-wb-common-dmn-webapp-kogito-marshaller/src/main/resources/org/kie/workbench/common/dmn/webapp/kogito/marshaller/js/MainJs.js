@@ -22,15 +22,15 @@ MainJs = {
         }
 
         function createConstructor(value) {
-            console.log("Create createConstructor " + value)
-            const parsedJson = JSON.parse(value)
-            const name = parsedJson["name"]
-            const nameSpace = parsedJson["nameSpace"]
-            const typeName = parsedJson["typeName"]
-            console.log("parsedJson " + parsedJson)
-            console.log("name " + name)
-            console.log("nameSpace " + nameSpace)
-            console.log("typeName " + typeName)
+            console.log("Create createConstructor " + value);
+            var parsedJson = JSON.parse(value);
+            var name = parsedJson["name"];
+            var nameSpace = parsedJson["nameSpace"];
+            var typeName = parsedJson["typeName"];
+            console.log("parsedJson " + parsedJson);
+            console.log("name " + name);
+            console.log("nameSpace " + nameSpace);
+            console.log("typeName " + typeName);
             if (nameSpace != null) {
                 if (typeName != null) {
                     window[nameSpace][name] = createFunction(typeName);
@@ -47,31 +47,31 @@ MainJs = {
         }
 
         function hasNameSpace(value) {
-            return JSON.parse(value)["nameSpace"] != null
+            return JSON.parse(value)["nameSpace"] != null;
         }
 
         function hasNotNameSpace(value) {
-            return JSON.parse(value)["nameSpace"] == null
+            return JSON.parse(value)["nameSpace"] == null;
         }
 
         function iterateValueEntry(values) {
             console.log("iterateValueEntry " + values);
-            const baseTypes = values.filter(hasNotNameSpace)
-            const innerTypes = values.filter(hasNameSpace)
-            baseTypes.forEach(createConstructor)
-            innerTypes.forEach(createConstructor)
+            var baseTypes = values.filter(hasNotNameSpace);
+            var innerTypes = values.filter(hasNameSpace);
+            baseTypes.forEach(createConstructor);
+            innerTypes.forEach(createConstructor);
         }
 
         function iterateKeyValueEntry(key, values) {
             console.log("iterateKeyValueEntry " + key + "  " + values);
-            iterateValueEntry(values)
+            iterateValueEntry(values);
         }
 
         console.log('Generating JsInterop constructors.');
 
-        for (const property in constructorsMap) {
+        for (var property in constructorsMap) {
             if (constructorsMap.hasOwnProperty(property)) {
-                iterateKeyValueEntry(property, constructorsMap[property])
+                iterateKeyValueEntry(property, constructorsMap[property]);
             }
         }
     },
