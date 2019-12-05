@@ -1,0 +1,23 @@
+schema_version: 1
+name: org.kie.kogito.graalvm.installer
+version: "19.2.1"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_HOME"
+    value: "/usr/share/graalvm"
+  #version without prefix ce
+  - name: "GRAALVM_VERSION"
+    value: "19.2.1"
+
+artifacts:
+- name: graalvm-ce-linux-amd64-19.2.1.tar.gz
+  url: https://github.com/oracle/graal/releases/download/vm-19.2.1/graalvm-ce-linux-amd64-19.2.1.tar.gz
+  md5: 30a33f6c66ff05e324ec348f62358abb
+- name: native-image-installable-svm-linux-amd64-19.2.1.jar
+  url: https://github.com/oracle/graal/releases/download/vm-19.2.1/native-image-installable-svm-linux-amd64-19.2.1.jar
+  md5: 98d19c4d01d0a3c5b622638ac17ac1b8
+
+execute:
+- script: configure

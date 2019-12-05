@@ -7,3 +7,7 @@ Feature: Common tests for Kogito images
     Then run bash -c 'echo $USER' in container and check its output for kogito
      And run sh -c 'echo $HOME' in container and check its output for /home/kogito
      And run sh -c 'id' in container and check its output for uid=1001(kogito) gid=1001(kogito) groups=1001(kogito)
+
+  Scenario: Verify if usage help is correctly called
+    When container is started with command /home/kogito/kogito-app-launch.sh -h
+    Then container log should contain This is the

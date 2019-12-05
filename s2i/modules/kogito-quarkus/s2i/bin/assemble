@@ -1,0 +1,7 @@
+#!/bin/bash -e
+# this script is used by OpenShift with chained builds
+# to transfer data from builder image into the runtime image
+
+source ${S2I_MODULE_LOCATION}/s2i-core
+runtime_assemble
+

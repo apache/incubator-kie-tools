@@ -1,0 +1,7 @@
+schema_version: 1
+name: org.kie.kogito.springboot
+version: "0.6.0"
+
+execute:
+  - script: configure
+

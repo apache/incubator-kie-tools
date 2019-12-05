@@ -1,0 +1,34 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the '/kogito-springboot-ubi8-s2i' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+source ${S2I_MODULE_LOCATION}/s2i-core
+
+#############################################
+# Configure maven - for a complete list of
+# supported values, please refer the module.yaml
+# file.
+CONFIGURE_SCRIPTS=(
+    ${KOGITO_HOME}/launch/configure-maven.sh
+)
+source ${KOGITO_HOME}/launch/configure.sh
+#############################################
+
+
+# incremental builds
+manage_incremental_build
+
+# kogito app build
+build_kogito_app
+
+# copy kogito app to ${KOGITO_HOME}/bin dir
+copy_kogito_app
+
+# handle custom image-metadata.json
+handle_image_metadata_json
+

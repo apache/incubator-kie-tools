@@ -35,9 +35,9 @@ ports:
 
 modules:
   install:
-  - name: install-rpm-dependencies
-  - name: add-kogito-user
-  - name: kogito-data-index
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.dataindex
 
 packages:
   install:

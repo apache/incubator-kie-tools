@@ -1,0 +1,12 @@
+#!/bin/bash -e
+#
+# S2I assemble-runtime script for the 'kogito-quarkus-ubi8' image.
+# The assemble-runtime script executes preparation for running the container on runtime image.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+source ${S2I_MODULE_LOCATION}/s2i-core
+assemble_runtime
+

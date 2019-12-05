@@ -1,0 +1,48 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-quarkus-ubi8-s2i"
+description: "Platform for building Kogito based on Quarkus"
+
+labels:
+- name: "io.k8s.description"
+  value: "Platform for building Kogito based on Quarkus"
+- name: "io.k8s.display-name"
+  value: "Kogito based on Quarkus"
+- name: "io.openshift.tags"
+  value: "builder,kogito,quarkus"
+
+envs:
+- name: NATIVE
+  example: false
+  description: If set to false, perform a non native build.
+- name: JAVA_OPTIONS
+  example: "-Dquarkus.log.level=DEBUG"
+  description: JVM options passed to the Java command.
+- name: MAVEN_ARGS_APPEND
+  example: "-pl mymodule -am"
+  description: Additional Maven arguments
+- name: ARTIFACT_DIR
+  example: mymodule/target
+  description:  Path to target/ where the jar files are created for multi-module builds
+
+modules:
+  install:
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.launch.scripts
+  - name: org.kie.kogito.graalvm.installer
+    version: "19.2.1"
+  - name: org.kie.kogito.graalvm.scripts
+  - name: org.kie.kogito.openjdk
+    version: "1.8.0"
+  - name: org.kie.kogito.maven
+    version: "3.6.0"
+  - name: org.kie.kogito.s2i.core
+  - name: org.kie.kogito.quarkus.s2i
+
+packages:
+  install:
+  - bc
+  - gcc
+  - glibc-devel
+  - zlib-devel

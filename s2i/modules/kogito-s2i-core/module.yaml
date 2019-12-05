@@ -1,0 +1,41 @@
+schema_version: 1
+name: org.kie.kogito.s2i.core
+version: '0.6.0'
+description: Kogito s2i core module. All s2i files shoul be placed here.
+
+labels:
+  - name: "io.openshift.s2i.scripts-url"
+    value: "image:///usr/local/s2i"
+  - name: "io.openshift.s2i.destination"
+    value: "/tmp"
+  - name: "io.openshift.s2i.assemble-input-files"
+    value: "/home/kogito/bin"
+
+envs:
+  - name : S2I_MODULE_LOCATION
+    value: "/usr/local/s2i"
+  - name: S2I_DESTINATION_DIR
+    description: ^
+      Root directory for S2I mount, as specified by the
+      **io.openshift.s2i.destination** label.  This should not be overridden by
+      end users.
+    example: /tmp
+
+  - name: S2I_ARTIFACTS_DIR
+    description: ^
+      Location mount for artifacts persisted with **save-artifacts** script, which
+      are used with incremental builds.  This should not be overridden by end users.
+    example: "${S2I_DESTINATION_DIR}/artifacts}"
+
+  - name: S2I_SOURCE_DIR
+    description: ^
+      Location of mount for source code to be built.  This should not be
+      overridden by end users.
+    example: "${S2I_DESTINATION_DIR}/src}"
+
+run:
+  cmd:
+    - "/usr/local/s2i/run"
+
+execute:
+  - script: configure.sh

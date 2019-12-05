@@ -3,7 +3,8 @@
 To be able to produce efficient container images for Kogito there are following sets
 of builder images to perform the build and to run the result binaries.
 
-Images are grouped by the runtime that will run the binaries and the OS level
+Images are grouped by the runtime that will run the binaries and the builders which will actually build the 
+binaries and copy it to the runtime image.
 
 
 ## Quarkus

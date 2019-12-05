@@ -1,6 +1,6 @@
 @quay.io/kiegroup/kogito-data-index
 
-Feature: Kogito-quarkus-ubi8 feature.
+Feature: Kogito-data-index feature.
 
   Scenario: verify if all labels are correctly set.
     Given image is built

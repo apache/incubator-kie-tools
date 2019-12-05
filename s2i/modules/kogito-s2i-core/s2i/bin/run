@@ -1,0 +1,2 @@
+#!/bin/bash -e
+exec $KOGITO_HOME/kogito-app-launch.sh ${1}

@@ -1,0 +1,38 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-quarkus-ubi8"
+description: "Runtime image for Kogito based on Quarkus native image"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito based on Quarkus native image"
+- name: "io.k8s.display-name"
+  value: "Kogito based on Quarkus native image"
+- name: "io.openshift.tags"
+  value: "builder,runtime,kogito,quarkus,native"
+- name: "io.openshift.s2i.assemble-input-files"
+  value: "/home/kogito/bin"
+
+envs:
+- name: JAVA_OPTIONS
+  example: "-Dquarkus.log.level=DEBUG"
+  description: JVM options passed to the Java command.
+
+ports:
+- value: 8080
+
+modules:
+  install:
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.graalvm.installer
+    version: "19.2.1"
+  - name: org.kie.kogito.s2i.core
+  - name: org.kie.kogito.quarkus
+
+
+## s2i build . quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/drools-quarkus-example
+run:
+  workdir: "/home/kogito/"
+

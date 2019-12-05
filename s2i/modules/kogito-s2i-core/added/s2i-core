@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+
+S2I_DESTINATION_DIR="${S2I_DESTINATION_DIR:-/tmp}"
+S2I_ARTIFACTS_DIR="${S2I_DESTINATION_DIR}/artifacts"
+S2I_SOURCE_DIR="${S2I_DESTINATION_DIR}/src"
+artifactDir="target"
+if [ ! -z "${ARTIFACT_DIR}" ]; then
+    artifactDir="${ARTIFACT_DIR}"
+fi
+
+# setup file permissions for injected content
+if [ -d "${S2I_ARTIFACTS_DIR}" ]; then
+    chmod -R ug+rwX "${S2I_ARTIFACTS_DIR}"
+fi
+
+
+function manage_incremental_build() {
+    if [ -d /tmp/artifacts ]; then
+        echo "Expanding artifacts from incremental build..."
+        ( cd /tmp/artifacts && tar cf - . ) | ( cd ${HOME} && tar xvf - )
+        rm -rf /tmp/artifacts
+    fi
+}
+
+
+function assemble_runtime() {
+    if [ -d "$KOGITO_HOME/bin" ]; then
+        echo "---> Application binaries found and ready to use"
+
+        echo "---> [s2i-core] Adding custom labels..."
+        if [ -e "${KOGITO_HOME}/bin/image_metadata.json" ]; then
+            mkdir -v /tmp/.s2i
+            cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
+        else
+            echo "-----> Failed to copy metadata file, $KOGITO_HOME/bin/image_metadata.json does not exist"
+        fi
+    else
+        echo "---> Application binaries NOT found, failing build..."
+        exit 1
+    fi
+}
+
+
+# copy already built artifacts to the runtime image.
+function runtime_assemble() {
+    cd ${S2I_DESTINATION_DIR}/src
+    cp -Rv --parents ./* ${KOGITO_HOME}/
+    assemble_runtime
+}
+
+
+function handle_image_metadata_json() {
+    echo "---> [s2i-core] Copy image metadata file..."
+    if [ -e "/tmp/src/${artifactDir}/image_metadata.json" ]; then
+        mkdir /tmp/.s2i
+        cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/.s2i
+        cp -v /tmp/src/$artifactDir/image_metadata.json $KOGITO_HOME/bin
+    else
+        echo "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."
+    fi
+}
+
+
+function build_kogito_app() {
+    cd "${S2I_SOURCE_DIR}"
+
+    nativeBuild="-Pnative"
+    if [ "${NATIVE^^}" == "FALSE" ]; then
+        nativeBuild=""
+    fi
+
+    if [ -f "pom.xml" ]; then
+
+        echo "---> Building application from source..."
+        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
+            -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
+            -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
+
+    else
+
+        echo "---> Generating project structure..."
+
+        $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
+        -DarchetypeVersion=$KOGITO_VERSION -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
+
+        # copy resources into the generated project
+        for item in *
+        do
+            if [ -d "${item}" ] && [ "${item}" == "project" ]; then
+                echo "--> Skipping generated project ..."
+            else
+                echo "--> Coping resource "${item}""
+                cp -Rv "${item}" project/src/main/resources
+            fi
+        done
+
+        # move all project content into the current directory
+        mv -v project/* .
+
+        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
+            -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
+            -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
+    fi
+
+    echo "---> Build finished, installing application from path $(pwd)"
+}
+
+function copy_kogito_app() {
+
+    if [ "${NATIVE^^}" == "FALSE" ]; then
+        # handle quarkus java build
+        if ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
+            echo "---> Installing jar file"
+            cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin/
+            echo "---> Copying application libraries"
+            cp -r $artifactDir/lib/ $KOGITO_HOME/bin/
+        fi
+
+    elif ls $artifactDir/*-runner 1> /dev/null 2>&1; then
+        # quarkus native builds
+        echo "---> Installing application binaries"
+        cp -v $artifactDir/*-runner $KOGITO_HOME/bin/
+        chmod +x $KOGITO_HOME/bin/*-runner
+
+    else
+        # handle non default java builds
+        echo "---> Installing application binaries"
+        cp -v $artifactDir/*.jar $KOGITO_HOME/bin
+
+    fi
+}
+

@@ -1,0 +1,12 @@
+schema_version: 1
+version: "0.6.0"
+name: org.kie.kogito.system.user
+execute:
+- script: add-user
+
+envs:
+- name: "KOGITO_HOME"
+  value: "/home/kogito"
+- name: "USER"
+  value: "kogito"
+

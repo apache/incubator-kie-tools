@@ -1,4 +1,0 @@
-#!/bin/bash
-
-source ${KOGITO_HOME}/launch/configure-maven.sh
-s2i_save_build_artifacts
