@@ -51,7 +51,7 @@ fi
 echo "-------- Running e2e tests with namespace=${namespace}, tag=${tag}, maven_mirror=${maven_mirror} and image=${image}"
 
 # performs the test
-DEBUG=true KOGITO_IMAGE_TAG=${tag} MAVEN_MIRROR_URL=${maven_mirror} TESTS=${tests} operator-sdk test local ./test/e2e "$E2E_PARAMS" --namespace "${namespace}" --debug --verbose --go-test-flags "-timeout 120m"
+DEBUG=true KOGITO_IMAGE_TAG=${tag} MAVEN_MIRROR_URL=${maven_mirror} TESTS=${tests} operator-sdk test local ./test/e2e ${E2E_PARAMS} --namespace ${namespace} --debug --verbose --go-test-flags "-timeout 120m"
 
 # clean up
 oc delete namespace "${namespace}"
