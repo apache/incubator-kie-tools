@@ -19,57 +19,6 @@ import org.uberfire.mvp.Command;
 
 public interface ErrorReportPopover extends PopoverView {
 
-    interface Presenter {
-
-        /**
-         * Makes the <code>ErrorReportPopover</code> visible with Keep/Apply buttons.
-         * @param errorTitleText
-         * @param errorContentText
-         * @param keepText
-         * @param applyText
-         * @param applyCommand
-         * @param mx x position of the replace
-         * @param my y position of the popover
-         * @param position position where the popover is put (LEFT or RIGHT)
-         */
-        void show(final String errorTitleText,
-                  final String errorContentText,
-                  final String keepText,
-                  final String applyText,
-                  final Command applyCommand,
-                  final int mx,
-                  final int my,
-                  final Position position);
-
-        /**
-         * Makes the <code>ErrorReportPopover</code> visible with Keep button only.
-         * @param errorTitleText
-         * @param errorContentText
-         * @param keepText
-         * @param mx x position of the replace
-         * @param my y position of the popover
-         * @param position position where the popover is put (LEFT or RIGHT)
-         */
-        void show(final String errorTitleText,
-                  final String errorContentText,
-                  final String keepText,
-                  final int mx,
-                  final int my,
-                  final Position position);
-
-        /**
-         * Makes this popover container(and the main content along with it) invisible. Has no effect if the popover is not
-         * already showing.
-         */
-        void hide();
-
-        /**
-         * Returns the status of the popver (open or closed)
-         * @return true if shown, false otherwise
-         */
-        boolean isShown();
-    }
-
     /**
      * Makes the <code>ErrorReportPopover</code> visible with Keep/Apply buttons.
      * @param errorTitleText
@@ -81,14 +30,14 @@ public interface ErrorReportPopover extends PopoverView {
      * @param my y position of the popover
      * @param position position where the popover is put (LEFT or RIGHT)
      */
-    void show(final String errorTitleText,
-              final String errorContentText,
-              final String keepText,
-              final String applyText,
-              final Command applyCommand,
-              final int mx,
-              final int my,
-              final Position position);
+    void setup(final String errorTitleText,
+               final String errorContentText,
+               final String keepText,
+               final String applyText,
+               final Command applyCommand,
+               final int mx,
+               final int my,
+               final Position position);
 
     /**
      * Makes the <code>ErrorReportPopover</code> visible with keep button only.
@@ -99,12 +48,13 @@ public interface ErrorReportPopover extends PopoverView {
      * @param my y position of the popover
      * @param position position where the popover is put (LEFT or RIGHT)
      */
-    void show(final String errorTitleText,
-              final String errorContentText,
-              final String keepText,
-              final int mx,
-              final int my,
-              final Position position);
+    void setup(final String errorTitleText,
+               final String errorContentText,
+               final String keepText,
+               final int mx,
+               final int my,
+               final Position position);
+
     /**
      * Makes this popover container(and the main content along with it) invisible. Has no effect if the popover is not
      * already showing.
@@ -116,4 +66,71 @@ public interface ErrorReportPopover extends PopoverView {
      * @return true if shown, false otherwise
      */
     boolean isShown();
+
+    interface Presenter {
+
+        /**
+         * Method to set/update status of the <code>ErrorReportPopover</code> <b>before</b> actually showing the view.
+         * Implemented to decouple this setup from the actual <b>show</b>, to be able to eventually add other modifications
+         * (e.g. change vertical position based on the actual height, that is available only <b>after</b> this method has been invoked)
+         * @param errorTitleText
+         * @param errorContentText
+         * @param keepText
+         * @param applyText
+         * @param applyCommand
+         * @param mx x position of the replace
+         * @param my y position of the popover
+         * @param position position where the popover is put (LEFT or RIGHT)
+         */
+        void setup(final String errorTitleText,
+                   final String errorContentText,
+                   final String keepText,
+                   final String applyText,
+                   final Command applyCommand,
+                   final int mx,
+                   final int my,
+                   final Position position);
+
+        /**
+         * Method to set/update status of the <code>ErrorReportPopover</code> <b>before</b> actually showing the view.
+         * Implemented to decouple this setup from the actual <b>show</b>, to be able to eventually add other modifications
+         * (e.g. change vertical position based on the actual height, that is available only <b>after</b> this method has been invoked)
+         * @param errorTitleText
+         * @param errorContentText
+         * @param keepText
+         * @param mx x position of the replace
+         * @param my y position of the popover
+         * @param position position where the popover is put (LEFT or RIGHT)
+         */
+        void setup(final String errorTitleText,
+                   final String errorContentText,
+                   final String keepText,
+                   final int mx,
+                   final int my,
+                   final Position position);
+
+        /**
+         * Makes this popover container(and the main content along with it) invisible. Has no effect if the popover is not
+         * already showing.
+         */
+        void hide();
+
+        /**
+         * Returns the status of the <code>ErrorReportPopover</code> (open or closed)
+         * @return true if shown, false otherwise
+         */
+        boolean isShown();
+
+        /**
+         * Method that actually <b>show</b> the view
+         */
+        void show();
+
+        /**
+         * Retrieve the actual height of the <code>ErrorReportPopover</code>
+         *
+         * @return
+         */
+        int getActualHeight();
+    }
 }

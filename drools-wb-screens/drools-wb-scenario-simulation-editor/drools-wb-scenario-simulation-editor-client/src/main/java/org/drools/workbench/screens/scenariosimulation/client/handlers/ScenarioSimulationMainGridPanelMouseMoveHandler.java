@@ -85,70 +85,92 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
                 errorReportPopupPresenter.isShown()) {
             return true;
         }
+        /* It updates the coordinates of the current shown cell */
+        currentlyShownBodyRowIndex = uiRowIndex;
+        currentlyShownBodyColumnIndex = uiColumnIndex;
         final Optional<AbstractScesimModel<? extends AbstractScesimData>> optionalAbstractScesimModel = scenarioGrid.getModel().getAbstractScesimModel();
         final AbstractScesimModel<? extends AbstractScesimData> scesimModel = optionalAbstractScesimModel.orElseThrow(IllegalStateException::new);
         final AbstractScesimData scenarioByIndex = scesimModel.getDataByIndex(uiRowIndex);
         final FactMapping factMapping = scesimModel.getScesimModelDescriptor().getFactMappingByIndex(uiColumnIndex);
         final Optional<FactMappingValue> factMappingValueOptional = scenarioByIndex.getFactMappingValue(factMapping);
-        factMappingValueOptional.ifPresent(factMappingValue -> {
-            /* If an error is present in the FactMappingValue, it calculates the coordinates for Popover and show it */
-            if (factMappingValue.getStatus() != null && FactMappingValueStatus.SUCCESS != factMappingValue.getStatus()) {
-                /* It updates the coordinates of the current shown cell */
-                currentlyShownBodyRowIndex = uiRowIndex;
-                currentlyShownBodyColumnIndex = uiColumnIndex;
-                /* It calculates the coordinates */
-                final GridColumn<?> column = scenarioGrid.getModel().getColumns().get(uiColumnIndex);
-                final Point2D xYCell = retrieveCellMiddleXYPosition(column, uiRowIndex);
-                PopoverView.Position position = PopoverView.Position.RIGHT;
-                int xMiddleWidth = (int) column.getWidth() / 2;
-                int xPosition = (int) xYCell.getX() + xMiddleWidth;
-                /* It determines if the popover should be draw on the RIGHT or in the LEFT of the cell */
-                if (xPosition + POPOVER_WIDTH > scenarioGrid.getLayer().getWidth()) {
-                    xPosition = (int) xYCell.getX() - xMiddleWidth;
-                    position = PopoverView.Position.LEFT;
-                }
-                /* Handling scrolling x-position */
-                int scrollX = scenarioGridPanel.getScrollPanel().getElement().getScrollLeft();
-                xPosition = xPosition - scrollX;
-                /* Handling scrolling y-position */
-                int yPosition = (int) xYCell.getY();
-                int scrollY = scenarioGridPanel.getScrollPanel().getElement().getScrollTop();
-                yPosition = yPosition - scrollY;
-                /* Parameters for the error message */
-                final Object expectedValue = factMappingValue.getRawValue();
-                final Object errorValue = factMappingValue.getErrorValue();
-                /* It shows the popover, the view depends on failed type (ERROR or EXCEPTION) */
-                if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
-                    errorReportPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
-                                                   ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(
-                                                           expectedValue != null ? expectedValue.toString() : NULL,
-                                                           errorValue != null ? errorValue.toString() : NULL),
-                                                   ScenarioSimulationEditorConstants.INSTANCE.keep(),
-                                                   ScenarioSimulationEditorConstants.INSTANCE.apply(),
-                                                   () -> scenarioGrid.getEventBus().fireEvent(
-                                                           new SetGridCellValueEvent(scenarioGrid.getGridWidget(),
-                                                                                     uiRowIndex,
-                                                                                     uiColumnIndex,
-                                                                                     errorValue != null ? errorValue.toString() : NULL)),
-                                                   xPosition,
-                                                   yPosition,
-                                                   position);
-                } else {
-                    errorReportPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
-                                                   ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithException(
-                                                           factMappingValue.getExceptionMessage()),
-                                                   ScenarioSimulationEditorConstants.INSTANCE.close(),
-                                                   xPosition,
-                                                   yPosition,
-                                                   position);
-                }
-            }
-        });
+        factMappingValueOptional.ifPresent(factMappingValue -> manageFactMappingValue(factMappingValue, uiRowIndex, uiColumnIndex));
         return true;
+    }
+
+    protected void manageFactMappingValue(FactMappingValue toManage, Integer uiRowIndex, Integer uiColumnIndex) {
+        /* If an error is present in the FactMappingValue, it calculates the coordinates for Popover and show it */
+        if (toManage.getStatus() != null && FactMappingValueStatus.SUCCESS != toManage.getStatus()) {
+            manageFailedFactMappingValue(toManage, uiRowIndex, uiColumnIndex);
+        }
+    }
+
+    protected void manageFailedFactMappingValue(FactMappingValue toManage, Integer uiRowIndex, Integer uiColumnIndex) {
+        /* It calculates the coordinates */
+        final GridColumn<?> column = scenarioGrid.getModel().getColumns().get(uiColumnIndex);
+        final Point2D cellXYMiddleCoordinates = retrieveCellMiddleXYPosition(column, uiRowIndex);
+        int cellHeight = getCellHeight(column, uiRowIndex);
+        PopoverView.Position position = PopoverView.Position.RIGHT;
+        int xMiddleWidth = (int) column.getWidth() / 2;
+        int xPosition = (int) cellXYMiddleCoordinates.getX() + xMiddleWidth;
+        /* Handling scrolling y-position */
+        int yPosition = (int) cellXYMiddleCoordinates.getY();
+        /* It determines if the popover should be draw on the RIGHT or in the LEFT of the cell */
+        if (xPosition + POPOVER_WIDTH > scenarioGrid.getLayer().getWidth()) {
+            xPosition = (int) cellXYMiddleCoordinates.getX() - xMiddleWidth;
+            position = PopoverView.Position.LEFT;
+        }
+        /* Popover can't be to the right nor to the left (single column); put it ABOVE the cell */
+        if (xPosition <= scenarioGrid.getLayer().getElement().getAbsoluteLeft()) {
+            xPosition = (int) cellXYMiddleCoordinates.getX();
+            yPosition = (int) cellXYMiddleCoordinates.getY() - cellHeight/2;
+            position = PopoverView.Position.TOP;
+        }
+        int scrollX = scenarioGridPanel.getScrollPanel().getElement().getScrollLeft();
+        xPosition -= scrollX;
+        int scrollY = scenarioGridPanel.getScrollPanel().getElement().getScrollTop();
+        yPosition -= scrollY;
+        setupPopupPresenter(toManage, uiRowIndex, uiColumnIndex, xPosition, yPosition, position);
+        errorReportPopupPresenter.show();
+    }
+
+    protected void setupPopupPresenter(final FactMappingValue toManage, final  int uiRowIndex, final int uiColumnIndex, final int xPosition,final  int yPosition,final  PopoverView.Position position) {
+        /* Parameters for the error message */
+        final Object expectedValue = toManage.getRawValue();
+        final Object errorValue = toManage.getErrorValue();
+        /* It shows the popover, the view depends on failed type (ERROR or EXCEPTION) */
+        if (FactMappingValueStatus.FAILED_WITH_ERROR == toManage.getStatus()) {
+            errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
+                                            ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(
+                                                    expectedValue != null ? expectedValue.toString() : NULL,
+                                                    errorValue != null ? errorValue.toString() : NULL),
+                                            ScenarioSimulationEditorConstants.INSTANCE.keep(),
+                                            ScenarioSimulationEditorConstants.INSTANCE.apply(),
+                                            () -> scenarioGrid.getEventBus().fireEvent(
+                                                    new SetGridCellValueEvent(scenarioGrid.getGridWidget(),
+                                                                              uiRowIndex,
+                                                                              uiColumnIndex,
+                                                                              errorValue != null ? errorValue.toString() : NULL)),
+                                            xPosition,
+                                            yPosition,
+                                            position);
+        } else {
+            errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
+                                            ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithException(
+                                                    toManage.getExceptionMessage()),
+                                            ScenarioSimulationEditorConstants.INSTANCE.close(),
+                                            xPosition,
+                                            yPosition,
+                                            position);
+        }
     }
 
     //Indirection for test
     protected Point2D retrieveCellMiddleXYPosition(GridColumn<?> column, int uiRowIndex) {
         return ScenarioSimulationUtils.getMiddleXYCell(scenarioGrid, column, false, uiRowIndex, (GridLayer) scenarioGrid.getLayer());
+    }
+
+    //Indirection for test
+    protected int getCellHeight(GridColumn<?> column, int uiRowIndex) {
+        return ScenarioSimulationUtils.getCellHeight(scenarioGrid, column, false, uiRowIndex);
     }
 }

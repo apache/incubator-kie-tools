@@ -126,8 +126,4 @@ public class ViewsProvider {
         return coverageScenarioListView.get();
     }
 
-    public ErrorReportPopoverView getErrorReportPopoverView() {
-        return errorReportPopoverViewInstance.get();
-    }
-
 }

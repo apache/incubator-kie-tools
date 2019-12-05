@@ -22,10 +22,25 @@ public interface PopoverView extends org.jboss.errai.ui.client.local.api.IsEleme
 
     enum Position {
         LEFT,
-        RIGHT
+        RIGHT,
+        TOP
     }
 
-    void show(final Optional<String> editorTitle, final int mx, final int my, final Position position);
+    /**
+     * Method to set/update status of the elements <b>before</b> actually showing the view.
+     * Implemented to decouple this setup from the actual <b>show</b>, to be able to eventually add other modifications
+     * (e.g. change vertical position based on the actual height, that is available only <b>after</b> this method has been invoked)
+     * @param editorTitle
+     * @param mx
+     * @param my
+     * @param position
+     */
+    void setup(final Optional<String> editorTitle, final int mx, final int my, final Position position);
+
+    /**
+     * Method that actually <b>show</b> the view
+     */
+    void show();
 
     boolean isShown();
 

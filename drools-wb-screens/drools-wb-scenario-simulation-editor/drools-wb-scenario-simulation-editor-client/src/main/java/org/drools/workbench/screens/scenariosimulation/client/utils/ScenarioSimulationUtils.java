@@ -310,6 +310,23 @@ public class ScenarioSimulationUtils {
         return new Point2D(cellXMiddle, cellYMiddle);
     }
 
+    public static int getCellHeight(final GridWidget gridWidget, final GridColumn<?> column, boolean isHeader, final int uiRowIndex) {
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+        final GridBodyCellEditContext context = isHeader ?
+                CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                 ri,
+                                                                 ci,
+                                                                 uiRowIndex)
+                : CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                             ri,
+                                                             ci,
+                                                             uiRowIndex);
+        return (int) context.getCellHeight();
+    }
+
     protected static double getColumnWidth(String columnId) {
         ExpressionIdentifier.NAME expressionName = ExpressionIdentifier.NAME.Other;
         try {
