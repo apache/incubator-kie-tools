@@ -16,6 +16,7 @@ package e2e
 
 import (
 	"io/ioutil"
+	"strings"
 
 	"net/http"
 	"testing"
@@ -45,4 +46,13 @@ func verifyDroolsQuarkusExample(t *testing.T, kogitoService *v1alpha1.KogitoApp)
 	assert.NotNil(t, body)
 	assert.NotEmpty(t, body)
 	assert.Contains(t, string(body), "older")
+}
+
+func verifyJbpmSpringBootExample(t *testing.T, kogitoService *v1alpha1.KogitoApp) {
+	orderContent := strings.NewReader("{\"approver\" : \"john\", \"order\" : {\"orderNumber\" : \"12345\", \"shipped\" : false}}")
+	resp, err := http.Post(kogitoService.Status.Route+"/orders", "application/json", orderContent)
+	if err != nil {
+		verifierLog.Fatalf("Error while trying to get the application endpoint: %s", err)
+	}
+	assert.Equal(t, 200, resp.StatusCode)
 }

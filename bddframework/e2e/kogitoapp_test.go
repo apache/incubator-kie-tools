@@ -61,6 +61,7 @@ func TestKogitoApp(t *testing.T) {
 		// Run just JVM tests
 		t.Run("kogitoapp", func(t *testing.T) {
 			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
+			t.Run("SpringBootJvm", testKogitoSpringBootJvmExample)
 		})
 	} else if tests == "native" {
 		// Run just native tests
@@ -72,6 +73,7 @@ func TestKogitoApp(t *testing.T) {
 		t.Run("kogitoapp", func(t *testing.T) {
 			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
 			t.Run("QuarkusNative", testKogitoQuarkusNativeExample)
+			t.Run("SpringBootJvm", testKogitoSpringBootJvmExample)
 		})
 	} else {
 		log.Fatalf("wrong value of tests parameter: %v", tests)
@@ -106,6 +108,19 @@ func testKogitoQuarkusNativeExample(t *testing.T) {
 	deployAndTestDroolsQuarkusExampleWithKogitoService(t, ctx, kogitoService)
 }
 
+func testKogitoSpringBootJvmExample(t *testing.T) {
+	// initialize framework
+	ctx := framework.NewTestCtx(t)
+	defer ctx.Cleanup()
+
+	appName := "example-springboot-jvm"
+	namespace := getNamespace(ctx)
+
+	kogitoService := getKogitoServiceStub(appName, namespace)
+
+	deployAndTestJbpmSpringBootExampleWithKogitoService(t, ctx, kogitoService)
+}
+
 func deployAndTestDroolsQuarkusExampleWithKogitoService(t *testing.T, ctx *framework.TestCtx, kogitoService *v1alpha1.KogitoApp) {
 	t.Parallel()
 
@@ -122,6 +137,25 @@ func deployAndTestDroolsQuarkusExampleWithKogitoService(t *testing.T, ctx *frame
 
 	deployKogitoServiceApp(t, kogitoService, f, ctx)
 	verifyDroolsQuarkusExample(t, kogitoService)
+}
+
+func deployAndTestJbpmSpringBootExampleWithKogitoService(t *testing.T, ctx *framework.TestCtx, kogitoService *v1alpha1.KogitoApp) {
+	t.Parallel()
+
+	// get global framework variables
+	f := framework.Global
+
+	initializeKogitoOperator(t, f, ctx)
+
+	gitProjectURI := "https://github.com/kiegroup/kogito-examples"
+	contextDir := "jbpm-springboot-example"
+
+	kogitoService.Spec.Build.GitSource.URI = &gitProjectURI
+	kogitoService.Spec.Build.GitSource.ContextDir = contextDir
+	kogitoService.Spec.Runtime = v1alpha1.SpringbootRuntimeType
+
+	deployKogitoServiceApp(t, kogitoService, f, ctx)
+	verifyJbpmSpringBootExample(t, kogitoService)
 }
 
 func initializeKogitoOperator(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
