@@ -98,7 +98,8 @@ export function SingleEditorApp(props: {
         value={{
           onEditorReady: () => setTextModeEnabled(true),
           fullscreen: fullscreen,
-          textMode: textMode
+          textMode: textMode,
+          isOriginal: true
         }}
       >
         {!fullscreen && (

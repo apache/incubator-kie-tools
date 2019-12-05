@@ -19,5 +19,6 @@ import * as React from "react";
 export const IsolatedEditorContext = React.createContext<{
   textMode: boolean;
   fullscreen: boolean;
+  isOriginal: boolean;
   onEditorReady?: () => void;
 }>({} as any);

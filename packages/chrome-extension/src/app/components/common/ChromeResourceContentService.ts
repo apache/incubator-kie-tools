@@ -19,6 +19,9 @@ import { ResourcesList } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import Octokit = require("@octokit/rest");
+import { parseRepoInfo, RepoInfo, discoverCurrentGitHubPageType, parsePrInfo } from "./GithubInfo";
+import { GitHubPageType } from "../../github/GitHubPageType";
+import { useState } from "react";
 
 class OctokitResponse {
   public data: GithubTreeResponse;
@@ -38,13 +41,8 @@ class GithubTreeResponse {
   public tree: GithubAsset[];
 }
 
-class RepoInfo {
-  public owner: string;
-  public repo: string;
-  public gitref: string;
-}
-
 class ChromeResourceContentService implements ResourceContentService {
+  isOriginal: boolean;
 
   private octokit: Octokit;
 
@@ -66,7 +64,7 @@ class ChromeResourceContentService implements ResourceContentService {
         console.debug(e);
         console.debug(`Error retrieving content from URI ${uri}`);
         return undefined;
-      }); 
+      });
   }
 
   public list(pattern: string): Promise<ResourcesList> {
@@ -90,15 +88,32 @@ class ChromeResourceContentService implements ResourceContentService {
   }
 
   private repoInfo(): RepoInfo {
-    const info = window.location.pathname.split('/');
-    if (info.length >= 5) {
-      return {
-        owner: info[1],
-        repo: info[2],
-        gitref: info[4]
-      };
+    const pageType = discoverCurrentGitHubPageType();
+
+    if (pageType === GitHubPageType.PR) {
+      const prInfo = parsePrInfo();
+      if (this.isOriginal) {
+        return {
+          owner: prInfo.org,
+          gitref: prInfo.gitRef,
+          repo: prInfo.repo
+        };
+      } else {
+        return {
+          owner: prInfo.targetOrg,
+          gitref: prInfo.targetGitRef,
+          repo: prInfo.repo
+        };
+      }
+    } else if (pageType === GitHubPageType.VIEW || pageType === GitHubPageType.EDIT) {
+      return parseRepoInfo();
     }
-    throw new Error("Not able to retrieve repository information.");
+    throw new Error(`Github Page type ${pageType} is not supported`);
+
+  }
+
+  public setOriginal(isOriginal: boolean) {
+    this.isOriginal = isOriginal;
   }
 
 }

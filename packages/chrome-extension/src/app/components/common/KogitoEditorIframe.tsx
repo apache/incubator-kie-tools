@@ -33,16 +33,18 @@ interface Props {
   readonly: boolean;
 }
 
+let _isOriginal = false;
+
 const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
   props,
   forwardedRef
 ) => {
   const githubApi = useGitHubApi();
-  const resourceContentService = resourceContentServiceFactory.create(githubApi.octokit());
   const ref = useRef<HTMLIFrameElement>(null);
   const { router, editorIndexPath, logger } = useGlobals();
-  const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
-
+  const { isOriginal, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const resourceContentService = resourceContentServiceFactory.create(githubApi.octokit());
+  _isOriginal = isOriginal;
   const envelopeBusOuterMessageHandler = useMemo(() => {
     return new EnvelopeBusOuterMessageHandler(
       {
@@ -89,6 +91,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           }
         },
         receive_resourceContentRequest(uri: string) {
+          resourceContentService.setOriginal(_isOriginal);
           console.debug(`Trying to read content from ${uri}`);
           resourceContentService.read(uri).then(r => {
             self.respond_resourceContent(r!);
@@ -98,6 +101,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           console.debug(`Error message retrieving a resource content ${errorMessage}`);
         },
         receive_resourceListRequest(pattern: string) {
+          resourceContentService.setOriginal(_isOriginal);
           resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         }
       })

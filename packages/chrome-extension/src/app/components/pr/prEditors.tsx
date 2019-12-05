@@ -25,7 +25,7 @@ import {
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import { PrInfo } from "./IsolatedPrEditor";
+import { parsePrInfo } from "../common/GithubInfo";
 
 export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -47,33 +47,6 @@ export function renderPrEditorsApp(args: Globals) {
     createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
-}
-
-function parsePrInfo(): PrInfo {
-  const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
-
-  const targetOrganization = window.location.pathname.split("/")[1];
-  const repository = window.location.pathname.split("/")[2];
-
-  // PR is within the same organization
-  if (prInfos.length < 6) {
-    return {
-      repo: repository,
-      targetOrg: targetOrganization,
-      targetGitRef: prInfos[1],
-      org: targetOrganization,
-      gitRef: prInfos[3]
-    };
-  }
-
-  // PR is from a fork to an upstream
-  return {
-    repo: repository,
-    targetOrg: targetOrganization,
-    targetGitRef: prInfos[2],
-    org: prInfos[4],
-    gitRef: prInfos[5]
-  };
 }
 
 function cleanup(id: string) {

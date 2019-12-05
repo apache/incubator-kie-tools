@@ -26,6 +26,7 @@ import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
+import { discoverCurrentGitHubPageType } from "./app/components/common/GithubInfo";
 
 /**
  * Starts a Kogito extension.
@@ -113,30 +114,6 @@ function init(args: Globals) {
   }
 
   throw new Error(`Unknown GitHubPageType ${pageType}`);
-}
-
-function uriMatches(regex: string) {
-  return !!window.location.pathname.match(new RegExp(regex));
-}
-
-function discoverCurrentGitHubPageType() {
-  if (uriMatches(`.*/.*/edit/.*`)) {
-    return GitHubPageType.EDIT;
-  }
-
-  if (uriMatches(`.*/.*/blob/.*`)) {
-    return GitHubPageType.VIEW;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  return GitHubPageType.ANY;
 }
 
 function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {

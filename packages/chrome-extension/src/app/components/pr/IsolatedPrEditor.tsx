@@ -106,7 +106,7 @@ export function IsolatedPrEditor(props: {
 
   return (
     <IsolatedEditorContext.Provider
-      value={{ textMode: textMode, fullscreen: false, onEditorReady: () => setEditorReady(true) }}
+      value={{ textMode: textMode, fullscreen: false, isOriginal: showOriginal, onEditorReady: () => setEditorReady(true) }}
     >
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
