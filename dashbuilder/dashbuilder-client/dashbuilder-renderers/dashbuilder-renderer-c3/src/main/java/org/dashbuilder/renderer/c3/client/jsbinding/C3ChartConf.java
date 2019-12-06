@@ -126,6 +126,9 @@ public class C3ChartConf {
     public native void setColor(C3Color color);    
     
     @JsProperty
-    public native void setGauge(C3Gauge gauge);  
-    
+    public native void setGauge(C3Gauge gauge);
+
+    @JsProperty
+    public native void setDonut(C3Donut donut);
+
 }

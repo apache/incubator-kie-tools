@@ -616,6 +616,14 @@ public class DisplayerSettings {
         settings.put( getSettingPath( DisplayerAttributeDef.METER_END ), Long.toString( meterEnd ) );
     }
 
+    public String getDonutHoleTitle() {
+        return settings.get( getSettingPath( DisplayerAttributeDef.DONUT_HOLE_TITLE ) );
+    }
+
+    public void setDonutHoleTitle( String holeTitle ) {
+        settings.put( getSettingPath( DisplayerAttributeDef.DONUT_HOLE_TITLE ), holeTitle );
+    }
+
     public boolean isChart3D() {
         return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.CHART_3D ) ) );
     }

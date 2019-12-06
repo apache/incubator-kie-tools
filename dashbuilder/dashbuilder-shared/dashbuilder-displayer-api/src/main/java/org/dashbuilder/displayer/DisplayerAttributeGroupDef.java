@@ -39,6 +39,8 @@ public class DisplayerAttributeGroupDef extends DisplayerAttributeDef {
 
     public static final DisplayerAttributeGroupDef METER_GROUP = new DisplayerAttributeGroupDef( "meter" );
 
+    public static final DisplayerAttributeGroupDef DONUT_GROUP = new DisplayerAttributeGroupDef( "donut" );
+
     public static final DisplayerAttributeGroupDef HTML_GROUP = new DisplayerAttributeGroupDef( "html" );
 
     public static final DisplayerAttributeGroupDef EXPORT_GROUP = new DisplayerAttributeGroupDef( "export" );

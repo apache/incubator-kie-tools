@@ -45,4 +45,10 @@ public interface PieChartSettingsBuilder<T extends PieChartSettingsBuilder> exte
      */
     T subType_Donut();
 
+    /**
+     * Set this pie chart's subtype to a donut-like simple pie chart (i.e. a pie chart with a hole in its center)
+     * and, in addition, with the label to assign inside the donut graph hole.
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a Pie chart data displayer.
+     */
+    T subType_Donut(String holeLabel);
 }

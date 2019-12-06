@@ -48,4 +48,11 @@ public class PieChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuild
         displayerSettings.setSubtype(DisplayerSubType.DONUT);
         return this;
     }
+
+    @Override
+    public PieChartSettingsBuilderImpl subType_Donut(String holeLabel) {
+        displayerSettings.setSubtype(DisplayerSubType.DONUT);
+        displayerSettings.setDonutHoleTitle(holeLabel);
+        return this;
+    }
 }
