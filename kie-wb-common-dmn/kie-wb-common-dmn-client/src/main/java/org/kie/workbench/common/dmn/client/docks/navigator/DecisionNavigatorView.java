@@ -24,11 +24,17 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
+
 @Templated
 public class DecisionNavigatorView implements DecisionNavigatorPresenter.View {
 
     @DataField("main-tree")
     private final HTMLDivElement mainTree;
+
+    @DataField("decision-components-container")
+    private final HTMLDivElement decisionComponentsContainer;
 
     @DataField("decision-components")
     private final HTMLDivElement decisionComponents;
@@ -37,8 +43,10 @@ public class DecisionNavigatorView implements DecisionNavigatorPresenter.View {
 
     @Inject
     public DecisionNavigatorView(final HTMLDivElement mainTree,
+                                 final HTMLDivElement decisionComponentsContainer,
                                  final HTMLDivElement decisionComponents) {
         this.mainTree = mainTree;
+        this.decisionComponentsContainer = decisionComponentsContainer;
         this.decisionComponents = decisionComponents;
     }
 
@@ -55,5 +63,15 @@ public class DecisionNavigatorView implements DecisionNavigatorPresenter.View {
     @Override
     public void setupDecisionComponents(final DecisionComponents.View decisionComponentsComponent) {
         decisionComponents.appendChild(decisionComponentsComponent.getElement());
+    }
+
+    @Override
+    public void showDecisionComponentsContainer() {
+        show(decisionComponentsContainer);
+    }
+
+    @Override
+    public void hideDecisionComponentsContainer() {
+        hide(decisionComponentsContainer);
     }
 }

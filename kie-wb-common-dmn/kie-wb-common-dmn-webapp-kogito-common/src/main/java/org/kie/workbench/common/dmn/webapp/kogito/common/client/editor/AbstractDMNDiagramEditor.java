@@ -29,8 +29,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -93,7 +91,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
 
-    //Editor tabs: [0] Main editor, [1] Documentation, [2] Data-Types, [3] Imported Models
+    //Editor tabs: [0] Main editor, [1] Documentation, [2] Data-Types
     public static final int DATA_TYPES_PAGE_INDEX = 2;
 
     protected final SessionManager sessionManager;
@@ -108,8 +106,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
 
     protected final DataTypesPage dataTypesPage;
-    protected final IncludedModelsPage includedModelsPage;
-    protected final IncludedModelsPageStateProviderImpl importsPageProvider;
 
     protected final DMNEditorSearchIndex editorSearchIndex;
     protected final SearchBarComponent<DMNSearchableElement> searchBarComponent;
@@ -142,8 +138,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final LayoutHelper layoutHelper,
                                     final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                     final DataTypesPage dataTypesPage,
-                                    final IncludedModelsPage includedModelsPage,
-                                    final IncludedModelsPageStateProviderImpl importsPageProvider,
                                     final KogitoClientDiagramService diagramServices) {
         super(view,
               fileMenuBuilder,
@@ -172,8 +166,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
 
         this.dataTypesPage = dataTypesPage;
-        this.includedModelsPage = includedModelsPage;
-        this.importsPageProvider = importsPageProvider;
 
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
@@ -200,7 +192,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         superInitialiseKieEditorForSession(diagram);
 
         getWidget().getMultiPage().addPage(dataTypesPage);
-        getWidget().getMultiPage().addPage(includedModelsPage);
 
         setupEditorSearchIndex();
         setupSearchComponent();

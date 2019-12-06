@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.docks.navigator;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.included.components.D
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 import org.mockito.Mock;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -36,6 +38,9 @@ public class DecisionNavigatorViewTest {
 
     @Mock
     private HTMLDivElement divMainTree;
+
+    @Mock
+    private HTMLDivElement decisionComponentsContainer;
 
     @Mock
     private HTMLDivElement decisionComponents;
@@ -50,7 +55,7 @@ public class DecisionNavigatorViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DecisionNavigatorView(divMainTree, decisionComponents));
+        view = spy(new DecisionNavigatorView(divMainTree, decisionComponentsContainer, decisionComponents));
     }
 
     @Test
@@ -73,5 +78,27 @@ public class DecisionNavigatorViewTest {
         view.setupDecisionComponents(decisionComponentsView);
 
         verify(decisionComponents).appendChild(element);
+    }
+
+    @Test
+    public void testShowDecisionComponentsContainer() {
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        decisionComponentsContainer.classList = classList;
+
+        view.showDecisionComponentsContainer();
+
+        verify(classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideDecisionComponentsContainer() {
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        decisionComponentsContainer.classList = classList;
+
+        view.hideDecisionComponentsContainer();
+
+        verify(classList).add(HIDDEN_CSS_CLASS);
     }
 }

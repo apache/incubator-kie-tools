@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -69,6 +70,8 @@ public class DecisionNavigatorPresenter {
 
     private final TranslationService translationService;
 
+    private final IsKogito isKogito;
+
     private CanvasHandler handler;
 
     @Inject
@@ -78,7 +81,8 @@ public class DecisionNavigatorPresenter {
                                       final DecisionNavigatorObserver decisionNavigatorObserver,
                                       final DecisionNavigatorChildrenTraverse navigatorChildrenTraverse,
                                       final DecisionNavigatorItemFactory itemFactory,
-                                      final TranslationService translationService) {
+                                      final TranslationService translationService,
+                                      final IsKogito isKogito) {
         this.view = view;
         this.treePresenter = treePresenter;
         this.decisionComponents = decisionComponents;
@@ -86,6 +90,7 @@ public class DecisionNavigatorPresenter {
         this.navigatorChildrenTraverse = navigatorChildrenTraverse;
         this.itemFactory = itemFactory;
         this.translationService = translationService;
+        this.isKogito = isKogito;
     }
 
     @WorkbenchPartView
@@ -171,7 +176,12 @@ public class DecisionNavigatorPresenter {
 
     void setupView() {
         view.setupMainTree(treePresenter.getView());
-        view.setupDecisionComponents(decisionComponents.getView());
+        if (!isKogito.get()) {
+            view.showDecisionComponentsContainer();
+            view.setupDecisionComponents(decisionComponents.getView());
+        } else {
+            view.hideDecisionComponentsContainer();
+        }
     }
 
     public void refreshTreeView() {
@@ -218,5 +228,10 @@ public class DecisionNavigatorPresenter {
         void setupMainTree(final DecisionNavigatorTreePresenter.View mainTreeComponent);
 
         void setupDecisionComponents(final DecisionComponents.View decisionComponentsComponent);
+
+        void showDecisionComponentsContainer();
+
+        void hideDecisionComponentsContainer();
+
     }
 }

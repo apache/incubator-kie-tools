@@ -26,8 +26,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -102,8 +100,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final LayoutHelper layoutHelper,
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
-                            final IncludedModelsPage includedModelsPage,
-                            final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final KogitoClientDiagramService diagramServices) {
         super(view,
               fileMenuBuilder,
@@ -131,8 +127,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               layoutHelper,
               openDiagramLayoutExecutor,
               dataTypesPage,
-              includedModelsPage,
-              importsPageProvider,
               diagramServices);
     }
 
@@ -145,7 +139,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
             expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.setupCanvasHandler(c);
             dataTypesPage.reload();
-            includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
         });
     }
 

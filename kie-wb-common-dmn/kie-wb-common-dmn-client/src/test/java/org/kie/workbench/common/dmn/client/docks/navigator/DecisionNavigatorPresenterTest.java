@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.mockito.Mock;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
@@ -77,6 +78,9 @@ public class DecisionNavigatorPresenterTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private IsKogito isKogito;
+
     private DecisionNavigatorPresenter presenter;
 
     @Before
@@ -87,7 +91,8 @@ public class DecisionNavigatorPresenterTest {
                                                        decisionNavigatorObserver,
                                                        navigatorChildrenTraverse,
                                                        itemFactory,
-                                                       translationService));
+                                                       translationService,
+                                                       isKogito));
     }
 
     @Test
@@ -136,7 +141,25 @@ public class DecisionNavigatorPresenterTest {
         presenter.setupView();
 
         verify(view).setupMainTree(treeView);
+        verify(view).showDecisionComponentsContainer();
         verify(view).setupDecisionComponents(decisionComponentsView);
+    }
+
+    @Test
+    public void testSetupViewWhenIsKogito() {
+
+        final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
+        final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
+
+        when(treePresenter.getView()).thenReturn(treeView);
+        when(decisionComponents.getView()).thenReturn(decisionComponentsView);
+        when(isKogito.get()).thenReturn(true);
+
+        presenter.setupView();
+
+        verify(view).setupMainTree(treeView);
+        verify(view).hideDecisionComponentsContainer();
+        verify(view, never()).setupDecisionComponents(decisionComponentsView);
     }
 
     @Test

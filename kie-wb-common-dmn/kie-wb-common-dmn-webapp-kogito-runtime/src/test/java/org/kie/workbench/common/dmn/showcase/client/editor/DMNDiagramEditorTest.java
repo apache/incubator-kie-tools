@@ -66,8 +66,6 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     layoutHelper,
                                     layoutExecutor,
                                     dataTypesPage,
-                                    includedModelsPage,
-                                    importsPageProvider,
                                     clientDiagramService) {
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {

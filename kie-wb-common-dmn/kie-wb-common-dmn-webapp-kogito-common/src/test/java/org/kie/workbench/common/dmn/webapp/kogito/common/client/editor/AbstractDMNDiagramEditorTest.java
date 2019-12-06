@@ -25,8 +25,6 @@ import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -185,12 +183,6 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected DataTypesPage dataTypesPage;
 
     @Mock
-    protected IncludedModelsPage includedModelsPage;
-
-    @Mock
-    protected IncludedModelsPageStateProviderImpl importsPageProvider;
-
-    @Mock
     protected KogitoClientDiagramService clientDiagramService;
 
     @Mock
@@ -267,7 +259,6 @@ public abstract class AbstractDMNDiagramEditorTest {
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getExpressionEditor()).thenReturn(expressionEditor);
 
-        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(editorPresenter.getInstance()).thenReturn(session);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -395,7 +386,7 @@ public abstract class AbstractDMNDiagramEditorTest {
         openDiagram();
 
         //Setting focus activates the diagram identically to opening a diagram; so reset applicable mocks.
-        reset(decisionNavigatorDock, diagramPropertiesDock, diagramPreviewDock, dataTypesPage, includedModelsPage);
+        reset(decisionNavigatorDock, diagramPropertiesDock, diagramPreviewDock, dataTypesPage);
 
         editor.onFocus();
 
@@ -472,7 +463,6 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected void openDiagram() {
         editor.onStartup(place);
 
-        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(editorPresenter.getInstance()).thenReturn(session);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -485,6 +475,5 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected void assertOnDiagramLoad() {
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
         verify(dataTypesPage).reload();
-        verify(includedModelsPage).setup(importsPageProvider);
     }
 }

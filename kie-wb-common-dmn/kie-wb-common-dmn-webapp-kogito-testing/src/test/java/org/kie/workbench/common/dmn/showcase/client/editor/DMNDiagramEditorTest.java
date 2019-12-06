@@ -140,8 +140,6 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     layoutHelper,
                                     layoutExecutor,
                                     dataTypesPage,
-                                    includedModelsPage,
-                                    importsPageProvider,
                                     clientDiagramService,
                                     vfsService,
                                     promises) {
