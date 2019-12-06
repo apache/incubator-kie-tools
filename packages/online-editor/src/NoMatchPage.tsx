@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,20 +15,7 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
-  router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
-
-export function useGlobals() {
-  return React.useContext(GlobalContext);
+export function NoMatchPage() {
+  return <div>404</div>;
 }

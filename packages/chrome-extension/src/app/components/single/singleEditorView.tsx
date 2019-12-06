@@ -25,7 +25,7 @@ import * as ReactDOM from "react-dom";
 import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
@@ -69,6 +69,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      externalEditorManager={args.externalEditorManager}
     >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
@@ -91,11 +92,15 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       ),
     []
   );
+  const fileName = useMemo(() => {
+    return decodeURIComponent(props.fileInfo.path.split("/").pop()!);
+  }, [props.fileInfo.path]);
 
   return (
     <SingleEditorApp
       readonly={true}
       openFileExtension={props.openFileExtension}
+      fileName={fileName}
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}

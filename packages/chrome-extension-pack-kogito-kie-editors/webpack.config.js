@@ -46,14 +46,32 @@ function getRouterArgs(argv) {
   return [targetOrigin, relativePath];
 }
 
+function getOnlineEditorArgs(argv) {
+  const isProd = argv.mode === "production";
+
+  let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
+
+  if (isProd) {
+    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
+  } else {
+    onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
+  }
+
+  console.info("Online Editor :: URL: " + onlineEditorUrl);
+
+  return [onlineEditorUrl];
+}
+
 module.exports = async (env, argv) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
+  const [onlineEditor_url] = getOnlineEditorArgs(argv);
 
   return {
     mode: "development",
     devtool: "inline-source-map",
     entry: {
-      contentscript: "./src/contentscript.ts",
+      "content_scripts/github": "./src/github-content-script.ts",
+      "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
       "envelope/index": "./src/envelope/index.ts"
     },
@@ -97,6 +115,18 @@ module.exports = async (env, argv) => {
               {
                 search: "$_{WEBPACK_REPLACE__relativePath}",
                 replace: router_relativePath
+              }
+            ]
+          }
+        },
+        {
+          test: /background\.ts$/,
+          loader: "string-replace-loader",
+          options: {
+            multiple: [
+              {
+                search: "$_{WEBPACK_REPLACE__onlineEditor_url}",
+                replace: onlineEditor_url
               }
             ]
           }

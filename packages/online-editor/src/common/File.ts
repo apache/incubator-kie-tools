@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
-
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
-  router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
-
-export function useGlobals() {
-  return React.useContext(GlobalContext);
+export interface File {
+  fileName: string;
+  getFileContents: () => Promise<string | undefined>;
 }
+
+export const EMPTY_FILE = {
+  fileName: "new-file",
+  getFileContents: () => Promise.resolve("")
+};

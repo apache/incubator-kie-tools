@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
@@ -24,24 +24,23 @@ import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
 import { IsolatedEditor } from "../common/IsolatedEditor";
 import * as dependencies__ from "../../dependencies";
-import {useGlobals} from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
+import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
-    const globals = useGlobals();
-  useLayoutEffect(
-    () => {
-      if (!fullscreen) {
-        iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.add("hidden");
-      } else {
-        iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.remove("hidden");
-      }
-    },
-    [fullscreen]
-  );
+  const globals = useGlobals();
+  useLayoutEffect(() => {
+    if (!fullscreen) {
+      iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.add("hidden");
+    } else {
+      iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.remove("hidden");
+    }
+  }, [fullscreen]);
 }
 
 export function SingleEditorApp(props: {
   openFileExtension: string;
+  fileName: string;
   readonly: boolean;
   getFileContents: () => Promise<string | undefined>;
   toolbarContainer: HTMLElement;
@@ -52,6 +51,7 @@ export function SingleEditorApp(props: {
   const [textModeEnabled, setTextModeEnabled] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const globals = useGlobals();
+  const isolatedEditorRef = useRef<IsolatedEditorRef>(null);
 
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
@@ -63,6 +63,7 @@ export function SingleEditorApp(props: {
       textMode={textMode}
       readonly={props.readonly}
       keepRenderedEditorInTextMode={true}
+      ref={isolatedEditorRef}
     />
   );
 
@@ -74,6 +75,22 @@ export function SingleEditorApp(props: {
   const deactivateTextMode = useCallback(() => setTextMode(false), []);
   const activateTextMode = useCallback(() => setTextMode(true), []);
   const goFullScreen = useCallback(() => setFullscreen(true), []);
+
+  const openExternalEditor = () => {
+    props.getFileContents().then(fileContent => {
+      globals.externalEditorManager?.open(props.fileName, fileContent!, props.readonly);
+    });
+  };
+
+  useEffect(() => {
+    const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
+      dependencies__.all.edit__githubFileNameInput()!.value = fileName;
+    }, isolatedEditorRef.current?.setContent!);
+
+    return () => {
+      listener?.stopListening();
+    };
+  }, [globals.externalEditorManager]);
 
   return (
     <>
@@ -92,6 +109,7 @@ export function SingleEditorApp(props: {
                 textModeEnabled={textModeEnabled}
                 onSeeAsDiagram={deactivateTextMode}
                 onSeeAsSource={activateTextMode}
+                onOpenInExternalEditor={openExternalEditor}
                 onFullScreen={goFullScreen}
                 readonly={props.readonly}
               />,
@@ -107,7 +125,10 @@ export function SingleEditorApp(props: {
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
               iframeFullscreenContainer(globals.id, dependencies__.all.body())
             )}
-            {ReactDOM.createPortal(IsolatedEditorComponent, iframeFullscreenContainer(globals.id, dependencies__.all.body()))}
+            {ReactDOM.createPortal(
+              IsolatedEditorComponent,
+              iframeFullscreenContainer(globals.id, dependencies__.all.body())
+            )}
           </>
         )}
       </IsolatedEditorContext.Provider>

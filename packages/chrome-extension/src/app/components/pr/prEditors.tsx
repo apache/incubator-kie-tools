@@ -40,6 +40,7 @@ export function renderPrEditorsApp(args: Globals) {
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      externalEditorManager={args.externalEditorManager}
     >
       <PrEditorsApp prInfo={parsePrInfo()} />
     </Main>,

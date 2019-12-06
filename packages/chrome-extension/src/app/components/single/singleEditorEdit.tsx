@@ -59,20 +59,22 @@ export function renderSingleEditorApp(args: Globals) {
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      externalEditorManager={args.externalEditorManager}
     >
-      <SingleEditorViewApp openFileExtension={openFileExtension} />
+      <SingleEditorEditApp openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function SingleEditorViewApp(props: { openFileExtension: string }) {
+function SingleEditorEditApp(props: { openFileExtension: string }) {
   const globals = useGlobals();
   return (
     <SingleEditorApp
       readonly={false}
       openFileExtension={props.openFileExtension}
+      fileName={dependencies__.all.edit__githubFileNameInput()!.value}
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}
@@ -82,7 +84,6 @@ function SingleEditorViewApp(props: { openFileExtension: string }) {
 }
 
 function cleanup(id: string) {
-  //FIXME: Unchecked dependency use
   removeAllChildren(iframeContainer(id));
   removeAllChildren(toolbarContainer(id));
   removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));

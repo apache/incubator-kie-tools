@@ -59,11 +59,17 @@ export const all = {
   body: () => {
     return document.body;
   },
+  edit__githubFileNameInput: () => {
+    return document.querySelector(".js-blob-filename") as HTMLInputElement | null;
+  },
   edit__githubTextAreaWithFileContents: () => {
     return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
   },
   pr__mutationObserverTarget: () => {
     return document.getElementById("files") as HTMLElement | null;
+  },
+  pr__openWithExternalEditorLinkContainer: (container: HTMLElement) => {
+    return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
   },
   pr__viewOriginalFileLinkContainer: (container: HTMLElement) => {
     return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
