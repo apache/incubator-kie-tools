@@ -17,7 +17,7 @@
 dirs=(cmd pkg version)
 for dir in "${dirs[@]}"
 do
-    if ! golint -set_exit_status "${dir}"/...; then
+    if ! golint "${dir}"/... | grep -v zz_generated; then
         code=1
     fi
 done
