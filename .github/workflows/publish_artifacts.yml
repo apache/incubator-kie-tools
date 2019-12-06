@@ -52,6 +52,8 @@ jobs:
           cd ../kogito-online
           rm -rf ./editors/latest
           ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
+          cp -r ./online-editor-staging/* .
+          rm -rf ./online-editor-staging
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           git add . && git commit -m "Update editors/latest to ${{ steps.release-tag.outputs.tag }}" || echo "No changes."
