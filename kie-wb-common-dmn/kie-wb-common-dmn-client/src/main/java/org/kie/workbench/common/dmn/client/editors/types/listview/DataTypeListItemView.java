@@ -58,7 +58,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     public static final String NAME_DATA_FIELD = "name-input";
 
-    static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
+    public static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
 
     static final String ARROW_BUTTON_SELECTOR = "[data-type-field=\"arrow-button\"]";
 

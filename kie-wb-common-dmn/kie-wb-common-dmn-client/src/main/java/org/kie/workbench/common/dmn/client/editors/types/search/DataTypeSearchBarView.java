@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.search;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
@@ -42,9 +44,12 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSearchBarView_Search;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -124,9 +129,15 @@ public class DataTypeSearchBarView implements DataTypeSearchBar.View {
     public void showSearchResults(final List<DataType> results) {
 
         final AtomicInteger position = new AtomicInteger(0);
+        final List<DataTypeListItem> listItems = presenter.getDataTypeListItemsSortedByPositionY();
 
-        for (final DataTypeListItem listItem : presenter.getDataTypeListItemsSortedByPositionY()) {
+        expandListItems(listItems);
+
+        final List<DataTypeListItem> grouped = groupElementsWithItsParents(listItems);
+        for (final DataTypeListItem listItem : grouped) {
+
             final HTMLElement element = listItem.getDragAndDropElement();
+
             if (results.contains(listItem.getDataType())) {
                 showElementAt(element, position);
             } else {
@@ -136,6 +147,83 @@ public class DataTypeSearchBarView implements DataTypeSearchBar.View {
 
         refreshItemsPosition();
         enableSearch();
+        refreshDragAreaSize();
+    }
+
+    void expandListItems(final List<DataTypeListItem> listItems) {
+        for (final DataTypeListItem listItem : listItems) {
+            listItem.expand();
+        }
+    }
+
+    List<DataTypeListItem> groupElementsWithItsParents(final List<DataTypeListItem> allElements) {
+
+        final List<DataTypeListItem> groupedElements = getGroupedElementsList();
+
+        for (final DataTypeListItem item : allElements) {
+            groupElementWithItsParent(groupedElements, allElements, item);
+        }
+
+        return groupedElements;
+    }
+
+    List<DataTypeListItem> getGroupedElementsList() {
+        return new ArrayList<>();
+    }
+
+    void groupElementWithItsParent(final List<DataTypeListItem> groupedElements,
+                                   final List<DataTypeListItem> allElements,
+                                   final DataTypeListItem item) {
+
+        if (groupedElements.contains(item)) {
+            return;
+        }
+
+        final String parentElementId = item.getDragAndDropElement().getAttribute(PARENT_UUID_ATTR);
+        if (!StringUtils.isEmpty(parentElementId)) {
+
+            final Optional<DataTypeListItem> parentElement = allElements.stream()
+                    .filter(element -> Objects.equals(element.getDragAndDropElement().getAttribute(UUID_ATTR), parentElementId))
+                    .findFirst();
+            parentElement.ifPresent(parent -> {
+                if (!isParentElementOnList(groupedElements, parentElementId)) {
+                    groupElementWithItsParent(groupedElements, allElements, parent);
+                    groupedElements.add(item);
+                } else {
+
+                    final int index = getIndexOfParentOrLastElementInGroup(groupedElements, parent) + 1;
+                    if (index == groupedElements.size()) {
+                        groupedElements.add(item);
+                    } else {
+                        groupedElements.add(index, item);
+                    }
+                }
+            });
+        } else {
+            groupedElements.add(item);
+        }
+    }
+
+    int getIndexOfParentOrLastElementInGroup(final List<DataTypeListItem> groupedElements,
+                                             final DataTypeListItem parent) {
+        final int parentIndex = groupedElements.indexOf(parent);
+        final String parentId = parent.getDragAndDropElement().getAttribute(UUID_ATTR);
+        int index = parentIndex;
+        for (int i = parentIndex; i < groupedElements.size(); i++) {
+            if (Objects.equals(groupedElements.get(i).getDragAndDropElement().getAttribute(PARENT_UUID_ATTR), parentId)) {
+                index++;
+            }
+        }
+        return index;
+    }
+
+    boolean isParentElementOnList(final List<DataTypeListItem> groupedElements, final String parentId) {
+        return groupedElements.stream()
+                .anyMatch(element -> Objects.equals(element.getDragAndDropElement().getAttribute(UUID_ATTR), parentId));
+    }
+
+    private void refreshDragAreaSize() {
+        presenter.getDNDListComponent().refreshDragAreaSize();
     }
 
     public void refreshItemsPosition() {

@@ -158,6 +158,10 @@ public class DNDListComponentViewTest {
         verify(element1.style).setProperty("padding-left", "75px");
         verify(element2.style).setProperty("padding-left", "75px");
 
+        verify(element0.style).setProperty("width", "calc(100% - 0px)");
+        verify(element1.style).setProperty("width", "calc(100% - 0px)");
+        verify(element2.style).setProperty("width", "calc(100% - 0px)");
+
         verify(dragArea.style).setProperty("height", "151px");
     }
 
@@ -180,7 +184,7 @@ public class DNDListComponentViewTest {
     }
 
     @Test
-    public void testConsolidateHierarchicalLevel() {
+    public void testConsolidateHierarchicalLevelWhenIsDraggedByUser() {
 
         final HTMLElement element0 = mock(HTMLElement.class);
         final HTMLElement element1 = mock(HTMLElement.class);
@@ -206,13 +210,51 @@ public class DNDListComponentViewTest {
 
         mockDragAreaWithChildren(element0, element1, element2);
 
-        view.consolidateHierarchicalLevel();
+        view.consolidateHierarchicalLevel(true);
 
         verify(element0).setAttribute(DATA_Y_POSITION, 0);
         verify(element2, times(2)).setAttribute(DATA_Y_POSITION, 1);
         verify(element1).setAttribute(DATA_Y_POSITION, 2);
 
         verify(element0).setAttribute(DATA_X_POSITION, 0);
+        verify(element2).setAttribute(DATA_X_POSITION, 1);
+        verify(element1, never()).setAttribute(anyString(), anyString());
+    }
+
+    @Test
+    public void testConsolidateHierarchicalLevelWhenIsNotDraggedByUser() {
+
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final HTMLElement element2 = mock(HTMLElement.class);
+
+        element0.style = mock(CSSStyleDeclaration.class);
+        element1.style = mock(CSSStyleDeclaration.class);
+        element2.style = mock(CSSStyleDeclaration.class);
+
+        dragArea.style = mock(CSSStyleDeclaration.class);
+
+        when(element0.getAttribute(DATA_Y_POSITION)).thenReturn("0");
+        when(element1.getAttribute(DATA_Y_POSITION)).thenReturn("2");
+        when(element2.getAttribute(DATA_Y_POSITION)).thenReturn("1");
+
+        when(element0.getAttribute(DATA_X_POSITION)).thenReturn("0");
+        when(element1.getAttribute(DATA_X_POSITION)).thenReturn("0");
+        when(element2.getAttribute(DATA_X_POSITION)).thenReturn("3");
+
+        when(dragArea.querySelector(".kie-dnd-draggable[data-y-position=\"0\"]")).thenReturn(element0);
+        when(dragArea.querySelector(".kie-dnd-draggable[data-y-position=\"2\"]")).thenReturn(element1);
+        when(dragArea.querySelector(".kie-dnd-draggable[data-y-position=\"1\"]")).thenReturn(element2);
+
+        mockDragAreaWithChildren(element0, element1, element2);
+
+        view.consolidateHierarchicalLevel(false);
+
+        verify(element0).setAttribute(DATA_Y_POSITION, 0);
+        verify(element2, times(2)).setAttribute(DATA_Y_POSITION, 1);
+        verify(element1).setAttribute(DATA_Y_POSITION, 2);
+
+        verify(element0, never()).setAttribute(DATA_X_POSITION, 0);
         verify(element2).setAttribute(DATA_X_POSITION, 1);
         verify(element1, never()).setAttribute(anyString(), anyString());
     }
@@ -230,7 +272,7 @@ public class DNDListComponentViewTest {
 
         mockDragAreaWithChildren(element);
 
-        view.consolidateHierarchicalLevel();
+        view.consolidateHierarchicalLevel(true);
 
         verify(element).setAttribute(DATA_X_POSITION, 0);
     }
@@ -248,7 +290,7 @@ public class DNDListComponentViewTest {
 
         mockDragAreaWithChildren(element);
 
-        view.consolidateHierarchicalLevel();
+        view.consolidateHierarchicalLevel(true);
 
         verify(element, never()).setAttribute(anyString(), anyString());
     }
@@ -447,7 +489,7 @@ public class DNDListComponentViewTest {
         doNothing().when(view).updateDraggingElementsPosition();
         doNothing().when(view).executeOnDropItemCallback();
         doNothing().when(view).releaseDraggingElement();
-        doNothing().when(view).consolidateHierarchicalLevel();
+        doNothing().when(view).consolidateHierarchicalLevel(true);
         doNothing().when(view).refreshItemsPosition();
         doNothing().when(view).refreshItemsHTML();
         doNothing().when(view).clearHover();
@@ -457,7 +499,7 @@ public class DNDListComponentViewTest {
         verify(view).updateDraggingElementsPosition();
         verify(view).executeOnDropItemCallback();
         verify(view).releaseDraggingElement();
-        verify(view).consolidateHierarchicalLevel();
+        verify(view).consolidateHierarchicalLevel(true);
         verify(view).refreshItemsPosition();
         verify(view).refreshItemsHTML();
         verify(view).clearHover();
@@ -473,7 +515,7 @@ public class DNDListComponentViewTest {
         verify(view, never()).updateDraggingElementsPosition();
         verify(view, never()).executeOnDropItemCallback();
         verify(view, never()).releaseDraggingElement();
-        verify(view, never()).consolidateHierarchicalLevel();
+        verify(view, never()).consolidateHierarchicalLevel(true);
         verify(view, never()).refreshItemsPosition();
         verify(view, never()).refreshItemsHTML();
         verify(view, never()).clearHover();

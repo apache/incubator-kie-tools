@@ -90,9 +90,7 @@ public class DNDListComponentView implements DNDListComponent.View {
     @Override
     public void refreshItemsPosition() {
 
-        int numberOfVisibleElements = 0;
-
-        for (final HTMLElement draggable : querySelector(getDragArea()).getDraggableElements()) {
+        for (final HTMLElement draggable : querySelector(getDragArea()).getVisibleDraggableElements()) {
 
             final int positionY = Position.getY(draggable);
             final int positionX = Position.getX(draggable);
@@ -101,13 +99,10 @@ public class DNDListComponentView implements DNDListComponent.View {
 
             setCSSTop(draggable, top);
             setCSSPaddingLeft(draggable, margin);
-
-            if (positionY > HIDDEN_Y_POSITION) {
-                numberOfVisibleElements++;
-            }
+            setCSSWidth(draggable, 0);
         }
 
-        refreshDragAreaSize(numberOfVisibleElements);
+        refreshDragAreaSize();
     }
 
     @Override
@@ -120,12 +115,14 @@ public class DNDListComponentView implements DNDListComponent.View {
     }
 
     @Override
-    public void consolidateHierarchicalLevel() {
+    public void consolidateHierarchicalLevel(final boolean isElementsDraggedByUser) {
 
         final List<HTMLElement> draggableElements = querySelector(getDragArea()).getVisibleAndSortedDraggableElements();
 
-        if (!draggableElements.isEmpty()) {
-            Position.setX(draggableElements.get(0), 0);
+        if (isElementsDraggedByUser) {
+            if (!draggableElements.isEmpty()) {
+                Position.setX(draggableElements.get(0), 0);
+            }
         }
 
         if (draggableElements.size() < 2) {
@@ -221,7 +218,7 @@ public class DNDListComponentView implements DNDListComponent.View {
         updateDraggingElementsPosition();
         executeOnDropItemCallback();
         releaseDraggingElement();
-        consolidateHierarchicalLevel();
+        consolidateHierarchicalLevel(true);
         refreshItemsPosition();
         refreshItemsHTML();
         clearHover();
@@ -342,8 +339,10 @@ public class DNDListComponentView implements DNDListComponent.View {
         return getNextElement(next, function);
     }
 
-    private void refreshDragAreaSize(final int numberOfElements) {
+    @Override
+    public void refreshDragAreaSize() {
 
+        final int numberOfElements = querySelector(getDragArea()).getVisibleDraggableElements().size();
         final int border = 1;
         final int elementHeight = getItemHeight();
         final int height = numberOfElements * elementHeight + border;

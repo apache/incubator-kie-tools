@@ -67,7 +67,7 @@ public class DNDListComponentTest {
     @Test
     public void testRefreshItemsCSSAndHTMLPosition() {
         dndListComponent.refreshItemsCSSAndHTMLPosition();
-        verify(view).consolidateHierarchicalLevel();
+        verify(view).consolidateHierarchicalLevel(false);
         verify(view).refreshItemsPosition();
     }
 
@@ -186,5 +186,11 @@ public class DNDListComponentTest {
     @Test
     public void testGetPreviousElementWhenReferenceIsNull() {
         assertFalse(dndListComponent.getPreviousElement(null, null).isPresent());
+    }
+
+    @Test
+    public void testRefreshDragAreaSize() {
+        dndListComponent.refreshDragAreaSize();
+        verify(view).refreshDragAreaSize();
     }
 }

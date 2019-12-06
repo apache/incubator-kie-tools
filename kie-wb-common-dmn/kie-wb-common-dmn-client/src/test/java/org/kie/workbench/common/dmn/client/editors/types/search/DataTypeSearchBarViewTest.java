@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.search;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -42,14 +44,20 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBarView.ENABLED_SEARCH;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSearchBarView_Search;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -191,7 +199,208 @@ public class DataTypeSearchBarViewTest {
         verify(dndListComponent).setPositionY(element2, 2);
         verify(dndListComponent).setPositionY(element3, -1);
         verify(dndListComponent).refreshItemsPosition();
+        verify(dndListComponent).refreshDragAreaSize();
+        verify(listItem0).expand();
+        verify(listItem1).expand();
+        verify(listItem2).expand();
         verify(view).enableSearch();
+        verify(view).groupElementsWithItsParents(listItems);
+        verify(view).expandListItems(listItems);
+    }
+
+    @Test
+    public void testExpandListItems() {
+
+        final DataTypeListItem item1 = mock(DataTypeListItem.class);
+        final DataTypeListItem item2 = mock(DataTypeListItem.class);
+
+        final List<DataTypeListItem> list = asList(item1, item2);
+
+        view.expandListItems(list);
+
+        verify(item1).expand();
+        verify(item2).expand();
+    }
+
+    @Test
+    public void testGroupElementsWithItsParents() {
+
+        final List<DataTypeListItem> groupedElementsList = mock(List.class);
+        final DataTypeListItem element1 = mock(DataTypeListItem.class);
+        final DataTypeListItem element2 = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> allElements = Arrays.asList(element1, element2);
+
+        doReturn(groupedElementsList).when(view).getGroupedElementsList();
+        doNothing().when(view).groupElementWithItsParent(groupedElementsList, allElements, element1);
+        doNothing().when(view).groupElementWithItsParent(groupedElementsList, allElements, element2);
+
+        final List<DataTypeListItem> actual = view.groupElementsWithItsParents(allElements);
+
+        verify(view).groupElementWithItsParent(groupedElementsList, allElements, element1);
+        verify(view).groupElementWithItsParent(groupedElementsList, allElements, element2);
+        assertEquals(actual, groupedElementsList);
+    }
+
+    @Test
+    public void testGroupElementWithItsParentWhenParentIsNotOnList() {
+
+        final DataTypeListItem item = mock(DataTypeListItem.class);
+        final DataTypeListItem parent = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> groupedElements = new ArrayList<>();
+        final List<DataTypeListItem> allElements = Arrays.asList(parent);
+        final String parentUuid = "parent_uuid";
+
+        final HTMLElement itemDragAndDropElement = mock(HTMLElement.class);
+        final HTMLElement parentDragAndDropElement = mock(HTMLElement.class);
+        when(parent.getDragAndDropElement()).thenReturn(parentDragAndDropElement);
+        when(item.getDragAndDropElement()).thenReturn(itemDragAndDropElement);
+        when(itemDragAndDropElement.getAttribute(PARENT_UUID_ATTR)).thenReturn(parentUuid);
+        when(parentDragAndDropElement.getAttribute(UUID_ATTR)).thenReturn(parentUuid);
+        doReturn(false).when(view).isParentElementOnList(groupedElements, parentUuid);
+        doNothing().when(view).groupElementWithItsParent(groupedElements, allElements, parent);
+
+        view.groupElementWithItsParent(groupedElements, allElements, item);
+
+        assertEquals(1, groupedElements.size());
+        assertEquals(item, groupedElements.get(0));
+        verify(view).groupElementWithItsParent(groupedElements, allElements, parent);
+        verify(view, never()).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+    }
+
+
+    @Test
+    public void testGroupElementWithItsParentWhenParentIsOnList() {
+
+        final DataTypeListItem item = mock(DataTypeListItem.class);
+        final DataTypeListItem parent = mock(DataTypeListItem.class);
+        final DataTypeListItem dummy = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> groupedElements = new ArrayList<>();
+        groupedElements.add(parent);
+        groupedElements.add(dummy);
+        final List<DataTypeListItem> allElements = Arrays.asList(parent);
+        final String parentUuid = "parent_uuid";
+
+        final HTMLElement itemDragAndDropElement = mock(HTMLElement.class);
+        final HTMLElement parentDragAndDropElement = mock(HTMLElement.class);
+        when(parent.getDragAndDropElement()).thenReturn(parentDragAndDropElement);
+        when(item.getDragAndDropElement()).thenReturn(itemDragAndDropElement);
+        when(itemDragAndDropElement.getAttribute(PARENT_UUID_ATTR)).thenReturn(parentUuid);
+        when(parentDragAndDropElement.getAttribute(UUID_ATTR)).thenReturn(parentUuid);
+        doReturn(true).when(view).isParentElementOnList(groupedElements, parentUuid);
+        doReturn(0).when(view).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+        view.groupElementWithItsParent(groupedElements, allElements, item);
+
+        assertEquals(3, groupedElements.size());
+        assertEquals(parent, groupedElements.get(0));
+        assertEquals(item, groupedElements.get(1));
+        assertEquals(dummy, groupedElements.get(2));
+        verify(view, never()).groupElementWithItsParent(groupedElements, allElements, parent);
+        verify(view).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+    }
+
+    @Test
+    public void testGroupElementWithItsParentWhenParentIsAtTheEndOfList() {
+
+        final DataTypeListItem item = mock(DataTypeListItem.class);
+        final DataTypeListItem parent = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> groupedElements = new ArrayList<>();
+        groupedElements.add(parent);
+        final List<DataTypeListItem> allElements = Arrays.asList(parent);
+        final String parentUuid = "parent_uuid";
+
+        final HTMLElement itemDragAndDropElement = mock(HTMLElement.class);
+        final HTMLElement parentDragAndDropElement = mock(HTMLElement.class);
+        when(parent.getDragAndDropElement()).thenReturn(parentDragAndDropElement);
+        when(item.getDragAndDropElement()).thenReturn(itemDragAndDropElement);
+        when(itemDragAndDropElement.getAttribute(PARENT_UUID_ATTR)).thenReturn(parentUuid);
+        when(parentDragAndDropElement.getAttribute(UUID_ATTR)).thenReturn(parentUuid);
+        doReturn(true).when(view).isParentElementOnList(groupedElements, parentUuid);
+        doReturn(0).when(view).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+        view.groupElementWithItsParent(groupedElements, allElements, item);
+
+        assertEquals(2, groupedElements.size());
+        assertEquals(parent, groupedElements.get(0));
+        assertEquals(item, groupedElements.get(1));
+        verify(view, never()).groupElementWithItsParent(groupedElements, allElements, parent);
+        verify(view).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+    }
+
+    @Test
+    public void testGetIndexOfParentOrLastElementInGroup() {
+
+        final DataTypeListItem parent = mock(DataTypeListItem.class);
+        final HTMLElement parentElement = mock(HTMLElement.class);
+        final String parentId = "parentId";
+        final List<DataTypeListItem> groupedElements = new ArrayList<>();
+        groupedElements.add(parent);
+        final int expectedIndex = 0;
+
+        when(parentElement.getAttribute(UUID_ATTR)).thenReturn(parentId);
+        when(parent.getDragAndDropElement()).thenReturn(parentElement);
+
+        final int index = view.getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+
+        assertEquals(expectedIndex, index);
+    }
+
+    @Test
+    public void testGetIndexOfParentOrLastElementInGroupWhenHaveMoreElements() {
+
+        final DataTypeListItem parent = mock(DataTypeListItem.class);
+
+        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
+        final HTMLElement parentElement = mock(HTMLElement.class);
+        final HTMLElement listItemElement1 = mock(HTMLElement.class);
+        final HTMLElement listItemElement2 = mock(HTMLElement.class);
+
+        final String parentId = "parentId";
+        final List<DataTypeListItem> groupedElements = new ArrayList<>();
+        groupedElements.add(parent);
+        groupedElements.add(listItem1);
+        groupedElements.add(listItem2);
+        final int expectedIndex = 2;
+
+        when(parentElement.getAttribute(UUID_ATTR)).thenReturn(parentId);
+        when(parent.getDragAndDropElement()).thenReturn(parentElement);
+        when(listItem1.getDragAndDropElement()).thenReturn(listItemElement1);
+        when(listItem2.getDragAndDropElement()).thenReturn(listItemElement2);
+        when(listItemElement1.getAttribute(PARENT_UUID_ATTR)).thenReturn(parentId);
+        when(listItemElement2.getAttribute(PARENT_UUID_ATTR)).thenReturn(parentId);
+
+        final int index = view.getIndexOfParentOrLastElementInGroup(groupedElements, parent);
+
+        assertEquals(expectedIndex, index);
+    }
+
+    @Test
+    public void testIsParentElementOnListWhenIsPresent() {
+
+        final DataTypeListItem item = mock(DataTypeListItem.class);
+        final HTMLElement element = mock(HTMLElement.class);
+        final String id = "id";
+        when(element.getAttribute(UUID_ATTR)).thenReturn(id);
+        when(item.getDragAndDropElement()).thenReturn(element);
+        final List<DataTypeListItem> groupedElements = Arrays.asList(item);
+
+        boolean isPresent = view.isParentElementOnList(groupedElements, id);
+
+        assertTrue(isPresent);
+    }
+
+    @Test
+    public void testIsParentElementOnListWhenIsNotPresent() {
+
+        final DataTypeListItem item = mock(DataTypeListItem.class);
+        final HTMLElement element = mock(HTMLElement.class);
+        final String id = "id";
+        when(element.getAttribute(UUID_ATTR)).thenReturn("otherId");
+        when(item.getDragAndDropElement()).thenReturn(element);
+        final List<DataTypeListItem> groupedElements = Arrays.asList(item);
+
+        boolean isPresent = view.isParentElementOnList(groupedElements, id);
+
+        assertFalse(isPresent);
     }
 
     @Test
@@ -273,3 +482,4 @@ public class DataTypeSearchBarViewTest {
         verify(closeSearch.classList).add(HIDDEN_CSS_CLASS);
     }
 }
+

@@ -131,7 +131,11 @@ public class DNDListComponent {
     }
 
     private void consolidateHierarchicalLevel() {
-        view.consolidateHierarchicalLevel();
+        view.consolidateHierarchicalLevel(false);
+    }
+
+    public void refreshDragAreaSize() {
+        view.refreshDragAreaSize();
     }
 
     public interface View extends UberElemental<DNDListComponent>,
@@ -145,11 +149,13 @@ public class DNDListComponent {
 
         void refreshItemsHTML();
 
-        void consolidateHierarchicalLevel();
+        void consolidateHierarchicalLevel(final boolean adjustFirstElementPositionX);
 
         void clear();
 
         void consolidateYPosition();
+
+        void refreshDragAreaSize();
 
         HTMLDivElement getDragArea();
     }

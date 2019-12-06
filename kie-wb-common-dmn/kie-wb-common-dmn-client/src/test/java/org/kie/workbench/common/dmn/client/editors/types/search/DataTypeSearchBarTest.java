@@ -221,6 +221,10 @@ public class DataTypeSearchBarTest {
                                                        .put(uuid0, positionY0)
                                                        .put(uuid1, positionY1)
                                                        .build());
+        final Map<String, Boolean> collapsedStore = spy(new Maps.Builder<String, Boolean>()
+                                                                .put(uuid0, false)
+                                                                .put(uuid1, true)
+                                                                .build());
 
         element0.classList = mock(DOMTokenList.class);
         element1.classList = mock(DOMTokenList.class);
@@ -235,6 +239,7 @@ public class DataTypeSearchBarTest {
         when(dataTypeList.getItems()).thenReturn(items);
         when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
         doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+        doReturn(collapsedStore).when(searchBar).getDataTypeListCollapsedStatusStore();
 
         searchBar.restoreDataTypeListPositions();
 
@@ -243,7 +248,10 @@ public class DataTypeSearchBarTest {
         verify(element0.classList).remove(HIDDEN_CSS_CLASS);
         verify(element1.classList).add(HIDDEN_CSS_CLASS);
         verify(dndListComponent).refreshItemsPosition();
+        verify(list0, never()).collapse();
+        verify(list1).collapse();
         verify(store).clear();
+        verify(collapsedStore).clear();
     }
 
     @Test
@@ -251,15 +259,18 @@ public class DataTypeSearchBarTest {
 
         final DNDListComponent dndListComponent = mock(DNDListComponent.class);
         final Map<String, Integer> store = spy(new HashMap<>());
+        final Map<String, Boolean> collapsedStore = spy(new HashMap<>());
 
         when(dataTypeList.getDNDListComponent()).thenReturn(dndListComponent);
         doReturn(store).when(searchBar).getDataTypeListPositionsStore();
+        doReturn(collapsedStore).when(searchBar).getDataTypeListCollapsedStatusStore();
 
-        searchBar.storeDataTypeListPositions();
+        searchBar.restoreDataTypeListPositions();
 
         verify(dndListComponent, never()).setPositionY(any(), anyDouble());
         verify(dndListComponent, never()).refreshItemsPosition();
         verify(store, never()).clear();
+        verify(collapsedStore, never()).clear();
     }
 
     @Test

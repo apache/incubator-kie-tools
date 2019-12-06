@@ -293,7 +293,7 @@ public class DataTypeList {
         }
     }
 
-    void collapseAll() {
+    public void collapseAll() {
         if (!getSearchBar().isEnabled()) {
             getItems().forEach(DataTypeListItem::collapse);
         }
