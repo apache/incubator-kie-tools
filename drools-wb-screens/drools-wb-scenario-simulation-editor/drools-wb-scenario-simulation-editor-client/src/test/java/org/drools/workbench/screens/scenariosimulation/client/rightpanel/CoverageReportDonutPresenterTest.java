@@ -61,12 +61,12 @@ public class CoverageReportDonutPresenterTest {
         HTMLDivElement container = mock(HTMLDivElement.class);
         donutPresenter.init(container);
 
-        donutPresenter.showCoverageReport(1, 1);
+        donutPresenter.showCoverageReport(1, 1, "holeLabel");
 
         verify(elemental2DomUtil, never()).removeAllElementChildren(any());
         verify(displayerCoordinator, never()).removeDisplayer(any());
 
-        donutPresenter.showCoverageReport(2, 2);
+        donutPresenter.showCoverageReport(2, 2, "holeLabel");
 
         verify(elemental2DomUtil).removeAllElementChildren(any());
         verify(displayerCoordinator).removeDisplayer(any());

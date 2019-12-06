@@ -44,6 +44,9 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
     @DataField
     protected HTMLElement faAngleRight = (HTMLElement) DomGlobal.document.createElement("span");
 
+    @DataField
+    protected HTMLElement itemLabelElement = (HTMLElement) DomGlobal.document.createElement("span");
+
     private Presenter presenter;
 
     @EventHandler("scenarioElement")
@@ -67,8 +70,8 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
     }
 
     @Override
-    public HTMLElement getFaAngleRight() {
-        return faAngleRight;
+    public void setItemLabel(String itemLabel) {
+        itemLabelElement.textContent = itemLabel;
     }
 
     @Override

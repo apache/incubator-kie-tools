@@ -18,7 +18,6 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.Map;
 
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
@@ -32,9 +31,9 @@ public interface CoverageScenarioListView {
 
     HTMLUListElement getScenarioContentList();
 
-    HTMLElement getFaAngleRight();
-
     boolean isVisible();
+
+    void setItemLabel(String itemLabel);
 
     void setVisible(boolean visible);
 

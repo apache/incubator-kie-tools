@@ -111,4 +111,7 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     @ClassName("list-group-item-container-fact-property")
     String listGroupItemContainerFactProperty();
+
+    @ClassName("kie-coverage__dl-horizontal")
+    String kieCoverageDlHorizontal();
 }

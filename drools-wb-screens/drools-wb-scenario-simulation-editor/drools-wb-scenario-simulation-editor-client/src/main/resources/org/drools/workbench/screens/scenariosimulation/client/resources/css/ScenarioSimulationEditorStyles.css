@@ -187,3 +187,10 @@ span.kie-list-view-pf-main-info__text {
     padding-left: 0;
     margin-bottom: 0;
 }
+
+.kie-coverage__dl-horizontal dt {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    text-align: inherit;
+}

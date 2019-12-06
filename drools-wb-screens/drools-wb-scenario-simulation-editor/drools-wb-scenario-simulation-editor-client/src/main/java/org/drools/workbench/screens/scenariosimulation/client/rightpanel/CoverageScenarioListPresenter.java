@@ -56,9 +56,10 @@ public class CoverageScenarioListPresenter implements CoverageScenarioListView.P
         String customText = Type.DMN.equals(type) ?
                 ScenarioSimulationEditorConstants.INSTANCE.decisionsEvaluated() :
                 ScenarioSimulationEditorConstants.INSTANCE.rulesFired();
+        String itemLabel = customText + " " + scenarioWithIndex.getIndex() + ": " +
+                scenarioWithIndex.getScesimData().getDescription();
 
-        coverageScenarioListView.getFaAngleRight().textContent = "  " + customText
-                + " " + scenarioWithIndex.getIndex() + ": " + scenarioWithIndex.getScesimData().getDescription();
+        coverageScenarioListView.setItemLabel(itemLabel);
 
         scenarioElement.appendChild(createInternalList(resultCounter, coverageScenarioListView.getScenarioContentList()));
 
