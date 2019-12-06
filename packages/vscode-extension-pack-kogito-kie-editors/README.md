@@ -1,7 +1,7 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.4 (alpha)
+## Release notes - 0.2.5 (alpha)
 
 ### Features and fixes included on this release 
 - [KOGITO-541](https://issues.jboss.org/browse/KOGITO-541): Format the output XML
@@ -18,8 +18,8 @@ BPMN and DMN Editors
 - [KOGITO-155](https://issues.jboss.org/browse/KOGITO-155) Flicker when opening or restoring editors. 
 - [AF-2167](https://issues.jboss.org/browse/AF-2167) Native editor key bindings for macOS. 
 - [AF-2113](https://issues.jboss.org/browse/AF-2113) No indication of a modified BPMN diagram. 
-- [AF-2168](https://issues.jboss.org/browse/AF-2168) No confirmation popup when closing a modified BPMN diagram. 
 - [KOGITO-157](https://issues.jboss.org/browse/KOGITO-157) Copy/paste between different BPMN diagram. 
 - [KOGITO-224](https://issues.jboss.org/browse/KOGITO-224) An error message is displayed if you try to create a new type by pressing `Enter`. 
 - [KOGITO-225](https://issues.jboss.org/browse/KOGITO-225) Custom type definitions aren’t re-used within the diagram. 
 - [KOGITO-272](https://issues.jboss.org/browse/KOGITO-272) Editor doesn't close when file is deleted.  
+- [KOGITO-704](https://issues.redhat.com/browse/KOGITO-704) DMN Editor repeated setContent/getContent operations changes the content.
