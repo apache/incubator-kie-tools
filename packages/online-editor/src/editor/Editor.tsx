@@ -83,7 +83,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       ref={iframeRef}
       id={"kogito-iframe"}
       className="kogito--editor"
-      src={context.router.getRelativePathTo(context.iframeTemplateRelativePath)}
+      src={context.iframeTemplateRelativePath}
     />
   );
 };
