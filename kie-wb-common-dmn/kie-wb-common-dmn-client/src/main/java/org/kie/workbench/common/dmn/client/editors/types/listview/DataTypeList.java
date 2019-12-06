@@ -502,6 +502,14 @@ public class DataTypeList {
         return dataTypeManager.getTopLevelDataTypeWithName(name);
     }
 
+    public void disableEditModeForChildren(final DataTypeListItem dataTypeListItem) {
+
+        final String uuid = dataTypeListItem.getDataType().getUUID();
+        getItems().stream()
+                .filter(item -> Objects.equals(item.getDataType().getParentUUID(), uuid))
+                .forEach(child -> child.disableEditMode());
+    }
+
     public interface View extends UberElemental<DataTypeList>,
                                   IsElement {
 

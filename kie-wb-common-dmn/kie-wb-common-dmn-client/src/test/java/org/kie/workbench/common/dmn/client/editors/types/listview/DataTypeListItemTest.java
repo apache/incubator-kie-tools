@@ -704,11 +704,24 @@ public class DataTypeListItemTest {
         final Command command = mock(Command.class);
 
         doReturn(dataType).when(listItem).getDataType();
-        doReturn(command).when(listItem).destroy();
+        doReturn(command).when(listItem).removeItem();
 
         listItem.remove();
 
         verify(confirmation).ifIsNotReferencedDataType(dataType, command);
+    }
+
+    @Test
+    public void testRemoveItem() {
+
+        final Command command = listItem.removeItem();
+
+        doNothing().when(listItem).destroyWithDependentTypes();
+
+        command.execute();
+
+        verify(dataTypeList).disableEditModeForChildren(listItem);
+        verify(listItem).destroyWithDependentTypes();
     }
 
     @Test

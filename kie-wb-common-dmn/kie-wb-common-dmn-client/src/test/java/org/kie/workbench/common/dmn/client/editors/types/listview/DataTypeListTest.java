@@ -1043,6 +1043,42 @@ public class DataTypeListTest {
         assertEquals(type, actual);
     }
 
+    @Test
+    public void testDisableEditModeForChildren() {
+
+        final DataTypeListItem dataTypeListItem = mock(DataTypeListItem.class);
+        final DataType dataType = mock(DataType.class);
+        final String uuid = "uuid";
+
+        final DataType notChildDataType = mock(DataType.class);
+        final DataTypeListItem notChildItem = mock(DataTypeListItem.class);
+        when(notChildDataType.getParentUUID()).thenReturn("other_uuid");
+        when(notChildItem.getDataType()).thenReturn(notChildDataType);
+
+        final DataType childDataType1 = mock(DataType.class);
+        final DataTypeListItem child1 = mock(DataTypeListItem.class);
+        when(child1.getDataType()).thenReturn(childDataType1);
+        when(childDataType1.getParentUUID()).thenReturn(uuid);
+
+        final DataType childDataType2 = mock(DataType.class);
+        final DataTypeListItem child2 = mock(DataTypeListItem.class);
+        when(child2.getDataType()).thenReturn(childDataType2);
+        when(childDataType2.getParentUUID()).thenReturn(uuid);
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(dataTypeListItem.getDataType()).thenReturn(dataType);
+
+        final List<DataTypeListItem> list = asList(child1, notChildItem, child2);
+
+        doReturn(list).when(dataTypeList).getItems();
+
+        dataTypeList.disableEditModeForChildren(dataTypeListItem);
+
+        verify(child1).disableEditMode();
+        verify(child2).disableEditMode();
+        verify(notChildItem, never()).disableEditMode();
+    }
+
     private DataTypeListItem listItem(final DataType dataType) {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         when(listItem.getDataType()).thenReturn(dataType);
