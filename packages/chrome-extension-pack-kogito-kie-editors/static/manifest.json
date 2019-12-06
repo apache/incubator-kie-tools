@@ -1,6 +1,6 @@
 {
   "name": "BPMN and DMN Editors :: GitHub Extension",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "manifest_version": 2,
   "description": "KIE Group :: GitHub Extension",
   "content_scripts": [
@@ -32,6 +32,10 @@
   ],
   "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
   "externally_connectable": {
-    "matches": ["*://*.github.com/*", "*://kiegroup.github.io/*", "*://localhost/*"]
+    "matches": [
+      "*://*.github.com/*",
+      "*://kiegroup.github.io/*",
+      "*://localhost/*"
+    ]
   }
 }

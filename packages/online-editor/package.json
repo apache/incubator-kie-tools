@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/online-editor",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,13 +10,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/core-api": "0.2.6",
+    "@kogito-tooling/kie-bc-editors": "0.2.6",
+    "@kogito-tooling/microeditor-envelope": "0.2.6",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.6",
     "@patternfly/patternfly": "2.40.2",
     "@patternfly/react-core": "3.90.0",
     "@patternfly/react-icons": "3.14.7",
-    "@kogito-tooling/core-api": "0.2.5",
-    "@kogito-tooling/kie-bc-editors": "0.2.5",
-    "@kogito-tooling/microeditor-envelope": "0.2.5",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.5",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "react-router": "5.1.1",
