@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useGlobals } from "../common/GlobalContext";
 
 export function SingleEditorToolbar(props: {
   readonly: boolean;
@@ -23,7 +24,10 @@ export function SingleEditorToolbar(props: {
   onFullScreen: () => void;
   onSeeAsSource: () => void;
   onSeeAsDiagram: () => void;
+  onOpenInExternalEditor: () => void;
 }) {
+  const globals = useGlobals();
+
   const goFullScreen = (e: any) => {
     e.preventDefault();
     props.onFullScreen();
@@ -39,6 +43,11 @@ export function SingleEditorToolbar(props: {
     props.onSeeAsDiagram();
   };
 
+  const openInExternalEditor = (e: any) => {
+    e.preventDefault();
+    props.onOpenInExternalEditor();
+  };
+  
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -50,6 +59,11 @@ export function SingleEditorToolbar(props: {
         {props.textMode && (
           <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
             See as diagram
+          </button>
+        )}
+        {globals.externalEditorManager && (
+          <button className={"btn btn-sm kogito-button"} onClick={openInExternalEditor}>
+            Open in {globals.externalEditorManager.name}
           </button>
         )}
         {!props.textMode && (

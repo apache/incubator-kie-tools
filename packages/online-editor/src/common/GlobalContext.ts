@@ -16,19 +16,19 @@
 
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { File } from "./File";
+import { Routes } from "./Routes";
+import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
+export interface GlobalContextType {
   router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
-
-export function useGlobals() {
-  return React.useContext(GlobalContext);
+  routes: Routes;
+  envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
+  iframeTemplateRelativePath: string;
+  file: File;
+  readonly: boolean;
+  external: boolean;
+  senderTabId?: string;
 }
+
+export const GlobalContext = React.createContext<GlobalContextType>({} as any);

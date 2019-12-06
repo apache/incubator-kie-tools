@@ -90,15 +90,16 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {
+    this.targetOrigin = init.origin;
+    this.id = init.busId;
+
+    this.respond_initRequest();
+
     if (this.capturedInitRequestYet) {
       return;
     }
 
     this.capturedInitRequestYet = true;
-    this.targetOrigin = init.origin;
-    this.id = init.busId;
-
-    this.respond_initRequest();
     this.request_languageResponse();
   }
 

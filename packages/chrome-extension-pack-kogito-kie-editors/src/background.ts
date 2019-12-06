@@ -38,3 +38,125 @@ chrome.webRequest.onHeadersReceived.addListener(
   { urls: ["https://github.com/*"] },
   ["blocking", "responseHeaders"]
 );
+
+/* Active tab management */
+
+let activeTabId: number;
+
+chrome.tabs.onActivated.addListener(activeInfo => {
+  activeTabId = activeInfo.tabId;
+});
+
+function getActiveTab(callback: (tab: any) => void) {
+  chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+    const activeTab = tabs[0];
+
+    if (activeTab) {
+      callback(activeTab);
+    } else {
+      chrome.tabs.get(activeTabId, tab => {
+        if (tab) {
+          callback(tab);
+        } else {
+          console.debug("No active tab identified.");
+        }
+      });
+    }
+  });
+}
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.messageId === "OPEN_ONLINE_EDITOR") {
+    openOnlineEditor(request, sender, sendResponse);
+  } else if (request.messageId === "RETURN_FROM_EXTERNAL_EDITOR") {
+    updateGitHub(request, sender, sendResponse);
+  }
+  sendResponse({ success: true });
+});
+
+function openOnlineEditor(request: any, sender: any, sendResponse: any) {
+  chrome.tabs.create(
+    { url: "$_{WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/" + extractFileExtension(request.filePath) },
+    tab => {
+      let newTabReady = () => {
+        newTabReady = () => {
+          /**/
+        };
+        chrome.tabs.onUpdated.removeListener(tabUpdateListener);
+        chrome.tabs.sendMessage(tab.id!, {
+          messageId: "LOAD_ONLINE_EDITOR",
+          filePath: removeDirectories(removeFileExtension(request.filePath)),
+          fileContent: request.fileContent,
+          readonly: request.readonly,
+          senderTabId: sender.tab!.id!
+        });
+      };
+
+      chrome.tabs.get(tab.id!, newTab => {
+        if (newTab.status === "complete") {
+          newTabReady();
+        }
+      });
+
+      const tabUpdateListener = (updatedTabId: number, changeInfo: any) => {
+        if (updatedTabId === tab.id && changeInfo.status === "complete") {
+          newTabReady();
+        }
+        sendResponse({ success: true });
+      };
+
+      chrome.tabs.onUpdated.addListener(tabUpdateListener);
+    }
+  );
+}
+
+function updateGitHub(request: any, sender: any, sendResponse: any) {
+  chrome.tabs.sendMessage(
+    request.senderTabId,
+    {
+      messageId: "RETURN_FROM_EXTERNAL_EDITOR",
+      fileName: request.fileName,
+      fileContent: request.fileContent
+    },
+    response => {
+      if (response?.success) {
+        chrome.tabs.remove(sender.tab!.id!, () => {
+          chrome.tabs.update(request.senderTabId, { active: true, selected: true });
+        });
+      }
+    }
+  );
+}
+
+function extractFileExtension(fileName: string) {
+  const fileExtension = fileName.split(".").pop();
+  if (!fileExtension) {
+    return undefined;
+  }
+
+  const openFileExtensionRegex = fileExtension.match(/[\w\d]+/);
+  if (!openFileExtensionRegex) {
+    return undefined;
+  }
+
+  const openFileExtension = openFileExtensionRegex.pop();
+  if (!openFileExtension) {
+    return undefined;
+  }
+
+  return openFileExtension;
+}
+
+function removeFileExtension(fileName: string) {
+  const fileExtension = extractFileExtension(fileName);
+
+  if (!fileExtension) {
+    return fileName;
+  }
+
+  return fileName.substr(0, fileName.length - fileExtension.length - 1);
+}
+
+function removeDirectories(filePath: string) {
+  return filePath.split("/").pop();
+}

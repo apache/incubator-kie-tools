@@ -1,0 +1,113 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.kogito--upload-box > div {
+  box-sizing: border-box;
+  border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--100);
+  width: 15em;
+  height: 15em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--pf-global--spacer--2xl);
+}
+
+.kogito--upload-box > div.hover {
+  border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--200);
+}
+
+.kogito--editor {
+  width: 100%;
+  height: 100%;
+}
+
+.kogito--editor__toolbar-section {
+  --pf-c-page__main-nav--PaddingBottom: var(--pf-global--spacer--sm);
+  border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
+}
+
+.kogito--editor__toolbar-section h3 {
+  border: var(--pf-global--BorderWidth--sm) solid transparent;
+  padding: 0.17em 0.3em;
+}
+
+.kogito--editor__toolbar-section h3:hover {
+  border: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
+  border-radius: var(--pf-global--BorderRadius--sm);
+}
+
+.kogito--editor__toolbar-name-container {
+  display: inline-block;
+  position: relative;
+}
+
+.kogito--editor__toolbar-name-container h3 {
+  display: inline-block;
+  visibility: hidden;
+  white-space: pre;
+  padding: 0.17em 0.3em;
+}
+
+.kogito--editor__toolbar-name-container input {
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--active-color--100);
+  border-radius: var(--pf-global--BorderRadius--sm);
+  padding: 0.25em 0 0px 0.25em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+  height: 1.9em;
+}
+
+.kogito--full-screen__toolbar {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.kogito--upload-btn-container {
+  display: flex;
+  align-items: center;
+}
+
+.kogito--upload-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  margin-left: 1em;
+}
+
+.kogito--upload-btn button {
+  width: 13em;
+  margin-left: 0 !important;
+}
+
+.kogito--upload-btn input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.kogito--right {
+  margin-left: auto;
+  margin-right: 0;
+}

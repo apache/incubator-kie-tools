@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { ChromeRouter } from "./ChromeRouter";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import { startExtension } from "@kogito-tooling/chrome-extension";
+import { OnlineEditorManager } from "./OnlineEditorManager";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
-  router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
-
-export function useGlobals() {
-  return React.useContext(GlobalContext);
-}
+startExtension({
+  name: "Kogito :: BPMN and DMN editors",
+  editorIndexPath: "envelope/index.html",
+  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" })),
+  extensionIconUrl: chrome.extension.getURL("/resources/kogito-icon.png"),
+  githubAuthTokenCookieName: "github-oauth-token-kie-editors",
+  externalEditorManager: new OnlineEditorManager()
+});

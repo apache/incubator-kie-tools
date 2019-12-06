@@ -32,6 +32,7 @@ import {
   GITHUB_RENAMED_FILE_ARROW,
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
+  KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as Octokit from "@octokit/rest";
@@ -89,6 +90,8 @@ export function IsolatedPrEditor(props: {
     setEditorReady(false);
   }, []);
 
+  const filePath = showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED ? originalFilePath : modifiedFilePath;
+
   const getFileContents =
     showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
@@ -96,6 +99,10 @@ export function IsolatedPrEditor(props: {
 
   const shouldAddLinkToOriginalFile =
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+
+  const openExternalEditor = () => {
+    getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
+  };
 
   return (
     <IsolatedEditorContext.Provider
@@ -110,6 +117,17 @@ export function IsolatedPrEditor(props: {
             globals.id,
             props.prFileContainer,
             dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+          )
+        )}
+
+      {globals.externalEditorManager &&
+        ReactDOM.createPortal(
+          <a className={"pl-5 dropdown-item btn-link"} onClick={openExternalEditor}>
+            Open in {globals.externalEditorManager.name}
+          </a>,
+          openWithExternalEditorLinkContainer(
+            props.prFileContainer,
+            dependencies__.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
           )
         )}
 
@@ -193,6 +211,17 @@ function viewOriginalFileLinkContainer(id: string, prFileContainer: HTMLElement,
       "afterend",
       `<div class="${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS} ${id}"></div>`
     );
+  }
+
+  return element()!;
+}
+
+function openWithExternalEditorLinkContainer(prFileContainer: HTMLElement, container: HTMLElement) {
+  const div = `<div class="${KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS}"></div>`;
+  const element = () => prFileContainer.querySelector(`.${KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS}`);
+
+  if (!element()) {
+    container.insertAdjacentHTML("beforebegin", div);
   }
 
   return element()!;

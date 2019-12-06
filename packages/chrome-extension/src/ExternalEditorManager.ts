@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-import { ChromeRouter } from "./ChromeRouter";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { startExtension } from "@kogito-tooling/chrome-extension";
-
-startExtension({
-  name: "Kogito :: BPMN and DMN editors",
-  editorIndexPath: "envelope/index.html",
-  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn" })),
-  extensionIconUrl: chrome.extension.getURL("/resources/kogito-icon.png"),
-  githubAuthTokenCookieName: "github-oauth-token-kie-editors"
-});
+export interface ExternalEditorManager {
+  name: string;
+  open(filePath: string, fileContent: string, readonly: boolean): void;
+  listenToComeBack(
+    setFileName: (fileName: string) => unknown,
+    setFileContent: (content: string) => unknown
+  ): { stopListening: () => void };
+}

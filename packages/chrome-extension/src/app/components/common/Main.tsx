@@ -23,6 +23,7 @@ import * as ReactDOM from "react-dom";
 import { KogitoMenu } from "./KogitoMenu";
 import * as dependencies__ from "../../dependencies";
 import { kogitoMenuContainer } from "../../utils";
+import { ExternalEditorManager } from "../../../ExternalEditorManager";
 
 export interface Globals {
   id: string;
@@ -31,6 +32,7 @@ export interface Globals {
   githubAuthTokenCookieName: string;
   extensionIconUrl: string;
   editorIndexPath: string;
+  externalEditorManager?: ExternalEditorManager;
 }
 
 export const Main: React.FunctionComponent<Globals> = props => {
@@ -42,7 +44,8 @@ export const Main: React.FunctionComponent<Globals> = props => {
         router: props.router,
         githubAuthTokenCookieName: props.githubAuthTokenCookieName,
         extensionIconUrl: props.extensionIconUrl,
-        editorIndexPath: props.editorIndexPath
+        editorIndexPath: props.editorIndexPath,
+        externalEditorManager: props.externalEditorManager
       }}
     >
       <GitHubContextProvider>

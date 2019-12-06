@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { Router, Routes } from "@kogito-tooling/core-api";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
-  router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
+export class OnlineEditorRouter extends Router {
+  constructor(...routesArray: Routes[]) {
+    super(...routesArray);
+  }
 
-export function useGlobals() {
-  return React.useContext(GlobalContext);
+  public getRelativePathTo(uri: string): string {
+    return `${this.getTargetOrigin()}/${uri}`;
+  }
+
+  public getLanguageData(fileExtension: string) {
+    return this.getLanguageDataByFileExtension().get(fileExtension);
+  }
+
+  public getTargetOrigin() {
+    return "";
+  }
 }

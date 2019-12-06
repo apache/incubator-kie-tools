@@ -15,20 +15,18 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { Logger } from "../../../Logger";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { Button } from "@patternfly/react-core";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
-  router: Router;
-  logger: Logger;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  externalEditorManager?: ExternalEditorManager;
-}>({} as any);
+interface Props {
+  onExitFullScreen: () => void;
+}
 
-export function useGlobals() {
-  return React.useContext(GlobalContext);
+export function FullScreenToolbar(props: Props) {
+  return (
+    <div className="kogito--full-screen__toolbar">
+      <Button variant="primary" onClick={props.onExitFullScreen}>
+        Exit full screen
+      </Button>
+    </div>
+  );
 }

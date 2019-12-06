@@ -25,6 +25,7 @@ import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
+import { ExternalEditorManager } from "./ExternalEditorManager";
 
 /**
  * Starts a Kogito extension.
@@ -39,6 +40,7 @@ export function startExtension(args: {
   extensionIconUrl: string;
   githubAuthTokenCookieName: string;
   router: Router;
+  externalEditorManager?: ExternalEditorManager;
 }) {
   const logger = new Logger(args.name);
 
@@ -49,7 +51,8 @@ export function startExtension(args: {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
-      router: args.router
+      router: args.router,
+      externalEditorManager: args.externalEditorManager
     });
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
@@ -75,7 +78,8 @@ function init(args: Globals) {
       router: args.router,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath
+      editorIndexPath: args.editorIndexPath,
+      externalEditorManager: args.externalEditorManager
     });
     return;
   }
@@ -89,7 +93,8 @@ function init(args: Globals) {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
-      fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") }
+      fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") },
+      externalEditorManager: args.externalEditorManager
     });
     return;
   }
@@ -101,7 +106,8 @@ function init(args: Globals) {
       logger: args.logger,
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath
+      editorIndexPath: args.editorIndexPath,
+      externalEditorManager: args.externalEditorManager
     });
     return;
   }
@@ -145,3 +151,4 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
 }
 
 export * from "./DefaultChromeRouter";
+export * from "./ExternalEditorManager";
