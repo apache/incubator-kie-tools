@@ -109,20 +109,5 @@ export function kogitoMenuContainer(id: string, container: HTMLElement) {
 }
 
 export function extractOpenFileExtension(url: string) {
-  const splitLocationHref = url.split(".").pop();
-  if (!splitLocationHref) {
-    return undefined;
-  }
-
-  const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
-  if (!openFileExtensionRegex) {
-    return undefined;
-  }
-
-  const openFileExtension = openFileExtensionRegex.pop();
-  if (!openFileExtension) {
-    return undefined;
-  }
-
-  return openFileExtension;
+  return url.split(".").pop()?.match(/[\w\d]+/)?.pop();
 }

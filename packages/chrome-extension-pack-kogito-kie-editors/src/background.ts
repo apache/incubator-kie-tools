@@ -131,22 +131,7 @@ function updateGitHub(request: any, sender: chrome.runtime.MessageSender) {
 // FIXME: Move the functions below to a common place to avoid duplicated code.
 
 function extractFileExtension(fileName: string) {
-  const fileExtension = fileName.split(".").pop();
-  if (!fileExtension) {
-    return undefined;
-  }
-
-  const openFileExtensionRegex = fileExtension.match(/[\w\d]+/);
-  if (!openFileExtensionRegex) {
-    return undefined;
-  }
-
-  const openFileExtension = openFileExtensionRegex.pop();
-  if (!openFileExtension) {
-    return undefined;
-  }
-
-  return openFileExtension;
+  return fileName.split(".").pop()?.match(/[\w\d]+/)?.pop();
 }
 
 function removeFileExtension(fileName: string) {

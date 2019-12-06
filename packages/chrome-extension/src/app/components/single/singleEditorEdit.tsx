@@ -84,7 +84,6 @@ function SingleEditorEditApp(props: { openFileExtension: string }) {
 }
 
 function cleanup(id: string) {
-  //FIXME: Unchecked dependency use
   removeAllChildren(iframeContainer(id));
   removeAllChildren(toolbarContainer(id));
   removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
