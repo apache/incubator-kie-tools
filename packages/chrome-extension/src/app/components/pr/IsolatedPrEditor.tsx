@@ -16,7 +16,7 @@
 
 import * as dependencies__ from "../../dependencies";
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import {
   useEffectAfterFirstRender,
@@ -103,10 +103,23 @@ export function IsolatedPrEditor(props: {
   const openExternalEditor = () => {
     getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
   };
+  const repoInfo = useMemo(() => {
+    return showOriginal
+      ? {
+          owner: props.prInfo.org,
+          gitref: props.prInfo.gitRef,
+          repo: props.prInfo.repo
+        }
+      : {
+          owner: props.prInfo.targetOrg,
+          gitref: props.prInfo.targetGitRef,
+          repo: props.prInfo.repo
+        };
+  }, [showOriginal]);
 
   return (
     <IsolatedEditorContext.Provider
-      value={{ textMode: textMode, fullscreen: false, isOriginal: showOriginal, onEditorReady: () => setEditorReady(true) }}
+      value={{ textMode: textMode, fullscreen: false, repoInfo: repoInfo, onEditorReady: () => setEditorReady(true) }}
     >
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(

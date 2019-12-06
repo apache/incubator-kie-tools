@@ -99,7 +99,7 @@ export function SingleEditorApp(props: {
           onEditorReady: () => setTextModeEnabled(true),
           fullscreen: fullscreen,
           textMode: textMode,
-          isOriginal: true
+          repoInfo: {} as any //FIXME: WILLIAM
         }}
       >
         {!fullscreen && (

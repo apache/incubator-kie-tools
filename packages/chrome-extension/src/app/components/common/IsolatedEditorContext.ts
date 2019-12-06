@@ -15,10 +15,11 @@
  */
 
 import * as React from "react";
+import {RepoInfo} from "./GithubInfo";
 
 export const IsolatedEditorContext = React.createContext<{
   textMode: boolean;
   fullscreen: boolean;
-  isOriginal: boolean;
+  repoInfo: RepoInfo;
   onEditorReady?: () => void;
 }>({} as any);

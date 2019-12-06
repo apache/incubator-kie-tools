@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-import { ResourceContentService, ResourceContent } from "@kogito-tooling/core-api";
-import { ResourcesList } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourceContentService, ResourcesList } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
+import { RepoInfo } from "./GithubInfo";
 import Octokit = require("@octokit/rest");
-import { parseRepoInfo, RepoInfo, discoverCurrentGitHubPageType, parsePrInfo } from "./GithubInfo";
-import { GitHubPageType } from "../../github/GitHubPageType";
-import { useState } from "react";
 
 class OctokitResponse {
   public data: GithubTreeResponse;
@@ -42,24 +39,17 @@ class GithubTreeResponse {
 }
 
 class ChromeResourceContentService implements ResourceContentService {
-  isOriginal: boolean;
+  private readonly repoInfo: RepoInfo;
+  private readonly octokit: Octokit;
 
-  private octokit: Octokit;
-
-  constructor(octokit: Octokit) {
+  constructor(octokit: Octokit, repoInfo: RepoInfo) {
     this.octokit = octokit;
+    this.repoInfo = repoInfo;
   }
 
   public read(uri: string): Promise<ResourceContent | undefined> {
-    const repoInfo = this.repoInfo();
-
-    return fetchFile(
-      this.octokit,
-      repoInfo.owner,
-      repoInfo.repo,
-      repoInfo.gitref,
-      uri
-    ).then(assetContent => new ResourceContent(uri, assetContent))
+    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, uri)
+      .then(assetContent => new ResourceContent(uri, assetContent))
       .catch(e => {
         console.debug(e);
         console.debug(`Error retrieving content from URI ${uri}`);
@@ -68,60 +58,31 @@ class ChromeResourceContentService implements ResourceContentService {
   }
 
   public list(pattern: string): Promise<ResourcesList> {
-    const repoInfo = this.repoInfo();
-
-    return this.octokit.git.getTree({
-      headers: {
-        "cache-control": "no-cache"
-      },
-      recursive: "1",
-      tree_sha: repoInfo.gitref,
-      ...repoInfo
-    }).then((v: OctokitResponse) => {
-      const filteredPaths = v.data.tree.filter(file => file.type === 'blob').map(file => file.path);
-      const result = minimatch.match(filteredPaths, pattern);
-      return new ResourcesList(pattern, result);
-    }).catch(e => {
-      console.debug(`Error retrieving file list for pattern ${pattern}`)
-      return new ResourcesList(pattern, []);
-    });
+    return this.octokit.git
+      .getTree({
+        headers: {
+          "cache-control": "no-cache"
+        },
+        recursive: "1",
+        tree_sha: this.repoInfo.gitref,
+        ...this.repoInfo
+      })
+      .then((v: OctokitResponse) => {
+        const filteredPaths = v.data.tree.filter(file => file.type === "blob").map(file => file.path);
+        const result = minimatch.match(filteredPaths, pattern);
+        return new ResourcesList(pattern, result);
+      })
+      .catch(e => {
+        console.debug(`Error retrieving file list for pattern ${pattern}`);
+        return new ResourcesList(pattern, []);
+      });
   }
-
-  private repoInfo(): RepoInfo {
-    const pageType = discoverCurrentGitHubPageType();
-
-    if (pageType === GitHubPageType.PR) {
-      const prInfo = parsePrInfo();
-      if (this.isOriginal) {
-        return {
-          owner: prInfo.org,
-          gitref: prInfo.gitRef,
-          repo: prInfo.repo
-        };
-      } else {
-        return {
-          owner: prInfo.targetOrg,
-          gitref: prInfo.targetGitRef,
-          repo: prInfo.repo
-        };
-      }
-    } else if (pageType === GitHubPageType.VIEW || pageType === GitHubPageType.EDIT) {
-      return parseRepoInfo();
-    }
-    throw new Error(`Github Page type ${pageType} is not supported`);
-
-  }
-
-  public setOriginal(isOriginal: boolean) {
-    this.isOriginal = isOriginal;
-  }
-
 }
 
 const resourceContentServiceFactory = {
-  create: (octokit: Octokit) => {
-    return new ChromeResourceContentService(octokit);
+  create: (octokit: Octokit, repoInfo: RepoInfo) => {
+    return new ChromeResourceContentService(octokit, repoInfo);
   }
-}
+};
 
 export { resourceContentServiceFactory };
