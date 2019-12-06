@@ -69,12 +69,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.messageId === "OPEN_ONLINE_EDITOR") {
     openOnlineEditor(request, sender, sendResponse);
   } else if (request.messageId === "RETURN_FROM_EXTERNAL_EDITOR") {
-    updateGitHub(request, sender, sendResponse);
+    updateGitHub(request, sender);
   }
   sendResponse({ success: true });
 });
 
-function openOnlineEditor(request: any, sender: any, sendResponse: any) {
+function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
   chrome.tabs.create(
     { url: "$_{WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/" + extractFileExtension(request.filePath) },
     tab => {
@@ -110,7 +110,7 @@ function openOnlineEditor(request: any, sender: any, sendResponse: any) {
   );
 }
 
-function updateGitHub(request: any, sender: any, sendResponse: any) {
+function updateGitHub(request: any, sender: chrome.runtime.MessageSender) {
   chrome.tabs.sendMessage(
     request.senderTabId,
     {
@@ -127,6 +127,8 @@ function updateGitHub(request: any, sender: any, sendResponse: any) {
     }
   );
 }
+
+// FIXME: Move the functions below to a common place to avoid duplicated code.
 
 function extractFileExtension(fileName: string) {
   const fileExtension = fileName.split(".").pop();

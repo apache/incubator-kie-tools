@@ -35,6 +35,7 @@ enum ActionType {
   DOWNLOAD
 }
 
+// FIXME: This action should be moved inside the React hooks lifecycle.
 let action = ActionType.NONE;
 
 export function EditorPage(props: Props) {

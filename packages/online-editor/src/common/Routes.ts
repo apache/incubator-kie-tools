@@ -44,22 +44,7 @@ export class EditorRoute implements Route<EditorRouteArgs> {
   }
 
   private getEditorType(url: string) {
-    const editorType = url.split("/").pop();
-    if (!editorType) {
-      return undefined;
-    }
-
-    const editorTypeRegex = editorType.match(/[\w\d]+/);
-    if (!editorTypeRegex) {
-      return undefined;
-    }
-
-    const parsedEditorType = editorTypeRegex.pop();
-    if (!parsedEditorType) {
-      return undefined;
-    }
-
-    return parsedEditorType;
+    return url.split("/").pop()?.match(/[\w\d]+/)?.pop();
   }
 }
 

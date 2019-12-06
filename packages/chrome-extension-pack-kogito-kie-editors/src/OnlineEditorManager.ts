@@ -32,7 +32,7 @@ export class OnlineEditorManager implements ExternalEditorManager {
   }
 
   public listenToComeBack(setFileName: (fileName: string) => void, setFileContent: (fileContent: string) => void) {
-    const listener = (request: any, sender: any, sendResponse: any) => {
+    const listener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
       if (request.messageId === "RETURN_FROM_EXTERNAL_EDITOR") {
         setFileName(request.fileName);
         setFileContent(request.fileContent);

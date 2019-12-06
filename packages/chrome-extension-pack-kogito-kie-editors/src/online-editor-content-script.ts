@@ -16,15 +16,16 @@
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.messageId === "LOAD_ONLINE_EDITOR") {
-    const event = new CustomEvent("loadOnlineEditor", {
-      detail: {
-        fileName: request.filePath,
-        fileContent: request.fileContent,
-        readonly: request.readonly,
-        senderTabId: request.senderTabId
-      }
-    });
-    window.dispatchEvent(event);
+    window.dispatchEvent(
+      new CustomEvent("loadOnlineEditor", {
+        detail: {
+          fileName: request.filePath,
+          fileContent: request.fileContent,
+          readonly: request.readonly,
+          senderTabId: request.senderTabId
+        }
+      })
+    );
   }
 });
 
