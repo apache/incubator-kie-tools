@@ -131,7 +131,7 @@ export function HomePage(props: Props) {
         <Bullseye>
           <Grid gutter="lg" className="pf-m-all-12-col pf-m-all-6-col-on-md">
             <GridItem className="pf-u-text-align-center pf-m-12-col">
-              <img src={context.router.getRelativePathTo("images/kogito_logo.png")} alt="Kogito Logo" />
+              <img src={"images/kogito_logo.png"} alt="Kogito Logo" />
             </GridItem>
             <GridItem>
               {/* Create side */}
