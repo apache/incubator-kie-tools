@@ -3,9 +3,9 @@ name: org.kie.kogito.dataindex
 version: "0.6.0"
 
 artifacts:
-- name: data-index-service-8.0.0-SNAPSHOT-runner.jar
-  url: https://repository.jboss.org/org/kie/kogito/data-index-service/8.0.0-SNAPSHOT/data-index-service-8.0.0-20191203.211509-90-runner.jar
-  md5: bf541da0f17e2c783385c0cfe968cfd0
+- name: data-index-service-0.6.0-runner.jar
+  url: https://repository.jboss.org/org/kie/kogito/data-index-service/0.6.0/data-index-service-0.6.0-runner.jar
+  md5: ce2ef31e37255450d2f3bc891ab66475
 
 execute:
 - script: configure

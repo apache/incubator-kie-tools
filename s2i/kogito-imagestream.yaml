@@ -136,18 +136,18 @@ items:
   metadata:
     name: kogito-data-index
     annotations:
-      openshift.io/display-name: Runtime image for the Kogito Data Index Service
+      openshift.io/display-name: Runtime image for the Kogito Data Index Service - Tech preview
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-      - name: '0.6.0'
+      - name: '0.6.0-TP'
         annotations:
-          description: Runtime image for the Kogito Jobs Service
+          description: Runtime image for the Kogito Jobs Service - Tech preview
           iconClass: icon-jbpm
           tags: kogito,jobs-service
-          version: '0.6.0'
+          version: '0.6.0-TP'
         referencePolicy:
           type: Local
         from:
           kind: DockerImage
-          name: quay.io/kiegroup/kogito-jobs-service:0.6.0
+          name: quay.io/kiegroup/kogito-jobs-service:0.6.0-TP
