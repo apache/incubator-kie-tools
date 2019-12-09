@@ -79,10 +79,9 @@ class ChromeResourceContentService implements ResourceContentService {
   }
 }
 
-const resourceContentServiceFactory = {
-  create: (octokit: Octokit, repoInfo: RepoInfo) => {
+
+export class ResourceContentServiceFactory {
+  public createNew(octokit: Octokit, repoInfo: RepoInfo) {
     return new ChromeResourceContentService(octokit, repoInfo);
   }
-};
-
-export { resourceContentServiceFactory };
+}

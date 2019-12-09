@@ -18,6 +18,7 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 
 export const GlobalContext = React.createContext<{
   id: string,
@@ -26,6 +27,7 @@ export const GlobalContext = React.createContext<{
   logger: Logger;
   extensionIconUrl: string;
   editorIndexPath: string;
+  resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
 }>({} as any);
 

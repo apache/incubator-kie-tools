@@ -101,20 +101,20 @@ export function IsolatedPrEditor(props: {
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
 
   const openExternalEditor = () => {
-    getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
+    getFileContents().then(fileContent => globals.externalEditorManager ?.open(filePath, fileContent!, true));
   };
   const repoInfo = useMemo(() => {
     return showOriginal
       ? {
-          owner: props.prInfo.org,
-          gitref: props.prInfo.gitRef,
-          repo: props.prInfo.repo
-        }
+        owner: props.prInfo.targetOrg,
+        gitref: props.prInfo.targetGitRef,
+        repo: props.prInfo.repo
+      }
       : {
-          owner: props.prInfo.targetOrg,
-          gitref: props.prInfo.targetGitRef,
-          repo: props.prInfo.repo
-        };
+        owner: props.prInfo.org,
+        gitref: props.prInfo.gitRef,
+        repo: props.prInfo.repo
+      };
   }, [showOriginal]);
 
   return (

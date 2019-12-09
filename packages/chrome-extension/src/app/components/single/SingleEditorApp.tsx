@@ -26,6 +26,7 @@ import { IsolatedEditor } from "../common/IsolatedEditor";
 import * as dependencies__ from "../../dependencies";
 import { useGlobals } from "../common/GlobalContext";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
+import { FileInfo } from "./singleEditorView";
 
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   const globals = useGlobals();
@@ -46,6 +47,7 @@ export function SingleEditorApp(props: {
   toolbarContainer: HTMLElement;
   iframeContainer: HTMLElement;
   githubTextEditorToReplace: HTMLElement;
+  fileInfo: FileInfo
 }) {
   const [textMode, setTextMode] = useState(false);
   const [textModeEnabled, setTextModeEnabled] = useState(false);
@@ -78,17 +80,17 @@ export function SingleEditorApp(props: {
 
   const openExternalEditor = () => {
     props.getFileContents().then(fileContent => {
-      globals.externalEditorManager?.open(props.fileName, fileContent!, props.readonly);
+      globals.externalEditorManager ?.open(props.fileName, fileContent!, props.readonly);
     });
   };
 
   useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
+    const listener = globals.externalEditorManager ?.listenToComeBack(fileName => {
       dependencies__.all.edit__githubFileNameInput()!.value = fileName;
-    }, isolatedEditorRef.current?.setContent!);
+    }, isolatedEditorRef.current ?.setContent!);
 
     return () => {
-      listener?.stopListening();
+      listener ?.stopListening();
     };
   }, [globals.externalEditorManager]);
 
@@ -99,7 +101,11 @@ export function SingleEditorApp(props: {
           onEditorReady: () => setTextModeEnabled(true),
           fullscreen: fullscreen,
           textMode: textMode,
-          repoInfo: {} as any //FIXME: WILLIAM
+          repoInfo: {
+            gitref: props.fileInfo.gitRef,
+            owner: props.fileInfo.org,
+            repo: props.fileInfo.repo
+          }
         }}
       >
         {!fullscreen && (

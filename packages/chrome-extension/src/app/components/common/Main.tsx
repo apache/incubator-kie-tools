@@ -24,6 +24,7 @@ import { KogitoMenu } from "./KogitoMenu";
 import * as dependencies__ from "../../dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 
 export interface Globals {
   id: string;
@@ -32,6 +33,7 @@ export interface Globals {
   githubAuthTokenCookieName: string;
   extensionIconUrl: string;
   editorIndexPath: string;
+  resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
 }
 
@@ -45,6 +47,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
         githubAuthTokenCookieName: props.githubAuthTokenCookieName,
         extensionIconUrl: props.extensionIconUrl,
         editorIndexPath: props.editorIndexPath,
+        resourceContentServiceFactory: props.resourceContentServiceFactory,
         externalEditorManager: props.externalEditorManager
       }}
     >
