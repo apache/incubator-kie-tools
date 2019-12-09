@@ -60,10 +60,12 @@ export function EditorPage(props: Props) {
 
   const enterFullscreen = useCallback(() => {
     document.documentElement.requestFullscreen?.();
+    (document.documentElement as any).webkitRequestFullscreen?.();
   }, []);
 
   const exitFullscreen = useCallback(() => {
     document.exitFullscreen?.();
+    (document as any).webkitExitFullscreen?.();
   }, []);
 
   const toggleFullScreen = useCallback(() => {
@@ -137,7 +139,7 @@ export function EditorPage(props: Props) {
             {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
           </StackItem>
 
-          <StackItem className="pf-m-fill">
+          <StackItem className="pf-m-fill" style={fullscreen ? { height: "calc(100vh - 5px)" } : { height: "calc(100vh - 60px)" }}>
             <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
           </StackItem>
         </Stack>

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { RefObject, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
@@ -128,7 +128,7 @@ export function HomePage(props: Props) {
   return (
     <Page>
       <PageSection variant="light">
-        <Bullseye>
+        <Bullseye style={{ height: "calc(100vh - 5px)" }}>
           <Grid gutter="lg" className="pf-m-all-12-col pf-m-all-6-col-on-md">
             <GridItem className="pf-u-text-align-center pf-m-12-col">
               <img src={"images/kogito_logo.png"} alt="Kogito Logo" />
