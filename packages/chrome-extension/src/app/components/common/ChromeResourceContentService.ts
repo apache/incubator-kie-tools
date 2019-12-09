@@ -17,7 +17,7 @@
 import { ResourceContent, ResourceContentService, ResourcesList } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
-import { RepoInfo } from "./GithubInfo";
+import { RepoInfo } from "./RepoInfo";
 import Octokit = require("@octokit/rest");
 
 class OctokitResponse {

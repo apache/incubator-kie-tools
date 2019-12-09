@@ -60,11 +60,11 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         console.info(`Editor is ready`);
       },
       receive_resourceContentRequest(uri: string) {
-        console.info(`Resource Content Request`);
+        console.debug(`Resource Content Request`);
         self.respond_resourceContent(new ResourceContent(uri, undefined));
       },
       receive_resourceListRequest(globPattern: string) {
-        console.info(`Resource List Request`);
+        console.debug(`Resource List Request`);
         self.respond_resourceList(new ResourcesList(globPattern, []));
       }
     }));

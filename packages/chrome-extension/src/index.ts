@@ -26,7 +26,6 @@ import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
-import { discoverCurrentGitHubPageType } from "./app/components/common/GithubInfo";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
 
 /**
@@ -140,6 +139,30 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
   } catch (e) {
     logger.log("Ignoring exception while unmounting features.");
   }
+}
+
+function uriMatches(regex: string) {
+  return !!window.location.pathname.match(new RegExp(regex));
+}
+
+function discoverCurrentGitHubPageType() {
+  if (uriMatches(`.*/.*/edit/.*`)) {
+      return GitHubPageType.EDIT;
+  }
+
+  if (uriMatches(`.*/.*/blob/.*`)) {
+      return GitHubPageType.VIEW;
+  }
+
+  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
+      return GitHubPageType.PR;
+  }
+
+  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
+      return GitHubPageType.PR;
+  }
+
+  return GitHubPageType.ANY;
 }
 
 export * from "./DefaultChromeRouter";

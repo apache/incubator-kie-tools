@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import {RepoInfo} from "./GithubInfo";
+import { RepoInfo } from "./RepoInfo";
 
 export const IsolatedEditorContext = React.createContext<{
   textMode: boolean;
