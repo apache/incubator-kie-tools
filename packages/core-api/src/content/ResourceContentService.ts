@@ -19,7 +19,7 @@ import { ResourcesList } from "./ResourcesList";
 
 export interface ResourceContentService {
 
-  read(uri: string): Promise<ResourceContent | undefined>;
+  get(uri: string): Promise<ResourceContent | undefined>;
 
   list(globPattern: string): Promise<ResourcesList>;
 

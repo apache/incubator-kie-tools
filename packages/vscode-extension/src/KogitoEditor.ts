@@ -76,7 +76,7 @@ export class KogitoEditor {
           this.updateDirtyIndicator(isDirty);
         },
         receive_resourceContentRequest: (uri: string) => {
-          this.resourceContentService.read(uri).then((v: ResourceContent) => self.respond_resourceContent(v));
+          this.resourceContentService.get(uri).then((v: ResourceContent) => self.respond_resourceContent(v));
         },
         receive_resourceListRequest: (pattern: string) => {
           this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));

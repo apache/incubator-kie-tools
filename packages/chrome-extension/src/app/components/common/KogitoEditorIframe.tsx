@@ -90,7 +90,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         },
         receive_resourceContentRequest(uri: string) {
           console.debug(`Trying to read content from ${uri}`);
-          resourceContentService.read(uri).then(r => {
+          resourceContentService.get(uri).then(r => {
             self.respond_resourceContent(r!);
           });
         },

@@ -3,7 +3,7 @@ import { ResourcesList, ResourceContent, ResourceContentService } from "@kogito-
 
 export class VsCodeResourceContentService implements ResourceContentService {
 
-  public read(uri: string): Promise<ResourceContent | undefined> {
+  public get(uri: string): Promise<ResourceContent | undefined> {
     const contentPath: string = this.resolvePath(uri)!;
     if (contentPath) {
       const content = vscode.workspace.openTextDocument(contentPath);

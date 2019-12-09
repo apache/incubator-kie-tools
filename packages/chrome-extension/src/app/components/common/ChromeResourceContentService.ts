@@ -47,7 +47,7 @@ class ChromeResourceContentService implements ResourceContentService {
     this.repoInfo = repoInfo;
   }
 
-  public read(uri: string): Promise<ResourceContent | undefined> {
+  public get(uri: string): Promise<ResourceContent | undefined> {
     return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, uri)
       .then(assetContent => new ResourceContent(uri, assetContent))
       .catch(e => {
