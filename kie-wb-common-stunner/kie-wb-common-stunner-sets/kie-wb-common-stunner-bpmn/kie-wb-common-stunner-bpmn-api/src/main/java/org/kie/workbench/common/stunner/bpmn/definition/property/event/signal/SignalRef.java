@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Valu
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class SignalRef implements BPMNProperty {
 
-    protected static final String STATIC_EXP = "[a-zA-Z0-9_]+";
+    protected static final String STATIC_EXP = "[a-zA-Z0-9._:\\s]+";
     protected static final String OR_EXP = "|";
     protected static final String EXP_SEPARATOR = "[\\-]";
     protected static final String MVEL_EXP = "[#]{1}[{]{1}[a-zA-Z0-9_]+[}]{1}";

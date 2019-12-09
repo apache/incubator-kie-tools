@@ -22,7 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -104,12 +103,6 @@ public class ComboBoxWidgetViewImpl extends Composite implements ComboBoxWidgetV
                            false,
                            CUSTOM_PROMPT,
                            ENTER_TYPE_PROMPT);
-        customValueField.addKeyDownHandler((KeyDownEvent event) -> {
-            int iChar = event.getNativeKeyCode();
-            if (iChar == ' ') {
-                event.preventDefault();
-            }
-        });
     }
 
     @Override

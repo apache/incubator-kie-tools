@@ -56,6 +56,8 @@ public class SignalRefTest {
     private static final String VALID_COMBINATION_3 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_MVEL_COMPLEX_REF_1;
     private static final String VALID_COMBINATION_4 = VALID_STATIC_REF + EXP_SEPARATOR + VALID_MVEL_COMPLEX_PARAM_REF_1;
 
+    private static final String VALID_EXPRESSION = "Milestone 2: Order shipped";
+
     private static final String INVALID_STATIC_REF = "~`!@#$%^&*()_+=-{}|][:\"';?><,./";
 
     private static final String INVALID_MVEL_REF = "#{~`!@#$%^&*()_+=-{}|][:\"';?><,./}";
@@ -98,6 +100,7 @@ public class SignalRefTest {
         assertValidExpression(VALID_COMBINATION_2);
         assertValidExpression(VALID_COMBINATION_3);
         assertValidExpression(VALID_COMBINATION_4);
+        assertValidExpression(VALID_EXPRESSION);
 
         assertInvalidExpression(INVALID_STATIC_REF);
         assertInvalidExpression(INVALID_MVEL_REF);
