@@ -118,7 +118,7 @@ export function EditorToolbar(props: Props) {
           {context.external && !context.readonly && (
             <ToolbarItem className="pf-u-mr-sm">
               <Button variant="primary" onClick={props.onSave}>
-                Back to GitHub
+                Send changes to GitHub
               </Button>
             </ToolbarItem>
           )}
