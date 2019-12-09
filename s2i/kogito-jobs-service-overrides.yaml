@@ -1,0 +1,47 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-jobs-service"
+description: "Runtime image for Kogito Jobs Service"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito Jobs Service"
+- name: "io.k8s.display-name"
+  value: "Kogito Jobs Service"
+- name: "io.openshift.tags"
+  value: "kogito,jobs-service"
+- name: "io.openshift.expose-services"
+  value: "8080:http"
+
+envs:
+- name: "ENABLE_PERSISTENCE"
+  example: "true"
+  description: "By default the Jobs services runs on memory only, if persistence is needed then set it to true. (Sets the property kogito.jobs-service.persistence to infinispan)."
+- name: "INFINISPAN_CLIENT_SERVER_LIST"
+  example: "localhost:11222,localhost:11223"
+  description: "Required when persisted is enabled. (Sets the property quarkus.infinispan-client.server-list)."
+- name: "MAX_INTERVAL_LIMIT_RETRY"
+  example: "localhost:11222,localhost:11223"
+  description: "Maximum interval in milliseconds when retrying to execute jobs, in case of failures, defaults to 60000ms. (Sets the property kogito.jobs-service.maxIntervalLimitToRetryMillis)."
+- name: "BACKOFF_RETRY"
+  example: "1000"
+  description: "Retry backoff time in milliseconds between the job execution attempts, in case of execution failure, defaults to 1000. (Sets the property kogito.jobs-service.backoffRetryMillis)."
+
+ports:
+- value: 8080
+
+modules:
+  install:
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.openjdk
+    version: "1.8.0-headless"
+  - name: org.kie.kogito.launch.scripts
+  - name: org.kie.kogito.infinispan.properties
+  - name: org.kie.kogito.jobs.service
+
+run:
+  workdir: "/home/kogito/"
+  user: 1001
+  cmd:
+    - "/home/kogito/kogito-app-launch.sh"

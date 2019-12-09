@@ -50,9 +50,14 @@ Image location: quay.io/kiegroup/kogito-springboot-ubi8:latest
 
 For more details have a look at [README.md](modules/kogito-springboot-ubi8/README.md)
 
-## Data Index Service
+## Kogito Data Index Service
 
-Runtime image that is responsibile for just running the [Data Index Service](https://github.com/kiegroup/kogito-runtimes/wiki/Data-Index-Service). Solely used by the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to deploy data index capabilities to Kogito Services.
+Runtime image that is responsible for just running the [Data Index Service](https://github.com/kiegroup/kogito-runtimes/wiki/Data-Index-Service). Solely used by the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to deploy data index capabilities to Kogito Services.
+
+## Kogito Jobs Service
+
+Kogito Job Service is a dedicated lightweight service responsible for scheduling jobs that aim to be fired at a given time. The service does not execute the job itself, it triggers a callback that could be an HTTP request on a given endpoint specified on the job request, or any other callback that could be supported by the service.
+For more information please access this (link)[https://github.com/kiegroup/kogito-runtimes/wiki/Job-Service]
 
 # Supported source structure
 

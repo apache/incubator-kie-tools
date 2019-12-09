@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR=/tmp/artifacts
+SCRIPT_DIR=$(dirname $0)
+
+cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch
+
+chown -R 1001:0 ${KOGITO_HOME}
+chmod -R ug+rwX ${KOGITO_HOME}
