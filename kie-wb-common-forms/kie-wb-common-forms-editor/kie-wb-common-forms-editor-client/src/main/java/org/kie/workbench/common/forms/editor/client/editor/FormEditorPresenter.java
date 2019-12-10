@@ -64,6 +64,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -615,5 +616,15 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         void showSavePopup(Path path,
                            Command saveCommand,
                            Command cancelCommand);
+    }
+
+    public void onLockStatusChange(@Observes UpdatedLockStatusEvent updatedLockStatusEvent) {
+        if (updatedLockStatusEvent.getFile().equals(versionRecordManager.getCurrentPath())) {
+            if (updatedLockStatusEvent.isLocked() && !updatedLockStatusEvent.isLockedByCurrentUser()) {
+                layoutEditor.lock();
+            } else {
+                layoutEditor.unlock();
+            }
+        }
     }
 }

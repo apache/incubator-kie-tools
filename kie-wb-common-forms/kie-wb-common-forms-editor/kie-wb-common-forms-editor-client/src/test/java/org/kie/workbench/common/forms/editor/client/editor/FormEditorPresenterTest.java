@@ -36,6 +36,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.mockito.verification.VerificationMode;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -679,5 +680,29 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(view).showBusyIndicator(anyString());
         verify(presenterSpy).getRenameErrorCallback(any(RenamePopUpPresenter.View.class));
         verify(presenterSpy).getRenameSuccessCallback(any(RenamePopUpPresenter.View.class));
+    }
+
+    @Test
+    public void testOnLockStatusChange() {
+        loadContent();
+        FormEditorPresenter presenterSpy = spy(presenter);
+        UpdatedLockStatusEvent updatedLockStatusEvent = new UpdatedLockStatusEvent(versionRecordManager.getCurrentPath(),
+                                                               true,false);
+        presenterSpy.onLockStatusChange(updatedLockStatusEvent);
+        verify(layoutEditorMock).lock();
+        updatedLockStatusEvent = new UpdatedLockStatusEvent(versionRecordManager.getCurrentPath(),
+                                                               false, false);
+        presenterSpy.onLockStatusChange(updatedLockStatusEvent);
+        verify(layoutEditorMock).unlock();
+    }
+
+    @Test
+    public void testOnLockStatusChangeOnLockByCurrentUser(){
+        loadContent();
+        FormEditorPresenter presenterSpy = spy(presenter);
+        UpdatedLockStatusEvent updatedLockStatusEvent = new UpdatedLockStatusEvent(versionRecordManager.getCurrentPath(),
+                                                                                   true, true);
+        presenterSpy.onLockStatusChange(updatedLockStatusEvent);
+        verify(layoutEditorMock).unlock();
     }
 }
