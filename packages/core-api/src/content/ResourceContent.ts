@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export class ResourceContent {
+  public readonly path: string;
+  public readonly content?: string;
 
-export * from "./core";
-export * from "./appformer";
-export * from "./router";
-export * from "./content";
+  constructor(path: string,
+    content: string | undefined) {
+    this.path = path;
+    this.content = content;
+  }
+
+}

@@ -19,12 +19,14 @@ import {
   EnvelopeBusMessage,
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 export interface Impl {
   receive_contentResponse(content: string): void;
   receive_languageResponse(languageData: LanguageData): void;
   receive_contentRequest(): void;
+  receive_resourceContentResponse(content: ResourceContent): void;
+  receive_resourceContentList(list: ResourcesList): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -89,6 +91,14 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
   }
 
+  public request_resourceContent(uri: string) {
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: uri });
+  }
+
+  public request_resourceList(pattern: string) {
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: pattern });
+  }
+
   private receive_initRequest(init: { origin: string; busId: string }) {
     this.targetOrigin = init.origin;
     this.id = init.busId;
@@ -116,6 +126,14 @@ export class EnvelopeBusInnerMessageHandler {
         break;
       case EnvelopeBusMessageType.REQUEST_CONTENT:
         this.impl.receive_contentRequest();
+        break;
+      case EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT:
+        const resourceContent = message.data as ResourceContent;
+        this.impl.receive_resourceContentResponse(resourceContent);
+        break;
+      case EnvelopeBusMessageType.RETURN_RESOURCE_LIST:
+        const resourcesList = message.data as ResourcesList;
+        this.impl.receive_resourceContentList(resourcesList);
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

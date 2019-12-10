@@ -26,6 +26,7 @@ import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
+import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
 
 /**
  * Starts a Kogito extension.
@@ -43,6 +44,7 @@ export function startExtension(args: {
   externalEditorManager?: ExternalEditorManager;
 }) {
   const logger = new Logger(args.name);
+  const resourceContentServiceFactory = new ResourceContentServiceFactory();
 
   const runInit = () =>
     init({
@@ -52,6 +54,7 @@ export function startExtension(args: {
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
       router: args.router,
+      resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
 
@@ -64,6 +67,15 @@ function init(args: Globals) {
   args.logger.log(`Starting GitHub extension.`);
 
   unmountPreviouslyRenderedFeatures(args.id, args.logger);
+
+  const split = window.location.pathname.split("/");
+
+  const fileInfo = {
+    gitRef: split[4],
+    repo: split[2],
+    org: split[1],
+    path: split.slice(5).join("/")
+  }
 
   const pageType = discoverCurrentGitHubPageType();
   if (pageType === GitHubPageType.ANY) {
@@ -79,13 +91,14 @@ function init(args: Globals) {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
-      externalEditorManager: args.externalEditorManager
+      externalEditorManager: args.externalEditorManager,
+      resourceContentServiceFactory: args.resourceContentServiceFactory,
+      fileInfo: fileInfo
     });
     return;
   }
 
   if (pageType === GitHubPageType.VIEW) {
-    const split = window.location.pathname.split("/");
     renderSingleEditorReadonlyApp({
       id: args.id,
       logger: args.logger,
@@ -93,7 +106,8 @@ function init(args: Globals) {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
-      fileInfo: { gitRef: split[4], repo: split[2], org: split[1], path: split.slice(5).join("/") },
+      fileInfo: fileInfo,
+      resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
     return;
@@ -107,36 +121,13 @@ function init(args: Globals) {
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
+      resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
     return;
   }
 
   throw new Error(`Unknown GitHubPageType ${pageType}`);
-}
-
-function uriMatches(regex: string) {
-  return !!window.location.pathname.match(new RegExp(regex));
-}
-
-function discoverCurrentGitHubPageType() {
-  if (uriMatches(`.*/.*/edit/.*`)) {
-    return GitHubPageType.EDIT;
-  }
-
-  if (uriMatches(`.*/.*/blob/.*`)) {
-    return GitHubPageType.VIEW;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR;
-  }
-
-  return GitHubPageType.ANY;
 }
 
 function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
@@ -148,6 +139,30 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
   } catch (e) {
     logger.log("Ignoring exception while unmounting features.");
   }
+}
+
+function uriMatches(regex: string) {
+  return !!window.location.pathname.match(new RegExp(regex));
+}
+
+function discoverCurrentGitHubPageType() {
+  if (uriMatches(`.*/.*/edit/.*`)) {
+      return GitHubPageType.EDIT;
+  }
+
+  if (uriMatches(`.*/.*/blob/.*`)) {
+      return GitHubPageType.VIEW;
+  }
+
+  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
+      return GitHubPageType.PR;
+  }
+
+  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
+      return GitHubPageType.PR;
+  }
+
+  return GitHubPageType.ANY;
 }
 
 export * from "./DefaultChromeRouter";

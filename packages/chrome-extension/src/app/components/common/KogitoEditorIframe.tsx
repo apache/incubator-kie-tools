@@ -21,6 +21,7 @@ import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-enve
 import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
+import { useGitHubApi } from "../common/GitHubContext";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -35,9 +36,14 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   props,
   forwardedRef
 ) => {
+  const githubApi = useGitHubApi();
   const ref = useRef<HTMLIFrameElement>(null);
-  const { router, editorIndexPath, logger } = useGlobals();
-  const { textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const { router, editorIndexPath, resourceContentServiceFactory, logger } = useGlobals();
+  const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+
+  const resourceContentService = useMemo(() => {
+    return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
+  }, [repoInfo]);
 
   const envelopeBusOuterMessageHandler = useMemo(() => {
     return new EnvelopeBusOuterMessageHandler(
@@ -80,13 +86,23 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         },
         receive_ready() {
           logger.log(`Editor is ready`);
-          if (onEditorReady) {
-            onEditorReady();
-          }
+          onEditorReady ?.();
+        },
+        receive_resourceContentRequest(uri: string) {
+          console.debug(`Trying to read content from ${uri}`);
+          resourceContentService.get(uri).then(r => {
+            self.respond_resourceContent(r!);
+          });
+        },
+        receive_readResourceContentError(errorMessage: string) {
+          console.debug(`Error message retrieving a resource content ${errorMessage}`);
+        },
+        receive_resourceListRequest(pattern: string) {
+          resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         }
       })
     );
-  }, [router]);
+  }, [router, resourceContentService]);
 
   useEffect(() => {
     if (textMode) {
@@ -121,7 +137,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       envelopeBusOuterMessageHandler.stopInitPolling();
       window.removeEventListener("message", listener);
     };
-  }, []);
+  }, [envelopeBusOuterMessageHandler]);
 
   useImperativeHandle(
     forwardedRef,

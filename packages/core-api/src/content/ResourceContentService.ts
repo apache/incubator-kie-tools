@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-export * from "./core";
-export * from "./appformer";
-export * from "./router";
-export * from "./content";
+import { ResourceContent } from "./ResourceContent";
+import { ResourcesList } from "./ResourcesList";
+
+export interface ResourceContentService {
+
+  get(uri: string): Promise<ResourceContent | undefined>;
+
+  list(globPattern: string): Promise<ResourcesList>;
+
+}

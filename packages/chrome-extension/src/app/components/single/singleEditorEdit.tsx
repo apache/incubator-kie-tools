@@ -27,8 +27,9 @@ import { Globals, Main } from "../common/Main";
 import * as dependencies__ from "../../dependencies";
 import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { useGlobals } from "../common/GlobalContext";
+import { FileInfo } from "./singleEditorView";
 
-export function renderSingleEditorApp(args: Globals) {
+export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!dependencies__.singleEdit.githubTextEditorToReplaceElement()) {
@@ -59,16 +60,17 @@ export function renderSingleEditorApp(args: Globals) {
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <SingleEditorEditApp openFileExtension={openFileExtension} />
+      <SingleEditorEditApp openFileExtension={openFileExtension} fileInfo={args.fileInfo} />
     </Main>,
     createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function SingleEditorEditApp(props: { openFileExtension: string }) {
+function SingleEditorEditApp(props: { openFileExtension: string, fileInfo: FileInfo }) {
   const globals = useGlobals();
   return (
     <SingleEditorApp
@@ -79,6 +81,7 @@ function SingleEditorEditApp(props: { openFileExtension: string }) {
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}
       githubTextEditorToReplace={dependencies__.singleEdit.githubTextEditorToReplaceElement()!}
+      fileInfo={props.fileInfo}
     />
   );
 }

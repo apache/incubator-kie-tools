@@ -15,9 +15,11 @@
  */
 
 import * as React from "react";
+import { RepoInfo } from "./RepoInfo";
 
 export const IsolatedEditorContext = React.createContext<{
   textMode: boolean;
   fullscreen: boolean;
+  repoInfo: RepoInfo;
   onEditorReady?: () => void;
 }>({} as any);

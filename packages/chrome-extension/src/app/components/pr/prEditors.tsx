@@ -40,6 +40,7 @@ export function renderPrEditorsApp(args: Globals) {
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
       <PrEditorsApp prInfo={parsePrInfo()} />
@@ -49,7 +50,7 @@ export function renderPrEditorsApp(args: Globals) {
   );
 }
 
-function parsePrInfo(): PrInfo {
+export function parsePrInfo(): PrInfo {
   const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];

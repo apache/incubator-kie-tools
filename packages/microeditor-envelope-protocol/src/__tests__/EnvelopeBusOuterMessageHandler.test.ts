@@ -51,6 +51,15 @@ beforeEach(() => {
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       },
+      receive_resourceContentRequest(uri: string): void {
+        receivedMessages.push("resourceContentRequest_" + uri);
+      },
+      receive_readResourceContentError(errorMessage: string): void {
+        receivedMessages.push("readResourceContentError_" + errorMessage);
+      },
+      receive_resourceListRequest(pattern: string): void {
+        receivedMessages.push("resourceListRequest_" + pattern);
+      },
       receive_ready() {
         receivedMessages.push("ready");
       }

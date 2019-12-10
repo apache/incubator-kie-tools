@@ -69,6 +69,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
+      resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
@@ -105,6 +106,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}
       githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
+      fileInfo={props.fileInfo}
     />
   );
 }
