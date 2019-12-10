@@ -24,6 +24,7 @@ import java.util.Set;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwtmockito.GwtMockito;
@@ -247,5 +248,33 @@ public class VariableNameTextBoxTest {
                                              false);
         assertEquals(ERROR_TYPED + ": .",
                      isValidResult);
+    }
+
+    @Test
+    public void testKeyEnter() {
+        when(textBox.getKeyCodeFromKeyPressEvent(any(KeyPressEvent.class))).thenReturn(KeyCodes.KEY_ENTER);
+        when(keyPressEvent.isControlKeyDown()).thenReturn(false);
+        when(keyPressEvent.isShiftKeyDown()).thenReturn(false);
+        when(keyPressEvent.getCharCode()).thenReturn((char) 13);
+        when(textBox.getCursorPos()).thenReturn(4);
+        when(textBox.getSelectionLength()).thenReturn(0);
+        when(textBox.getValue()).thenReturn("ab12");
+        when(textBox.getText()).thenReturn("ab12" + (char) 13);
+        textBox.setup();
+        verify(textBox,
+               times(1)).addBlurHandler(blurCaptor.capture());
+        verify(textBox,
+               times(1)).addKeyPressHandler(keyPressCaptor.capture());
+        BlurHandler blurHandler = blurCaptor.getValue();
+        blurHandler.onBlur(blurEvent);
+        verify(textBox,
+               times(1)).isValidValue("ab12" + (char) 13,
+                                      true);
+        verify(textBox,
+               times(1)).makeValidValue("ab12" + (char) 13);
+        verify(textBox,
+               times(1)).setValue("ab12");
+        KeyPressHandler keyPressHandler = keyPressCaptor.getValue();
+        keyPressHandler.onKeyPress(keyPressEvent);
     }
 }
