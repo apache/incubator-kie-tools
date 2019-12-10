@@ -19,7 +19,6 @@
 <module>
 
   <inherits name="jsinterop.base.Base"/>
-  <inherits name="org.kie.workbench.common.dmn.DMNAPI"/>
 
   <!-- JSON COMPARATOR - TO BE REMOVED -->
   <inherits name="com.google.gwt.json.JSON"/>
