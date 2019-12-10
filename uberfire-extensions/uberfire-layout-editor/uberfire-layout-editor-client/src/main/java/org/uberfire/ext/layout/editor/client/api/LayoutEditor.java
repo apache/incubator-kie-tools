@@ -50,4 +50,7 @@ public interface LayoutEditor {
 
     void visit(LayoutElementVisitor visitor);
 
+    void lock();
+
+    void unlock();
 }

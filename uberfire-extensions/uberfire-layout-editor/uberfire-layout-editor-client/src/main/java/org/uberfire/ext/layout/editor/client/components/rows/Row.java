@@ -72,6 +72,7 @@ public class Row implements LayoutEditorElement {
 
     private ParameterizedCommand<ColumnDrop> removeComponentCommand;
     private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
+    private Supplier<Boolean> lockSupplier;
 
     private ColumnWithComponents parentColumnWithComponents;
 
@@ -89,7 +90,7 @@ public class Row implements LayoutEditorElement {
     private Integer height;
     private boolean canResizeUp;
     private boolean canResizeDown;
-    
+
     LayoutEditorFocusController layoutEditorFocusController;
 
     @Inject
@@ -124,11 +125,13 @@ public class Row implements LayoutEditorElement {
                      ParameterizedCommand<Row> removeCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
                      Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
+                     Supplier<Boolean> lockSupplier,
                      Integer height) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
+        this.lockSupplier = lockSupplier;
         this.parentColumnWithComponents = null;
         this.height = height;
         setupPageLayout(height);
@@ -139,12 +142,14 @@ public class Row implements LayoutEditorElement {
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
                      ColumnWithComponents parentColumnWithComponents,
                      Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
+                     Supplier<Boolean> lockSupplier,
                      Integer height) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.parentColumnWithComponents = parentColumnWithComponents;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
+        this.lockSupplier = lockSupplier;
         this.height = height;
         setupPageLayout(height);
     }
@@ -153,11 +158,13 @@ public class Row implements LayoutEditorElement {
                      LayoutRow layoutRow,
                      ParameterizedCommand<Row> removeCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
-                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier) {
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
+                     Supplier<Boolean> lockSupplier) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
+        this.lockSupplier = lockSupplier;
         this.height = getHeight(layoutRow.getHeight());
         this.properties = layoutRow.getProperties();
         setupPageLayout(height);
@@ -211,6 +218,7 @@ public class Row implements LayoutEditorElement {
                           removeComponentCommand,
                           removeColumnCommand(),
                           currentLayoutTemplateSupplier,
+                          lockSupplier,
                           getHeight(layoutColumn.getHeight()));
 
             for (LayoutColumn column : row.getLayoutColumns()) {
@@ -275,6 +283,7 @@ public class Row implements LayoutEditorElement {
                     dropCommand(),
                     removeColumnCommand(),
                     currentLayoutTemplateSupplier,
+                    lockSupplier,
                     newComponent);
         columns.add(column);
         setupColumnResizeActions();
@@ -664,6 +673,7 @@ public class Row implements LayoutEditorElement {
                        dropCommand(),
                        removeColumnCommand(),
                        currentLayoutTemplateSupplier,
+                       lockSupplier,
                        drop.newComponent());
         newColumn.setColumnHeight(innerColumnHeight);
         return newColumn;
@@ -685,6 +695,7 @@ public class Row implements LayoutEditorElement {
                           removeComponentCommand,
                           removeColumnCommand(),
                           currentLayoutTemplateSupplier,
+                          lockSupplier,
                           currentColumn.getColumnHeight());
 
             final ComponentColumn newColumn = createComponentColumn(
@@ -740,6 +751,7 @@ public class Row implements LayoutEditorElement {
                        dropCommand(),
                        removeColumnCommand(),
                        currentLayoutTemplateSupplier,
+                       lockSupplier,
                        newComponent);
         return newColumn;
     }

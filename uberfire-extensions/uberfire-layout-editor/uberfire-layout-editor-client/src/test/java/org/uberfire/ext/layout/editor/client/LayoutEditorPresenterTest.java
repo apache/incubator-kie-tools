@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.function.Supplier;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
-import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPresenter;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
 import static org.mockito.Matchers.any;
@@ -89,6 +90,13 @@ public class LayoutEditorPresenterTest {
                                           LayoutTemplate.Style.FLUID,
                                           EMPTY_TITLE_TEXT,
                                           EMPTY_SUB_TITLE_TEXT);
+    }
+
+    @Test
+    public void testSetup() {
+        Supplier<Boolean> lockSupplier = () -> false;
+        presenter.setup(lockSupplier);
+        verify(container).setLockSupplier(lockSupplier);
     }
 
     public void testLayoutEditorClear() {

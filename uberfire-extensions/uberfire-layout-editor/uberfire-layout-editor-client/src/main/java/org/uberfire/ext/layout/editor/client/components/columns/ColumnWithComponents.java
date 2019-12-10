@@ -28,6 +28,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.errai.codegen.util.Bool;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -62,8 +64,10 @@ public class ColumnWithComponents implements Column {
     private boolean canResizeLeft;
     private boolean canResizeRight;
     private Event<ColumnResizeEvent> columnResizeEvent;
+    private Event<LockRequiredEvent> lockRequiredEvent;
     private LayoutTemplate.Style pageStyle;
     private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
+    private Supplier<Boolean> lockSupplier;
     private Integer columnHeight = DEFAULT_COLUMN_HEIGHT;
     private Integer columnWidth;
     private boolean selected = false;
@@ -74,12 +78,14 @@ public class ColumnWithComponents implements Column {
                                 Instance<Row> rowInstance,
                                 DnDManager dndManager,
                                 LayoutDragComponentHelper layoutDragComponentHelper,
-                                Event<ColumnResizeEvent> columnResizeEvent) {
+                                Event<ColumnResizeEvent> columnResizeEvent,
+                                Event<LockRequiredEvent> lockRequiredEvent) {
         this.view = view;
         this.rowInstance = rowInstance;
         this.dndManager = dndManager;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.columnResizeEvent = columnResizeEvent;
+        this.lockRequiredEvent = lockRequiredEvent;
     }
 
     @PostConstruct
@@ -99,6 +105,7 @@ public class ColumnWithComponents implements Column {
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
                      ParameterizedCommand<Column> removeCommand,
                      Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
+                     Supplier<Boolean> lockSupplier,
                      Integer columnHeight) {
         this.columnWidth = columnWidth;
         this.parentElement = parent;
@@ -107,6 +114,7 @@ public class ColumnWithComponents implements Column {
         this.removeColumnCommand = removeCommand;
         this.pageStyle = pageStyle;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
+        this.lockSupplier = lockSupplier;
         this.columnHeight = columnHeight;
         view.setWidth(columnWidth);
         setupPageLayout();
@@ -119,6 +127,7 @@ public class ColumnWithComponents implements Column {
                  createComponentRemoveCommand(),
                  this,
                  currentLayoutTemplateSupplier,
+                 lockSupplier,
                  Row.ROW_DEFAULT_HEIGHT);
     }
 
@@ -196,6 +205,7 @@ public class ColumnWithComponents implements Column {
                                    id,
                                    orientation));
         }
+        lockRequiredEvent.fire(new LockRequiredEvent());
     }
 
     public boolean hasComponent(Column targetColumn) {

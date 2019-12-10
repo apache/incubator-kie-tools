@@ -24,9 +24,11 @@ import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -56,6 +58,7 @@ public class ComponentColumn implements Column {
     private boolean innerColumn = false;
     private LayoutComponent layoutComponent;
     private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
+    private Supplier<Boolean> lockSupplier;
     private boolean componentReady;
     private ParameterizedCommand<Column> removeCommand;
     private LayoutDragComponentHelper layoutDragComponentHelper;
@@ -67,6 +70,7 @@ public class ComponentColumn implements Column {
     private boolean selectable = true;
     private Event<LayoutEditorElementSelectEvent> columnSelectEvent;
     private Event<LayoutEditorElementUnselectEvent> columnUnselectEvent;
+    private Event<LockRequiredEvent> lockRequiredEvent;
     private ManagedInstance<ComponentColumnPart> componentColumnManagedInstance;
     private List<LayoutEditorElementPart> parts = new ArrayList<>();
 
@@ -77,6 +81,7 @@ public class ComponentColumn implements Column {
                            Event<ColumnResizeEvent> columnResizeEvent,
                            Event<LayoutEditorElementSelectEvent> columnSelectEvent,
                            Event<LayoutEditorElementUnselectEvent> columnUnselectEvent,
+                           Event<LockRequiredEvent> lockRequiredEvent,
                            ManagedInstance<ComponentColumnPart> componentColumnManagedInstance) {
         this.view = view;
         this.dndManager = dndManager;
@@ -84,6 +89,7 @@ public class ComponentColumn implements Column {
         this.columnResizeEvent = columnResizeEvent;
         this.columnSelectEvent = columnSelectEvent;
         this.columnUnselectEvent = columnUnselectEvent;
+        this.lockRequiredEvent = lockRequiredEvent;
         this.componentColumnManagedInstance = componentColumnManagedInstance;
     }
 
@@ -98,9 +104,11 @@ public class ComponentColumn implements Column {
                      ParameterizedCommand<ColumnDrop> dropCommand,
                      ParameterizedCommand<Column> removeCommand,
                      Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
+                     Supplier<Boolean> lockSupplier,
                      boolean newComponent) {
         this.layoutComponent = layoutComponent;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
+        this.lockSupplier = lockSupplier;
         view.setup(layoutComponent, pageStyle);
         this.parentElement = parent;
         this.columnWidth = columnWidth;
@@ -211,7 +219,9 @@ public class ComponentColumn implements Column {
     }
 
     void configComponent(boolean newComponent) {
-
+        if (lockSupplier.get()) {
+            return;
+        }
         if (hasModalConfiguration(newComponent)) {
             view.showConfigComponentModal(this::configurationFinish,
                                           this::configurationCanceled,
@@ -345,6 +355,11 @@ public class ComponentColumn implements Column {
             newComponentDrop(orientation,
                              dndData);
         }
+        requiredLock();
+    }
+
+    public void requiredLock() {
+        lockRequiredEvent.fire(new LockRequiredEvent());
     }
 
     private void newComponentDrop(ColumnDrop.Orientation orientation,
@@ -432,6 +447,11 @@ public class ComponentColumn implements Column {
             }
         }
     }
+
+    public void onDragEnd(@Observes DragComponentEndEvent dragComponentEndEvent) {
+        view.notifyDragEnd();
+        requiredLock();
+    }
     
     @Override
     public List<LayoutEditorElementPart> getLayoutEditorElementParts() {
@@ -470,6 +490,8 @@ public class ComponentColumn implements Column {
         void setColumnHeight(Integer columnHeight);
 
         void setSelected(boolean selected);
+
+        void notifyDragEnd();
 
         List<PropertyEditorCategory> getPropertyCategories();
     }

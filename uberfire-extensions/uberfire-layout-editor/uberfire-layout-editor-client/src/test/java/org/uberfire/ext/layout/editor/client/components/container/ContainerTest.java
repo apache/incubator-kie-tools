@@ -19,6 +19,7 @@ package org.uberfire.ext.layout.editor.client.components.container;
 import java.util.function.Supplier;
 
 import org.junit.Test;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
@@ -282,7 +283,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
                      getRowsSizeFromContainer());
         assertEquals(dropRow,
                      getRowByIndex(FIRST_ROW));
-
+        verify(lockRequiredEventMock, times(1)).fire(any(LockRequiredEvent.class));
         verify(componentDropEventMock,
                times(1)).fire(any(ComponentDropEvent.class));
     }
@@ -322,5 +323,11 @@ public class ContainerTest extends AbstractLayoutEditorTest {
                      toLayoutTemplate);
         assertEquals(expected,
                      currentLayoutTemplateSupplier.get());
+    }
+
+    @Test
+    public void testLockSupplier() {
+        container.setLockSupplier(() -> false);
+        assertEquals(Boolean.FALSE, container.getLockSupplier().get());
     }
 }

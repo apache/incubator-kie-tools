@@ -17,6 +17,8 @@
 package org.uberfire.ext.layout.editor.client;
 
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -49,6 +51,13 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private String pluginName;
     private String emptyTitleText;
     private String emptySubTitleText;
+
+    private boolean locked = false;
+
+    @PostConstruct
+    public void setup() {
+        layoutEditorPresenter.setup(this::isLocked);
+    }
 
     @Override
     public void init(String layoutName,
@@ -152,5 +161,19 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     @Override
     public void visit(LayoutElementVisitor visitor) {
         layoutEditorPresenter.visit(visitor);
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    @Override
+    public void lock() {
+        locked = true;
+    }
+
+    @Override
+    public void unlock() {
+        locked = false;
     }
 }

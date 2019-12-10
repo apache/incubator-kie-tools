@@ -31,6 +31,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -70,10 +71,12 @@ public class Container implements LayoutEditorElement {
     private LayoutTemplate.Style pageStyle = LayoutTemplate.Style.FLUID;
     private Event<LayoutEditorElementSelectEvent> containerSelectEvent;
     private Event<LayoutEditorElementUnselectEvent> containerUnselectEvent;
+    private Event<LockRequiredEvent> lockRequiredEvent;
     private DnDManager dndManager;
     private boolean selectable = false;
     private boolean selected = false;
-    
+    private Supplier<Boolean> lockSupplier = () -> false;
+
     LayoutEditorFocusController layoutEditorFocusController;
 
     @Inject
@@ -84,6 +87,7 @@ public class Container implements LayoutEditorElement {
                      Event<ComponentDropEvent> componentDropEvent,
                      Event<LayoutEditorElementSelectEvent> containerSelectEvent,
                      Event<LayoutEditorElementUnselectEvent> containerUnselectEvent,
+                     Event<LockRequiredEvent> lockRequiredEvent,
                      DnDManager dndManager,
                      LayoutEditorFocusController layoutEditorFocusController) {
         this.layoutCssHelper = layoutCssHelper;
@@ -93,6 +97,7 @@ public class Container implements LayoutEditorElement {
         this.componentDropEvent = componentDropEvent;
         this.containerSelectEvent = containerSelectEvent;
         this.containerUnselectEvent = containerUnselectEvent;
+        this.lockRequiredEvent = lockRequiredEvent;
         this.dndManager = dndManager;
         this.layoutEditorFocusController = layoutEditorFocusController;
         this.id = idGenerator.createContainerID();
@@ -118,6 +123,10 @@ public class Container implements LayoutEditorElement {
             destroy(row);
         }
         rows = new ArrayList<>();
+    }
+
+    public void setLockSupplier(Supplier<Boolean> lockSupplier) {
+        this.lockSupplier = lockSupplier;
     }
 
     @Override
@@ -253,11 +262,16 @@ public class Container implements LayoutEditorElement {
                  createRemoveRowCommand(),
                  createRemoveComponentCommand(),
                  createCurrentLayoutTemplateSupplier(),
+                 getLockSupplier(),
                  height);
         row.withOneColumn(drop.getComponent(),
                           drop.newComponent());
         view.addRow(row.getView());
         return row;
+    }
+
+    public Supplier<Boolean> getLockSupplier() {
+        return () -> lockSupplier.get();
     }
 
     Supplier<LayoutTemplate> createCurrentLayoutTemplateSupplier() {
@@ -322,6 +336,7 @@ public class Container implements LayoutEditorElement {
             }
             rows = updatedRows;
             getView();
+            lockRequiredEvent.fire(new LockRequiredEvent());
         };
     }
 
@@ -470,7 +485,8 @@ public class Container implements LayoutEditorElement {
                  layoutRow,
                  createRemoveRowCommand(),
                  createRemoveComponentCommand(),
-                 createCurrentLayoutTemplateSupplier());
+                 createCurrentLayoutTemplateSupplier(),
+                 getLockSupplier());
         return row;
     }
 

@@ -18,17 +18,60 @@ package org.uberfire.ext.layout.editor.client.components.columns;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Supplier;
+
+import javax.enterprise.event.Event;
 
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.uberfire.client.mvp.LockRequiredEvent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponentPart;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
+import org.uberfire.ext.layout.editor.client.infra.DragComponentEndEvent;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class ComponentColumnTest extends AbstractLayoutEditorTest {
+
+    @Mock
+    private Event<LockRequiredEvent> lockRequiredEvent;
+
+    @Spy
+    @InjectMocks
+    private ComponentColumn componentColumn;
+
+    @Mock
+    private LayoutEditorElement parent;
+
+    @Mock
+    private LayoutComponent layoutComponent;
+
+    @Mock
+    private ParameterizedCommand<ColumnDrop> dropCommand;
+
+    @Mock
+    private ParameterizedCommand<Column> removeCommand;
+
+    @Mock
+    private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
+
+    @Mock
+    private Supplier<Boolean> lockSupplier;
+
+    @Mock
+    private ComponentColumn.View view;
 
     @Test
     public void assertThereIsNoGWTDepInComponentColumn() throws Exception {
@@ -65,5 +108,41 @@ public class ComponentColumnTest extends AbstractLayoutEditorTest {
         part1.addCssProperty("NEW_PROP", "NEW_VALUE");
         assertEquals("NEW_VALUE", part1.getCssProperties().get("NEW_PROP"));
     }
-    
+
+    @Test
+    public void testOnDrop() {
+        componentColumn.onDrop(ColumnDrop.Orientation.UP,"this-is-a-requirement-to-firefox-html5dnd");
+        verify(lockRequiredEvent,
+               times(1)).fire(any(LockRequiredEvent.class));
+    }
+
+    @Test
+    public void testRequiredLock() {
+        componentColumn.requiredLock();
+        verify(lockRequiredEvent,
+               times(1)).fire(any(LockRequiredEvent.class));
+    }
+
+    @Test
+    public void onDragEnd() {
+        componentColumn.onDragEnd(new DragComponentEndEvent());
+        verify(view, times(1)).notifyDragEnd();
+        verify(lockRequiredEvent,
+               times(1)).fire(any(LockRequiredEvent.class));
+    }
+
+    @Test
+    public void testConfigComponentSupplier() {
+        when(lockSupplier.get()).thenReturn(true);
+        componentColumn.configComponent(true);
+        verify(view, times(0)).hasModalConfiguration();
+    }
+
+    @Test
+    public void testConfigComponent() {
+        when(lockSupplier.get()).thenReturn(false);
+        when(view.hasModalConfiguration()).thenReturn(true);
+        componentColumn.configComponent(true);
+        verify(view,times(1)).hasModalConfiguration();
+    }
 }

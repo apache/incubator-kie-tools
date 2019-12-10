@@ -27,12 +27,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
@@ -100,6 +100,8 @@ public abstract class AbstractLayoutEditorTest {
     @Mock
     protected EventSourceMock<LayoutEditorElementUnselectEvent> columnUnselectedEvent;
     @Mock
+    protected EventSourceMock<LockRequiredEvent> lockRequiredEventMock;
+    @Mock
     protected LayoutEditorFocusController layoutEditorFocusController;
 
     protected EmptyDropRow emptyDropRow = new EmptyDropRow(mock(EmptyDropRow.View.class),
@@ -118,6 +120,7 @@ public abstract class AbstractLayoutEditorTest {
                              componentDropEventMock,
                              layoutElementSelectEventMock,
                              layoutElementUnselectEventMock,
+                             lockRequiredEventMock,
                              dnDManager,
                              layoutEditorFocusController) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
@@ -168,6 +171,7 @@ public abstract class AbstractLayoutEditorTest {
                                                                       mock(Event.class),
                                                                       columnSelectedEvent,
                                                                       columnUnselectedEvent,
+                                                                      mock(Event.class),
                                                                       managedInstanceMock) {
                     @Override
                     protected boolean hasConfiguration() {
@@ -185,6 +189,7 @@ public abstract class AbstractLayoutEditorTest {
                         null,
                         dnDManager,
                         dragHelper,
+                        mock(Event.class),
                         mock(Event.class)) {
                     @Override
                     protected Row createInstanceRow() {

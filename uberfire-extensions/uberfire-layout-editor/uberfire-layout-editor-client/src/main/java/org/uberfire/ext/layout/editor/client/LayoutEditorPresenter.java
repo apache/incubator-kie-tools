@@ -33,6 +33,7 @@ import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Dependent
 public class LayoutEditorPresenter {
@@ -51,6 +52,10 @@ public class LayoutEditorPresenter {
         this.container = container;
         this.layoutGenerator = layoutGenerator;
         view.init(this);
+    }
+
+    public void setup(Supplier<Boolean> lockSupplier) {
+        container.setLockSupplier(lockSupplier);
     }
 
     @PostConstruct
