@@ -72,6 +72,8 @@ Build from source
     yarn run build:fast # skips lint and unit tests
     ```
 
+    > **NOTE**: It's necessary to have the Git tags fetched when building with `build:prod`.
+    
     > Final artifacts will be on `packages/*/dist` directories.
 
 Develop
