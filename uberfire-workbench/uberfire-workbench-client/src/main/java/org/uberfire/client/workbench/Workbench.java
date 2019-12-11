@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -30,7 +29,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
@@ -50,6 +48,8 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.util.UserAgent;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -128,12 +128,6 @@ public class Workbench {
     private SyncBeanManager iocManager;
     @Inject
     private PlaceManager placeManager;
-    private final Command workbenchCloseCommand = new Command() {
-        @Override
-        public void execute() {
-            placeManager.closeAllPlaces(); // would be preferable to close current perspective, which should be recursive
-        }
-    };
     @Inject
     private PermissionManager permissionManager;
     @Inject
@@ -150,6 +144,19 @@ public class Workbench {
     private SessionInfo sessionInfo = null;
     @Inject
     private ManagedInstance<WorkbenchCustomStandalonePerspectiveDefinition> workbenchCustomStandalonePerspectiveDefinition;
+
+    final ParameterizedCommand<Window.ClosingEvent> workbenchClosingCommand = (Window.ClosingEvent event) -> {
+        if (!placeManager.canCloseAllPlaces()) {
+            // Setting a non-null message will make the browser to present a confirmation dialog that asks the user
+            // whether or not they wish to navigate away from the page. The message in the dialog, however,
+            // is not customizable anymore mainly due to scammers using such a message to trick people.
+            // Thus, each browser shows its own message. If the user has an outdated browser, then our custom
+            // message might be shown.
+            event.setMessage(WorkbenchConstants.INSTANCE.closingWindowMessage());
+        }
+    };
+
+    final Command workbenchCloseCommand = () -> placeManager.closeAllPlaces(); // would be preferable to close current perspective, which should be recursive
 
     /**
      * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
@@ -248,21 +255,17 @@ public class Workbench {
 
     private void addCloseHandler() {
         if (UserAgent.isChrome()) {
+            setupMessageForUnsavedChanges(); // only works on chrome
             Window.addCloseHandler(event -> workbenchCloseHandler.onWindowClose(workbenchCloseCommand));
-
-            Window.addWindowClosingHandler(event -> {
-                if (!placeManager.canCloseAllPlaces()) {
-                    // Setting a non-null message will make the browser to present a confirmation dialog that asks the user
-                    // whether or not they wish to navigate away from the page. The message in the dialog, however,
-                    // is not customizable anymore mainly due to scammers using such a message to trick people.
-                    // Thus, each browser shows its own message. If the user has an outdated browser, then our custom
-                    // message might be shown.
-                    event.setMessage(WorkbenchConstants.INSTANCE.closingWindowMessage());
-                }
-            });
         } else {
+            // The Window.addCloseHandler does not work as expected for other browsers, thus we need to register the
+            // workbenchCloseCommand in the Window.addWindowClosingHandler.
             Window.addWindowClosingHandler(event -> workbenchCloseHandler.onWindowClose(workbenchCloseCommand));
         }
+    }
+
+    private void setupMessageForUnsavedChanges() {
+        Window.addWindowClosingHandler(event -> workbenchCloseHandler.onWindowClosing(workbenchClosingCommand, event));
     }
 
     private native void notifyJSReady() /*-{

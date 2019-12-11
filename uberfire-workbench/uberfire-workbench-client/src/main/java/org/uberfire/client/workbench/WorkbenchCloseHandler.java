@@ -15,12 +15,19 @@
  */
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * Generic WindowCloseHandler
  */
 public interface WorkbenchCloseHandler {
+
+    void onWindowClosing(final ParameterizedCommand<Window.ClosingEvent> command);
+
+    void onWindowClosing(final ParameterizedCommand<Window.ClosingEvent> command,
+                         final Window.ClosingEvent event);
 
     void onWindowClose(final Command command);
 }

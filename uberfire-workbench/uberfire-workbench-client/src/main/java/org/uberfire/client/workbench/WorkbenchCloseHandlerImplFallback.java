@@ -15,13 +15,27 @@
  */
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * Generic WindowCloseHandler
  */
 public class WorkbenchCloseHandlerImplFallback implements WorkbenchCloseHandler {
 
+    @Override
+    public void onWindowClosing(final ParameterizedCommand<Window.ClosingEvent> command) {
+        //Do nothing, as WindowCloseEvents are raised when we don't need them by IE10 and Firefox
+    }
+
+    @Override
+    public void onWindowClosing(final ParameterizedCommand<Window.ClosingEvent> command,
+                                final Window.ClosingEvent event) {
+        //Do nothing, as WindowCloseEvents are raised when we don't need them by IE10 and Firefox
+    }
+
+    @Override
     public void onWindowClose(final Command command) {
         //Do nothing, as WindowCloseEvents are raised when we don't need them by IE10 and Firefox
     }

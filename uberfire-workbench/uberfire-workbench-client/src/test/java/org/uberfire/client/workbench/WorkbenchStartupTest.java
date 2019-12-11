@@ -22,6 +22,7 @@ import java.util.Collections;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
@@ -164,6 +165,32 @@ public class WorkbenchStartupTest {
         workbench.startIfNotBlocked();
         verify(placeManager,
                never()).goTo(any(PlaceRequest.class));
+    }
+
+    @Test
+    public void workbenchCloseCommandTest() {
+        workbench.workbenchCloseCommand.execute();
+        verify(placeManager).closeAllPlaces();
+    }
+
+    @Test
+    public void workbenchClosingCommandWithUnsavedChangesTest() {
+        doReturn(false).when(placeManager).canCloseAllPlaces();
+        final Window.ClosingEvent event = mock(Window.ClosingEvent.class);
+
+        workbench.workbenchClosingCommand.execute(event);
+
+        verify(event).setMessage(anyString());
+    }
+
+    @Test
+    public void workbenchClosingCommandWithoutUnsavedChangesTest() {
+        doReturn(true).when(placeManager).canCloseAllPlaces();
+        final Window.ClosingEvent event = mock(Window.ClosingEvent.class);
+
+        workbench.workbenchClosingCommand.execute(event);
+
+        verify(event, never()).setMessage(anyString());
     }
 
     /**
