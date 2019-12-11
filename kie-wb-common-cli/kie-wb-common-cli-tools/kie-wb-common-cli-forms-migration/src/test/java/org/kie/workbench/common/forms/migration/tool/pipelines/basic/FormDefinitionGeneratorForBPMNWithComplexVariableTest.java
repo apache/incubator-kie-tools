@@ -176,7 +176,7 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
                 .hasFieldOrPropertyWithValue("sourceLink", summary.getBaseFormName() + "-" + invoiceField.getFieldName())
                 .hasFieldOrPropertyWithValue("inputBinding", originalDataHolder.getInputId())
                 .hasFieldOrPropertyWithValue("outputBinding", originalDataHolder.getOuputId())
-                .extracting("defaultSubform").doesNotContainNull();
+                .extracting("defaultSubform").isNotNull();
 
         assertNotNull(invoiceField);
         assertEquals(FieldTypeBuilder.SUBFORM, invoiceField.getFieldType().getCode());
