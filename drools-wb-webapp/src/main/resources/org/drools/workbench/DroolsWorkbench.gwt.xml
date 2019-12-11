@@ -36,6 +36,7 @@
 
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
+  <inherits name="org.kie.workbench.common.screens.archetype.mgmt.KieWorkbenchArchetypeMgmtClient"/>
   <inherits name="org.kie.workbench.common.screens.contributors.KieWorkbenchContributorsClient"/>
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchHomeClient"/>
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
