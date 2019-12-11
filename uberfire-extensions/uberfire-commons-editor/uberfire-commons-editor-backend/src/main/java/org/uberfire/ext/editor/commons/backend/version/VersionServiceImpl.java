@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.backend.version;
 
 import java.net.URI;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,6 +50,9 @@ public class VersionServiceImpl
     @Inject
     private VersionRecordService versionRecordService;
 
+    @Inject
+    private PathResolver pathResolver;
+
     @Override
     public List<VersionRecord> getVersions(final Path path) {
 
@@ -68,7 +72,9 @@ public class VersionServiceImpl
     public Path restore(final Path _path,
                         final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path path = convert(_path);
+            ioService.startBatch(Paths.convert(_path).getFileSystem());
+
+            final org.uberfire.java.nio.file.Path path = pathResolver.resolveMainFilePath(convert(_path));
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath(path.toString());
 
             return convert(ioService.copy(path,
@@ -81,6 +87,8 @@ public class VersionServiceImpl
                                                   comment)));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            ioService.endBatch();
         }
     }
 }
