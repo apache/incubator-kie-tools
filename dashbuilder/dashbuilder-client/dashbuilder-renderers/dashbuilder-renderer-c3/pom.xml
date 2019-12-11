@@ -53,10 +53,6 @@
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-dataset-client</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
@@ -81,11 +77,6 @@
     <dependency>
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
