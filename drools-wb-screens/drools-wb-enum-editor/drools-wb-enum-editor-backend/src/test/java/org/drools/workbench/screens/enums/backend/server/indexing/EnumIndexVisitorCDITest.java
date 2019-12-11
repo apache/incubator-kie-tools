@@ -18,8 +18,8 @@ package org.drools.workbench.screens.enums.backend.server.indexing;
 
 import java.util.Set;
 
-import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.IterableAssert;
 import org.guvnor.test.CDITestSetup;
 import org.junit.After;
 import org.junit.Before;
@@ -52,10 +52,10 @@ public class EnumIndexVisitorCDITest extends CDITestSetup {
         final Set<KProperty<?>> properties = indexer.fillIndexBuilder(testedPath).build();
         final ModuleDataModelOracle oracle = indexer.getModuleDataModelOracle(testedPath);
         Assertions.assertThat(oracle.getModuleModelFields().keySet()).contains(carFQN);
-        final AbstractListAssert carFields = Assertions.assertThat(properties).filteredOn("name", "ref:field:" + carFQN);
+        final IterableAssert carFields = Assertions.assertThat(properties).filteredOn("name", "ref:field:" + carFQN);
         carFields.filteredOn("value", "price").hasSize(1);
         carFields.filteredOn("value", "color").hasSize(1);
-        final AbstractListAssert javaClasses = Assertions.assertThat(properties).filteredOn("name", "ref:java");
+        final IterableAssert javaClasses = Assertions.assertThat(properties).filteredOn("name", "ref:java");
         javaClasses.filteredOn("value", carFQN).hasSize(1);
     }
 }
