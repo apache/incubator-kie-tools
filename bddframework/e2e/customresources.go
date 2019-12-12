@@ -17,6 +17,9 @@ package e2e
 import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
+	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
+	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -43,4 +46,36 @@ func getKogitoServiceStub(appName string, namespace string) *v1alpha1.KogitoApp 
 	}
 
 	return kogitoService
+}
+
+func getOperatorGroup(operatorGroupName string, namespace string) *olmapiv1.OperatorGroup {
+
+	operatorGroup := &olmapiv1.OperatorGroup{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      operatorGroupName,
+			Namespace: namespace,
+		},
+		Spec: olmapiv1.OperatorGroupSpec{
+			TargetNamespaces: []string{namespace},
+		},
+	}
+	return operatorGroup
+}
+
+func getSubscriptionSingleNamespace(subscriptionName string, namespace string, operatorName string, operatorSource string, channel string) *olmapiv1alpha1.Subscription {
+
+	subscription := &olmapiv1alpha1.Subscription{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      subscriptionName,
+			Namespace: namespace,
+		},
+		Spec: &olmapiv1alpha1.SubscriptionSpec{
+			Package:                operatorName,
+			CatalogSource:          operatorSource,
+			CatalogSourceNamespace: "openshift-marketplace",
+			Channel:                channel,
+		},
+	}
+
+	return subscription
 }

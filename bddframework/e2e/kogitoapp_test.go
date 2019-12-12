@@ -27,7 +27,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
-
 	"github.com/stretchr/testify/assert"
 
 	appsv1 "github.com/openshift/api/apps/v1"
@@ -35,6 +34,10 @@ import (
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
 
 	v1 "github.com/openshift/api/build/v1"
+
+	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
+	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
+
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -49,10 +52,21 @@ var (
 )
 
 func TestKogitoApp(t *testing.T) {
+
 	kogitoAppList := &v1alpha1.KogitoAppList{}
 	err := framework.AddToFrameworkScheme(apis.AddToScheme, kogitoAppList)
 	if err != nil {
 		t.Fatalf("failed to add custom resource scheme to framework: %v", err)
+	}
+	operatorGroupList := &olmapiv1.OperatorGroup{}
+	err = framework.AddToFrameworkScheme(olmapiv1.AddToScheme, operatorGroupList)
+	if err != nil {
+		t.Fatalf("failed to add OperatorGroup to framework: %v", err)
+	}
+	subscriptionList := &olmapiv1alpha1.SubscriptionList{}
+	err = framework.AddToFrameworkScheme(olmapiv1alpha1.AddToScheme, subscriptionList)
+	if err != nil {
+		t.Fatalf("failed to add Subscription to framework: %v", err)
 	}
 
 	// Specifies what tests should be executed
@@ -62,6 +76,7 @@ func TestKogitoApp(t *testing.T) {
 		t.Run("kogitoapp", func(t *testing.T) {
 			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
 			t.Run("SpringBootJvm", testKogitoSpringBootJvmExample)
+			t.Run("QuarkusJvmPersistent", testKogitoQuarkusJvmPersistentExample)
 		})
 	} else if tests == "native" {
 		// Run just native tests
@@ -74,6 +89,7 @@ func TestKogitoApp(t *testing.T) {
 			t.Run("QuarkusJvm", testKogitoQuarkusJvmExample)
 			t.Run("QuarkusNative", testKogitoQuarkusNativeExample)
 			t.Run("SpringBootJvm", testKogitoSpringBootJvmExample)
+			t.Run("QuarkusJvmPersistent", testKogitoQuarkusJvmPersistentExample)
 		})
 	} else {
 		log.Fatalf("wrong value of tests parameter: %v", tests)
@@ -121,6 +137,19 @@ func testKogitoSpringBootJvmExample(t *testing.T) {
 	deployAndTestJbpmSpringBootExampleWithKogitoService(t, ctx, kogitoService)
 }
 
+func testKogitoQuarkusJvmPersistentExample(t *testing.T) {
+	// initialize framework
+	ctx := framework.NewTestCtx(t)
+	defer ctx.Cleanup()
+
+	appName := "example-quarkus-jvm-persistent"
+	namespace := getNamespace(ctx)
+
+	kogitoService := getKogitoServiceStub(appName, namespace)
+
+	deployAndTestJbpmQuarkusExampleWithPersistenceWithKogitoService(t, ctx, kogitoService)
+}
+
 func deployAndTestDroolsQuarkusExampleWithKogitoService(t *testing.T, ctx *framework.TestCtx, kogitoService *v1alpha1.KogitoApp) {
 	t.Parallel()
 
@@ -158,6 +187,30 @@ func deployAndTestJbpmSpringBootExampleWithKogitoService(t *testing.T, ctx *fram
 	verifyJbpmSpringBootExample(t, kogitoService)
 }
 
+func deployAndTestJbpmQuarkusExampleWithPersistenceWithKogitoService(t *testing.T, ctx *framework.TestCtx, kogitoService *v1alpha1.KogitoApp) {
+	t.Parallel()
+
+	// get global framework variables
+	f := framework.Global
+
+	initializeKogitoOperator(t, f, ctx)
+	initializeInfinispanOperator(t, f, ctx)
+
+	gitProjectURI := "https://github.com/sutaakar/submarine-examples" // temporary change due to workaround, can be reverted to https://github.com/kiegroup/kogito-examples once Quarkus is able to propagate env variables
+	contextDir := "jbpm-quarkus-example"
+
+	kogitoService.Spec.Build.GitSource.URI = &gitProjectURI
+	kogitoService.Spec.Build.GitSource.ContextDir = contextDir
+	kogitoService.Spec.Build.Env = append(kogitoService.Spec.Build.Env, v1alpha1.Env{
+		Name:  "MAVEN_ARGS_APPEND",
+		Value: "-Ppersistence",
+	})
+	kogitoService.Spec.Infra.InstallInfinispan = "Always" // Workaround for OCP 4.x, can be removed once https://issues.redhat.com/browse/KOGITO-702 is fixed.
+
+	deployKogitoServiceApp(t, kogitoService, f, ctx)
+	verifyJbpmQuarkusPersistentExample(t, f, kogitoService)
+}
+
 func initializeKogitoOperator(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
 	// initialize cluster resources
 	err := ctx.InitializeClusterResources(&framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: retryInterval})
@@ -174,6 +227,34 @@ func initializeKogitoOperator(t *testing.T, f *framework.Framework, ctx *framewo
 
 	// wait for kogito-operator to be ready
 	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-cloud-operator", 1, time.Second*20, time.Second*40)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func initializeInfinispanOperator(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
+	// get our namespace
+	namespace, err := ctx.GetNamespace()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Info("Installing Infinispan operator")
+
+	operatorGroup := getOperatorGroup(namespace, namespace)
+	err = f.Client.Create(goctx.TODO(), operatorGroup, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
+	if err != nil {
+		log.Fatalf("could not create operator group: %v", err)
+	}
+
+	subscription := getSubscriptionSingleNamespace("infinispan", namespace, "infinispan", "community-operators", "stable")
+	err = f.Client.Create(goctx.TODO(), subscription, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
+	if err != nil {
+		log.Fatalf("could not create subscription: %v", err)
+	}
+
+	// wait for infinispan operator to be ready
+	err = e2eutil.WaitForDeployment(t, f.KubeClient, namespace, "infinispan-operator", 1, time.Second*5, time.Minute*3)
 	if err != nil {
 		log.Fatal(err)
 	}
