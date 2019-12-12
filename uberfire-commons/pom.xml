@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>uberfire-commons</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <name>Uberfire Commons</name>
   <description>Collection of reusable (not depending on any other UberFire module) components for Uberfire.</description>
@@ -105,27 +105,5 @@
     </dependency>
     <!-- /ActiveMQ (artemis) -->
   </dependencies>
-
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.uberfire.commons</Bundle-SymbolicName>
-            <Export-Package>
-              org.uberfire.commons.*
-            </Export-Package>
-            <Import-Package>
-              *
-            </Import-Package>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
