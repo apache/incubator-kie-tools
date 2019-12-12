@@ -68,11 +68,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.jsinterop</groupId>
-      <artifactId>jsinterop-annotations</artifactId>
-    </dependency>
-
     <!-- Uberfire & Errai. -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -122,11 +117,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
@@ -144,11 +134,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
 
     <dependency>
