@@ -30,7 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
       context,
       new GwtEditorRoutes({
         bpmnPath: "dist/webview/editors/bpmn",
-        dmnPath: "dist/webview/editors/dmn"
+        dmnPath: "dist/webview/editors/dmn",
+        scesimPath: "dist/webview/editors/scesim"
       })
     )
   });

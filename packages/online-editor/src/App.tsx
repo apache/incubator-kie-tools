@@ -49,7 +49,8 @@ export function App(props: Props) {
       new OnlineEditorRouter(
         new GwtEditorRoutes({
           bpmnPath: "gwt-editors/bpmn",
-          dmnPath: "gwt-editors/dmn"
+          dmnPath: "gwt-editors/dmn",
+          scesimPath: "gwt-editors/scesim"
         })
       ),
     []
