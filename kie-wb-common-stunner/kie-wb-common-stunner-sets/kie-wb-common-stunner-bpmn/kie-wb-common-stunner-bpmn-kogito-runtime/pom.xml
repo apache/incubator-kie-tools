@@ -25,7 +25,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-wb-common-bpmn-kogito-runtime</artifactId>
+  <artifactId>kie-wb-common-stunner-bpmn-kogito-runtime</artifactId>
   <packaging>war</packaging>
   <name>Kie Workbench - Common - Stunner - BPMN Definition Set - Kogito Runtime</name>
   <description>Kie Workbench - Common - Stunner - BPMN Definition Set - Kogito Runtime</description>

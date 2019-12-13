@@ -71,8 +71,8 @@ public class GenericServiceTaskPropertyWriterTest {
         assertEquals("serviceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
         assertEquals("serviceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
         assertEquals("serviceOperation", serviceTask.getOperationRef().getName());
-        assertEquals("inMessageStructure", serviceTask.getOperationRef().getInMessageRef().getItemRef().getStructureRef());
-        assertEquals("outMessagetructure", serviceTask.getOperationRef().getOutMessageRef().getItemRef().getStructureRef());
+        //https://issues.jboss.org/browse/KOGITO-418
+        // In/Out Messages should not be written now
     }
 
     @Test

@@ -85,8 +85,8 @@ public class GenericServiceTaskPropertyReaderTest {
         assertEquals("Java", task.getServiceImplementation());
         assertEquals("serviceOperation", task.getServiceOperation());
         assertEquals("serviceInterface", task.getServiceInterface());
-        assertEquals("inMessageStructure", task.getInMessageStructure());
-        assertEquals("outMessageStructure", task.getOutMessagetructure());
+        //https://issues.jboss.org/browse/KOGITO-418
+        // In/Out Messages should not be written now
         assertEquals(SLA_DUE_DATE_CDATA, reader.getSLADueDate());
         assertEquals(false, reader.isAsync());
         assertEquals(true, reader.isAdHocAutostart());

@@ -17,8 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import org.eclipse.bpmn2.Interface;
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.Operation;
 import org.eclipse.bpmn2.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
@@ -53,29 +51,8 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
         //2 Interface
         String serviceInterface = value.getServiceInterface();
 
-        //in message
-        final Message inMessage;
-        ItemDefinition itemDefinitionInMsg = bpmn2.createItemDefinition();
-        itemDefinitionInMsg.setId(task.getId() + "_InMessageType");
-        itemDefinitionInMsg.setStructureRef(value.getInMessageStructure());
-        addItemDefinition(itemDefinitionInMsg);
-
-        inMessage = bpmn2.createMessage();
-        inMessage.setId(task.getId() + "_InMessage");
-        inMessage.setItemRef(itemDefinitionInMsg);
-        addRootElement(inMessage);
-
-        //out message
-        final Message outMessage;
-        ItemDefinition itemDefinitionOutMsg = bpmn2.createItemDefinition();
-        itemDefinitionOutMsg.setId(task.getId() + "_OutMessageType");
-        itemDefinitionOutMsg.setStructureRef(value.getOutMessagetructure());
-        addItemDefinition(itemDefinitionOutMsg);
-
-        outMessage = bpmn2.createMessage();
-        outMessage.setId(task.getId() + "_OutMessage");
-        outMessage.setItemRef(itemDefinitionOutMsg);
-        addRootElement(outMessage);
+        //https://issues.jboss.org/browse/KOGITO-418
+        // In/Out Messages should not be written now
 
         //custom attribute
         CustomAttribute.serviceInterface.of(task).set(serviceInterface);
@@ -97,8 +74,6 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
         iface.getOperations().add(operation);
         task.setOperationRef(operation);
         addInterfaceDefinition(iface);
-        operation.setInMessageRef(inMessage);
-        operation.setOutMessageRef(outMessage);
     }
 
     public void setAdHocAutostart(boolean autoStart) {
