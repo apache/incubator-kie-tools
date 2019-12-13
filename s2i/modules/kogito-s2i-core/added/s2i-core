@@ -30,7 +30,9 @@ function assemble_runtime() {
         echo "---> [s2i-core] Adding custom labels..."
         if [ -e "${KOGITO_HOME}/bin/image_metadata.json" ]; then
             mkdir -v /tmp/.s2i
+            mkdir -pv /tmp/src/.s2i/
             cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
+            cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/src/.s2i/image_metadata.json
         else
             echo "-----> Failed to copy metadata file, $KOGITO_HOME/bin/image_metadata.json does not exist"
         fi
@@ -53,7 +55,9 @@ function handle_image_metadata_json() {
     echo "---> [s2i-core] Copy image metadata file..."
     if [ -e "/tmp/src/${artifactDir}/image_metadata.json" ]; then
         mkdir /tmp/.s2i
+        mkdir -p /tmp/src/.s2i/
         cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/.s2i
+        cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/src/.s2i
         cp -v /tmp/src/$artifactDir/image_metadata.json $KOGITO_HOME/bin
     else
         echo "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."

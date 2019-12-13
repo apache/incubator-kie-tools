@@ -75,19 +75,23 @@ teardown() {
     [ "${lines[0]}" = "---> Application binaries found and ready to use" ]
     [ "${lines[1]}" = "---> [s2i-core] Adding custom labels..." ]
     [ "${lines[2]}" = "mkdir: created directory '/tmp/.s2i'" ]
-    [ "${lines[3]}" = "'/tmp/kogito/bin/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
+    [ "${lines[3]}" = "mkdir: created directory '/tmp/src'" ]
+    [ "${lines[4]}" = "mkdir: created directory '/tmp/src/.s2i/'" ]
+    [ "${lines[5]}" = "'/tmp/kogito/bin/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
+    [ "${lines[6]}" = "'/tmp/kogito/bin/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
+
 }
 
 @test "test runtime_assemble" {
     mkdir -p ${KOGITO_HOME}/bin
-    mkdir /tmp/src
-    touch /tmp/src/myapp.jar
+    mkdir -p /tmp/src/bin
+    touch /tmp/src/bin/myapp.jar
 
     run runtime_assemble
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "'./myapp.jar' -> '/tmp/kogito/bin/./myapp.jar'" ]
+    [ "${lines[0]}" = "'./bin/myapp.jar' -> '/tmp/kogito/./bin/myapp.jar'" ]
 }
 
 
@@ -111,7 +115,8 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> [s2i-core] Copy image metadata file..." ]
     [ "${lines[1]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
-    [ "${lines[2]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/kogito/bin'" ]
+    [ "${lines[2]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
+    [ "${lines[3]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/kogito/bin'" ]
 }
 
 @test "test copy_kogito_app default java build no jar file present" {
