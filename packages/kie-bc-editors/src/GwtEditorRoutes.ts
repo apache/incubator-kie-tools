@@ -27,7 +27,7 @@ export const editors = {
     name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
   },
   scesim: {
-    id: "SCESIMEditor",
+    id: "ScenarioSimulationEditor",
     name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
   }
 };
@@ -93,7 +93,7 @@ export class GwtEditorRoutes implements Routes {
     };
     const scesimLanguageData: GwtLanguageData = {
       type: "gwt",
-      editorId: editors.dmn.id,
+      editorId: editors.scesim.id,
       gwtModuleName: editors.scesim.name,
       resources: [
         {
@@ -103,19 +103,19 @@ export class GwtEditorRoutes implements Routes {
         {
           type: "js",
           paths: [
-            router.getRelativePathTo(`${this.dmnPath}/model/DC.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/DI.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/DMN12.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/DMNDI12.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/JsonixAll.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/KIE.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/MainJs.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/SCESIM.js`),
-            router.getRelativePathTo(`${this.dmnPath}/model/SCESIMMainJs.js`),
-            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/ace.js`),
-            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/mode-xml.js`),
-            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/ace/theme-chrome.js`),
-            router.getRelativePathTo(`${this.dmnPath}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`)
+            router.getRelativePathTo(`${this.scesimPath}/model/DC.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DI.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DMN12.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DMNDI12.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/JsonixAll.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/KIE.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/MainJs.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/SCESIM.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/SCESIMMainJs.js`),
+            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/ace.js`),
+            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/mode-xml.js`),
+            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/theme-chrome.js`),
+            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`)
           ]
         }
       ]
