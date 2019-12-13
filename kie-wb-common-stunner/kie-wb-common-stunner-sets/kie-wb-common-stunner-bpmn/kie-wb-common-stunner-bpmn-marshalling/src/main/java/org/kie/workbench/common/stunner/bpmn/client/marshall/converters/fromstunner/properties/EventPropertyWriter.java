@@ -60,6 +60,12 @@ public abstract class EventPropertyWriter extends PropertyWriter {
     public abstract void setAssignmentsInfo(AssignmentsInfo assignmentsInfo);
 
     public void addMessage(MessageRef messageRef) {
+
+        // since events only have one parameter, look for the only one
+        if (messageRef.getStructure().isEmpty() && this.getItemDefinitions().size() == 1) {
+            messageRef.setStructure(this.getItemDefinitions().get(0).getStructureRef());
+        }
+
         MessageEventDefinition messageEventDefinition =
                 bpmn2.createMessageEventDefinition();
         addEventDefinition(messageEventDefinition);
