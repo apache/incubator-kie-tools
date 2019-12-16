@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.mina.util.ConcurrentHashSet;
 import org.guvnor.ala.config.gwt.CodeServerPortHandle;
 
 @ApplicationScoped
@@ -28,7 +27,7 @@ public class GWTCodeServerPortLeaserImpl implements GWTCodeServerPortLeaser {
 
     protected static final int CODE_SERVER_LOWEST_PORT = 5000;
     protected static final int CODE_SERVER_HIGHEST_PORT = 5010;
-    protected final Set<Integer> leasedCodeServerPorts = new ConcurrentHashSet<Integer>();
+    protected final Set<Integer> leasedCodeServerPorts = new ConcurrentHashMap<Integer, Integer>().keySet();
     protected Map<String, Integer> codeServerByProject = new ConcurrentHashMap<>();
 
     @Override
