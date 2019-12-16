@@ -226,7 +226,7 @@ func initializeKogitoOperator(t *testing.T, f *framework.Framework, ctx *framewo
 	}
 
 	// wait for kogito-operator to be ready
-	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-cloud-operator", 1, time.Second*20, time.Second*40)
+	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "kogito-operator", 1, time.Second*20, time.Second*40)
 	if err != nil {
 		log.Fatal(err)
 	}
