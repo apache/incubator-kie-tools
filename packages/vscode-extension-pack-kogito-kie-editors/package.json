@@ -42,6 +42,16 @@
           "dmn",
           "Decision Model and Notation"
         ]
+      },
+      {
+        "id": "scesim",
+        "extensions": [
+          ".scesim"
+        ],
+        "aliases": [
+          "scesim",
+          "Scenario Simulation"
+        ]
       }
     ]
   },
