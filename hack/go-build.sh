@@ -43,7 +43,7 @@ if [[ -z ${CI} ]]; then
 
         echo "${CFLAGS}"
         cekit build "${CFLAGS}" \
-            --overrides "{'artifacts': [{'name': 'kogito-cloud-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
+            --overrides "{'artifacts': [{'name': 'kogito-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
     fi
 else
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod=vendor -v -a -o build/_output/bin/kogito-cloud-operator github.com/kiegroup/kogito-cloud-operator/cmd/manager

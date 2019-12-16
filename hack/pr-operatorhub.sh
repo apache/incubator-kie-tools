@@ -17,7 +17,7 @@
 # prepare the package for the operatorhub.io to push our changes there
 # 0. make sure that the operator is ok (e2e)
 # 1. run this script
-# 2. push the results of build/_output/operatorhub/ to https://github.com/operator-framework/community-operators/tree/master/community-operators/kogito-cloud-operator
+# 2. push the results of build/_output/operatorhub/ to https://github.com/operator-framework/community-operators/tree/master/community-operators/kogito-operator
 
 version=$1
 output="build/_output/operatorhub/"
@@ -39,8 +39,8 @@ mkdir -p ${output}
 make test
 
 # copy the generated files
-cp "deploy/olm-catalog/kogito-cloud-operator/${version}/"*.yaml $output
-cp deploy/olm-catalog/kogito-cloud-operator/kogito-cloud-operator.package.yaml $output
+cp "deploy/olm-catalog/kogito-operator/${version}/"*.yaml $output
+cp deploy/olm-catalog/kogito-operator/kogito-operator.package.yaml $output
 
 # basic verification
 operator-courier verify --ui_validate_io $output
