@@ -8,7 +8,7 @@ rm -rf kogito-examples/
 git clone https://github.com/kiegroup/kogito-examples.git
 cd kogito-examples/drools-quarkus-example
 git fetch origin --tags
-git checkout -b 0.6.0 0.6.0
+git checkout -b 0.6.1 0.6.1
 
 # by adding the application.properties file telling quarkus to start on
 # port 10000, the purpose of this tests is make sure that the images
