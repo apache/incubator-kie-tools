@@ -47,6 +47,7 @@ import org.kie.dmn.model.v1_2.TInformationItem;
 import org.kie.dmn.model.v1_2.TInputData;
 import org.kie.dmn.model.v1_2.TItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.backend.editors.common.PMMLIncludedDocumentFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -273,12 +274,13 @@ public class DMNMarshallerImplImportsHelperTest {
         final InformationItem informationItem3 = new TInformationItem();
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3);
         final String namespace = "http://github.com/kiegroup/_something";
+        final String builtInTypeNumber = BuiltInType.NUMBER.getName();
 
         when(anImport.getName()).thenReturn("model");
         when(anImport.getNamespace()).thenReturn(namespace);
         informationItem1.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tUUID", XMLConstants.DEFAULT_NS_PREFIX));
         informationItem2.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tAge", XMLConstants.DEFAULT_NS_PREFIX));
-        informationItem3.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tNum", XMLConstants.DEFAULT_NS_PREFIX));
+        informationItem3.setTypeRef(new QName(XMLConstants.NULL_NS_URI, builtInTypeNumber, XMLConstants.DEFAULT_NS_PREFIX));
         drgElement1.setId("0000-1111");
         drgElement2.setId("2222-3333");
         drgElement3.setId("4444-5555");
@@ -309,7 +311,7 @@ public class DMNMarshallerImplImportsHelperTest {
         final TDecisionService element3 = (TDecisionService) elements.get(2);
         assertEquals("model:4444-5555", element3.getId());
         assertEquals("model.Decision Service", element3.getName());
-        assertEquals("model.tNum", element3.getVariable().getTypeRef().getLocalPart());
+        assertEquals(builtInTypeNumber, element3.getVariable().getTypeRef().getLocalPart());
         assertEquals(namespace, getNamespace(element3));
     }
 

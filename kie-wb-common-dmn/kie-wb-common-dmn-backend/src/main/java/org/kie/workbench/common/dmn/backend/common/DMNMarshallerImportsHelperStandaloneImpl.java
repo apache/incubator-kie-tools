@@ -254,9 +254,8 @@ public class DMNMarshallerImportsHelperStandaloneImpl implements DMNMarshallerIm
 
             if (qName != null && !isBuiltInType(qName.getLocalPart())) {
                 tInformationItem.setTypeRef(new QName(qName.getNamespaceURI(), namespace + "." + qName.getLocalPart(), qName.getPrefix()));
+                setInformationItem(drgElement, tInformationItem);
             }
-
-            setInformationItem(drgElement, tInformationItem);
         });
     }
 
