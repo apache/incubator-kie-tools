@@ -134,9 +134,9 @@ items:
 - kind: ImageStream
   apiVersion: v1
   metadata:
-    name: kogito-data-index
+    name: kogito-jobs-service
     annotations:
-      openshift.io/display-name: Runtime image for the Kogito Data Index Service - Tech preview
+      openshift.io/display-name: Runtime image for the Kogito Jobs Service - Tech preview
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
