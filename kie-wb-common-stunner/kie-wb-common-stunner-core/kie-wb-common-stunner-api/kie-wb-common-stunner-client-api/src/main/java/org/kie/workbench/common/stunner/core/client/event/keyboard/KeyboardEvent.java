@@ -23,6 +23,7 @@ public interface KeyboardEvent {
     enum Key {
         ESC(KeyCodes.KEY_ESCAPE),
         CONTROL(KeyCodes.KEY_CTRL),
+        KEY_BACKSPACE(KeyCodes.KEY_BACKSPACE),
         ALT(KeyCodes.KEY_ALT),
         SHIFT(KeyCodes.KEY_SHIFT),
         DELETE(KeyCodes.KEY_DELETE),

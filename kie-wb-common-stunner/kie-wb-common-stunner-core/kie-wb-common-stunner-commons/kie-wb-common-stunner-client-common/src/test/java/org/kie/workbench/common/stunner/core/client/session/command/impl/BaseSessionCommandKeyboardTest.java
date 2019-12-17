@@ -83,6 +83,10 @@ public abstract class BaseSessionCommandKeyboardTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkRespondsToExpectedKeys() {
+        checkRespondsToExpectedKeysMatch(getExpectedKeys());
+    }
+
+    public void checkRespondsToExpectedKeysMatch(final KeyboardEvent.Key[] keys) {
         doReturn(true).when(command).isEnabled();
 
         command.bind(session);
@@ -91,7 +95,7 @@ public abstract class BaseSessionCommandKeyboardTest {
                times(1)).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
 
         final KeyShortcutCallback keyShortcutCallback = keyShortcutCallbackCaptor.getValue();
-        keyShortcutCallback.onKeyShortcut(getExpectedKeys());
+        keyShortcutCallback.onKeyShortcut(keys);
 
         verify(command,
                times(1)).execute(any(ClientSessionCommand.Callback.class));

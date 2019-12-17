@@ -156,8 +156,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     }
 
     private void handleDelete(final KeyboardEvent.Key... keys) {
-        if (doKeysMatch(keys,
-                        KeyboardEvent.Key.DELETE)) {
+        if ((doKeysMatch(keys, KeyboardEvent.Key.DELETE)) || doKeysMatch(keys, KeyboardEvent.Key.KEY_BACKSPACE)) {
             this.execute();
         }
     }

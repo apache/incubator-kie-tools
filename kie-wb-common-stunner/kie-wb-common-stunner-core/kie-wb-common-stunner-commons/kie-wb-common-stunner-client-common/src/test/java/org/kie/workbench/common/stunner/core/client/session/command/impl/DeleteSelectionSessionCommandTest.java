@@ -113,6 +113,11 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
         verify(canvasClearSelectionEventEvent, never()).fire(any());
     }
 
+    @Test
+    public void testExecuteBackSpaceKeys() {
+       this.checkRespondsToExpectedKeysMatch(new KeyboardEvent.Key[]{KeyboardEvent.Key.KEY_BACKSPACE});
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testEmptyConstructor() {
         DeleteSelectionSessionCommand del = new DeleteSelectionSessionCommand();
