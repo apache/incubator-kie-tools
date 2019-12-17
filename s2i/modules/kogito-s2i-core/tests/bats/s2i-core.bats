@@ -7,12 +7,14 @@ setup() {
     export KOGITO_HOME=/tmp/kogito
     export HOME=$KOGITO_HOME
     mkdir -p ${KOGITO_HOME}
+    mkdir target
 }
 
 teardown() {
     rm -rf ${KOGITO_HOME}
     rm -rf /tmp/.s2i
     rm -rf /tmp/src
+    rm -rf target
     rm -rf $KOGITO_HOME/bin/*
 }
 
@@ -22,15 +24,27 @@ teardown() {
     touch /tmp/artifacts/{file,file1,file2,file3}
     run manage_incremental_build
 
-    echo "result= ${lines[@]}"
+    IFS=$'\n' sorted=($(sort <<<"${lines[*]}")); unset IFS
+    echo "result= ${sorted[@]}"
 
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "Expanding artifacts from incremental build..." ]
-    [ "${lines[1]}" = "./" ]
-    [ "${lines[2]}" = "./file3" ]
-    [ "${lines[3]}" = "./file2" ]
-    [ "${lines[4]}" = "./file1" ]
-    [ "${lines[5]}" = "./file" ]
+    if [ -z "${GITHUB_ACTIONS}" ]; then
+        [ "$status" -eq 0 ]
+        [ "${sorted[0]}" = "./" ]
+        [ "${sorted[1]}" = "Expanding artifacts from incremental build..." ]
+        [ "${sorted[2]}" = "./file" ]
+        [ "${sorted[3]}" = "./file1" ]
+        [ "${sorted[4]}" = "./file2" ]
+        [ "${sorted[5]}" = "./file3" ]
+    else
+        [ "${sorted[0]}" = "./" ]
+        [ "${sorted[1]}" = "./file" ]
+        [ "${sorted[2]}" = "./file1" ]
+        [ "${sorted[3]}" = "./file2" ]
+        [ "${sorted[4]}" = "./file3" ]
+        [ "${sorted[5]}" = "Expanding artifacts from incremental build..." ]
+    fi
+
 }
 
 
