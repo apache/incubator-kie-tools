@@ -107,4 +107,22 @@ public class ContextEntryPropertyConverterTest {
         assertThat(componentWidths.getWidths().size()).isEqualTo(literalExpression.getRequiredComponentWidthCount());
         assertThat(componentWidths.getWidths().get(0)).isEqualTo(200.0);
     }
+
+    @Test
+    public void testDMNFromWBWithNullWBExpression() {
+        final ContextEntry wb = new ContextEntry();
+        final InformationItem informationItem = new InformationItem();
+        wb.setVariable(informationItem);
+        wb.setExpression(null);
+
+        final org.kie.dmn.model.api.ContextEntry dmn = ContextEntryPropertyConverter.dmnFromWB(wb, componentWidthsConsumer);
+
+        assertThat(dmn).isNotNull();
+        assertThat(dmn.getVariable()).isNotNull();
+        assertThat(dmn.getExpression()).isNotNull();
+        assertThat(dmn.getExpression()).isInstanceOf(org.kie.dmn.model.api.LiteralExpression.class);
+
+        final org.kie.dmn.model.api.LiteralExpression literalExpression = (org.kie.dmn.model.api.LiteralExpression) dmn.getExpression();
+        assertThat(literalExpression.getText()).isEqualTo(ContextEntry.DEFAULT_EXPRESSION_VALUE);
+    }
 }

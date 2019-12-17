@@ -28,8 +28,11 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITContextEntry;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITExpression;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationItem;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITLiteralExpression;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITComponentWidths;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
+
+import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.utils.WrapperUtils.getWrappedJSITLiteralExpression;
 
 public class ContextEntryPropertyConverter {
 
@@ -63,8 +66,13 @@ public class ContextEntryPropertyConverter {
         final JSITContextEntry result = new JSITContextEntry();
 
         final JSITInformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
-        final JSITExpression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
-                                                                                componentWidthsConsumer);
+        JSITExpression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                          componentWidthsConsumer);
+        if (Objects.isNull(expression)) {
+            final JSITLiteralExpression mockLiteralExpression = new JSITLiteralExpression();
+            mockLiteralExpression.setText(ContextEntry.DEFAULT_EXPRESSION_VALUE);
+            expression = getWrappedJSITLiteralExpression(mockLiteralExpression, "dmn", "literalExpression");
+        }
 
         result.setVariable(variable);
         result.setExpression(expression);

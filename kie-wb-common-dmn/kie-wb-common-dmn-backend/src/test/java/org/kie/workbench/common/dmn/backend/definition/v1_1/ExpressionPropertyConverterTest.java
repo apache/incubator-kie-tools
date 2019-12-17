@@ -227,4 +227,14 @@ public class ExpressionPropertyConverterTest {
 
         assertDMNFromWBConversion(wb, TDecisionTable.class, 100.0, 200.0);
     }
+
+    @Test
+    public void testWBFromDMN_NullConversion() {
+        assertThat(ExpressionPropertyConverter.wbFromDMN(null, hasComponentWidthsConsumer)).isNull();
+    }
+
+    @Test
+    public void testDMNFromWB_NullConversion() {
+        assertThat(ExpressionPropertyConverter.dmnFromWB(null, componentWidthsConsumer)).isNull();
+    }
 }

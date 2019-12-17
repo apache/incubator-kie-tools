@@ -127,12 +127,9 @@ public class DecisionConverter implements NodeConverter<JSITDecision, org.kie.wo
         d.setName(source.getName().getValue());
         final JSITInformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable(), source);
         d.setVariable(variable);
-        final JSITExpression expression = ExpressionPropertyConverter.dmnFromWB(source.getExpression(),
-                                                                                componentWidthsConsumer);
+        final JSITExpression expression = ExpressionPropertyConverter.dmnFromWB(source.getExpression(), componentWidthsConsumer);
+        d.setExpression(expression);
 
-        if (Objects.nonNull(expression)) {
-            d.setExpression(expression);
-        }
         final String question = QuestionPropertyConverter.dmnFromWB(source.getQuestion());
         if (!StringUtils.isEmpty(question)) {
             d.setQuestion(question);

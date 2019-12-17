@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -34,11 +35,11 @@ public class ContextEntryPropertyConverter {
                                                                             hasComponentWidthsConsumer);
 
         final ContextEntry result = new ContextEntry();
-        if (variable != null) {
+        if (Objects.nonNull(variable)) {
             variable.setParent(result);
         }
         result.setVariable(variable);
-        if (expression != null) {
+        if (Objects.nonNull(expression)) {
             expression.setParent(result);
         }
         result.setExpression(expression);
@@ -50,14 +51,17 @@ public class ContextEntryPropertyConverter {
         final org.kie.dmn.model.api.ContextEntry result = new org.kie.dmn.model.v1_2.TContextEntry();
 
         final org.kie.dmn.model.api.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
-        if (variable != null) {
+        if (Objects.nonNull(variable)) {
             variable.setParent(result);
         }
-        final org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
-                                                                                                  componentWidthsConsumer);
-        if (expression != null) {
-            expression.setParent(result);
+        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                                            componentWidthsConsumer);
+        if (Objects.isNull(expression)) {
+            final org.kie.dmn.model.v1_2.TLiteralExpression literalExpression = new org.kie.dmn.model.v1_2.TLiteralExpression();
+            literalExpression.setText(ContextEntry.DEFAULT_EXPRESSION_VALUE);
+            expression = literalExpression;
         }
+        expression.setParent(result);
 
         result.setVariable(variable);
         result.setExpression(expression);

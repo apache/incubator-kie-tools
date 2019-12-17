@@ -85,11 +85,8 @@ public class ExpressionPropertyConverter {
 
     public static org.kie.dmn.model.api.Expression dmnFromWB(final Expression wb,
                                                              final Consumer<ComponentWidths> componentWidthsConsumer) {
-        // SPECIAL CASE: to represent a partially edited DMN file.
-        // reference above.
-        if (wb == null) {
-            final org.kie.dmn.model.api.LiteralExpression mockedExpression = new org.kie.dmn.model.v1_2.TLiteralExpression();
-            return mockedExpression;
+        if (Objects.isNull(wb)) {
+            return null;
         }
 
         final String uuid = wb.getId().getValue();
