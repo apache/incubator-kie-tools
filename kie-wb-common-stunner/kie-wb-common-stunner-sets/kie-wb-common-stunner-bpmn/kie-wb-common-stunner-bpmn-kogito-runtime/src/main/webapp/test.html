@@ -21,24 +21,29 @@
     <title>BPMN Editor Test</title>
 
     <script>
+        function loadDiagram(diagram) {
+            window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(diagram);
+        }
+
         var openFile = function (event) {
             var input = event.target;
             var reader = new FileReader();
             reader.onload = function () {
-                var text = reader.result;
-                window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(text);
+                var diagram = reader.result;
+                loadDiagram(diagram)
             };
 
             reader.readAsText(input.files[0]);
         };
-
     </script>
 
 </head>
 <body>
 
 <div id="editor">
-    Wait until the editor is loaded to open a BPMN file:</br>
+    Wait until the editor is loaded to open a BPMN file:<br>
+    <input type="button" onclick="loadDiagram('')" value="Create new Diagram"/>
+    or
     <input type="file" onchange="openFile(event)" value="Choose BPMN2 file" accept="bpmn,bpmn2,txt"/>
 </div>
 
