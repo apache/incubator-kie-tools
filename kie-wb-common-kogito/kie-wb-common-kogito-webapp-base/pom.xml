@@ -106,6 +106,18 @@
       <artifactId>kie-wb-common-kogito-client</artifactId>
     </dependency>
 
+    <!-- Test scope dependencies -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>lienzo-tests</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

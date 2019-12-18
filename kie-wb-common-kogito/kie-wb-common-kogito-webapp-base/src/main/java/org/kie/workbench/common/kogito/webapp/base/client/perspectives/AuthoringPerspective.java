@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.kogito.webapp.base.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,24 +22,28 @@ import javax.inject.Inject;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false, isDefault = true)
+@WorkbenchPerspective(identifier = AuthoringPerspective.PERSPECTIVE_ID, isDefault = true)
 public class AuthoringPerspective {
 
     public static final String PERSPECTIVE_ID = "AuthoringPerspective";
 
+    public static final String PERSPECTIVE_NAME = "Authoring";
+
     @Inject
     protected KogitoScreen kogitoScreen;
 
+    @Inject
+    protected PerspectiveConfiguration perspectiveConfiguration;
+
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
-        perspective.setName("Authoring");
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(perspectiveConfiguration.getPerspectivePanelType().getName());
+        perspective.setName(PERSPECTIVE_NAME);
         perspective.getRoot().addPart(new PartDefinitionImpl(kogitoScreen.getPlaceRequest()));
         return perspective;
     }
