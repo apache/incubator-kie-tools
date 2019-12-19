@@ -275,6 +275,9 @@ public class DMNEditorConstants {
     public static final String DataTypeWithFieldsWarningMessage_RegularMessage = "DataTypeWithFieldsWarningMessage.RegularMessage";
 
     @TranslationKey(defaultValue = "")
+    public static final String DataTypeSuccessfullyImportedMessage_StrongMessage = "DataTypeSuccessfullyImportedMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
     public static final String ReferencedDataTypeWarningMessage_StrongMessage = "ReferencedDataTypeWarningMessage.StrongMessage";
 
     @TranslationKey(defaultValue = "")

@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,16 +33,19 @@ import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.isHidden;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
@@ -49,6 +53,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSuccessfullyImportedMessage_StrongMessage;
 import static org.uberfire.client.views.pfly.selectpicker.ElementHelper.remove;
 
 @Templated
@@ -101,6 +106,10 @@ public class DataTypeListView implements DataTypeList.View {
 
     private final ImportDataObjectModal importDataObjectModal;
 
+    private final Event<FlashMessage> flashMessageEvent;
+
+    private final TranslationService translationService;
+
     private DataTypeList presenter;
 
     @Inject
@@ -119,7 +128,9 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLButtonElement readOnlyMessageCloseButton,
                             final ScrollHelper scrollHelper,
                             final HTMLButtonElement importDataObjectButton,
-                            final ImportDataObjectModal importDataObjectModal) {
+                            final ImportDataObjectModal importDataObjectModal,
+                            final Event<FlashMessage> flashMessageEvent,
+                            final TranslationService translationService) {
         this.listItems = listItems;
         this.collapsedDescription = collapsedDescription;
         this.expandedDescription = expandedDescription;
@@ -136,6 +147,8 @@ public class DataTypeListView implements DataTypeList.View {
         this.scrollHelper = scrollHelper;
         this.importDataObjectButton = importDataObjectButton;
         this.importDataObjectModal = importDataObjectModal;
+        this.flashMessageEvent = flashMessageEvent;
+        this.translationService = translationService;
     }
 
     @Override
@@ -149,6 +162,16 @@ public class DataTypeListView implements DataTypeList.View {
 
     void importDataObjects(final List<DataObject> imported) {
         presenter.importDataObjects(imported);
+
+        if (!imported.isEmpty()) {
+            fireSuccessfullyImportedData();
+        }
+    }
+
+    void fireSuccessfullyImportedData() {
+        flashMessageEvent.fire(new FlashMessage(SUCCESS,
+                                                translationService.getTranslation(DataTypeSuccessfullyImportedMessage_StrongMessage),
+                                                ""));
     }
 
     private void setupSearchBar() {

@@ -29,25 +29,32 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Node;
 import elemental2.dom.NodeList;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSuccessfullyImportedMessage_StrongMessage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -127,6 +134,15 @@ public class DataTypeListViewTest {
     @Mock
     private ImportDataObjectModal importDataObjectModal;
 
+    @Mock
+    private EventSourceMock<FlashMessage> flashMessageEvent;
+
+    @Mock
+    private TranslationService translationService;
+
+    @Captor
+    private ArgumentCaptor<FlashMessage> flashMessageCaptor;
+
     private DataTypeListView view;
 
     @Before
@@ -142,7 +158,7 @@ public class DataTypeListViewTest {
         listItems.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal));
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -614,13 +630,44 @@ public class DataTypeListViewTest {
     }
 
     @Test
-    public void testImportDataObjects() {
+    public void testImportDataObjectsWhenListIsEmpty() {
 
         final List<DataObject> imported = mock(List.class);
 
+        when(imported.isEmpty()).thenReturn(true);
         view.importDataObjects(imported);
 
         verify(presenter).importDataObjects(imported);
+    }
+
+    @Test
+    public void testImportDataObjectsWhenListIsNotEmpty() {
+
+        final List<DataObject> imported = mock(List.class);
+
+        doNothing().when(view).fireSuccessfullyImportedData();
+        when(imported.isEmpty()).thenReturn(false);
+        view.importDataObjects(imported);
+
+        verify(presenter).importDataObjects(imported);
+        verify(view).fireSuccessfullyImportedData();
+    }
+
+    @Test
+    public void testFireSuccessfullyImportedData() {
+
+        final String translated = "translated";
+        when(translationService.getTranslation(DataTypeSuccessfullyImportedMessage_StrongMessage)).thenReturn(translated);
+
+        view.fireSuccessfullyImportedData();
+
+        verify(flashMessageEvent).fire(flashMessageCaptor.capture());
+
+        final FlashMessage flashMessage = flashMessageCaptor.getValue();
+
+        assertEquals(SUCCESS, flashMessage.getType());
+        assertEquals(translated, flashMessage.getStrongMessage());
+        assertEquals("", flashMessage.getRegularMessage());
     }
 
     private HTMLElement makeHTMLElement() {

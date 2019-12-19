@@ -27,6 +27,7 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.ERROR;
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.WARNING;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -99,8 +100,26 @@ public class FlashMessagesTest {
 
         flashMessages.onFlashMessageEvent(flashMessage);
 
-        verify(flashMessages, never()).registerFlashMessageCallback(flashMessage);
-        verify(flashMessages, never()).showFlashMessage(flashMessage);
+        verify(flashMessages).registerFlashMessageCallback(flashMessage);
+        verify(flashMessages).showFlashMessage(flashMessage);
+        verify(flashMessages, never()).highlighElement(flashMessage);
+    }
+
+    @Test
+    public void testOnFlashMessageEventWhenSelectorIsEmpty() {
+
+        final FlashMessage flashMessage = mock(FlashMessage.class);
+        final String selector = "";
+
+        doNothing().when(flashMessages).registerFlashMessageCallback(flashMessage);
+        doNothing().when(flashMessages).showFlashMessage(flashMessage);
+        doNothing().when(flashMessages).highlighElement(flashMessage);
+        when(flashMessage.getElementSelector()).thenReturn(selector);
+
+        flashMessages.onFlashMessageEvent(flashMessage);
+
+        verify(flashMessages).registerFlashMessageCallback(flashMessage);
+        verify(flashMessages).showFlashMessage(flashMessage);
         verify(flashMessages, never()).highlighElement(flashMessage);
     }
 
@@ -119,6 +138,7 @@ public class FlashMessagesTest {
 
         verify(view).showErrorMessage(strongMessage, regularMessage);
         verify(view, never()).showWarningMessage(anyString(), anyString());
+        verify(view, never()).showSuccessMessage(anyString(), anyString());
     }
 
     @Test
@@ -135,6 +155,25 @@ public class FlashMessagesTest {
         flashMessages.showFlashMessage(flashMessage);
 
         verify(view).showWarningMessage(strongMessage, regularMessage);
+        verify(view, never()).showErrorMessage(anyString(), anyString());
+        verify(view, never()).showSuccessMessage(anyString(), anyString());
+    }
+
+    @Test
+    public void testShowFlashMessageWhenItsASuccessMessage() {
+
+        final FlashMessage flashMessage = mock(FlashMessage.class);
+        final String strongMessage = "*message*";
+        final String regularMessage = "message";
+
+        when(flashMessage.getType()).thenReturn(SUCCESS);
+        when(flashMessage.getStrongMessage()).thenReturn(strongMessage);
+        when(flashMessage.getRegularMessage()).thenReturn(regularMessage);
+
+        flashMessages.showFlashMessage(flashMessage);
+
+        verify(view).showSuccessMessage(strongMessage, regularMessage);
+        verify(view, never()).showWarningMessage(anyString(), anyString());
         verify(view, never()).showErrorMessage(anyString(), anyString());
     }
 

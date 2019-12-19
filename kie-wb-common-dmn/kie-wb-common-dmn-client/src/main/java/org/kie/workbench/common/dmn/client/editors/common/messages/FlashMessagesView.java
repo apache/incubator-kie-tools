@@ -50,6 +50,9 @@ public class FlashMessagesView implements FlashMessages.View {
     @DataField("warning-container")
     private final HTMLDivElement warningContainer;
 
+    @DataField("success-container")
+    private final HTMLDivElement successContainer;
+
     @DataField("strong-error-message")
     private final HTMLElement strongErrorMessage;
 
@@ -62,11 +65,20 @@ public class FlashMessagesView implements FlashMessages.View {
     @DataField("regular-warning-message")
     private final HTMLElement regularWarningMessage;
 
+    @DataField("strong-success-message")
+    private final HTMLElement strongSuccessMessage;
+
+    @DataField("regular-success-message")
+    private final HTMLElement regularSuccessMessage;
+
     @DataField("ok-warning-button")
     private final HTMLButtonElement okWarningButton;
 
     @DataField("cancel-warning-button")
     private final HTMLButtonElement cancelWarningButton;
+
+    @DataField("close-success-message-button")
+    private final HTMLButtonElement closeSuccessButton;
 
     private FlashMessages presenter;
 
@@ -78,7 +90,11 @@ public class FlashMessagesView implements FlashMessages.View {
                              final @Named("strong") HTMLElement strongWarningMessage,
                              final @Named("span") HTMLElement regularWarningMessage,
                              final HTMLButtonElement okWarningButton,
-                             final HTMLButtonElement cancelWarningButton) {
+                             final HTMLButtonElement cancelWarningButton,
+                             final HTMLButtonElement closeSuccessButton,
+                             final HTMLDivElement successContainer,
+                             final @Named("strong") HTMLElement strongSuccessMessage,
+                             final @Named("span") HTMLElement regularSuccessMessage) {
         this.errorContainer = errorContainer;
         this.warningContainer = warningContainer;
         this.strongErrorMessage = strongErrorMessage;
@@ -87,11 +103,20 @@ public class FlashMessagesView implements FlashMessages.View {
         this.regularWarningMessage = regularWarningMessage;
         this.okWarningButton = okWarningButton;
         this.cancelWarningButton = cancelWarningButton;
+        this.closeSuccessButton = closeSuccessButton;
+        this.successContainer = successContainer;
+        this.strongSuccessMessage = strongSuccessMessage;
+        this.regularSuccessMessage = regularSuccessMessage;
     }
 
     @Override
     public void init(final FlashMessages presenter) {
         this.presenter = presenter;
+    }
+
+    @EventHandler("close-success-message-button")
+    public void onCloseSuccessButtonClick(final ClickEvent e) {
+        hideSuccessContainer();
     }
 
     @EventHandler("ok-warning-button")
@@ -125,6 +150,14 @@ public class FlashMessagesView implements FlashMessages.View {
     }
 
     @Override
+    public void showSuccessMessage(final String strongMessage,
+                                   final String regularMessage){
+        show(successContainer);
+        strongSuccessMessage.textContent = strongMessage;
+        regularSuccessMessage.textContent = regularMessage;
+    }
+
+    @Override
     public void showErrorHighlight(final String errorElementSelector) {
         querySelector(errorElementSelector).ifPresent(element -> {
 
@@ -153,6 +186,11 @@ public class FlashMessagesView implements FlashMessages.View {
     @Override
     public void hideWarningContainer() {
         hide(warningContainer);
+    }
+
+    @Override
+    public void hideSuccessContainer() {
+        hide(successContainer);
     }
 
     @Override

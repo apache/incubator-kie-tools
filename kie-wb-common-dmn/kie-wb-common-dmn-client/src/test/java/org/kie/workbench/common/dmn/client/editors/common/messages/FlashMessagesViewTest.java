@@ -80,11 +80,23 @@ public class FlashMessagesViewTest {
     @Mock
     private FlashMessages presenter;
 
+    @Mock
+    private HTMLButtonElement closeSuccessButton;
+
+    @Mock
+    private HTMLDivElement successContainer;
+
+    @Mock
+    private HTMLElement strongSuccessMessage;
+
+    @Mock
+    private HTMLElement regularSuccessMessage;
+
     private FlashMessagesView view;
 
     @Before
     public void setup() {
-        view = Mockito.spy(new FlashMessagesView(errorContainer, warningContainer, strongErrorMessage, regularErrorMessage, strongWarningMessage, regularWarningMessage, okButton, cancelButton));
+        view = Mockito.spy(new FlashMessagesView(errorContainer, warningContainer, strongErrorMessage, regularErrorMessage, strongWarningMessage, regularWarningMessage, okButton, cancelButton, closeSuccessButton, successContainer, strongSuccessMessage, regularSuccessMessage));
         view.init(presenter);
     }
 
@@ -119,6 +131,17 @@ public class FlashMessagesViewTest {
     }
 
     @Test
+    public void testOnCloseSuccessButtonClick() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        doNothing().when(view).hideSuccessContainer();
+
+        view.onCloseSuccessButtonClick(event);
+
+        verify(view).hideSuccessContainer();
+    }
+
+    @Test
     public void testShowErrorMessage() {
 
         final String expectedStrongMessage = "*message*";
@@ -148,6 +171,23 @@ public class FlashMessagesViewTest {
         final String actualRegularMessage = regularWarningMessage.textContent;
 
         verify(warningContainer.classList).add(OPENED_CONTAINER_CSS_CLASS);
+        assertEquals(expectedStrongMessage, actualStrongMessage);
+        assertEquals(expectedRegularMessage, actualRegularMessage);
+    }
+
+    @Test
+    public void testShowSuccessMessage() {
+
+        final String expectedStrongMessage = "*message*";
+        final String expectedRegularMessage = "message";
+        successContainer.classList = mock(DOMTokenList.class);
+
+        view.showSuccessMessage(expectedStrongMessage, expectedRegularMessage);
+
+        final String actualStrongMessage = strongSuccessMessage.textContent;
+        final String actualRegularMessage = regularSuccessMessage.textContent;
+
+        verify(successContainer.classList).add(OPENED_CONTAINER_CSS_CLASS);
         assertEquals(expectedStrongMessage, actualStrongMessage);
         assertEquals(expectedRegularMessage, actualRegularMessage);
     }
@@ -345,5 +385,14 @@ public class FlashMessagesViewTest {
         view.hideErrorContainer();
 
         verify(errorContainer.classList).remove(OPENED_CONTAINER_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideSuccessContainer() {
+        successContainer.classList = mock(DOMTokenList.class);
+
+        view.hideSuccessContainer();
+
+        verify(successContainer.classList).remove(OPENED_CONTAINER_CSS_CLASS);
     }
 }

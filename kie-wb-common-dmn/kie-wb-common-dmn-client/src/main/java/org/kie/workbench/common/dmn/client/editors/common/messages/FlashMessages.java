@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
@@ -52,10 +53,10 @@ public class FlashMessages {
     }
 
     public void onFlashMessageEvent(final @Observes FlashMessage flashMessage) {
-        final boolean isElementPresent = view.isElementPresent(flashMessage.getElementSelector());
+        showFlashMessage(flashMessage);
+        registerFlashMessageCallback(flashMessage);
+        final boolean isElementPresent = !StringUtils.isEmpty(flashMessage.getElementSelector()) && view.isElementPresent(flashMessage.getElementSelector());
         if (isElementPresent) {
-            registerFlashMessageCallback(flashMessage);
-            showFlashMessage(flashMessage);
             highlighElement(flashMessage);
         }
     }
@@ -68,6 +69,9 @@ public class FlashMessages {
             case WARNING:
                 view.showWarningMessage(flashMessage.getStrongMessage(), flashMessage.getRegularMessage());
                 break;
+            case SUCCESS:
+                view.showSuccessMessage(flashMessage.getStrongMessage(), flashMessage.getRegularMessage());
+                break;
         }
     }
 
@@ -79,13 +83,17 @@ public class FlashMessages {
             case WARNING:
                 view.showWarningHighlight(flashMessage.getElementSelector());
                 break;
+            case SUCCESS:
+                // 'Success' FlashMessage does not have highlight.
+                break;
         }
     }
 
     void registerFlashMessageCallback(final FlashMessage flashMessage) {
         switch (flashMessage.getType()) {
             case ERROR:
-                // 'Error' FlashMessage does not have callbacks.
+            case SUCCESS:
+                // 'Error' and 'Success' FlashMessage does not have callbacks.
                 break;
             case WARNING:
                 warningSuccessCallback = flashMessage.getOnSuccess();
@@ -113,6 +121,7 @@ public class FlashMessages {
     public void hideMessages() {
         view.hideErrorContainer();
         view.hideWarningContainer();
+        view.hideSuccessContainer();
     }
 
     public interface View extends UberElemental<FlashMessages>,
@@ -126,10 +135,14 @@ public class FlashMessages {
 
         void showWarningHighlight(final String warningElementSelector);
 
+        void showSuccessMessage(final String strongMessage, final String regularMessage);
+
         boolean isElementPresent(final String elementSelector);
 
         void hideWarningContainer();
 
         void hideErrorContainer();
+
+        void hideSuccessContainer();
     }
 }

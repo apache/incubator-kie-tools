@@ -54,6 +54,12 @@ public class FlashMessage implements UberFireEvent {
         this(type, strongMessage, regularMessage, elementSelector, () -> { /* Nothing. */ }, () -> { /* Nothing. */ });
     }
 
+    public FlashMessage(final Type type,
+                        final String strongMessage,
+                        final String regularMessage) {
+        this(type, strongMessage, regularMessage,"", () -> { /* Nothing. */ }, () -> { /* Nothing. */ });
+    }
+
     public String getStrongMessage() {
         return strongMessage;
     }
@@ -80,6 +86,7 @@ public class FlashMessage implements UberFireEvent {
 
     public enum Type {
         ERROR,
-        WARNING
+        WARNING,
+        SUCCESS
     }
 }
