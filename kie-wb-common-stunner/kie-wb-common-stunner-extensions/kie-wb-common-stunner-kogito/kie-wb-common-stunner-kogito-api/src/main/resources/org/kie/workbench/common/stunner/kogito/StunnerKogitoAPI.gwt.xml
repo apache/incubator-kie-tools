@@ -19,10 +19,7 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
-
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
 

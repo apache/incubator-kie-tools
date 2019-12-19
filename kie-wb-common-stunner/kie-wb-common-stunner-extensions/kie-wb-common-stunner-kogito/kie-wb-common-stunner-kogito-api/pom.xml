@@ -41,24 +41,6 @@
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
-    <!-- Uberfire -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-services-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-api</artifactId>
-    </dependency>
-
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -69,13 +51,6 @@
       <artifactId>errai-common</artifactId>
     </dependency>
 
-    <!-- Others -->
-    <dependency>
-      <groupId>com.google.elemental2</groupId>
-      <artifactId>elemental2-promise</artifactId>
-    </dependency>
-
-
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
@@ -85,10 +60,6 @@
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
     <!-- Test scope -->
