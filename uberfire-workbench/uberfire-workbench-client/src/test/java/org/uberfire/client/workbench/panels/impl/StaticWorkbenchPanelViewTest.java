@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
@@ -31,8 +32,13 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class StaticWorkbenchPanelViewTest {
@@ -45,7 +51,7 @@ public class StaticWorkbenchPanelViewTest {
     private PanelManager panelManager;
 
     @Mock
-    private PlaceManager placeManager;
+    private SelectionEvent<PartDefinition> selectionEvent;
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     private StaticFocusedResizePanel panel;
@@ -129,6 +135,22 @@ public class StaticWorkbenchPanelViewTest {
         view.onResize();
 
         verify(panel).onResize();
+    }
+
+    @Test
+    public void testOnPartFocus() {
+
+        final PartDefinition selectedItem = mock(PartDefinition.class);
+        final SelectionHandler<PartDefinition> handler = view.getPanelSelectionHandler();
+
+        when(selectionEvent.getSelectedItem()).thenReturn(selectedItem);
+        when(panelManager.getFocusedPart()).thenReturn(null, selectedItem);
+
+        handler.onSelection(selectionEvent);
+        handler.onSelection(selectionEvent); // Calling it twice.
+
+        verify(panelManager).onPartLostFocus();
+        verify(panelManager).onPartFocus(selectedItem);
     }
 
     @Test

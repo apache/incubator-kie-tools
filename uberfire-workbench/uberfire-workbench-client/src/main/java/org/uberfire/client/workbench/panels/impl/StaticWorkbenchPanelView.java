@@ -18,6 +18,8 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -25,12 +27,10 @@ import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -62,18 +62,21 @@ public class StaticWorkbenchPanelView
         });
 
         //When a tab is selected ensure content is resized and set focus
-        panel.addSelectionHandler(new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection(final SelectionEvent<PartDefinition> event) {
-                panelManager.onPartLostFocus();
-                panelManager.onPartFocus(event.getSelectedItem());
-            }
-        });
+        panel.addSelectionHandler(getPanelSelectionHandler());
 
         Layouts.setToFillParent(panel);
 
         initWidget(panel);
+    }
 
+    SelectionHandler<PartDefinition> getPanelSelectionHandler() {
+        return event -> {
+            final PartDefinition selectedItem = event.getSelectedItem();
+            if (!Objects.equals(selectedItem, panelManager.getFocusedPart())) {
+                panelManager.onPartLostFocus();
+                panelManager.onPartFocus(selectedItem);
+            }
+        };
     }
 
     // override is for unit test: super.getWidget() returns a new mock every time

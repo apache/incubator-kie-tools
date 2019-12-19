@@ -361,6 +361,11 @@ public class PanelManagerImpl implements PanelManager {
     }
 
     @Override
+    public PartDefinition getFocusedPart() {
+        return activePart;
+    }
+
+    @Override
     public void onPartHidden(final PartDefinition part) {
         placeHiddenEvent.fire(new PlaceHiddenEvent(part.getPlace()));
     }
@@ -435,7 +440,7 @@ public class PanelManagerImpl implements PanelManager {
 
     @SuppressWarnings("unused")
     private void onChangeTitleWidgetEvent(@Observes ChangeTitleWidgetEvent event) {
-        if (event.getPlaceRequest() == null){
+        if (event.getPlaceRequest() == null) {
             return;
         }
         final PlaceRequest place = event.getPlaceRequest();

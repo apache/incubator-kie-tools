@@ -217,4 +217,9 @@ public interface PanelManager {
      * @param part the part that has been minimized
      */
     void onPartMinimized(PartDefinition part);
+
+    /**
+     * @return the focused {@link PartDefinition}
+     */
+    PartDefinition getFocusedPart();
 }
