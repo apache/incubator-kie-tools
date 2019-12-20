@@ -3,7 +3,7 @@
   <dmn:extensionElements></dmn:extensionElements>
   <dmn:inputData id="_F60D7991-B11F-4760-87B7-4F105E52C611" name="InputData-1">
     <dmn:extensionElements></dmn:extensionElements>
-    <dmn:variable id="_CCCEBA75-272F-4EAE-9DDF-C1C923E62B1D" name="InputData-1"></dmn:variable>
+    <dmn:variable id="_CCCEBA75-272F-4EAE-9DDF-C1C923E62B1D"></dmn:variable>
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
