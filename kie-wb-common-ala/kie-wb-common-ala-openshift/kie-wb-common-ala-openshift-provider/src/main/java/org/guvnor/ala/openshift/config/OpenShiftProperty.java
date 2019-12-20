@@ -67,7 +67,7 @@ public enum OpenShiftProperty {
     /* ---------- Provider properties: OpenShift Client ---------- */
     KUBERNETES_OAPI_VERSION(OpenShiftConfig.KUBERNETES_OAPI_VERSION_SYSTEM_PROPERTY),
     OPENSHIFT_BUILD_TIMEOUT(OpenShiftConfig.OPENSHIFT_BUILD_TIMEOUT_SYSTEM_PROPERTY),
-    OPENSHIFT_URL(OpenShiftConfig.OPENSHIFT_URL_SYTEM_PROPERTY),
+    OPENSHIFT_URL(OpenShiftConfig.OPENSHIFT_URL_SYSTEM_PROPERTY),
 
     /* ---------- Provider properties: Guvnor ALA API ---------- */
     PROVIDER_NAME(ProviderConfig.PROVIDER_NAME.replaceAll("-", ".")),
