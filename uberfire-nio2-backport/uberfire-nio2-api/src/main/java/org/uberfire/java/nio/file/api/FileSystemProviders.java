@@ -77,7 +77,7 @@ public final class FileSystemProviders {
         final Map<String, FileSystemProvider> result = new HashMap<String, FileSystemProvider>(installedProviders.size() + 1);
         for (int i = 0; i < installedProviders.size(); i++) {
             final FileSystemProvider provider = installedProviders.get(i);
-            if (i == 0) {
+            if (i == 0 || FileSystemUtils.isK8SFileSystemProviderAsDefault(provider)) {
                 provider.forceAsDefault();
                 result.put("default",
                            provider);

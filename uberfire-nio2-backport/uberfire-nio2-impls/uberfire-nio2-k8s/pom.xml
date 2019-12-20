@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-nio2-impls</artifactId>
+    <version>7.32.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>uberfire-nio2-k8s</artifactId>
+  <packaging>jar</packaging>
+
+  <name>UberFire NIO.2 :: K8S Impl</name>
+  <description>UberFire NIO.2 :: K8S Impl</description>
+
+  <properties>
+    <!-- Skip integration tests by default, they are enabled in openshift profile as the tests need connection to external OpenShift instance. -->
+    <skipITs>true</skipITs>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    
+    <!-- fabric8 kubernetes and openshift java client dependencies -->
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>openshift-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-server-mock</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>openshift-server-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- log -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+          <environmentVariables>
+            <KUBERNETES_SERVICE_HOST>127.0.0.1</KUBERNETES_SERVICE_HOST>
+            <KUBERNETES_SERVICE_PORT>8443</KUBERNETES_SERVICE_PORT>
+            <KUBERNETES_MASTER />
+            <KUBERNETES_API_VERSION />
+            <KUBERNETES_TRUST_CERTIFICATES />
+            <KUBERNETES_CERTS_CA_FILE />
+            <KUBERNETES_CERTS_CA_DATA />
+            <KUBERNETES_CERTS_CLIENT_FILE />
+            <KUBERNETES_CERTS_CLIENT_DATA />
+            <KUBERNETES_CERTS_CLIENT_KEY_FILE />
+            <KUBERNETES_CERTS_CLIENT_KEY_DATA />
+            <KUBERNETES_CERTS_CLIENT_KEY_ALGO />
+            <KUBERNETES_CERTS_CLIENT_KEY_PASSPHRASE />
+            <KUBERNETES_AUTH_BASIC_USERNAME />
+            <KUBERNETES_AUTH_BASIC_PASSWORD />
+            <KUBERNETES_AUTH_TRYKUBECONFIG />
+            <KUBERNETES_AUTH_TRYSERVICEACCOUNT />
+            <KUBERNETES_AUTH_TOKEN />
+            <KUBERNETES_WATCH_RECONNECTINTERVAL />
+            <KUBERNETES_WATCH_RECONNECTLIMIT />
+            <KUBERNETES_REQUEST_TIMEOUT />
+            <KUBERNETES_NAMESPACE />
+            <KUBERNETES_TLS_VERSIONS>TLSv1.2,TLSv1.1,TLSv1</KUBERNETES_TLS_VERSIONS>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>openshift</id>
+      <properties>
+        <skipITs>false</skipITs>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <systemProperties>
+                <!-- Properties for connection to external OpenShift for integration tests. -->
+                <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

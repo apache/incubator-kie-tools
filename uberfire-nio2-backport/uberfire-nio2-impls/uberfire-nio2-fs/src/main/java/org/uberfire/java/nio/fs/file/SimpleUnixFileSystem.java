@@ -19,18 +19,28 @@ package org.uberfire.java.nio.fs.file;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 public class SimpleUnixFileSystem extends BaseSimpleFileSystem {
 
-    final FileStore fileStore = new SimpleUnixFileStore(null);
+    protected FileStore fileStore;
 
-    SimpleUnixFileSystem(final FileSystemProvider provider,
+    protected SimpleUnixFileSystem(final FileSystemProvider provider,
                          final String path) {
-        super(provider,
-              path);
+        super(provider,path);
+        fileStore = new SimpleUnixFileStore(null);
+    }
+
+    @Override
+    public Path getPath(String first, String... more) {
+        if (UNIX_SEPARATOR_STRING.equals(first) && (more == null || more.length == 0)) {
+            return GeneralPathImpl.createRoot(this, UNIX_SEPARATOR_STRING, false);
+        } else {
+            return super.getPath(first, more);
+        }
     }
 
     @Override

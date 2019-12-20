@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.fs.file;
+package org.uberfire.java.nio.fs.k8s;
 
-import java.io.File;
-
-import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.file.SimpleUnixFileStore;
 
-public class SimpleUnixFileStore extends BaseSimpleFileStore {
+public class K8SFileStore extends SimpleUnixFileStore {
 
-    protected SimpleUnixFileStore(final Path path) {
+    K8SFileStore(final Path path) {
         super(path);
     }
 
     @Override
-    public String name() {
-        return "/";
+    public long getTotalSpace() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public long getTotalSpace() throws IOException {
-        return File.listRoots()[0].getTotalSpace();
+    public long getUsableSpace() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public long getUsableSpace() throws IOException {
-        return File.listRoots()[0].getUsableSpace();
-    }
-
-    @Override
-    public long getUnallocatedSpace() throws IOException {
+    public long getUnallocatedSpace() {
         throw new UnsupportedOperationException();
     }
 }

@@ -31,5 +31,6 @@
   <modules>
     <module>uberfire-nio2-fs</module>
     <module>uberfire-nio2-jgit</module>
+    <module>uberfire-nio2-k8s</module>
   </modules>
 </project>
