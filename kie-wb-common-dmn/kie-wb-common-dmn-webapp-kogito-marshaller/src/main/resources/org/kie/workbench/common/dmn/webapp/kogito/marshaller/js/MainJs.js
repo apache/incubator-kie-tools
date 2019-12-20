@@ -102,10 +102,14 @@ MainJs = {
 
         // Create unmarshaller
         var marshaller = context.createMarshaller();
-
         var xmlDocument = marshaller.marshalDocument(value);
-        var s = new XMLSerializer();
-        var toReturn = s.serializeToString(xmlDocument);
-        callback(toReturn);
+        if (typeof FormatterJs !== "undefined") {
+            var toReturn = FormatterJs.format(xmlDocument);
+            callback(toReturn);
+        } else {
+            var s = new XMLSerializer();
+            var toReturn = s.serializeToString(xmlDocument);
+            callback(toReturn);
+        }
     }
 }

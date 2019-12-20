@@ -755,6 +755,26 @@
                   </artifactItems>
                 </configuration>
               </execution>
+              <execution>
+                <id>Unpack FormatterJS JS from dependency</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.kie.workbench</groupId>
+                      <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+                      <version>${version.org.kie}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
+                      <includes>**/*.js</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
 

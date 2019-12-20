@@ -15,6 +15,7 @@
 /src/main/webapp/model/KIE.js
 /src/main/webapp/model/Jsonix-all.js
 /src/main/webapp/model/MainJs.js
+/src/main/webapp/model/FormatterJs.js
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
