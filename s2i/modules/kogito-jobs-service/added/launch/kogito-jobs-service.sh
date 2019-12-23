@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# keep it here for now
-# TODO refactor data-index image to reuse it.
-source ${KOGITO_HOME}/launch/kogito-infinispan-properties.sh
-
 function prepareEnv() {
     # keep it on alphabetical order
     unset BACKOFF_RETRY
@@ -24,8 +20,7 @@ function configure_jobs_service() {
             echo "INFINISPAN_CLIENT_SERVER_LIST env not found, please set it."
             exit 1
         else
-            infinispanProps=$(set_infinispan_props)
-            KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dkogito.jobs-service.persistence=infinispan ${infinispanProps}"
+            KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dkogito.jobs-service.persistence=infinispan"
             KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dquarkus.infinispan-client.server-list=${INFINISPAN_CLIENT_SERVER_LIST}"
         fi
     fi

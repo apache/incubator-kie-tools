@@ -20,7 +20,7 @@ Feature: Kogito-jobs-service feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -jar /home/kogito/bin/kogito-jobs-service-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.infinispan-client.use-auth=false -jar /home/kogito/bin/kogito-jobs-service-runner.jar
 
   Scenario: verify if container fails if persistence is enabled but there is no infinispan server list.
     When container is started with env

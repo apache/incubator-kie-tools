@@ -1,7 +1,21 @@
 #!/bin/bash -e
 
+function prepareEnv() {
+    # keep it on alphabetical order
+    unset INFINISPAN_AUTHREALM
+    unset INFINISPAN_PASSWORD
+    unset INFINISPAN_SASLMECHANISM
+    unset INFINISPAN_USEAUTH
+    unset INFINISPAN_USERNAME
+}
+
+function configure() {
+    configure_infinispan_props
+}
+
+
 # see https://quarkus.io/guides/infinispan-client-guide#quarkus-infinispan-client_configuration
-function set_infinispan_props() {
+function configure_infinispan_props() {
     local infinispan_props=""
 
     if [[ "${INFINISPAN_USEAUTH}" == "true" ]] && [[ -z "${INFINISPAN_USERNAME}"  || -z "${INFINISPAN_PASSWORD}" ]]; then
@@ -21,6 +35,6 @@ function set_infinispan_props() {
     if [ ! -z "${INFINISPAN_AUTHREALM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-realm=${INFINISPAN_AUTHREALM}"); fi
     if [ ! -z "${INFINISPAN_SASLMECHANISM}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.sasl-mechanism=${INFINISPAN_SASLMECHANISM}"); fi
 
-    echo $infinispan_props
+    INFINISPAN_PROPERTIES="${infinispan_props}"
 }
 

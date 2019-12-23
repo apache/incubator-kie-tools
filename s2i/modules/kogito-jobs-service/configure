@@ -8,7 +8,6 @@ ADDED_DIR=${SCRIPT_DIR}/added
 cp -v ${SOURCES_DIR}/kogito-jobs-service-runner.jar ${KOGITO_HOME}/bin/
 cp -rv ${ADDED_DIR}/launch/* ${KOGITO_HOME}/launch/
 
-
 chown -R 1001:0 ${KOGITO_HOME}
 chmod -R ug+rwX ${KOGITO_HOME}
 

@@ -13,23 +13,6 @@ labels:
 - name: "io.openshift.expose-services"
   value: "8080:http"
 
-envs:
-- name: "INFINISPAN_USEAUTH"
-  value: "false"
-  description: "Flag that signals to Infinispan Hotrod client to use authentication (Used to set the infinispan.client.hotrod.use_auth system property)"
-- name: "INFINISPAN_USERNAME"
-  value: ""
-  description: "Username for the user credential used by the Hotrod client (Used to set the infinispan.client.hotrod.auth_username system property)"
-- name: "INFINISPAN_PASSWORD"
-  value: ""
-  description: "Password for the user credential used by the Hotrod client (Used to set the infinispan.client.hotrod.auth_password system property)"
-- name: "INFINISPAN_AUTHREALM"
-  value: ""
-  description: "Infinispan authentication realm (Used to set the infinispan.client.hotrod.auth_realm system property)"
-- name: "INFINISPAN_SASLMECHANISM"
-  value: ""
-  description: "Sasl mechanism to use during authentication. Example: PLAIN (Used to set the infinispan.client.hotrod.sasl_mechanism system property)"
-
 ports:
 - value: 8080
 
@@ -37,13 +20,15 @@ modules:
   install:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.openjdk
+    version: "1.8.0-headless"
+  - name: org.kie.kogito.launch.scripts
+  - name: org.kie.kogito.infinispan.properties
   - name: org.kie.kogito.dataindex
 
-packages:
-  install:
-  - java-1.8.0-openjdk
-
 run:
+  workdir: "/home/kogito/"
   user: 1001
-  cmd: 
-    - "/home/kogito/bin/start"
+  cmd:
+    - "/home/kogito/kogito-app-launch.sh"
+

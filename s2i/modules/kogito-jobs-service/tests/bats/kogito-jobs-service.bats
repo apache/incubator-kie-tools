@@ -8,6 +8,7 @@ cp $BATS_TEST_DIRNAME/../../../kogito-infinispan-properties/added/kogito-infinis
 
 # imports
 load $BATS_TEST_DIRNAME/../../added/launch/kogito-jobs-service.sh
+load ${KOGITO_HOME}/launch/kogito-infinispan-properties.sh
 
 
 teardown() {
@@ -60,9 +61,13 @@ teardown() {
     export INFINISPAN_USERNAME="nevermind"
     export INFINISPAN_PASSWORD="impossible2gues"
     configure_jobs_service
-    expected=" -Dkogito.jobs-service.persistence=infinispan -Dquarkus.infinispan-client.auth-username=nevermind -Dquarkus.infinispan-client.auth-password=impossible2gues -Dquarkus.infinispan-client.use-auth=true -Dquarkus.infinispan-client.server-list=localhost:11222"
-    echo "Result is ${KOGITO_JOBS_PROPS} and expected is ${expected}"
-    [ "${KOGITO_JOBS_PROPS}" = "${expected}" ]
+    configure_infinispan_props
+
+    result="${KOGITO_JOBS_PROPS} ${INFINISPAN_PROPERTIES}"
+    expected=" -Dkogito.jobs-service.persistence=infinispan -Dquarkus.infinispan-client.server-list=localhost:11222  -Dquarkus.infinispan-client.auth-username=nevermind -Dquarkus.infinispan-client.auth-password=impossible2gues -Dquarkus.infinispan-client.use-auth=true"
+
+    echo "Result is ${result} and expected is ${expected}"
+    [ "${result}" = "${expected}" ]
 }
 
 

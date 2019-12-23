@@ -1,9 +1,15 @@
 #!/usr/bin/env bats
 
-export TEST=true
+export KOGITO_HOME=/tmp/kogito
+export HOME=$KOGITO_HOME
+mkdir -p ${KOGITO_HOME}/launch
+cp $BATS_TEST_DIRNAME/../../../kogito-infinispan-properties/added/kogito-infinispan-properties.sh ${KOGITO_HOME}/launch/
 
-# import
-load $BATS_TEST_DIRNAME/../../added/kogito-infinispan-properties.sh
+load ${KOGITO_HOME}/launch/kogito-infinispan-properties.sh
+
+teardown() {
+    rm -rf ${KOGITO_HOME}
+}
 
 function clear_vars() {
     unset INFINISPAN_USEAUTH
@@ -17,7 +23,6 @@ function clear_vars() {
     clear_vars
     local expected=""
     configure_infinispan_props
-
     echo "Result is ${INFINISPAN_PROPERTIES} and expected is ${expected}" >&2
     [ "${expected}" = "${INFINISPAN_PROPERTIES}" ]
 }
@@ -28,7 +33,6 @@ function clear_vars() {
     export INFINISPAN_USEAUTH="false"
     local expected=" -Dquarkus.infinispan-client.use-auth=false"
     configure_infinispan_props
-
     echo "Result is ${INFINISPAN_PROPERTIES} and expected is ${expected}" >&2
     [ "${expected}" = "${INFINISPAN_PROPERTIES}" ]
 }
@@ -86,8 +90,12 @@ function clear_vars() {
 @test "when use auth is set to true and no credentials" {
     clear_vars
     export INFINISPAN_USEAUTH="true"
+
     run configure_infinispan_props
-    # exit
-    echo "Status: ${status}"
+
+    expected="[ERROR] Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
+    echo "Result is ${output} and expected is ${expected}"
+    echo "Expected status is 1, outcome status is ${status}"
     [ "$status" -eq 1 ]
+    [ "${output}" = "${expected}" ]
 }

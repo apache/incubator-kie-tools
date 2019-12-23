@@ -3,7 +3,7 @@ name: org.kie.kogito.dataindex
 version: "0.7.0-rc1"
 
 artifacts:
-- name: data-index-service-8.0.0-SNAPSHOT-runner.jar
+- name: kogito-data-index-runner.jar
   url: https://repository.jboss.org/org/kie/kogito/data-index-service/8.0.0-SNAPSHOT/data-index-service-8.0.0-20191216.211654-103-runner.jar
   md5: aa73da330737993d08daf8046bffe728
 

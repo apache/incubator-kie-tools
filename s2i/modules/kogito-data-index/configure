@@ -5,8 +5,12 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 
-mv ${SOURCES_DIR}/data-index-service-*-runner.jar ${KOGITO_HOME}/bin/
-mv ${ADDED_DIR}/* ${KOGITO_HOME}/bin/
+cp -v ${SOURCES_DIR}/kogito-data-index-runner.jar ${KOGITO_HOME}/bin/
 
 chown -R 1001:0 ${KOGITO_HOME}
 chmod -R ug+rwX ${KOGITO_HOME}
+
+
+cp -v ${ADDED_DIR}/kogito-app-launch.sh ${KOGITO_HOME}
+chmod +x-w ${KOGITO_HOME}/kogito-app-launch.sh
+

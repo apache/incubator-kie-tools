@@ -14,7 +14,13 @@ Feature: Kogito-data-index feature.
 
   Scenario: verify if the binary index is available on /home/kogito
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-8.0.0-SNAPSHOT-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/kogito-data-index-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-data-index-runner.jar
+
+  Scenario: Verify if the debug is correctly enabled
+    When container is started with env
+      | variable     | value |
+      | SCRIPT_DEBUG | true  |
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.infinispan-client.use-auth=false-Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/kogito-data-index-runner.jar
 
   Scenario: Verify data-index default configuration
     When container is started with env
@@ -48,15 +54,11 @@ Feature: Kogito-data-index feature.
     And container log should contain quarkus.infinispan-client.auth-realm = SecretRealm
     And container log should contain quarkus.infinispan-client.sasl-mechanism = COOLGSSAPI
 
-  Scenario: verify if all parameters are correctly set
+  Scenario: verify if image is started
     When container is started with env
-      | variable                                                               | value                  |
-      | INFINISPAN_CREDENTIAL_SECRET                                           | infinispan-credentials |
-      | INFINISPAN_AUTHREALM                                                   | default                |
-      | INFINISPAN_USEAUTH                                                     | true                   |
-      | INFINISPAN_SASLMECHANISM                                               | PLAIN                  |
-      | QUARKUS_INFINISPAN_CLIENT_SERVER_LIST                                  | server:11222           |
-      | MP_MESSAGING_INCOMING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS | mycluster:9092         |
-      | KOGITO_PROTOBUF_FOLDER                                                 | /home/kogito           |
-      | KOGITO_PROTOBUF_WATCH                                                  | true                   |
-     Then container log should contain Error: Could not find or load main class [ERROR]
+      | variable                        | value                  |
+      | INFINISPAN_CREDENTIAL_SECRET    | infinispan-credentials |
+      | INFINISPAN_AUTHREALM            | default                |
+      | INFINISPAN_USEAUTH              | true                   |
+      | INFINISPAN_SASLMECHANISM        | PLAIN                  |
+     Then container log should not contain Error: Could not find or load main class [ERROR]
