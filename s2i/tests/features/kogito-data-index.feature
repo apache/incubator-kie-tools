@@ -14,7 +14,7 @@ Feature: Kogito-data-index feature.
 
   Scenario: verify if the binary index is available on /home/kogito
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-0.6.1-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-*-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-8.0.0-SNAPSHOT-runner.jar
 
   Scenario: Verify data-index default configuration
     When container is started with env
