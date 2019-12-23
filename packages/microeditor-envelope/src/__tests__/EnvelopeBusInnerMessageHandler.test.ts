@@ -16,7 +16,7 @@
 
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData, ResourcesList, ResourceContent } from "@kogito-tooling/core-api";
+import { LanguageData, ResourcesList, ResourceContent, EditorContent } from "@kogito-tooling/core-api";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];
@@ -31,7 +31,7 @@ beforeEach(() => {
       postMessage: (message, targetOrigin) => sentMessages.push([message, targetOrigin])
     },
     self => ({
-      receive_contentResponse: (content: string) => {
+      receive_contentResponse: (content: EditorContent) => {
         receivedMessages.push(["contentResponse", content]);
       },
       receive_languageResponse: (languageData: LanguageData) => {
@@ -180,8 +180,9 @@ describe("send", () => {
   });
 
   test("respond contentRequest", () => {
-    handler.respond_contentRequest("some");
-    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "some" }, "tgt-orgn"]]);
+    const content = { content: "some" };
+    handler.respond_contentRequest(content);
+    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content }, "tgt-orgn"]]);
   });
 
   test("notify setContentError", () => {

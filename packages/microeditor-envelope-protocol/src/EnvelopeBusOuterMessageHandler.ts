@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList, EditorContent } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
@@ -75,7 +75,7 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
   }
 
-  public respond_contentRequest(content: string) {
+  public respond_contentRequest(content: EditorContent) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
   }
 

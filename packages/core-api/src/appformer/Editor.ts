@@ -28,7 +28,7 @@ export abstract class Editor extends Component {
     super({ type: ComponentTypes.EDITOR, af_componentId: componentId });
   }
 
-  public abstract setContent(content: string): Promise<void>;
+  public abstract setContent(path: string, content: string): Promise<void>; 
 
   public abstract getContent(): Promise<string>;
 

@@ -23,14 +23,18 @@ import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
 import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
 import { ResourceContentEditorService } from "./ResourceContentEditorService";
+import { EditorContext } from "./EditorContext";
+import { ChannelType } from "@kogito-tooling/core-api";
 
 export * from "./EditorFactory";
+export * from "./EditorContext";
 export * from "./EnvelopeBusInnerMessageHandler";
 
 declare global {
   interface Window {
     envelope: {
-      resourceContentEditorService: ResourceContentEditorService;
+      resourceContentEditorService?: ResourceContentEditorService;
+      editorContext: EditorContext
     }
   }
 }
@@ -49,9 +53,8 @@ class ReactDomRenderer implements Renderer {
  * @param args.busApi The implementation of EnvelopeBusApi to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors using a LanguageData implementation.
  */
-export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; editorFactory: EditorFactory<any> }) {
+export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; editorFactory: EditorFactory<any>, editorContext: EditorContext }) {
   const specialDomElements = new SpecialDomElements();
-
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const editorEnvelopeController = new EditorEnvelopeController(
@@ -63,7 +66,8 @@ export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; edi
 
   return editorEnvelopeController.start(args.container).then(messageBus => {
     window.envelope = {
-      resourceContentEditorService: resourceContentEditorCoordinator.exposed(messageBus)
+      resourceContentEditorService: resourceContentEditorCoordinator.exposed(messageBus),
+      editorContext: args.editorContext
     }
   });
 

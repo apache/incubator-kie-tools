@@ -96,6 +96,7 @@ describe("EditorEnvelopeController", () => {
   test("receives init request", async () => {
     const render = await startController();
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
     expect(sentMessages).toEqual([
       { type: EnvelopeBusMessageType.RETURN_INIT, data: undefined },
       { type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined }
@@ -106,6 +107,7 @@ describe("EditorEnvelopeController", () => {
   test("receives language response", async () => {
     await startController();
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
     sentMessages = [];
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
 
@@ -116,9 +118,10 @@ describe("EditorEnvelopeController", () => {
     const render = await startController();
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
     sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "test content" });
+    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content"} });
 
     expect(sentMessages).toEqual([]);
     expect(render.update()).toMatchSnapshot();
@@ -128,9 +131,10 @@ describe("EditorEnvelopeController", () => {
     const render = await startController();
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
     sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "test content" });
+    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
     await delay(EditorEnvelopeController.ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT);
 
     expect(sentMessages).toEqual([]);

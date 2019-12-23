@@ -61,6 +61,7 @@ export function SingleEditorApp(props: {
   const IsolatedEditorComponent = (
     <IsolatedEditor
       getFileContents={props.getFileContents}
+      contentPath={props.fileInfo.path}
       openFileExtension={props.openFileExtension}
       textMode={textMode}
       readonly={props.readonly}

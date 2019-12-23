@@ -28,6 +28,7 @@ const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
 interface Props {
   openFileExtension: string;
+  contentPath: string;
   getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
 }
@@ -74,7 +75,12 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           );
         },
         receive_contentRequest() {
-          props.getFileContents().then(c => self.respond_contentRequest(c || ""));
+          props.getFileContents().then(c => {
+            self.respond_contentRequest({
+              path: props.contentPath || "",
+              content: c || ""
+            });
+          });
         },
         receive_setContentError() {
           //TODO: Display a nice message with explanation why "setContent" failed
@@ -117,7 +123,10 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
+      .then(c => {
+        const editorContent = { content: c || "" };
+        envelopeBusOuterMessageHandler.respond_contentRequest(editorContent)
+      })
       .then(() => {
         task = window.setInterval(
           () => envelopeBusOuterMessageHandler.request_contentResponse(),
@@ -148,7 +157,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
       return {
         setContent: (content: string) => {
-          envelopeBusOuterMessageHandler.respond_contentRequest(content);
+          envelopeBusOuterMessageHandler.respond_contentRequest({ content: content });
           return Promise.resolve();
         }
       };

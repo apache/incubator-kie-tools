@@ -27,7 +27,7 @@ import {
 import * as dependencies__ from "../../dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
 
-export function renderPrEditorsApp(args: Globals) {
+export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
@@ -43,7 +43,7 @@ export function renderPrEditorsApp(args: Globals) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <PrEditorsApp prInfo={parsePrInfo()} />
+      <PrEditorsApp prInfo={parsePrInfo()} contentPath={args.contentPath} />
     </Main>,
     createAndGetMainContainer(args.id, dependencies__.all.body()),
     () => args.logger.log("Mounted.")
