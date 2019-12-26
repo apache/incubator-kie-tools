@@ -6,148 +6,150 @@ metadata:
     description: ImageStream definitions for Kogito images
     openshift.io/provider-display-name: Kie Group.
 items:
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-quarkus-ubi8
-    annotations:
-      openshift.io/display-name: Runtime image for Kogito based on Quarkus native image
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-    - name: '0.7.0-rc1'
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-quarkus-ubi8
       annotations:
-        description: Runtime image for Kogito based on Quarkus native image
-        iconClass: icon-jbpm
-        tags: runtime,kogito,quarkus
-        supports: quarkus
-        version: '0.7.0-rc1'
-      referencePolicy:
-        type: Local
-      from:
-        kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-ubi8:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-quarkus-jvm-ubi8
-    annotations:
-      openshift.io/display-name: Runtime image for Kogito based on Quarkus JVM image
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-      - name: '0.7.0-rc1'
-        annotations:
-          description: Runtime image for Kogito based on Quarkus JVM image
-          iconClass: icon-jbpm
-          tags: runtime,kogito,quarkus,jvm
-          supports: quarkus
-          version: '0.7.0-rc1'
-        referencePolicy:
-          type: Local
-        from:
-          kind: DockerImage
-          name: quay.io/kiegroup/kogito-quarkus-jvm-ubi8:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-quarkus-ubi8-s2i
-    annotations:
-      openshift.io/display-name: Platform for building Kogito based on Quarkus
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-    - name: '0.7.0-rc1'
+        openshift.io/display-name: Runtime image for Kogito based on Quarkus native image
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Runtime image for Kogito based on Quarkus native image
+            iconClass: icon-jbpm
+            tags: runtime,kogito,quarkus
+            supports: quarkus
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-quarkus-ubi8:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-quarkus-jvm-ubi8
       annotations:
-        description: Platform for building Kogito based on Quarkus
-        iconClass: icon-jbpm
-        tags: builder,kogito,quarkus
-        supports: quarkus
-        version: '0.7.0-rc1'
-      referencePolicy:
-        type: Local
-      from:
-        kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-springboot-ubi8
-    annotations:
-      openshift.io/display-name: Runtime image for Kogito based on SpringBoot
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-    - name: '0.7.0-rc1'
+        openshift.io/display-name: Runtime image for Kogito based on Quarkus JVM image
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Runtime image for Kogito based on Quarkus JVM image
+            iconClass: icon-jbpm
+            tags: runtime,kogito,quarkus,jvm
+            supports: quarkus
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-quarkus-jvm-ubi8:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-quarkus-ubi8-s2i
       annotations:
-        description: Runtime image for Kogito based on SpringBoot
-        iconClass: icon-jbpm
-        tags: runtime,kogito,springboot
-        supports: springboot
-        version: '0.7.0-rc1'
-      referencePolicy:
-        type: Local
-      from:
-        kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-ubi8:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-springboot-ubi8-s2i
-    annotations:
-      openshift.io/display-name: Platform for building Kogito based on SpringBoot
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-    - name: '0.7.0-rc1'
+        openshift.io/display-name: Platform for building Kogito based on Quarkus
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Platform for building Kogito based on Quarkus
+            iconClass: icon-jbpm
+            tags: builder,kogito,quarkus
+            supports: quarkus
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-springboot-ubi8
       annotations:
-        description: Platform for building Kogito based on Quarkus
-        iconClass: icon-jbpm
-        tags: builder,kogito,springboot
-        supports: springboot
-        version: '0.7.0-rc1'
-      referencePolicy:
-        type: Local
-      from:
-        kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-data-index
-    annotations:
-      openshift.io/display-name: Runtime image for the Kogito Data Index Service
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-    - name: '0.7.0-rc1'
+        openshift.io/display-name: Runtime image for Kogito based on SpringBoot
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Runtime image for Kogito based on SpringBoot
+            iconClass: icon-jbpm
+            tags: runtime,kogito,springboot
+            supports: springboot
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-springboot-ubi8:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-springboot-ubi8-s2i
       annotations:
-        description: Runtime image for the Kogito Data Index Service
-        iconClass: icon-jbpm
-        tags: kogito,data-index
-        version: '0.7.0-rc1'
-      referencePolicy:
-        type: Local
-      from:
-        kind: DockerImage
-        name: quay.io/kiegroup/kogito-data-index:0.7.0-rc1
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: kogito-jobs-service
-    annotations:
-      openshift.io/display-name: Runtime image for the Kogito Jobs Service - Tech preview
-      openshift.io/provider-display-name: Kie Group.
-  spec:
-    tags:
-      - name: '0.7.0-rc1'
-        annotations:
-          description: Runtime image for the Kogito Jobs Service - Tech preview
-          iconClass: icon-jbpm
-          tags: kogito,jobs-service
-          version: '0.7.0-rc1'
-        referencePolicy:
-          type: Local
-        from:
-          kind: DockerImage
-          name: quay.io/kiegroup/kogito-jobs-service:0.7.0-rc1
+        openshift.io/display-name: Platform for building Kogito based on SpringBoot
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Platform for building Kogito based on Quarkus
+            iconClass: icon-jbpm
+            tags: builder,kogito,springboot
+            supports: springboot
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-data-index
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Data Index Service
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Runtime image for the Kogito Data Index Service
+            iconClass: icon-jbpm
+            tags: kogito,data-index
+            supports: infinispan, persitence
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-data-index:0.7.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-jobs-service
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Jobs Service - Tech preview
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.7.0-rc1'
+          annotations:
+            description: Runtime image for the Kogito Jobs Service - Tech preview
+            iconClass: icon-jbpm
+            tags: kogito,jobs-service
+            supports: out-of-box process timers
+            version: '0.7.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-jobs-service:0.7.0-rc1
