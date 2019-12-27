@@ -6,10 +6,10 @@ SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 
 cp -v ${SOURCES_DIR}/kogito-data-index-runner.jar ${KOGITO_HOME}/bin/
+cp -rv ${ADDED_DIR}/launch/* ${KOGITO_HOME}/launch/
 
 chown -R 1001:0 ${KOGITO_HOME}
 chmod -R ug+rwX ${KOGITO_HOME}
-
 
 cp -v ${ADDED_DIR}/kogito-app-launch.sh ${KOGITO_HOME}
 chmod +x-w ${KOGITO_HOME}/kogito-app-launch.sh
