@@ -25,8 +25,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller-tests</artifactId>
-  <name>Kie Workbench - Common - DMN - Kogito Marshaller Integration Tests</name>
-  <description>Kie Workbench - Common - DMN - Kogito Marshaller Integration Tests</description>
+  <name>Kie Workbench - Common - DMN - Kogito Marshaller - Tests</name>
+  <description>Kie Workbench - Common - DMN - Kogito Marshaller - Tests</description>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -61,6 +61,12 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- DMN Editor -->
@@ -83,13 +89,73 @@
 
     <!-- GWT Sources - required for GWTTestCase -->
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-dmn-api</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -105,6 +171,11 @@
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-adf-base</artifactId>
       <classifier>sources</classifier>
     </dependency>
 
