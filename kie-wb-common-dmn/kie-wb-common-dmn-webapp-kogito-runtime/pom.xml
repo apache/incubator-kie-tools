@@ -508,10 +508,11 @@
               <strict>true</strict>
               <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
               <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-              <draftCompile>true</draftCompile>
-              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
               <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
-              <logLevel>INFO</logLevel>
+              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+              <optimizationLevel>9</optimizationLevel>
+              <style>OBFUSCATED</style>
+
               <noServer>false</noServer>
               <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
               <disableCastChecking>true</disableCastChecking>

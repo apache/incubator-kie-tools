@@ -20,9 +20,8 @@
 
   <inherits name="org.kie.workbench.common.dmn.webapp.kogito.common.DMNWebappKogitoCommon"/>
 
-  <!-- We don't need to support IE10 or older -->
-  <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
-  <set-property name="user.agent" value="gecko1_8,safari"/>
+  <!-- We only need Chrome -->
+  <set-property name="user.agent" value="safari"/>
 
   <!-- To change the default logLevel -->
   <set-property name="gwt.logging.logLevel" value="SEVERE"/>
