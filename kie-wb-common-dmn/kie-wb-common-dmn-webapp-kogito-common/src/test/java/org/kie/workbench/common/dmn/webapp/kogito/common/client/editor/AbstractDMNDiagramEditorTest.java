@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -227,6 +228,9 @@ public abstract class AbstractDMNDiagramEditorTest {
     @Mock
     protected ClientRuntimeError clientRuntimeError;
 
+    @Mock
+    protected MonacoFEELInitializer feelInitializer;
+
     @Captor
     protected ArgumentCaptor<KogitoDiagramResourceImpl> kogitoDiagramResourceArgumentCaptor;
 
@@ -292,6 +296,7 @@ public abstract class AbstractDMNDiagramEditorTest {
         verify(fileMenuBuilder).build();
 
         verify(multiPageEditorContainerView).init(eq(editor));
+        verify(feelInitializer).initializeFEELEditor();
     }
 
     @Test

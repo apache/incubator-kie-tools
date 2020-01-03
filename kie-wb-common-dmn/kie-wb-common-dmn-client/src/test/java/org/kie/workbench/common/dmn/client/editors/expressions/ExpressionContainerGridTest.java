@@ -53,6 +53,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.AutocompleteTextAreaDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -194,6 +195,9 @@ public class ExpressionContainerGridTest {
 
     @Mock
     private TextAreaSingletonDOMElementFactory textAreaSingletonDOMElementFactory;
+
+    @Mock
+    private AutocompleteTextAreaDOMElementFactory autocompleteTextareaDOMElementFactory;
 
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;
@@ -396,7 +400,7 @@ public class ExpressionContainerGridTest {
     public void testResizeContainerCorrectlyResizesExpressionComponentWidth() {
         final BaseGridData literalExpressionModel = new BaseGridData();
         final DMNGridColumn literalExpressionEditorColumn = new LiteralExpressionColumn(Collections.emptyList(),
-                                                                                        textAreaSingletonDOMElementFactory,
+                                                                                        autocompleteTextareaDOMElementFactory,
                                                                                         DMNGridColumn.DEFAULT_WIDTH,
                                                                                         literalExpressionEditor);
         literalExpressionModel.appendColumn(literalExpressionEditorColumn);

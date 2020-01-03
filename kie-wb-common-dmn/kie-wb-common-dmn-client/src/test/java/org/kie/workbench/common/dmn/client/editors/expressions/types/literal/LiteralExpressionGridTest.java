@@ -44,6 +44,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid.LITERAL_EXPRESSION_DEFAULT_WIDTH;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -236,6 +237,11 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
         setupGrid(0);
 
         assertThat(extractHeaderMetaData().asDMNModelInstrumentedBase()).isInstanceOf(hasExpression.getVariable().getClass());
+    }
+
+    @Override
+    protected double getDefaultWidth() {
+        return LITERAL_EXPRESSION_DEFAULT_WIDTH;
     }
 }
 

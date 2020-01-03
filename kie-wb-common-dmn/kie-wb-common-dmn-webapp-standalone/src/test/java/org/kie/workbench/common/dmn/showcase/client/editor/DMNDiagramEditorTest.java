@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -147,6 +148,9 @@ public class DMNDiagramEditorTest {
     private HTMLElement searchBarComponentViewElement;
 
     @Mock
+    private MonacoFEELInitializer feelInitializer;
+
+    @Mock
     private ElementWrapperWidget searchBarComponentWidget;
     private DMNDiagramEditor editor;
 
@@ -195,7 +199,8 @@ public class DMNDiagramEditorTest {
                                           null,
                                           screenPanelView,
                                           null,
-                                          kieView));
+                                          kieView,
+                                          feelInitializer));
 
         doReturn(searchBarComponentWidget).when(editor).getWidget(searchBarComponentViewElement);
     }
@@ -225,6 +230,7 @@ public class DMNDiagramEditorTest {
         verify(kieView).addMainEditorPage(screenPanelWidget);
         verify(multiPageEditor).addPage(dataTypesPage);
         verify(multiPageEditor).addPage(includedModelsPage);
+        verify(feelInitializer).initializeFEELEditor();
         verify(multiPageEditor).addPage(documentationPage);
         verify(editorSearchIndex).setIsDataTypesTabActiveSupplier(isDataTypesTabActiveSupplier);
         verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(hashcodeSupplier);

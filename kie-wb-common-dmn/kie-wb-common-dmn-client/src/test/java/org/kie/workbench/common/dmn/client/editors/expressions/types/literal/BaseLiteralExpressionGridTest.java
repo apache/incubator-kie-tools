@@ -300,7 +300,7 @@ public abstract class BaseLiteralExpressionGridTest<G extends BaseDelegatingExpr
     public void testInitialColumnWidthsFromDefinition() {
         setupGrid(0);
 
-        assertComponentWidths(DMNGridColumn.DEFAULT_WIDTH);
+        assertComponentWidths(getDefaultWidth());
     }
 
     @Test
@@ -421,6 +421,10 @@ public abstract class BaseLiteralExpressionGridTest<G extends BaseDelegatingExpr
         grid.onItemSelected(listSelectorItem);
 
         verify(command).execute();
+    }
+
+    protected double getDefaultWidth() {
+        return DMNGridColumn.DEFAULT_WIDTH;
     }
 }
 

@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -129,6 +130,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final IncludedModelsPageStateProviderImpl importsPageProvider;
     private final DMNEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
+    private final MonacoFEELInitializer feelInitializer;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -157,7 +159,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final DMNEditorSearchIndex editorSearchIndex,
-                            final SearchBarComponent<DMNSearchableElement> searchBarComponent) {
+                            final SearchBarComponent<DMNSearchableElement> searchBarComponent,
+                            final MonacoFEELInitializer feelInitializer) {
         super(view,
               xmlEditorView,
               editorSessionPresenterInstances,
@@ -185,6 +188,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.importsPageProvider = importsPageProvider;
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
+        this.feelInitializer = feelInitializer;
     }
 
     @Override
@@ -194,6 +198,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         getMenuSessionItems().setErrorConsumer(e -> hideLoadingViews());
         editorSearchIndex.setCurrentAssetHashcodeSupplier(getGetCurrentContentHashSupplier());
         editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
+        feelInitializer.initializeFEELEditor();
     }
 
     @Override

@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
@@ -124,7 +125,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final DataTypesPage dataTypesPage,
                             final KogitoClientDiagramService diagramServices,
                             final DMNVFSService vfsService,
-                            final Promises promises) {
+                            final Promises promises,
+                            final MonacoFEELInitializer feelInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -151,7 +153,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               layoutHelper,
               openDiagramLayoutExecutor,
               dataTypesPage,
-              diagramServices);
+              diagramServices,
+              feelInitializer);
         this.notificationEvent = notificationEvent;
         this.vfsService = vfsService;
         this.promises = promises;

@@ -28,5 +28,6 @@ public class DMNClientEntryPoint {
     @PostConstruct
     public void init() {
         PatternFlyBootstrapper.ensureMomentIsAvailable();
+        PatternFlyBootstrapper.ensureMonacoEditorLoaderIsAvailable();
     }
 }

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -111,6 +112,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
     protected final KogitoClientDiagramService diagramServices;
+    protected final MonacoFEELInitializer feelInitializer;
 
     public AbstractDMNDiagramEditor(final View view,
                                     final FileMenuBuilder fileMenuBuilder,
@@ -138,7 +140,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final LayoutHelper layoutHelper,
                                     final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                     final DataTypesPage dataTypesPage,
-                                    final KogitoClientDiagramService diagramServices) {
+                                    final KogitoClientDiagramService diagramServices,
+                                    final MonacoFEELInitializer feelInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -171,6 +174,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.searchBarComponent = searchBarComponent;
 
         this.diagramServices = diagramServices;
+        this.feelInitializer = feelInitializer;
     }
 
     @OnStartup
@@ -181,6 +185,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         decisionNavigatorDock.init(PERSPECTIVE_ID);
         diagramPropertiesDock.init(PERSPECTIVE_ID);
         diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
+
+        feelInitializer.initializeFEELEditor();
     }
 
     void superDoStartUp(final PlaceRequest place) {

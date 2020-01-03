@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -177,6 +178,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private HTMLElement searchBarComponentViewElement;
 
     @Mock
+    private MonacoFEELInitializer feelInitializer;
+
+    @Mock
     private ElementWrapperWidget searchBarComponentWidget;
 
     @Captor
@@ -236,7 +240,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  includedModelsPage,
                                                  importsPageProvider,
                                                  editorSearchIndex,
-                                                 searchBarComponent) {
+                                                 searchBarComponent,
+                                                 feelInitializer) {
             {
                 docks = DMNDiagramEditorTest.this.docks;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -307,6 +312,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         //DMNProjectEditorMenuSessionItems.setErrorConsumer(..) is called several times so just check the last invocation
         verify(dmnProjectMenuSessionItems, atLeast(1)).setErrorConsumer(errorConsumerCaptor.capture());
+        verify(feelInitializer, atLeast(1)).initializeFEELEditor();
 
         errorConsumerCaptor.getValue().accept("ERROR");
 

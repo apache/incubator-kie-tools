@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.dmn.showcase.client.services.DMNShowcaseDiagramService;
@@ -141,6 +142,7 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
     private final ScreenPanelView screenPanelView;
     private final ScreenErrorView screenErrorView;
     private final KieEditorWrapperView kieView;
+    private final MonacoFEELInitializer feelInitializer;
 
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
@@ -170,7 +172,8 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
                             final MenuDevCommandsBuilder menuDevCommandsBuilder,
                             final ScreenPanelView screenPanelView,
                             final ScreenErrorView screenErrorView,
-                            final KieEditorWrapperView kieView) {
+                            final KieEditorWrapperView kieView,
+                            final MonacoFEELInitializer feelInitializer) {
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.presenter = presenter;
@@ -199,6 +202,7 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
         this.screenPanelView = screenPanelView;
         this.screenErrorView = screenErrorView;
         this.kieView = kieView;
+        this.feelInitializer = feelInitializer;
     }
 
     @PostConstruct
@@ -213,6 +217,7 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
         kieView.getMultiPage().addPage(getDocumentationPage());
         kieView.getMultiPage().addPage(dataTypesPage);
         kieView.getMultiPage().addPage(includedModelsPage);
+        feelInitializer.initializeFEELEditor();
 
         setupEditorSearchIndex();
         setupSearchComponent();

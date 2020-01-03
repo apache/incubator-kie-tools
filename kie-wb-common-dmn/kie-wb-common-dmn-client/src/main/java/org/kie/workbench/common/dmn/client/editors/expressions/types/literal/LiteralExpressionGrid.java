@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetCellSelectorMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderGridWidgetEditCellMouseEventHandler;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -62,6 +61,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.getExpressionTextLineHeight;
 
 public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
+
+    static final double LITERAL_EXPRESSION_DEFAULT_WIDTH = 300.0;
 
     private final NameAndDataTypePopoverView.Presenter headerEditor;
 
@@ -158,8 +159,8 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
         }
 
         final GridColumn literalExpressionColumn = new LiteralExpressionColumn(headerMetaData,
-                                                                               getBodyTextAreaFactory(),
-                                                                               getAndSetInitialWidth(0, DMNGridColumn.DEFAULT_WIDTH),
+                                                                               getAutocompleteTextareaFactory(),
+                                                                               getAndSetInitialWidth(0, LITERAL_EXPRESSION_DEFAULT_WIDTH),
                                                                                this);
 
         model.appendColumn(literalExpressionColumn);

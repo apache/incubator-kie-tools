@@ -142,7 +142,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     dataTypesPage,
                                     clientDiagramService,
                                     vfsService,
-                                    promises) {
+                                    promises,
+                                    feelInitializer) {
 
             @Override
             protected PlaceRequest getPlaceRequest() {

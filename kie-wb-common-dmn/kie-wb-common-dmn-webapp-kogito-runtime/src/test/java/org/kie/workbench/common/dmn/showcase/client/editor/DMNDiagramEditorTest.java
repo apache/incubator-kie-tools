@@ -66,7 +66,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     layoutHelper,
                                     layoutExecutor,
                                     dataTypesPage,
-                                    clientDiagramService) {
+                                    clientDiagramService,
+                                    feelInitializer) {
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;

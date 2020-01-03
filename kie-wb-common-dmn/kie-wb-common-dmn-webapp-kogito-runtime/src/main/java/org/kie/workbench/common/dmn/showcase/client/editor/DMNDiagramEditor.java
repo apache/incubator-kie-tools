@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
@@ -100,7 +101,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final LayoutHelper layoutHelper,
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
-                            final KogitoClientDiagramService diagramServices) {
+                            final KogitoClientDiagramService diagramServices,
+                            final MonacoFEELInitializer feelInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -127,7 +129,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               layoutHelper,
               openDiagramLayoutExecutor,
               dataTypesPage,
-              diagramServices);
+              diagramServices,
+              feelInitializer);
     }
 
     @Override
