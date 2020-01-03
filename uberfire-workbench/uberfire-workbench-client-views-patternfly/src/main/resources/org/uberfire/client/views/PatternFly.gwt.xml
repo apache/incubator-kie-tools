@@ -30,4 +30,5 @@
   <stylesheet src="bootstrap-select/css/bootstrap-select.min.css"/>
   <stylesheet src="prettify/bin/prettify.min.css"/>
   <stylesheet src="uberfire-patternfly.css" />
+  <stylesheet src="monaco-editor/min/vs/editor/editor.main.css"/>
 </module>

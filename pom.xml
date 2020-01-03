@@ -60,6 +60,7 @@
     <version.org.webjars.bower.moment>2.14.1</version.org.webjars.bower.moment>
     <version.org.webjars.bower.moment-timezone>0.5.17</version.org.webjars.bower.moment-timezone>
     <version.org.webjars.bower.bluebird>3.1.1</version.org.webjars.bower.bluebird>
+    <version.org.webjars.npm.monaco-editor>0.18.1</version.org.webjars.npm.monaco-editor>
     <version.org.webjars.npm.react>16.6.0</version.org.webjars.npm.react>
     <version.org.webjars.npm.react-dom>16.6.0</version.org.webjars.npm.react-dom>
     <version.org.webjars.bower.bootstrap-daterangepicker>2.1.25</version.org.webjars.bower.bootstrap-daterangepicker>

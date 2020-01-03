@@ -16,8 +16,10 @@
 
 package org.uberfire.client.views.pfly.sys;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
 import org.gwtbootstrap3.client.GwtBootstrap3ClientBundle;
+import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
 
 import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
 
@@ -25,6 +27,8 @@ import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
  * Utilities for ensuring the PatternFly/BS3 system is working early enough that the app can start correctly.
  */
 public class PatternFlyBootstrapper {
+
+    private static final String MONACO_EDITOR_BASE_PATH = "monaco-editor/dev";
 
     private static boolean isPrettifyLoaded = false;
 
@@ -41,6 +45,8 @@ public class PatternFlyBootstrapper {
     private static boolean isD3Loaded = false;
 
     private static boolean isJQueryUILoaded = false;
+
+    private static boolean isMonacoEditorLoaderLoaded = false;
 
     /**
      * Uses GWT's ScriptInjector to put jQuery in the page if it isn't already. All Errai IOC beans that rely on
@@ -130,12 +136,39 @@ public class PatternFlyBootstrapper {
         }
     }
 
+    public static void ensureMonacoEditorLoaderIsAvailable() {
+        if (!isMonacoEditorLoaderLoaded) {
+
+            final String monacoAbsolutePath = GWT.getModuleBaseURL() + MONACO_EDITOR_BASE_PATH;
+            final String amdLoaderScript = PatternFlyClientBundle.INSTANCE.monacoAMDLoader().getText();
+
+            ScriptInjector.fromString(enclosureByMonacoAMDLoaderNamespace(monacoAbsolutePath, amdLoaderScript))
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+
+            isMonacoEditorLoaderLoaded = true;
+        }
+    }
+
+    /**
+     * The global scope already has other libraries occupying namespaces that Monaco cannot override.
+     * Thus, this method encloses Monaco loader functions into the '__MONACO_AMD_LOADER__' namespace, and
+     * the {@link MonacoEditorInitializer} uses '__MONACO_AMD_LOADER__' to correctly initialize Monaco modules.
+     */
+    private static String enclosureByMonacoAMDLoaderNamespace(final String baseUrlPath,
+                                                              final String script) {
+
+        return "(new function() { this.require = { baseUrl: '" + baseUrlPath + "' }; "
+                + script
+                + " window.__MONACO_AMD_LOADER__ = _amdLoaderGlobal });";
+    }
+
     /**
      * Checks to see if jQuery is already present.
+     *
      * @return true is jQuery is loaded, false otherwise.
      */
     private static native boolean isjQueryLoaded() /*-{
         return (typeof $wnd['jQuery'] !== 'undefined');
     }-*/;
 }
-
