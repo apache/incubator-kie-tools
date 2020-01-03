@@ -120,7 +120,7 @@ module.exports = async (env, argv) => {
           }
         },
         {
-          test: /background\.ts$/,
+          test: /background\.ts|OnlineEditorManager\.ts$/,
           loader: "string-replace-loader",
           options: {
             multiple: [

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
@@ -47,7 +47,7 @@ export function SingleEditorApp(props: {
   toolbarContainer: HTMLElement;
   iframeContainer: HTMLElement;
   githubTextEditorToReplace: HTMLElement;
-  fileInfo: FileInfo
+  fileInfo: FileInfo;
 }) {
   const [textMode, setTextMode] = useState(false);
   const [textModeEnabled, setTextModeEnabled] = useState(false);
@@ -80,17 +80,23 @@ export function SingleEditorApp(props: {
 
   const openExternalEditor = () => {
     props.getFileContents().then(fileContent => {
-      globals.externalEditorManager ?.open(props.fileName, fileContent!, props.readonly);
+      globals.externalEditorManager?.open(props.fileName, fileContent!, props.readonly);
     });
   };
 
+  const linkToExternalEditor = useMemo(() => {
+    return globals.externalEditorManager?.getLink(
+      `${props.fileInfo.org}/${props.fileInfo.repo}/${props.fileInfo.gitRef}/${props.fileInfo.path}`
+    );
+  }, [globals.externalEditorManager]);
+
   useEffect(() => {
-    const listener = globals.externalEditorManager ?.listenToComeBack(fileName => {
+    const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
       dependencies__.all.edit__githubFileNameInput()!.value = fileName;
-    }, isolatedEditorRef.current ?.setContent!);
+    }, isolatedEditorRef.current?.setContent!);
 
     return () => {
-      listener ?.stopListening();
+      listener?.stopListening();
     };
   }, [globals.externalEditorManager]);
 
@@ -117,6 +123,7 @@ export function SingleEditorApp(props: {
                 onSeeAsDiagram={deactivateTextMode}
                 onSeeAsSource={activateTextMode}
                 onOpenInExternalEditor={openExternalEditor}
+                linkToExternalEditor={linkToExternalEditor!}
                 onFullScreen={goFullScreen}
                 readonly={props.readonly}
               />,

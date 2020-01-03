@@ -18,14 +18,11 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import { EMPTY_FILE } from "./common/File";
+import { removeDirectories, removeFileExtension } from "./common/utils";
 
 const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has("ext")) {
-  ReactDOM.render(
-    <App iframeTemplateRelativePath={"envelope/index.html"} file={EMPTY_FILE} readonly={false} external={false} />,
-    document.getElementById("app")!
-  );
-} else {
+
+if (urlParams.has("ext")) {
   window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
     const file = { fileName: e.detail.fileName, getFileContents: () => Promise.resolve(e.detail.fileContent) };
     ReactDOM.render(
@@ -39,4 +36,23 @@ if (!urlParams.has("ext")) {
       document.getElementById("app")!
     );
   });
+}
+
+if (urlParams.has("file")) {
+  const filePath = urlParams.get("file")!;
+  const file = {
+    fileName: removeFileExtension(removeDirectories(filePath)!)!,
+    getFileContents: () => fetch(filePath).then(response => Promise.resolve(response.text()))
+  };
+  ReactDOM.render(
+    <App iframeTemplateRelativePath={"envelope/index.html"} file={file} readonly={false} external={false} />,
+    document.getElementById("app")!
+  );
+}
+
+if (!urlParams.has("ext") && !urlParams.has("file")) {
+  ReactDOM.render(
+    <App iframeTemplateRelativePath={"envelope/index.html"} file={EMPTY_FILE} readonly={false} external={false} />,
+    document.getElementById("app")!
+  );
 }

@@ -20,6 +20,16 @@ import { GlobalContext } from "../common/GlobalContext";
 import { Button, PageSection, TextInput, Title, Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
 import { EditIcon } from "@patternfly/react-icons";
 import { useLocation } from "react-router";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownSeparator,
+  DropdownPosition,
+  DropdownDirection,
+  KebabToggle
+} from "@patternfly/react-core";
+import { ThIcon } from "@patternfly/react-icons";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -27,6 +37,7 @@ interface Props {
   onSave: () => void;
   onDownload: () => void;
   onClose: () => void;
+  onCopyContentToClipboard: () => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -34,6 +45,7 @@ export function EditorToolbar(props: Props) {
   const location = useLocation();
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState(context.file.fileName);
+  const [isKebabOpen, setKebabOpen] = useState(false);
 
   const editorType = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
@@ -64,6 +76,18 @@ export function EditorToolbar(props: Props) {
       }
     },
     [saveNewName, cancelNewName]
+  );
+
+  const kebabItems = useMemo(
+    () => [
+      <DropdownItem key="copy" component="button" onClick={props.onCopyContentToClipboard}>
+        Copy content to clipboard
+      </DropdownItem>,
+      <DropdownItem key="fullscreen" component="button" onClick={props.onFullScreen}>
+        Full Screen
+      </DropdownItem>
+    ],
+    []
   );
 
   return (
@@ -108,13 +132,6 @@ export function EditorToolbar(props: Props) {
           </ToolbarGroup>
         )}
         <ToolbarGroup className="kogito--right">
-          <ToolbarItem>
-            <Button variant="link" onClick={props.onFullScreen}>
-              Full Screen
-            </Button>
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup>
           {context.external && !context.readonly && (
             <ToolbarItem className="pf-u-mr-sm">
               <Button variant="primary" onClick={props.onSave}>
@@ -134,6 +151,16 @@ export function EditorToolbar(props: Props) {
               </Button>
             </ToolbarItem>
           )}
+          <ToolbarItem className="pf-u-mr-sm">
+            <Dropdown
+              onSelect={() => setKebabOpen(false)}
+              toggle={<KebabToggle onToggle={isOpen => setKebabOpen(isOpen)} />}
+              isOpen={isKebabOpen}
+              isPlain={true}
+              dropdownItems={kebabItems}
+              position={DropdownPosition.right}
+            />
+          </ToolbarItem>
         </ToolbarGroup>
       </Toolbar>
     </PageSection>

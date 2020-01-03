@@ -15,6 +15,7 @@
  */
 
 import { ExternalEditorManager } from "@kogito-tooling/chrome-extension";
+import { extractFileExtension } from "./utils";
 
 export class OnlineEditorManager implements ExternalEditorManager {
   public name = "Online Editor";
@@ -29,6 +30,10 @@ export class OnlineEditorManager implements ExternalEditorManager {
         }
       }
     );
+  }
+
+  public getLink(filePath: string) {
+    return `$_{WEBPACK_REPLACE__onlineEditor_url}/?file=https://raw.githubusercontent.com/${filePath}#/editor/${extractFileExtension(filePath)}`;
   }
 
   public listenToComeBack(setFileName: (fileName: string) => void, setFileContent: (fileContent: string) => void) {
