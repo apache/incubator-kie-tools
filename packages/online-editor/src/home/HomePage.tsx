@@ -156,7 +156,7 @@ export function HomePage(props: Props) {
                 </StackItem>
                 <StackItem>
                   <Toolbar>
-                    <ToolbarItem style={{width: "23em"}}>
+                    <ToolbarItem>
                       <Select
                         onSelect={onSelectFileType}
                         onToggle={onToggleFileType}
