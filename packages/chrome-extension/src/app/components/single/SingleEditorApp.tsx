@@ -123,7 +123,7 @@ export function SingleEditorApp(props: {
                 onSeeAsDiagram={deactivateTextMode}
                 onSeeAsSource={activateTextMode}
                 onOpenInExternalEditor={openExternalEditor}
-                linkToExternalEditor={linkToExternalEditor!}
+                linkToExternalEditor={linkToExternalEditor}
                 onFullScreen={goFullScreen}
                 readonly={props.readonly}
               />,

@@ -52,17 +52,17 @@ export function EditorPage(props: Props) {
 
   const requestSave = useCallback(() => {
     action = ActionType.SAVE;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
   }, []);
 
   const requestDownload = useCallback(() => {
     action = ActionType.DOWNLOAD;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
     action = ActionType.COPY;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
   }, []);
 
   const enterFullscreen = useCallback(() => {

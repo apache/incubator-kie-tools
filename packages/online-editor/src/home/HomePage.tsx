@@ -127,13 +127,13 @@ export function HomePage(props: Props) {
   }, [context, history, fileTypeSelect]);
 
   const trySample = useCallback(() => {
-    if (fileTypeSelect && fileTypeSelect.value) {
+    if (fileTypeSelect?.value) {
       const fileName = "sample";
       const fileExtension = fileTypeSelect.value!.toLowerCase();
       const filePath = `samples/${fileName}.${fileExtension}`;
       props.onFileOpened({
         fileName: fileName,
-        getFileContents: () => fetch(filePath).then(response => Promise.resolve(response.text()))
+        getFileContents: () => fetch(filePath).then(response => response.text())
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     }

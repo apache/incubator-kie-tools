@@ -26,10 +26,10 @@ export function SingleEditorToolbar(props: {
   onSeeAsSource: () => void;
   onSeeAsDiagram: () => void;
   onOpenInExternalEditor: () => void;
-  linkToExternalEditor: string;
+  linkToExternalEditor: string | undefined;
 }) {
   const globals = useGlobals();
-  const linkToExternalEditorTextArea = useRef<HTMLTextAreaElement>(null);
+  const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const goFullScreen = (e: any) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ export function SingleEditorToolbar(props: {
 
   const copyLinkToExternalEditor = (e: any) => {
     e.preventDefault();
-    linkToExternalEditorTextArea.current?.select();
+    linkToExternalEditorTextAreaRef.current?.select();
     document.execCommand("copy");
     e.target.focus();
   };
@@ -87,7 +87,7 @@ export function SingleEditorToolbar(props: {
           </button>
         )}
         <textarea
-          ref={linkToExternalEditorTextArea}
+          ref={linkToExternalEditorTextAreaRef}
           value={props.linkToExternalEditor}
           style={{ opacity: 0, width: 0, height: 0 }}
         />
