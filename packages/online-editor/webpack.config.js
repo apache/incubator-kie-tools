@@ -34,6 +34,7 @@ module.exports = {
       { from: "./static/resources", to: "./resources" },
       { from: "./static/envelope", to: "./envelope" },
       { from: "./static/images", to: "./images" },
+      { from: "./static/samples", to: "./samples" },
       { from: "./static/index.html", to: "./index.html" },
       { from: "../kie-bc-editors-unpacked", to: "./gwt-editors" }
     ])
