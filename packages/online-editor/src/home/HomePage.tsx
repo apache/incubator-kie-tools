@@ -34,7 +34,6 @@ import {
   Toolbar,
   ToolbarItem
 } from "@patternfly/react-core";
-import { removeDirectories } from "../common/utils";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -159,6 +158,7 @@ export function HomePage(props: Props) {
                   <Toolbar>
                     <ToolbarItem>
                       <Select
+                        width={"7em"}
                         onSelect={onSelectFileType}
                         onToggle={onToggleFileType}
                         isExpanded={fileTypeSelect.isExpanded}
@@ -168,8 +168,6 @@ export function HomePage(props: Props) {
                           <SelectOption key={index} value={option.value} />
                         ))}
                       </Select>
-                    </ToolbarItem>
-                    <ToolbarItem>
                       <Button className="pf-u-ml-md" variant="secondary" onClick={createFile}>
                         Create
                       </Button>
