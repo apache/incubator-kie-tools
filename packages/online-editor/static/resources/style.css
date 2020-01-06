@@ -17,7 +17,7 @@
 .kogito--upload-box > div {
   box-sizing: border-box;
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--100);
-  width: 20em;
+  width: 23em;
   height: 20em;
   display: flex;
   justify-content: center;
