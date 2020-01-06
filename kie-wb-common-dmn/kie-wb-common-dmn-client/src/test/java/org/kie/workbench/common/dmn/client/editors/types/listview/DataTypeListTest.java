@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DN
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -97,6 +98,9 @@ public class DataTypeListTest {
     @Mock
     private DNDDataTypesHandler dndDataTypesHandler;
 
+    @Mock
+    private IsKogito isKogito;
+
     private DataTypeStore dataTypeStore;
 
     private DataTypeStackHash dataTypeStackHash;
@@ -110,7 +114,14 @@ public class DataTypeListTest {
     public void setup() {
         dataTypeStore = new DataTypeStore();
         dataTypeStackHash = new DataTypeStackHash(dataTypeStore);
-        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager, searchBar, dndListComponent, dataTypeStackHash, dndDataTypesHandler));
+        dataTypeList = spy(new DataTypeList(view,
+                                            listItems,
+                                            dataTypeManager,
+                                            searchBar,
+                                            dndListComponent,
+                                            dataTypeStackHash,
+                                            dndDataTypesHandler,
+                                            isKogito));
         when(listItems.get()).thenReturn(treeGridItem);
     }
 
@@ -124,6 +135,23 @@ public class DataTypeListTest {
         dataTypeList.setup();
 
         verify(view).init(dataTypeList);
+        verify(view).showImportDataObjectButton();
+        verify(dndDataTypesHandler).init(dataTypeList);
+        verify(dndListComponent).setOnDropItem(consumer);
+    }
+
+    @Test
+    public void testSetupViewWhenIsKogito() {
+
+        final BiConsumer<Element, Element> consumer = (a, b) -> {/* Nothing. */};
+
+        doReturn(consumer).when(dataTypeList).getOnDropDataType();
+        when(isKogito.get()).thenReturn(true);
+
+        dataTypeList.setup();
+
+        verify(view).init(dataTypeList);
+        verify(view).hideImportDataObjectButton();
         verify(dndDataTypesHandler).init(dataTypeList);
         verify(dndListComponent).setOnDropItem(consumer);
     }

@@ -670,6 +670,28 @@ public class DataTypeListViewTest {
         assertEquals("", flashMessage.getRegularMessage());
     }
 
+    @Test
+    public void testShowImportDataObjectButton() {
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        importDataObjectButton.classList = classList;
+
+        view.showImportDataObjectButton();
+
+        verify(classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideImportDataObjectButton() {
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        importDataObjectButton.classList = classList;
+
+        view.hideImportDataObjectButton();
+
+        verify(classList).add(HIDDEN_CSS_CLASS);
+    }
+
     private HTMLElement makeHTMLElement() {
         final HTMLElement element = mock(HTMLElement.class);
         element.parentNode = mock(Node.class);

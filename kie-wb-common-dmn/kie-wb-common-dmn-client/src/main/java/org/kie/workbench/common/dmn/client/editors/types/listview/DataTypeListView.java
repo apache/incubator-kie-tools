@@ -425,4 +425,14 @@ public class DataTypeListView implements DataTypeList.View {
     public HTMLDivElement getListItems() {
         return listItems;
     }
+
+    @Override
+    public void showImportDataObjectButton() {
+        show(importDataObjectButton);
+    }
+
+    @Override
+    public void hideImportDataObjectButton() {
+        hide(importDataObjectButton);
+    }
 }
