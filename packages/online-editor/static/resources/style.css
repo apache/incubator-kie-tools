@@ -17,12 +17,12 @@
 .kogito--upload-box > div {
   box-sizing: border-box;
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--100);
-  width: 15em;
-  height: 15em;
+  width: 20em;
+  height: 20em;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--pf-global--spacer--2xl);
+  padding: var(--pf-global--spacer--xl);
 }
 
 .kogito--upload-box > div.hover {
@@ -47,6 +47,10 @@
 .kogito--editor__toolbar-section h3:hover {
   border: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
   border-radius: var(--pf-global--BorderRadius--sm);
+}
+
+.kogito--editor__toolbar-section button {
+  outline: none;
 }
 
 .kogito--editor__toolbar-name-container {
@@ -85,6 +89,7 @@
 .kogito--upload-btn-container {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .kogito--upload-btn {
@@ -95,7 +100,6 @@
 }
 
 .kogito--upload-btn button {
-  width: 13em;
   margin-left: 0 !important;
 }
 
@@ -105,6 +109,7 @@
   top: 0;
   opacity: 0;
   cursor: pointer;
+  width: 10.2em;
 }
 
 .kogito--right {

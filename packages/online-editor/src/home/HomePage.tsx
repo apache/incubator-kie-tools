@@ -34,6 +34,7 @@ import {
   Toolbar,
   ToolbarItem
 } from "@patternfly/react-core";
+import { removeDirectories } from "../common/utils";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -125,6 +126,19 @@ export function HomePage(props: Props) {
     }
   }, [context, history, fileTypeSelect]);
 
+  const trySample = useCallback(() => {
+    if (fileTypeSelect?.value) {
+      const fileName = "sample";
+      const fileExtension = fileTypeSelect.value!.toLowerCase();
+      const filePath = `samples/${fileName}.${fileExtension}`;
+      props.onFileOpened({
+        fileName: fileName,
+        getFileContents: () => fetch(filePath).then(response => response.text())
+      });
+      history.replace(context.routes.editor.url({ type: fileExtension }));
+    }
+  }, [context, history, fileTypeSelect]);
+
   return (
     <Page>
       <PageSection variant="light">
@@ -158,6 +172,9 @@ export function HomePage(props: Props) {
                     <ToolbarItem>
                       <Button className="pf-u-ml-md" variant="secondary" onClick={createFile}>
                         Create
+                      </Button>
+                      <Button className="pf-u-ml-md" variant="secondary" onClick={trySample}>
+                        Try Sample
                       </Button>
                     </ToolbarItem>
                   </Toolbar>
@@ -202,7 +219,11 @@ export function HomePage(props: Props) {
 }
 
 function extractFileExtension(fileName: string) {
-  return fileName.split(".").pop()?.match(/[\w\d]+/)?.pop();
+  return fileName
+    .split(".")
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
 }
 
 function removeFileExtension(fileName: string) {

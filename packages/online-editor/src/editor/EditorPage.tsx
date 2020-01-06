@@ -32,7 +32,8 @@ interface Props {
 enum ActionType {
   NONE,
   SAVE,
-  DOWNLOAD
+  DOWNLOAD,
+  COPY
 }
 
 // FIXME: This action should be moved inside the React hooks lifecycle.
@@ -44,18 +45,24 @@ export function EditorPage(props: Props) {
   const history = useHistory();
   const editorRef = useRef<EditorRef>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
 
   const close = useCallback(() => history.replace(context.routes.home.url({}), {}), []);
 
   const requestSave = useCallback(() => {
     action = ActionType.SAVE;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
   }, []);
 
   const requestDownload = useCallback(() => {
     action = ActionType.DOWNLOAD;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
+  }, []);
+
+  const requestCopyContentToClipboard = useCallback(() => {
+    action = ActionType.COPY;
+    editorRef.current?.requestContent();
   }, []);
 
   const enterFullscreen = useCallback(() => {
@@ -96,6 +103,10 @@ export function EditorPage(props: Props) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
+      } else if (action === ActionType.COPY && copyContentTextArea.current) {
+        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.select();
+        document.execCommand("copy");
       }
     },
     [fileNameWithExtension]
@@ -133,17 +144,22 @@ export function EditorPage(props: Props) {
                 onDownload={requestDownload}
                 onClose={close}
                 onFileNameChanged={props.onFileNameChanged}
+                onCopyContentToClipboard={requestCopyContentToClipboard}
               />
             )}
 
             {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
           </StackItem>
 
-          <StackItem className="pf-m-fill" style={fullscreen ? { height: "calc(100vh - 5px)" } : { height: "calc(100vh - 60px)" }}>
+          <StackItem
+            className="pf-m-fill"
+            style={fullscreen ? { height: "calc(100vh - 5px)" } : { height: "calc(100vh - 60px)" }}
+          >
             <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
           </StackItem>
         </Stack>
         <a ref={downloadRef} />
+        <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />
       </PageSection>
     </Page>
   );

@@ -15,6 +15,7 @@
  */
 
 import HttpHeader = chrome.webRequest.HttpHeader;
+import { removeDirectories, removeFileExtension, extractFileExtension } from "./utils";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Kogito Tooling extension is running.");
@@ -126,24 +127,4 @@ function updateGitHub(request: any, sender: chrome.runtime.MessageSender) {
       }
     }
   );
-}
-
-// FIXME: Move the functions below to a common place to avoid duplicated code.
-
-function extractFileExtension(fileName: string) {
-  return fileName.split(".").pop()?.match(/[\w\d]+/)?.pop();
-}
-
-function removeFileExtension(fileName: string) {
-  const fileExtension = extractFileExtension(fileName);
-
-  if (!fileExtension) {
-    return fileName;
-  }
-
-  return fileName.substr(0, fileName.length - fileExtension.length - 1);
-}
-
-function removeDirectories(filePath: string) {
-  return filePath.split("/").pop();
 }
