@@ -24,6 +24,7 @@ import { GlobalContext } from "../common/GlobalContext";
 import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -36,6 +37,8 @@ enum ActionType {
   COPY
 }
 
+const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
+
 // FIXME: This action should be moved inside the React hooks lifecycle.
 let action = ActionType.NONE;
 
@@ -47,8 +50,11 @@ export function EditorPage(props: Props) {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
+  const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
 
-  const close = useCallback(() => history.replace(context.routes.home.url({}), {}), []);
+  const close = useCallback(() => {
+    window.location.href = window.location.href.split("?")[0].split("#")[0];
+  }, []);
 
   const requestSave = useCallback(() => {
     action = ActionType.SAVE;
@@ -87,6 +93,8 @@ export function EditorPage(props: Props) {
     return context.file.fileName + "." + editorType;
   }, [context.file.fileName, editorType]);
 
+  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
+
   const onContentResponse = useCallback(
     (content: string) => {
       if (action === ActionType.SAVE) {
@@ -106,11 +114,22 @@ export function EditorPage(props: Props) {
       } else if (action === ActionType.COPY && copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
-        document.execCommand("copy");
+        if (document.execCommand("copy")) {
+          setCopySuccessAlertVisible(true);
+        }
       }
     },
     [fileNameWithExtension]
   );
+
+  useEffect(() => {
+    if (closeCopySuccessAlert) {
+      const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseCopySuccessAlert);
+    }
+
+    return () => { /* Do nothing */ };
+  }, [copySuccessAlertVisible]);
 
   useEffect(() => {
     if (downloadRef.current) {
@@ -130,11 +149,20 @@ export function EditorPage(props: Props) {
       document.removeEventListener("mozfullscreenchange", toggleFullScreen);
       document.removeEventListener("msfullscreenchange", toggleFullScreen);
     };
-  });
+  }, []);
 
   return (
     <Page>
       <PageSection variant="light" noPadding={true}>
+        {copySuccessAlertVisible && (
+          <div className={"kogito--alert-container"}>
+            <Alert
+              variant="success"
+              title="Content copied to clipboard"
+              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+            />
+          </div>
+        )}
         <Stack>
           <StackItem>
             {!fullscreen && (

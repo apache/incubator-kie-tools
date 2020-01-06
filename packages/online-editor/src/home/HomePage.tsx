@@ -156,13 +156,14 @@ export function HomePage(props: Props) {
                 </StackItem>
                 <StackItem>
                   <Toolbar>
-                    <ToolbarItem>
+                    <ToolbarItem style={{width: "23em"}}>
                       <Select
                         width={"7em"}
                         onSelect={onSelectFileType}
                         onToggle={onToggleFileType}
                         isExpanded={fileTypeSelect.isExpanded}
                         selections={fileTypeSelect.value}
+                        width={"7em"}
                       >
                         {editorTypeOptions.map((option, index) => (
                           <SelectOption key={index} value={option.value} />

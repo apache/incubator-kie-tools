@@ -22,14 +22,10 @@ import { EditIcon } from "@patternfly/react-icons";
 import { useLocation } from "react-router";
 import {
   Dropdown,
-  DropdownToggle,
   DropdownItem,
-  DropdownSeparator,
   DropdownPosition,
-  DropdownDirection,
   KebabToggle
 } from "@patternfly/react-core";
-import { ThIcon } from "@patternfly/react-icons";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
