@@ -500,12 +500,8 @@ public class ConstraintValueEditor extends Composite {
     void setUpTextBoxStyleAndHandlers(final TextBox box,
                                       final Command onChangeCommand) {
         box.setStyleName("constraint-value-Editor");
-        box.addValueChangeHandler((e) -> {
-            constraint.setValue(e.getValue());
-            if (onChangeCommand != null) {
-                onChangeCommand.execute();
-            }
-        });
+        box.addValueChangeHandler(new ConstraintValueChangeHandler(constraint,
+                                                                   onChangeCommand));
     }
 
     //Only display the number of characters that have been entered
