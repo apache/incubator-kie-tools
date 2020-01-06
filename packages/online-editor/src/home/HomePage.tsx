@@ -158,7 +158,6 @@ export function HomePage(props: Props) {
                   <Toolbar>
                     <ToolbarItem style={{width: "23em"}}>
                       <Select
-                        width={"7em"}
                         onSelect={onSelectFileType}
                         onToggle={onToggleFileType}
                         isExpanded={fileTypeSelect.isExpanded}
