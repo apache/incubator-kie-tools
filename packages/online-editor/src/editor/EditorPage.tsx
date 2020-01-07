@@ -151,7 +151,7 @@ export function EditorPage(props: Props) {
       document.removeEventListener("mozfullscreenchange", toggleFullScreen);
       document.removeEventListener("msfullscreenchange", toggleFullScreen);
     };
-  }, []);
+  });
 
   return (
     <Page>
