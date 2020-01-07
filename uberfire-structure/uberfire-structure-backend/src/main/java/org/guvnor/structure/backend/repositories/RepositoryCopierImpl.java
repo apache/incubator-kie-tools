@@ -159,7 +159,7 @@ public class RepositoryCopierImpl
             newBranchEventEvent.fire(new NewBranchEvent(repository,
                                                         branch.get().getName(),
                                                         origBranch.get().getName(),
-                                                        sessionInfo.getIdentity()));
+                                                        sessionInfo.getIdentity().getIdentifier()));
         } else {
             throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());
         }
@@ -181,7 +181,7 @@ public class RepositoryCopierImpl
             newBranchEventEvent.fire(new NewBranchEvent(repository,
                                                         branch.get().getName(),
                                                         origBranch.get().getName(),
-                                                        sessionInfo.getIdentity()));
+                                                        sessionInfo.getIdentity().getIdentifier()));
         } else {
             throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());
         }

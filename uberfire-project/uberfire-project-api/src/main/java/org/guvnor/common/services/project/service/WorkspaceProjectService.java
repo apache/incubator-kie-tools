@@ -75,4 +75,13 @@ public interface WorkspaceProjectService {
                                     final String branchName);
 
     WorkspaceProject resolveProjectByRepositoryAlias(final Space space, final String repositoryAlias);
+
+    void addBranch(final String newBranchName,
+                   final String baseBranchName,
+                   final WorkspaceProject project,
+                   final String userIdentifier);
+
+    void removeBranch(final String branchName,
+                      final WorkspaceProject project,
+                      final String userIdentifier);
 }

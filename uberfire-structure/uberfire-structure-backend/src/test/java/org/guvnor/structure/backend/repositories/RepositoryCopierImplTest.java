@@ -73,6 +73,8 @@ public class RepositoryCopierImplTest {
 
     @Before
     public void setUp() throws Exception {
+        doReturn("user").when(user).getIdentifier();
+
         fileSystemTestingUtils.setup();
         ioService = spy(fileSystemTestingUtils.getIoService());
 

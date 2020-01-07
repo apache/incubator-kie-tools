@@ -15,6 +15,8 @@
  */
 package org.guvnor.common.services.project.backend.server;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +26,9 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
@@ -41,16 +45,21 @@ import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
+import org.uberfire.io.IOService;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -60,11 +69,16 @@ public class WorkspaceProjectServiceImpl
     private OrganizationalUnitService organizationalUnitService;
     private RepositoryService repositoryService;
     private Event<NewProjectEvent> newProjectEvent;
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+    private Event<NewBranchEvent> newBranchEvent;
     private ModuleService<? extends Module> moduleService;
     private SpacesAPI spaces;
     private ModuleRepositoryResolver repositoryResolver;
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
     private Logger logger = LoggerFactory.getLogger(WorkspaceProjectServiceImpl.class);
+    private IOService ioService;
+    private PathUtil pathUtil;
+    private ChangeRequestService changeRequestService;
 
     public WorkspaceProjectServiceImpl() {
     }
@@ -74,15 +88,25 @@ public class WorkspaceProjectServiceImpl
                                        final RepositoryService repositoryService,
                                        final SpacesAPI spaces,
                                        final Event<NewProjectEvent> newProjectEvent,
+                                       final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                                       final Event<NewBranchEvent> newBranchEvent,
                                        final Instance<ModuleService<? extends Module>> moduleServices,
                                        final ModuleRepositoryResolver repositoryResolver,
+                                       @Named("ioStrategy") final IOService ioService,
+                                       final PathUtil pathUtil,
+                                       final ChangeRequestService changeRequestService,
                                        final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         this.organizationalUnitService = organizationalUnitService;
         this.repositoryService = repositoryService;
         this.spaces = spaces;
         this.newProjectEvent = newProjectEvent;
+        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
+        this.newBranchEvent = newBranchEvent;
         this.moduleService = moduleServices.get();
         this.repositoryResolver = repositoryResolver;
+        this.ioService = ioService;
+        this.pathUtil = pathUtil;
+        this.changeRequestService = changeRequestService;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
     }
 
@@ -378,6 +402,100 @@ public class WorkspaceProjectServiceImpl
         if (repositories.size() > 0) {
             throw new GAVAlreadyExistsException(pom.getGav(),
                                                 repositories);
+        }
+    }
+
+    @Override
+    public void addBranch(final String newBranchName,
+                          final String baseBranchName,
+                          final WorkspaceProject project,
+                          final String userIdentifier) {
+
+        final Branch baseBranch = project
+            .getRepository()
+            .getBranch(baseBranchName)
+            .orElseThrow(() -> new IllegalStateException("The base branch [" + baseBranchName + "] does not exists"));
+
+        final org.uberfire.java.nio.file.Path baseBranchPath = pathUtil.convert(baseBranch.getPath());
+        final String newBranchPathURI = pathUtil.replaceBranch(newBranchName,
+                                                               baseBranch.getPath().toURI());
+        try {
+            final org.uberfire.java.nio.file.Path newBranchPath = ioService.get(new URI(newBranchPathURI));
+
+            baseBranchPath
+                .getFileSystem()
+                .provider()
+                .copy(baseBranchPath,
+                      newBranchPath);
+
+            final BranchPermissions branchPermissions = spaceConfigStorageRegistry
+                .get(project.getSpace().getName())
+                .loadBranchPermissions(baseBranchName,
+                                       project.getRepository().getIdentifier());
+
+            spaceConfigStorageRegistry
+                .get(project.getSpace().getName())
+                .saveBranchPermissions(newBranchName,
+                                       project.getRepository().getIdentifier(),
+                                       branchPermissions);
+
+            final Repository repository = repositoryService.getRepositoryFromSpace(
+                    project.getSpace(),
+                    project.getRepository().getAlias());
+
+            repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repository));
+
+            newBranchEvent.fire(new NewBranchEvent(repository,
+                                                   newBranchName,
+                                                   baseBranchName,
+                                                   userIdentifier));
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void removeBranch(final String branchName,
+                             final WorkspaceProject project,
+                             final String userIdentifier) {
+
+        final Branch branch = project
+                .getRepository()
+                .getBranch(branchName)
+                .orElseThrow(() -> new IllegalStateException("The branch [" + branchName + "] does not exists"));
+
+        try {
+            ioService.startBatch(pathUtil.convert(branch.getPath()).getFileSystem());
+
+            repositoryService
+                .getRepositoryFromSpace(project.getSpace(),
+                                        project.getRepository().getAlias())
+                .getBranch(branch.getName())
+                .ifPresent(updatedBranch -> {
+                        final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
+
+                        ioService.delete(branchPath);
+
+                        spaceConfigStorageRegistry
+                            .get(project.getSpace().getName())
+                            .deleteBranchPermissions(branch.getName(),
+                                                     project.getRepository().getIdentifier());
+
+                        changeRequestService.deleteChangeRequests(project.getSpace().getName(),
+                                                                  project.getRepository().getAlias(),
+                                                                  branch.getName(),
+                                                                  userIdentifier);
+
+                        final Repository repository = repositoryService.getRepositoryFromSpace(
+                                project.getSpace(),
+                                project.getRepository().getAlias());
+
+                        repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repository));
+                    });
+
+        } finally {
+            ioService.endBatch();
         }
     }
 }

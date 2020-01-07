@@ -71,6 +71,7 @@ import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitWatchEvent;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.SpacesAPI;
+import org.jboss.errai.security.shared.api.identity.User;
 
 import static java.lang.Integer.min;
 import static java.util.stream.Collectors.toMap;
@@ -205,7 +206,7 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                                                      ChangeRequestPredicates
                                                              .matchSearchFilter(filter,
                                                                                 ChangeRequestServiceImpl
-                                                                                        ::composeSearchableElement));
+                                                                                ::composeSearchableElement));
 
         return computeFullContent(spaceName,
                                   repositoryAlias,
@@ -404,6 +405,17 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     public void deleteChangeRequests(final String spaceName,
                                      final String repositoryAlias,
                                      final String associatedBranchName) {
+        deleteChangeRequests(spaceName,
+                             repositoryAlias,
+                             associatedBranchName,
+                             sessionInfo.getIdentity().getIdentifier());
+    }
+
+    @Override
+    public void deleteChangeRequests(final String spaceName,
+                                     final String repositoryAlias,
+                                     final String associatedBranchName,
+                                     final String userIdentifier) {
         checkNotEmpty(SPACE_NAME_PARAM, spaceName);
         checkNotEmpty(REPOSITORY_ALIAS_PARAM, repositoryAlias);
         checkNotEmpty(ASSOCIATED_BRANCH_NAME_PARAM, associatedBranchName);
@@ -413,7 +425,8 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                                                      repositoryAlias,
                                                      false,
                                                      ChangeRequestPredicates
-                                                             .matchSourceOrTargetBranch(associatedBranchName));
+                                                             .matchSourceOrTargetBranch(associatedBranchName),
+                                                     userIdentifier);
 
         if (!changeRequestsToDelete.isEmpty()) {
             changeRequestsToDelete.forEach(elem -> spaceConfigStorageRegistry.get(spaceName)
@@ -754,13 +767,25 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                                                                      final String repositoryAlias,
                                                                      final boolean sorted,
                                                                      final Predicate<ChangeRequest> predicate) {
+        return getFilteredChangeRequestsFromStorage(spaceName,
+                                             repositoryAlias,
+                                             sorted,
+                                             predicate,
+                                             sessionInfo.getIdentity().getIdentifier());
+    }
+
+    private List<ChangeRequest> getFilteredChangeRequestsFromStorage(final String spaceName,
+                                                                     final String repositoryAlias,
+                                                                     final boolean sorted,
+                                                                     final Predicate<ChangeRequest> predicate,
+                                                                     final String userIdentifier) {
         final Repository repository = resolveRepository(spaceName,
                                                         repositoryAlias);
 
         final List<String> branchesUserCanRead = repository.getBranches()
                 .stream()
                 .map(Branch::getName)
-                .filter(branchName -> branchAccessAuthorizer.authorize(sessionInfo.getIdentity().getIdentifier(),
+                .filter(branchName -> branchAccessAuthorizer.authorize(userIdentifier,
                                                                        repository.getSpace().getName(),
                                                                        repository.getIdentifier(),
                                                                        repository.getAlias(),

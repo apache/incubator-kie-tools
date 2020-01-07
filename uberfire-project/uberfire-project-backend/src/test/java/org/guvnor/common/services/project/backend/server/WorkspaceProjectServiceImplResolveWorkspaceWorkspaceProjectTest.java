@@ -33,6 +33,7 @@ import java.util.Arrays;
 
 import javax.enterprise.inject.Instance;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -47,6 +48,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +60,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.io.IOService;
@@ -104,6 +107,15 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
     @Mock
     SpaceConfigStorage spaceConfigStorage;
 
+    @Mock
+    PathUtil pathUtil;
+
+    @Mock
+    ChangeRequestService changeRequestService;
+
+    @Mock
+    SessionInfo sessionInfo;
+
     private Path path;
     private Path branchRoot;
     private Branch masterBranch;
@@ -145,8 +157,13 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
                                                                   repositoryService,
                                                                   spaces,
                                                                   new EventSourceMock<>(),
+                                                                  new EventSourceMock<>(),
+                                                                  new EventSourceMock<>(),
                                                                   moduleServices,
                                                                   repositoryResolver,
+                                                                  ioService,
+                                                                  pathUtil,
+                                                                  changeRequestService,
                                                                   spaceConfigStorageRegistry);
     }
 

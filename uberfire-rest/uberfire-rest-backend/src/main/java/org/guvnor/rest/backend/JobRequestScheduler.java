@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.rest.backend.cmd.AddBranchCmd;
 import org.guvnor.rest.backend.cmd.AbstractJobCommand;
 import org.guvnor.rest.backend.cmd.AddProjectToSpaceCmd;
 import org.guvnor.rest.backend.cmd.CloneRepositoryCmd;
@@ -32,7 +33,9 @@ import org.guvnor.rest.backend.cmd.DeleteProjectCmd;
 import org.guvnor.rest.backend.cmd.DeployProjectCmd;
 import org.guvnor.rest.backend.cmd.InstallProjectCmd;
 import org.guvnor.rest.backend.cmd.RemoveSpaceCmd;
+import org.guvnor.rest.backend.cmd.RemoveBranchCmd;
 import org.guvnor.rest.backend.cmd.TestProjectCmd;
+import org.guvnor.rest.client.AddBranchJobRequest;
 import org.guvnor.rest.client.AddProjectToSpaceRequest;
 import org.guvnor.rest.client.CloneProjectJobRequest;
 import org.guvnor.rest.client.CompileProjectRequest;
@@ -40,6 +43,7 @@ import org.guvnor.rest.client.CreateProjectJobRequest;
 import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
+import org.guvnor.rest.client.RemoveBranchJobRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.RemoveSpaceRequest;
@@ -75,7 +79,7 @@ public class JobRequestScheduler {
 
     There's a significative improvement on timeouts by using an @Unmanaged ExecutorService.
     The @Unmanaged tends to be more available and likely that it won't share the Async execution
-    of the operations itself. 
+    of the operations itself.
     */
     @Inject
     public JobRequestScheduler(@Unmanaged ExecutorService executorService,
@@ -209,6 +213,42 @@ public class JobRequestScheduler {
                     new AddProjectToSpaceCmd(jobRequestHelper,
                                              jobResultManager,
                                              params));
+    }
+
+    public void addBranchRequest(final AddBranchJobRequest jobRequest) {
+        final Map<String, Object> params = getContext(jobRequest);
+        params.put("Space",
+                   jobRequest.getSpaceName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("NewBranchName",
+                   jobRequest.getNewBranchName());
+        params.put("BaseBranchName",
+                   jobRequest.getBaseBranchName());
+        params.put("Operation",
+                   "addBranch");
+
+        scheduleJob(jobRequest,
+                    new AddBranchCmd(jobRequestHelper,
+                                     jobResultManager,
+                                     params));
+    }
+
+    public void removeBranchRequest(final RemoveBranchJobRequest jobRequest) {
+        final Map<String, Object> params = getContext(jobRequest);
+        params.put("Space",
+                   jobRequest.getSpaceName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("BranchName",
+                   jobRequest.getBranchName());
+        params.put("Operation",
+                   "addBranch");
+
+        scheduleJob(jobRequest,
+                    new RemoveBranchCmd(jobRequestHelper,
+                                        jobResultManager,
+                                        params));
     }
 
     public void removeSpaceRequest(final RemoveSpaceRequest jobRequest) {

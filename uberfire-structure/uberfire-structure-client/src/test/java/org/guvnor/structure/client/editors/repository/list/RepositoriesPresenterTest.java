@@ -215,7 +215,7 @@ public class RepositoriesPresenterTest {
         guvnorStructureContext.onNewBranch(new NewBranchEvent(r1,
                                                               "theNewBranch",
                                                               "master",
-                                                              mock(User.class)));
+                                                              "user"));
 
         verify(handler).onNewBranchAdded("r1",
                                          "theNewBranch",

@@ -25,6 +25,8 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestSta
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestCommentList;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestList;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.rpc.SessionInfo;
+import org.jboss.errai.security.shared.api.identity.User;
 
 /**
  * Service that contains the basic mechanism to administrate change requests.
@@ -193,6 +195,19 @@ public interface ChangeRequestService {
     void deleteChangeRequests(final String spaceName,
                               final String repositoryAlias,
                               final String associatedBranchName);
+
+    /**
+     * Deletes all change requests associated with the given branch.
+     *
+     * @param spaceName            the space containing the origin repository
+     * @param repositoryAlias      the origin repository
+     * @param associatedBranchName branch name
+     * @param userIdentififer      user identifier
+     */
+    void deleteChangeRequests(final String spaceName,
+                              final String repositoryAlias,
+                              final String associatedBranchName,
+                              final String userIdentifier);
 
     /**
      * Rejects the change request.
