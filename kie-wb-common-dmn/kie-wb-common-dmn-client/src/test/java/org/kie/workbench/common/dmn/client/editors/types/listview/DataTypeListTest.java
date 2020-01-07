@@ -857,9 +857,10 @@ public class DataTypeListTest {
         doReturn(renamed).when(dataTypeList).getRenamedImportedDataTypes();
 
         final List<DataObject> imported = Arrays.asList(do1, do2, do3);
-        doReturn(extractedName1).when(dataTypeList).extractName(do1Class);
-        doReturn(extractedName2).when(dataTypeList).extractName(do2Class);
-        doReturn(extractedName3).when(dataTypeList).extractName(do3Class);
+        when(do1.getClassNameWithoutPackage()).thenReturn(extractedName1);
+        when(do2.getClassNameWithoutPackage()).thenReturn(extractedName2);
+        when(do3.getClassNameWithoutPackage()).thenReturn(extractedName3);
+
         doReturn(builtName1).when(dataTypeList).buildName(extractedName1, namesCount);
         doReturn(builtName2).when(dataTypeList).buildName(extractedName2, namesCount);
         doReturn(builtName3).when(dataTypeList).buildName(extractedName3, namesCount);
@@ -868,19 +869,19 @@ public class DataTypeListTest {
 
         dataTypeList.removeFullQualifiedNames(imported);
 
-        verify(dataTypeList).extractName(do1Class);
+        verify(do1).getClassNameWithoutPackage();
         verify(dataTypeList).buildName(extractedName1, namesCount);
         assertTrue(renamed.containsKey(do1Class));
         assertEquals(builtName1, renamed.get(do1Class));
         verify(do1).setClassType(builtName1);
 
-        verify(dataTypeList).extractName(do2Class);
+        verify(do2).getClassNameWithoutPackage();
         verify(dataTypeList).buildName(extractedName2, namesCount);
         assertTrue(renamed.containsKey(do2Class));
         assertEquals(builtName2, renamed.get(do2Class));
         verify(do2).setClassType(builtName2);
 
-        verify(dataTypeList).extractName(do3Class);
+        verify(do3).getClassNameWithoutPackage();
         verify(dataTypeList).buildName(extractedName3, namesCount);
         assertTrue(renamed.containsKey(do3Class));
         assertEquals(builtName3, renamed.get(do3Class));
@@ -895,22 +896,6 @@ public class DataTypeListTest {
         final DataObject dataObject = mock(DataObject.class);
         when(dataObject.getClassType()).thenReturn(className);
         return dataObject;
-    }
-
-    @Test
-    public void testExtractName() {
-
-        final String name1 = "org.java.SomeClass";
-        final String expected1 = "SomeClass";
-
-        final String actual1 = dataTypeList.extractName(name1);
-        assertEquals(expected1, actual1);
-
-        final String name2 = "SomeOtherClass";
-        final String expected2 = "SomeOtherClass";
-
-        final String actual2 = dataTypeList.extractName(name2);
-        assertEquals(expected2, actual2);
     }
 
     @Test
@@ -1118,6 +1103,38 @@ public class DataTypeListTest {
         verify(innerDataTypeListItem).disableEditMode();
         verify(deepDataTypeListItem).disableEditMode();
         verify(notChildItem, never()).disableEditMode();
+    }
+
+    @Test
+    public void testGetExistingDataTypeNames() {
+
+        final String name1 = "name1";
+        final String name2 = "name2";
+        final String name3 = "name3";
+        final DataType dataType1 = makeDataType(name1, "whatever");
+        final DataType dataType2 = makeDataType(name2, "whatever");
+        final DataType dataType3 = makeDataType(name3, "whatever");
+        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem3 = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> items = Arrays.asList(listItem1, listItem2, listItem3);
+
+        when(dataType1.isTopLevel()).thenReturn(true);
+        when(dataType2.isTopLevel()).thenReturn(false);
+        when(dataType3.isTopLevel()).thenReturn(true);
+
+        when(listItem1.getDataType()).thenReturn(dataType1);
+        when(listItem2.getDataType()).thenReturn(dataType2);
+        when(listItem3.getDataType()).thenReturn(dataType3);
+
+        doReturn(items).when(dataTypeList).getItems();
+
+        final List<String> names = dataTypeList.getExistingDataTypesNames();
+
+        assertEquals(2, names.size());
+        assertTrue(names.contains(name1));
+        assertFalse(names.contains(name2));
+        assertTrue(names.contains(name3));
     }
 
     private DataTypeListItem listItem(final DataType dataType) {

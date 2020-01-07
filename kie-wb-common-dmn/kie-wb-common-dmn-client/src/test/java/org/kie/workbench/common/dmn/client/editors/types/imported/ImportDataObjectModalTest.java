@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.imported;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,12 +59,16 @@ public class ImportDataObjectModalTest {
 
         final Consumer consumer = mock(Consumer.class);
         final ServiceCallback serviceCallback = mock(ServiceCallback.class);
+        final List<String> existingDataTypes = mock(List.class);
         doReturn(serviceCallback).when(modal).wrap(consumer);
         doReturn(consumer).when(modal).getConsumer();
+        doNothing().when(modal).superShow();
 
-        modal.show();
+        modal.show(existingDataTypes);
 
+        verify(modal).superShow();
         verify(client).loadDataObjects(serviceCallback);
+        verify(view).hideDataTypeWithSameNameWarning();
     }
 
     @Test
@@ -94,7 +100,10 @@ public class ImportDataObjectModalTest {
     public void testSetup() {
 
         final Consumer<List<DataObject>> consumer = mock(Consumer.class);
+        final Consumer onDataObjectSelectionChanged = mock(Consumer.class);
         doNothing().when(modal).callSuperSetup();
+        doReturn(onDataObjectSelectionChanged).when(modal).getOnDataObjectSelectionChanged();
+
         modal.setup(consumer);
 
         verify(modal).callSuperSetup();
@@ -106,8 +115,10 @@ public class ImportDataObjectModalTest {
 
         final List<DataObject> importedObjects = mock(List.class);
         final Consumer<List<DataObject>> consumer = mock(Consumer.class);
+
         doNothing().when(modal).callSuperSetup();
         doNothing().when(modal).superHide();
+
         modal.setup(consumer);
 
         modal.hide(importedObjects);
@@ -127,5 +138,50 @@ public class ImportDataObjectModalTest {
         modal.hide(importedObjects);
 
         verify(modal).superHide();
+    }
+
+    @Test
+    public void testOnDataObjectSelectionChangedAndHasDuplicatedName() {
+
+        final String name1 = "name1";
+        final String name2 = "name2";
+        final String name3 = "name3";
+        final List<String> existingDataTypes = Arrays.asList(name1, name2, name3);
+        final DataObject do1 = createDataObject(name1);
+        final DataObject do2 = createDataObject(name2);
+        final DataObject do3 = createDataObject(name3);
+        final List<DataObject> dataObjects = Arrays.asList(do1, do2, do3);
+        doReturn(existingDataTypes).when(modal).getExistingDataTypes();
+
+        modal.onDataObjectSelectionChanged(dataObjects);
+
+        verify(view).showDataTypeWithSameNameWarning();
+        verify(view, never()).hideDataTypeWithSameNameWarning();
+    }
+
+    @Test
+    public void testOnDataObjectSelectionChangedAndDoesntHasDuplicatedName() {
+
+        final String name1 = "name1";
+        final String name2 = "name2";
+        final String name3 = "name3";
+        final List<String> existingDataTypes = Arrays.asList("unique1", "unique2", "unique3");
+        final DataObject do1 = createDataObject(name1);
+        final DataObject do2 = createDataObject(name2);
+        final DataObject do3 = createDataObject(name3);
+        final List<DataObject> dataObjects = Arrays.asList(do1, do2, do3);
+        doReturn(existingDataTypes).when(modal).getExistingDataTypes();
+
+        modal.onDataObjectSelectionChanged(dataObjects);
+
+        verify(view, never()).showDataTypeWithSameNameWarning();
+        verify(view).hideDataTypeWithSameNameWarning();
+    }
+
+    private DataObject createDataObject(final String name) {
+
+        final DataObject dataObject = mock(DataObject.class);
+        when(dataObject.getClassNameWithoutPackage()).thenReturn(name);
+        return dataObject;
     }
 }

@@ -16,22 +16,29 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.imported.treelist;
 
+import java.util.function.Consumer;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class TreeListItemTest {
 
     @Mock
@@ -45,7 +52,7 @@ public class TreeListItemTest {
     @Before
     public void setup() {
 
-        treeListItem = new TreeListItem(view);
+        treeListItem = spy(new TreeListItem(view));
         when(view.getElement()).thenReturn(viewElement);
     }
 
@@ -92,10 +99,35 @@ public class TreeListItemTest {
     @Test
     public void testGetSetIsSelected() {
 
+        doNothing().when(treeListItem).callOnIsSelectedChanged();
         treeListItem.setIsSelected(true);
         assertTrue(treeListItem.getIsSelected());
 
         treeListItem.setIsSelected(false);
         assertFalse(treeListItem.getIsSelected());
+
+        verify(treeListItem, times(2)).callOnIsSelectedChanged();
+    }
+
+    @Test
+    public void testCallOnIsSelectedChanged() {
+
+        final Consumer consumer = mock(Consumer.class);
+        doReturn(consumer).when(treeListItem).getOnIsSelectedChanged();
+
+        treeListItem.callOnIsSelectedChanged();
+
+        verify(consumer).accept(treeListItem);
+    }
+
+    @Test
+    public void testCallOnIsSelectedChangedWhenConsumerIsNotSet() {
+
+        final Consumer consumer = mock(Consumer.class);
+        doReturn(null).when(treeListItem).getOnIsSelectedChanged();
+
+        treeListItem.callOnIsSelectedChanged();
+
+        verify(consumer, never()).accept(treeListItem);
     }
 }

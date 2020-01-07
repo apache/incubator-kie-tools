@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.types.imported;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,6 +43,8 @@ import org.kie.workbench.common.dmn.client.editors.types.imported.treelist.TreeL
 @Dependent
 @Templated
 public class ImportDataObjectModalView implements ImportDataObjectModal.View {
+
+    static final String OPENED_CONTAINER_CSS_CLASS = "opened";
 
     @DataField("header")
     private final HTMLDivElement header;
@@ -69,6 +73,9 @@ public class ImportDataObjectModalView implements ImportDataObjectModal.View {
     @DataField("button-import")
     private final HTMLButtonElement buttonImport;
 
+    @DataField("warning-container")
+    private final HTMLDivElement warningContainer;
+
     private final TreeList treeList;
 
     private ImportDataObjectModal presenter;
@@ -86,7 +93,8 @@ public class ImportDataObjectModalView implements ImportDataObjectModal.View {
                                      final HTMLAnchorElement clearSelection,
                                      final ManagedInstance<TreeListItem> items,
                                      final HTMLButtonElement buttonImport,
-                                     final HTMLButtonElement buttonCancel) {
+                                     final HTMLButtonElement buttonCancel,
+                                     final HTMLDivElement warningContainer) {
         this.header = header;
         this.body = body;
         this.footer = footer;
@@ -98,6 +106,23 @@ public class ImportDataObjectModalView implements ImportDataObjectModal.View {
         this.items = items;
         this.buttonImport = buttonImport;
         this.buttonCancel = buttonCancel;
+        this.warningContainer = warningContainer;
+    }
+
+    @PostConstruct
+    public void setup() {
+        treeList.setOnSelectionChanged(getOnSelectionChanged());
+    }
+
+    Consumer<List<TreeListItem>> getOnSelectionChanged() {
+        return this::onSelectionChanged;
+    }
+
+    void onSelectionChanged(final List<TreeListItem> treeListItems) {
+        final List<DataObject> selectedItems = treeListItems.stream()
+                .map(item -> item.getDataSource())
+                .collect(Collectors.toList());
+        presenter.onDataObjectSelectionChanged(selectedItems);
     }
 
     @Override
@@ -176,6 +201,16 @@ public class ImportDataObjectModalView implements ImportDataObjectModal.View {
 
         removeTreeList();
         treeList.clear();
+    }
+
+    @Override
+    public void showDataTypeWithSameNameWarning() {
+        warningContainer.classList.add(OPENED_CONTAINER_CSS_CLASS);
+    }
+
+    @Override
+    public void hideDataTypeWithSameNameWarning() {
+        warningContainer.classList.remove(OPENED_CONTAINER_CSS_CLASS);
     }
 
     void removeTreeList() {

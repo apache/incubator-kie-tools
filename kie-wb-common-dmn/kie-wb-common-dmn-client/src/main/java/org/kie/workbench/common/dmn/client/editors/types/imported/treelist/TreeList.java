@@ -16,6 +16,8 @@
 package org.kie.workbench.common.dmn.client.editors.types.imported.treelist;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -30,6 +32,8 @@ public class TreeList {
     private final View view;
 
     private List<TreeListItem> currentItems;
+
+    private Consumer<List<TreeListItem>> onSelectionChanged;
 
     @Inject
     public TreeList(final View view) {
@@ -46,6 +50,18 @@ public class TreeList {
         for (final TreeListItem item : getCurrentItems()) {
             item.updateView();
             view.add(item);
+            item.setOnIsSelectedChanged(this::selectionChanged);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    void selectionChanged(final TreeListItem treeListItem) {
+        callOnSelectionChanged();
+    }
+
+    void callOnSelectionChanged() {
+        if (!Objects.isNull(getOnSelectionChanged())) {
+            getOnSelectionChanged().accept(getSelectedItems());
         }
     }
 
@@ -69,6 +85,14 @@ public class TreeList {
         return getCurrentItems().stream()
                 .filter(item -> item.getIsSelected())
                 .collect(Collectors.toList());
+    }
+
+    public void setOnSelectionChanged(final Consumer<List<TreeListItem>> onSelectionChanged) {
+        this.onSelectionChanged = onSelectionChanged;
+    }
+
+    Consumer<List<TreeListItem>> getOnSelectionChanged() {
+        return onSelectionChanged;
     }
 
     public interface View extends UberElemental<TreeList> {

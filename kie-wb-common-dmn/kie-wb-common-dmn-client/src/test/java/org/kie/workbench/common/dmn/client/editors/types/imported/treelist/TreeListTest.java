@@ -18,14 +18,15 @@ package org.kie.workbench.common.dmn.client.editors.types.imported.treelist;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,11 +34,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class TreeListTest {
 
     @Mock
@@ -125,5 +127,42 @@ public class TreeListTest {
         assertTrue(selectedItems.contains(itemThree));
         assertFalse(selectedItems.contains(itemOne));
         assertFalse(selectedItems.contains(itemTwo));
+    }
+
+    @Test
+    public void testSelectionChanged() {
+
+        final TreeListItem treeListItem = mock(TreeListItem.class);
+        doNothing().when(treeList).callOnSelectionChanged();
+
+        treeList.selectionChanged(treeListItem);
+
+        verify(treeList).callOnSelectionChanged();
+    }
+
+    @Test
+    public void testCallOnSelectionChanged() {
+
+        final List selectedItems = mock(List.class);
+        final Consumer consumer = mock(Consumer.class);
+        doReturn(consumer).when(treeList).getOnSelectionChanged();
+        doReturn(selectedItems).when(treeList).getSelectedItems();
+
+        treeList.callOnSelectionChanged();
+
+        verify(consumer).accept(selectedItems);
+    }
+
+    @Test
+    public void testCallOnSelectionChangedWhenConsumerIsNotSet() {
+
+        final List selectedItems = mock(List.class);
+        final Consumer consumer = mock(Consumer.class);
+        doReturn(null).when(treeList).getOnSelectionChanged();
+        doReturn(selectedItems).when(treeList).getSelectedItems();
+
+        treeList.callOnSelectionChanged();
+
+        verify(consumer, never()).accept(selectedItems);
     }
 }

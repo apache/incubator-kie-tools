@@ -241,9 +241,10 @@ public class DataTypeListView implements DataTypeList.View {
         presenter.addDataType();
     }
 
+    @SuppressWarnings("unused")
     @EventHandler("import-data-object-button")
     public void onImportDataObjectClick(final ClickEvent e) {
-        importDataObjectModal.show();
+        importDataObjectModal.show(presenter.getExistingDataTypesNames());
     }
 
     @EventHandler("read-only-message-close-button")

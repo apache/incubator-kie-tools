@@ -36,6 +36,8 @@ public class ImportDataObjectModal extends Elemental2Modal<ImportDataObjectModal
 
     private Consumer<List<DataObject>> dataObjectsConsumer;
 
+    private List<String> existingDataTypes;
+
     @Inject
     public ImportDataObjectModal(final View view,
                                  final DMNClientServicesProxy client) {
@@ -52,7 +54,20 @@ public class ImportDataObjectModal extends Elemental2Modal<ImportDataObjectModal
         callSuperSetup();
     }
 
-    void callSuperSetup(){
+    Consumer<List<DataObject>> getOnDataObjectSelectionChanged() {
+        return this::onDataObjectSelectionChanged;
+    }
+
+    void onDataObjectSelectionChanged(final List<DataObject> dataObjects) {
+
+        if (dataObjects.stream().anyMatch(dataObject -> getExistingDataTypes().contains(dataObject.getClassNameWithoutPackage()))) {
+            getView().showDataTypeWithSameNameWarning();
+        } else {
+            getView().hideDataTypeWithSameNameWarning();
+        }
+    }
+
+    void callSuperSetup() {
         super.setup();
     }
 
@@ -68,9 +83,15 @@ public class ImportDataObjectModal extends Elemental2Modal<ImportDataObjectModal
         super.hide();
     }
 
-    @Override
-    public void show() {
+    public void show(final List<String> existingDataTypes) {
+        getView().hideDataTypeWithSameNameWarning();
+        this.existingDataTypes = existingDataTypes;
         client.loadDataObjects(wrap(getConsumer()));
+        superShow();
+    }
+
+    public List<String> getExistingDataTypes() {
+        return existingDataTypes;
     }
 
     ServiceCallback<List<DataObject>> wrap(final Consumer<List<DataObject>> consumer) {
@@ -105,5 +126,9 @@ public class ImportDataObjectModal extends Elemental2Modal<ImportDataObjectModal
         void addItems(final List<DataObject> dataObjects);
 
         void clear();
+
+        void showDataTypeWithSameNameWarning();
+
+        void hideDataTypeWithSameNameWarning();
     }
 }

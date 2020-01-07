@@ -52,5 +52,15 @@ public class DataObject {
     public void setProperties(final List<DataObjectProperty> properties) {
         this.properties = properties;
     }
+
+    public String getClassNameWithoutPackage() {
+
+        int lastIndex = 0;
+        if (classType.contains(".")) {
+            lastIndex = classType.lastIndexOf('.') + 1;
+        }
+
+        return classType.substring(lastIndex);
+    }
 }
 

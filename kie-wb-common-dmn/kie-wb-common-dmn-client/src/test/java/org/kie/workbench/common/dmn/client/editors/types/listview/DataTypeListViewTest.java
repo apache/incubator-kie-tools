@@ -692,6 +692,19 @@ public class DataTypeListViewTest {
         verify(classList).add(HIDDEN_CSS_CLASS);
     }
 
+    @Test
+    public void testOnImportDataObjectClick() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        final List<String> list = mock(List.class);
+
+        when(presenter.getExistingDataTypesNames()).thenReturn(list);
+
+        view.onImportDataObjectClick(event);
+
+        verify(importDataObjectModal).show(list);
+    }
+
     private HTMLElement makeHTMLElement() {
         final HTMLElement element = mock(HTMLElement.class);
         element.parentNode = mock(Node.class);
