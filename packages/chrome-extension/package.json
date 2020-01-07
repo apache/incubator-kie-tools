@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/chrome-extension",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -13,8 +13,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/microeditor-envelope": "0.2.7",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.7",
+    "@kogito-tooling/microeditor-envelope": "0.2.8",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.8",
     "@octokit/rest": "16.35.0",
     "@types/chrome": "0.0.81",
     "minimatch": "3.0.4"
