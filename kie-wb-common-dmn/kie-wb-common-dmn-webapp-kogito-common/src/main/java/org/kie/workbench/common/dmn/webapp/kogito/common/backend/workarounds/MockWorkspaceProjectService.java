@@ -138,4 +138,18 @@ public class MockWorkspaceProjectService implements WorkspaceProjectService {
                                            final String branchName) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
+
+    public void addBranch(final String newBranchName,
+                          final String baseBranchName,
+                          final WorkspaceProject project,
+                          final String userIdentifier) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
+
+    @Override
+    public void removeBranch(final String branchName,
+                             final WorkspaceProject project,
+                             final String userIdentifier) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
 }

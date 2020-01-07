@@ -119,6 +119,8 @@ public class ProjectBranchBreadcrumbTest {
 
         when(libraryPlaces.getActiveSpace()).thenReturn(organizationalUnit);
         when(libraryPlaces.getActiveWorkspace()).thenReturn(project);
+
+        when(user.getIdentifier()).thenReturn("user");
     }
 
     @Test
@@ -147,9 +149,12 @@ public class ProjectBranchBreadcrumbTest {
 
     @Test
     public void newBranchCreatedByUserShouldBeOpened() {
-        doReturn(true).when(libraryPlaces).isThisUserAccessingThisRepository(user, repository);
+        doReturn(true).when(libraryPlaces).isThisUserAccessingThisRepository("user", repository);
 
-        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), "old-branch", user));
+        presenter.newBranchEvent(new NewBranchEvent(repository,
+                                                    newBranch.getName(),
+                                                    "old-branch",
+                                                    user.getIdentifier()));
 
         verify(libraryPlaces).goToProject(project, newBranch);
     }
@@ -159,9 +164,12 @@ public class ProjectBranchBreadcrumbTest {
         final User otherUser = mock(User.class);
         when(otherUser.getIdentifier()).thenReturn("otherUser");
 
-        doReturn(false).when(libraryPlaces).isThisUserAccessingThisRepository(otherUser, repository);
+        doReturn(false).when(libraryPlaces).isThisUserAccessingThisRepository("otherUser", repository);
 
-        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), "old-branch", otherUser));
+        presenter.newBranchEvent(new NewBranchEvent(repository,
+                                                    newBranch.getName(),
+                                                    "old-branch",
+                                                    otherUser.getIdentifier()));
 
         verify(libraryPlaces, never()).goToProject(project, newBranch);
     }

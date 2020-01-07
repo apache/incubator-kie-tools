@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.impl;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +32,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
@@ -42,7 +39,6 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
-import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -50,11 +46,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -116,14 +108,8 @@ public class LibraryServiceImpl implements LibraryService {
     private IOService ioService;
     private UserManagerService userManagerService;
     private IndexStatusOracle indexOracle;
-    private RepositoryService repoService;
-    private PathUtil pathUtil;
-    private Event<NewBranchEvent> newBranchEvent;
-    private ConfiguredRepositories configuredRepositories;
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
     private ClusterService clusterService;
-    private ChangeRequestService changeRequestService;
 
     public LibraryServiceImpl() {
     }
@@ -141,14 +127,8 @@ public class LibraryServiceImpl implements LibraryService {
                               @Named("ioStrategy") final IOService ioService,
                               final UserManagerService userManagerService,
                               final IndexStatusOracle indexOracle,
-                              final RepositoryService repoService,
-                              final PathUtil pathUtil,
-                              final Event<NewBranchEvent> newBranchEvent,
-                              final ConfiguredRepositories configuredRepositories,
-                              final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
                               final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
-                              final ClusterService clusterService,
-                              final ChangeRequestService changeRequestService) {
+                              final ClusterService clusterService) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -161,14 +141,8 @@ public class LibraryServiceImpl implements LibraryService {
         this.ioService = ioService;
         this.userManagerService = userManagerService;
         this.indexOracle = indexOracle;
-        this.repoService = repoService;
-        this.pathUtil = pathUtil;
-        this.newBranchEvent = newBranchEvent;
-        this.configuredRepositories = configuredRepositories;
-        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
         this.clusterService = clusterService;
-        this.changeRequestService = changeRequestService;
     }
 
     @Override
@@ -412,64 +386,20 @@ public class LibraryServiceImpl implements LibraryService {
     public void addBranch(final String newBranchName,
                           final String baseBranchName,
                           final WorkspaceProject project) {
-        Branch baseBranch = project.getRepository().getBranch(baseBranchName)
-                .orElseThrow(() -> new IllegalStateException("The base branch does not exists"));
 
-        final org.uberfire.java.nio.file.Path baseBranchPath = pathUtil.convert(baseBranch.getPath());
-        final String newBranchPathURI = pathUtil.replaceBranch(newBranchName,
-                                                               baseBranch.getPath().toURI());
-        try {
-            final org.uberfire.java.nio.file.Path newBranchPath = ioService.get(new URI(newBranchPathURI));
-            baseBranchPath.getFileSystem().provider().copy(baseBranchPath,
-                                                           newBranchPath);
-            copyBranchPermissions(newBranchName,
-                                  baseBranchName,
-                                  project);
-
-            repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
-                                                                                                      project.getRepository().getAlias())));
-
-            fireNewBranchEvent(pathUtil.convert(newBranchPath),
-                               newBranchPath,
-                               baseBranchPath);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void copyBranchPermissions(final String targetBranchName,
-                                       final String sourceBranchName,
-                                       final WorkspaceProject project) {
-        final BranchPermissions branchPermissions = loadBranchPermissions(project.getSpace().getName(),
-                                                                          project.getRepository().getIdentifier(),
-                                                                          sourceBranchName);
-        saveBranchPermissions(project.getSpace().getName(),
-                              project.getRepository().getIdentifier(),
-                              targetBranchName,
-                              branchPermissions);
+        projectService.addBranch(newBranchName,
+                                 baseBranchName,
+                                 project,
+                                 sessionInfo.getIdentity().getIdentifier());
     }
 
     @Override
     public void removeBranch(final WorkspaceProject project,
                              final Branch branch) {
-        try {
-            ioService.startBatch(pathUtil.convert(branch.getPath()).getFileSystem());
 
-            repoService.getRepositoryFromSpace(project.getSpace(), project.getRepository().getAlias()).getBranch(branch.getName()).ifPresent(updatedBranch -> {
-                final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
-                ioService.delete(branchPath);
-                deleteBranchPermissions(project.getSpace().getName(),
-                                        project.getRepository().getIdentifier(),
-                                        branch.getName());
-                deleteAssociatedChangeRequests(project.getSpace().getName(),
-                                               project.getRepository().getAlias(),
-                                               branch.getName());
-                this.repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
-                                                                                                               project.getRepository().getAlias())));
-            });
-        } finally {
-            ioService.endBatch();
-        }
+        projectService.removeBranch(branch.getName(),
+                                    project,
+                                    sessionInfo.getIdentity().getIdentifier());
     }
 
     @Override
@@ -493,40 +423,6 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public Boolean isClustered() {
         return clusterService.isAppFormerClustered();
-    }
-
-    private void deleteBranchPermissions(final String spaceName,
-                                         final String projectIdentifier,
-                                         final String branchName) {
-        spaceConfigStorageRegistry.get(spaceName).deleteBranchPermissions(branchName,
-                                                                          projectIdentifier);
-    }
-
-    private void deleteAssociatedChangeRequests(final String spaceName,
-                                                final String repositoryAlias,
-                                                final String associatedBranchName) {
-        changeRequestService.deleteChangeRequests(spaceName,
-                                                  repositoryAlias,
-                                                  associatedBranchName);
-    }
-
-    private void fireNewBranchEvent(final Path targetRoot,
-                                    final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
-                                    final org.uberfire.java.nio.file.Path nioSourceRepositoryRoot) {
-        final Repository repository = repoService.getRepository(targetRoot);
-
-        final Optional<Branch> toBranch = repository.getBranch(Paths.convert(nioTargetRepositoryRoot.getRoot()));
-
-        final Optional<Branch> fromBranch = repository.getBranch(Paths.convert(nioSourceRepositoryRoot.getRoot()));
-
-        if (toBranch.isPresent()) {
-            newBranchEvent.fire(new NewBranchEvent(repository,
-                                                   toBranch.get().getName(),
-                                                   fromBranch.get().getName(),
-                                                   sessionInfo.getIdentity()));
-        } else {
-            throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());
-        }
     }
 
     String getCustomImportProjectsUrl() {

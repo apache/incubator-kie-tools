@@ -19,7 +19,9 @@ package org.kie.workbench.common.project.config;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.backend.server.WorkspaceProjectServiceImpl;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
@@ -28,7 +30,11 @@ import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.uberfire.spaces.SpacesAPI;
+import org.uberfire.io.IOService;
 
 @Migration
 public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServiceImpl {
@@ -42,15 +48,25 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
                                                 final @Migration RepositoryService repositoryService,
                                                 final SpacesAPI spaces,
                                                 final Event<NewProjectEvent> newProjectEvent,
+                                                final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                                                final Event<NewBranchEvent> newBranchEvent,
                                                 final Instance<ModuleService<? extends Module>> moduleServices,
                                                 final ModuleRepositoryResolver repositoryResolver,
+                                                @Named("ioStrategy") final IOService ioService,
+                                                final PathUtil pathUtil,
+                                                final ChangeRequestService changeRequestService,
                                                 final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         super(organizationalUnitService,
               repositoryService,
               spaces,
               newProjectEvent,
+              repositoryUpdatedEvent,
+              newBranchEvent,
               moduleServices,
               repositoryResolver,
+              ioService,
+              pathUtil,
+              changeRequestService,
               spaceConfigStorageRegistry);
     }
 }

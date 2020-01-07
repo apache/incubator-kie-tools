@@ -852,19 +852,19 @@ public class LibraryPlacesTest {
 
     @Test
     public void loggedUserAccessingRepositoryTest() {
-        assertTrue(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+        assertTrue(libraryPlaces.isThisUserAccessingThisRepository(user.getIdentifier(), activeRepository));
     }
 
     @Test
     public void loggedUserWithNoActiveSpaceTest() {
         doReturn(Optional.empty()).when(projectContext).getActiveOrganizationalUnit();
-        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user.getIdentifier(), activeRepository));
     }
 
     @Test
     public void loggedUserWithNoActiveWorkspaceProjectTest() {
         doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
-        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user.getIdentifier(), activeRepository));
     }
 
     @Test
@@ -873,13 +873,13 @@ public class LibraryPlacesTest {
         when(repository.getAlias()).thenReturn("another-repository");
         when(repository.getSpace()).thenReturn(activeSpace);
 
-        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user,
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user.getIdentifier(),
                                                                     repository));
     }
 
     @Test
     public void anotherUserAccessingRepositoryTest() {
-        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(mock(User.class), activeRepository));
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository("otheruser", activeRepository));
     }
 
     @Test
@@ -888,8 +888,7 @@ public class LibraryPlacesTest {
         when(repository.getAlias()).thenReturn("another-repository");
         when(repository.getSpace()).thenReturn(activeSpace);
 
-        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(mock(User.class),
-                                                                    repository));
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository("user", repository));
     }
 
     @Test

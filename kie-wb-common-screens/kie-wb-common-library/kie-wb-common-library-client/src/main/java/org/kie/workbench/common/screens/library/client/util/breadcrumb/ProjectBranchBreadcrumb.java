@@ -121,10 +121,10 @@ public class ProjectBranchBreadcrumb implements BreadcrumbPresenter {
     }
 
     public void newBranchEvent(@Observes final NewBranchEvent newBranchEvent) {
-        final User user = newBranchEvent.getUser();
+        final String userIdentifier = newBranchEvent.getUserIdentifier();
         final Repository repository = newBranchEvent.getRepository();
 
-        if (libraryPlaces.isThisUserAccessingThisRepository(user, repository)) {
+        if (libraryPlaces.isThisUserAccessingThisRepository(userIdentifier, repository)) {
             libraryPlaces.goToProject(libraryPlaces.getActiveWorkspace(), repository.getBranch(newBranchEvent.getNewBranchName()).get());
         }
     }

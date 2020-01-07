@@ -714,9 +714,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         return this.projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("No active space found"));
     }
 
-    public boolean isThisUserAccessingThisRepository(final User user,
+    public boolean isThisUserAccessingThisRepository(final String userIdentifier,
                                                      final Repository repository) {
-        return isThisRepositoryBeingAccessed(repository) && sessionInfo.getIdentity().equals(user);
+        return isThisRepositoryBeingAccessed(repository)
+            && sessionInfo.getIdentity().getIdentifier().equals(userIdentifier);
     }
 
     public boolean isThisRepositoryBeingAccessed(final Repository repository) {
