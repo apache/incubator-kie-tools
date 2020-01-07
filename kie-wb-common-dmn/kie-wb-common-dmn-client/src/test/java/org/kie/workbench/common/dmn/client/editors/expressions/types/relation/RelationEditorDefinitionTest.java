@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,6 +110,9 @@ public class RelationEditorDefinitionTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+
+    @Mock
     private NameAndDataTypePopoverView.Presenter headerEditor;
 
     private Optional<HasName> hasName = Optional.empty();
@@ -123,6 +127,8 @@ public class RelationEditorDefinitionTest {
         when(session.getGridLayer()).thenReturn(gridLayer);
         when(session.getCellEditorControls()).thenReturn(cellEditorControls);
 
+        when(headerEditors.get()).thenReturn(headerEditor);
+
         this.definition = new RelationEditorDefinition(definitionUtils,
                                                        sessionManager,
                                                        sessionCommandManager,
@@ -132,7 +138,7 @@ public class RelationEditorDefinitionTest {
                                                        domainObjectSelectionEvent,
                                                        listSelector,
                                                        translationService,
-                                                       headerEditor);
+                                                       headerEditors);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 

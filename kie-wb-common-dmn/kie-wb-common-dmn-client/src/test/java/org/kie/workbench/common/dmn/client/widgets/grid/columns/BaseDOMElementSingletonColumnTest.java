@@ -179,12 +179,4 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
         verify(editableHeaderMetaData).destroyResources();
     }
-
-    @Test
-    public void testDestroyExpressionGridAdditionalDomElements() {
-        if (gridWidget instanceof BaseExpressionGrid) {
-            column.destroyResources();
-            verify(gridWidget).destroyResources();
-        }
-    }
 }

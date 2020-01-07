@@ -854,13 +854,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testDestroyResources() {
-        grid.destroyResources();
-
-        verify(cellEditorControls).hide();
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void testShowContextMenuHeader() {
         final MockHasCellEditorControlsHeaderMetaData headerMetaData = mock(MockHasCellEditorControlsHeaderMetaData.class);

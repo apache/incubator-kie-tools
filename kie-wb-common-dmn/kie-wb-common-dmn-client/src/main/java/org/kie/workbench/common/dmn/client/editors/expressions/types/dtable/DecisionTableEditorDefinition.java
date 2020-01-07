@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -54,7 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
     private HitPolicyPopoverView.Presenter hitPolicyEditor;
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
     private DecisionTableEditorDefinitionEnricher enricher;
 
     public DecisionTableEditorDefinition() {
@@ -72,7 +73,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
                                          final HitPolicyPopoverView.Presenter hitPolicyEditor,
-                                         final NameAndDataTypePopoverView.Presenter headerEditor,
+                                         final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors,
                                          final DecisionTableEditorDefinitionEnricher enricher) {
         super(definitionUtils,
               sessionManager,
@@ -84,7 +85,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
               listSelector,
               translationService);
         this.hitPolicyEditor = hitPolicyEditor;
-        this.headerEditor = headerEditor;
+        this.headerEditors = headerEditors;
         this.enricher = enricher;
     }
 
@@ -138,7 +139,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  isOnlyVisualChangeAllowed,
                                                  nesting,
                                                  hitPolicyEditor,
-                                                 headerEditor));
+                                                 headerEditors));
     }
 
     @Override

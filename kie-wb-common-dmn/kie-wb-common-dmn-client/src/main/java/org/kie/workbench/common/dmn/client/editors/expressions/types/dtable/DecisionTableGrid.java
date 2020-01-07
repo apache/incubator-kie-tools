@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -96,7 +97,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
     private final HitPolicyPopoverView.Presenter hitPolicyEditor;
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
 
     private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
 
@@ -135,7 +136,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final boolean isOnlyVisualChangeAllowed,
                              final int nesting,
                              final HitPolicyPopoverView.Presenter hitPolicyEditor,
-                             final NameAndDataTypePopoverView.Presenter headerEditor) {
+                             final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -157,7 +158,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               isOnlyVisualChangeAllowed,
               nesting);
         this.hitPolicyEditor = hitPolicyEditor;
-        this.headerEditor = headerEditor;
+        this.headerEditors = headerEditors;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -214,7 +215,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                    setDisplayNameConsumer(false),
                                                                                                    setTypeRefConsumer(),
                                                                                                    cellEditorControls,
-                                                                                                   headerEditor,
+                                                                                                   headerEditors.get(),
                                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditInputClause)),
                                                                                                    listSelector,
                                                                                                    this::getHeaderItems,
@@ -250,6 +251,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     private Supplier<List<GridColumn.HeaderMetaData>> outputClauseHeaderMetaData(final OutputClause oc) {
+        final NameAndDataTypePopoverView.Presenter headerEditor = headerEditors.get();
         return () -> {
             final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
             getExpression().get().ifPresent(dtable -> {

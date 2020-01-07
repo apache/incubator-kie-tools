@@ -94,9 +94,6 @@ public abstract class DMNGridColumn<G extends BaseGrid<? extends Expression>, T>
 
     @Override
     public void destroyResources() {
-        if (gridWidget instanceof BaseExpressionGrid) {
-            ((BaseExpressionGrid) gridWidget).destroyResources();
-        }
         getHeaderMetaData().stream()
                 .filter(md -> md instanceof HasDOMElementResources)
                 .map(md -> (HasDOMElementResources) md)

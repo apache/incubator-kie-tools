@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -71,7 +72,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
 
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
@@ -92,7 +93,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final TranslationService translationService,
                         final boolean isOnlyVisualChangeAllowed,
                         final int nesting,
-                        final NameAndDataTypePopoverView.Presenter headerEditor) {
+                        final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -113,7 +114,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               translationService,
               isOnlyVisualChangeAllowed,
               nesting);
-        this.headerEditor = headerEditor;
+        this.headerEditors = headerEditors;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -159,7 +160,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                   setDisplayNameConsumer(false),
                                                                                                   setTypeRefConsumer(),
                                                                                                   cellEditorControls,
-                                                                                                  headerEditor,
+                                                                                                  headerEditors.get(),
                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation)),
                                                                                                   listSelector,
                                                                                                   this::getHeaderItems,

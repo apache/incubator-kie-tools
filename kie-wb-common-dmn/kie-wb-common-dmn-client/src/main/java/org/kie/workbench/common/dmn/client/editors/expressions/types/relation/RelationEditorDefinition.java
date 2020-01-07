@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -54,7 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
 
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
 
     public RelationEditorDefinition() {
         //CDI proxy
@@ -70,7 +71,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService,
-                                    final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                    final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -80,7 +81,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
               domainObjectSelectionEvent,
               listSelector,
               translationService);
-        this.headerEditor = headerEditor;
+        this.headerEditors = headerEditors;
     }
 
     @Override
@@ -145,7 +146,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             translationService,
                                             isOnlyVisualChangeAllowed,
                                             nesting,
-                                            headerEditor));
+                                            headerEditors));
     }
 
     @Override

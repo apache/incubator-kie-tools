@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
@@ -109,6 +111,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
@@ -251,6 +254,9 @@ public class DecisionTableGridTest {
     private HitPolicyPopoverView.Presenter hitPolicyEditor;
 
     @Mock
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+
+    @Mock
     private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
@@ -273,6 +279,9 @@ public class DecisionTableGridTest {
 
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+
+    @Mock
+    private GridBodyCellEditContext gridBodyCellEditContext;
 
     @Captor
     private ArgumentCaptor<AddInputClauseCommand> addInputClauseCommandCaptor;
@@ -335,7 +344,7 @@ public class DecisionTableGridTest {
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
-                                                            headerEditor,
+                                                            headerEditors,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
                                                                                                       new DMNGraphUtils(sessionManager, dmnDiagramUtils),
                                                                                                       itemDefinitionUtils));
@@ -369,6 +378,9 @@ public class DecisionTableGridTest {
                                                       anyString(),
                                                       any())).thenReturn(updateElementPropertyCommand);
         when(updateElementPropertyCommand.execute(canvasHandler)).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+
+        when(headerEditors.get()).thenReturn(headerEditor);
+        when(gridBodyCellEditContext.getRelativeLocation()).thenReturn(Optional.empty());
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
@@ -1797,5 +1809,71 @@ public class DecisionTableGridTest {
         grid.selectFirstCell();
 
         assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
+    }
+
+    @Test
+    public void testMultipleInputClauseColumnHeaderEditorInstances() {
+        final NameAndDataTypePopoverView.Presenter headerEditor2 = mock(NameAndDataTypePopoverView.Presenter.class);
+
+        when(headerEditors.get()).thenReturn(headerEditor, headerEditor2);
+
+        setupGrid(makeHasNameForDecision(), 0);
+
+        addInputClause(2);
+
+        //Adding the column above shows the header editor by default, so reset it for the purpose of this test.
+        reset(headerEditor2);
+
+        final GridColumn uiColumn1 = grid.getModel().getColumns().get(1);
+        assertInputClauseColumnHeaderEditor(uiColumn1, headerEditor);
+
+        final GridColumn uiColumn2 = grid.getModel().getColumns().get(2);
+        assertInputClauseColumnHeaderEditor(uiColumn2, headerEditor2);
+    }
+
+    private void assertInputClauseColumnHeaderEditor(final GridColumn uiColumn,
+                                                     final NameAndDataTypePopoverView.Presenter headerEditor) {
+        assertThat(uiColumn).isInstanceOf(InputClauseColumn.class);
+        final InputClauseColumn inputClauseColumn = (InputClauseColumn) uiColumn;
+        final GridColumn.HeaderMetaData inputClauseColumnHeaderMetaData = inputClauseColumn.getHeaderMetaData().get(0);
+        assertThat(inputClauseColumnHeaderMetaData).isInstanceOf(InputClauseColumnHeaderMetaData.class);
+        final InputClauseColumnHeaderMetaData inputClauseColumnHeaderMetaData1 = (InputClauseColumnHeaderMetaData) inputClauseColumnHeaderMetaData;
+        assertThat(inputClauseColumnHeaderMetaData1.getEditor()).isPresent();
+        //The only way to assert the editor was bound to the column is to try editing the header
+        inputClauseColumnHeaderMetaData1.edit(gridBodyCellEditContext);
+        verify(headerEditor).bind(any(HasNameAndTypeRef.class), anyInt(), anyInt());
+    }
+
+    @Test
+    public void testMultipleOutputClauseColumnHeaderEditorInstances() {
+        final NameAndDataTypePopoverView.Presenter headerEditor2 = mock(NameAndDataTypePopoverView.Presenter.class);
+
+        when(headerEditors.get()).thenReturn(headerEditor, headerEditor, headerEditor2);
+
+        setupGrid(makeHasNameForDecision(), 0);
+
+        addOutputClause(3);
+
+        //Adding the column above shows the header editor by default, so reset it for the purpose of this test.
+        reset(headerEditor2);
+
+        final GridColumn uiColumn1 = grid.getModel().getColumns().get(2);
+        assertOutputClauseColumnHeaderEditor(uiColumn1, headerEditor);
+
+        final GridColumn uiColumn2 = grid.getModel().getColumns().get(3);
+        assertOutputClauseColumnHeaderEditor(uiColumn2, headerEditor2);
+    }
+
+    private void assertOutputClauseColumnHeaderEditor(final GridColumn uiColumn,
+                                                      final NameAndDataTypePopoverView.Presenter headerEditor) {
+        assertThat(uiColumn).isInstanceOf(OutputClauseColumn.class);
+        final OutputClauseColumn outputClauseColumn = (OutputClauseColumn) uiColumn;
+        final GridColumn.HeaderMetaData outputClauseColumnHeaderMetaData = outputClauseColumn.getHeaderMetaData().get(1);
+        assertThat(outputClauseColumnHeaderMetaData).isInstanceOf(OutputClauseColumnHeaderMetaData.class);
+        final OutputClauseColumnHeaderMetaData outputClauseColumnHeaderMetaData1 = (OutputClauseColumnHeaderMetaData) outputClauseColumnHeaderMetaData;
+        assertThat(outputClauseColumnHeaderMetaData1.getEditor()).isPresent();
+        //The only way to assert that editor was bound to the column is to try editing the header
+        outputClauseColumnHeaderMetaData1.edit(gridBodyCellEditContext);
+        verify(headerEditor).bind(any(HasNameAndTypeRef.class), anyInt(), anyInt());
     }
 }

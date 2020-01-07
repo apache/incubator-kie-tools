@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
+import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -87,6 +89,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
@@ -213,7 +216,13 @@ public class RelationGridTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+
+    @Mock
     private NameAndDataTypePopoverView.Presenter headerEditor;
+
+    @Mock
+    private GridBodyCellEditContext gridBodyCellEditContext;
 
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
@@ -270,7 +279,7 @@ public class RelationGridTest {
                                                   domainObjectSelectionEvent,
                                                   listSelector,
                                                   translationService,
-                                                  headerEditor);
+                                                  headerEditors);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
@@ -295,6 +304,9 @@ public class RelationGridTest {
         when(gridLayer.getVisibleBounds()).thenReturn(new BaseBounds(0, 0, 200, 200));
         when(gridLayer.getViewport()).thenReturn(viewport);
         when(viewport.getTransform()).thenReturn(transform);
+
+        when(headerEditors.get()).thenReturn(headerEditor);
+        when(gridBodyCellEditContext.getRelativeLocation()).thenReturn(Optional.empty());
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
@@ -1033,5 +1045,38 @@ public class RelationGridTest {
         grid.selectFirstCell();
 
         assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
+    }
+
+    @Test
+    public void testMultipleColumnHeaderEditorInstances() {
+        final NameAndDataTypePopoverView.Presenter headerEditor2 = mock(NameAndDataTypePopoverView.Presenter.class);
+
+        when(headerEditors.get()).thenReturn(headerEditor, headerEditor2);
+
+        setupGrid(0);
+
+        addColumn(2);
+
+        //Adding the column above shows the header editor by default, so reset it for the purpose of this test.
+        reset(headerEditor2);
+
+        final GridColumn uiColumn1 = grid.getModel().getColumns().get(1);
+        assertColumnHeaderEditor(uiColumn1, headerEditor);
+
+        final GridColumn uiColumn2 = grid.getModel().getColumns().get(2);
+        assertColumnHeaderEditor(uiColumn2, headerEditor2);
+    }
+
+    private void assertColumnHeaderEditor(final GridColumn uiColumn,
+                                          final NameAndDataTypePopoverView.Presenter headerEditor) {
+        assertThat(uiColumn).isInstanceOf(RelationColumn.class);
+        final RelationColumn relationColumn = (RelationColumn) uiColumn;
+        final GridColumn.HeaderMetaData relationColumnHeaderMetaData = relationColumn.getHeaderMetaData().get(0);
+        assertThat(relationColumnHeaderMetaData).isInstanceOf(RelationColumnHeaderMetaData.class);
+        final RelationColumnHeaderMetaData relationColumnHeaderMetaData1 = (RelationColumnHeaderMetaData) relationColumnHeaderMetaData;
+        assertThat(relationColumnHeaderMetaData1.getEditor()).isPresent();
+        //The only way to assert that editor was bound to the column is to try editing the header
+        relationColumnHeaderMetaData1.edit(gridBodyCellEditContext);
+        verify(headerEditor).bind(any(HasNameAndTypeRef.class), anyInt(), anyInt());
     }
 }

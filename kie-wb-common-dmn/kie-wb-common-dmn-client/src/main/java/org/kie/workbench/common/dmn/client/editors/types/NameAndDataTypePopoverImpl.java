@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
-@ApplicationScoped
+@Dependent
 public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Presenter {
 
     private NameAndDataTypePopoverView view;

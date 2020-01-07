@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.BrowserEvents;
@@ -54,7 +54,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
 @Templated
-@ApplicationScoped
+@Dependent
 public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl implements NameAndDataTypePopoverView {
 
     static final String TYPE_SELECTOR_BUTTON_SELECTOR = "button.dropdown-toggle.btn-default";
@@ -339,8 +339,9 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
 
     @Override
     public void initSelectedTypeRef(final QName typeRef) {
-        typeRefEditor.setValue(typeRef,
-                               false);
+        typeRefEditor.setValue(typeRef, false);
+        previousTypeRef = typeRef;
+        currentTypeRef = typeRef;
     }
 
     @Override
@@ -385,8 +386,7 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
             typeRefEditor.setValue(previousTypeRef);
         }
         currentName = previousName;
-        previousTypeRef = null;
-        currentTypeRef = null;
+        currentTypeRef = previousTypeRef;
     }
 
     @EventHandler("nameEditor")

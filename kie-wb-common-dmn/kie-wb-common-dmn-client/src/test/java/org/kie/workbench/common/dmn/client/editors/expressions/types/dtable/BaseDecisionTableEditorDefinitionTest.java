@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.List;
 import java.util.Optional;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -116,6 +117,9 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
+    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+
+    @Mock
     private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
@@ -151,14 +155,16 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
-                                                            headerEditor,
+                                                            headerEditors,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager,new DMNDiagramUtils()),
+                                                                                                      new DMNGraphUtils(sessionManager, new DMNDiagramUtils()),
                                                                                                       itemDefinitionUtils));
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
+
+        when(headerEditors.get()).thenReturn(headerEditor);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());

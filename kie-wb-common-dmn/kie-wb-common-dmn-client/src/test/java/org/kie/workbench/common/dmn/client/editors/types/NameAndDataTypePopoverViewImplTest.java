@@ -519,6 +519,7 @@ public class NameAndDataTypePopoverViewImplTest {
         view.initName(NAME);
 
         verify(nameEditor).setValue(eq(NAME));
+        assertEquals(NAME, view.getCurrentName());
     }
 
     @Test
@@ -526,6 +527,7 @@ public class NameAndDataTypePopoverViewImplTest {
         view.initSelectedTypeRef(typeRef);
 
         verify(dataTypeEditor).setValue(eq(typeRef), eq(false));
+        assertEquals(typeRef, view.getCurrentTypeRef());
     }
 
     @Test
@@ -667,5 +669,35 @@ public class NameAndDataTypePopoverViewImplTest {
         verify(view, never()).onClosedByKeyboard();
         verify(view, never()).isEscapeKeyPressed(any());
         verify(view, never()).reset();
+    }
+
+    @Test
+    public void testResetName() {
+        view.initName(NAME);
+
+        final String newName = "new_name";
+        when(nameEditor.getValue()).thenReturn(newName);
+        view.onNameChange(blurEvent);
+        assertEquals(newName, view.getCurrentName());
+
+        view.reset();
+
+        assertEquals(NAME, view.getCurrentName());
+    }
+
+    @Test
+    public void testResetTypeRef() {
+        view.initSelectedTypeRef(typeRef);
+
+        final QName newTypeRef = mock(QName.class);
+        verify(dataTypeEditor).addValueChangeHandler(valueChangeHandlerCaptor.capture());
+        when(valueChangeEvent.getValue()).thenReturn(newTypeRef);
+        valueChangeHandlerCaptor.getValue().onValueChange(valueChangeEvent);
+
+        assertEquals(newTypeRef, view.getCurrentTypeRef());
+
+        view.reset();
+
+        assertEquals(typeRef, view.getCurrentTypeRef());
     }
 }
