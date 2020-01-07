@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent.View;
 import org.mockito.Mock;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,6 +36,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent.DEFAULT_ITEM_HEIGHT;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DATA_X_POSITION;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.DATA_Y_POSITION;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.HIDDEN_Y_POSITION;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -192,5 +195,33 @@ public class DNDListComponentTest {
     public void testRefreshDragAreaSize() {
         dndListComponent.refreshDragAreaSize();
         verify(view).refreshDragAreaSize();
+    }
+
+    @Test
+    public void testSetInitialPositionY() {
+
+        final HTMLElement dragAndDropElement = mock(HTMLElement.class);
+        final String parentPosition = "4";
+        final HTMLElement child0 = mock(HTMLElement.class);
+        final HTMLElement child1 = mock(HTMLElement.class);
+        final HTMLElement child2 = mock(HTMLElement.class);
+        final List<HTMLElement> children = asList(child0, child1, child2);
+
+        when(dragAndDropElement.getAttribute(DATA_Y_POSITION)).thenReturn(parentPosition);
+
+        dndListComponent.setInitialPositionY(dragAndDropElement, children);
+
+        verify(child0).setAttribute(DATA_Y_POSITION, 5);
+        verify(child1).setAttribute(DATA_Y_POSITION, 6);
+        verify(child2).setAttribute(DATA_Y_POSITION, 7);
+    }
+
+    @Test
+    public void testSetInitialHiddenPositionY() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        dndListComponent.setInitialHiddenPositionY(element);
+
+        verify(element).setAttribute(DATA_Y_POSITION, HIDDEN_Y_POSITION);
     }
 }

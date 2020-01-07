@@ -260,6 +260,7 @@ public class DataTypeListView implements DataTypeList.View {
 
         if (isCollapsedParent || isHiddenParent) {
             hide(itemElement);
+            getDndListComponent().setInitialHiddenPositionY(itemElement);
         } else {
             show(itemElement);
         }
@@ -319,6 +320,7 @@ public class DataTypeListView implements DataTypeList.View {
 
         final Element elementReference = getLastSubDataTypeElement(reference);
         ElementHelper.insertAfter(listItem.getDragAndDropElement(), elementReference);
+        setNewElementYPosition(elementReference, listItem.getDragAndDropElement());
     }
 
     @Override
@@ -327,6 +329,13 @@ public class DataTypeListView implements DataTypeList.View {
 
         final Element elementReference = getDataTypeRow(reference);
         ElementHelper.insertBefore(listItem.getDragAndDropElement(), elementReference);
+        setNewElementYPosition(elementReference, listItem.getDragAndDropElement());
+    }
+
+    void setNewElementYPosition(final Element elementReference,
+                                final Element newElement) {
+        final int referencePosition = getDndListComponent().getPositionY(elementReference);
+        getDndListComponent().setPositionY(newElement, referencePosition);
     }
 
     private boolean isCollapsed(final Element arrow) {

@@ -108,6 +108,9 @@ public class DataTypeListTest {
     @Captor
     private ArgumentCaptor<List<DataTypeListItem>> listItemsCaptor;
 
+    @Captor
+    private ArgumentCaptor<List<HTMLElement>> htmlElementsCaptor;
+
     private DataTypeList dataTypeList;
 
     @Before
@@ -361,12 +364,20 @@ public class DataTypeListTest {
         final DataTypeManager dataTypeManager3 = mock(DataTypeManager.class);
         final ArrayList<Object> items = new ArrayList<>();
         final int level = 1;
+        final HTMLElement element0 = mock(HTMLElement.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final HTMLElement element2 = mock(HTMLElement.class);
+        final HTMLElement element3 = mock(HTMLElement.class);
 
         when(listItem0.getLevel()).thenReturn(level);
         when(listItem0.getDataType()).thenReturn(dataType0);
+        when(listItem0.getDragAndDropElement()).thenReturn(element0);
         when(listItem1.getDataType()).thenReturn(dataType1);
+        when(listItem1.getDragAndDropElement()).thenReturn(element1);
         when(listItem2.getDataType()).thenReturn(dataType2);
+        when(listItem2.getDragAndDropElement()).thenReturn(element2);
         when(listItem3.getDataType()).thenReturn(dataType3);
+        when(listItem3.getDragAndDropElement()).thenReturn(element3);
         when(dataTypeManager.from(dataType1)).thenReturn(dataTypeManager1);
         when(dataTypeManager.from(dataType2)).thenReturn(dataTypeManager2);
         when(dataTypeManager.from(dataType3)).thenReturn(dataTypeManager3);
@@ -382,6 +393,11 @@ public class DataTypeListTest {
         verify(dataTypeManager1).withIndexedItemDefinition();
         verify(dataTypeManager2).withIndexedItemDefinition();
         verify(dataTypeManager3).withIndexedItemDefinition();
+        verify(dndListComponent).setInitialPositionY(eq(element0), htmlElementsCaptor.capture());
+
+        final List<HTMLElement> capturedElements = htmlElementsCaptor.getValue();
+        final List<HTMLElement> expectedElements = asList(element1, element2, element3);
+        assertEquals(expectedElements, capturedElements);
 
         final List<DataTypeListItem> actualItems = listItemsCaptor.getValue();
         final List<DataTypeListItem> expectedItems = asList(listItem1, listItem2, listItem3);

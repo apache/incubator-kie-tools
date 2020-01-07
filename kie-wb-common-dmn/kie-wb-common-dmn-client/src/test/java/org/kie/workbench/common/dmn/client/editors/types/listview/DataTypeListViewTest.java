@@ -371,6 +371,7 @@ public class DataTypeListViewTest {
         view.hideItemElementIfParentIsCollapsed(itemElement, parent);
 
         verify(itemElementClassList).add(HIDDEN_CSS_CLASS);
+        verify(dndListComponent).setInitialHiddenPositionY(itemElement);
     }
 
     @Test
@@ -545,6 +546,7 @@ public class DataTypeListViewTest {
         view.insertBelow(listItem, reference);
 
         verify(parentElement).insertBefore(listItemElement, siblingElement);
+        verify(view).setNewElementYPosition(lastElement, listItemElement);
     }
 
     @Test
@@ -564,6 +566,7 @@ public class DataTypeListViewTest {
         view.insertAbove(listItem, reference);
 
         verify(parentElement).insertBefore(listItemElement, element);
+        verify(view).setNewElementYPosition(element, listItemElement);
     }
 
     @Test
@@ -668,6 +671,19 @@ public class DataTypeListViewTest {
         assertEquals(SUCCESS, flashMessage.getType());
         assertEquals(translated, flashMessage.getStrongMessage());
         assertEquals("", flashMessage.getRegularMessage());
+    }
+
+    @Test
+    public void testSetNewElementYPosition() {
+
+        final HTMLElement elementReference = mock(HTMLElement.class);
+        final HTMLElement newElement = mock(HTMLElement.class);
+
+        when(dndListComponent.getPositionY(elementReference)).thenReturn(1);
+
+        view.setNewElementYPosition(elementReference, newElement);
+
+        verify(dndListComponent).setPositionY(newElement, 1);
     }
 
     @Test

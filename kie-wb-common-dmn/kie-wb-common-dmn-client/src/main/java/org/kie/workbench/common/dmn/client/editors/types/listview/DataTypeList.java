@@ -158,6 +158,9 @@ public class DataTypeList {
             listItems.addAll(makeTreeListItems(subDataType, level + 1));
         }
 
+        final List<HTMLElement> children = listItems.stream().map(e -> e.getDragAndDropElement()).collect(Collectors.toList());
+        dndListComponent.setInitialPositionY(listItem.getDragAndDropElement(), children);
+
         cleanAndUnIndex(dataType);
         addNewSubItems(dataType, listItems);
         listItems.forEach(this::reIndexDataTypes);

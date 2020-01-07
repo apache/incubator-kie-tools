@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -136,6 +137,18 @@ public class DNDListComponent {
 
     public void refreshDragAreaSize() {
         view.refreshDragAreaSize();
+    }
+
+    public void setInitialPositionY(final HTMLElement dragAndDropElement,
+                                    final List<HTMLElement> children) {
+        Integer parentY = Position.getY(dragAndDropElement);
+        for (final Element element : children) {
+            Position.setY(element, ++parentY);
+        }
+    }
+
+    public void setInitialHiddenPositionY(final HTMLElement itemElement) {
+        Position.setY(itemElement, DNDListDOMHelper.HIDDEN_Y_POSITION);
     }
 
     public interface View extends UberElemental<DNDListComponent>,

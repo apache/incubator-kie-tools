@@ -90,7 +90,8 @@ public class DNDListComponentView implements DNDListComponent.View {
     @Override
     public void refreshItemsPosition() {
 
-        for (final HTMLElement draggable : querySelector(getDragArea()).getVisibleDraggableElements()) {
+        final List<HTMLElement> items = querySelector(getDragArea()).getVisibleAndSortedDraggableElements();
+        for (final HTMLElement draggable : items) {
 
             final int positionY = Position.getY(draggable);
             final int positionX = Position.getX(draggable);
@@ -150,7 +151,7 @@ public class DNDListComponentView implements DNDListComponent.View {
     @Override
     public void consolidateYPosition() {
 
-        final List<HTMLElement> draggableElements = querySelector(getDragArea()).getVisibleDraggableElements();
+        final List<HTMLElement> draggableElements = querySelector(getDragArea()).getVisibleAndSortedDraggableElements();
 
         for (int i = 0; i < draggableElements.size(); i++) {
             Position.setY(draggableElements.get(i), i);
