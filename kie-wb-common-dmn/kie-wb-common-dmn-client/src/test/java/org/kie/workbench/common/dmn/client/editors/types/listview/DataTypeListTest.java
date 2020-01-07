@@ -1077,26 +1077,37 @@ public class DataTypeListTest {
         final DataTypeListItem dataTypeListItem = mock(DataTypeListItem.class);
         final DataType dataType = mock(DataType.class);
         final String uuid = "uuid";
+        final String innerUuid = "inner";
+        final String deepUuid = "deep";
 
         final DataType notChildDataType = mock(DataType.class);
         final DataTypeListItem notChildItem = mock(DataTypeListItem.class);
-        when(notChildDataType.getParentUUID()).thenReturn("other_uuid");
-        when(notChildItem.getDataType()).thenReturn(notChildDataType);
-
         final DataType childDataType1 = mock(DataType.class);
         final DataTypeListItem child1 = mock(DataTypeListItem.class);
-        when(child1.getDataType()).thenReturn(childDataType1);
-        when(childDataType1.getParentUUID()).thenReturn(uuid);
-
         final DataType childDataType2 = mock(DataType.class);
         final DataTypeListItem child2 = mock(DataTypeListItem.class);
+        final DataType innerDataType = mock(DataType.class);
+        final DataTypeListItem innerDataTypeListItem = mock(DataTypeListItem.class);
+
+        final DataType deepDataType = mock(DataType.class);
+        final DataTypeListItem deepDataTypeListItem = mock(DataTypeListItem.class);
+        when(deepDataType.getUUID()).thenReturn(deepUuid);
+        when(deepDataType.getParentUUID()).thenReturn(innerUuid);
+        when(deepDataTypeListItem.getDataType()).thenReturn(deepDataType);
+
+        when(innerDataType.getUUID()).thenReturn(innerUuid);
+        when(innerDataType.getParentUUID()).thenReturn(uuid);
+        when(innerDataTypeListItem.getDataType()).thenReturn(innerDataType);
+        when(notChildDataType.getParentUUID()).thenReturn("other_uuid");
+        when(notChildItem.getDataType()).thenReturn(notChildDataType);
+        when(child1.getDataType()).thenReturn(childDataType1);
+        when(childDataType1.getParentUUID()).thenReturn(uuid);
         when(child2.getDataType()).thenReturn(childDataType2);
         when(childDataType2.getParentUUID()).thenReturn(uuid);
-
         when(dataType.getUUID()).thenReturn(uuid);
         when(dataTypeListItem.getDataType()).thenReturn(dataType);
 
-        final List<DataTypeListItem> list = asList(child1, notChildItem, child2);
+        final List<DataTypeListItem> list = asList(child1, notChildItem, child2, innerDataTypeListItem, deepDataTypeListItem);
 
         doReturn(list).when(dataTypeList).getItems();
 
@@ -1104,6 +1115,8 @@ public class DataTypeListTest {
 
         verify(child1).disableEditMode();
         verify(child2).disableEditMode();
+        verify(innerDataTypeListItem).disableEditMode();
+        verify(deepDataTypeListItem).disableEditMode();
         verify(notChildItem, never()).disableEditMode();
     }
 
