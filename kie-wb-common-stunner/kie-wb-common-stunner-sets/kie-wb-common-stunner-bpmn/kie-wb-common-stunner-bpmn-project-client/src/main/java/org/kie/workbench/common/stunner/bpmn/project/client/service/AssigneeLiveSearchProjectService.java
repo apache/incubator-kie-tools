@@ -59,8 +59,8 @@ public class AssigneeLiveSearchProjectService implements AssigneeLiveSearchServi
     private Consumer<Throwable> searchErrorHandler;
 
     @Inject
-    public AssigneeLiveSearchProjectService(ClientUserSystemManager userSystemManager,
-                                            AssigneeLiveSearchEntryCreationEditor editor) {
+    public AssigneeLiveSearchProjectService(final ClientUserSystemManager userSystemManager,
+                                            final AssigneeLiveSearchEntryCreationEditor editor) {
         this.userSystemManager = userSystemManager;
         this.editor = editor;
     }
@@ -70,32 +70,45 @@ public class AssigneeLiveSearchProjectService implements AssigneeLiveSearchServi
         localSearchService = AssigneeLocalSearchService.build(editor);
     }
 
-    public void init(AssigneeType type) {
+    public void init(final AssigneeType type) {
         this.type = type;
     }
 
-    public void setSearchErrorHandler(Consumer<Throwable> searchErrorHandler) {
+    public void setSearchErrorHandler(final Consumer<Throwable> searchErrorHandler) {
         this.searchErrorHandler = searchErrorHandler;
     }
 
     @Override
-    public void search(String pattern,
-                       int maxResults,
-                       LiveSearchCallback<String> callback) {
+    public void search(final String pattern,
+                       final int maxResults,
+                       final LiveSearchCallback<String> callback) {
 
         final List<String> filteredCustomEntries = localSearchService.search(pattern);
 
-        RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback = response -> processFilterResponse(response, filteredCustomEntries, maxResults, callback);
+        final RemoteCallback<AbstractEntityManager.SearchResponse<?>> remoteCallback =
+                newSafeRemoteCallback(response -> processSearchPatternResponse(response, filteredCustomEntries, maxResults, callback));
 
-        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processSearchError(filteredCustomEntries, maxResults, callback, throwable);
+        final ErrorCallback<Message> errorCallback =
+                newSafeErrorCallback((message, throwable) -> processSearchPatternError(filteredCustomEntries, maxResults, callback, throwable));
 
-        SearchRequestImpl request = new SearchRequestImpl(pattern, 1, maxResults);
+        doSearch(new SearchRequestImpl(pattern, 1, maxResults),
+                 remoteCallback,
+                 errorCallback);
+    }
 
-        if (AssigneeType.USER.equals(type)) {
-            userSystemManager.users(searchResponseRemoteCallback, searchErrorCallback).search(request);
-        } else {
-            userSystemManager.groups(searchResponseRemoteCallback, searchErrorCallback).search(request);
-        }
+    @Override
+    public void searchEntry(final String key,
+                            final LiveSearchCallback<String> callback) {
+
+        final RemoteCallback<AbstractEntityManager.SearchResponse<?>> remoteCallback =
+                newSafeRemoteCallback(response -> processEntrySearchResponse(key, response, callback));
+
+        final ErrorCallback<Message> errorCallback =
+                newSafeErrorCallback((message, throwable) -> processEntrySearchError(key, callback, throwable));
+
+        doSearch(new SearchRequestImpl(key, 1, 1),
+                 remoteCallback,
+                 errorCallback);
     }
 
     @Override
@@ -108,94 +121,18 @@ public class AssigneeLiveSearchProjectService implements AssigneeLiveSearchServi
         return editor;
     }
 
-    @Override
-    public void searchEntry(String key,
-                            LiveSearchCallback<String> callback) {
-
-        SearchRequestImpl request = new SearchRequestImpl(key, 1, 1);
-
-        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processSearchEntryError(key, callback, throwable);
-
-        RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback = response -> searchEntry(key, response, callback);
-
-        if (AssigneeType.USER.equals(type)) {
-            userSystemManager.users(searchResponseRemoteCallback, searchErrorCallback).search(request);
-        } else {
-            userSystemManager.groups(searchResponseRemoteCallback, searchErrorCallback).search(request);
-        }
-    }
-
     @PreDestroy
     public void destroy() {
         localSearchService.destroy();
         localSearchService = null;
+        searchErrorHandler = null;
     }
 
-    private boolean processSearchEntryError(String key, LiveSearchCallback<String> callback, Throwable throwable) {
-        LiveSearchResults<String> results = new LiveSearchResults<>(1);
-        if (!isEmpty(key)) {
-            addCustomEntry(key);
-            results.add(key, key);
-        }
-        callback.afterSearch(results);
-        processError("It was not possible to get user or group: " + key + " from the users system.", throwable);
-        return false;
-    }
-
-    private boolean processSearchError(List<String> filteredCustomEntries, int maxResults, LiveSearchCallback<String> callback, Throwable throwable) {
-        int maxSize = maxResults > filteredCustomEntries.size() ? filteredCustomEntries.size() : maxResults;
-        maxSize = maxSize < 0 ? 0 : maxSize;
-        LiveSearchResults<String> result = new LiveSearchResults<>(maxSize);
-        filteredCustomEntries.subList(0, maxSize).forEach(entry -> result.add(entry, entry));
-        callback.afterSearch(result);
-        processError("It was not possible to execute search on the users system.", throwable);
-        return false;
-    }
-
-    private void processError(String errorMessage, Throwable throwable) {
-        LOGGER.log(Level.SEVERE, errorMessage, throwable);
-        if (searchErrorHandler != null) {
-            searchErrorHandler.accept(throwable);
-        }
-    }
-
-    private void searchEntry(String key,
-                             AbstractEntityManager.SearchResponse<?> response,
-                             LiveSearchCallback<String> liveSearchCallback) {
-
-        LiveSearchResults<String> results = new LiveSearchResults<>(1);
-
-        if (key != null) {
-            if (!getCustomEntries().contains(key)) {
-                Optional<?> exists = response.getResults().stream().filter(item -> {
-
-                    String value = null;
-
-                    if (item instanceof User) {
-                        value = ((User) item).getIdentifier();
-                    } else if (item instanceof Group) {
-                        value = ((Group) item).getName();
-                    }
-
-                    return key.equals(value);
-                }).findAny();
-
-                if (!exists.isPresent()) {
-                    addCustomEntry(key);
-                }
-            }
-            results.add(key, key);
-        }
-
-        liveSearchCallback.afterSearch(results);
-    }
-
-    protected void processFilterResponse(AbstractEntityManager.SearchResponse<?> response,
-                                         List<String> filteredCustomEntries,
-                                         int maxResults,
-                                         LiveSearchCallback<String> liveSearchCallback) {
-
-        Set<String> values = new TreeSet<>(filteredCustomEntries);
+    private static void processSearchPatternResponse(AbstractEntityManager.SearchResponse<?> response,
+                                              List<String> filteredCustomEntries,
+                                              int maxResults,
+                                              LiveSearchCallback<String> liveSearchCallback) {
+        final Set<String> values = new TreeSet<>(filteredCustomEntries);
 
         response.getResults().forEach(item -> {
             String value = null;
@@ -220,7 +157,87 @@ public class AssigneeLiveSearchProjectService implements AssigneeLiveSearchServi
         liveSearchCallback.afterSearch(results);
     }
 
-    List<String> getCustomEntries() {
-        return localSearchService.getCustomEntries();
+    private void processEntrySearchResponse(String key,
+                                            AbstractEntityManager.SearchResponse<?> response,
+                                            LiveSearchCallback<String> liveSearchCallback) {
+        final LiveSearchResults<String> results = new LiveSearchResults<>(1);
+        if (key != null) {
+            if (!localSearchService.getCustomEntries().contains(key)) {
+                final Optional<?> exists = response.getResults().stream().filter(item -> {
+                    String value = null;
+                    if (item instanceof User) {
+                        value = ((User) item).getIdentifier();
+                    } else if (item instanceof Group) {
+                        value = ((Group) item).getName();
+                    }
+                    return key.equals(value);
+                }).findAny();
+                if (!exists.isPresent()) {
+                    addCustomEntry(key);
+                }
+            }
+            results.add(key, key);
+        }
+
+        liveSearchCallback.afterSearch(results);
+    }
+
+    private void doSearch(final SearchRequestImpl request,
+                          final RemoteCallback<AbstractEntityManager.SearchResponse<?>> remoteCallback,
+                          final ErrorCallback<Message> errorCallback) {
+        if (AssigneeType.USER.equals(type)) {
+            userSystemManager.users(remoteCallback, errorCallback).search(request);
+        } else {
+            userSystemManager.groups(remoteCallback, errorCallback).search(request);
+        }
+    }
+
+    private boolean processEntrySearchError(String key, LiveSearchCallback<String> callback, Throwable throwable) {
+        LiveSearchResults<String> results = new LiveSearchResults<>(1);
+        if (!isEmpty(key)) {
+            addCustomEntry(key);
+            results.add(key, key);
+        }
+        callback.afterSearch(results);
+        processError("It was not possible to get user or group: " + key + " from the users system.", throwable);
+        return false;
+    }
+
+    private boolean processSearchPatternError(List<String> filteredCustomEntries, int maxResults, LiveSearchCallback<String> callback, Throwable throwable) {
+        int maxSize = maxResults > filteredCustomEntries.size() ? filteredCustomEntries.size() : maxResults;
+        maxSize = maxSize < 0 ? 0 : maxSize;
+        LiveSearchResults<String> result = new LiveSearchResults<>(maxSize);
+        filteredCustomEntries.subList(0, maxSize).forEach(entry -> result.add(entry, entry));
+        callback.afterSearch(result);
+        processError("It was not possible to execute search on the users system.", throwable);
+        return false;
+    }
+
+    private <T> RemoteCallback<T> newSafeRemoteCallback(final RemoteCallback<T> callback) {
+        return response -> {
+            if (isInstanceAlive()) {
+                callback.callback(response);
+            }
+        };
+    }
+
+    private <T> ErrorCallback<T> newSafeErrorCallback(final ErrorCallback<T> callback) {
+        return (message, throwable) -> {
+            if (isInstanceAlive()) {
+                return callback.error(message, throwable);
+            }
+            return false;
+        };
+    }
+
+    private boolean isInstanceAlive() {
+        return null != localSearchService;
+    }
+
+    private void processError(String errorMessage, Throwable throwable) {
+        LOGGER.log(Level.SEVERE, errorMessage, throwable);
+        if (searchErrorHandler != null) {
+            searchErrorHandler.accept(throwable);
+        }
     }
 }
