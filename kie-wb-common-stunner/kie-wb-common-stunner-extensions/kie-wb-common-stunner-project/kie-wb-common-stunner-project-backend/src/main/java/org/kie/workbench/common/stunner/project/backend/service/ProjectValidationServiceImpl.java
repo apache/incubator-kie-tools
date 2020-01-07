@@ -57,10 +57,7 @@ public class ProjectValidationServiceImpl implements ProjectValidationService {
         return domainViolations(diagram).stream()
                 .filter(v -> Objects.nonNull(v.getUUID()))
                 .filter(v -> !"null".equals(v.getUUID()))
-                .collect(Collectors.groupingBy(DomainViolation::getUUID))
-                .entrySet()
-                .stream()
-                .map(e -> new ElementViolationImpl.Builder().setUuid(e.getKey()).setDomainViolations(e.getValue()).build())
+                .map(v -> new ElementViolationImpl.Builder().setUuid(v.getUUID()).setDomainViolations(Collections.singletonList(v)).build())
                 .collect(Collectors.toList());
     }
 

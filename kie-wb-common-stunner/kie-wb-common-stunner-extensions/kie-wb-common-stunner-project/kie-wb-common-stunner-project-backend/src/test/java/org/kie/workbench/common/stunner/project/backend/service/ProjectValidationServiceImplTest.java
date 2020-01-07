@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -135,22 +136,23 @@ public class ProjectValidationServiceImplTest {
         final Collection<DiagramElementViolation<RuleViolation>> violations = validationService.validate(diagram);
         verify(diagram).getMetadata();
         verify(metadata).getDefinitionSetId();
-        assertEquals(violations.size(), 2);
+        assertEquals(violations.size(), 4);
 
-        List<DomainViolation> violations0 = Arrays.asList(domainViolation);
-        List<DomainViolation> violations1 =
-                Arrays.asList(domainViolation2, domainViolation3, domainViolation4);
+        final List<DiagramElementViolation<RuleViolation>> ordered = new ArrayList<>(violations);
+        assertEquals(ordered.get(0).getUUID(), UUID_0);
+        assertEquals(ordered.get(0).getDomainViolations().size(), 1);
+        assertEquals(ordered.get(0).getDomainViolations().iterator().next(), domainViolation);
 
-        assertEquals(violations.stream()
-                             .filter(v -> UUID_1.equals(v.getUUID()))
-                             .findFirst()
-                             .map(DiagramElementViolation::getDomainViolations)
-                             .get(), violations1);
+        assertEquals(ordered.get(1).getUUID(), UUID_1);
+        assertEquals(ordered.get(1).getDomainViolations().size(), 1);
+        assertEquals(ordered.get(1).getDomainViolations().iterator().next(), domainViolation2);
 
-        assertEquals(violations.stream()
-                             .filter(v -> UUID_0.equals(v.getUUID()))
-                             .findFirst()
-                             .map(DiagramElementViolation::getDomainViolations)
-                             .get(), violations0);
+        assertEquals(ordered.get(2).getUUID(), UUID_1);
+        assertEquals(ordered.get(2).getDomainViolations().size(), 1);
+        assertEquals(ordered.get(2).getDomainViolations().iterator().next(), domainViolation3);
+
+        assertEquals(ordered.get(3).getUUID(), UUID_1);
+        assertEquals(ordered.get(3).getDomainViolations().size(), 1);
+        assertEquals(ordered.get(3).getDomainViolations().iterator().next(), domainViolation4);
     }
 }
