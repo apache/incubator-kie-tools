@@ -112,6 +112,19 @@
   color: #959595;
 }
 
+.kogito-github-action-alert {
+  background-color: #1F1F1F;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 3px 10px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.kogito-github-action-alert:after {
+  border-bottom-color: #1F1F1F;
+}
+
 .info-icon-container {
   margin-left: -9px !important;
   font-size: 0.8em;

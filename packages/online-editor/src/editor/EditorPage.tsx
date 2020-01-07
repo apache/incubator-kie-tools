@@ -128,7 +128,9 @@ export function EditorPage(props: Props) {
       return () => clearInterval(autoCloseCopySuccessAlert);
     }
 
-    return () => { /* Do nothing */ };
+    return () => {
+      /* Do nothing */
+    };
   }, [copySuccessAlertVisible]);
 
   useEffect(() => {
