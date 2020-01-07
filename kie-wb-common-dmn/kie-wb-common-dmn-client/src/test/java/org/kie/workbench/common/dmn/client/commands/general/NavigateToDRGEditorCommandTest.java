@@ -61,6 +61,7 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
         verify(command).hidePaletteWidget(eq(false));
         verify(command).addDRGEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(view);
+        verify(sessionPresenter).focus();
 
         verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
@@ -96,6 +97,7 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
                                      eq(Optional.of(hasName)),
                                      eq(isOnlyVisualChangeAllowed));
         verify(expressionEditorView).setFocus();
+        verify(sessionPresenter).lostFocus();
     }
 
     @Test

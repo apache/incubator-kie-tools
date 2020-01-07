@@ -76,6 +76,7 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
                                      eq(Optional.of(hasName)),
                                      eq(isOnlyVisualChangeAllowed));
         verify(expressionEditorView).setFocus();
+        verify(sessionPresenter).lostFocus();
     }
 
     @Test
@@ -92,6 +93,7 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(sessionPresenterView).setCanvasWidget(view);
 
         verify(canvasHandler).notifyCanvasClear();
+        verify(sessionPresenter).focus();
     }
 
     @Test
