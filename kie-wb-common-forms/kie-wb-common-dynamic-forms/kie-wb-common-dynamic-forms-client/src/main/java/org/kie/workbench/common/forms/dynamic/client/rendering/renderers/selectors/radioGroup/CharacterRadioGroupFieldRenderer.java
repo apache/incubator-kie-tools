@@ -19,19 +19,16 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.CharacterRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.CharacterSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.CharacterRadioGroupFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = CharacterRadioGroupFieldDefinition.class)
 public class CharacterRadioGroupFieldRenderer
         extends RadioGroupFieldRendererBase<CharacterRadioGroupFieldDefinition, CharacterSelectorOption, Character> {
-
-    @Override
-    public Class<CharacterRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return CharacterRadioGroupFieldDefinition.class;
-    }
 
     @Override
     protected RadioGroupBase<Character> getRadioGroup() {

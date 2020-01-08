@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.errorMessage;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,12 +27,12 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.common.client.dom.RadioInput;
 import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
@@ -71,6 +72,9 @@ public class ErrorMessageDisplayerViewImpl implements ErrorMessageDisplayerView,
     @Inject
     private TranslationService translationService;
 
+    @Inject
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
     private Presenter presenter;
 
     private BaseModal modal;
@@ -80,7 +84,7 @@ public class ErrorMessageDisplayerViewImpl implements ErrorMessageDisplayerView,
         modal = new BaseModal();
         modal.setTitle(translationService.getTranslation(FormEditorConstants.ErrorMessageDisplayerViewImplTitle));
         modal.setClosable(false);
-        modal.setBody(ElementWrapperWidget.getWidget(this.getElement()));
+        modal.setBody(wrapperWidgetUtil.getWidget(this, this.getElement()));
         modal.add(new ModalFooterOKButton(modal::hide));
         modal.addHideHandler(evt -> presenter.notifyClose());
     }
@@ -139,5 +143,11 @@ public class ErrorMessageDisplayerViewImpl implements ErrorMessageDisplayerView,
     @EventHandler("showMoreAnchor")
     public void onShowMore(ClickEvent event) {
         presenter.notifyShowMorePressed();
+    }
+
+    @PreDestroy
+    public void clear() {
+        modal.clear();
+        wrapperWidgetUtil.clear(this);
     }
 }

@@ -19,16 +19,17 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label.FieldLabel;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
@@ -48,6 +49,9 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
     @DataField
     protected Div helpBlock;
 
+    @Inject
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
     private Map<String, Widget> viewPartsWidgets = new HashMap<>();
 
     @Override
@@ -56,8 +60,8 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
 
         render("", widget, fieldDefinition);
         
-        viewPartsWidgets.put(PART_SLIDER_LABEL, 
-                             ElementWrapperWidget.getWidget(fieldLabel.getElement()));
+        viewPartsWidgets.put(PART_SLIDER_LABEL,
+                             wrapperWidgetUtil.getWidget(this, fieldLabel.getElement()));
     }
 
     public void render(String inputId, Widget widget, FieldDefinition fieldDefinition) {
@@ -76,5 +80,10 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
     @Override
     public Map<String, Widget> getViewPartsWidgets() {
         return viewPartsWidgets;
+    }
+
+    @PreDestroy
+    public void clear() {
+        wrapperWidgetUtil.clear(this);
     }
 }

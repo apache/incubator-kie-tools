@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HTML;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.DecimalBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
@@ -28,8 +29,10 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGr
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.type.DecimalBoxFieldType;
 
 @Dependent
+@Renderer(type = DecimalBoxFieldType.class)
 public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefinition, DefaultFormGroup>
         implements RequiresValueConverter {
 
@@ -65,11 +68,6 @@ public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefini
         }
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return DecimalBoxFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

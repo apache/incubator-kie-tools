@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -40,6 +41,7 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.ext.widgets.common.client.dropdown.MultipleLiveSearchSelectionHandler;
 
 @Dependent
+@Renderer(type = MultipleSelectorFieldType.class)
 public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractMultipleSelectorFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     private MultipleSelectorInput<TYPE> selector;
@@ -127,11 +129,6 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
 
     @Override
     public String getName() {
-        return MultipleSelectorFieldType.NAME;
-    }
-
-    @Override
-    public String getSupportedCode() {
         return MultipleSelectorFieldType.NAME;
     }
 

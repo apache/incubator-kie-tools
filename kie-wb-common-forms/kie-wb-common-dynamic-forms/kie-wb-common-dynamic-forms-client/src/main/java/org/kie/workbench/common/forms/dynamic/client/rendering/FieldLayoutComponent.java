@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -38,10 +39,8 @@ public class FieldLayoutComponent implements FormLayoutComponent,
 
     protected FlowPanel content = new FlowPanel();
 
-    @Inject
     protected FieldRendererManager fieldRendererManager;
 
-    @Inject
     protected TranslationService translationService;
 
     protected FieldDefinition field;
@@ -49,6 +48,12 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     protected FieldRenderer fieldRenderer;
 
     protected FormRenderingContext renderingContext;
+
+    @Inject
+    public FieldLayoutComponent(FieldRendererManager fieldRendererManager, TranslationService translationService) {
+        this.fieldRendererManager = fieldRendererManager;
+        this.translationService = translationService;
+    }
 
     public void init(FormRenderingContext renderingContext,
                      FieldDefinition field) {
@@ -62,8 +67,7 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     protected void initComponent() {
         fieldRenderer = fieldRendererManager.getRendererForField(field);
         if (fieldRenderer != null) {
-            fieldRenderer.init(renderingContext,
-                               field);
+            fieldRenderer.init(renderingContext, field);
         }
     }
 
@@ -106,7 +110,6 @@ public class FieldLayoutComponent implements FormLayoutComponent,
         return content;
     }
 
-
     protected void renderContent() {
         content.clear();
         content.add(fieldRenderer.renderWidget());
@@ -132,5 +135,10 @@ public class FieldLayoutComponent implements FormLayoutComponent,
 
     public FieldDefinition getField() {
         return field;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        content.clear();
     }
 }

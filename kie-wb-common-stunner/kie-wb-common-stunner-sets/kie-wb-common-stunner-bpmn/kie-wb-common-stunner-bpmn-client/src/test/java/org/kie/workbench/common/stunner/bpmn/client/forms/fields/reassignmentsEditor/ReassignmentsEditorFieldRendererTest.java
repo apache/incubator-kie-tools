@@ -42,7 +42,6 @@ public class ReassignmentsEditorFieldRendererTest extends ReflectionUtilsTest {
         reassignmentsEditorFieldRenderer = spy(new ReassignmentsEditorFieldRenderer(reassignmentsEditorWidget));
 
         doCallRealMethod().when(reassignmentsEditorFieldRenderer).getName();
-        doCallRealMethod().when(reassignmentsEditorFieldRenderer).getSupportedCode();
         doCallRealMethod().when(reassignmentsEditorFieldRenderer).getField();
     }
 
@@ -51,8 +50,4 @@ public class ReassignmentsEditorFieldRendererTest extends ReflectionUtilsTest {
         Assert.assertEquals("ReassignmentsEditor", reassignmentsEditorFieldRenderer.getName());
     }
 
-    @Test
-    public void getSupportedCodeTest() {
-        Assert.assertEquals("ReassignmentsEditor", reassignmentsEditorFieldRenderer.getSupportedCode());
-    }
 }

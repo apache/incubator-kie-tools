@@ -20,7 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksFieldType;
 import org.kie.workbench.common.dmn.client.editors.documentation.DocumentationLinksWidget;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -28,6 +30,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 
 @Dependent
+@Renderer(type = DocumentationLinksFieldType.class)
 public class DocumentationLinksFieldRenderer extends FieldRenderer<DocumentationLinksFieldDefinition, DefaultFormGroup> {
 
     private DocumentationLinksWidget widget;
@@ -75,11 +78,6 @@ public class DocumentationLinksFieldRenderer extends FieldRenderer<Documentation
 
     @Override
     public String getName() {
-        return DocumentationLinksFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return DocumentationLinksFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

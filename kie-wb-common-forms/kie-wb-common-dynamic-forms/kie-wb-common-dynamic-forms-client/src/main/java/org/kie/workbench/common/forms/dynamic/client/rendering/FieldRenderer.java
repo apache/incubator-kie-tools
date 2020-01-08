@@ -29,32 +29,35 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.configError.ConfigErrorDisplayer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
-public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extends FormGroup> {
+public abstract class FieldRenderer<F extends FieldDefinition, G extends FormGroup> {
 
     protected FormRenderingContext renderingContext;
     protected String fieldNS;
     protected F field;
     protected FormFieldImpl formField = null;
+    private FormGroup formGroup;
     protected List<FieldChangeListener> fieldChangeListeners = new ArrayList<>();
     private Map<String, IsWidget> partsWidgets = new HashMap<>();
 
     @Inject
-    protected ManagedInstance<FORM_GROUP> formGroupsInstance;
+    protected ManagedInstance<G> formGroupsInstance;
 
     @Inject
-    private ConfigErrorDisplayer errorDisplayer;
+    protected ConfigErrorDisplayer errorDisplayer;
+
+    @Inject
+    protected FormsElementWrapperWidgetUtil wrapperWidgetUtil;
 
     public void init(FormRenderingContext renderingContext, F field) {
         this.renderingContext = renderingContext;
@@ -72,7 +75,7 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
             return errorDisplayer;
         } else {
 
-            FormGroup formGroup = getFormGroup(renderingContext.getRenderMode());
+            formGroup = getFormGroup(renderingContext.getRenderMode());
             
             Map<String, Widget> formPartsWidgets = formGroup.getPartsWidgets();
             partsWidgets.putAll(formPartsWidgets);
@@ -114,7 +117,7 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
 
             registerCustomFieldValidators(formField);
 
-            return ElementWrapperWidget.getWidget(formGroup.getElement());
+            return wrapperWidgetUtil.getWidget(this, formGroup.getElement());
         }
     }
 
@@ -141,8 +144,6 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
     }
 
     public abstract String getName();
-
-    public abstract String getSupportedCode();
 
     protected abstract void setReadOnly(boolean readOnly);
 
@@ -182,7 +183,14 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
 
     @PreDestroy
     public void preDestroy() {
+        wrapperWidgetUtil.clear(this);
+        partsWidgets.values().forEach(part -> part.asWidget().removeFromParent());
+        partsWidgets.clear();
         formGroupsInstance.destroyAll();
+        fieldChangeListeners.clear();
+        formField = null;
+        formGroup = null;
+        field = null;
     }
     
     final public Set<String> getFieldParts() {

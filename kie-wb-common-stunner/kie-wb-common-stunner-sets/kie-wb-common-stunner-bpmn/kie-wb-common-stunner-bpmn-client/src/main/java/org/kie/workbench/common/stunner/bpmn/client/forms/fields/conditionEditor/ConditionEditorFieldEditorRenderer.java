@@ -18,14 +18,17 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEdito
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionEditorFieldType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 
+@Renderer(type = ConditionEditorFieldType.class)
 public class ConditionEditorFieldEditorRenderer
         extends FieldRenderer<ConditionEditorFieldDefinition, DefaultFormGroup> {
 
@@ -49,11 +52,6 @@ public class ConditionEditorFieldEditorRenderer
 
     @Override
     public String getName() {
-        return ConditionEditorFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return ConditionEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

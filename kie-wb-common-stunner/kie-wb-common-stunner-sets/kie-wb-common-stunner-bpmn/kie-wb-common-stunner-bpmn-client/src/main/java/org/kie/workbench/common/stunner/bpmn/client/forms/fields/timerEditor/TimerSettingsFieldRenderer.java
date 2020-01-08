@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.TimerSettingsFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.TimerSettingsFieldType;
 
+@Renderer(type = TimerSettingsFieldType.class)
 public class TimerSettingsFieldRenderer
         extends FieldRenderer<TimerSettingsFieldDefinition, DefaultFormGroup> {
 
@@ -51,10 +54,5 @@ public class TimerSettingsFieldRenderer
     @Override
     protected void setReadOnly(final boolean readOnly) {
         widget.setReadOnly(readOnly);
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return TimerSettingsFieldDefinition.FIELD_TYPE.getTypeName();
     }
 }

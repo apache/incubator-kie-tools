@@ -17,67 +17,52 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters.IntegerToDoubleConverter;
+import org.kie.workbench.common.forms.dynamic.client.rendering.AbstractFieldRendererTest;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.slider.SliderFormGroup;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.DoubleSliderDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Spy;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SliderFieldRendererTest {
+@RunWith(GwtMockitoTestRunner.class)
+public class SliderFieldRendererTest extends AbstractFieldRendererTest<SliderFieldRenderer, SliderBaseDefinition, SliderFormGroup> {
 
-    private SliderFieldRenderer fieldRenderer;
+    private static String NAME = "slider";
 
     @Mock
-    private SliderBaseDefinition fieldMock;
+    private SliderFormGroup formGroup;
 
     @GwtMock
     private Slider sliderMock;
 
+    @Spy
+    @InjectMocks
+    private SliderFieldRenderer fieldRenderer;
+
     @Before
     public void init() {
+        super.init();
 
-        when(fieldMock.getMin()).thenReturn(0d);
-        when(fieldMock.getMax()).thenReturn(100d);
-        when(fieldMock.getStep()).thenReturn(1d);
-        when(fieldMock.getPrecision()).thenReturn(.1d);
-
-        fieldRenderer = spy(new SliderFieldRenderer() {
-            {
-                field = fieldMock;
-            }
-        });
-    }
-
-    @Test
-    public void testGetName() {
-        String name = fieldRenderer.getName();
-        assertEquals(SliderBaseDefinition.FIELD_TYPE.getTypeName(),
-                     name);
-    }
-
-    @Test
-    public void testGetSupportedCode() {
-        String name = fieldRenderer.getSupportedCode();
-        assertEquals(SliderBaseDefinition.FIELD_TYPE.getTypeName(),
-                     name);
+        when(formGroupsInstance.get()).thenReturn(formGroup);
     }
 
     @Test
     public void testGetConverterInteger() {
-        when(fieldMock.getStandaloneClassName()).thenReturn(Integer.class.getName());
+        when(fieldDefinition.getStandaloneClassName()).thenReturn(Integer.class.getName());
         Converter converter = fieldRenderer.getConverter();
         assertNotNull(converter);
         assertThat(converter,
@@ -86,7 +71,7 @@ public class SliderFieldRendererTest {
 
     @Test
     public void testGetConverterInt() {
-        when(fieldMock.getStandaloneClassName()).thenReturn("int");
+        when(fieldDefinition.getStandaloneClassName()).thenReturn("int");
         Converter converter = fieldRenderer.getConverter();
         assertNotNull(converter);
         assertThat(converter,
@@ -95,8 +80,25 @@ public class SliderFieldRendererTest {
 
     @Test
     public void testGetConverterNotInt() {
-        when(fieldMock.getStandaloneClassName()).thenReturn(Double.class.getName());
+        when(fieldDefinition.getStandaloneClassName()).thenReturn(Double.class.getName());
         Converter converter = fieldRenderer.getConverter();
         assertNull(converter);
+    }
+
+    @Override
+    protected SliderFieldRenderer getRendererInstance() {
+        return fieldRenderer;
+    }
+
+    @Override
+    protected SliderBaseDefinition getFieldDefinition() {
+        DoubleSliderDefinition doubleSliderDefinition = new DoubleSliderDefinition();
+        doubleSliderDefinition.setName(NAME);
+        doubleSliderDefinition.setBinding(NAME);
+        doubleSliderDefinition.setMin(0d);
+        doubleSliderDefinition.setMax(100d);
+        doubleSliderDefinition.setStep(1d);
+        doubleSliderDefinition.setPrecision(.1d);
+        return doubleSliderDefinition;
     }
 }

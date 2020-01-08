@@ -18,19 +18,16 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.DecimalRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.DecimalRadioGroupFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = DecimalRadioGroupFieldDefinition.class)
 public class DecimalRadioGroupFieldRenderer
         extends RadioGroupFieldRendererBase<DecimalRadioGroupFieldDefinition, DecimalSelectorOption, Double> {
-
-    @Override
-    public Class<DecimalRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return DecimalRadioGroupFieldDefinition.class;
-    }
 
     @Override
     protected RadioGroupBase<Double> getRadioGroup() {

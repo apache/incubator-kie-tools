@@ -17,14 +17,15 @@
 package org.kie.workbench.common.forms.editor.client.editor.changes;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
@@ -45,6 +46,9 @@ public class ChangesNotificationDisplayerViewImpl implements ChangesNotification
     private Document document;
 
     @Inject
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
+    @Inject
     public ChangesNotificationDisplayerViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
@@ -53,7 +57,7 @@ public class ChangesNotificationDisplayerViewImpl implements ChangesNotification
     public void init() {
         modal = new BaseModal();
         modal.setTitle(translationService.getTranslation(FormEditorConstants.ChangesNotificationDisplayerTitle));
-        modal.setBody(ElementWrapperWidget.getWidget(this.getElement()));
+        modal.setBody(wrapperWidgetUtil.getWidget(this, this.getElement()));
         modal.add(footer);
     }
 
@@ -72,5 +76,11 @@ public class ChangesNotificationDisplayerViewImpl implements ChangesNotification
     @Override
     public void show() {
         modal.show();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        modal.clear();
+        wrapperWidgetUtil.clear(this.getElement());
     }
 }

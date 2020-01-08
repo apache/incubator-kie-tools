@@ -181,16 +181,4 @@ public class ConditionalComboBoxFieldRendererTest {
         Assert.assertEquals(conditionalComboBoxFieldRenderer.getName(),
                             ConditionalComboBoxFieldType.NAME);
     }
-
-    @Test
-    public void getSupportedCode() throws Exception {
-        Assert.assertEquals(conditionalComboBoxFieldRenderer.getSupportedCode(),
-                            ConditionalComboBoxFieldType.NAME);
-    }
-
-    @Test
-    public void getSupportedFieldDefinition() throws Exception {
-        Assert.assertEquals(conditionalComboBoxFieldRenderer.getSupportedFieldDefinition(),
-                            ConditionalComboBoxFieldDefinition.class);
-    }
 }

@@ -18,19 +18,16 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.IntegerRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.IntegerSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.IntegerRadioGroupFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = IntegerRadioGroupFieldDefinition.class)
 public class IntegerRadioGroupFieldRenderer
         extends RadioGroupFieldRendererBase<IntegerRadioGroupFieldDefinition, IntegerSelectorOption, Long> {
-
-    @Override
-    public Class<IntegerRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return IntegerRadioGroupFieldDefinition.class;
-    }
 
     @Override
     protected RadioGroupBase<Long> getRadioGroup() {

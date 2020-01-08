@@ -130,12 +130,6 @@ public class QNameFieldRendererTest {
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals(QNameFieldDefinition.FIELD_TYPE.getTypeName(),
-                     renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadOnly() {
         renderer.setReadOnly(false);
         verify(typePicker).setEnabled(true);

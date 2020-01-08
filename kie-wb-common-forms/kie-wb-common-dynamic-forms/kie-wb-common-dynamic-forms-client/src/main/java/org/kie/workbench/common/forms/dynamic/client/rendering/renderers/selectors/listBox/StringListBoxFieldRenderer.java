@@ -20,21 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.StringListBoxFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = StringListBoxFieldDefinition.class)
 public class StringListBoxFieldRenderer
         extends AbstractListBoxFieldRenderer<StringListBoxFieldDefinition, StringSelectorOption, String> {
 
     @Inject
     public StringListBoxFieldRenderer(TranslationService translationService) {
         super(translationService);
-    }
-
-    @Override
-    public Class<StringListBoxFieldDefinition> getSupportedFieldDefinition() {
-        return StringListBoxFieldDefinition.class;
     }
 
     @Override

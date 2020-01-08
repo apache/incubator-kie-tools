@@ -111,10 +111,4 @@ public class DocumentationLinksFieldRendererTest {
         assertEquals(DocumentationLinksFieldDefinition.FIELD_TYPE.getTypeName(),
                      renderer.getName());
     }
-
-    @Test
-    public void testGetSupportedCode() {
-        assertEquals(DocumentationLinksFieldDefinition.FIELD_TYPE.getTypeName(),
-                     renderer.getSupportedCode());
-    }
 }

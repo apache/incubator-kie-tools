@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = ComboBoxFieldDefinition.class)
 public class ComboBoxFieldRenderer
         extends AbstractComboBoxFieldRenderer<ComboBoxFieldDefinition> {
 
@@ -35,15 +37,5 @@ public class ComboBoxFieldRenderer
     @Override
     public String getName() {
         return TYPE_NAME;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return TYPE_NAME;
-    }
-
-    @Override
-    public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
-        return ComboBoxFieldDefinition.class;
     }
 }

@@ -46,12 +46,6 @@ public class ScriptTypeListFieldRendererTest {
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals("ScriptTypeListFieldType",
-                     renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadonlyTrue() {
         renderer.setReadOnly(true);
         verify(widget,

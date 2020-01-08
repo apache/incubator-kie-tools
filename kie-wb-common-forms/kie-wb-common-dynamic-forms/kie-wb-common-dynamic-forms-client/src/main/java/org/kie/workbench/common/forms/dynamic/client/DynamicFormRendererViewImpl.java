@@ -22,12 +22,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormLayoutGenerator;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
@@ -43,6 +43,11 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
     @DataField
     private FlowPanel formContent;
 
+    @Inject
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
+    private HTMLElement layoutContent;
+
     private DynamicFormRenderer presenter;
 
     @Override
@@ -52,12 +57,11 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
 
     @Override
     public void render(FormRenderingContext context) {
-        layoutGenerator.clear();
-        formContent.clear();
+        clear();
 
         if (context != null) {
-            Widget layout = ElementWrapperWidget.getWidget(layoutGenerator.buildLayout(context));
-            formContent.add(layout);
+            layoutContent = layoutGenerator.buildLayout(context);
+            formContent.add(wrapperWidgetUtil.getWidget(this, layoutContent));
         }
     }
 
@@ -75,6 +79,11 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
 
     @Override
     public void clear() {
+        if (layoutContent != null) {
+            wrapperWidgetUtil.clear(this);
+            layoutContent = null;
+        }
         formContent.clear();
+        layoutGenerator.clear();
     }
 }

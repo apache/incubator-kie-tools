@@ -98,11 +98,6 @@ public class MultipleInstanceVariableFieldRendererTest {
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals("MultipleInstanceVariableFieldType", renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadonlyTrue() {
         renderer.setReadOnly(true);
         verify(widget).setReadOnly(true);

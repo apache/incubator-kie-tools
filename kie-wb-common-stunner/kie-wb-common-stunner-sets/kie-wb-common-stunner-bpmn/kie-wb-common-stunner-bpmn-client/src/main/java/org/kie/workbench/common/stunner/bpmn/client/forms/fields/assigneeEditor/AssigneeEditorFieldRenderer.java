@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormFieldImpl;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -34,8 +35,10 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget.AssigneeEditorWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 
 @Dependent
+@Renderer(type = AssigneeEditorFieldType.class)
 public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition, AssigneeFormGroup> {
 
     private AssigneeEditorWidget widget;
@@ -62,11 +65,6 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
         formGroup.render(widget.asWidget(), field);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return AssigneeEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

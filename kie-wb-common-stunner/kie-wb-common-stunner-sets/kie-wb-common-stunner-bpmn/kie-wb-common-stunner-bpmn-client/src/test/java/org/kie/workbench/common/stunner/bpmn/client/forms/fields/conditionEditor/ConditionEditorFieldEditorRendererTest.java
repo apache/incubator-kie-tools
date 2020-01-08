@@ -65,12 +65,6 @@ public class ConditionEditorFieldEditorRendererTest {
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals("ConditionEditorFieldType",
-                     renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadonlyTrue() {
         renderer.setReadOnly(true);
         verify(widget,

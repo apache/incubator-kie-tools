@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor.annotation.FixedValues;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
  * Each relatedField can be composed by an hierarchy that is a sequence of sub-fields that should be separated by  a delimiter {@code .} e.g. "general.name"
  */
 @Dependent
+@Renderer(fieldDefinition = ConditionalComboBoxFieldDefinition.class)
 public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRenderer<ConditionalComboBoxFieldDefinition> {
 
     public static final String TYPE_NAME = ConditionalComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
@@ -140,15 +142,5 @@ public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRende
     @Override
     public String getName() {
         return TYPE_NAME;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return TYPE_NAME;
-    }
-
-    @Override
-    public Class<ConditionalComboBoxFieldDefinition> getSupportedFieldDefinition() {
-        return ConditionalComboBoxFieldDefinition.class;
     }
 }

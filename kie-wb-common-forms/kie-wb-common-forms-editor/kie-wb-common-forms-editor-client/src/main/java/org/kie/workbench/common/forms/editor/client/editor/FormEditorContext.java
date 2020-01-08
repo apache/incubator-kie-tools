@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.forms.editor.client.editor;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class FormEditorContext {
 
-    private FormEditorHelper activeEditorHelper;
+    private static FormEditorHelper activeEditorHelper;
 
-    public void setActiveEditorHelper(FormEditorHelper activeEditorHelper) {
-        this.activeEditorHelper = activeEditorHelper;
+    private FormEditorContext() {
     }
 
-    public FormEditorHelper getActiveEditorHelper() {
+    public static void setActiveEditorHelper(FormEditorHelper activeEditorHelper) {
+        FormEditorContext.activeEditorHelper = activeEditorHelper;
+    }
+
+    public static FormEditorHelper getActiveEditorHelper() {
         return activeEditorHelper;
     }
 }

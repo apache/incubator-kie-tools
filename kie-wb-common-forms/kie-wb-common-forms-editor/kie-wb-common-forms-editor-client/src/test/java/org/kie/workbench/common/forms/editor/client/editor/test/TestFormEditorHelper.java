@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
@@ -31,9 +32,9 @@ import org.uberfire.commons.data.Pair;
 public class TestFormEditorHelper extends FormEditorHelper {
 
     public TestFormEditorHelper(TestFieldManager fieldManager,
-                                ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
-        super(fieldManager,
-              editorFieldLayoutComponents);
+                                ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
+                                SyncBeanManager beanManager) {
+        super(fieldManager, editorFieldLayoutComponents, beanManager);
         fieldManager.getAllBasicTypeProviders().stream().forEach((provider) -> {
             enabledPaletteFieldTypes.add(provider.getDefaultField().getFieldType());
             enabledFieldPropertiesFieldTypes.add(provider.getDefaultField().getFieldType());

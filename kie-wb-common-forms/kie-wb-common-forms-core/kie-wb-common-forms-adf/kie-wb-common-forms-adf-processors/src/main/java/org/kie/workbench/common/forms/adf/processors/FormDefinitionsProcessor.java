@@ -16,11 +16,6 @@
 
 package org.kie.workbench.common.forms.adf.processors;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,12 +27,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.GenerationCompleteCallback;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 import static org.kie.workbench.common.forms.adf.processors.FormDefinitionsProcessor.FIELD_DEFINITION_ANNOTATION;
 import static org.kie.workbench.common.forms.adf.processors.FormDefinitionsProcessor.FORM_DEFINITON_ANNOTATION;
@@ -102,15 +93,13 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
             templateContext.put("fieldModifiers", context.getFieldDefinitions());
             templateContext.put("fieldDefinitions", context.getFieldDefinitions());
 
-            StringBuffer code = writeTemplate("templates/FormGenerationResourcesProvider.ftl", templateContext);
+            StringBuffer code = TemplateWriter.writeTemplate("FormGenerationResourcesProvider.ftl", templateContext);
 
             // If code is successfully created write files, or send generated code to callback.
             // The callback function is used primarily for testing when we don't necessarily want
             // the generated code to be stored as a compilable file for javac to process.
             if (callback == null) {
-                writeCode(packageName,
-                          "ModuleFormGenerationResourcesProvider",
-                          code);
+                writeCode(packageName, "ModuleFormGenerationResourcesProvider", code);
             } else {
                 callback.generationComplete(code.toString());
             }
@@ -122,39 +111,5 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
         }
 
         return true;
-    }
-
-    protected StringBuffer writeTemplate(String templateName, Map<String, Object> context) throws GenerationException {
-        //Generate code
-        final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter(sw);
-
-        // The code used to contain 'new InputStreamReader(this.getClass().getResourceAsStream(templateName))' which for
-        // some reason was causing issues during concurrent invocation of this method (e.g. in parallel Maven build).
-        // The stream returned by 'getResourceAsStream(templateName)' was sometimes already closed (!) and as the
-        // Template class tried to read from the stream it resulted in IOException. Changing the code to
-        // 'getResource(templateName).openStream()' seems to be a sensible workaround
-        try (InputStream templateIs = this.getClass().getResource(templateName).openStream()) {
-            Configuration config = new Configuration();
-
-            Template template = new Template("",
-                                             new InputStreamReader(templateIs),
-                                             config);
-
-            template.process(context,
-                             bw);
-        } catch (IOException ioe) {
-            throw new GenerationException(ioe);
-        } catch (TemplateException te) {
-            throw new GenerationException(te);
-        } finally {
-            try {
-                bw.close();
-                sw.close();
-            } catch (IOException ioe) {
-                throw new GenerationException(ioe);
-            }
-        }
-        return sw.getBuffer();
     }
 }

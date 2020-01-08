@@ -19,13 +19,16 @@ package org.kie.workbench.common.stunner.forms.client.fields.colorPicker;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Dependent
+@Renderer(type = ColorPickerFieldType.class)
 public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefinition, DefaultFormGroup> {
 
     private ColorPickerWidget colorPicker;
@@ -49,11 +52,6 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
         formGroup.render(colorPicker, field);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return ColorPickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -43,17 +43,11 @@ public class NotificationsEditorFieldRendererTest extends ReflectionUtilsTest {
         notificationsEditorFieldRenderer = spy(new NotificationsEditorFieldRenderer(notificationsEditorWidget));
 
         doCallRealMethod().when(notificationsEditorFieldRenderer).getName();
-        doCallRealMethod().when(notificationsEditorFieldRenderer).getSupportedCode();
         doCallRealMethod().when(notificationsEditorFieldRenderer).getField();
     }
 
     @Test
     public void getNameTest() {
         Assert.assertEquals("NotificationsEditor", notificationsEditorFieldRenderer.getName());
-    }
-
-    @Test
-    public void getSupportedCodeTest() {
-        Assert.assertEquals("NotificationsEditor", notificationsEditorFieldRenderer.getSupportedCode());
     }
 }

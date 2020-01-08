@@ -23,7 +23,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -31,6 +33,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 
 @Dependent
+@Renderer(type = QNameFieldType.class)
 public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, DefaultFormGroup> {
 
     private DataTypePickerWidget typePicker;
@@ -82,11 +85,6 @@ public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, Defa
         formGroup.render(typePicker, field);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return QNameFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

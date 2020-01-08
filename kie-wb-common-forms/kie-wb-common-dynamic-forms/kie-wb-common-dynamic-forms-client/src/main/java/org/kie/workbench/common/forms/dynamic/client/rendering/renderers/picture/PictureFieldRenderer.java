@@ -19,14 +19,17 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.pictur
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.picture.PictureInput;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.definition.PictureFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.type.PictureFieldType;
 
 @Dependent
+@Renderer(type = PictureFieldType.class)
 public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition, DefaultFormGroup> {
 
     private PictureInput pictureInput;
@@ -53,11 +56,6 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition, 
 
     @Override
     public String getName() {
-        return PictureFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return PictureFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

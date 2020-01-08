@@ -28,6 +28,7 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
@@ -181,6 +182,9 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected MenuItem downloadMenuItem;
 
+    @Mock
+    private SyncBeanManager beanManager;
+
     protected TestFieldManager fieldManager;
 
     protected List<Path> assetUsages = new ArrayList<>();
@@ -242,7 +246,7 @@ public class FormEditorPresenterAbstractTest {
         editorServiceCallerMock = new CallerMock<>(formEditorService);
 
         editorHelper = spy(new TestFormEditorHelper(fieldManager,
-                                                    editorFieldLayoutComponents));
+                                                    editorFieldLayoutComponents, beanManager));
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
 
@@ -301,7 +305,6 @@ public class FormEditorPresenterAbstractTest {
                 deletePopUpPresenter = FormEditorPresenterAbstractTest.this.deletePopUpPresenter;
                 renamePopUpPresenter = FormEditorPresenterAbstractTest.this.renamePopUpPresenter;
                 alertsButtonMenuItemBuilder = FormEditorPresenterAbstractTest.this.alertsButtonMenuItemBuilder;
-                formEditorContext = mock(FormEditorContext.class);
                 copyPopUpPresenter = FormEditorPresenterAbstractTest.this.copyPopUpPresenter;
                 promises = FormEditorPresenterAbstractTest.this.promises;
             }

@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeFieldType;
 
+@Renderer(type = ScriptTypeFieldType.class)
 public class ScriptTypeFieldRenderer
         extends FieldRenderer<ScriptTypeFieldDefinition, DefaultFormGroup> {
 
@@ -53,10 +56,5 @@ public class ScriptTypeFieldRenderer
     @Override
     protected void setReadOnly(final boolean readOnly) {
         widget.setReadOnly(readOnly);
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return ScriptTypeFieldDefinition.FIELD_TYPE.getTypeName();
     }
 }

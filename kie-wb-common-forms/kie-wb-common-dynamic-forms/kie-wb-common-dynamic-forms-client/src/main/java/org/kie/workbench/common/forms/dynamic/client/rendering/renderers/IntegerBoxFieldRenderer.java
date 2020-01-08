@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.IntegerBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
@@ -29,8 +30,10 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGr
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.type.IntegerBoxFieldType;
 
 @Dependent
+@Renderer(type = IntegerBoxFieldType.class)
 public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefinition, DefaultFormGroup>
         implements RequiresValueConverter {
 
@@ -66,17 +69,10 @@ public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefini
 
         DefaultFormGroup formGroup = formGroupsInstance.get();
 
-        formGroup.render(inputId,
-                         widget,
-                         field);
+        formGroup.render(inputId, widget, field);
         registerFieldRendererPart(widget);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return IntegerBoxFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

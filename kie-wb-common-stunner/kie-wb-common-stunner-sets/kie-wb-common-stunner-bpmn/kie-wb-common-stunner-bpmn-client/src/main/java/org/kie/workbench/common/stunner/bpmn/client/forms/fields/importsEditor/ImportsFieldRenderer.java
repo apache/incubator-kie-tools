@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldType;
 
+@Renderer(type = ImportsFieldType.class)
 public class ImportsFieldRenderer
         extends FieldRenderer<ImportsFieldDefinition, DefaultFormGroup> {
 
@@ -48,10 +51,5 @@ public class ImportsFieldRenderer
 
     @Override
     protected void setReadOnly(final boolean readOnly) {
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return ImportsFieldDefinition.FIELD_TYPE.getTypeName();
     }
 }

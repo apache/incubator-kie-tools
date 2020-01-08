@@ -116,11 +116,6 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
     public abstract TYPE getEmptyValue();
 
     @Override
-    public String getSupportedCode() {
-        return ListBoxBaseDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
     protected void setReadOnly(boolean readOnly) {
         widgetList.setEnabled(!readOnly);
     }

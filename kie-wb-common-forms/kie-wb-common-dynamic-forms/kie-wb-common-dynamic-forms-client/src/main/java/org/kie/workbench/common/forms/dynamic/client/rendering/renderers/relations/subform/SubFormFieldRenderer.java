@@ -22,6 +22,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.AbstractNestedFormFormGroup;
@@ -33,8 +34,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.Container;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 
 @Dependent
+@Renderer(type = SubFormFieldType.class)
 public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, AbstractNestedFormFormGroup> {
 
     @Inject
@@ -50,6 +53,7 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, 
         if (field.getReadOnly()) {
             nestedContext.setRenderMode(RenderMode.READ_ONLY_MODE);
         }
+
         subFormWidget.render(nestedContext);
 
         AbstractNestedFormFormGroup formGroup;
@@ -85,11 +89,6 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, 
     @Override
     public String getName() {
         return "SubForm";
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return SubFormFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

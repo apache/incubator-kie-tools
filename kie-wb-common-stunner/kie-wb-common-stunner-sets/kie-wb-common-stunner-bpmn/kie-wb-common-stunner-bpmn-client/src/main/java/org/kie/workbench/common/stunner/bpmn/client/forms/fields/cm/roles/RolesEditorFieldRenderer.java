@@ -22,15 +22,18 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
 import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.serializer.cm.CaseRoleSerializer;
 
 @Dependent
+@Renderer(type = RolesEditorFieldType.class)
 public class RolesEditorFieldRenderer extends FieldRenderer<RolesEditorFieldDefinition, DefaultFormGroup>
         implements RolesEditorWidgetView.Presenter {
 
@@ -46,11 +49,6 @@ public class RolesEditorFieldRenderer extends FieldRenderer<RolesEditorFieldDefi
 
     @Override
     public String getName() {
-        return RolesEditorFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return RolesEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

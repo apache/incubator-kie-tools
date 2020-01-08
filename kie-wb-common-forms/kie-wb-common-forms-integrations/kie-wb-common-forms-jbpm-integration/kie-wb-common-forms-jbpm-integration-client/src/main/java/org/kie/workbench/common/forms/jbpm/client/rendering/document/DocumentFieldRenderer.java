@@ -20,13 +20,16 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
 
 @Dependent
+@Renderer(type = DocumentFieldType.class)
 public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition, DefaultFormGroup> {
 
     private DocumentFieldRendererView view;
@@ -55,11 +58,6 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
         formGroup.render(view.asWidget(), field);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return DocumentFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

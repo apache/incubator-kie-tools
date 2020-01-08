@@ -81,12 +81,6 @@ public class RolesEditorFieldRendererTest {
     }
 
     @Test
-    public void getSupportedCode() {
-        String code = tested.getSupportedCode();
-        assertThat(code).isEqualTo(RolesEditorFieldDefinition.FIELD_TYPE.getTypeName());
-    }
-
-    @Test
     public void getFormGroup() {
         FormGroup formGroup = tested.getFormGroup(RenderMode.EDIT_MODE);
         verify(view).init(tested);

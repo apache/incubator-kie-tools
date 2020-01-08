@@ -29,7 +29,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
+import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRendererManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorContext;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
@@ -45,7 +47,6 @@ import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
 @Specializes
 @Dependent
@@ -56,13 +57,9 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     protected FieldPropertiesRenderer propertiesRenderer;
 
-    protected LayoutDragComponentHelper layoutDragComponentHelper;
-
     protected Event<FormEditorSyncPaletteEvent> syncPaletteEvent;
 
     protected FieldManager fieldManager;
-
-    protected FormEditorContext formEditorContext;
 
     protected FormEditorHelper editorHelper;
 
@@ -77,15 +74,14 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     private Optional<String> formId = Optional.empty();
 
     @Inject
-    public EditorFieldLayoutComponent(FieldPropertiesRenderer propertiesRenderer,
-                                      LayoutDragComponentHelper layoutDragComponentHelper,
+    public EditorFieldLayoutComponent(FieldRendererManager fieldRendererManager,
+                                      TranslationService translationService,
+                                      FieldPropertiesRenderer propertiesRenderer,
                                       FieldManager fieldManager,
-                                      FormEditorContext formEditorContext,
                                       Event<FormEditorSyncPaletteEvent> syncPaletteEvent) {
+        super(fieldRendererManager, translationService);
         this.propertiesRenderer = propertiesRenderer;
-        this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.fieldManager = fieldManager;
-        this.formEditorContext = formEditorContext;
         this.syncPaletteEvent = syncPaletteEvent;
     }
 
@@ -267,7 +263,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             formId = Optional.ofNullable(properties.get(FORM_ID));
         }
 
-        editorHelper = getHelperInstance();
+        editorHelper = FormEditorContext.getActiveEditorHelper();
 
         init(editorHelper.getRenderingContext(),
              editorHelper.getFormField(fieldId.get()));
@@ -277,10 +273,6 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         if (showProperties) {
             propertiesRenderer.render(propertiesRendererHelper);
         }
-    }
-
-    protected FormEditorHelper getHelperInstance() {
-        return formEditorContext.getActiveEditorHelper();
     }
 
     FieldPropertiesRendererHelper getPropertiesRendererHelper() {

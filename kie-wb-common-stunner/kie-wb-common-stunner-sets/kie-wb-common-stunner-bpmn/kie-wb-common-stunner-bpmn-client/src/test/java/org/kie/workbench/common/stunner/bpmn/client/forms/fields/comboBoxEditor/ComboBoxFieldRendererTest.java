@@ -44,16 +44,4 @@ public class ComboBoxFieldRendererTest {
         Assert.assertEquals(comboBoxFieldRenderer.getName(),
                             ComboBoxFieldType.NAME);
     }
-
-    @Test
-    public void getSupportedCode() throws Exception {
-        Assert.assertEquals(comboBoxFieldRenderer.getSupportedCode(),
-                            ComboBoxFieldType.NAME);
-    }
-
-    @Test
-    public void getSupportedFieldDefinition() throws Exception {
-        Assert.assertEquals(comboBoxFieldRenderer.getSupportedFieldDefinition(),
-                            ComboBoxFieldDefinition.class);
-    }
 }

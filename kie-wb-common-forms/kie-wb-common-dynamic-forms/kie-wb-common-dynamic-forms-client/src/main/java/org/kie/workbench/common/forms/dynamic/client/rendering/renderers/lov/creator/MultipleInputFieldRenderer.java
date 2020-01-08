@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.MultipleInputFieldType;
 
 @Dependent
+@Renderer(type = MultipleInputFieldType.class)
 public class MultipleInputFieldRenderer extends FieldRenderer<AbstractMultipleInputFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     private MultipleInput input;
@@ -58,11 +60,6 @@ public class MultipleInputFieldRenderer extends FieldRenderer<AbstractMultipleIn
 
     @Override
     public String getName() {
-        return MultipleInputFieldType.NAME;
-    }
-
-    @Override
-    public String getSupportedCode() {
         return MultipleInputFieldType.NAME;
     }
 

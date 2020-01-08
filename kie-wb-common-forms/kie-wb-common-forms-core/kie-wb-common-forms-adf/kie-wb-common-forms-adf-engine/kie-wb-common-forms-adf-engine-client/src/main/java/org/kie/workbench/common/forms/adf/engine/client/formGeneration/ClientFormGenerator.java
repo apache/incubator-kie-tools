@@ -51,17 +51,21 @@ public class ClientFormGenerator extends AbstractFormGenerator {
 
         Collection<SyncBeanDef<FormElementProcessor>> processors = beanManager.lookupBeans(FormElementProcessor.class);
 
-        processors.forEach(processorDef -> {
-            registerProcessor(processorDef.getInstance());
-        });
+        processors.stream()
+                .map(SyncBeanDef::getInstance)
+                .forEach(processor -> {
+                    registerProcessor(processor);
+                    beanManager.destroyBean(processor);
+                });
 
         Collection<SyncBeanDef<FormGenerationResourcesProvider>> builderDefs = beanManager.lookupBeans(FormGenerationResourcesProvider.class);
 
-        builderDefs.forEach(builderDef -> {
-            FormGenerationResourcesProvider instance = builderDef.getInstance();
-            registerResources(instance);
-            beanManager.destroyBean(instance);
-        });
+        builderDefs.stream()
+                .map(SyncBeanDef::getInstance)
+                .forEach(provider -> {
+                    registerResources(provider);
+                    beanManager.destroyBean(provider);
+                });
     }
 
     @Override

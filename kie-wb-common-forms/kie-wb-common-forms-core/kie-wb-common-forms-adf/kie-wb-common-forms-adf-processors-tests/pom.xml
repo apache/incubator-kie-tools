@@ -60,6 +60,12 @@
       <artifactId>kie-wb-common-forms-adf-processors</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-dynamic-forms-client</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
@@ -29,13 +30,13 @@ import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.help.FieldHelp;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.required.FieldRequired;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
@@ -73,6 +74,9 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     @DataField
     private Div helpBlock;
 
+    @Inject
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
     private Presenter presenter;
 
     private Map<String, Widget> partsWidget = new HashMap<>();
@@ -105,8 +109,8 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
         container.clear();
 
         container.add(widget);
-        
-        partsWidget.put(PART_ANCHOR_TEXT, ElementWrapperWidget.getWidget(anchorText));
+
+        partsWidget.put(PART_ANCHOR_TEXT, wrapperWidgetUtil.getWidget(this, anchorText));
     }
 
     @Override
@@ -134,9 +138,15 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     public void onClick(ClickEvent clickEvent) {
         presenter.notifyClick();
     }
-    
+
     @Override
     public Map<String, Widget> getViewPartsWidgets() {
         return partsWidget;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        container.clear();
+        wrapperWidgetUtil.clear(this);
     }
 }

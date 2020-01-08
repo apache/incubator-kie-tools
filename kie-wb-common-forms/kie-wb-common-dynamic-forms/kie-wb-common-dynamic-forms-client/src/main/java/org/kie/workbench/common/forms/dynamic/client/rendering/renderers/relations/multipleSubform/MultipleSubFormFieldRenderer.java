@@ -21,22 +21,27 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
 
 @Dependent
+@Renderer(type = MultipleSubFormFieldType.class)
 public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormFieldDefinition, FieldSetFormGroup> {
+
+    static String RENDERER_NAME = "Multiple SubForm";
 
     @Inject
     private MultipleSubFormWidget multipleSubFormWidget;
 
     @Override
     public String getName() {
-        return "Multiple SubForm";
+        return RENDERER_NAME;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     protected List<String> getConfigErrors() {
         List<String> configErrors = new ArrayList<>();
 
-        if (field.getColumnMetas() == null || field.getColumnMetas().size() == 0) {
+        if (field.getColumnMetas() == null || field.getColumnMetas().isEmpty()) {
             configErrors.add(FormRenderingConstants.MultipleSubformNoColumns);
         }
         if (field.getCreationForm() == null || field.getCreationForm().isEmpty()) {
@@ -69,11 +74,6 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
             configErrors.add(FormRenderingConstants.MultipleSubformWongEditionForm);
         }
         return configErrors;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return MultipleSubFormFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

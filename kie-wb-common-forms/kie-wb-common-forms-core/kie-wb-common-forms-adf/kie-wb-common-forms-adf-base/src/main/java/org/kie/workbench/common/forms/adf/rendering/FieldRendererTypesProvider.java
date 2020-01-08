@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering;
+package org.kie.workbench.common.forms.adf.rendering;
+
+import java.util.Map;
 
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public interface FieldDefinitionFieldRenderer<FIELD extends FieldDefinition> {
+public interface FieldRendererTypesProvider<R> {
 
-    Class<FIELD> getSupportedFieldDefinition();
+    Map<Class<? extends FieldType>, Class<? extends R>> getFieldTypeRenderers();
+
+    Map<Class<? extends FieldDefinition>, Class<? extends R>> getFieldDefinitionRenderers();
+
 }

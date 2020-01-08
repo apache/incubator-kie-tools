@@ -16,6 +16,7 @@
 package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,8 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,10 +63,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -110,6 +115,9 @@ public class FormEditorHelperTest {
 
     @Mock
     private FormDefinition formDefinition;
+
+    @Mock
+    private SyncBeanManager beanManager;
 
     private TestFieldManager testFieldManager;
 
@@ -160,11 +168,21 @@ public class FormEditorHelperTest {
 
         editorServiceCallerMock = new CallerMock<>(formEditorService);
 
+        when(beanManager.lookupBeans(any(Class.class))).thenAnswer(invocation -> {
+            SyncBeanDef<EditorFieldTypesProvider> beanDef = mock(SyncBeanDef.class);
+            when(beanDef.getInstance()).thenReturn(new EditorFieldTypesProviderImpl());
+            return Arrays.asList(beanDef);
+        });
+
         formEditorHelper = new TestFormEditorHelper(testFieldManager,
-                                                    editorFieldLayoutComponents);
+                                                    editorFieldLayoutComponents,
+                                                    beanManager);
 
         formEditorService.loadContent(null);
         formEditorHelper.initHelper(content);
+
+        verify(beanManager).lookupBeans(eq(EditorFieldTypesProvider.class));
+        verify(beanManager).destroyBean(any());
 
         assertEquals(formEditorHelper.getEditorFieldTypes().size(),
                      formEditorHelper.getBaseFieldsDraggables().size());
@@ -424,6 +442,13 @@ public class FormEditorHelperTest {
         assertTrue(formEditorHelper.getAvailableFields().containsKey(nameField.getId()));
         formEditorHelper.removeAvailableField(nameField);
         assertFalse(formEditorHelper.getAvailableFields().containsKey(nameField.getId()));
+    }
+
+    @Test
+    public void testDestroy() {
+        formEditorHelper.destroy();
+
+        verify(editorFieldLayoutComponents).destroyAll();
     }
 
     private void initFields() {

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormFieldImpl;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -34,12 +35,14 @@ import org.kie.workbench.common.forms.jbpm.client.rendering.documents.control.Do
 import org.kie.workbench.common.forms.jbpm.client.rendering.util.DocumentSizeHelper;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
 import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentCollectionFieldType;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
 
 @Dependent
+@Renderer(type = DocumentCollectionFieldType.class)
 public class DocumentCollectionFieldRenderer extends FieldRenderer<DocumentCollectionFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     private static final Integer MAX_CONTENT_SIZE = 20 * 1024 * 1024;
@@ -65,11 +68,6 @@ public class DocumentCollectionFieldRenderer extends FieldRenderer<DocumentColle
 
     @Override
     public String getName() {
-        return DocumentCollectionFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return DocumentCollectionFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

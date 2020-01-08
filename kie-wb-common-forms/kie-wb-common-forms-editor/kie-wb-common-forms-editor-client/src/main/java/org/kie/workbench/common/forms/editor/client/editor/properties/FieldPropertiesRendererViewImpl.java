@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.client.editor.properties;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -27,12 +28,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Modal;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -59,17 +60,23 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
 
     private TranslationService translationService;
 
+    private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
+
     private FieldPropertiesRenderer presenter;
 
     private FieldPropertiesRendererHelper helper;
+
+    private DataBindingEditor dataBindingEditor;
 
     private BaseModal modal;
 
     @Inject
     public FieldPropertiesRendererViewImpl(DynamicFormRenderer formRenderer,
-                                           TranslationService translationService) {
+                                           TranslationService translationService,
+                                           FormsElementWrapperWidgetUtil wrapperWidgetUtil) {
         this.formRenderer = formRenderer;
         this.translationService = translationService;
+        this.wrapperWidgetUtil = wrapperWidgetUtil;
     }
 
     @PostConstruct
@@ -93,12 +100,13 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     @Override
     public void render(FieldPropertiesRendererHelper helper,
                        FormEditorRenderingContext renderingContext,
-                       DataBindingEditor bindingEditor) {
+                       DataBindingEditor dataBindingEditor) {
         this.helper = helper;
+        this.dataBindingEditor = dataBindingEditor;
         formRenderer.render(renderingContext);
         initFieldTypeList();
         fieldBinding.clear();
-        fieldBinding.add(ElementWrapperWidget.getWidget(bindingEditor.getElement()));
+        fieldBinding.add(wrapperWidgetUtil.getWidget(this, dataBindingEditor.getElement()));
         modal.setTitle(translationService.getTranslation(FormEditorConstants.FieldPropertiesRendererViewImplTitle));
     }
 
@@ -138,5 +146,15 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     @EventHandler("fieldType")
     public void onTypeChange(ChangeEvent event) {
         presenter.onFieldTypeChange(fieldType.getSelectedValue());
+    }
+
+    @PreDestroy
+    public void clear() {
+        fieldBinding.clear();
+        if (dataBindingEditor != null) {
+            wrapperWidgetUtil.clear(this);
+        }
+        formRenderer.unBind();
+        modal.clear();
     }
 }

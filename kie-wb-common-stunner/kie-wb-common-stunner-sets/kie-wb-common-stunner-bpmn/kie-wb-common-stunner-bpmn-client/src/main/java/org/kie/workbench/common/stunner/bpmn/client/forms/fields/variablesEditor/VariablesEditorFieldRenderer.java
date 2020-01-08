@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -47,6 +49,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.Fi
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag.CASE_FILE_VARIABLE;
 
 @Dependent
+@Renderer(type = VariablesEditorFieldType.class)
 public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorFieldDefinition, DefaultFormGroup>
         implements VariablesEditorWidgetView.Presenter {
 
@@ -103,11 +106,6 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Override
     protected void setReadOnly(final boolean readOnly) {
         view.setReadOnly(readOnly);
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return VariablesEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

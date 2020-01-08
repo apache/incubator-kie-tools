@@ -60,12 +60,6 @@ public class GenericServiceTaskEditorFieldRendererTest extends ReflectionUtilsTe
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals("GenericServiceTaskEditor",
-                     renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadonlyTrue() {
         renderer.setReadOnly(true);
         verify(widget,

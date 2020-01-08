@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -26,8 +27,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.BPMNFormsContextUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 
 @Dependent
+@Renderer(type = AssignmentsEditorFieldType.class)
 public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEditorFieldDefinition, DefaultFormGroup> {
 
     private AssignmentsEditorWidget assignmentsEditor;
@@ -60,10 +63,5 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     @Override
     protected void setReadOnly(final boolean readOnly) {
         assignmentsEditor.setReadOnly(readOnly);
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return AssignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 }

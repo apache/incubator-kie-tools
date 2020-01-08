@@ -19,14 +19,17 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date.input.DatePickerWrapper;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.type.DatePickerFieldType;
 
 @Dependent
+@Renderer(type = DatePickerFieldType.class)
 public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefinition, DefaultFormGroup> {
 
     protected WidgetHandler handler;
@@ -63,11 +66,6 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
                          field);
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return DatePickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

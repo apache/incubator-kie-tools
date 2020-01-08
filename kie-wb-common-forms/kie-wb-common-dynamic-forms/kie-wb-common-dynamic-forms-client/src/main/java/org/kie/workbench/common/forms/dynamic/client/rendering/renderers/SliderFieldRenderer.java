@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters.IntegerToDoubleConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
@@ -27,8 +28,10 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGr
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.slider.SliderFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 
 @Dependent
+@Renderer(type = SliderFieldType.class)
 public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition, SliderFormGroup>
         implements RequiresValueConverter {
 
@@ -73,11 +76,6 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition, Sli
             }
         }
         return NumberFormat.getFormat(pattern);
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return SliderBaseDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -19,13 +19,16 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.serviceEditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.GenericServiceTaskEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.GenericServiceTaskEditorFieldType;
 
 @Dependent
+@Renderer(type = GenericServiceTaskEditorFieldType.class)
 public class GenericServiceTaskEditorFieldRenderer extends FieldRenderer<GenericServiceTaskEditorFieldDefinition, DefaultFormGroup> {
 
     private GenericServiceTaskEditorWidget editorWidget;
@@ -44,11 +47,6 @@ public class GenericServiceTaskEditorFieldRenderer extends FieldRenderer<Generic
 
     @Override
     public String getName() {
-        return GenericServiceTaskEditorFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return GenericServiceTaskEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

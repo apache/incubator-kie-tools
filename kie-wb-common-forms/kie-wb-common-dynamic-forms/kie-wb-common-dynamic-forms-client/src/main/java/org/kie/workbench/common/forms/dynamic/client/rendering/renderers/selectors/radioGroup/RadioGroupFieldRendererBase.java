@@ -33,7 +33,6 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selecto
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 
 public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE>
         extends SelectorFieldRenderer<FIELD, OPTION, TYPE>
@@ -96,11 +95,6 @@ public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDe
         }
 
         return formGroup;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return StringRadioGroupFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -46,12 +46,6 @@ public class TimerSettingsFieldRendererTest {
     }
 
     @Test
-    public void testGetSupportedCode() {
-        assertEquals("TimerSettingsFieldType",
-                     renderer.getSupportedCode());
-    }
-
-    @Test
     public void testSetReadonlyTrue() {
         renderer.setReadOnly(true);
         verify(widget,

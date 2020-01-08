@@ -106,8 +106,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     @Inject
     protected BusyIndicatorView busyIndicatorView;
     @Inject
-    protected FormEditorContext formEditorContext;
-    @Inject
     protected FormEditorHelper editorHelper;
     protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
     @Inject
@@ -183,7 +181,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     private void setActiveInstance() {
-        formEditorContext.setActiveEditorHelper(editorHelper);
+        FormEditorContext.setActiveEditorHelper(editorHelper);
 
         initLayoutDragComponentPalette();
 
@@ -604,6 +602,9 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     @PreDestroy
     public void destroy() {
+        if (Objects.equals(FormEditorContext.getActiveEditorHelper(), editorHelper)) {
+            FormEditorContext.setActiveEditorHelper(null);
+        }
         editorFieldLayoutComponents.destroyAll();
     }
 

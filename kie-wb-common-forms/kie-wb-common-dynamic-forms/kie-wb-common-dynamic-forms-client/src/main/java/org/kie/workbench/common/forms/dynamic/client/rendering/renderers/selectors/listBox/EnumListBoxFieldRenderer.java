@@ -20,21 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 
 @Dependent
+@Renderer(fieldDefinition = EnumListBoxFieldDefinition.class)
 public class EnumListBoxFieldRenderer
         extends AbstractListBoxFieldRenderer<EnumListBoxFieldDefinition, EnumSelectorOption, Enum> {
 
     @Inject
     public EnumListBoxFieldRenderer(TranslationService translationService) {
         super(translationService);
-    }
-
-    @Override
-    public Class<EnumListBoxFieldDefinition> getSupportedFieldDefinition() {
-        return EnumListBoxFieldDefinition.class;
     }
 
     @Override

@@ -19,13 +19,16 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsE
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFieldType;
 
 @Dependent
+@Renderer(type = ReassignmentsEditorFieldType.class)
 public class ReassignmentsEditorFieldRenderer extends FieldRenderer<ReassignmentsEditorFieldDefinition, DefaultFormGroup> {
 
     private ReassignmentsEditorWidget reassignmentsEditorWidget;
@@ -44,11 +47,6 @@ public class ReassignmentsEditorFieldRenderer extends FieldRenderer<Reassignment
 
     @Override
     public String getName() {
-        return ReassignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return ReassignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 

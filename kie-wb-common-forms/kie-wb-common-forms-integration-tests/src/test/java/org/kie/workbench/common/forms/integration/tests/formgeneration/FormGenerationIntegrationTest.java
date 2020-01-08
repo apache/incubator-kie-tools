@@ -28,6 +28,7 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -93,6 +94,7 @@ import static org.kie.workbench.common.forms.jbpm.model.authoring.document.type.
 import static org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService.generateNestedFormName;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -178,7 +180,7 @@ public class FormGenerationIntegrationTest {
         formGenerationProcessDefinitions = TestUtils.getDefinitionsFromResources(FormGenerationIntegrationTest.class, DEFINITION_PATH);
 
         formModelerContent = new FormModelerContent();
-        formEditorHelper = new FormEditorHelper(fieldManager, null);
+        formEditorHelper = new FormEditorHelper(fieldManager, null, mock(SyncBeanManager.class));
     }
 
     @Before

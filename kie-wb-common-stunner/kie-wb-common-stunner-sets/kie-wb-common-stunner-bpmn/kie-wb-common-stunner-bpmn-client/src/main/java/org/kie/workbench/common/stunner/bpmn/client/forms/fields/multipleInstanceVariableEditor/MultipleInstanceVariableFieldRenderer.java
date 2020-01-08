@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.multipleInstan
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormFieldImpl;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -32,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 
+@Renderer(type = MultipleInstanceVariableFieldType.class)
 public class MultipleInstanceVariableFieldRenderer
         extends FieldRenderer<MultipleInstanceVariableFieldDefinition, DefaultFormGroup> {
 
@@ -59,11 +62,6 @@ public class MultipleInstanceVariableFieldRenderer
 
     @Override
     public String getName() {
-        return MultipleInstanceVariableFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public String getSupportedCode() {
         return MultipleInstanceVariableFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
