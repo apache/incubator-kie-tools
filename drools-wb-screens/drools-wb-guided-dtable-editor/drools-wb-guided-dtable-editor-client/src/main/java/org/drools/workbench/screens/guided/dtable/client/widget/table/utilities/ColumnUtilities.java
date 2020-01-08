@@ -145,13 +145,22 @@ public class ColumnUtilities
 
         final String[] values = ListSplitter.split("'", true, valueList);
 
-        return Stream.of(values).filter(value -> isValueValidForType(value,
+        return Stream.of(values).filter(value -> isValueValidForType(parseActualValue(value),
                                                                      convertToTypeSafeType(fieldType)))
                 .toArray(String[]::new);
     }
 
+    private String parseActualValue(final String value) {
+        if (value != null && value.indexOf("=") > 0) {
+            return value.substring(0, value.indexOf("="));
+        } else {
+            return value;
+        }
+    }
+
     private boolean isValueValidForType(String value,
                                         DataType.DataTypes type) {
+
         switch (type) {
             case STRING:
                 return true;

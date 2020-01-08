@@ -147,6 +147,32 @@ public class ColumnUtilitiesTest {
     }
 
     @Test
+    public void testIntegerAliases() {
+        column.setFactField(FIELD_NAME);
+        column.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        column.setValueList("1=One,2=Two");
+        final String[] valueList = utilities.getValueList(column);
+        Assertions.assertThat(valueList).containsExactly("1=One", "2=Two");
+    }
+
+    @Test
+    public void testBooleanAliases() {
+        column.setFactField(FIELD_NAME);
+        column.setFieldType(DataType.TYPE_BOOLEAN);
+        column.setValueList("true=Yes,false=No");
+        final String[] valueList = utilities.getValueList(column);
+        Assertions.assertThat(valueList).containsExactly("true=Yes", "false=No");
+    }
+
+    @Test
+    public void testBooleanAliasesInvalidValues() {
+        column.setFactField(FIELD_NAME);
+        column.setFieldType(DataType.TYPE_BOOLEAN);
+        column.setValueList("yes=Yes, no=No");
+        Assertions.assertThat(utilities.getValueList(column)).isEmpty();
+    }
+
+    @Test
     public void testGetValueSetFieldColumn() throws Exception {
         pattern.setFactType(FACT_TYPE);
         pattern.setBoundName("$a");
