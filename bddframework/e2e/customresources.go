@@ -31,8 +31,8 @@ func getKogitoServiceStub(appName string, namespace string) *v1alpha1.KogitoApp 
 			Namespace: namespace,
 		},
 		Status: v1alpha1.KogitoAppStatus{
-			Conditions:  []v1alpha1.Condition{},
-			Deployments: v1alpha1.Deployments{},
+			ConditionsMeta: v1alpha1.ConditionsMeta{Conditions: make([]v1alpha1.Condition, 0)},
+			Deployments:    v1alpha1.Deployments{},
 		},
 		Spec: v1alpha1.KogitoAppSpec{
 			Build: &v1alpha1.KogitoAppBuildObject{

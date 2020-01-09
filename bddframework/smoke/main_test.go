@@ -85,6 +85,31 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies() error {
 	return InstallCommunityOperator(data.Namespace, "infinispan", "stable")
 }
 
+// Jobs service steps
+func (data *Data) deployKogitoJobsServiceWithReplicasWithinMinutes(replicas, timeoutInMin int) error {
+	if err := DeployKogitoJobsService(data.Namespace, replicas, false); err != nil {
+		return err
+	}
+
+	return WaitForKogitoJobsService(data.Namespace, replicas, timeoutInMin)
+}
+
+func (data *Data) deployKogitoJobsServiceWithPersistenceAndReplicasWithinMinutes(replicas, timeoutInMin int) error {
+	if err := DeployKogitoJobsService(data.Namespace, replicas, true); err != nil {
+		return err
+	}
+
+	return WaitForKogitoJobsService(data.Namespace, replicas, timeoutInMin)
+}
+
+func (data *Data) scaleKogitoJobsServiceToPodsWithinMinutes(nbPods, timeoutInMin int) error {
+	err := SetKogitoJobsServiceReplicas(data.Namespace, nbPods)
+	if err != nil {
+		return err
+	}
+	return WaitForKogitoJobsService(data.Namespace, nbPods, timeoutInMin)
+}
+
 // Deploy service steps
 func (data *Data) deployQuarkusExampleServiceWithNative(contextDir, native string) error {
 	return DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false)
@@ -144,6 +169,15 @@ func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path, bod
 	return nil
 }
 
+func (data *Data) httpPostRequestOnServiceWithPathAndBodyWithinMinutes(serviceName, path, bodyFormat, bodyContent string, timeoutInMin int) error {
+	GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceWithPathAndBody with service %s, path %s, %s bodyContent %s and timeout %d", serviceName, path, bodyFormat, bodyContent, timeoutInMin)
+	routeURI, err := waitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	return waitForSuccessfulHTTPRequest(data.Namespace, "POST", routeURI, path, bodyFormat, strings.NewReader(bodyContent), timeoutInMin)
+}
+
 func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes(serviceName, path string, size, timeoutInMin int) error {
 	routeURI, err := waitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
@@ -166,6 +200,11 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
 	s.Step(`^Kogito Operator is deployed with dependencies$`, data.kogitoOperatorIsDeployedWithDependencies)
 
+	// Jobs service steps
+	s.Step(`^Deploy Kogito jobs service with (\d+) replicas within (\d+) minutes$`, data.deployKogitoJobsServiceWithReplicasWithinMinutes)
+	s.Step(`^Deploy Kogito jobs service with persistence and (\d+) replicas within (\d+) minutes$`, data.deployKogitoJobsServiceWithPersistenceAndReplicasWithinMinutes)
+	s.Step(`^Scale Kogito jobs service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
+
 	// Deploy steps
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native "([^"]*)"$`, data.deployQuarkusExampleServiceWithNative)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)"$`, data.deployQuarkusExampleServiceWithPersistenceAndNative)
@@ -185,4 +224,5 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
 	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and "([^"]*)" body '(.*)'$`, data.httpPostRequestOnServiceWithPathAndBody)
+	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and "([^"]*)" body '(.*)' within (\d+) minutes$`, data.httpPostRequestOnServiceWithPathAndBodyWithinMinutes)
 }

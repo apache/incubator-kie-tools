@@ -37,10 +37,11 @@ const (
 	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
 	defaultOperatorDeployURI = "https://raw.githubusercontent.com/kiegroup/kogito-cloud-operator/master/deploy/"
 
-	kogitoCrdGroupName     = "app.kiegroup.org"
-	kogitoAppCrdName       = "kogitoapps"
-	kogitoInfraCrdName     = "kogitoinfras"
-	kogitoDataIndexCrdName = "kogitodataindices"
+	kogitoCrdGroupName       = "app.kiegroup.org"
+	kogitoAppCrdName         = "kogitoapps"
+	kogitoInfraCrdName       = "kogitoinfras"
+	kogitoDataIndexCrdName   = "kogitodataindices"
+	kogitoJobsServiceCrdName = "kogitojobsservices"
 )
 
 var (
@@ -57,6 +58,9 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 		return err
 	}
 	if err := deployCrdIfNeeded(namespace, kogitoDataIndexCrdName); err != nil {
+		return err
+	}
+	if err := deployCrdIfNeeded(namespace, kogitoJobsServiceCrdName); err != nil {
 		return err
 	}
 
