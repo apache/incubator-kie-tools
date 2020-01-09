@@ -4,5 +4,5 @@ set -e
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 
-mkdir ${KOGITO_HOME}/launch
+mkdir -p ${KOGITO_HOME}/launch
 cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch

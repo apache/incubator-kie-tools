@@ -1,0 +1,31 @@
+{
+    "kind": "ConfigMap",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "example-quarkus-protobuf-files",
+        "namespace": "kogito-587",
+        "selfLink": "/api/v1/namespaces/kogito-587/configmaps/example-quarkus-protobuf-files",
+        "uid": "e9a77236-20fe-11ea-92d6-52fdfc072182",
+        "resourceVersion": "851604",
+        "creationTimestamp": "2019-12-17T18:56:20Z",
+        "labels": {
+            "app": "example-quarkus",
+            "kogito-protobuf": "true"
+        },
+        "annotations": {
+            "org.kie.kogito/managed-by": "Kogito Operator",
+            "org.kie.kogito/operator-crd": "KogitoApp",
+            "org.kie.kogito.protobuf.hash/file1" : "d41d8cd98f00b204e9800998ecf8427e"
+        },
+        "ownerReferences": [
+            {
+                "apiVersion": "app.kiegroup.org/v1alpha1",
+                "kind": "KogitoApp",
+                "name": "example-quarkus",
+                "uid": "e993c8b2-20fe-11ea-92d6-52fdfc072182",
+                "controller": true,
+                "blockOwnerDeletion": true
+            }
+        ]
+    }
+}

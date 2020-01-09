@@ -1,0 +1,8 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(dirname $0)
+
+# logging
+mkdir -p ${KOGITO_HOME}/launch/
+cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/
+chmod +x-w ${KOGITO_HOME}/launch/logging.sh

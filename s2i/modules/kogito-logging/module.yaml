@@ -1,0 +1,6 @@
+schema_version: 1
+name: org.kie.kogito.logging
+version: "0.7.0-rc1"
+
+execute:
+- script: configure

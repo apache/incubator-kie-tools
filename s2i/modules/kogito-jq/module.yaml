@@ -1,0 +1,15 @@
+schema_version: 1
+name: org.kie.kogito.jq
+version: "0.7.0-rc1"
+
+modules:
+    install:
+    - name: org.kie.kogito.epel
+      version: "7"
+
+execute:
+  - script: clean.sh
+
+packages:
+  install:
+    - jq

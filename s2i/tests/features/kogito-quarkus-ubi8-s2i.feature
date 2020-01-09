@@ -43,6 +43,19 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | Mario is older than Mark |
     And file /home/kogito/bin/drools-quarkus-example-0.6.1-runner.jar should exist
 
+  Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-quarkus-example using 0.6.1 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+      | variable          | value |
+      | NATIVE            | false   |
+      | MAVEN_ARGS_APPEND | -Ppersistence |
+    Then file /home/kogito/bin/jbpm-quarkus-example-0.6.1-runner.jar should exist
+    And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
+    And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
+    And s2i build log should contain ---> [persistence] generating md5 for persistence files
+    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for cd35391d447a67062c3914965254ebd2
+    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 318830fd04bce5b0f2a4727e001dbc21
+
+
     Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build and if it is listening on the expected port
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using 0.6.1 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value                           |

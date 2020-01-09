@@ -32,3 +32,5 @@ copy_kogito_app
 # handle custom image-metadata.json
 handle_image_metadata_json
 
+# handle persistence files
+copy_persistence_files

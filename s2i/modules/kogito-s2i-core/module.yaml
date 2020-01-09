@@ -33,6 +33,11 @@ envs:
       overridden by end users.
     example: "${S2I_DESTINATION_DIR}/src}"
 
+modules:
+  install:
+  - name: org.kie.kogito.persistence
+  - name: org.kie.kogito.logging
+
 run:
   cmd:
     - "/usr/local/s2i/run"

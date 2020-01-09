@@ -1,17 +1,22 @@
 #!/usr/bin/env bats
 
+export KOGITO_HOME=$BATS_TMPDIR/kogito_home
+mkdir -p ${KOGITO_HOME}/launch/
+
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh $KOGITO_HOME/launch/
+cp $BATS_TEST_DIRNAME/../../../kogito-persistence/added/kogito-persistence.sh $KOGITO_HOME/launch/
+cp $BATS_TEST_DIRNAME/../../../kogito-kubernetes-client/added/kogito-kubernetes-client.sh $KOGITO_HOME/launch/
+
 # imports
 source $BATS_TEST_DIRNAME/../../added/s2i-core
 
 setup() {
-    export KOGITO_HOME=/tmp/kogito
     export HOME=$KOGITO_HOME
-    mkdir -p ${KOGITO_HOME}
-    mkdir target
+    mkdir -p target
 }
 
 teardown() {
-    rm -rf ${KOGITO_HOME}
+    rm -rf ${KOGITO_HOME}/bin
     rm -rf /tmp/.s2i
     rm -rf /tmp/src
     rm -rf target
@@ -59,7 +64,6 @@ teardown() {
 @test "test assemble_runtime with binaries binaries" {
     mkdir $KOGITO_HOME/bin
     touch $KOGITO_HOME/bin/artifact.jar
-    KOGITO_HOME=/tmp/kogito
 
     run assemble_runtime
 
@@ -71,7 +75,7 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Application binaries found and ready to use" ]
     [ "${lines[1]}" = "---> [s2i-core] Adding custom labels..." ]
-    [ "${lines[2]}" = "-----> Failed to copy metadata file, /tmp/kogito/bin/image_metadata.json does not exist" ]
+    [ "${lines[2]}" = "-----> Failed to copy metadata file, ${KOGITO_HOME}/bin/image_metadata.json does not exist" ]
 }
 
 
@@ -79,7 +83,6 @@ teardown() {
     mkdir $KOGITO_HOME/bin
     touch $KOGITO_HOME/bin/image_metadata.json
     touch $KOGITO_HOME/bin/artifact.jar
-    KOGITO_HOME=/tmp/kogito
 
     run assemble_runtime
 
@@ -91,8 +94,8 @@ teardown() {
     [ "${lines[2]}" = "mkdir: created directory '/tmp/.s2i'" ]
     [ "${lines[3]}" = "mkdir: created directory '/tmp/src'" ]
     [ "${lines[4]}" = "mkdir: created directory '/tmp/src/.s2i/'" ]
-    [ "${lines[5]}" = "'/tmp/kogito/bin/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
-    [ "${lines[6]}" = "'/tmp/kogito/bin/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
+    [ "${lines[5]}" = "'$KOGITO_HOME/bin/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
+    [ "${lines[6]}" = "'$KOGITO_HOME/bin/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
 
 }
 
@@ -105,7 +108,7 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "'./bin/myapp.jar' -> '/tmp/kogito/./bin/myapp.jar'" ]
+    [ "${lines[0]}" = "'./bin/myapp.jar' -> '$KOGITO_HOME/./bin/myapp.jar'" ]
 }
 
 
@@ -130,7 +133,7 @@ teardown() {
     [ "${lines[0]}" = "---> [s2i-core] Copy image metadata file..." ]
     [ "${lines[1]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
     [ "${lines[2]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
-    [ "${lines[3]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/kogito/bin'" ]
+    [ "${lines[3]}" = "'/tmp/src/target/image_metadata.json' -> '$KOGITO_HOME/bin'" ]
 }
 
 @test "test copy_kogito_app default java build no jar file present" {
@@ -153,7 +156,7 @@ teardown() {
     echo "status= $status"
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Installing application binaries" ]
-    [ "${lines[1]}" = "'target/app.jar' -> '/tmp/kogito/bin'" ]
+    [ "${lines[1]}" = "'target/app.jar' -> '$KOGITO_HOME/bin'" ]
 }
 
 
@@ -172,7 +175,7 @@ teardown() {
 
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Installing jar file" ]
-    [ "${lines[1]}" = "'target/app-runner.jar' -> '/tmp/kogito/bin/app-runner.jar'" ]
+    [ "${lines[1]}" = "'target/app-runner.jar' -> '$KOGITO_HOME/bin/app-runner.jar'" ]
     [ "${lines[2]}" = "---> Copying application libraries" ]
 }
 
@@ -191,7 +194,7 @@ teardown() {
 
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Installing application binaries" ]
-    [ "${lines[1]}" = "'target/app-runner' -> '/tmp/kogito/bin/app-runner'" ]
+    [ "${lines[1]}" = "'target/app-runner' -> '$KOGITO_HOME/bin/app-runner'" ]
 }
 
 @test "build_kogito_app only checks if it will generated the project in case there's no pom.xml" {

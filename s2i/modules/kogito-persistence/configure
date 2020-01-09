@@ -1,0 +1,12 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(dirname $0)
+
+# kogito-persistence
+mkdir -p ${KOGITO_HOME}/launch/
+cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/
+chmod +x-w ${KOGITO_HOME}/launch/kogito-persistence.sh
+chmod +x-w ${KOGITO_HOME}/launch/post-hook-persistence.sh
+
+mkdir -p ${KOGITO_HOME}/data/protobufs
+chmod +w ${KOGITO_HOME}/data/protobufs

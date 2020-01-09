@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# imports
+source $KOGITO_HOME/launch/kogito-persistence.sh
+
 S2I_DESTINATION_DIR="${S2I_DESTINATION_DIR:-/tmp}"
 S2I_ARTIFACTS_DIR="${S2I_DESTINATION_DIR}/artifacts"
 S2I_SOURCE_DIR="${S2I_DESTINATION_DIR}/src"
@@ -40,6 +43,8 @@ function assemble_runtime() {
         echo "---> Application binaries NOT found, failing build..."
         exit 1
     fi
+    # handle persistence files
+    move_persistence_files
 }
 
 
@@ -130,7 +135,6 @@ function copy_kogito_app() {
         # handle non default java builds
         echo "---> Installing application binaries"
         cp -v $artifactDir/*.jar $KOGITO_HOME/bin
-
     fi
 }
 

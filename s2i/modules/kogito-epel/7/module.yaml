@@ -1,0 +1,6 @@
+schema_version: 1
+name: org.kie.kogito.epel
+version: "7"
+
+execute:
+  - script: configure
