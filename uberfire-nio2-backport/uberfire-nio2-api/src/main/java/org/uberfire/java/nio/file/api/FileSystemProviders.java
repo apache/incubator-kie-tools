@@ -44,6 +44,7 @@ public final class FileSystemProviders {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemProviders.class);
 
+    private static final String DEFAULT = "default";
     private static List<FileSystemProvider> installedProviders = null;
     private static Map<String, FileSystemProvider> mapOfinstalledProviders = null;
 
@@ -65,7 +66,7 @@ public final class FileSystemProviders {
         if (providers == null) {
             return emptyList();
         }
-        final List<FileSystemProvider> result = new ArrayList<FileSystemProvider>();
+        final List<FileSystemProvider> result = new ArrayList<>();
 
         for (final FileSystemProvider provider : providers) {
             result.add(provider);
@@ -74,17 +75,16 @@ public final class FileSystemProviders {
     }
 
     private static synchronized Map<String, FileSystemProvider> buildProvidersMap() {
-        final Map<String, FileSystemProvider> result = new HashMap<String, FileSystemProvider>(installedProviders.size() + 1);
+        final Map<String, FileSystemProvider> result = new HashMap<>(installedProviders.size() + 1);
         for (int i = 0; i < installedProviders.size(); i++) {
             final FileSystemProvider provider = installedProviders.get(i);
-            if (i == 0 || FileSystemUtils.isK8SFileSystemProviderAsDefault(provider)) {
+            if (FileSystemUtils.isK8SFileSystemProviderAsDefault(provider)) {
                 provider.forceAsDefault();
-                result.put("default",
-                           provider);
+                result.put(DEFAULT, provider);
             }
-            result.put(provider.getScheme(),
-                       provider);
+            result.put(provider.getScheme(), provider);
         }
+        result.computeIfAbsent(DEFAULT, k -> installedProviders.get(0)).forceAsDefault();
         return unmodifiableMap(result);
     }
 
@@ -98,7 +98,7 @@ public final class FileSystemProviders {
         if (installedProviders == null) {
             setup();
         }
-        return installedProviders.get(0);
+        return mapOfinstalledProviders.get(DEFAULT);
     }
 
     /**
