@@ -19,7 +19,7 @@ export function extractFileExtension(fileName: string) {
     .split(".")
     .pop()
     ?.match(/[\w\d]+/)
-    ?.pop();
+      ?.pop();
 }
 
 export function removeFileExtension(fileName: string) {

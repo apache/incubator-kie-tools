@@ -19,6 +19,7 @@
     "@patternfly/react-icons": "3.14.7",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
+    "@octokit/rest": "16.35.0",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1"
   },
