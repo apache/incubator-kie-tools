@@ -48,6 +48,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectBottomRightCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 
 /**
@@ -176,6 +177,7 @@ public class ScenarioGridPanelProducer {
                              new KeyboardOperationMoveRight(scenarioGridLayer),
                              new KeyboardOperationMoveUp(scenarioGridLayer),
                              new KeyboardOperationMoveDown(scenarioGridLayer),
+                             new KeyboardOperationSelectBottomRightCell(scenarioGridLayer),
                              invokeContextMenuKeyboardOperation);
         scenarioGridPanel.addKeyDownHandler(handler);
 
