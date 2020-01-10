@@ -496,9 +496,15 @@
       </build>
     </profile>
 
-    <!-- Profile to build GWT code and package WAR -->
+    <!-- Profile to build GWT code and package WAR for Community builds -->
     <profile>
       <id>kogito</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+
       <build>
         <plugins>
           <plugin>
