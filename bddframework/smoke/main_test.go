@@ -188,6 +188,30 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithin
 	})
 }
 
+func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes(serviceName, path, responseContent string, timeoutInMin int) error {
+	routeURI, err := waitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	return waitFor(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", path, responseContent), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+		return doesResponseContain(data.Namespace, "GET", routeURI, path, "", nil, responseContent)
+	})
+}
+
+// Prometheus steps
+func (data *Data) prometheusOperatorIsDeployed() error {
+	return InstallCommunityOperator(data.Namespace, "prometheus", "beta")
+}
+
+func (data *Data) prometheusInstanceIsDeployed(labelName, labelValue string) error {
+	err := deployPrometheusInstance(data.Namespace, labelName, labelValue)
+	if err != nil {
+		return err
+	}
+	return waitForPods(data.Namespace, "app", "prometheus", 1, 3)
+}
+
 func FeatureContext(s *godog.Suite) {
 	data := &Data{}
 	// Create kube client
@@ -204,6 +228,10 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Deploy Kogito jobs service with (\d+) replicas within (\d+) minutes$`, data.deployKogitoJobsServiceWithReplicasWithinMinutes)
 	s.Step(`^Deploy Kogito jobs service with persistence and (\d+) replicas within (\d+) minutes$`, data.deployKogitoJobsServiceWithPersistenceAndReplicasWithinMinutes)
 	s.Step(`^Scale Kogito jobs service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
+
+	// Prometheus steps
+	s.Step(`^Prometheus Operator is deployed$`, data.prometheusOperatorIsDeployed)
+	s.Step(`^Prometheus instance is deployed, monitoring services with label name "([^"]*)" and value "([^"]*)"$`, data.prometheusInstanceIsDeployed)
 
 	// Deploy steps
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native "([^"]*)"$`, data.deployQuarkusExampleServiceWithNative)
@@ -223,6 +251,7 @@ func FeatureContext(s *godog.Suite) {
 	// HTTP call steps
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
+	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
 	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and "([^"]*)" body '(.*)'$`, data.httpPostRequestOnServiceWithPathAndBody)
 	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and "([^"]*)" body '(.*)' within (\d+) minutes$`, data.httpPostRequestOnServiceWithPathAndBodyWithinMinutes)
 }

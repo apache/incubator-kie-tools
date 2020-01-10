@@ -154,6 +154,24 @@ func isResultArraySize(namespace, httpMethod, uri, path string, bodyFormat strin
 	return len(values) == arraySize, nil
 }
 
+func doesResponseContain(namespace, httpMethod, uri, path string, bodyFormat string, body io.Reader, responseContent string) (bool, error) {
+	response, err := executeHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, body)
+	if err != nil {
+		return false, err
+	}
+	if !checkResponseSuccessful(namespace, response) {
+		return false, nil
+	}
+	// Check response
+	defer response.Body.Close()
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(response.Body)
+	text := buf.String()
+
+	return strings.Contains(text, responseContent), nil
+}
+
 type genericObject struct {
 }
 

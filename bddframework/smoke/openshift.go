@@ -101,6 +101,27 @@ func GetRoute(namespace, routeName string) (*routev1.Route, error) {
 	}
 }
 
+func createHTTPRoute(namespace, serviceName string) error {
+	GetLogger(namespace).Infof("Creating HTTP route for service %s.", serviceName)
+
+	route := &routev1.Route{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      serviceName,
+			Namespace: namespace,
+		},
+		Spec: routev1.RouteSpec{
+			To: routev1.RouteTargetReference{
+				Kind: "Service",
+				Name: serviceName,
+			},
+		},
+	}
+	if err := kubernetes.ResourceC(kubeClient).Create(route); err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetRouteURI retrieves a route URI
 func GetRouteURI(namespace, routeName string) (string, error) {
 	route, err := GetRoute(namespace, routeName)
