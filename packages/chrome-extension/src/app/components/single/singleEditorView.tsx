@@ -93,7 +93,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       ),
     []
   );
-  const fileName = useMemo(() => {
+  const getFileName = useCallback(() => {
     return decodeURIComponent(props.fileInfo.path.split("/").pop()!);
   }, [props.fileInfo.path]);
 
@@ -101,7 +101,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
     <SingleEditorApp
       readonly={true}
       openFileExtension={props.openFileExtension}
-      fileName={fileName}
+      getFileName={getFileName}
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}

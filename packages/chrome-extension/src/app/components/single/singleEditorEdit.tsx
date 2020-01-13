@@ -76,7 +76,7 @@ function SingleEditorEditApp(props: { openFileExtension: string, fileInfo: FileI
     <SingleEditorApp
       readonly={false}
       openFileExtension={props.openFileExtension}
-      fileName={dependencies__.all.edit__githubFileNameInput()!.value}
+      getFileName={getFileName}
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id)}
       toolbarContainer={toolbarContainer(globals.id)}
@@ -91,6 +91,10 @@ function cleanup(id: string) {
   removeAllChildren(toolbarContainer(id));
   removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
   removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
+}
+
+function getFileName() {
+  return dependencies__.all.edit__githubFileNameInput()!.value;
 }
 
 function getFileContents() {
