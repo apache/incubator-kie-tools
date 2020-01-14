@@ -299,6 +299,7 @@ public class Row implements LayoutEditorElement {
 
     public ParameterizedCommand<ColumnDrop> dropCommand() {
         return (drop) -> {
+            ColumnDropContext.setActiveDrop(drop);
             if (dropFromMoveComponent(drop)) {
                 removeOldComponent(drop);
                 // notifying dndManager that the move has finished!
@@ -308,6 +309,7 @@ public class Row implements LayoutEditorElement {
             Row.this.columns = updateColumns(drop,
                                              Row.this.columns);
             updateView();
+            ColumnDropContext.clear();
         };
     }
 
@@ -414,11 +416,11 @@ public class Row implements LayoutEditorElement {
         Optional<Column> optional = checkIfColumnExistsInChildColumnWithComponents(targetColumn);
 
         // If present let's remove it!
-        optional.ifPresent(column -> removeComponentFromColumnWihtComponents((ColumnWithComponents) column,
+        optional.ifPresent(column -> removeComponentFromColumnWithComponents((ColumnWithComponents) column,
                                                                              targetColumn));
     }
 
-    private void removeComponentFromColumnWihtComponents(ColumnWithComponents parent,
+    private void removeComponentFromColumnWithComponents(ColumnWithComponents parent,
                                                          Column targetColumn) {
         PortablePreconditions.checkNotNull("parent",
                                            parent);
@@ -432,9 +434,22 @@ public class Row implements LayoutEditorElement {
         }
 
         // if parent has only one child remaining we'll remove parent and promote the remaining child on the layout.
-        if (parent.getRow().getColumns().size() == 1) {
+        if (parent.getRow().getColumns().size() == 1 && !isDropInSameColumnWithComponent(ColumnDropContext.getActiveDrop())) {
             replaceColumnWithComponents(parent);
         }
+    }
+
+    protected boolean isDropInSameColumnWithComponent(ColumnDrop drop) {
+        if (drop != null) {
+            int indexOfRowIdOfColumn = drop.getOldColumn().getId().lastIndexOf("column");
+            int indexOfEndIdOfColumn = drop.getEndId().lastIndexOf("column");
+            if (indexOfRowIdOfColumn > 0 && indexOfEndIdOfColumn > 0) {
+                String rowIdOfColumn = drop.getOldColumn().getId().substring(0, indexOfRowIdOfColumn);
+                String rowEndIdOfColumn = drop.getEndId().substring(0, indexOfEndIdOfColumn);
+                return rowIdOfColumn.equals(rowEndIdOfColumn);
+            }
+        }
+        return false;
     }
 
     private void replaceColumnWithComponents(ColumnWithComponents columnToReplace) {
@@ -445,21 +460,17 @@ public class Row implements LayoutEditorElement {
         if (columnToReplace.getRow().getColumns().size() == 1) {
 
             // getting the remaining column
-            Column column = columnToReplace.getRow().getColumns().remove(0);
+            ComponentColumn originalColumn = (ComponentColumn) columnToReplace.getRow().getColumns().remove(0);
+            ComponentColumn column = createNewComponentColumn(originalColumn.getLayoutComponent(),
+                                              columnToReplace.getColumnWidth(),
+                                              false);
+
+            column.setId(columnToReplace.getId());
 
             int index = columns.indexOf(columnToReplace);
 
-            if (column instanceof ComponentColumn) {
-                // if it is a ComponentColumn we must regenerate to reload all the styling
-                ComponentColumn originalColumn = (ComponentColumn) column;
-                column = createNewComponentColumn(originalColumn.getLayoutComponent(),
-                                                  columnToReplace.getColumnWidth(),
-                                                  false);
-            }
-
             // promoting the remaining child on the actual row
-            columns.set(index,
-                        column);
+            columns.set(index, column);
 
             // destroy current column & update view
             columnToReplace.preDestroy();

@@ -35,10 +35,10 @@ import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RowTest extends AbstractLayoutEditorTest {
 
@@ -261,6 +261,31 @@ public class RowTest extends AbstractLayoutEditorTest {
                                                                 "columnWidth",
                                                                 "columnHeight",
                                                                 "layoutComponent");
+    }
+
+    @Test
+    public void testIsDropInSameColumnWithComponent() throws Exception {
+
+        loadLayout(SAMPLE_COLUMN_WITH_COMPONENTS_LAYOUT);
+
+        Row row = getRowByIndex(FIRST_ROW);
+
+        assertThat(row.getColumns()).hasSize(1);
+
+        Column rowColumn = row.getColumns().get(0);
+        ColumnWithComponents columnWithComponents = (ColumnWithComponents) rowColumn;
+        Column firstColumn = columnWithComponents.getRow().getColumns().get(0);
+
+        // when drop is not in the same column
+        ColumnDrop columnDrop = mock(ColumnDrop.class);
+        when(columnDrop.getOldColumn()).thenReturn(firstColumn);
+        when(columnDrop.getEndId()).thenReturn("container: | row:1");
+        assertFalse(row.isDropInSameColumnWithComponent(columnDrop));
+
+        // when drop is in the same column
+        when(columnDrop.getOldColumn()).thenReturn(firstColumn);
+        when(columnDrop.getEndId()).thenReturn(firstColumn.getId());
+        assertTrue(row.isDropInSameColumnWithComponent(columnDrop));
     }
 
     @Test
