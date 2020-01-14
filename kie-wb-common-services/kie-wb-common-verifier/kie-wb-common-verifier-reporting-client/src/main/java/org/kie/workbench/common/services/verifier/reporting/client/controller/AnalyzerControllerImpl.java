@@ -21,12 +21,10 @@ import java.util.logging.Logger;
 import com.google.gwt.event.shared.EventBus;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.verifier.reporting.client.analysis.DecisionTableAnalyzer;
-import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
-import org.uberfire.client.mvp.PlaceManager;
 
 public class AnalyzerControllerImpl
         implements AnalyzerController,
@@ -42,15 +40,11 @@ public class AnalyzerControllerImpl
 
     private final DecisionTableAnalyzer decisionTableAnalyzer;
     private final Events events;
-    private PlaceManager placeManager;
 
     public AnalyzerControllerImpl(final DecisionTableAnalyzer decisionTableAnalyzer,
-                                  final PlaceManager placeManager,
                                   final EventBus eventBus) {
         this.decisionTableAnalyzer = PortablePreconditions.checkNotNull("decisionTableAnalyzer",
                                                                         decisionTableAnalyzer);
-        this.placeManager = PortablePreconditions.checkNotNull("placeManager",
-                                                               placeManager);
         events = new Events(PortablePreconditions.checkNotNull("eventBus",
                                                                eventBus),
                             this);
@@ -73,7 +67,6 @@ public class AnalyzerControllerImpl
         events.teardown();
 
         decisionTableAnalyzer.terminate();
-        placeManager.closePlace(AnalysisReportScreen.IDENTIFIER);
     }
 
     @Override

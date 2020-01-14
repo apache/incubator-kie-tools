@@ -19,6 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -43,6 +44,9 @@ import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBase;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBaseView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -51,6 +55,9 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.AbstractWorkbenchActivity;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
@@ -113,12 +120,16 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     private MenuItem registeredDocumentsMenuItem;
     private MenuItem downloadMenuItem;
 
+    protected PlaceManager placeManager;
+
     protected Menus menus;
 
     protected D activeDocument = null;
     protected final Set<D> documents = new HashSet<>();
 
     protected boolean saveWithComments = true;
+
+    protected boolean showDocks = false;
 
     //Handler for MayClose requests
     protected interface MayCloseHandler {
@@ -234,6 +245,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         this.promises = promises;
     }
 
+    @Inject
+    protected void setPlaceManager(final PlaceManager placeManager) {
+        this.placeManager = placeManager;
+    }
+
     @Override
     public void registerDocument(final D document) {
         PortablePreconditions.checkNotNull("document",
@@ -264,6 +280,39 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         });
 
         path.onConcurrentUpdate((eventInfo) -> document.setConcurrentUpdateSessionInfo(eventInfo));
+    }
+
+    protected void registerDock(final String id,
+                                final IsWidget widget) {
+        final DockPlaceHolderPlace placeRequest = new DockPlaceHolderPlace(id);
+        registerDock(placeRequest,
+                     widget);
+    }
+
+    protected void registerDock(final PlaceRequest placeRequest,
+                                final IsWidget widget) {
+        placeManager.registerOnOpenCallback(placeRequest, () -> {
+            if (showDocks) {
+                setDockWidget(placeRequest, widget);
+            }
+        });
+    }
+
+    protected void setDockWidget(final PlaceRequest placeRequest,
+                                 final IsWidget widget) {
+        final Optional<DockPlaceHolderBase> dockPlaceHolder = getDockPlaceHolder(placeRequest);
+        if (dockPlaceHolder.isPresent()) {
+            dockPlaceHolder.get().setView(widget);
+        }
+    }
+
+    private Optional<DockPlaceHolderBase> getDockPlaceHolder(final PlaceRequest placeRequest) {
+        if (Objects.equals(PlaceStatus.OPEN, placeManager.getStatus(placeRequest))) {
+            final AbstractWorkbenchActivity panelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
+            return Optional.of(((DockPlaceHolderBaseView) panelActivity.getWidget()).getPresenter());
+        } else {
+            return Optional.empty();
+        }
     }
 
     //Package protected to allow overriding for Unit Tests

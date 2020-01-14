@@ -15,21 +15,23 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class DockPlaceHolderPlace
-        extends DefaultPlaceRequest {
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-    private static final String DEFAULT_IDENTIFIER = "org.docks.PlaceHolder";
+@RunWith(GwtMockitoTestRunner.class)
+public class DockPlaceHolderBaseViewImplTest {
 
-    public DockPlaceHolderPlace(final String identifier,
-                                final String name) {
-        super(identifier);
-        addParameter("name", name);
-    }
+    @Test
+    public void testRoundTripWorks() {
+        final DockPlaceHolderBase presenter = mock(DockPlaceHolderBase.class);
+        final DockPlaceHolderBaseViewImpl view = new DockPlaceHolderBaseViewImpl();
 
-    public DockPlaceHolderPlace(final String name) {
-        this(DEFAULT_IDENTIFIER,
-             name);
+        view.setPresenter(presenter);
+
+        assertEquals(presenter, view.getPresenter());
     }
 }

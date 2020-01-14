@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.widgets.client.docks;
+package org.kie.workbench.common.services.verifier.reporting.client.panel;
 
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import javax.enterprise.context.ApplicationScoped;
 
-public class DockPlaceHolderPlace
-        extends DefaultPlaceRequest {
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBase;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
-    private static final String DEFAULT_IDENTIFIER = "org.docks.PlaceHolder";
+/**
+ * Wrapper for the analysis panel when it is placed into an editor dock.
+ */
+@ApplicationScoped
+@WorkbenchScreen(identifier = AnalysisDockPlaceHolder.IDENTIFIER)
+public class AnalysisDockPlaceHolder
+        extends DockPlaceHolderBase {
 
-    public DockPlaceHolderPlace(final String identifier,
-                                final String name) {
-        super(identifier);
-        addParameter("name", name);
-    }
-
-    public DockPlaceHolderPlace(final String name) {
-        this(DEFAULT_IDENTIFIER,
-             name);
-    }
+    public static final String IDENTIFIER = "org.docks.AnalysisDockPlaceHolder";
 }

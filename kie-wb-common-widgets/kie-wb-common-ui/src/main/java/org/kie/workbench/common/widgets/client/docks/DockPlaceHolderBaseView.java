@@ -15,21 +15,16 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public class DockPlaceHolderPlace
-        extends DefaultPlaceRequest {
+public interface DockPlaceHolderBaseView
+        extends IsWidget {
 
-    private static final String DEFAULT_IDENTIFIER = "org.docks.PlaceHolder";
+    void clear();
 
-    public DockPlaceHolderPlace(final String identifier,
-                                final String name) {
-        super(identifier);
-        addParameter("name", name);
-    }
+    void setWidget(final IsWidget widget);
 
-    public DockPlaceHolderPlace(final String name) {
-        this(DEFAULT_IDENTIFIER,
-             name);
-    }
+    DockPlaceHolderBase getPresenter();
+
+    void setPresenter(final DockPlaceHolderBase presenter);
 }

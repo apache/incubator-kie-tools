@@ -15,12 +15,21 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-public interface DockPlaceHolderView
-        extends IsWidget {
+public class DockPlaceHolderBaseViewImpl
+        extends SimplePanel
+        implements DockPlaceHolderBaseView {
 
-    void clear();
+    private DockPlaceHolderBase presenter;
 
-    void setWidget(IsWidget widget);
+    @Override
+    public DockPlaceHolderBase getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void setPresenter(final DockPlaceHolderBase presenter) {
+        this.presenter = presenter;
+    }
 }

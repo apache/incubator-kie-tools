@@ -56,9 +56,6 @@ public class AnalysisReportScreenTest {
     private AnalysisReportScreenView view;
 
     @Mock
-    private PlaceManager placeManager;
-
-    @Mock
     private EventSourceMock<IssueSelectedEvent> issueSelectedEvent;
 
     @Captor
@@ -77,7 +74,6 @@ public class AnalysisReportScreenTest {
             Exception {
 
         screen = new AnalysisReportScreen(view,
-                                          placeManager,
                                           issueSelectedEvent);
 
         screen.setCurrentPlace(place);
@@ -95,8 +91,6 @@ public class AnalysisReportScreenTest {
                                  Collections.emptySet());
         screen.showReport(getAnalysis(issue1));
 
-        verify(placeManager).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
-
         assertEquals(1,
                      dataProvider.getList()
                              .size());
@@ -111,9 +105,6 @@ public class AnalysisReportScreenTest {
                                  Collections.emptySet());
         screen.showReport(getAnalysis(issue2,
                                       issue3));
-
-        verify(placeManager,
-               times(2)).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
 
         verify(view).showIssue(issue1);
 
@@ -134,8 +125,6 @@ public class AnalysisReportScreenTest {
                                                   CheckType.ILLEGAL_VERIFIER_STATE,
                                                   Collections.emptySet());
         screen.showReport(getAnalysis(illegalStateIssue));
-
-        verify(placeManager).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
 
         assertEquals(1,
                      dataProvider.getList().size());
@@ -175,8 +164,6 @@ public class AnalysisReportScreenTest {
                                  new HashSet<>(Arrays.asList(3)));
         screen.showReport(getAnalysis(issue1, issue2, issue3));
 
-        verify(placeManager).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
-
         assertEquals(1, dataProvider.getList().size());
 
         Issue issue = (Issue) dataProvider.getList().get(0);
@@ -202,9 +189,6 @@ public class AnalysisReportScreenTest {
 
         verify(view,
                never()).showIssue(any(Issue.class));
-        verify(placeManager,
-               never()).goTo(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
-        verify(placeManager).closePlace(eq("org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen"));
     }
 
     @Test

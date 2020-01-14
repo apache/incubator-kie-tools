@@ -39,7 +39,7 @@ import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
-import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderView;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBaseView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
@@ -507,10 +507,10 @@ public abstract class KieEditor<T>
         });
     }
 
-    private Optional<DockPlaceHolderView> getDockPresenter(final PlaceRequest placeRequest) {
+    private Optional<DockPlaceHolderBaseView> getDockPresenter(final PlaceRequest placeRequest) {
         if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
             final AbstractWorkbenchActivity panelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
-            return Optional.of((DockPlaceHolderView) panelActivity.getWidget());
+            return Optional.of((DockPlaceHolderBaseView) panelActivity.getWidget());
         } else {
             return Optional.empty();
         }

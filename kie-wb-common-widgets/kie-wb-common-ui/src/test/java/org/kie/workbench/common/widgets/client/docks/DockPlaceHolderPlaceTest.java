@@ -15,21 +15,23 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.junit.Test;
 
-public class DockPlaceHolderPlace
-        extends DefaultPlaceRequest {
+import static org.junit.Assert.assertEquals;
 
-    private static final String DEFAULT_IDENTIFIER = "org.docks.PlaceHolder";
+public class DockPlaceHolderPlaceTest {
 
-    public DockPlaceHolderPlace(final String identifier,
-                                final String name) {
-        super(identifier);
-        addParameter("name", name);
+    @Test
+    public void defaultSettings() {
+        final DockPlaceHolderPlace test = new DockPlaceHolderPlace("test");
+        assertEquals("org.docks.PlaceHolder", test.getIdentifier());
+        assertEquals("test", test.getParameter("name", "default"));
     }
 
-    public DockPlaceHolderPlace(final String name) {
-        this(DEFAULT_IDENTIFIER,
-             name);
+    @Test
+    public void customSettings() {
+        final DockPlaceHolderPlace test = new DockPlaceHolderPlace("my.place", "custom");
+        assertEquals("my.place", test.getIdentifier());
+        assertEquals("custom", test.getParameter("name", "default"));
     }
 }

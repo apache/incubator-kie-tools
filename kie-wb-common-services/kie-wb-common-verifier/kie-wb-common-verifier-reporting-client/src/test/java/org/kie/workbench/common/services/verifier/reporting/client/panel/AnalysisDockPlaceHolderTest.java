@@ -13,46 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.widgets.client.docks;
+package org.kie.workbench.common.services.verifier.reporting.client.panel;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBaseView;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DockPlaceHolderTest {
+public class AnalysisDockPlaceHolderTest {
 
     @Mock
     private DockPlaceHolderBaseView view;
 
     @InjectMocks
-    private DockPlaceHolder dockPlaceHolder = new DockPlaceHolder();
+    private AnalysisDockPlaceHolder analysisDockPlaceHolder = new AnalysisDockPlaceHolder();
 
     @Test
     public void presenterIsSet() {
-        dockPlaceHolder.init(view);
-        verify(view).setPresenter(dockPlaceHolder);
+        analysisDockPlaceHolder.init(view);
+        verify(view).setPresenter(analysisDockPlaceHolder);
     }
 
     @Test
     public void viewIsNotNull() {
-        assertEquals(view, dockPlaceHolder.getView());
+        assertEquals(view, analysisDockPlaceHolder.getView());
     }
 
     @Test
     public void setContent() {
         final IsWidget widget = mock(IsWidget.class);
 
-        dockPlaceHolder.setView(widget);
+        analysisDockPlaceHolder.setView(widget);
 
         verify(view).clear();
         verify(view).setWidget(widget);
     }
+
 }

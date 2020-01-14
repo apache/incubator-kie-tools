@@ -21,39 +21,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.verifier.api.Status;
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
-import org.kie.workbench.common.services.verifier.reporting.client.resources.i18n.AnalysisConstants;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.lifecycle.OnClose;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.Position;
 
-@ApplicationScoped
-@WorkbenchScreen(identifier = AnalysisReportScreen.IDENTIFIER, preferredWidth = 360)
-public class AnalysisReportScreen {
-
-    public static final String IDENTIFIER = "org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen";
+@Dependent
+public class AnalysisReportScreen implements IsWidget {
 
     private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
-
-    private AnalysisReportScreenView view;
-    private PlaceManager placeManager;
-
-    private Event<IssueSelectedEvent> issueSelectedEvent;
     private final ListDataProvider<Issue> dataProvider = new ListDataProvider<Issue>();
+    private AnalysisReportScreenView view;
+    private Event<IssueSelectedEvent> issueSelectedEvent;
     private PlaceRequest currentPlace;
 
     public AnalysisReportScreen() {
@@ -61,20 +47,12 @@ public class AnalysisReportScreen {
 
     @Inject
     public AnalysisReportScreen(final AnalysisReportScreenView view,
-                                final PlaceManager placeManager,
                                 final Event<IssueSelectedEvent> issueSelectedEvent) {
         this.view = view;
-        this.placeManager = placeManager;
         this.issueSelectedEvent = issueSelectedEvent;
 
         view.setPresenter(this);
         view.setUpDataProvider(dataProvider);
-    }
-
-    @OnClose
-    public void onClose() {
-        dataProvider.flush();
-        view.clearIssue();
     }
 
     public void showReport(final AnalysisReport report) {
@@ -104,16 +82,6 @@ public class AnalysisReportScreen {
             final Issue issue = dataProvider.getList().get(0);
             onSelect(issue);
         }
-
-        if (!report.getAnalysisData().isEmpty()) {
-            LOGGER.finest("goto " + IDENTIFIER);
-            placeManager.goTo(IDENTIFIER);
-            LOGGER.finest("went " + IDENTIFIER);
-        } else {
-            LOGGER.finest("close " + IDENTIFIER);
-            placeManager.closePlace(IDENTIFIER);
-            LOGGER.finest("closed " + IDENTIFIER);
-        }
     }
 
     public void setCurrentPlace(final PlaceRequest place) {
@@ -125,17 +93,7 @@ public class AnalysisReportScreen {
         return new ArrayList<>(new IssuesSet(report.getAnalysisData()));
     }
 
-    @DefaultPosition
-    public Position getDefaultPosition() {
-        return CompassPosition.EAST;
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return AnalysisConstants.INSTANCE.Analysis();
-    }
-
-    @WorkbenchPartView
+    @Override
     public Widget asWidget() {
         return view.asWidget();
     }

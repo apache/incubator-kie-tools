@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
-import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderView;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBaseView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.mockito.ArgumentCaptor;
@@ -412,7 +412,7 @@ public class KieEditorTest {
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(any(PlaceRequest.class));
         final AbstractWorkbenchActivity workbenchActivity = mock(AbstractWorkbenchActivity.class);
         doReturn(workbenchActivity).when(placeManager).getActivity(any());
-        final DockPlaceHolderView placeHolderView = mock(DockPlaceHolderView.class);
+        final DockPlaceHolderBaseView placeHolderView = mock(DockPlaceHolderBaseView.class);
         doReturn(placeHolderView).when(workbenchActivity).getWidget();
         verify(placeManager).registerOnOpenCallback(any(),
                                                     commandArgumentCaptor.capture());
@@ -430,7 +430,7 @@ public class KieEditorTest {
         doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
         final AbstractWorkbenchActivity workbenchActivity = mock(AbstractWorkbenchActivity.class);
         doReturn(workbenchActivity).when(placeManager).getActivity(any());
-        final DockPlaceHolderView placeHolderView = mock(DockPlaceHolderView.class);
+        final DockPlaceHolderBaseView placeHolderView = mock(DockPlaceHolderBaseView.class);
         doReturn(placeHolderView).when(workbenchActivity).getWidget();
         verify(placeManager).registerOnOpenCallback(any(),
                                                     commandArgumentCaptor.capture());

@@ -16,32 +16,13 @@
 package org.kie.workbench.common.widgets.client.docks;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.docks.PlaceHolder")
-public class DockPlaceHolder {
+public class DockPlaceHolder
+        extends DockPlaceHolderBase {
 
-    @Inject
-    private DockPlaceHolderView view;
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "DockPlaceHolder"; // Never used.
-    }
-
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return view;
-    }
-
-    public void setView(final IsWidget widget) {
-        view.clear();
-        view.setWidget(widget);
-    }
 }
