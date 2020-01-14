@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisDockPlaceHolder;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -62,7 +66,9 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.client.workbench.events.AbstractPlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -78,13 +84,16 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static org.drools.workbench.screens.guided.dtable.client.editor.GuidedDecisionTableDocksHandler.VERIFIER_DOCK;
+
 /**
  * Guided Decision Table Editor Presenter
  */
 public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultipleDocumentEditor<GuidedDecisionTableView.Presenter> {
 
     static final int COLUMNS_TAB_INDEX = 1;
-
+    private final static DockPlaceHolderPlace DOCK_PLACE_HOLDER_PLACE = new DockPlaceHolderPlace(AnalysisDockPlaceHolder.IDENTIFIER,
+                                                                                                 VERIFIER_DOCK);
     protected View view;
     protected Caller<GuidedDecisionTableEditorService> service;
     protected Event<DecisionTableSelectedEvent> decisionTableSelectedEvent;
@@ -95,19 +104,17 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     protected InsertMenuBuilder insertMenuBuilder;
     protected RadarMenuBuilder radarMenuBuilder;
     protected GuidedDecisionTableModellerView.Presenter modeller;
-
     protected ObservablePath editorPath;
     protected PlaceRequest editorPlaceRequest;
-
     protected MenuItem editMenuItem;
     protected MenuItem viewMenuItem;
     protected MenuItem insertMenuItem;
     protected MenuItem radarMenuItem;
-
     protected SyncBeanManager beanManager;
-    protected PlaceManager placeManager;
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
     protected PerspectiveManager perspectiveManager;
+    protected GuidedDecisionTableDocksHandler guidedDecisionTableDocksHandler;
+    protected AnalysisReportScreen analysisReportScreen;
     private ColumnsPage columnsPage;
     private AuthoringWorkbenchDocks docks;
 
@@ -117,6 +124,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                                   final PerspectiveManager perspectiveManager,
                                                   final Event<NotificationEvent> notification,
                                                   final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                                  final GuidedDecisionTableDocksHandler guidedDecisionTableDocksHandler,
+                                                  final AnalysisReportScreen analysisReportScreen,
                                                   final ValidationPopup validationPopup,
                                                   final ClientResourceType resourceType,
                                                   final EditMenuBuilder editMenuBuilder,
@@ -134,6 +143,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.service = service;
         this.docks = docks;
         this.perspectiveManager = perspectiveManager;
+        this.guidedDecisionTableDocksHandler = guidedDecisionTableDocksHandler;
+        this.analysisReportScreen = analysisReportScreen;
         this.notification = notification;
         this.decisionTableSelectedEvent = decisionTableSelectedEvent;
         this.validationPopup = validationPopup;
@@ -243,15 +254,11 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                              final PlaceRequest placeRequest) {
         this.editorPath = path;
         this.editorPlaceRequest = placeRequest;
+        registerDock(this.DOCK_PLACE_HOLDER_PLACE,
+                     analysisReportScreen.asWidget());
     }
 
     protected void onFocus() {
-
-        if (!docks.isSetup()) {
-            docks.setup(perspectiveManager.getCurrentPerspective().getIdentifier(),
-                        new DefaultPlaceRequest("org.kie.guvnor.explorer"));
-        }
-        docks.show();
 
         modeller.getActiveDecisionTable().ifPresent(dt -> {
             decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dt));
@@ -259,9 +266,42 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         });
     }
 
-    private void hideDataModellerDocks(@Observes PlaceHiddenEvent event) {
-        docks.hide();
+    public void onShowDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
+        if (verifyEventIdentifier(event)) {
+            if (!docks.isSetup()) {
+                docks.setup(perspectiveManager.getCurrentPerspective().getIdentifier(),
+                            new DefaultPlaceRequest("org.kie.guvnor.explorer"));
+            }
+            showDocks();
+        }
     }
+
+    public void onHideDocks(@Observes PlaceHiddenEvent event) {
+        if (verifyEventIdentifier(event)) {
+            hideDocks();
+        }
+    }
+
+    public void showDocks() {
+        showDocks = true;
+        docks.show();
+        guidedDecisionTableDocksHandler.addDocks();
+    }
+
+    public void hideDocks() {
+        showDocks = false;
+        docks.hide();
+        guidedDecisionTableDocksHandler.removeDocks();
+    }
+
+    public boolean verifyEventIdentifier(AbstractPlaceEvent event) {
+        return (Objects.equals(getEditorIdentifier(),
+                               event.getPlace().getIdentifier()) &&
+                Objects.equals(editorPlaceRequest,
+                               event.getPlace()));
+    }
+
+    protected abstract String getEditorIdentifier();
 
     protected String getTitleText() {
         return resourceType.getDescription();

@@ -54,6 +54,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
@@ -221,6 +222,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            notification,
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
+                                                           mock(GuidedDecisionTableDocksHandler.class),
+                                                           mock(AnalysisReportScreen.class),
                                                            validationPopup,
                                                            dtGraphResourceType,
                                                            editMenuBuilder,
@@ -1689,6 +1692,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            notification,
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
+                                                           mock(GuidedDecisionTableDocksHandler.class),
+                                                           mock(AnalysisReportScreen.class),
                                                            validationPopup,
                                                            dtGraphResourceType,
                                                            editMenuBuilder,

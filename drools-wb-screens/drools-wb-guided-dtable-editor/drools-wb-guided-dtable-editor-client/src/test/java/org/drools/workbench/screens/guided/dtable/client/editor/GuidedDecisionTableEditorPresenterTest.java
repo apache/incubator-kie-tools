@@ -39,6 +39,7 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
@@ -76,13 +77,11 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableEditorPresenter> {
 
-    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
-
-    @Mock
-    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
-
     @Mock
     protected AuthoringWorkbenchDocks docks;
+    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
+    @Mock
+    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
     @Mock
     private EventSourceMock<SearchPerformedEvent> searchPerformedEvent;
@@ -96,6 +95,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       mock(PerspectiveManager.class),
                                                       notification,
                                                       decisionTableSelectedEvent,
+                                                      mock(GuidedDecisionTableDocksHandler.class),
+                                                      mock(AnalysisReportScreen.class),
                                                       validationPopup,
                                                       resourceType,
                                                       editMenuBuilder,

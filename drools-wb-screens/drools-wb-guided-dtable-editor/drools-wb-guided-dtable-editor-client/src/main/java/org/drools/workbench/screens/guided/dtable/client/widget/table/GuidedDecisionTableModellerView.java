@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBui
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
@@ -118,5 +119,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
         void refreshScrollPosition();
 
         void updateLinks();
+
+        void analysisReportScreen(AnalysisReportScreen analysisReportScreen);
+
     }
 }

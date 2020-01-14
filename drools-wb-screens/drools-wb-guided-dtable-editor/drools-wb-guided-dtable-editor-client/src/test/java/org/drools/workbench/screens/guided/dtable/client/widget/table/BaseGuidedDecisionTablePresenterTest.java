@@ -94,6 +94,7 @@ import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.services.verifier.reporting.client.controller.AnalyzerController;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.mockito.Mock;
@@ -287,7 +288,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     }
 
     private void setupProviders() {
-        when(decisionTableAnalyzerProvider.newAnalyzer(eq(dtPlaceRequest),
+        when(decisionTableAnalyzerProvider.newAnalyzer(any(),
+                                                       eq(dtPlaceRequest),
                                                        eq(oracle),
                                                        any(GuidedDecisionTable52.class),
                                                        any(EventBus.class))).thenReturn(analyzerController);
@@ -418,6 +420,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
 
         presenter.setContent(dtPath,
                              dtPlaceRequest,
+                             mock(AnalysisReportScreen.class),
                              dtContent,
                              modellerPresenter,
                              false);

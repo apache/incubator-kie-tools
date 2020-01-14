@@ -54,6 +54,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -395,6 +396,8 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   perspectiveManager,
                                                                                                   notification,
                                                                                                   decisionTableSelectedEvent,
+                                                                                                  mock(GuidedDecisionTableDocksHandler.class),
+                                                                                                  mock(AnalysisReportScreen.class),
                                                                                                   validationPopup,
                                                                                                   resourceType,
                                                                                                   editMenuBuilder,

@@ -36,6 +36,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -43,6 +44,7 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
@@ -88,6 +90,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       perspectiveManager,
                                                       notification,
                                                       decisionTableSelectedEvent,
+                                                      mock(GuidedDecisionTableDocksHandler.class),
+                                                      mock(AnalysisReportScreen.class),
                                                       validationPopup,
                                                       resourceType,
                                                       editMenuBuilder,
@@ -182,6 +186,11 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
     @Test
     public void setupTheDocks() {
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        doReturn(GuidedDecisionTableEditorPresenter.IDENTIFIER).when(placeRequest).getIdentifier();
+        final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
+        makeDecisionTable(path, path, placeRequest, content);
 
         doReturn("perspectiveId").when(currentPerspective).getIdentifier();
         doReturn(false).when(docks).isSetup();
@@ -189,7 +198,9 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final GuidedDecisionTableView.Presenter activeDtable = mock(GuidedDecisionTableView.Presenter.class);
         when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(activeDtable));
 
-        presenter.onFocus();
+        presenter.onStartup(path,
+                            placeRequest);
+        presenter.onShowDiagramEditorDocks(new PlaceGainFocusEvent(placeRequest));
 
         verify(docks).setup(eq("perspectiveId"),
                             placeRequestArgumentCaptor.capture());

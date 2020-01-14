@@ -57,6 +57,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.mockito.Mock;
@@ -215,6 +216,7 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
 
         dtPresenter.setContent(null,
                                mock(PlaceRequest.class),
+                               mock(AnalysisReportScreen.class),
                                dtContent,
                                modellerPresenter,
                                false);

@@ -31,7 +31,6 @@ import org.kie.workbench.common.services.verifier.reporting.client.panel.Analysi
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.assertFalse;
@@ -43,9 +42,6 @@ public class DecisionTableAnalyzerProviderTest {
 
     @Mock
     private AnalysisReportScreen analysisReportScreen;
-
-    @Mock
-    private PlaceManager placeManager;
 
     @Test
     public void defaultAnalyserSetting() throws
@@ -105,10 +101,10 @@ public class DecisionTableAnalyzerProviderTest {
     }
 
     private AnalyzerController constructAnalyzer() {
-        return new DecisionTableAnalyzerProvider(analysisReportScreen,
-                                                 placeManager).newAnalyzer(mock(PlaceRequest.class),
-                                                                           mock(AsyncPackageDataModelOracleImpl.class),
-                                                                           mock(GuidedDecisionTable52.class),
-                                                                           mock(EventBus.class));
+        return new DecisionTableAnalyzerProvider().newAnalyzer(mock(AnalysisReportScreen.class),
+                                                               mock(PlaceRequest.class),
+                                                               mock(AsyncPackageDataModelOracleImpl.class),
+                                                               mock(GuidedDecisionTable52.class),
+                                                               mock(EventBus.class));
     }
 }

@@ -99,6 +99,7 @@ import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.services.verifier.reporting.client.controller.AnalyzerController;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.services.verifier.reporting.client.panel.IssueSelectedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -184,6 +185,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus eventBus = new SimpleEventBus();
     private Set<PortableWorkDefinition> workItemDefinitions;
+    private AnalysisReportScreen analysisReportScreen;
 
     @Inject
     public GuidedDecisionTablePresenter(final User identity,
@@ -294,11 +296,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @Override
     public void setContent(final ObservablePath path,
                            final PlaceRequest placeRequest,
+                           final AnalysisReportScreen analysisReportScreen,
                            final GuidedDecisionTableEditorContent content,
                            final GuidedDecisionTableModellerView.Presenter parent,
                            final boolean isReadOnly) {
         this.parent = parent;
         this.latestPath = path;
+        this.analysisReportScreen = analysisReportScreen;
 
         initialiseContent(path,
                           placeRequest,
@@ -511,7 +515,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     //Setup the Validation & Verification analyzer
     void initialiseValidationAndVerification() {
-        this.analyzerController = decisionTableAnalyzerProvider.newAnalyzer(placeRequest,
+        this.analyzerController = decisionTableAnalyzerProvider.newAnalyzer(analysisReportScreen,
+                                                                            placeRequest,
                                                                             oracle,
                                                                             model,
                                                                             eventBus);
@@ -601,9 +606,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void initialiseAnalysis() {
-        if (analyzerController != null) {
-            analyzerController.initialiseAnalysis();
+        if (analyzerController == null) {
+            initialiseValidationAndVerification();
         }
+        analyzerController.initialiseAnalysis();
     }
 
     @Override
@@ -1455,13 +1461,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public boolean hasEditableColumns() {
-        return getAccess().hasEditableColumns();
+    public void setReadOnly(final boolean isReadOnly) {
+        this.access.setReadOnly(isReadOnly);
     }
 
     @Override
-    public void setReadOnly(final boolean isReadOnly) {
-        this.access.setReadOnly(isReadOnly);
+    public boolean hasEditableColumns() {
+        return getAccess().hasEditableColumns();
     }
 
     @Override
@@ -1512,16 +1518,16 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             return isReadOnly;
         }
 
+        public void setReadOnly(final boolean isReadOnly) {
+            this.isReadOnly = isReadOnly;
+        }
+
         public boolean hasEditableColumns() {
             return hasEditableColumns;
         }
 
         public void setHasEditableColumns(final boolean hasEditableColumns) {
             this.hasEditableColumns = hasEditableColumns;
-        }
-
-        public void setReadOnly(final boolean isReadOnly) {
-            this.isReadOnly = isReadOnly;
         }
 
         public boolean isEditable() {

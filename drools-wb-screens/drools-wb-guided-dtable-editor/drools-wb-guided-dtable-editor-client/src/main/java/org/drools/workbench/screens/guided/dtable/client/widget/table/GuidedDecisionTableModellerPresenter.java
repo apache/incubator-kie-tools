@@ -46,9 +46,9 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.S
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectionPaste;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOverHandler;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -76,13 +76,13 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     private final ColumnHeaderPopOver columnHeaderPopOver;
 
-    private final ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
-
     private GuidedDecisionTableView.Presenter activeDecisionTable = null;
 
     private Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<>();
 
     private Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
+
+    private AnalysisReportScreen analysisReportScreen;
 
     @Inject
     public GuidedDecisionTableModellerPresenter(final GuidedDecisionTableModellerView view,
@@ -90,14 +90,12 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                                 final GuidedDecisionTableModellerContextMenuSupport contextMenuSupport,
                                                 final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent,
                                                 final Event<DecisionTablePinnedEvent> pinnedEvent,
-                                                final ColumnHeaderPopOver columnHeaderPopOver,
-                                                final ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance) {
+                                                final ColumnHeaderPopOver columnHeaderPopOver) {
         this.view = view;
         this.dtPresenterProvider = dtPresenterProvider;
         this.updateRadarEvent = updateRadarEvent;
         this.pinnedEvent = pinnedEvent;
         this.columnHeaderPopOver = columnHeaderPopOver;
-        this.wizardManagedInstance = wizardManagedInstance;
 
         this.view.init(this);
 
@@ -167,6 +165,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         //Set content of new Presenter
         dtPresenter.setContent(path,
                                placeRequest,
+                               analysisReportScreen,
                                content,
                                this,
                                isReadOnly);
@@ -404,5 +403,10 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
             dtPresenter.link(getAvailableDecisionTables());
         }
         getView().getGridLayerView().refreshGridWidgetConnectors();
+    }
+
+    @Override
+    public void analysisReportScreen(final AnalysisReportScreen analysisReportScreen) {
+        this.analysisReportScreen = analysisReportScreen;
     }
 }

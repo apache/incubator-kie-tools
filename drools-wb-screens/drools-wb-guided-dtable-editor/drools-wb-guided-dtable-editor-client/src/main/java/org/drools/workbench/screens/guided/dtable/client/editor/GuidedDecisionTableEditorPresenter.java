@@ -59,6 +59,7 @@ import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuIt
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
@@ -99,6 +100,8 @@ import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.ED
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = {GuidedDTableResourceType.class}, lockingStrategy = EDITOR_PROVIDED)
 public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableEditorPresenter implements HasSearchableElements<GuidedDecisionTableSearchableElement> {
 
+    public static final String IDENTIFIER = "GuidedDecisionTableEditor";
+
     private final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
     private final GuidedDecisionTableEditorSearchIndex editorSearchIndex;
@@ -118,6 +121,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final PerspectiveManager perspectiveManager,
                                               final Event<NotificationEvent> notification,
                                               final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                              final GuidedDecisionTableDocksHandler guidedDecisionTableDocksHandler,
+                                              final AnalysisReportScreen analysisReportScreen,
                                               final ValidationPopup validationPopup,
                                               final GuidedDTableResourceType resourceType,
                                               final EditMenuBuilder editMenuBuilder,
@@ -141,6 +146,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               perspectiveManager,
               notification,
               decisionTableSelectedEvent,
+              guidedDecisionTableDocksHandler,
+              analysisReportScreen,
               validationPopup,
               resourceType,
               editMenuBuilder,
@@ -159,6 +166,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         this.searchBarComponent = searchBarComponent;
         this.searchableElementFactory = searchableElementFactory;
         this.searchPerformedEvent = searchPerformedEvent;
+
+        this.modeller.analysisReportScreen(analysisReportScreen);
     }
 
     @Override
@@ -233,6 +242,11 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     @OnFocus
     public void onFocus() {
         super.onFocus();
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return GuidedDecisionTableEditorPresenter.IDENTIFIER;
     }
 
     @Override

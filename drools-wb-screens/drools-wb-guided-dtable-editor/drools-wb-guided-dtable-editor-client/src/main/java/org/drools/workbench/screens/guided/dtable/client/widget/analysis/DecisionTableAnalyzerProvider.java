@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -27,24 +26,13 @@ import org.kie.workbench.common.services.verifier.reporting.client.controller.An
 import org.kie.workbench.common.services.verifier.reporting.client.controller.AnalyzerControllerImpl;
 import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class DecisionTableAnalyzerProvider {
 
-    private final AnalysisReportScreen analysisReportScreen;
-    private PlaceManager placeManager;
-
-    @Inject
-    public DecisionTableAnalyzerProvider(
-            final AnalysisReportScreen analysisReportScreen,
-            final PlaceManager placeManager) {
-        this.analysisReportScreen = analysisReportScreen;
-        this.placeManager = placeManager;
-    }
-
-    public AnalyzerController newAnalyzer(final PlaceRequest placeRequest,
+    public AnalyzerController newAnalyzer(final AnalysisReportScreen analysisReportScreen,
+                                          final PlaceRequest placeRequest,
                                           final AsyncPackageDataModelOracle oracle,
                                           final GuidedDecisionTable52 model,
                                           final EventBus eventBus) {
@@ -55,7 +43,6 @@ public class DecisionTableAnalyzerProvider {
                                                       .withOracle(oracle)
                                                       .withModel(model)
                                                       .build(),
-                                              placeManager,
                                               eventBus);
         } else {
             return makePlaceHolder();
