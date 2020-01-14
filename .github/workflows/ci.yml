@@ -7,32 +7,8 @@ on:
     branches: "**"
 
 jobs:
-  fetch-editors:
-    runs-on: macOS-latest
-    steps:
-      - name: Checkout upstream
-        uses: actions/checkout@v1
-        with:
-          repository: kiegroup/kogito-tooling
-          ref: master
-
-      - name: Checkout to lastest tag
-        run: git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
-
-      - name: Upload DMN editor
-        uses: actions/upload-artifact@v1
-        with:
-          name: dmn-editor
-          path: packages/kie-bc-editors-unpacked/dmn
-
-      - name: Upload BPMN editor
-        uses: actions/upload-artifact@v1
-        with:
-          name: bpmn-editor
-          path: packages/kie-bc-editors-unpacked/bpmn
 
   build:
-    needs: fetch-editors
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -44,6 +20,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+
+      - name: Checkout upstream
+        uses: actions/checkout@v1
+        with:
+          repository: kiegroup/kogito-tooling
+          ref: master
 
       - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
         uses: actions/checkout@v1
@@ -88,18 +70,6 @@ jobs:
         run: npx lerna run test --stream
         continue-on-error: true
 
-      - name: Download DMN editor
-        uses: actions/download-artifact@v1
-        with:
-          name: dmn-editor
-          path: packages/kie-bc-editors-unpacked/dmn
-
-      - name: Download BPMN editor
-        uses: actions/download-artifact@v1
-        with:
-          name: bpmn-editor
-          path: packages/kie-bc-editors-unpacked/bpmn
-
       - name: "Build :: prod"
         if: success()
         run: npx lerna run --stream build:fast -- --mode production --devtool none
@@ -112,6 +82,18 @@ jobs:
 
       - name: Pack artifacts
         run: npx lerna run pack-extension --stream
+
+      - name: Upload DMN editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmn-editor
+          path: packages/kie-bc-editors-unpacked/dmn
+
+      - name: Upload BPMN editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: bpmn-editor
+          path: packages/kie-bc-editors-unpacked/bpmn
 
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
