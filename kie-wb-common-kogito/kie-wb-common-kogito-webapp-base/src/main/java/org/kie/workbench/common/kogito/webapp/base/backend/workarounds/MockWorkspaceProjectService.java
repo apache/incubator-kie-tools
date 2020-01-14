@@ -17,7 +17,6 @@
 package org.kie.workbench.common.kogito.webapp.base.backend.workarounds;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,47 +34,50 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 
+import static org.kie.workbench.common.kogito.api.KogitoConstants.NOT_AVAILABLE_IN_KOGITO;
+
+/**
+ * kogito does not have the concept of Workspaces or Projects. Therefore this dummy
+ * implementation of the WorkspaceProjectService returns non-null sensible defaults.
+ */
 @Service
 @ApplicationScoped
 public class MockWorkspaceProjectService implements WorkspaceProjectService {
 
-    private static final WorkspaceProject PROJECT = new WorkspaceProject();
-    private static final Collection<WorkspaceProject> PROJECTS = Collections.singleton(PROJECT);
-
     @Override
     public Collection<WorkspaceProject> getAllWorkspaceProjects() {
-        return PROJECTS;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public Collection<WorkspaceProject> getAllWorkspaceProjects(final OrganizationalUnit organizationalUnit) {
-        return PROJECTS;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public Collection<WorkspaceProject> getAllWorkspaceProjectsByName(final OrganizationalUnit organizationalUnit,
                                                                       final String name) {
-        return PROJECTS;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
                                               final String name,
                                               final WorkspaceProject projectToIgnore) {
-        return false;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                        final POM pom) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                        final POM pom,
                                        final DeploymentMode mode) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
@@ -83,71 +85,73 @@ public class MockWorkspaceProjectService implements WorkspaceProjectService {
                                        final POM pom,
                                        final DeploymentMode mode,
                                        final List<Contributor> contributor) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public String createFreshProjectName(final OrganizationalUnit organizationalUnit,
                                          final String name) {
-        return "";
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Repository repository) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Space space,
                                            final Branch branch) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Space space,
                                            final Module module) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Path module) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Space space,
                                            final Path module) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Space space,
                                            final String name) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProjectByRepositoryAlias(final Space space,
                                                             final String repositoryAlias) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public WorkspaceProject resolveProject(final Space space,
                                            final String projectName,
                                            final String branchName) {
-        return PROJECT;
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     public void addBranch(final String newBranchName,
                           final String baseBranchName,
                           final WorkspaceProject project,
                           final String userIdentifier) {
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 
     @Override
     public void removeBranch(final String branchName,
                              final WorkspaceProject project,
                              final String userIdentifier) {
+        throw new UnsupportedOperationException(NOT_AVAILABLE_IN_KOGITO);
     }
 }

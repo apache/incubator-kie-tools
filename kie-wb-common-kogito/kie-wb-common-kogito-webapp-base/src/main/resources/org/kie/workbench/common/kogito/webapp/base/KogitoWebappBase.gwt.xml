@@ -29,5 +29,6 @@
   <inherits name="org.kie.workbench.common.profile.ProfileAPI" />
 
   <inherits name="org.kie.workbench.common.kogito.KogitoClient" />
+  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge" />
 
 </module>
