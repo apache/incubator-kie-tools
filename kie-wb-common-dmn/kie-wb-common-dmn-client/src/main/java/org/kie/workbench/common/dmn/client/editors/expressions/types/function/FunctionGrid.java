@@ -253,14 +253,13 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     public void addParameter(final Command onSuccess) {
         getExpression().get().ifPresent(e -> {
             final InformationItem parameter = new InformationItem();
-            parameter.setName(new Name("p" + e.getFormalParameter().size()));
+            parameter.setName(new Name());
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddParameterCommand(e,
                                                                   parameter,
                                                                   () -> {
                                                                       gridLayer.batch();
-                                                                      gridPanel.setFocus(true);
                                                                       onSuccess.execute();
                                                                   }));
         });
@@ -275,7 +274,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                      parameter,
                                                                      () -> {
                                                                          gridLayer.batch();
-                                                                         gridPanel.setFocus(true);
                                                                          onSuccess.execute();
                                                                      }));
         });
@@ -283,12 +281,16 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     public void updateParameterName(final InformationItem parameter,
-                                    final String name) {
+                                    final String name,
+                                    final Command onSuccess) {
         getExpression().get().ifPresent(e -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new UpdateParameterNameCommand(parameter,
                                                                          name,
-                                                                         gridLayer::batch));
+                                                                         () -> {
+                                                                             gridLayer.batch();
+                                                                             onSuccess.execute();
+                                                                         }));
         });
     }
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -98,8 +99,24 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
     @Override
     public void updateParameterName(final InformationItem parameter,
                                     final String name) {
-        binding.ifPresent(b -> b.updateParameterName(parameter,
-                                                     name));
+        binding.ifPresent(b -> {
+            // See https://issues.redhat.com/browse/DROOLS-4907
+            final String trimmedName = Objects.nonNull(name) ? name.trim() : "";
+            if (!Objects.equals(parameter.getName().getValue(), trimmedName)) {
+                b.updateParameterName(parameter,
+                                      trimmedName,
+                                      () -> updateViewParameterName(b, parameter, trimmedName));
+            } else if (!Objects.equals(name, trimmedName)) {
+                updateViewParameterName(b, parameter, trimmedName);
+            }
+        });
+    }
+
+    private void updateViewParameterName(final HasParametersControl binding,
+                                         final InformationItem parameter,
+                                         final String name) {
+        final int index = binding.getParameters().indexOf(parameter);
+        view.updateParameterName(index, name);
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
@@ -36,11 +37,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParametersPopoverImplTest {
@@ -50,6 +53,8 @@ public class ParametersPopoverImplTest {
     private static final int COLUMN_INDEX = 1;
 
     private static final String PARAMETER_NAME = "name";
+
+    private static final String PARAMETER_NAME_NEW = "new-name";
 
     private static final QName PARAMETER_TYPE_REF = new QName(QName.NULL_NS_URI,
                                                               BuiltInType.DATE.getName());
@@ -93,7 +98,8 @@ public class ParametersPopoverImplTest {
 
         @Override
         public void updateParameterName(final InformationItem parameter,
-                                        final String name) {
+                                        final String name,
+                                        final Command onSuccess) {
         }
 
         @Override
@@ -269,11 +275,52 @@ public class ParametersPopoverImplTest {
                                       PARAMETER_NAME);
 
         verify(control, never()).updateParameterName(any(InformationItem.class),
-                                                     any(String.class));
+                                                     any(String.class),
+                                                     any(Command.class));
     }
 
     @Test
-    public void testUpdateParameterNameNonNullControl() {
+    public void testUpdateParameterNameNonNullControlWithChange() {
+        final Name name = new Name(PARAMETER_NAME);
+        when(parameter.getName()).thenReturn(name);
+        parameters.add(parameter);
+
+        assertUpdateParameterName(PARAMETER_NAME_NEW);
+    }
+
+    @Test
+    public void testUpdateParameterNameNonNullControlWithChangeWithWhiteSpace() {
+        final Name name = new Name(PARAMETER_NAME);
+        when(parameter.getName()).thenReturn(name);
+        parameters.add(parameter);
+
+        assertUpdateParameterName("   " + PARAMETER_NAME_NEW + "  ");
+    }
+
+    private void assertUpdateParameterName(final String newName) {
+        presenter.bind(control,
+                       ROW_INDEX,
+                       COLUMN_INDEX);
+
+        presenter.updateParameterName(parameter,
+                                      newName);
+
+        verify(control).updateParameterName(eq(parameter),
+                                            parameterNameCaptor.capture(),
+                                            commandCaptor.capture());
+
+        assertThat(parameterNameCaptor.getValue()).isEqualTo(PARAMETER_NAME_NEW);
+
+        commandCaptor.getValue().execute();
+
+        verify(view).updateParameterName(eq(0), eq(PARAMETER_NAME_NEW));
+    }
+
+    @Test
+    public void testUpdateParameterNameNonNullControlWithNoChange() {
+        final Name name = new Name(PARAMETER_NAME);
+        when(parameter.getName()).thenReturn(name);
+
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
@@ -281,10 +328,25 @@ public class ParametersPopoverImplTest {
         presenter.updateParameterName(parameter,
                                       PARAMETER_NAME);
 
-        verify(control).updateParameterName(eq(parameter),
-                                            parameterNameCaptor.capture());
+        verify(control, never()).updateParameterName(any(InformationItem.class),
+                                                     anyString(),
+                                                     any(Command.class));
+    }
 
-        assertThat(parameterNameCaptor.getValue()).isEqualTo(PARAMETER_NAME);
+    @Test
+    public void testUpdateParameterNameNonNullControlWithNoChangeWithWhiteSpace() {
+        final Name name = new Name(PARAMETER_NAME);
+        when(parameter.getName()).thenReturn(name);
+        parameters.add(parameter);
+
+        presenter.bind(control,
+                       ROW_INDEX,
+                       COLUMN_INDEX);
+
+        presenter.updateParameterName(parameter,
+                                      "   " + PARAMETER_NAME + "   ");
+
+        verify(view).updateParameterName(eq(0), eq(PARAMETER_NAME));
     }
 
     @Test

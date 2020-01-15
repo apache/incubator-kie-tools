@@ -39,6 +39,7 @@ public class AddParameterCommand extends AbstractCanvasGraphCommand implements V
     private final FunctionDefinition function;
     private final InformationItem parameter;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddParameterCommand(final FunctionDefinition function,
                                final InformationItem parameter,
@@ -46,6 +47,7 @@ public class AddParameterCommand extends AbstractCanvasGraphCommand implements V
         this.function = function;
         this.parameter = parameter;
         this.canvasOperation = canvasOperation;
+        this.name = FunctionDefaultValueUtilities.getNewParameterName(function);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class AddParameterCommand extends AbstractCanvasGraphCommand implements V
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 function.getFormalParameter().add(parameter);
-                parameter.getName().setValue(FunctionDefaultValueUtilities.getNewParameterName(function));
+                parameter.getName().setValue(name);
 
                 parameter.setParent(function);
 

@@ -84,6 +84,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -122,7 +123,9 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class FunctionGridTest {
 
-    private static final String PARAMETER_NAME = "name";
+    private static final String PARAMETER_NAME = "parameter-name";
+
+    private static final String PARAMETER_NAME_NEW = "parameter-name-new";
 
     private static final String NODE_UUID = "uuid";
 
@@ -158,6 +161,9 @@ public class FunctionGridTest {
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private GraphCommandExecutionContext graphCommandExecutionContext;
 
     @Mock
     private Diagram diagram;
@@ -379,6 +385,7 @@ public class FunctionGridTest {
         when(canvasCommandFactory.updatePropertyValue(any(Element.class),
                                                       anyString(),
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphCommandExecutionContext);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
@@ -573,7 +580,6 @@ public class FunctionGridTest {
 
         verify(gridLayer).batch();
         verify(onSuccess).execute();
-        verify(gridPanel).setFocus(true);
     }
 
     @Test
@@ -591,15 +597,17 @@ public class FunctionGridTest {
 
         verify(gridLayer).batch();
         verify(onSuccess).execute();
-        verify(gridPanel).setFocus(true);
     }
 
     @Test
     public void testUpdateParameterName() {
         setupGrid(0);
 
+        final Command command = mock(Command.class);
+
         grid.updateParameterName(parameter,
-                                 "name");
+                                 PARAMETER_NAME_NEW,
+                                 command);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               updateParameterNameCommandCaptor.capture());
@@ -607,7 +615,9 @@ public class FunctionGridTest {
         final UpdateParameterNameCommand updateParameterNameCommand = updateParameterNameCommandCaptor.getValue();
         updateParameterNameCommand.execute(canvasHandler);
 
+        assertEquals(PARAMETER_NAME_NEW, parameter.getName().getValue());
         verify(gridLayer).batch();
+        verify(command).execute();
     }
 
     @Test

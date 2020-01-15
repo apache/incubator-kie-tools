@@ -38,6 +38,7 @@ import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -172,6 +173,33 @@ public class ParametersPopoverViewImplTest {
         commandArgumentCaptor.getValue().execute(PARAMETER_TYPE_REF_NEW);
 
         verify(presenter).updateParameterTypeRef(parameter, PARAMETER_TYPE_REF_NEW);
+    }
+
+    @Test
+    public void testUpdateParameterName() {
+        final InformationItem parameter1 = new InformationItem();
+        final InformationItem parameter2 = new InformationItem();
+
+        view.setParameters(Arrays.asList(parameter1, parameter2));
+
+        view.updateParameterName(0, PARAMETER1_NAME);
+
+        verify(parameterView1).setName(PARAMETER1_NAME);
+
+        view.updateParameterName(1, PARAMETER2_NAME);
+
+        verify(parameterView2).setName(PARAMETER2_NAME);
+
+        reset(parameterView1, parameterView2);
+        view.updateParameterName(-1, "cheese");
+
+        verify(parameterView1, never()).setName(anyString());
+        verify(parameterView2, never()).setName(anyString());
+
+        view.updateParameterName(2, "cheese");
+
+        verify(parameterView1, never()).setName(anyString());
+        verify(parameterView2, never()).setName(anyString());
     }
 
     @Test

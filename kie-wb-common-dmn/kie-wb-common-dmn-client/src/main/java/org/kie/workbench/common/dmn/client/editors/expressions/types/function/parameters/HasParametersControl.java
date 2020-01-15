@@ -32,7 +32,8 @@ public interface HasParametersControl {
                          final Command onSuccess);
 
     void updateParameterName(final InformationItem parameter,
-                             final String name);
+                             final String name,
+                             final Command onSuccess);
 
     void updateParameterTypeRef(final InformationItem parameter,
                                 final QName typeRef);

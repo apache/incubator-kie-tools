@@ -99,6 +99,15 @@ public class ParametersPopoverViewImpl extends AbstractPopoverViewImpl implement
     }
 
     @Override
+    public void updateParameterName(final int index,
+                                    final String name) {
+        if (index < 0 || index >= parameterViewInstances.size()) {
+            return;
+        }
+        parameterViewInstances.get(index).setName(name);
+    }
+
+    @Override
     public void focusParameter(final int index) {
         if (index < 0 || index >= parameterViewInstances.size()) {
             return;

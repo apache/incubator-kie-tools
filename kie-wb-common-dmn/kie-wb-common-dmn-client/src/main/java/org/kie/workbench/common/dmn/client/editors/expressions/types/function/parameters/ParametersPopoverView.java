@@ -42,5 +42,8 @@ public interface ParametersPopoverView extends PopoverView,
 
     void setParameters(final List<InformationItem> parameters);
 
+    void updateParameterName(final int index,
+                             final String name);
+
     void focusParameter(final int index);
 }
