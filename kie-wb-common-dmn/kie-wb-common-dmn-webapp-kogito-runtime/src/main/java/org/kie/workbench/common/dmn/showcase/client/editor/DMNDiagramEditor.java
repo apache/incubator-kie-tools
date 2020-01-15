@@ -20,6 +20,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractD
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
@@ -67,12 +69,18 @@ import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @DiagramEditor
 @ApplicationScoped
 @WorkbenchClientEditor(identifier = AbstractDMNDiagramEditor.EDITOR_ID)
-public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
+@Default
+public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements KogitoScreen {
+
+    private static final PlaceRequest DMN_KOGITO_RUNTIME_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(AbstractDMNDiagramEditor.EDITOR_ID);
+
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -131,6 +139,11 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               dataTypesPage,
               diagramServices,
               feelInitializer);
+    }
+
+    @Override
+    public PlaceRequest getPlaceRequest() {
+        return DMN_KOGITO_RUNTIME_SCREEN_DEFAULT_REQUEST;
     }
 
     @Override

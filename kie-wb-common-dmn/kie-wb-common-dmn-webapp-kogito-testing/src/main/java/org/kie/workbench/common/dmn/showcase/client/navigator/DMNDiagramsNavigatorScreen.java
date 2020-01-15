@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.dmn.webapp.common.client.navigator.BaseDMNDiagramsNavigatorScreen;
+import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagrams.DiagramsNavigator;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.ShapeSetsMenuItemsBuilder;
@@ -36,11 +37,14 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @WorkbenchScreen(identifier = BaseDMNDiagramsNavigatorScreen.SCREEN_ID)
-public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen {
+public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen implements KogitoScreen {
+
+    private static final PlaceRequest DMN_KOGITO_TESTING_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(DMNDiagramsNavigatorScreen.SCREEN_ID);
 
     private DMNVFSService vfsService;
 
@@ -55,6 +59,11 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen {
         super(diagramsNavigator,
               newDiagramMenuItemsBuilder);
         this.vfsService = vfsService;
+    }
+
+    @Override
+    public PlaceRequest getPlaceRequest() {
+        return DMN_KOGITO_TESTING_SCREEN_DEFAULT_REQUEST;
     }
 
     @Override

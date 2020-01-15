@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.webapp.kogito.common.client.workarounds;
+package org.kie.workbench.common.dmn.webapp.kogito.common.backend;
 
-import org.junit.Before;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.kie.workbench.common.kogito.webapp.base.backend.IOServiceNio2WrapperProvider;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
-public class IsKogitoTest {
+@ApplicationScoped
+public class IOServiceNio2WrapperProviderImpl implements IOServiceNio2WrapperProvider {
 
-    private IsKogito isKogito;
-
-    @Before
-    public void setup() {
-        this.isKogito = new IsKogito();
-    }
-
-    @Test
-    public void testIsKogito() {
-        assertThat(isKogito.get()).isTrue();
+    @Override
+    public IOServiceNio2WrapperImpl getIOServiceNio2() {
+        return new IOServiceNio2WrapperImpl("dmn");
     }
 }
+

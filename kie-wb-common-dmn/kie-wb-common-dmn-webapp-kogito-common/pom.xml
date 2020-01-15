@@ -121,10 +121,6 @@
       <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.uberfire</groupId>-->
-    <!--<artifactId>uberfire-wires-core-grids</artifactId>-->
-    <!--</dependency>-->
 
     <!-- Core UberFire dependencies -->
     <dependency>
@@ -231,6 +227,11 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <scope>provided</scope>
     </dependency>
 

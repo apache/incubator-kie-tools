@@ -46,6 +46,8 @@
   <inherits name="org.kie.workbench.common.dmn.webapp.common.DMNWebappCommon"/>
   <inherits name="org.kie.workbench.common.dmn.webapp.kogito.marshaller.DMNMarshaller"/>
 
+  <inherits name="org.kie.workbench.common.kogito.webapp.base.KogitoWebappBase" />
+
   <!-- Specify the paths for translatable code -->
   <source path="client"/>
 
