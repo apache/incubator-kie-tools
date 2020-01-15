@@ -542,10 +542,10 @@ public class DNDListComponentViewTest {
         doReturn(true).when(view).hasChildren(previousElement);
 
         when(presenter.getIndentationSize()).thenReturn(50);
-        when(draggingElement.style.getPropertyValue("width")).thenReturn("calc(100% - 100px)");
-        when(getDependentElement0.style.getPropertyValue("width")).thenReturn("calc(100% - 150px)");
-        when(getDependentElement1.style.getPropertyValue("width")).thenReturn("calc(100% - 200px)");
-        when(getDependentElement2.style.getPropertyValue("width")).thenReturn("calc(100% - 250px)");
+        when(draggingElement.style.getPropertyValue("padding-left")).thenReturn("100px");
+        when(getDependentElement0.style.getPropertyValue("padding-left")).thenReturn("150px");
+        when(getDependentElement1.style.getPropertyValue("padding-left")).thenReturn("200px");
+        when(getDependentElement2.style.getPropertyValue("padding-left")).thenReturn("250px");
 
         view.updateDraggingElementsPosition();
 
@@ -576,10 +576,10 @@ public class DNDListComponentViewTest {
         doReturn(false).when(view).hasChildren(previousElement);
 
         when(presenter.getIndentationSize()).thenReturn(50);
-        when(draggingElement.style.getPropertyValue("width")).thenReturn("calc(100% - 100px)");
-        when(dependentElement0.style.getPropertyValue("width")).thenReturn("calc(100% - 150px)");
-        when(dependentElement1.style.getPropertyValue("width")).thenReturn("calc(100% - 200px)");
-        when(dependentElement2.style.getPropertyValue("width")).thenReturn("calc(100% - 250px)");
+        when(draggingElement.style.getPropertyValue("padding-left")).thenReturn("100px");
+        when(dependentElement0.style.getPropertyValue("padding-left")).thenReturn("150px");
+        when(dependentElement1.style.getPropertyValue("padding-left")).thenReturn("200px");
+        when(dependentElement2.style.getPropertyValue("padding-left")).thenReturn("250px");
 
         view.updateDraggingElementsPosition();
 

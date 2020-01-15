@@ -49,6 +49,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asHover;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asNonDragging;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asNonHover;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSPaddingLeft;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSTop;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSWidth;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.isDraggingElement;
@@ -301,6 +302,18 @@ public class DNDListDOMHelperTest {
         final int expectedWidth = 321;
 
         assertEquals(expectedWidth, actualWidth);
+    }
+
+    @Test
+    public void testGetCSSPaddingLeft() {
+
+        element.style = mock(CSSStyleDeclaration.class);
+        when(element.style.getPropertyValue("padding-left")).thenReturn("321");
+
+        final int actualPadding = getCSSPaddingLeft(element);
+        final int expectedPadding = 321;
+
+        assertEquals(expectedPadding, actualPadding);
     }
 
     // -- Class handlers

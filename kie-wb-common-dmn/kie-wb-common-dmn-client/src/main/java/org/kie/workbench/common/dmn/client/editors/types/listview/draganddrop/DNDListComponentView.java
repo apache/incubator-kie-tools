@@ -41,6 +41,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asDragging;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asHover;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.asNonDragging;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSPaddingLeft;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSTop;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.getCSSWidth;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.isGrip;
@@ -247,7 +248,7 @@ public class DNDListComponentView implements DNDListComponent.View {
     }
 
     private int getCurrentXPosition(final HTMLElement element) {
-        final int margin = getCSSWidth(element) / getLevelSize();
+        final int margin = getCSSPaddingLeft(element) / getLevelSize();
         return margin > 0 ? margin : 0;
     }
 

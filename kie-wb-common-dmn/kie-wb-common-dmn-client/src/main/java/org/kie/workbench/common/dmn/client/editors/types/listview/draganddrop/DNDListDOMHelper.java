@@ -153,6 +153,10 @@ class DNDListDOMHelper {
         return parseInt(element.style.getPropertyValue("top"));
     }
 
+    static int getCSSPaddingLeft(final HTMLElement element) {
+        return parseInt(element.style.getPropertyValue("padding-left"));
+    }
+
     static int getCSSWidth(final HTMLElement element) {
         final String width = element.style.getPropertyValue("width");
         return parseInt(width.replace("calc(100% - ", "").replace("px)", ""));
