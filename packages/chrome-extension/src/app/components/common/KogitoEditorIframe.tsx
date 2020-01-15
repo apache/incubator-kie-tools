@@ -50,7 +50,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       {
         postMessage: msg => {
           if (ref.current && ref.current.contentWindow) {
-            ref.current.contentWindow.postMessage(msg, router.getTargetOrigin());
+            ref.current.contentWindow.postMessage(msg, "*");
           }
         }
       },
