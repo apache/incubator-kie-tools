@@ -70,7 +70,7 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   );
 }
 
-function SingleEditorEditApp(props: { openFileExtension: string, fileInfo: FileInfo }) {
+function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {
   const globals = useGlobals();
   return (
     <SingleEditorApp
