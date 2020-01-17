@@ -19,10 +19,10 @@ import {
   EnvelopeBusMessage,
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList, EditorContent, ChannelType } from "@kogito-tooling/core-api";
 
 export interface Impl {
-  receive_contentResponse(content: string): void;
+  receive_contentResponse(content: EditorContent): void;
   receive_languageResponse(languageData: LanguageData): void;
   receive_contentRequest(): void;
   receive_resourceContentResponse(content: ResourceContent): void;
@@ -67,7 +67,7 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.RETURN_INIT, data: undefined });
   }
 
-  public respond_contentRequest(content: string) {
+  public respond_contentRequest(content: EditorContent) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
   }
 
@@ -116,13 +116,14 @@ export class EnvelopeBusInnerMessageHandler {
   public receive(message: EnvelopeBusMessage<any>) {
     switch (message.type) {
       case EnvelopeBusMessageType.REQUEST_INIT:
-        this.receive_initRequest({ origin: message.data as string, busId: message.busId as string });
+        const origin = message.data as string;
+        this.receive_initRequest({ origin: origin, busId: message.busId as string });
         break;
       case EnvelopeBusMessageType.RETURN_LANGUAGE:
         this.impl.receive_languageResponse(message.data as LanguageData);
         break;
       case EnvelopeBusMessageType.RETURN_CONTENT:
-        this.impl.receive_contentResponse(message.data as string);
+        this.impl.receive_contentResponse(message.data as EditorContent);
         break;
       case EnvelopeBusMessageType.REQUEST_CONTENT:
         this.impl.receive_contentRequest();

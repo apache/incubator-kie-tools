@@ -16,6 +16,6 @@
 
 export interface GwtEditor {
   getContent(): Promise<string>;
-  setContent(content: string): void;
+  setContent(path: string, content: string): void;
   isDirty(): boolean;
 }

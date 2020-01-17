@@ -68,10 +68,10 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     return this.gwtEditor.isDirty();
   }
 
-  public setContent(content: string) {
+  public setContent(path: string, content: string) {
     //FIXME: Make setContent return a promise.
     try {
-      this.gwtEditor.setContent(content.trim());
+      this.gwtEditor.setContent(path, content.trim());
       setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     } catch (e) {
       this.messageBus.notify_setContentError(

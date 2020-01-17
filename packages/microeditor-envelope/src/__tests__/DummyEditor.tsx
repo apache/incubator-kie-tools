@@ -38,7 +38,7 @@ export class DummyEditor extends AppFormer.Editor {
     return false;
   }
 
-  public setContent(content: string) {
+  public setContent(path: string, content: string) {
     return this.ref!.setContent(content);
   }
 }

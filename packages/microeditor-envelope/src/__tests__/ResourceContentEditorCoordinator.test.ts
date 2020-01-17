@@ -1,7 +1,7 @@
 
 import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
-import { LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { LanguageData, ResourceContent, ResourcesList, EditorContent } from "@kogito-tooling/core-api";
 import { ResourceContentEditorService } from "../ResourceContentEditorService";
 
 let coordinator: ResourceContentEditorCoordinator;
@@ -14,7 +14,7 @@ const handler = new EnvelopeBusInnerMessageHandler(
     }
   },
   self => ({
-    receive_contentResponse: (content: string) => {
+    receive_contentResponse: (content: EditorContent) => {
       // do nothing
     },
     receive_languageResponse: (languageData: LanguageData) => {

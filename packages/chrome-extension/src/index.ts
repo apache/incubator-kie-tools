@@ -122,7 +122,8 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
+      externalEditorManager: args.externalEditorManager,
+      contentPath: fileInfo.path
     });
     return;
   }

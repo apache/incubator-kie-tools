@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourcesList, ChannelType } from "@kogito-tooling/core-api";
 
 interface Props {
   fullscreen: boolean;
@@ -48,7 +48,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         props.onContentResponse(content);
       },
       receive_contentRequest() {
-        context.file.getFileContents().then(c => self.respond_contentRequest(c || ""));
+        context.file.getFileContents().then(c => self.respond_contentRequest({ content: c || "" }));
       },
       receive_setContentError() {
         console.info("Set content error");

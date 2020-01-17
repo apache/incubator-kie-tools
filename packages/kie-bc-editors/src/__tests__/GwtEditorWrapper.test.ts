@@ -30,8 +30,8 @@ const wrapper = new GwtEditorWrapper("MockEditorId", mockEditor, mockMessageBus 
 
 describe("GwtEditorWrapper", () => {
   test("set content", async () => {
-    await wrapper.setContent(" a content ");
-    expect(mockEditor.setContent).toHaveBeenCalledWith("a content");
+    await wrapper.setContent("path", " a content ");
+    expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
   });
 
   test("set content error", async () => {
@@ -39,8 +39,8 @@ describe("GwtEditorWrapper", () => {
       throw new Error();
     });
 
-    await wrapper.setContent(" a content ");
-    expect(mockEditor.setContent).toHaveBeenCalledWith("a content");
+    await wrapper.setContent("path", " a content ");
+    expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
     expect(mockMessageBus.notify_setContentError).toHaveBeenCalled();
   });
 

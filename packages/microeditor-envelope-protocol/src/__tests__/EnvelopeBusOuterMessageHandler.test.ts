@@ -17,6 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
+import { ChannelType } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -168,7 +169,8 @@ describe("send", () => {
   });
 
   test("respond contentRequest", () => {
-    handler.respond_contentRequest("bar");
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "bar" }]);
+    const content = { content: "bar" };
+    handler.respond_contentRequest(content);
+    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content }]);
   });
 });
