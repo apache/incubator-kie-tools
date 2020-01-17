@@ -85,7 +85,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
                                  Kind.ERROR,
                                  Diagnostic.NOPOS,
                                  Diagnostic.NOPOS,
-                                 "org.uberfire.annotations.processors.WorkbenchClientEditorTest4Activity: The WorkbenchClientEditor must provide a @SetContent annotated method that has a java.lang.String as parameter.");
+                                 "org.uberfire.annotations.processors.WorkbenchClientEditorTest4Activity: The WorkbenchClientEditor must provide a @SetContent annotated method that has two java.lang.String (path and content) as parameters.");
         assertNull(result.getActualCode());
     }
     

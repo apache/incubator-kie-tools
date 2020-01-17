@@ -48,8 +48,8 @@ public class GWTEditorNativeRegister {
             this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::onOpen()();
         };
 
-        $wnd.GWTEditor.prototype.setContent = function (value) {
-            this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::setContent(Ljava/lang/String;)(value);
+        $wnd.GWTEditor.prototype.setContent = function (path, value) {
+            this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::setContent(Ljava/lang/String;Ljava/lang/String;)(path, value);
         };
 
         $wnd.GWTEditor.prototype.getContent = function () {

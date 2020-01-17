@@ -16,7 +16,7 @@ public class WorkbenchClientEditorTest5 extends Widget {
     }
     
     @SetContent
-    public void setContent(String content) {
+    public void setContent(String path, String content) {
         
     }
 

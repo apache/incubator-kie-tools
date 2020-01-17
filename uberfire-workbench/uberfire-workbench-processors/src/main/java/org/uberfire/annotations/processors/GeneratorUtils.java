@@ -134,7 +134,7 @@ public class GeneratorUtils {
                 processingEnvironment,
                 APIModule.getSetContentClass(),
                 requiredReturnType,
-                new String[]{"java.lang.String"});
+                new String[]{"java.lang.String", "java.lang.String"});
     }
 
     public static ExecutableElement getGetContentMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {

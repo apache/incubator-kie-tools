@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.resource.interop;
+package org.appformer.kogito.bridge.client.context;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
+/**
+ * 
+ * Provide access to EditorContext properties
+ *
+ */
+public interface EditorContextProvider {
 
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
-public class Envelope {
-
-    @JsProperty(name = "envelope")
-    private static native Envelope get();
-
-    @JsOverlay
-    public static boolean isAvailable() {
-        return get() != null;
-    }
+    /**
+     * Access the channel where the editor is running (e.g. ONLINE, GITHUB or VSCODE).
+     * 
+     * @return
+     * The channel where the editor is running or DEFAULT if no channel is available.
+     */
+    KogitoChannel getChannel();
 
 }

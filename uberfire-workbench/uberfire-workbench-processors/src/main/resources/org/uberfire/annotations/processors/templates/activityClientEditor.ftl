@@ -193,8 +193,8 @@ public class ${className} extends AbstractWorkbenchClientEditorActivity {
     </#if>
     <#if setContentMethodName??>
     @Override
-    public void setContent(String value) {
-        realPresenter.${setContentMethodName}(value);
+    public void setContent(String path, String value) {
+        realPresenter.${setContentMethodName}(path, value);
     }
     </#if>
     <#if getContentMethodName??>

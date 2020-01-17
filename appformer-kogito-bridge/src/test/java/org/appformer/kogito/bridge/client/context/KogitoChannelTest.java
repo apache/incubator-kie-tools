@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.resource.impl;
+package org.appformer.kogito.bridge.client.context;
 
-import elemental2.promise.Promise;
-import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.junit.Test;
 
-/**
- * This {@link ResourceContentService} implementation is used when the envelope API is not available
- */
-public class NoOpResourceContentService implements ResourceContentService {
+import static org.junit.Assert.assertEquals;
 
-    @Override
-    public Promise<String> get(String uri) {
-        return Promise.resolve("");
+public class KogitoChannelTest {
+
+    @Test
+    public void withNameTest() {
+        assertEquals(KogitoChannel.GITHUB, KogitoChannel.withName("GitHub"));
     }
 
-    @Override
-    public Promise<String[]> list(String pattern) {
-        return Promise.resolve(new String[0]);
+    @Test(expected = IllegalArgumentException.class)
+    public void withWrongNameTest() {
+        KogitoChannel.withName("foo");
     }
 
 }

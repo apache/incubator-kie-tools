@@ -26,11 +26,15 @@ import org.uberfire.workbench.model.ActivityResourceType;
 public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
 
     /**
-     * Set the editor content
+     *  
+     *  Set the editor content
+     *  
+     * @param path
+     *  Content Relative Path
      * @param value
-     *  The the editor content
+     *  The editor content
      */
-    void setContent(String value);
+    void setContent(String path, String value);
 
     /**
      * Get the editor content

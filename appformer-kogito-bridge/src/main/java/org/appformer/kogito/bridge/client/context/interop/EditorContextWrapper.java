@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.resource.interop;
+package org.appformer.kogito.bridge.client.context.interop;
 
-import elemental2.promise.Promise;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 /**
- * Javascript bridge to access actual ResourceContentService available in the envelope namespace
- *
+ * 
+ * Provide access to the editorContext object 
+ * 
  */
 @JsType(isNative = true, namespace = "window", name = "envelope")
-public class ResourceContentEditorServiceWrapper {
+public class EditorContextWrapper {
 
-    public native Promise<String> get(String uri);
+    @JsProperty
+    public native String getChannel();
 
-    public native Promise<String[]> list(String pattern);
-
-    @JsProperty(name = "resourceContentEditorService")
-    public static native ResourceContentEditorServiceWrapper get();
+    @JsProperty(name = "editorContext")
+    public static native EditorContextWrapper get();
 
 }
