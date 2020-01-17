@@ -428,7 +428,7 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Test
     public void testSetContentSuccess() {
-        editor.setContent(CONTENT);
+        editor.setContent("", CONTENT);
 
         verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
 
@@ -441,7 +441,7 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Test
     public void testSetContentFailure() {
-        editor.setContent(CONTENT);
+        editor.setContent("", CONTENT);
 
         verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
 

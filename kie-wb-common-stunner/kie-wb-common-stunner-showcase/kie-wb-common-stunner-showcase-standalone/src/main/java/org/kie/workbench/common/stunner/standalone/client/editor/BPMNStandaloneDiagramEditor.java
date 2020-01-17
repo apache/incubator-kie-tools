@@ -301,7 +301,7 @@ public class BPMNStandaloneDiagramEditor extends AbstractDiagramEditor {
 
     @Override
     // @SetContent
-    public void setContent(final String value) {
+    public void setContent(final String path, final String value) {
         diagramServices.transform(value,
                                   new ServiceCallback<Diagram>() {
 

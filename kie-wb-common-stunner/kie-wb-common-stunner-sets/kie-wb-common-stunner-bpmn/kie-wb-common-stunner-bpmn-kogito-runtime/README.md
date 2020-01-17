@@ -10,7 +10,7 @@ the [Stunner directory README documentation](../../../).
   * `mvn -T 8C clean install -DskipTests=true`
 * Start GWT super dev mode by: `mvn gwt:run`
 * To create new diagram copy/paste this command into the browser console:
-  * `gwtEditorBeans.get("BPMNDiagramEditor").get().setContent("")` 
+  * `gwtEditorBeans.get("BPMNDiagramEditor").get().setContent("", "")` 
 * To get content of the diagram copy/paste this command into the browser console:
   * `gwtEditorBeans.get("BPMNDiagramEditor").get().getContent()`
 * Alternatively you can load file from the disk, change url to `http://127.0.0.1:8888/test.html` and select file from the disk.

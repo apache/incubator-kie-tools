@@ -168,7 +168,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     public void testOnStartup() {
         super.testOnStartup();
 
-        verify(editor).setContent(eq(""));
+        verify(editor).setContent(eq(""), eq(""));
     }
 
     @Test

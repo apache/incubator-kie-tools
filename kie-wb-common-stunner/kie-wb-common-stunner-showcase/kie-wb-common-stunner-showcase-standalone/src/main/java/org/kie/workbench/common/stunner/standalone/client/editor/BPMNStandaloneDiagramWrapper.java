@@ -50,7 +50,7 @@ public class BPMNStandaloneDiagramWrapper {
     public void newFile() {
         placeManager.registerOnOpenCallback(BPMNDiagramsNavigatorScreen.DIAGRAM_EDITOR,
                                             () -> {
-                                                diagramEditor.setContent("");
+                                                diagramEditor.setContent("", "");
                                                 placeManager.unregisterOnOpenCallbacks(BPMNDiagramsNavigatorScreen.DIAGRAM_EDITOR);
                                             });
 
@@ -64,7 +64,7 @@ public class BPMNStandaloneDiagramWrapper {
                                                                                new ServiceCallback<String>() {
                                                                                    @Override
                                                                                    public void onSuccess(final String xml) {
-                                                                                       diagramEditor.setContent(xml);
+                                                                                       diagramEditor.setContent("", xml);
                                                                                        placeManager.unregisterOnOpenCallbacks(BPMNDiagramsNavigatorScreen.DIAGRAM_EDITOR);
                                                                                    }
 

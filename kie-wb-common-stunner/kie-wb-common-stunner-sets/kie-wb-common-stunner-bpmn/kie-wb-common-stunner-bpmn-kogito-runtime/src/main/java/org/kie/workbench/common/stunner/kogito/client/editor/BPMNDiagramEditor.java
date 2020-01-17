@@ -265,7 +265,7 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     @SetContent
     @Override
-    public void setContent(final String value) {
+    public void setContent(final String path, final String value) {
         diagramServices.transform(value,
                                   new ServiceCallback<Diagram>() {
 

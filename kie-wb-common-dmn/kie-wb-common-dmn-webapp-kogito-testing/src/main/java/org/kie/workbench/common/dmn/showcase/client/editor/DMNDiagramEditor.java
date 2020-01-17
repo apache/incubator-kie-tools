@@ -166,7 +166,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     public void onStartup(final PlaceRequest place) {
         super.onStartup(place);
 
-        setContent(place.getParameter(CONTENT_PARAMETER_NAME, ""));
+        setContent("", place.getParameter(CONTENT_PARAMETER_NAME, ""));
     }
 
     @Override
