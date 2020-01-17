@@ -113,19 +113,19 @@ func InstallOperator(namespace, operatorName, operatorSource, channel string) er
 		return err
 	}
 
-	return WaitForOperatorRunning(namespace, operatorName+"-operator")
+	return WaitForOperatorRunning(namespace, operatorName, operatorSource)
 }
 
 // WaitForOperatorRunning waits for an operator to be running
-func WaitForOperatorRunning(namespace, operatorName string) error {
-	return waitFor(namespace, fmt.Sprintf("%s operator running", operatorName), time.Minute*5, func() (bool, error) {
-		return IsOperatorRunning(namespace, operatorName)
+func WaitForOperatorRunning(namespace, operatorPackageName, operatorSource string) error {
+	return waitFor(namespace, fmt.Sprintf("%s operator running", operatorPackageName), time.Minute*5, func() (bool, error) {
+		return IsOperatorRunning(namespace, operatorPackageName, operatorSource)
 	})
 }
 
 // IsOperatorRunning checks whether an operator is running
-func IsOperatorRunning(namespace, operatorName string) (bool, error) {
-	exists, err := infra.CheckOperatorExists(kubeClient, namespace, operatorName)
+func IsOperatorRunning(namespace, operatorPackageName, operatorSource string) (bool, error) {
+	exists, err := infra.CheckOperatorExistsUsingSubscription(kubeClient, namespace, operatorPackageName, operatorSource)
 	if err != nil {
 		if exists {
 			return false, nil
