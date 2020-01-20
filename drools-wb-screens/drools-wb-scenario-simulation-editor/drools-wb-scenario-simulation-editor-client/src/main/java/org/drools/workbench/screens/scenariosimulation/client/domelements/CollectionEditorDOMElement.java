@@ -18,8 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import java.util.Objects;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -50,35 +50,17 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
               gridLayer,
               gridWidget);
         final Style style = widget.getElement().getStyle();
-        style.setWidth(100,
-                       Style.Unit.PCT);
-        style.setHeight(100,
-                        Style.Unit.PCT);
-        style.setPaddingLeft(2,
-                             Style.Unit.PX);
-        style.setPaddingRight(2,
-                              Style.Unit.PX);
-        style.setPaddingTop(2,
-                            Style.Unit.PX);
-        style.setPaddingBottom(2,
-                               Style.Unit.PX);
-        style.setFontSize(10,
-                          Style.Unit.PX);
-        style.setProperty("resize",
-                          "none");
+        style.setFontSize(10, Style.Unit.PX);
+        style.setProperty("resize", "none");
 
         final SimplePanel widgetContainer = getContainer();
         final Element widgetContainerElement = widgetContainer.getElement();
         final Style widgetContainerElementStyle = widgetContainerElement.getStyle();
 
-        widgetContainerElementStyle.setPaddingLeft(5,
-                                                   Style.Unit.PX);
-        widgetContainerElementStyle.setPaddingRight(5,
-                                                    Style.Unit.PX);
-        widgetContainerElementStyle.setPaddingTop(5,
-                                                  Style.Unit.PX);
-        widgetContainerElementStyle.setPaddingBottom(5,
-                                                     Style.Unit.PX);
+        widgetContainerElementStyle.setPaddingLeft(5, Style.Unit.PX);
+        widgetContainerElementStyle.setPaddingRight(5, Style.Unit.PX);
+        widgetContainerElementStyle.setPaddingTop(5, Style.Unit.PX);
+        widgetContainerElementStyle.setPaddingBottom(5, Style.Unit.PX);
 
         widgetContainer.setWidget(widget);
     }
