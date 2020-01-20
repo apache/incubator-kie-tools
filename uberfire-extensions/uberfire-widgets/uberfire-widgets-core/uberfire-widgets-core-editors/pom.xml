@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-widgets-core</artifactId>
-    <version>7.32.0-SNAPSHOT</version>
+    <version>7.33.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-widgets-core-editors</artifactId>

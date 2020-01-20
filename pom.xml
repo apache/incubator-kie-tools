@@ -21,14 +21,14 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.32.0-SNAPSHOT</version>
+    <version>7.33.0-SNAPSHOT</version>
     <!-- Keep in sync with the parent version of uberfire-bom/pom.xml -->
   </parent>
 
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
-  <version>7.32.0-SNAPSHOT</version>
+  <version>7.33.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire parent</name>
