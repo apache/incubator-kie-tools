@@ -161,12 +161,23 @@ public class VerifyFieldConstraintEditor extends Composite {
                 if (field.getNature() == FieldData.TYPE_VARIABLE) {
                     panel.add(variableEditor());
                 } else if (field.getNature() == FieldData.TYPE_LITERAL) {
-                    panel.add(editableTextBox(callback,
-                                              flType,
-                                              field.getFieldName(),
-                                              field.getExpected()));
+                    panel.add(textBoxEditor(flType).asWidget());
                 }
             }
+        }
+    }
+
+    IsWidget textBoxEditor(final String flType) {
+        if (Objects.equals(flType, DataType.TYPE_COLLECTION)) {
+            return editableCollectionTextBox(callback,
+                                             flType,
+                                             field.getFieldName(),
+                                             field.getExpected());
+        } else {
+            return editableTextBox(callback,
+                                   flType,
+                                   field.getFieldName(),
+                                   field.getExpected());
         }
     }
 
@@ -208,14 +219,24 @@ public class VerifyFieldConstraintEditor extends Composite {
         return box;
     }
 
-    private static Widget editableTextBox(final Callback<String> changed,
-                                          final String dataType,
-                                          final String fieldName,
-                                          final String initialValue) {
+    private static EditableTextBox editableTextBox(final Callback<String> changed,
+                                                   final String dataType,
+                                                   final String fieldName,
+                                                   final String initialValue) {
         return new EditableTextBox(changed,
                                    TextBoxFactory.getTextBox(dataType),
                                    fieldName,
-                                   initialValue).asWidget();
+                                   initialValue);
+    }
+
+    private static EditableCollectionBox editableCollectionTextBox(final Callback<String> changed,
+                                                                   final String dataType,
+                                                                   final String fieldName,
+                                                                   final String initialValue) {
+        return new EditableCollectionBox(changed,
+                                         TextBoxFactory.getTextBox(dataType),
+                                         fieldName,
+                                         initialValue);
     }
 
     private void showTypeChoice(final VerifyField con) {

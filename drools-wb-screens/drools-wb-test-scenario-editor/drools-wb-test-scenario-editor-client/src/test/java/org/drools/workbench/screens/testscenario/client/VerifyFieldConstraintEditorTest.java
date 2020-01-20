@@ -28,6 +28,9 @@ import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.kie.soup.project.datamodel.oracle.DataType.TYPE_COLLECTION;
+import static org.kie.soup.project.datamodel.oracle.DataType.TYPE_STRING;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -133,5 +136,37 @@ public class VerifyFieldConstraintEditorTest {
                                                       executionTrace);
 
         assertEquals(field.getNature(), FieldData.TYPE_VARIABLE);
+    }
+
+    @Test
+    public void testTextBoxEditorWhenTypeIsCollection() {
+        this.field = new VerifyField("age", "=$age", "==");
+
+        when(oracle.getFieldType(FACT_TYPE, field.getFieldName())).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
+
+        this.editor = new VerifyFieldConstraintEditor(FACT_TYPE,
+                                                      callback,
+                                                      field,
+                                                      oracle,
+                                                      scenario,
+                                                      executionTrace);
+
+        assertTrue(editor.textBoxEditor(TYPE_COLLECTION) instanceof EditableCollectionBox);
+    }
+
+    @Test
+    public void testTextBoxEditorWhenTypeIsNotCollection() {
+        this.field = new VerifyField("age", "=$age", "==");
+
+        when(oracle.getFieldType(FACT_TYPE, field.getFieldName())).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
+
+        this.editor = new VerifyFieldConstraintEditor(FACT_TYPE,
+                                                      callback,
+                                                      field,
+                                                      oracle,
+                                                      scenario,
+                                                      executionTrace);
+
+        assertTrue(editor.textBoxEditor(TYPE_STRING) instanceof EditableTextBox);
     }
 }
