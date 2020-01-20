@@ -57,6 +57,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
@@ -1028,6 +1029,7 @@ public class DataTypeListTest {
         when(dataProperty.getType()).thenReturn(propertyType);
 
         when(dataTypeManager.fromNew()).thenReturn(dataTypeManager);
+        when(dataTypeManager.asList(anyBoolean())).thenReturn(dataTypeManager);
         when(dataTypeManager.withType(propertyType)).thenReturn(dataTypeManager);
         when(dataTypeManager.get()).thenReturn(newType);
 
@@ -1035,6 +1037,31 @@ public class DataTypeListTest {
 
         assertEquals(newType, actual);
 
+        verify(dataTypeManager).asList(false);
+        verify(newType).setName(propertyName);
+    }
+
+    @Test
+    public void testCreateNewDataTypeFromPropertyWhenIsList() {
+
+        final DataObjectProperty dataProperty = mock(DataObjectProperty.class);
+        final String propertyName = "name";
+        final String propertyType = "type";
+        final DataType newType = mock(DataType.class);
+        when(dataProperty.getProperty()).thenReturn(propertyName);
+        when(dataProperty.getType()).thenReturn(propertyType);
+        when(dataProperty.isList()).thenReturn(true);
+
+        when(dataTypeManager.fromNew()).thenReturn(dataTypeManager);
+        when(dataTypeManager.asList(anyBoolean())).thenReturn(dataTypeManager);
+        when(dataTypeManager.withType(propertyType)).thenReturn(dataTypeManager);
+        when(dataTypeManager.get()).thenReturn(newType);
+
+        final DataType actual = dataTypeList.createNewDataType(dataProperty);
+
+        assertEquals(newType, actual);
+
+        verify(dataTypeManager).asList(true);
         verify(newType).setName(propertyName);
     }
 

@@ -23,10 +23,12 @@ public class DataObjectProperty {
 
     private String type;
     private String property;
+    private boolean isList;
 
     public DataObjectProperty() {
         this.type = "";
         this.property = "";
+        this.isList = false;
     }
 
     public String getProperty() {
@@ -43,5 +45,13 @@ public class DataObjectProperty {
 
     public void setType(final String type) {
         this.type = type;
+    }
+
+    public boolean isList() {
+        return isList;
+    }
+
+    public void setList(final boolean list) {
+        isList = list;
     }
 }

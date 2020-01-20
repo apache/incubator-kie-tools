@@ -75,30 +75,58 @@ public class DataObjectsServiceImpl implements DataObjectsService {
         final ModuleDataModelOracle dmo = dataModelService.getModuleDataModel(workspaceProject.getRootPath());
         final String[] types = DataModelOracleUtilities.getFactTypes(dmo);
         final Map<String, ModelField[]> typesModelFields = dmo.getModuleModelFields();
+        final Map<String, String> parametersType = dmo.getModuleFieldParametersType();
 
         final List<DataObject> dataObjects = Arrays.stream(types).map(DataObject::new).collect(Collectors.toList());
-        dataObjects.forEach(dataObject -> convertProperties(dataObject, dataObjects, typesModelFields, classLoader));
+        dataObjects.forEach(dataObject -> convertProperties(dataObject, dataObjects, typesModelFields, classLoader, parametersType));
         return dataObjects;
     }
 
     private void convertProperties(final DataObject dataObject,
                                    final List<DataObject> dataObjects,
                                    final Map<String, ModelField[]> typesModelFields,
-                                   final ClassLoader classLoader) {
+                                   final ClassLoader classLoader,
+                                   final Map<String, String> parametersType) {
         final ModelField[] typeModelFields = typesModelFields.getOrDefault(dataObject.getClassType(), new ModelField[]{});
         dataObject.setProperties(Arrays.stream(typeModelFields)
                                          .filter(typeModelField -> !Objects.equals(typeModelField.getName(), DataType.TYPE_THIS))
-                                         .map(typeModelField -> convertProperty(typeModelField, dataObjects, classLoader))
+                                         .map(typeModelField -> convertProperty(typeModelField, dataObjects, classLoader, parametersType, dataObject))
                                          .collect(Collectors.toList()));
     }
 
     private DataObjectProperty convertProperty(final ModelField field,
                                                final List<DataObject> dataObjects,
-                                               final ClassLoader classLoader) {
+                                               final ClassLoader classLoader,
+                                               final Map<String, String> parametersType,
+                                               final DataObject dataObject) {
         final DataObjectProperty dataObjectProperty = new DataObjectProperty();
-        dataObjectProperty.setType(convertDataType(field.getClassName(), dataObjects, classLoader));
+
+        dataObjectProperty.setList(isList(field.getClassName(), classLoader));
+        if (dataObjectProperty.isList()) {
+            final String parametersKey = dataObject.getClassType() + "#" + field.getName();
+            if (!parametersType.containsKey(parametersKey)) {
+                dataObjectProperty.setType(convertDataType(field.getClassName(), dataObjects, classLoader));
+            } else {
+                final String type = parametersType.get(parametersKey);
+                final String listType = convertDataType(type, dataObjects, classLoader);
+                dataObjectProperty.setType(listType);
+            }
+        } else {
+            dataObjectProperty.setType(convertDataType(field.getClassName(), dataObjects, classLoader));
+        }
+
         dataObjectProperty.setProperty(field.getName());
         return dataObjectProperty;
+    }
+
+    private boolean isList(final String typeName, final ClassLoader classLoader) {
+        try {
+            final String className = PrimitiveUtilities.getClassNameForPrimitiveType(typeName);
+            final Class<?> clazz = classLoader.loadClass(Objects.nonNull(className) ? className : typeName);
+            return List.class.isAssignableFrom(clazz);
+        } catch (ClassNotFoundException cnfe) {
+            return false;
+        }
     }
 
     private String convertDataType(final String typeName,

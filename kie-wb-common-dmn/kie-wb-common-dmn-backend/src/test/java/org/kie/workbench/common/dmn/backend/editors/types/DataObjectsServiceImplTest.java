@@ -275,11 +275,20 @@ public class DataObjectsServiceImplTest {
                                                      DataType.TYPE_OBJECT),
                                        newModelField("temporalAccessorField",
                                                      ChronoLocalDate.class.getName(),
-                                                     DataType.TYPE_OBJECT)
+                                                     DataType.TYPE_OBJECT),
+                                       newModelField("listField",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName())
                                });
 
         final Map<String, ModelField[]> modelFields = modelFieldsBuilder.build();
         dataModelOracle.addModuleModelFields(modelFields);
+
+
+        final Maps.Builder<String, String> modelFieldsParametersTypeBuilder = new Maps.Builder<>();
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#listField", String.class.getName());
+        final Map<String, String> modelFieldsParameters = modelFieldsParametersTypeBuilder.build();
+        dataModelOracle.addModuleFieldParametersType(modelFieldsParameters);
 
         final List<DataObject> dataObjects = service.loadDataObjects(workspaceProject);
 
@@ -287,27 +296,143 @@ public class DataObjectsServiceImplTest {
         assertThat(dataObjects).hasSize(1);
 
         assertThat(dataObjects.get(0).getClassType()).isEqualTo(APerson.class.getName());
-        assertThat(dataObjects.get(0).getProperties()).hasSize(10);
+        assertThat(dataObjects.get(0).getProperties()).hasSize(11);
         assertThat(dataObjects.get(0).getProperties().get(0).getProperty()).isEqualTo("stringField");
         assertThat(dataObjects.get(0).getProperties().get(0).getType()).isEqualTo(BuiltInType.STRING.getName());
+        assertThat(dataObjects.get(0).getProperties().get(0).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(1).getProperty()).isEqualTo("characterField");
         assertThat(dataObjects.get(0).getProperties().get(1).getType()).isEqualTo(BuiltInType.STRING.getName());
+        assertThat(dataObjects.get(0).getProperties().get(1).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(2).getProperty()).isEqualTo("localDateField");
         assertThat(dataObjects.get(0).getProperties().get(2).getType()).isEqualTo(BuiltInType.DATE.getName());
+        assertThat(dataObjects.get(0).getProperties().get(2).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(3).getProperty()).isEqualTo("localTimeField");
         assertThat(dataObjects.get(0).getProperties().get(3).getType()).isEqualTo(BuiltInType.TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(3).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(4).getProperty()).isEqualTo("offsetTimeField");
         assertThat(dataObjects.get(0).getProperties().get(4).getType()).isEqualTo(BuiltInType.TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(4).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(5).getProperty()).isEqualTo("zonedDateTimeField");
         assertThat(dataObjects.get(0).getProperties().get(5).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(5).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(6).getProperty()).isEqualTo("offsetDateTimeField");
         assertThat(dataObjects.get(0).getProperties().get(6).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(6).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(7).getProperty()).isEqualTo("localDateTimeField");
         assertThat(dataObjects.get(0).getProperties().get(7).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(7).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(8).getProperty()).isEqualTo("mapField");
         assertThat(dataObjects.get(0).getProperties().get(8).getType()).isEqualTo(BuiltInType.CONTEXT.getName());
+        assertThat(dataObjects.get(0).getProperties().get(8).isList()).isFalse();
         assertThat(dataObjects.get(0).getProperties().get(9).getProperty()).isEqualTo("temporalAccessorField");
         assertThat(dataObjects.get(0).getProperties().get(9).getType()).isEqualTo(BuiltInType.ANY.getName());
+        assertThat(dataObjects.get(0).getProperties().get(9).isList()).isFalse();
+        assertThat(dataObjects.get(0).getProperties().get(10).getProperty()).isEqualTo("listField");
+        assertThat(dataObjects.get(0).getProperties().get(10).getType()).isEqualTo(BuiltInType.STRING.getName());
+        assertThat(dataObjects.get(0).getProperties().get(10).isList()).isTrue();
+    }
+
+    @Test
+    public void testLoadDataObjects_Lists(){
+        final Maps.Builder<String, ModelField[]> modelFieldsBuilder = new Maps.Builder<>();
+        modelFieldsBuilder.put(APerson.class.getName(),
+                               new ModelField[]{
+                                       newModelField(DataType.TYPE_THIS,
+                                                     APerson.class.getName(),
+                                                     APerson.class.getSimpleName()),
+                                       newModelField("stringList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("characterList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("localDateList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("localTimeList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("offsetTimeList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("zonedDateTimeList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("offsetDateTimeList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("localDateTimeList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("mapList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("temporalAccessorList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName()),
+                                       newModelField("unknownList",
+                                                     List.class.getName(),
+                                                     List.class.getSimpleName())
+                               });
+
+        final Map<String, ModelField[]> modelFields = modelFieldsBuilder.build();
+        dataModelOracle.addModuleModelFields(modelFields);
+
+        final Maps.Builder<String, String> modelFieldsParametersTypeBuilder = new Maps.Builder<>();
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#stringList", String.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#characterList", String.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#localDateList", LocalDate.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#localTimeList", LocalTime.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#offsetTimeList", OffsetTime.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#zonedDateTimeList", ZonedDateTime.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#offsetDateTimeList", OffsetDateTime.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#localDateTimeList", LocalDateTime.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#mapList", Map.class.getName());
+        modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#temporalAccessorList", ChronoLocalDate.class.getName());
+
+        final Map<String, String> modelFieldsParameters = modelFieldsParametersTypeBuilder.build();
+        dataModelOracle.addModuleFieldParametersType(modelFieldsParameters);
+
+        final List<DataObject> dataObjects = service.loadDataObjects(workspaceProject);
+
+        assertThat(dataObjects).isNotEmpty();
+        assertThat(dataObjects).hasSize(1);
+
+        assertThat(dataObjects.get(0).getClassType()).isEqualTo(APerson.class.getName());
+        assertThat(dataObjects.get(0).getProperties()).hasSize(11);
+        assertThat(dataObjects.get(0).getProperties().get(0).getProperty()).isEqualTo("stringList");
+        assertThat(dataObjects.get(0).getProperties().get(0).getType()).isEqualTo(BuiltInType.STRING.getName());
+        assertThat(dataObjects.get(0).getProperties().get(0).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(1).getProperty()).isEqualTo("characterList");
+        assertThat(dataObjects.get(0).getProperties().get(1).getType()).isEqualTo(BuiltInType.STRING.getName());
+        assertThat(dataObjects.get(0).getProperties().get(1).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(2).getProperty()).isEqualTo("localDateList");
+        assertThat(dataObjects.get(0).getProperties().get(2).getType()).isEqualTo(BuiltInType.DATE.getName());
+        assertThat(dataObjects.get(0).getProperties().get(2).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(3).getProperty()).isEqualTo("localTimeList");
+        assertThat(dataObjects.get(0).getProperties().get(3).getType()).isEqualTo(BuiltInType.TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(3).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(4).getProperty()).isEqualTo("offsetTimeList");
+        assertThat(dataObjects.get(0).getProperties().get(4).getType()).isEqualTo(BuiltInType.TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(4).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(5).getProperty()).isEqualTo("zonedDateTimeList");
+        assertThat(dataObjects.get(0).getProperties().get(5).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(5).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(6).getProperty()).isEqualTo("offsetDateTimeList");
+        assertThat(dataObjects.get(0).getProperties().get(6).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(6).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(7).getProperty()).isEqualTo("localDateTimeList");
+        assertThat(dataObjects.get(0).getProperties().get(7).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(7).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(8).getProperty()).isEqualTo("mapList");
+        assertThat(dataObjects.get(0).getProperties().get(8).getType()).isEqualTo(BuiltInType.CONTEXT.getName());
+        assertThat(dataObjects.get(0).getProperties().get(8).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(9).getProperty()).isEqualTo("temporalAccessorList");
+        assertThat(dataObjects.get(0).getProperties().get(9).getType()).isEqualTo(BuiltInType.ANY.getName());
+        assertThat(dataObjects.get(0).getProperties().get(9).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(10).getProperty()).isEqualTo("unknownList");
+        assertThat(dataObjects.get(0).getProperties().get(10).getType()).isEqualTo(BuiltInType.ANY.getName());
+        assertThat(dataObjects.get(0).getProperties().get(10).isList()).isTrue();
     }
 
     @Test

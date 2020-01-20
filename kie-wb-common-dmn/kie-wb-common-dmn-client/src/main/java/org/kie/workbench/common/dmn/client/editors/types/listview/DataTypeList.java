@@ -469,14 +469,12 @@ public class DataTypeList {
     void insertProperties(final DataObject dataObject) {
 
         final Optional<DataType> existing = findDataTypeByName(dataObject.getClassType());
-        existing.ifPresent(dataType -> {
-            findItem(dataType).ifPresent(item -> {
-                for (final DataObjectProperty property : dataObject.getProperties()) {
-                    final DataType newDataType = createNewDataType(property);
-                    item.insertNestedField(newDataType);
-                }
-            });
-        });
+        existing.ifPresent(dataType -> findItem(dataType).ifPresent(item -> {
+            for (final DataObjectProperty property : dataObject.getProperties()) {
+                final DataType newDataType = createNewDataType(property);
+                item.insertNestedField(newDataType);
+            }
+        }));
     }
 
     void insert(final DataType newDataType) {
@@ -491,7 +489,10 @@ public class DataTypeList {
 
     DataType createNewDataType(final DataObjectProperty dataProperty) {
 
-        final DataType newDataType = dataTypeManager.fromNew().withType(dataProperty.getType()).get();
+        final DataType newDataType = dataTypeManager.fromNew()
+                .withType(dataProperty.getType())
+                .asList(dataProperty.isList())
+                .get();
         newDataType.setName(dataProperty.getProperty());
         return newDataType;
     }
