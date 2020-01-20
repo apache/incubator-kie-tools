@@ -97,7 +97,7 @@
                                 <artifactItem>
                                     <groupId>org.kie.workbench.stunner</groupId>
                                     <artifactId>kie-wb-common-bpmn-kogito-runtime</artifactId>
-                                    <version>${version.dmn.webapp}</version>
+                                    <version>${version.bpmn.webapp}</version>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/bpmn</outputDirectory>
