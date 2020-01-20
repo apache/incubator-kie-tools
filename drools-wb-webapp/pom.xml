@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wb</artifactId>
-    <version>7.32.0-SNAPSHOT</version>
+    <version>7.33.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-wb-webapp</artifactId>
