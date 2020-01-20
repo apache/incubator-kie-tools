@@ -79,9 +79,7 @@ Build from source
 Develop
 --------------------
 
-> **NOTE:** We currently pack two GWT-based editors -- BPMN and DMN. They are exploded WARs, so we don't commit them in this repo. We are currently working on automatically fetching them during the build, but we didn't do it **yet**. For builds to work properly, you must have the exploded WARs copied on `packages/kie-bc-editors-unpacked/` `dmn` and `bpmn` folders. You can go to [the latest commit](https://github.com/kiegroup/kogito-tooling/commits/master), click on the "check" icon and download the exploded WARs from the Artifacts tab. Be aware that each editor must go on its own folder.
-
-> We recommend using *LTS* version of Node.js when developing this project.
+> **NOTE:** We recommend using *LTS* version of Node.js when developing this project.
     
 ##### VSCode Extension
 1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-pack-kogito-kie-editors` folder on VSCode. Use a new VSCode window so that the `packages/vscode-extension-pack-kogito-kie-editors` folder shows up as root in the VSCode explorer.
