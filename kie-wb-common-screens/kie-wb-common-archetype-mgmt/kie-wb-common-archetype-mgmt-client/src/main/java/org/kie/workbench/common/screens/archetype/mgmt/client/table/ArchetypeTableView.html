@@ -1,0 +1,143 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="archetype-table" data-field="table-container">
+    <div class="toolbar-pf" data-field="table-toolbar-container">
+        <div class="toolbar-pf-actions">
+            <div class="form-group toolbar-pf-filter has-clear search-bar">
+                <input class="form-control" data-field="search-input" data-i18n-key="Search" type="search">
+            </div>
+            <div class="toolbar-pf-action-right">
+                <div class="form-group right-toolbar">
+                    <button class="btn btn-primary pull-right"
+                            data-field="add-archetype-button"
+                            data-i18n-key="AddArchetype">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover kie-tablelist">
+        <caption hidden></caption>
+        <thead>
+        <tr class="kie-tablelist__row kie-tablelist__row--header">
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                data-field="archetype-column-include"
+                id="archetype-header-include">
+                <span data-i18n-key="Include"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="include-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                id="archetype-header-groupd-id">
+                <span data-i18n-key="ArchetypeGroupId"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="group-id-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                id="archetype-header-artifact-id">
+                <span data-i18n-key="ArchetypeArtifactId"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="artifact-id-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                id="archetype-header-version">
+                <span data-i18n-key="ArchetypeVersion"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="version-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                id="archetype-header-created-date">
+                <span data-i18n-key="CreatedDate"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="created-date-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header"
+                data-field="archetype-column-status"
+                id="archetype-header-status">
+                <span data-i18n-key="Status"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="status-tooltip"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header kie-tablelist__cell--actions"
+                id="archetype-header-actions">
+                <span data-i18n-key="Actions"></span>
+                <a data-delay="0" data-toggle="tooltip" href="#">
+                    <span class="fa fa-info-circle" data-field="actions-tooltip"></span>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-field="archetype-table-body"></tbody>
+    </table>
+    <div class="no-results" data-field="no-results-container" hidden>
+        <span data-i18n-key="NoResults"></span>
+    </div>
+    <div class="blank-slate-pf empty-content-container" data-field="empty-container" hidden>
+        <div class="blank-slate-pf-icon">
+            <span class="fa fa-file-code-o"></span>
+        </div>
+        <h1 data-i18n-key="NoContentTitle"></h1>
+        <p data-i18n-key="NoContentSubTitle"></p>
+        <div class="blank-slate-pf-main-action">
+            <button class="btn btn-primary btn-lg"
+                    data-field="empty-add-archetype-button"
+                    data-i18n-key="AddArchetype"></button>
+        </div>
+    </div>
+    <div data-field="pagination-container">
+        <div class="content-view-pf-pagination">
+            <div class="form-group">
+                <span data-field="selection-counter"></span>
+            </div>
+            <div class="form-group">
+                <span data-field="page-indicator"></span>
+                <ul class="pagination pagination-pf-back">
+                    <li data-field="first-page">
+                        <a href="#">
+                            <span class="i fa fa-angle-double-left"></span>
+                        </a>
+                    </li>
+                    <li data-field="previous-page">
+                        <a href="#">
+                            <span class="i fa fa-angle-left"></span>
+                        </a>
+                    </li>
+                </ul>
+                <input class="pagination-pf-page" data-field="current-page" type="text">
+                <span data-field="total-pages"></span>
+                <ul class="pagination pagination-pf-forward">
+                    <li data-field="next-page">
+                        <a href="#">
+                            <span class="i fa fa-angle-right"></span>
+                        </a>
+                    </li>
+                    <li data-field="last-page">
+                        <a href="#">
+                            <span class="i fa fa-angle-double-right"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

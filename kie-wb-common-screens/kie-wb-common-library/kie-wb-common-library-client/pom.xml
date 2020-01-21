@@ -241,7 +241,6 @@
       <artifactId>kie-wb-common-profile-api</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-workbench-client</artifactId>
@@ -255,6 +254,16 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-contributors-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-client</artifactId>
     </dependency>
 
     <dependency>

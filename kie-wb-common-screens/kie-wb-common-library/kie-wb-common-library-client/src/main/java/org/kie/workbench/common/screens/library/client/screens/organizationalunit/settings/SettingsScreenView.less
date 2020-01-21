@@ -1,0 +1,110 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@media only screen and (min-width: 992px) {
+  .kie-row--is-table {
+    display: table;
+    width: 100%;
+  }
+
+  .kie-row--is-table > [class*="col-"] {
+    float: none;
+    display: table-cell;
+    vertical-align: top;
+  }
+}
+
+.settings-hidden {
+  display: none;
+  opacity: 0;
+}
+
+.settings-tab-content {
+  border-left: 1px solid #bbb;
+  padding-bottom: 20px;
+}
+
+.settings-screen {
+  height: 100%;
+}
+
+.settings-nav--left {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.settings-nav--left li {
+  border-left: 3px solid transparent;
+}
+
+.settings-nav--left li.active {
+  border-left-color: #0088ce;
+  background-color: #def3ff;
+}
+
+.settings-nav--left li:hover {
+  border-left: 3px solid #def3ff;
+}
+
+.settings-nav--left li > a {
+  color: #363636;
+}
+
+.settings-nav--left li > a:hover,
+.settings-nav--left li > a:focus {
+  background-color: #def3ff;
+  color: #00659c;
+}
+
+.kie-tablelist > thead > tr > th,
+.kie-tablelist > tbody > tr > th,
+.kie-tablelist > tfoot > tr > th,
+.kie-tablelist > thead > tr > td,
+.kie-tablelist > tbody > tr > td,
+.kie-tablelist > tfoot > tr > td {
+  padding: 1.5rem;
+  border-bottom: none;
+}
+
+.kie-tablelist > thead > tr:last-of-type td,
+.kie-tablelist > tbody > tr:last-of-type td,
+.kie-tablelist > tfoot > tr:last-of-type td {
+  border-bottom: 1px solid #d1d1d1;
+}
+
+.kie-tablelist > thead {
+  background-color: transparent;
+  background-image: none;
+}
+
+.kie-tablelist > thead > tr > th,
+.kie-tablelist > thead > tr > td {
+  padding: 0.75rem 1.5rem;
+}
+
+.kie-tablelist__subrow {
+  display: none;
+}
+
+.kie-tablelist__cell--actions {
+  text-align: right;
+}
+
+td .kie-tablelist__select {
+  border-right: 1px solid #d1d1d1;
+  padding-right: 1.5rem;
+  text-align: center;
+}

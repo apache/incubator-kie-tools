@@ -50,6 +50,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
@@ -85,12 +86,24 @@ import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryServiceImplTest {
@@ -151,6 +164,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private ChangeRequestService changeRequestService;
+
+    @Mock
+    private ArchetypeService archetypeService;
 
     @Mock
     private Event<NewBranchEvent> newBranchEvent;
@@ -223,8 +239,8 @@ public class LibraryServiceImplTest {
                                                     userManagerService,
                                                     indexOracle,
                                                     spaceConfigStorageRegistry,
-                                                    clusterService
-        ));
+                                                    clusterService,
+                                                    archetypeService));
     }
 
     @Test
@@ -355,7 +371,69 @@ public class LibraryServiceImplTest {
         verify(projectService).newProject(organizationalUnit,
                                           pom,
                                           DeploymentMode.VALIDATED,
-                                          projectContributors);
+                                          projectContributors,
+                                          null);
+    }
+
+    @Test
+    public void createProjectFromTemplateTest() {
+        final List<Contributor> spaceContributors = new ArrayList<>();
+        spaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        spaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        spaceContributors.add(new Contributor("admin", ContributorType.CONTRIBUTOR));
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou").when(organizationalUnit).getName();
+        doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
+        doReturn(spaceContributors).when(organizationalUnit).getContributors();
+        doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+
+        final String templateId = "my-template";
+        final Repository templateRepository = mock(Repository.class);
+        doReturn(templateRepository).when(archetypeService).getTemplateRepository(templateId);
+
+        final POM pom = mock(POM.class);
+
+        libraryService.createProject(organizationalUnit,
+                                     pom,
+                                     DeploymentMode.VALIDATED,
+                                     templateId);
+
+        verify(ouService, never()).updateOrganizationalUnit(anyString(), anyString(), anyList());
+
+        final List<Contributor> projectContributors = new ArrayList<>();
+        projectContributors.add(new Contributor("user1", ContributorType.OWNER));
+        projectContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        projectContributors.add(new Contributor("admin", ContributorType.OWNER));
+        verify(projectService).newProject(organizationalUnit,
+                                          pom,
+                                          DeploymentMode.VALIDATED,
+                                          projectContributors,
+                                          templateRepository);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void createProjectFromInvalidTemplateTest() {
+        final List<Contributor> spaceContributors = new ArrayList<>();
+        spaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        spaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        spaceContributors.add(new Contributor("admin", ContributorType.CONTRIBUTOR));
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou").when(organizationalUnit).getName();
+        doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
+        doReturn(spaceContributors).when(organizationalUnit).getContributors();
+        doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+
+        final String templateId = "invalid-template";
+        doThrow(IllegalStateException.class).when(archetypeService).getTemplateRepository(templateId);
+
+        final POM pom = mock(POM.class);
+
+        libraryService.createProject(organizationalUnit,
+                                     pom,
+                                     DeploymentMode.VALIDATED,
+                                     templateId);
     }
 
     @Test
@@ -392,7 +470,8 @@ public class LibraryServiceImplTest {
         verify(projectService).newProject(organizationalUnit,
                                           pom,
                                           DeploymentMode.VALIDATED,
-                                          projectContributors);
+                                          projectContributors,
+                                          null);
     }
 
     @Test

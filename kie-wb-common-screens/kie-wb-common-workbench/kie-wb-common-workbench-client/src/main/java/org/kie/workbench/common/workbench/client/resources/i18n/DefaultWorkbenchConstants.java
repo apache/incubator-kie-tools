@@ -182,4 +182,6 @@ public interface DefaultWorkbenchConstants
     String DisconnectedFromServer();
 
     String CouldNotConnectToServer();
+
+    String Archetypes();
 }

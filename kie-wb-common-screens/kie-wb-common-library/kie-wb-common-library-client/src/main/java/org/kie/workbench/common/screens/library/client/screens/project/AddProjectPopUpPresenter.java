@@ -18,9 +18,13 @@ package org.kie.workbench.common.screens.library.client.screens.project;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -28,6 +32,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.client.preferences.SpaceScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.GAV;
@@ -40,6 +45,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
@@ -76,6 +82,8 @@ public class AddProjectPopUpPresenter {
         String getArtifactId();
 
         String getVersion();
+
+        boolean isBasedOnTemplate();
 
         void setDescription(String description);
         
@@ -116,8 +124,15 @@ public class AddProjectPopUpPresenter {
         String getInvalidVersionMessage();
 
         void setAddButtonEnabled(boolean enabled);
+
+        void setTemplates(List<String> templates,
+                          int selectedIdx);
+
+        String getSelectedTemplate();
+
+        void enableBasedOnTemplatesCheckbox(boolean isEnabled);
     }
-    
+
     private Caller<LibraryService> libraryService;
 
     private BusyIndicatorView busyIndicatorView;
@@ -147,6 +162,10 @@ public class AddProjectPopUpPresenter {
 
     private Logger logger;
 
+    private ArchetypePreferences archetypePreferences;
+
+    private SpaceScopedResolutionStrategySupplier spaceScopedResolutionStrategySupplier;
+
     LibraryInfo libraryInfo;
 
     ParameterizedCommand<WorkspaceProject> successCallback;
@@ -170,7 +189,9 @@ public class AddProjectPopUpPresenter {
                                     final ErrorPopup errorPopup,
                                     final TranslationService translationService,
                                     final Caller<WorkspaceProjectService> projectService,
-                                    final Logger logger) {
+                                    final Logger logger,
+                                    final ArchetypePreferences archetypePreferences,
+                                    final SpaceScopedResolutionStrategySupplier spaceScopedResolutionStrategySupplier) {
         this.libraryService = libraryService;
         this.busyIndicatorView = busyIndicatorView;
         this.notificationEvent = notificationEvent;
@@ -188,6 +209,8 @@ public class AddProjectPopUpPresenter {
         this.logger = logger;
         this.newProjectPath = null;
         this.projectsIndexed = new ArrayList<>();
+        this.archetypePreferences = archetypePreferences;
+        this.spaceScopedResolutionStrategySupplier = spaceScopedResolutionStrategySupplier;
     }
 
     @PostConstruct
@@ -213,7 +236,7 @@ public class AddProjectPopUpPresenter {
                                     view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
                                     view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId() 
                                                                                                              : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
-                                    view.show();
+                                    loadTemplates();
                                 },
                                 error -> {
                                 });
@@ -221,6 +244,43 @@ public class AddProjectPopUpPresenter {
 
     public void add() {
         createProject(DeploymentMode.VALIDATED);
+    }
+
+    private void loadTemplates() {
+        archetypePreferences.load(spaceScopedResolutionStrategySupplier.get(),
+                                  this::finishLoadTemplates,
+                                  error -> {
+                                  });
+    }
+
+    void finishLoadTemplates(final ArchetypePreferences preferences) {
+        final List<String> templates = preferences.getArchetypeSelectionMap()
+                .entrySet()
+                .stream()
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .sorted()
+                .collect(Collectors.toList());
+
+        final boolean templatesAvailable = !templates.isEmpty();
+
+        if (templatesAvailable) {
+            final String defaultSelection = preferences.getDefaultSelection();
+            final int selectedTemplateIdx = IntStream.range(0, templates.size())
+                    .filter(i -> templates.get(i).equals(defaultSelection))
+                    .findFirst()
+                    .orElse(0);
+
+            view.setTemplates(templates, selectedTemplateIdx);
+        } else {
+            view.setTemplates(Collections.singletonList(
+                    translationService.getTranslation(LibraryConstants.NoTemplatesAvailable)),
+                              0);
+        }
+
+        view.enableBasedOnTemplatesCheckbox(templatesAvailable);
+
+        view.show();
     }
 
     private void createProject(final DeploymentMode mode) {
@@ -231,6 +291,7 @@ public class AddProjectPopUpPresenter {
         final String groupId = view.getGroupId();
         final String artifactId = view.getArtifactId();
         final String version = view.getVersion();
+        final String templateAlias = view.isBasedOnTemplate() ? view.getSelectedTemplate() : null;
         
         validateFields(name,
                        groupId,
@@ -262,7 +323,8 @@ public class AddProjectPopUpPresenter {
                                                errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
                                                                                           .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
                                                                             pom,
-                                                                            mode);
+                                                                            mode,
+                                                                            templateAlias);
                        });
     }
 

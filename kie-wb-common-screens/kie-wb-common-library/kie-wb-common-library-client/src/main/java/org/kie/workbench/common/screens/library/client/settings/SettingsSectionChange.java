@@ -22,11 +22,19 @@ public class SettingsSectionChange<T> {
 
     private final Section<T> presenter;
 
-    public SettingsSectionChange(final Section<T> presenter) {
+    private final SettingsSectionChangeType type;
+
+    public SettingsSectionChange(final Section<T> presenter,
+                                 final SettingsSectionChangeType type) {
         this.presenter = presenter;
+        this.type = type;
     }
 
     public Section<T> getSection() {
         return presenter;
+    }
+
+    public SettingsSectionChangeType getType() {
+        return type;
     }
 }

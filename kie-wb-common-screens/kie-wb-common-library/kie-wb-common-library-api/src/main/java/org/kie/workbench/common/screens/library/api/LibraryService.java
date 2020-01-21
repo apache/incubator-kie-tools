@@ -50,6 +50,11 @@ public interface LibraryService {
                                    final POM pom,
                                    final DeploymentMode mode);
 
+    WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
+                                   final POM pom,
+                                   final DeploymentMode mode,
+                                   final String templateId);
+
     Boolean thereIsAProjectInTheWorkbench();
 
     AssetQueryResult getProjectAssets(final ProjectAssetsQuery query);

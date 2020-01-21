@@ -71,6 +71,22 @@
       <artifactId>kie-wb-common-contributors-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-backend</artifactId>
+    </dependency>
+
 
     <!-- errai-cdi-jboss provides gwt-dev with the proper dependency exclusions and should be first on the classpath -->
     <dependency>
@@ -1309,6 +1325,8 @@
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-contributors-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-contributors-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-archetype-mgmt-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-archetype-mgmt-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.server:kie-server-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.server:kie-server-controller-api</compileSourcesArtifact>

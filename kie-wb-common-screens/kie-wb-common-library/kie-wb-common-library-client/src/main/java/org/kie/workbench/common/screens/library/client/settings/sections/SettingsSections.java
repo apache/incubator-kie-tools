@@ -19,9 +19,8 @@ package org.kie.workbench.common.screens.library.client.settings.sections;
 import java.util.List;
 
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
-import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 
-public interface SettingsSections {
+public interface SettingsSections<T> {
 
-    List<Section<ProjectScreenModel>> getList();
+    List<Section<T>> getList();
 }

@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 
 import elemental2.promise.Promise;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
+import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChangeType;
 import org.uberfire.client.promise.Promises;
 
 public abstract class Section<T> {
@@ -48,7 +49,13 @@ public abstract class Section<T> {
     }
 
     public void fireChangeEvent() {
-        settingsSectionChangeEvent.fire(new SettingsSectionChange<>(this));
+        settingsSectionChangeEvent.fire(new SettingsSectionChange<>(this,
+                                                                    SettingsSectionChangeType.CHANGE));
+    }
+
+    public void fireResetEvent() {
+        settingsSectionChangeEvent.fire(new SettingsSectionChange<>(this,
+                                                                    SettingsSectionChangeType.RESET));
     }
 
     public MenuItem<T> getMenuItem() {

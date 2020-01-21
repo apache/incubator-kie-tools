@@ -40,11 +40,13 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.settings.SettingsScreenPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -62,12 +64,14 @@ public class LibraryScreen {
     private EmptyLibraryScreen emptyLibraryScreen;
     private PopulatedLibraryScreen populatedLibraryScreen;
     private OrgUnitsMetricsScreen orgUnitsMetricsScreen;
+    private SettingsScreenPresenter settingsScreenPresenter;
     private ContributorsListPresenter contributorsListPresenter;
     private Caller<LibraryService> libraryService;
     private LibraryPlaces libraryPlaces;
     private SpaceContributorsListServiceImpl spaceContributorsListService;
     private Event<NotificationEvent> notificationEvent;
     private TranslationService translationService;
+    private Promises promises;
 
     @Inject
     public LibraryScreen(final View view,
@@ -78,12 +82,14 @@ public class LibraryScreen {
                          final EmptyLibraryScreen emptyLibraryScreen,
                          final PopulatedLibraryScreen populatedLibraryScreen,
                          final OrgUnitsMetricsScreen orgUnitsMetricsScreen,
+                         final SettingsScreenPresenter settingsScreenPresenter,
                          final ContributorsListPresenter contributorsListPresenter,
                          final Caller<LibraryService> libraryService,
                          final LibraryPlaces libraryPlaces,
                          final SpaceContributorsListServiceImpl spaceContributorsListService,
                          final Event<NotificationEvent> notificationEvent,
-                         final TranslationService translationService) {
+                         final TranslationService translationService,
+                         final Promises promises) {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
         this.projectContext = projectContext;
@@ -92,12 +98,14 @@ public class LibraryScreen {
         this.emptyLibraryScreen = emptyLibraryScreen;
         this.populatedLibraryScreen = populatedLibraryScreen;
         this.orgUnitsMetricsScreen = orgUnitsMetricsScreen;
+        this.settingsScreenPresenter = settingsScreenPresenter;
         this.contributorsListPresenter = contributorsListPresenter;
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
         this.spaceContributorsListService = spaceContributorsListService;
         this.notificationEvent = notificationEvent;
         this.translationService = translationService;
+        this.promises = promises;
     }
 
     @PostConstruct
@@ -108,6 +116,7 @@ public class LibraryScreen {
 
         view.init(this);
         view.setTitle(activeOU.getName());
+        view.showSettingsTab(organizationalUnitController.canUpdateOrgUnit(activeOU));
 
         showProjects();
 
@@ -186,6 +195,15 @@ public class LibraryScreen {
         orgUnitsMetricsScreen.refresh();
         if (view.isMetricsTabActive()) {
             view.updateContent(orgUnitsMetricsScreen.getView().getElement());
+        }
+    }
+
+    public void showSettings() {
+        if (view.isSettingsTabActive()) {
+            settingsScreenPresenter.setupUsingCurrentSection().then(v -> {
+                view.updateContent(settingsScreenPresenter.getView().getElement());
+                return promises.resolve();
+            });
         }
     }
 
@@ -269,5 +287,9 @@ public class LibraryScreen {
         boolean isContributorsTabActive();
 
         boolean isMetricsTabActive();
+
+        boolean isSettingsTabActive();
+
+        void showSettingsTab(boolean isVisible);
     }
 }

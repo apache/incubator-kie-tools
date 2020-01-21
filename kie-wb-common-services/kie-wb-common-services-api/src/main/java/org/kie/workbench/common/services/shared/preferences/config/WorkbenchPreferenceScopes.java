@@ -26,6 +26,7 @@ public class WorkbenchPreferenceScopes {
     public static final String GLOBAL = GuvnorPreferenceScopes.GLOBAL;
     public static final String USER = GuvnorPreferenceScopes.USER;
     public static final String PROJECT = GuvnorPreferenceScopes.PROJECT;
+    public static final String SPACE = GuvnorPreferenceScopes.SPACE;
 
     /**
      * Must include all scopes that are defined separately for each user.
@@ -36,6 +37,7 @@ public class WorkbenchPreferenceScopes {
         List<String> userScopedScopes = new ArrayList<>();
 
         userScopedScopes.add(PROJECT);
+        userScopedScopes.add(SPACE);
 
         return userScopedScopes;
     }

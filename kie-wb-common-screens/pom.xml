@@ -30,6 +30,7 @@
     <module>kie-wb-common-workbench</module>
     <module>kie-wb-common-datasource-mgmt</module>
     <module>kie-wb-common-library</module>
+    <module>kie-wb-common-archetype-mgmt</module>
   </modules>
 
 </project>

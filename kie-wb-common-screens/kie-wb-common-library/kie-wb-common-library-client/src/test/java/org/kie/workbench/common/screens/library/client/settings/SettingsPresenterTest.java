@@ -522,7 +522,8 @@ public class SettingsPresenterTest {
         final Section<ProjectScreenModel> section = newMockedSection();
         doReturn(true).when(sectionManager).manages(eq(section));
 
-        presenter.onSettingsSectionChanged(new SettingsSectionChange<>(section));
+        presenter.onSettingsSectionChanged(new SettingsSectionChange<>(section,
+                                                                       SettingsSectionChangeType.CHANGE));
 
         verify(sectionManager).updateDirtyIndicator(eq(section));
     }

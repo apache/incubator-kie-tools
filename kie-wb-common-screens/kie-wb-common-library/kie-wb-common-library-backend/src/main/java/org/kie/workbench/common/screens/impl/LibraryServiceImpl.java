@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -52,6 +51,7 @@ import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
@@ -110,6 +110,7 @@ public class LibraryServiceImpl implements LibraryService {
     private IndexStatusOracle indexOracle;
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
     private ClusterService clusterService;
+    private ArchetypeService archetypeService;
 
     public LibraryServiceImpl() {
     }
@@ -128,7 +129,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final UserManagerService userManagerService,
                               final IndexStatusOracle indexOracle,
                               final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
-                              final ClusterService clusterService) {
+                              final ClusterService clusterService,
+                              final ArchetypeService archetypeService) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -143,6 +145,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.indexOracle = indexOracle;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
         this.clusterService = clusterService;
+        this.archetypeService = archetypeService;
     }
 
     @Override
@@ -203,10 +206,22 @@ public class LibraryServiceImpl implements LibraryService {
     public WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
                                           final POM pom,
                                           final DeploymentMode mode) {
+        return createProject(activeOrganizationalUnit,
+                             pom,
+                             mode,
+                             null);
+    }
+
+    @Override
+    public WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
+                                          final POM pom,
+                                          final DeploymentMode mode,
+                                          final String templateId) {
         return projectService.newProject(activeOrganizationalUnit,
                                          pom,
                                          mode,
-                                         getRepositoryContributors(activeOrganizationalUnit));
+                                         getRepositoryContributors(activeOrganizationalUnit),
+                                         resolveTemplateRepository(templateId));
     }
 
     private List<Contributor> getRepositoryContributors(final OrganizationalUnit organizationalUnit) {
@@ -228,6 +243,10 @@ public class LibraryServiceImpl implements LibraryService {
                                          ContributorType.OWNER));
 
         return contributors;
+    }
+
+    private Repository resolveTemplateRepository(final String templateId) {
+        return templateId != null ? archetypeService.getTemplateRepository(templateId) : null;
     }
 
     @Override

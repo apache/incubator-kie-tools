@@ -39,8 +39,8 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImpl implements Workben
     }
 
     @Override
-    public PreferenceScopeResolutionStrategyInfo getUserInfoFor( final String scopeType,
-                                                                 final String scopeKey ) {
+    public PreferenceScopeResolutionStrategyInfo getUserInfoFor(final String scopeType,
+                                                                final String scopeKey ) {
         PreferenceScopeResolutionStrategy scopeResolutionStrategy;
 
         if ( scopeType != null ) {
@@ -48,15 +48,29 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImpl implements Workben
             PreferenceScope userScopedScope;
 
             if ( scopeKey != null ) {
-                userScopedScope = scopeFactory.createScope( scopeType, scopeKey );
+                userScopedScope = scopeFactory.createScope(scopeType, scopeKey );
             } else {
-                userScopedScope = scopeFactory.createScope( scopeType );
+                userScopedScope = scopeFactory.createScope(scopeType );
             }
 
-            PreferenceScope projectUserScope = scopeFactory.createScope( userScope, userScopedScope );
-            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy( scopeFactory, projectUserScope );
+            PreferenceScope projectUserScope = scopeFactory.createScope(userScope, userScopedScope );
+            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy(scopeFactory, projectUserScope );
         } else {
-            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy( scopeFactory );
+            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy(scopeFactory );
+        }
+
+        return scopeResolutionStrategy.getInfo();
+    }
+
+    @Override
+    public PreferenceScopeResolutionStrategyInfo getSpaceInfoFor(final String scopeKey) {
+        PreferenceScopeResolutionStrategy scopeResolutionStrategy;
+
+        if (scopeKey != null) {
+            final PreferenceScope spaceScope = scopeFactory.createScope(WorkbenchPreferenceScopes.SPACE, scopeKey);
+            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy(scopeFactory, spaceScope);
+        } else {
+            scopeResolutionStrategy = new WorkbenchPreferenceScopeResolutionStrategy(scopeFactory);
         }
 
         return scopeResolutionStrategy.getInfo();

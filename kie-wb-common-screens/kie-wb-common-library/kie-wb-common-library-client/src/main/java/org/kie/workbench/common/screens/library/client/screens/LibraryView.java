@@ -79,6 +79,14 @@ public class LibraryView implements LibraryScreen.View,
     Anchor metricsTab;
 
     @Inject
+    @DataField("settings-tab-container")
+    ListItem settingsTabContainer;
+
+    @Inject
+    @DataField("settings-tab")
+    Anchor settingsTab;
+
+    @Inject
     @DataField("main-container")
     Div mainContainer;
 
@@ -102,6 +110,7 @@ public class LibraryView implements LibraryScreen.View,
         projectsTabContainer.getClassList().add("active");
         contributorsTabContainer.getClassList().remove("active");
         metricsTabContainer.getClassList().remove("active");
+        settingsTabContainer.getClassList().remove("active");
 
         presenter.showProjects();
     }
@@ -111,6 +120,7 @@ public class LibraryView implements LibraryScreen.View,
         projectsTabContainer.getClassList().remove("active");
         contributorsTabContainer.getClassList().add("active");
         metricsTabContainer.getClassList().remove("active");
+        settingsTabContainer.getClassList().remove("active");
 
         presenter.showContributors();
     }
@@ -120,8 +130,19 @@ public class LibraryView implements LibraryScreen.View,
         projectsTabContainer.getClassList().remove("active");
         contributorsTabContainer.getClassList().remove("active");
         metricsTabContainer.getClassList().add("active");
+        settingsTabContainer.getClassList().remove("active");
 
         presenter.showMetrics();
+    }
+
+    @EventHandler("settings-tab")
+    public void showSettings(final ClickEvent event) {
+        projectsTabContainer.getClassList().remove("active");
+        contributorsTabContainer.getClassList().remove("active");
+        metricsTabContainer.getClassList().remove("active");
+        settingsTabContainer.getClassList().add("active");
+
+        presenter.showSettings();
     }
 
     @Override
@@ -158,5 +179,16 @@ public class LibraryView implements LibraryScreen.View,
     @Override
     public boolean isMetricsTabActive() {
         return metricsTabContainer.getClassList().contains("active");
+    }
+
+    @Override
+    public boolean isSettingsTabActive() {
+        return settingsTabContainer.getClassList().contains("active");
+    }
+
+    @Override
+    public void showSettingsTab(final boolean isVisible) {
+        settingsTab.setHidden(!isVisible);
+        settingsTabContainer.setHidden(!isVisible);
     }
 }

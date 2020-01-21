@@ -16,11 +16,17 @@
 package org.kie.workbench.common.screens.library.client.screens.project;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.client.preferences.SpaceScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
@@ -32,11 +38,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.refactoring.model.index.events.IndexingFinishedEvent;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
@@ -55,7 +63,17 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -113,6 +131,12 @@ public class AddProjectPopUpPresenterTest {
     private LibraryInfo libraryInfo;
     private OrganizationalUnit selectedOrganizationalUnit;
 
+    @Mock
+    private ArchetypePreferences archetypePreferences;
+
+    @Mock
+    private SpaceScopedResolutionStrategySupplier spaceScopedResolutionStrategySupplier;
+
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
@@ -143,7 +167,9 @@ public class AddProjectPopUpPresenterTest {
                                                      errorPopup,
                                                      translationService,
                                                      projectServiceCaller,
-                                                     logger));
+                                                     logger,
+                                                     archetypePreferences,
+                                                     spaceScopedResolutionStrategySupplier));
 
         doReturn("baseUrl").when(presenter).getBaseURL();
 
@@ -159,7 +185,7 @@ public class AddProjectPopUpPresenterTest {
         doReturn(true).when(validationService).validateArtifactId(any());
         doReturn(true).when(validationService).validateGAVVersion(any());
 
-        doReturn(mock(WorkspaceProject.class)).when(libraryService).createProject(any(), any(), any());
+        doReturn(mock(WorkspaceProject.class)).when(libraryService).createProject(any(), any(), any(), anyString());
 
         presenter.setup();
     }
@@ -174,7 +200,7 @@ public class AddProjectPopUpPresenterTest {
     public void cancelTest() {
         presenter.cancel();
 
-        view.hide();
+        verify(view).hide();
     }
 
     @Test
@@ -192,7 +218,8 @@ public class AddProjectPopUpPresenterTest {
         verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
-                                             eq(DeploymentMode.VALIDATED));
+                                             eq(DeploymentMode.VALIDATED),
+                                             anyString());
         verify(view).setAddButtonEnabled(true);
     }
 
@@ -215,7 +242,8 @@ public class AddProjectPopUpPresenterTest {
         verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
-                                             eq(DeploymentMode.VALIDATED));
+                                             eq(DeploymentMode.VALIDATED),
+                                             anyString());
         verify(view).setAddButtonEnabled(true);
 
         final POM pom = pomArgumentCaptor.getValue();
@@ -251,7 +279,8 @@ public class AddProjectPopUpPresenterTest {
         verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
-                                             eq(DeploymentMode.VALIDATED));
+                                             eq(DeploymentMode.VALIDATED),
+                                             anyString());
         verify(view).setAddButtonEnabled(true);
         
         final POM pom = pomArgumentCaptor.getValue();
@@ -284,13 +313,29 @@ public class AddProjectPopUpPresenterTest {
     }
 
     @Test
+    public void createProjectFromTemplateTest() {
+        doReturn("test").when(view).getName();
+        doReturn("description").when(view).getDescription();
+        doReturn(true).when(view).isBasedOnTemplate();
+        doReturn("template").when(view).getSelectedTemplate();
+
+        presenter.add();
+
+        verify(libraryService).createProject(any(),
+                                             any(),
+                                             any(),
+                                             eq("template"));
+    }
+
+    @Test
     public void createProjectWithDuplicatedNameTest() {
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
         doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(any(),
                                                                                      any(),
-                                                                                     any());
+                                                                                     any(),
+                                                                                     anyString());
         doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
                 .when(presenter).isDuplicatedProjectName(any());
 
@@ -315,7 +360,7 @@ public class AddProjectPopUpPresenterTest {
         doReturn("description").when(view).getDescription();
 
         doThrow(new IllegalStateException("New repository should always have a branch."))
-                .when(libraryService).createProject(any(), any(), any());
+                .when(libraryService).createProject(any(), any(), any(), anyString());
 
         presenter.add();
 
@@ -552,7 +597,7 @@ public class AddProjectPopUpPresenterTest {
         final Path projectRootPath = mock(Path.class);
         doReturn(projectRootPath).when(project).getRootPath();
         doReturn(project).when(projectService).resolveProject(any(Path.class));
-        doReturn(project).when(libraryService).createProject(any(), any(), any());
+        doReturn(project).when(libraryService).createProject(any(), any(), any(), anyString());
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
@@ -574,7 +619,7 @@ public class AddProjectPopUpPresenterTest {
         final Path projectRootPath = mock(Path.class);
         doReturn(projectRootPath).when(project).getRootPath();
         doReturn(project).when(projectService).resolveProject(any(Path.class));
-        doReturn(project).when(libraryService).createProject(any(), any(), any());
+        doReturn(project).when(libraryService).createProject(any(), any(), any(), anyString());
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
@@ -634,5 +679,91 @@ public class AddProjectPopUpPresenterTest {
         verify(view).setGroupId("group");
         verify(view, never()).setDescription(any());
         verify(view).setArtifactId("ProjectTest");
+    }
+
+    @Test
+    public void testLoadTemplatesWhenAllAvailable() {
+        final ArchetypePreferences preferences = mock(ArchetypePreferences.class);
+
+        final Map<String, Boolean> archetypeSelectionMap = new HashMap<>();
+        archetypeSelectionMap.put("template1", true);
+        archetypeSelectionMap.put("template2", true);
+        archetypeSelectionMap.put("template3", true);
+
+        doReturn(archetypeSelectionMap).when(preferences).getArchetypeSelectionMap();
+        doReturn("template2").when(preferences).getDefaultSelection();
+
+        final List<String> templates = Arrays.asList("template1", "template2", "template3");
+
+        presenter.finishLoadTemplates(preferences);
+
+        verify(view).setTemplates(templates, 1);
+    }
+
+    @Test
+    public void testLoadTemplatesWhenSomeAvailable() {
+        final ArchetypePreferences preferences = mock(ArchetypePreferences.class);
+
+        final Map<String, Boolean> archetypeSelectionMap = new HashMap<>();
+        archetypeSelectionMap.put("template1", true);
+        archetypeSelectionMap.put("template2", true);
+        archetypeSelectionMap.put("template3", false);
+
+        doReturn(archetypeSelectionMap).when(preferences).getArchetypeSelectionMap();
+        doReturn("template2").when(preferences).getDefaultSelection();
+
+        final List<String> templates = Arrays.asList("template1", "template2");
+
+        presenter.finishLoadTemplates(preferences);
+
+        verify(view).setTemplates(templates, 1);
+    }
+
+    @Test
+    public void testLoadTemplatesWhenDefaultNotPresent() {
+        final ArchetypePreferences preferences = mock(ArchetypePreferences.class);
+
+        final Map<String, Boolean> archetypeSelectionMap = new HashMap<>();
+        archetypeSelectionMap.put("template1", true);
+        archetypeSelectionMap.put("template2", true);
+        archetypeSelectionMap.put("template3", false);
+
+        doReturn(archetypeSelectionMap).when(preferences).getArchetypeSelectionMap();
+        doReturn("template3").when(preferences).getDefaultSelection();
+
+        final List<String> templates = Arrays.asList("template1", "template2");
+
+        presenter.finishLoadTemplates(preferences);
+
+        verify(view).setTemplates(templates, 0);
+    }
+
+    @Test
+    public void testLoadTemplatesWhenEmpty() {
+        final ArchetypePreferences preferences = mock(ArchetypePreferences.class);
+        doReturn(Collections.emptyMap()).when(preferences).getArchetypeSelectionMap();
+
+        presenter.finishLoadTemplates(preferences);
+
+        verify(view).setTemplates(Collections.singletonList(
+                translationService.getTranslation(LibraryConstants.NoTemplatesAvailable)),
+                                  0);
+    }
+
+    @Test
+    public void testLoadTemplatesWhenNoOneAvailable() {
+        final ArchetypePreferences preferences = mock(ArchetypePreferences.class);
+        final Map<String, Boolean> archetypeSelectionMap = new HashMap<>();
+        archetypeSelectionMap.put("template1", false);
+        archetypeSelectionMap.put("template2", false);
+        archetypeSelectionMap.put("template3", false);
+
+        doReturn(archetypeSelectionMap).when(preferences).getArchetypeSelectionMap();
+
+        presenter.finishLoadTemplates(preferences);
+
+        verify(view).setTemplates(Collections.singletonList(
+                translationService.getTranslation(LibraryConstants.NoTemplatesAvailable)),
+                                  0);
     }
 }

@@ -66,6 +66,7 @@ public class DefaultAdminPageHelperTest {
     private static String MANAGE_PREFERENCES = "ManagePreferences";
     private static String SERTIVCE_TASKS_ADMIN = "ServiceTasksAdministration";
     private static String DATA_TRANSFER = "DataTransfer";
+    private static String ARCHETYPES = "Archetypes";
 
     @Mock
     private AdminPage adminPage;
@@ -405,6 +406,31 @@ public class DefaultAdminPageHelperTest {
     private void verifyDataTransferAdded(boolean expected) {
         verify(adminPage, expected ? times(1) : never())
             .addTool(eq("root"), eq(DATA_TRANSFER), any(), eq("services"), any(Command.class));
+    }
+
+    @Test
+    public void archetypesAddedTest() {
+        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
+                                                            any(User.class));
+        defaultAdminPageHelper.setup();
+        verifyArchetypesAdded(true);
+    }
+
+    @Test
+    public void archetypesNotAddedTest() {
+        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
+                                                             any(User.class));
+        defaultAdminPageHelper.setup();
+        verifyArchetypesAdded(false);
+    }
+
+    private void verifyArchetypesAdded(final boolean expected) {
+        verify(adminPage, expected ? times(1) : never())
+                .addTool(eq("root"),
+                         eq(ARCHETYPES),
+                         any(),
+                         eq("advanced"),
+                         any(Command.class));
     }
 
     private void verifyExperimentalFeatureAdded(final boolean addExperimental, final boolean addFeatures) {

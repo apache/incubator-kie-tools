@@ -273,6 +273,15 @@ public class LibraryConstants {
     public static final String Version = "Version";
 
     @TranslationKey(defaultValue = "")
+    public static final String BasedOnTemplate = "BasedOnTemplate";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoTemplatesAvailable = "NoTemplatesAvailable";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ArchetypeListUpdatedMessage = "ArchetypeListUpdatedMessage";
+
+    @TranslationKey(defaultValue = "")
     public static final String ImportProject = "ImportProject";
 
     @TranslationKey(defaultValue = "")

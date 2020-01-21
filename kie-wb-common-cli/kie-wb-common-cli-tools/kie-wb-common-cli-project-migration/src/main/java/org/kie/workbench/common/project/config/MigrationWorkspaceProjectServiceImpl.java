@@ -21,20 +21,21 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.backend.server.WorkspaceProjectServiceImpl;
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
-import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.io.IOService;
+import org.uberfire.spaces.SpacesAPI;
 
 @Migration
 public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServiceImpl {
@@ -53,9 +54,10 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
                                                 final Instance<ModuleService<? extends Module>> moduleServices,
                                                 final ModuleRepositoryResolver repositoryResolver,
                                                 @Named("ioStrategy") final IOService ioService,
+                                                final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
                                                 final PathUtil pathUtil,
                                                 final ChangeRequestService changeRequestService,
-                                                final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
+                                                final POMService pomService) {
         super(organizationalUnitService,
               repositoryService,
               spaces,
@@ -65,8 +67,9 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
               moduleServices,
               repositoryResolver,
               ioService,
+              spaceConfigStorageRegistry,
               pathUtil,
               changeRequestService,
-              spaceConfigStorageRegistry);
+              pomService);
     }
 }

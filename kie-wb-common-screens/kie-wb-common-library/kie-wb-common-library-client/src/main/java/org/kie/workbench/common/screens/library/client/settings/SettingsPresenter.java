@@ -102,7 +102,7 @@ public class SettingsPresenter {
     public SettingsPresenter(final View view,
                              final Promises promises,
                              final Event<NotificationEvent> notificationEvent,
-                             final @Customizable SettingsSections settingsSections,
+                             final @Customizable SettingsSections<ProjectScreenModel> settingsSections,
                              final SavePopUpPresenter savePopUpPresenter,
                              final Caller<ProjectScreenService> projectScreenService,
                              final WorkspaceProjectContext projectContext,
@@ -330,7 +330,9 @@ public class SettingsPresenter {
             return;
         }
 
-        sectionManager.updateDirtyIndicator(settingsSectionChange.getSection());
+        if (settingsSectionChange.getType() == SettingsSectionChangeType.CHANGE) {
+            sectionManager.updateDirtyIndicator(settingsSectionChange.getSection());
+        }
     }
 
     public boolean mayClose() {

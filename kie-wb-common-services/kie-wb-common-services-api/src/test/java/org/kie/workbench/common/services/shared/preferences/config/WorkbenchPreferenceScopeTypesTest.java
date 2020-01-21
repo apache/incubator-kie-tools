@@ -18,13 +18,16 @@ package org.kie.workbench.common.services.shared.preferences.config;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.UsernameProvider;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 public class WorkbenchPreferenceScopeTypesTest {
 
@@ -33,34 +36,40 @@ public class WorkbenchPreferenceScopeTypesTest {
     @Before
     public void setup() {
         final SessionInfo sessionInfo = new SessionInfoMock();
-        final UsernameProvider usernameProvider = mock( UsernameProvider.class );
-        doReturn( sessionInfo.getIdentity().getIdentifier() ).when( usernameProvider ).get();
-        scopeTypes = new WorkbenchPreferenceScopeTypes( usernameProvider );
+        final UsernameProvider usernameProvider = mock(UsernameProvider.class);
+        doReturn(sessionInfo.getIdentity().getIdentifier()).when(usernameProvider).get();
+        scopeTypes = new WorkbenchPreferenceScopeTypes(usernameProvider);
     }
 
     @Test
     public void typesRequireKeyTest() {
-        assertFalse( scopeTypes.typeRequiresKey( WorkbenchPreferenceScopes.GLOBAL ) );
-        assertFalse( scopeTypes.typeRequiresKey( WorkbenchPreferenceScopes.USER ) );
-        assertTrue( scopeTypes.typeRequiresKey( WorkbenchPreferenceScopes.PROJECT ) );
+        assertFalse(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.GLOBAL));
+        assertFalse(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.USER));
+        assertTrue(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.PROJECT));
+        assertTrue(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.SPACE));
     }
 
     @Test
     public void defaultKeysForTypesTest() {
-        assertEquals( WorkbenchPreferenceScopes.GLOBAL, scopeTypes.getDefaultKeyFor( WorkbenchPreferenceScopes.GLOBAL ) );
-        assertEquals( "admin", scopeTypes.getDefaultKeyFor( WorkbenchPreferenceScopes.USER ) );
+        assertEquals(WorkbenchPreferenceScopes.GLOBAL, scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.GLOBAL));
+        assertEquals("admin", scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.USER));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
-    public void defaultKeysForTypesThatDoNotHaveDefaultKeysTest() {
-        scopeTypes.getDefaultKeyFor( WorkbenchPreferenceScopes.PROJECT );
+    public void defaultKeyForProjectTest() {
+        scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.PROJECT);
+    }
+
+    @Test(expected = InvalidPreferenceScopeException.class)
+    public void defaultKeyForSpaceTest() {
+        scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.SPACE);
     }
 
     @Test
     public void isEmptyTest() {
-        assertTrue( scopeTypes.isEmpty( null ) );
-        assertTrue( scopeTypes.isEmpty( "" ) );
-        assertTrue( scopeTypes.isEmpty( "  " ) );
-        assertFalse( scopeTypes.isEmpty( "anyString" ) );
+        assertTrue(scopeTypes.isEmpty(null));
+        assertTrue(scopeTypes.isEmpty(""));
+        assertTrue(scopeTypes.isEmpty("  "));
+        assertFalse(scopeTypes.isEmpty("anyString"));
     }
 }

@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -28,6 +33,7 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.common.client.dom.TextArea;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -91,6 +97,21 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     @DataField("version")
     Input version;
 
+    @Inject
+    @DataField("based-on-template-checkbox")
+    Input basedOnTemplateCheckbox;
+
+    @Inject
+    @DataField("based-on-template-label")
+    Span basedOnTemplateLabel;
+
+    @Inject
+    @DataField("template-select")
+    private HTMLSelectElement templateSelect;
+
+    @Inject
+    private ManagedInstance<AddProjectPopUpView.TemplateOptionView> options;
+
     private Button addButton;
 
     public AddProjectPopUpView() {
@@ -111,6 +132,7 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     public void init(final AddProjectPopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
+        enableBasedOnTemplate(false);
     }
 
     @Override
@@ -136,6 +158,11 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     @Override
     public String getVersion() {
         return version.getValue();
+    }
+
+    @Override
+    public boolean isBasedOnTemplate() {
+        return basedOnTemplateCheckbox.getChecked();
     }
 
     @Override
@@ -253,6 +280,30 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
         }
     }
 
+    @Override
+    public void setTemplates(final List<String> templates,
+                             final int selectedIdx) {
+        templateSelect.innerHTML = "";
+
+        templates.forEach(template -> {
+            final TemplateOptionView option = options.get();
+            option.setup(template);
+            templateSelect.appendChild(option.getElement());
+        });
+
+        templateSelect.selectedIndex = selectedIdx;
+    }
+
+    @Override
+    public String getSelectedTemplate() {
+        return templateSelect.value;
+    }
+
+    @Override
+    public void enableBasedOnTemplatesCheckbox(final boolean isEnabled) {
+        basedOnTemplateCheckbox.setDisabled(!isEnabled);
+    }
+
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(ts.format(LibraryConstants.AddProject))
@@ -294,6 +345,10 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
         return button;
     }
 
+    private void enableBasedOnTemplate(final boolean isEnabled) {
+        templateSelect.disabled = !isEnabled;
+    }
+
     @Override
     public void showBusyIndicator(final String message) {
         BusyPopup.showMessage(message);
@@ -315,11 +370,27 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
             presenter.restoreAdvancedOptions();
         }
     }
+
+    @EventHandler("based-on-template-checkbox")
+    public void onIncludeChanged(final ChangeEvent event) {
+        enableBasedOnTemplate(basedOnTemplateCheckbox.getChecked());
+    }
     
     @EventHandler("name")
     public void setProjectNameAndArtifactId(final KeyUpEvent keyUpEvent) {
         presenter.setDefaultArtifactId();
     }
 
+    @Templated("AddProjectPopUpView.html#template-select-option")
+    public static class TemplateOptionView implements org.jboss.errai.ui.client.local.api.elemental2.IsElement {
 
+        @Inject
+        @DataField("template-select-option")
+        HTMLOptionElement option;
+
+        public void setup(final String templateName) {
+            option.value = templateName;
+            option.innerHTML = templateName;
+        }
+    }
 }

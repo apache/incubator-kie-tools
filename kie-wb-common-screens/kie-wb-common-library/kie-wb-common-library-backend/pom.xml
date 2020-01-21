@@ -133,6 +133,10 @@
       <artifactId>kie-wb-common-refactoring-backend</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-archetype-mgmt-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-api</artifactId>
     </dependency>

@@ -43,5 +43,16 @@
             <label class="form-control-label required" data-i18n-key="Version"></label>
             <input type="text" class="form-control" data-field="version"/>
         </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" data-field="based-on-template-checkbox">
+                    <span data-i18n-key="BasedOnTemplate" data-field="based-on-template-label"></span>
+                </label>
+            </div>
+            <select class="combobox form-control" data-field="template-select" id="templateSelector">
+                <option data-field="template-select-option"></option>
+            </select>
+        </div>
     </div>
 </div>

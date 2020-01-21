@@ -39,12 +39,15 @@ import org.kie.workbench.common.screens.library.client.screens.importrepository.
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.settings.SettingsScreenPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -89,6 +92,12 @@ public class LibraryScreenTest {
     private OrgUnitsMetricsScreen.View orgUnitsMetricsView;
 
     @Mock
+    private SettingsScreenPresenter settingsScreenPresenter;
+
+    @Mock
+    private SettingsScreenPresenter.View settingsScreenView;
+
+    @Mock
     private ContributorsListPresenter contributorsListPresenter;
 
     @Mock
@@ -117,11 +126,15 @@ public class LibraryScreenTest {
 
     private LibraryScreen libraryScreen;
 
+    private Promises promises;
+
     @Before
     public void setup() {
+        promises = new SyncPromises();
 
         doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
         doReturn(orgUnitsMetricsView).when(orgUnitsMetricsScreen).getView();
+        doReturn(settingsScreenView).when(settingsScreenPresenter).getView();
 
         doReturn(true).when(projectController).canCreateProjects(any());
         doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
@@ -151,12 +164,14 @@ public class LibraryScreenTest {
                                               emptyLibraryScreen,
                                               populatedLibraryScreen,
                                               orgUnitsMetricsScreen,
+                                              settingsScreenPresenter,
                                               contributorsListPresenter,
                                               new CallerMock<>(libraryService),
                                               libraryPlaces,
                                               spaceContributorsListService,
                                               notificationEvent,
-                                              translationService));
+                                              translationService,
+                                              promises));
     }
 
     @Test
@@ -310,6 +325,32 @@ public class LibraryScreenTest {
         doReturn(true).when(view).isMetricsTabActive();
         libraryScreen.showMetrics();
         verify(orgUnitsMetricsScreen).refresh();
+        verify(view).updateContent(any());
+    }
+
+    @Test
+    public void showSettingsTabWhenUserAllowed() {
+        libraryScreen.init();
+
+        verify(view).showSettingsTab(true);
+    }
+
+    @Test
+    public void hideSettingsTabWhenUserNotAllowed() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+
+        libraryScreen.init();
+
+        verify(view).showSettingsTab(false);
+    }
+
+    @Test
+    public void showSettingsTest() {
+        doReturn(true).when(view).isSettingsTabActive();
+        doReturn(promises.resolve()).when(settingsScreenPresenter).setupUsingCurrentSection();
+
+        libraryScreen.showSettings();
+
         verify(view).updateContent(any());
     }
 

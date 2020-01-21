@@ -1,0 +1,80 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<table class="archetype-item">
+    <caption hidden></caption>
+    <thead>
+    <th scope="row"></th>
+    </thead>
+    <tbody>
+    <tr class="kie-tablelist__row archetype-row-item" data-field="archetype-item-root">
+        <td class="kie-tablelist__cell" data-field="cell-include">
+            <input data-field="include" type="checkbox"/>
+        </td>
+        <td class="kie-tablelist__cell">
+            <span data-field="group-id"></span>
+        </td>
+        <td class="kie-tablelist__cell">
+            <span data-field="artifact-id"></span>
+        </td>
+        <td class="kie-tablelist__cell">
+            <span data-field="version"></span>
+        </td>
+        <td class="kie-tablelist__cell">
+            <span data-field="created-date"></span>
+        </td>
+        <td class="kie-tablelist__cell" data-field="cell-status">
+            <div class="all-status">
+                <div data-field="status-valid"
+                     data-placement="bottom"
+                     data-toggle="tooltip"
+                     hidden>
+                    <span class="label label-success"><em class="fa fa-check"></em></span>
+                </div>
+                <div data-field="status-invalid"
+                     data-placement="bottom"
+                     data-toggle="tooltip"
+                     hidden>
+                    <span class="label label-danger"><em class="pficon pficon-close"></em></span>
+                </div>
+                <div data-field="default-badge"
+                     data-placement="bottom"
+                     data-toggle="tooltip"
+                     hidden>
+                    <span class="label label-info default-badge" data-i18n-key="Default"></span>
+                </div>
+            </div>
+        </td>
+        <td class="kie-tablelist__cell kie-tablelist__cell--actions" data-field="cell-kebab-actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button aria-expanded="false"
+                        aria-haspopup="true"
+                        class="btn btn-link dropdown-toggle"
+                        data-toggle="dropdown"
+                        id="dropdownKebab"
+                        type="button">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul aria-labelledby="dropdownKebab" class="dropdown-menu dropdown-menu-right">
+                    <li data-field="actions-delete"><a data-i18n-key="Delete" href="#"></a></li>
+                    <li data-field="actions-validate"><a data-i18n-key="Validate" href="#"></a></li>
+                    <li data-field="actions-set-as-default"><a data-i18n-key="SetAsDefault" href="#"></a></li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>

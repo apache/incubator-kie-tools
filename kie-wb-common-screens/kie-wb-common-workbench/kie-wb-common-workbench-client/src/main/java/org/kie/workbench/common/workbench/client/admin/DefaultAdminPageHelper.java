@@ -95,6 +95,8 @@ public class DefaultAdminPageHelper {
     @Inject
     Caller<ProfileService> profileService;
 
+    private static final String ADVANCED_CATEGORY = "advanced";
+
     public void setup() {
         setup(true,
               true,
@@ -120,6 +122,7 @@ public class DefaultAdminPageHelper {
         addSSHKeys();
         addProfilePreferences();
         addDataTransferPerspective();
+        addArchetypesPerspective();
     }
 
     private void addDataTransferPerspective() {
@@ -149,12 +152,12 @@ public class DefaultAdminPageHelper {
         profileService.call((Boolean force) -> {
             if (canEditProfilePreferences && !force) {
                 adminPage.addPreference("root",
-                        "ProfilePreferences",
-                        translationService.format(PreferencesConstants.ProfilePreferences_Title),
-                        new Sets.Builder().add("fa").add("fa-list").build(),
-                        "advanced",
-                        scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
-                        AdminPageOptions.WITH_BREADCRUMBS);
+                                        "ProfilePreferences",
+                                        translationService.format(PreferencesConstants.ProfilePreferences_Title),
+                                        new Sets.Builder().add("fa").add("fa-list").build(),
+                                        ADVANCED_CATEGORY,
+                                        scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
+                                        AdminPageOptions.WITH_BREADCRUMBS);
             }
         }).isForce();
     }
@@ -184,7 +187,7 @@ public class DefaultAdminPageHelper {
             adminPage.addTool("root",
                               constants.ExperimentalSettings(),
                               new Sets.Builder().add("fa").add("fa-flask").build(),
-                              "advanced",
+                              ADVANCED_CATEGORY,
                               () -> {
                                   final Command accessExperimentals = () -> placeManager.goTo(PerspectiveIds.EXPERIMENTAL_FEATURES);
                                   accessExperimentals.execute();
@@ -339,6 +342,22 @@ public class DefaultAdminPageHelper {
                                   addAdminBreadcrumbs(PerspectiveIds.DATASET_AUTHORING,
                                                       constants.DataSets(),
                                                       accessDataSets);
+                              });
+        }
+    }
+
+    private void addArchetypesPerspective() {
+        if (hasAccessToPerspective(PerspectiveIds.ARCHETYPE_MANAGEMENT)) {
+            adminPage.addTool("root",
+                              constants.Archetypes(),
+                              new Sets.Builder().add("fa").add("fa-file-code-o").build(),
+                              ADVANCED_CATEGORY,
+                              () -> {
+                                  final Command accessArchetypeMgmt = () -> placeManager.goTo(PerspectiveIds.ARCHETYPE_MANAGEMENT);
+                                  accessArchetypeMgmt.execute();
+                                  addAdminBreadcrumbs(PerspectiveIds.ARCHETYPE_MANAGEMENT,
+                                                      constants.Archetypes(),
+                                                      accessArchetypeMgmt);
                               });
         }
     }
