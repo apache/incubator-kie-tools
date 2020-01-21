@@ -74,4 +74,27 @@ public class BRLFragmentsAnalyzerFromFileTest
 
         assertTrue(analysisReport.isEmpty());
     }
+
+    /*
+    https://issues.redhat.com/browse/DROOLS-4945
+     */
+    @Test
+    public void legalBRLColumns() throws
+            Exception {
+        final String xml = loadResource("TicketsDT.gdst");
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+                .unmarshal(xml);
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
+
+        analyzer.resetChecks();
+        analyzer.analyze();
+
+        final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
+
+        assertTrue(analysisReport.isEmpty());
+    }
+
+
 }
