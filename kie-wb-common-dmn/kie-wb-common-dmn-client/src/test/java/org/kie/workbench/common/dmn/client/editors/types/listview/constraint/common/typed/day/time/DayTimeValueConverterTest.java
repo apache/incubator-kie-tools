@@ -140,6 +140,74 @@ public class DayTimeValueConverterTest {
     }
 
     @Test
+    public void testToDisplayValueWithZeroHour() {
+
+        final String rawValue = "duration(\"P2DT0H8M16S\")";
+        final DayTimeValue value = new DayTimeValue(2, 0, 8, 16);
+        doReturn(value).when(converter).fromDMNString(rawValue);
+        when(translationService.format(DayTimeValueConverter_Days)).thenReturn("days");
+        when(translationService.format(DayTimeValueConverter_Hours)).thenReturn("hours");
+        when(translationService.format(DayTimeValueConverter_Minutes)).thenReturn("minutes");
+        when(translationService.format(DayTimeValueConverter_Seconds)).thenReturn("seconds");
+
+        final String actual = converter.toDisplayValue(rawValue);
+        final String expected = "2 days, 8 minutes, 16 seconds";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToDisplayValueWithZeroDays() {
+
+        final String rawValue = "duration(\"P0DT4H8M16S\")";
+        final DayTimeValue value = new DayTimeValue(0, 4, 8, 16);
+        doReturn(value).when(converter).fromDMNString(rawValue);
+        when(translationService.format(DayTimeValueConverter_Days)).thenReturn("days");
+        when(translationService.format(DayTimeValueConverter_Hours)).thenReturn("hours");
+        when(translationService.format(DayTimeValueConverter_Minutes)).thenReturn("minutes");
+        when(translationService.format(DayTimeValueConverter_Seconds)).thenReturn("seconds");
+
+        final String actual = converter.toDisplayValue(rawValue);
+        final String expected = "4 hours, 8 minutes, 16 seconds";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToDisplayValueWithZeroMinutes() {
+
+        final String rawValue = "duration(\"P2DT4H0M16S\")";
+        final DayTimeValue value = new DayTimeValue(2, 4, 0, 16);
+        doReturn(value).when(converter).fromDMNString(rawValue);
+        when(translationService.format(DayTimeValueConverter_Days)).thenReturn("days");
+        when(translationService.format(DayTimeValueConverter_Hours)).thenReturn("hours");
+        when(translationService.format(DayTimeValueConverter_Minutes)).thenReturn("minutes");
+        when(translationService.format(DayTimeValueConverter_Seconds)).thenReturn("seconds");
+
+        final String actual = converter.toDisplayValue(rawValue);
+        final String expected = "2 days, 4 hours, 16 seconds";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToDisplayValueWithZeroSeconds() {
+
+        final String rawValue = "duration(\"P2DT4H8M0S\")";
+        final DayTimeValue value = new DayTimeValue(2, 4, 8, 0);
+        doReturn(value).when(converter).fromDMNString(rawValue);
+        when(translationService.format(DayTimeValueConverter_Days)).thenReturn("days");
+        when(translationService.format(DayTimeValueConverter_Hours)).thenReturn("hours");
+        when(translationService.format(DayTimeValueConverter_Minutes)).thenReturn("minutes");
+        when(translationService.format(DayTimeValueConverter_Seconds)).thenReturn("seconds");
+
+        final String actual = converter.toDisplayValue(rawValue);
+        final String expected = "2 days, 4 hours, 8 minutes";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void testNumber() {
 
         final JSONValue actual = converter.number(1);

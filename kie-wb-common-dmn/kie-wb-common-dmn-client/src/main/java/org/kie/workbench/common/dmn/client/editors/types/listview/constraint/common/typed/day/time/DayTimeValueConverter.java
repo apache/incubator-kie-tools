@@ -102,6 +102,10 @@ public class DayTimeValueConverter {
     private String pluralize(final int value,
                              final String singular,
                              final String plural) {
+        if (value == 0) {
+            return "";
+        }
+
         if (value == 1) {
             return value + " " + translationService.format(singular);
         }
