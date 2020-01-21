@@ -41,8 +41,8 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
 
 export function SingleEditorApp(props: {
   openFileExtension: string;
-  fileName: string;
   readonly: boolean;
+  getFileName: () => string;
   getFileContents: () => Promise<string | undefined>;
   toolbarContainer: HTMLElement;
   iframeContainer: HTMLElement;
@@ -81,7 +81,7 @@ export function SingleEditorApp(props: {
 
   const openExternalEditor = () => {
     props.getFileContents().then(fileContent => {
-      globals.externalEditorManager?.open(props.fileName, fileContent!, props.readonly);
+      globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
     });
   };
 

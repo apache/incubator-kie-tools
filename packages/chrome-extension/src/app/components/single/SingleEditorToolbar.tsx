@@ -123,7 +123,7 @@ export function SingleEditorToolbar(props: {
         )}
         <textarea
           ref={linkToExternalEditorTextAreaRef}
-          value={props.linkToExternalEditor}
+          defaultValue={props.linkToExternalEditor}
           style={{ opacity: 0, width: 0, height: 0 }}
         />
       </div>
