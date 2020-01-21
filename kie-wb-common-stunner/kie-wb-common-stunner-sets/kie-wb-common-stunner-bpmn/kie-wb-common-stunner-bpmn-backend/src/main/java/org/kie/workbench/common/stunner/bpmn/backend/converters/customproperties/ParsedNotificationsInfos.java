@@ -105,7 +105,7 @@ public class ParsedNotificationsInfos {
     }
 
     private static String replaceBracket(String original) {
-        return original.replaceFirst("\\[", "").replace("]", "");
+        return original.replaceFirst("\\[", "").replaceFirst("\\]([^\\]]*)$",  "$1");
     }
 
     public static NotificationValue of(String type, String body) {

@@ -48,7 +48,7 @@ public class NotificationsInfos {
                     if (assignment != null) {
                         String body = ((FormalExpression) assignment.getFrom()).getBody();
                         if (body != null) {
-                            Arrays.stream(replaceBracket(body).split("\\^")).forEach(b -> {
+                            Arrays.stream(body.split("\\^")).forEach(b -> {
                                 notifications.addValue(ParsedNotificationsInfos.of(targetRef.getName(), b));
                             });
                         }
@@ -64,7 +64,4 @@ public class NotificationsInfos {
         return RESERVED_ASSIGNMENTS.contains(targetName);
     }
 
-    private static String replaceBracket(String original) {
-        return original.replaceFirst("\\[", "").replace("]", "");
-    }
 }

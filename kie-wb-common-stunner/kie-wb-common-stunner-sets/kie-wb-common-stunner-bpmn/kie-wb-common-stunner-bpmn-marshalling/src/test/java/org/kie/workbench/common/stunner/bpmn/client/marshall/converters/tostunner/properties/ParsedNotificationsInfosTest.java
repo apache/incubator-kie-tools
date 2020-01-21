@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstun
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ParsedNotificationsInfosTest {
 
@@ -47,12 +48,43 @@ public class ParsedNotificationsInfosTest {
 
     @Test
     public void testNotificationPartial() {
-        String body = "[from:|tousers:|togroups:|replyTo:|subject:|body:]@[0h]]";
+        String body = "[from:|tousers:|togroups:|replyTo:|subject:|body:]@[0h]";
         NotificationValue actual = ParsedNotificationsInfos.of(AssociationType.NOT_COMPLETED_NOTIFY.getName(), body);
         NotificationValue expected = new NotificationValue();
         expected.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());
         expected.setExpiresAt("0h");
 
+        assertEquals(expected.toString(), actual.toString());
+        assertEquals(expected.toCDATAFormat(), actual.toCDATAFormat());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testNotificationPartialVerticalBarBadFormat() {
+        //Testing for bad format, an extra closing bracket was being used in the validation tests
+        String bodyError = "[from:|tousers:|togroups:|replyTo:|subject:ZZZ&#124;ZZZ&#124;ZZZ&#124;|body:asd&#124;&#124;&#124;asd]@[0h]]";
+        NotificationValue actualError = ParsedNotificationsInfos.of(AssociationType.NOT_COMPLETED_NOTIFY.getName(), bodyError);
+        NotificationValue unexpected = new NotificationValue();
+        unexpected.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());
+        unexpected.setExpiresAt("0h");
+        unexpected.setBody("asd|||asd");
+        unexpected.setSubject("ZZZ|ZZZ|ZZZ|");
+
+        assertNotEquals(unexpected.toString(), actualError.toString());
+        assertNotEquals(unexpected.toCDATAFormat(), actualError.toCDATAFormat());
+        assertNotEquals(unexpected, actualError);
+    }
+
+    @Test
+    public void testNotificationPartialVerticalBarPreservingBrackets() {
+        String body = "[from:|tousers:|togroups:|replyTo:|subject:|body:test[test]]@[PT1M]";
+        NotificationValue actual = ParsedNotificationsInfos.of(AssociationType.NOT_COMPLETED_NOTIFY.getName(), body);
+        NotificationValue expected = new NotificationValue();
+        expected.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());
+        expected.setBody("test[test]");
+        expected.setExpiresAt("PT1M");
+
+        assertEquals(expected.getBody(), actual.getBody());
         assertEquals(expected.toString(), actual.toString());
         assertEquals(expected.toCDATAFormat(), actual.toCDATAFormat());
         assertEquals(expected, actual);
