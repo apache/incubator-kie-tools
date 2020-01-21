@@ -338,4 +338,7 @@ public interface Git {
     void updateRepo(Repository repo);
 
     void updateLeaders(final KetchLeaderCache leaders);
+
+    void removeRemote(String remote,
+                      String ref);
 }

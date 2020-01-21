@@ -55,6 +55,12 @@ public interface WorkspaceProjectService {
                                 final DeploymentMode mode,
                                 final List<Contributor> contributor);
 
+    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
+                                final POM pom,
+                                final DeploymentMode mode,
+                                final List<Contributor> contributor,
+                                final Repository templateRepository);
+
     String createFreshProjectName(final OrganizationalUnit organizationalUnit,
                                   final String name);
 

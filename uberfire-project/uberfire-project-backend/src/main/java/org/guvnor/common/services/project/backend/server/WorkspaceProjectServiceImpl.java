@@ -15,6 +15,7 @@
  */
 package org.guvnor.common.services.project.backend.server;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.Module;
@@ -39,32 +40,38 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
-import org.uberfire.io.IOService;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class WorkspaceProjectServiceImpl
         implements WorkspaceProjectService {
+
+    private static final String GIT_SCHEME = "git";
+    private static final String REMOTE_ORIGIN_REF = "refs/remotes/origin/master";
+    private static final String ORIGIN_KEY = "origin";
 
     private OrganizationalUnitService organizationalUnitService;
     private RepositoryService repositoryService;
@@ -79,6 +86,7 @@ public class WorkspaceProjectServiceImpl
     private IOService ioService;
     private PathUtil pathUtil;
     private ChangeRequestService changeRequestService;
+    private POMService pomService;
 
     public WorkspaceProjectServiceImpl() {
     }
@@ -93,9 +101,10 @@ public class WorkspaceProjectServiceImpl
                                        final Instance<ModuleService<? extends Module>> moduleServices,
                                        final ModuleRepositoryResolver repositoryResolver,
                                        @Named("ioStrategy") final IOService ioService,
+                                       final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
                                        final PathUtil pathUtil,
                                        final ChangeRequestService changeRequestService,
-                                       final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
+                                       final POMService pomService) {
         this.organizationalUnitService = organizationalUnitService;
         this.repositoryService = repositoryService;
         this.spaces = spaces;
@@ -108,6 +117,7 @@ public class WorkspaceProjectServiceImpl
         this.pathUtil = pathUtil;
         this.changeRequestService = changeRequestService;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
+        this.pomService = pomService;
     }
 
     @Override
@@ -192,6 +202,19 @@ public class WorkspaceProjectServiceImpl
                                        final POM pom,
                                        final DeploymentMode mode,
                                        final List<Contributor> contributors) {
+        return newProject(organizationalUnit,
+                          pom,
+                          mode,
+                          contributors,
+                          null);
+    }
+
+    @Override
+    public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
+                                       final POM pom,
+                                       final DeploymentMode mode,
+                                       final List<Contributor> contributors,
+                                       final Repository templateRepository) {
 
         return spaceConfigStorageRegistry.getBatch(organizationalUnit.getSpace().getName())
                 .run(context -> {
@@ -205,24 +228,27 @@ public class WorkspaceProjectServiceImpl
 
                     String repositoryAlias = this.createFreshRepositoryAlias(organizationalUnit, pom.getName());
 
+                    final boolean createFromTemplate = templateRepository != null;
+                    final RepositoryEnvironmentConfigurations configurations = createFromTemplate
+                            ? createRepositoryConfigForTemplate(templateRepository)
+                            : new RepositoryEnvironmentConfigurations();
+
                     final Repository repository = repositoryService.createRepository(organizationalUnit,
-                                                                                     "git",
+                                                                                     GIT_SCHEME,
                                                                                      repositoryAlias,
-                                                                                     new RepositoryEnvironmentConfigurations(),
+                                                                                     configurations,
                                                                                      contributors != null ? contributors : Collections.emptyList());
 
                     try {
-                        if (!repository.getDefaultBranch().isPresent()) {
-                            throw new IllegalStateException("New repository should always have a branch.");
-                        }
+                        final Branch defaultBranch = resolveDefaultBranch(repository);
 
-                        final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
-                                                                      pom,
-                                                                      mode);
+                        final Module module = createFromTemplate
+                                ? finishCreateFromTemplate(repository, templateRepository, pom)
+                                : moduleService.newModule(defaultBranch.getPath(), pom, mode);
 
                         final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,
                                                                                        repository,
-                                                                                       repository.getDefaultBranch().get(),
+                                                                                       defaultBranch,
                                                                                        module);
 
                         newProjectEvent.fire(new NewProjectEvent(workspaceProject));
@@ -241,6 +267,84 @@ public class WorkspaceProjectServiceImpl
                         throw ExceptionUtilities.handleException(e);
                     }
                 });
+    }
+
+    private RepositoryEnvironmentConfigurations createRepositoryConfigForTemplate(final Repository templateRepository) {
+        final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+
+        final File repositoryDirectory = resolveRepositoryDirectory(templateRepository);
+
+        configurations.setInit(false);
+        configurations.setOrigin(repositoryDirectory.toURI().toString());
+        configurations.setMirror(false);
+
+        return configurations;
+    }
+
+    private File resolveRepositoryDirectory(final Repository repository) {
+        final org.uberfire.java.nio.fs.jgit.util.Git git = resolveGit(repository);
+
+        return git.getRepository().getDirectory();
+    }
+
+    private Branch resolveDefaultBranch(final Repository repository) {
+        return repository.getDefaultBranch()
+                .orElseThrow(() -> new IllegalStateException("New repository should always have a branch."));
+    }
+
+    private org.uberfire.java.nio.fs.jgit.util.Git resolveGit(final Repository repository) {
+        final Branch defaultBranch = resolveDefaultBranch(repository);
+
+        return ((JGitPathImpl) pathUtil.convert(defaultBranch.getPath())).getFileSystem().getGit();
+    }
+
+    private Module finishCreateFromTemplate(final Repository projectRepository,
+                                            final Repository templateRepository,
+                                            final POM pom) {
+        cleanUpTemplateOrigin(projectRepository);
+
+        updateTemplatePOM(projectRepository,
+                          templateRepository,
+                          pom);
+
+        final Branch defaultBranch = resolveDefaultBranch(projectRepository);
+
+        return moduleService.resolveModule(Paths.convert(Paths.convert(defaultBranch.getPath()).getRoot()));
+    }
+
+    private void cleanUpTemplateOrigin(final Repository repository) {
+        final org.uberfire.java.nio.fs.jgit.util.Git git = resolveGit(repository);
+
+        git.removeRemote(ORIGIN_KEY,
+                         REMOTE_ORIGIN_REF);
+    }
+
+    private void updateTemplatePOM(final Repository projectRepository,
+                                   final Repository templateRepository,
+                                   final POM pom) {
+        final Path repositoryRoot = resolveDefaultBranch(projectRepository).getPath();
+        final Path templatePath = resolveDefaultBranch(templateRepository).getPath();
+        final Path pomPath = resolvePathFromParent(repositoryRoot, POMServiceImpl.POM_XML);
+        final Path templatePomPath = resolvePathFromParent(templatePath, POMServiceImpl.POM_XML);
+        final POM templatePom = pomService.load(templatePomPath);
+
+        templatePom.setName(pom.getName());
+        templatePom.setDescription(pom.getDescription());
+        templatePom.setPackaging(pom.getPackaging());
+
+        templatePom.getGav().setGroupId(pom.getGav().getGroupId());
+        templatePom.getGav().setArtifactId(pom.getGav().getArtifactId());
+        templatePom.getGav().setVersion(pom.getGav().getVersion());
+
+        pomService.save(pomPath,
+                        templatePom,
+                        null,
+                        "Updating the POM file");
+    }
+
+    Path resolvePathFromParent(final Path parent,
+                               final String toResolve) {
+        return Paths.convert(Paths.convert(parent).resolve(toResolve));
     }
 
     String createFreshRepositoryAlias(final OrganizationalUnit organizationalUnit,

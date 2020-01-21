@@ -32,6 +32,7 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.CRYPT_PASS
 import static org.guvnor.structure.repositories.EnvironmentParameters.SPACE;
 import static org.guvnor.structure.repositories.EnvironmentParameters.SUBDIRECTORY;
 import static org.guvnor.structure.repositories.EnvironmentParameters.USER_NAME;
+import static org.guvnor.structure.repositories.EnvironmentParameters.AVOID_INDEX;
 
 @Portable
 public class RepositoryEnvironmentConfigurations {
@@ -86,6 +87,11 @@ public class RepositoryEnvironmentConfigurations {
     public void setInit(final boolean init) {
         configurationMap.put(INIT,
                              init);
+    }
+
+    public void setAvoidIndex(final boolean avoidIndex) {
+        configurationMap.put(AVOID_INDEX,
+                             avoidIndex);
     }
 
     public Object getInit() {

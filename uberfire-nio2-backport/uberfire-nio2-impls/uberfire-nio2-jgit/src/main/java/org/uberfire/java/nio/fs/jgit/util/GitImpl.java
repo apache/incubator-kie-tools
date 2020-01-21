@@ -82,6 +82,7 @@ import org.uberfire.java.nio.fs.jgit.util.commands.MapDiffContent;
 import org.uberfire.java.nio.fs.jgit.util.commands.Merge;
 import org.uberfire.java.nio.fs.jgit.util.commands.Push;
 import org.uberfire.java.nio.fs.jgit.util.commands.RefTreeUpdateCommand;
+import org.uberfire.java.nio.fs.jgit.util.commands.RemoveRemote;
 import org.uberfire.java.nio.fs.jgit.util.commands.ResolveObjectIds;
 import org.uberfire.java.nio.fs.jgit.util.commands.ResolveRevCommit;
 import org.uberfire.java.nio.fs.jgit.util.commands.RevertMerge;
@@ -555,6 +556,14 @@ public class GitImpl implements Git {
     @Override
     public void updateLeaders(final KetchLeaderCache leaders) {
         this.leaders = leaders;
+    }
+
+    @Override
+    public void removeRemote(final String remote,
+                             final String ref) {
+        new RemoveRemote(this,
+                         remote,
+                         ref).execute();
     }
 
     //just for test purposes

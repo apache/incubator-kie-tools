@@ -33,6 +33,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -112,6 +113,9 @@ public class WorkspaceProjectServiceImplTest {
     ChangeRequestService changeRequestService;
 
     @Mock
+    POMService pomService;
+
+    @Mock
     EventSourceMock<RepositoryUpdatedEvent> repositoryUpdatedEvent;
 
     @Mock
@@ -154,9 +158,10 @@ public class WorkspaceProjectServiceImplTest {
                                                                   moduleServices,
                                                                   repositoryResolver,
                                                                   ioService,
+                                                                  spaceConfigStorageRegistry,
                                                                   pathUtil,
                                                                   changeRequestService,
-                                                                  spaceConfigStorageRegistry);
+                                                                  pomService);
     }
 
     private void setUpOUs() {

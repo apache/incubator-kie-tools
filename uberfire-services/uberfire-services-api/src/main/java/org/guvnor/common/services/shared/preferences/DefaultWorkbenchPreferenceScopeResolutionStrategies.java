@@ -37,4 +37,9 @@ public class DefaultWorkbenchPreferenceScopeResolutionStrategies implements Work
                                                                 final String scopeKey) {
         return preferenceScopeResolutionStrategy.getInfo();
     }
+
+    @Override
+    public PreferenceScopeResolutionStrategyInfo getSpaceInfoFor(final String scopeKey) {
+        return preferenceScopeResolutionStrategy.getInfo();
+    }
 }

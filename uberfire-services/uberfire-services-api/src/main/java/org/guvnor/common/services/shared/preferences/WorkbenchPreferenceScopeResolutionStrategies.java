@@ -31,4 +31,6 @@ public interface WorkbenchPreferenceScopeResolutionStrategies {
      */
     PreferenceScopeResolutionStrategyInfo getUserInfoFor(String scopeType,
                                                          String scopeKey);
+
+    PreferenceScopeResolutionStrategyInfo getSpaceInfoFor(String scopeKey);
 }
