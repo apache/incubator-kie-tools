@@ -37,8 +37,8 @@
     </repositories>
 
     <properties>
-        <version.dmn.webapp>7.32.0-SNAPSHOT</version.dmn.webapp>
-        <version.bpmn.webapp>7.32.0-SNAPSHOT</version.bpmn.webapp>
+        <version.dmn.webapp>7.33.0-SNAPSHOT</version.dmn.webapp>
+        <version.bpmn.webapp>7.33.0-SNAPSHOT</version.bpmn.webapp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-bpmn-kogito-runtime</artifactId>
+            <artifactId>kie-wb-common-stunner-bpmn-kogito-runtime</artifactId>
             <version>${version.bpmn.webapp}</version>
             <type>war</type>
         </dependency>
@@ -96,7 +96,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.kie.workbench.stunner</groupId>
-                                    <artifactId>kie-wb-common-bpmn-kogito-runtime</artifactId>
+                                    <artifactId>kie-wb-common-stunner-bpmn-kogito-runtime</artifactId>
                                     <version>${version.bpmn.webapp}</version>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
