@@ -18,7 +18,7 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { GlobalContext } from "./GlobalContext";
 import { Logger } from "../../../Logger";
-import { GitHubContextProvider } from "./GitHubContext";
+import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";
 import * as ReactDOM from "react-dom";
 import { KogitoMenu } from "./KogitoMenu";
 import * as dependencies__ from "../../dependencies";
@@ -37,6 +37,20 @@ export interface Globals {
   externalEditorManager?: ExternalEditorManager;
 }
 
+function KogitoMenuPortal(props: { id: string }) {
+  const githubApi = useGitHubApi();
+
+  return (
+    <>
+      {githubApi.userIsLoggedIn() &&
+        ReactDOM.createPortal(
+          <KogitoMenu />,
+          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
+        )}
+    </>
+  );
+}
+
 export const Main: React.FunctionComponent<Globals> = props => {
   return (
     <GlobalContext.Provider
@@ -52,11 +66,8 @@ export const Main: React.FunctionComponent<Globals> = props => {
       }}
     >
       <GitHubContextProvider>
-        {ReactDOM.createPortal(
-          <KogitoMenu />,
-          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
-        )}
-        <>{props.children}</>
+        <KogitoMenuPortal id={props.id} />
+        {props.children}
       </GitHubContextProvider>
     </GlobalContext.Provider>
   );
