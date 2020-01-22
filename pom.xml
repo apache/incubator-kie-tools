@@ -350,15 +350,6 @@
                 <skip>true</skip>
               </configuration>
             </plugin>
-            <plugin>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <systemPropertyVariables>
-                  <jacoco-agent.destfile>${jacoco.exec.file}</jacoco-agent.destfile>
-                </systemPropertyVariables>
-                <skip>${code.coverage.disabled}</skip>
-              </configuration>
-                   </plugin>
           </plugins>
         </pluginManagement>
         <plugins>
