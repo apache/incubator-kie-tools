@@ -16,10 +16,13 @@
 
 package org.drools.workbench.screens.testscenario.client.page.settings;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
@@ -48,14 +51,10 @@ public class ExecutionWidget extends HorizontalPanel {
         dateConfigurationChoice.addItem(TestScenarioConstants.INSTANCE.UseRealDateAndTime());
         dateConfigurationChoice.addItem(TestScenarioConstants.INSTANCE.UseASimulatedDateAndTime());
         dateConfigurationChoice.setSelectedIndex(0);
-        dateConfigurationChoice.addChangeHandler(event -> {
-            if (dateConfigurationChoice.getSelectedIndex() == 0) {
-                dateTimePicker.setValue(null);
-            }
-        });
+        dateConfigurationChoice.addChangeHandler(getChangeHandler());
 
         dateTimePicker.setFormat("yyyy-MM-dd HH:mm");
-        dateTimePicker.addValueChangeHandler(event -> executionTrace.setScenarioSimulatedDate(event.getValue()));
+        dateTimePicker.addValueChangeHandler(event -> getExecutionTrace().ifPresent(e -> e.setScenarioSimulatedDate(event.getValue())));
 
         add(dateConfigurationChoice);
         add(dateTimePicker);
@@ -73,5 +72,18 @@ public class ExecutionWidget extends HorizontalPanel {
             dateTimePicker.setValue(null);
             dateConfigurationChoice.setSelectedIndex(0);
         }
+    }
+
+    ChangeHandler getChangeHandler() {
+        return event -> {
+            if (dateConfigurationChoice.getSelectedIndex() == 0) {
+                dateTimePicker.setValue(null);
+                getExecutionTrace().ifPresent(e -> e.setScenarioSimulatedDate(null));
+            }
+        };
+    }
+
+    Optional<ExecutionTrace> getExecutionTrace() {
+        return Optional.ofNullable(executionTrace);
     }
 }
