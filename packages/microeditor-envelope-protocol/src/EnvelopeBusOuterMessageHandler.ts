@@ -23,7 +23,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   pollInit(): void;
   receive_languageRequest(): void;
   receive_contentRequest(): void;
-  receive_contentResponse(content: string): void;
+  receive_contentResponse(content: EditorContent): void;
   receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
   receive_resourceContentRequest(uri: string): void;
@@ -108,7 +108,7 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_languageRequest();
         break;
       case EnvelopeBusMessageType.RETURN_CONTENT:
-        this.impl.receive_contentResponse(message.data as string);
+        this.impl.receive_contentResponse(message.data as EditorContent);
         break;
       case EnvelopeBusMessageType.REQUEST_CONTENT:
         this.impl.receive_contentRequest();
