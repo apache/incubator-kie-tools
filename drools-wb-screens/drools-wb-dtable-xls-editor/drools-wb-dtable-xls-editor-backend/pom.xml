@@ -171,6 +171,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-backend</artifactId>
+      <!-- Dependency for DecisionTableXLSServiceImplCDITest -->
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
       <exclusions>
