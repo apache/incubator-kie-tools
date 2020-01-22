@@ -4,8 +4,9 @@
   "description": "",
   "version": "0.2.8",
   "license": "Apache-2.0",
+  "enableProposedApi": true,
   "engines": {
-    "vscode": "^1.33.0"
+    "vscode": "^1.41.0"
   },
   "repository": {
     "type": "git",
@@ -15,11 +16,22 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onWebviewEditor:kieKogitoWebviewEditors"
   ],
   "publisher": "kiegroup",
   "main": "./dist/extension/extension.js",
   "contributes": {
+    "webviewEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditors",
+        "displayName": "KIE Kogito Editors",
+        "selector": [
+          {
+            "filenamePattern": "*.{dmn,bpmn,bpmn2}"
+          }
+        ]
+      }
+    ],
     "languages": [
       {
         "id": "bpmn",
