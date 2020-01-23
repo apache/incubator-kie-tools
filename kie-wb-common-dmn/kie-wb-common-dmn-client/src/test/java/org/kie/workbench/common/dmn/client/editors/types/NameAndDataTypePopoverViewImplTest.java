@@ -557,12 +557,30 @@ public class NameAndDataTypePopoverViewImplTest {
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
+        doReturn(true).when(view).isVisible();
 
         view.show(Optional.empty());
         view.hide();
 
         verify(nameEditor).blur();
         verify(monitor).hide();
+        verify(view).isVisible();
+    }
+
+    @Test
+    public void testHideWhenPopupAlreadyIsHidden() {
+
+        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        doReturn(monitor).when(view).getMonitor();
+        final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
+        doReturn(menuElement).when(monitor).getMenuElement();
+        doReturn(false).when(view).isVisible();
+
+        view.hide();
+
+        verify(nameEditor, never()).blur();
+        verify(monitor, never()).hide();
+        verify(view).isVisible();
     }
 
     @Test

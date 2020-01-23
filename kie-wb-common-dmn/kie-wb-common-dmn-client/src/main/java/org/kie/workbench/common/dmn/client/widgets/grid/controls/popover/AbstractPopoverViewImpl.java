@@ -37,6 +37,8 @@ public class AbstractPopoverViewImpl implements PopoverView {
 
     protected Popover popover;
 
+    private boolean isVisible;
+
     protected AbstractPopoverViewImpl() {
         //CDI proxy
     }
@@ -58,6 +60,10 @@ public class AbstractPopoverViewImpl implements PopoverView {
 
         editorTitle.ifPresent(t -> popoverElement.setAttribute("title", t));
         popover = jQueryPopover.wrap(this.getElement());
+        popover.addShowListener(() -> isVisible = true);
+        popover.addShownListener(() -> isVisible = true);
+        popover.addHideListener(() -> isVisible = false);
+        popover.addHiddenListener(() -> isVisible = false);
         popover.popover(options);
         popover.show();
     }
@@ -68,5 +74,9 @@ public class AbstractPopoverViewImpl implements PopoverView {
             popover.hide();
             popover.destroy();
         }
+    }
+
+    public boolean isVisible() {
+        return isVisible;
     }
 }

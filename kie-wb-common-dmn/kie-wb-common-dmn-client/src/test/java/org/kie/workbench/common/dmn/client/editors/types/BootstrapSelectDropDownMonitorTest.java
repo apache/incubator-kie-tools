@@ -91,7 +91,7 @@ public class BootstrapSelectDropDownMonitorTest {
     @Test
     public void testHideWhenDropDownIsShown() {
 
-        doReturn(true).when(monitor).isVisible();
+        doReturn(true).when(monitor).isDropDownVisible();
 
         monitor.hide();
 
@@ -115,7 +115,7 @@ public class BootstrapSelectDropDownMonitorTest {
     @Test
     public void testHideWhenDropDownIsNotShown() {
 
-        doReturn(false).when(monitor).isVisible();
+        doReturn(false).when(monitor).isDropDownVisible();
 
         monitor.hide();
 
@@ -130,14 +130,14 @@ public class BootstrapSelectDropDownMonitorTest {
     @Test
     public void testIsVisible() {
         when(menuElementClassList.contains(OPEN_CLASS)).thenReturn(true);
-        final boolean actual = monitor.isVisible();
+        final boolean actual = monitor.isDropDownVisible();
         assertTrue(actual);
     }
 
     @Test
     public void testIsVisibleWhenIsNotVisible() {
         when(menuElementClassList.contains(OPEN_CLASS)).thenReturn(false);
-        final boolean actual = monitor.isVisible();
+        final boolean actual = monitor.isDropDownVisible();
         assertFalse(actual);
     }
 }

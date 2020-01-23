@@ -143,7 +143,7 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
             kieDataTypeSelect().off(BOOTSTRAP_SELECT_SHOWN_EVENT);
 
             //If drop-down is visible defer closure of popover until drop-down has closed.
-            if (isVisible()) {
+            if (isDropDownVisible()) {
                 kieDataTypeSelect().on(BOOTSTRAP_SELECT_HIDDEN_EVENT, (event) -> onHide());
             } else {
                 onHide();
@@ -155,7 +155,7 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
             commandHide.execute();
         }
 
-        boolean isVisible() {
+        boolean isDropDownVisible() {
             final elemental2.dom.Element menuElement = getMenuElement();
             return Optional
                     .ofNullable(menuElement)
@@ -356,10 +356,12 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
     }
 
     public void hide(boolean applyChanges) {
-        nameEditor.blur();
-        getMonitor().hide();
-        if (applyChanges) {
-            applyChanges();
+        if (isVisible()) {
+            nameEditor.blur();
+            getMonitor().hide();
+            if (applyChanges) {
+                applyChanges();
+            }
         }
     }
 
