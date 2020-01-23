@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
 	"fmt"
@@ -53,7 +53,7 @@ func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoJobsService, error)
 
 // WaitForKogitoJobsService waits that the jobs service has a certain number of replicas
 func WaitForKogitoJobsService(namespace string, replicas, timeoutInMin int) error {
-	return waitFor(namespace, "Kogito jobs service running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+	return WaitFor(namespace, "Kogito jobs service running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
 		service, err := GetKogitoJobsService(namespace)
 		if err != nil {
 			return false, err

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
 	"fmt"
@@ -32,7 +32,7 @@ import (
 
 // WaitForBuildComplete waits for a build to be completed
 func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
-	return waitFor(namespace, fmt.Sprintf("Build %s complete", buildName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+	return WaitFor(namespace, fmt.Sprintf("Build %s complete", buildName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
 		bc := buildv1.BuildConfig{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      buildName,
@@ -53,7 +53,7 @@ func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
 
 // WaitForDeploymentConfigRunning waits for a deployment config to be running, with a specific number of pod
 func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeoutInMin int) error {
-	return waitFor(namespace, fmt.Sprintf("DeploymentConfig %s running", dcName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+	return WaitFor(namespace, fmt.Sprintf("DeploymentConfig %s running", dcName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
 		if dc, err := GetDeploymentConfig(namespace, dcName); err != nil {
 			return false, err
 		} else if dc == nil {
@@ -78,7 +78,7 @@ func GetDeploymentConfig(namespace, dcName string) (*ocapps.DeploymentConfig, er
 
 // WaitForRoute waits for a route to be available
 func WaitForRoute(namespace, routeName string, timeoutInMin int) error {
-	return waitFor(namespace, fmt.Sprintf("Route %s available", routeName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+	return WaitFor(namespace, fmt.Sprintf("Route %s available", routeName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
 		route, err := GetRoute(namespace, routeName)
 		if err != nil || route == nil {
 			return false, err
@@ -141,7 +141,8 @@ func GetRouteURI(namespace, routeName string) (string, error) {
 	return uri, nil
 }
 
-func waitAndRetrieveRouteURI(namespace, serviceName string) (string, error) {
+// WaitAndRetrieveRouteURI waits for a route and returns its URI
+func WaitAndRetrieveRouteURI(namespace, serviceName string) (string, error) {
 	if err := WaitForRoute(namespace, serviceName, 2); err != nil {
 		return "", fmt.Errorf("Route %s does not exist in namespace %s: %v", serviceName, namespace, err)
 	}

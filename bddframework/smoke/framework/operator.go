@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
 	"fmt"
@@ -42,10 +42,30 @@ const (
 	kogitoInfraCrdName       = "kogitoinfras"
 	kogitoDataIndexCrdName   = "kogitodataindices"
 	kogitoJobsServiceCrdName = "kogitojobsservices"
+
+	kogitoOperatorTimeoutInMin = 5
+
+	communityCatalog = "community-operators"
 )
+
+type dependentOperator struct {
+	timeoutInMin int
+	channel      string
+}
 
 var (
 	defaultOperatorImageTag = version.Version
+
+	kogitoOperatorCommunityDependencies = map[string]dependentOperator{
+		"infinispan": dependentOperator{
+			timeoutInMin: 5,
+			channel:      "stable",
+		},
+		"strimzi-kafka-operator": dependentOperator{
+			timeoutInMin: 5,
+			channel:      "stable",
+		},
+	}
 )
 
 // DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files
@@ -92,33 +112,63 @@ func IsKogitoOperatorRunning(namespace string) (bool, error) {
 
 // WaitForKogitoOperatorRunning waits for Kogito operator running
 func WaitForKogitoOperatorRunning(namespace string) error {
-	return waitFor(namespace, "Kogito operator running", time.Minute*2, func() (bool, error) {
+	return WaitFor(namespace, "Kogito operator running", time.Minute*time.Duration(kogitoOperatorTimeoutInMin), func() (bool, error) {
 		return IsKogitoOperatorRunning(namespace)
 	})
 }
 
+// WaitForKogitoOperatorRunningWithDependencies waits for Kogito operator running as well as other dependent operators
+func WaitForKogitoOperatorRunningWithDependencies(namespace string) error {
+	if err := WaitForKogitoOperatorRunning(namespace); err != nil {
+		return err
+	}
+	return WaitForKogitoOperatorDependenciesRunning(namespace)
+}
+
+// InstallCommunityKogitoOperatorDependencies installs all dependent operators
+func InstallCommunityKogitoOperatorDependencies(namespace string) error {
+	for subscriptionName := range kogitoOperatorCommunityDependencies {
+		operatorInfo := kogitoOperatorCommunityDependencies[subscriptionName]
+		if err := InstallCommunityOperator(namespace, subscriptionName, operatorInfo.channel); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// WaitForKogitoOperatorDependenciesRunning waits for all dependent operators to be running
+func WaitForKogitoOperatorDependenciesRunning(namespace string) error {
+	for subscriptionName := range kogitoOperatorCommunityDependencies {
+		operatorInfo := kogitoOperatorCommunityDependencies[subscriptionName]
+		if err := WaitForOperatorRunning(namespace, subscriptionName, communityCatalog, operatorInfo.timeoutInMin); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // InstallCommunityOperator installs an operator from 'community-operators' catalog
-func InstallCommunityOperator(namespace, operatorName, channel string) error {
-	return InstallOperator(namespace, operatorName, "community-operators", channel)
+func InstallCommunityOperator(namespace, subscriptionName, channel string) error {
+	return InstallOperator(namespace, subscriptionName, communityCatalog, channel)
 }
 
 // InstallOperator installs an operator via subscrition
-func InstallOperator(namespace, operatorName, operatorSource, channel string) error {
-	GetLogger(namespace).Infof("Subscribing to %s operator from source %s on channel %s", operatorName, operatorSource, channel)
+func InstallOperator(namespace, subscriptionName, operatorSource, channel string) error {
+	GetLogger(namespace).Infof("Subscribing to %s operator from source %s on channel %s", subscriptionName, operatorSource, channel)
 	if _, err := CreateOperatorGroupIfNotExists(namespace, namespace); err != nil {
 		return err
 	}
 
-	if _, err := CreateNamespaceSubscriptionIfNotExist(namespace, operatorName, operatorName, operatorSource, channel); err != nil {
+	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, operatorSource, channel); err != nil {
 		return err
 	}
 
-	return WaitForOperatorRunning(namespace, operatorName, operatorSource)
+	return nil
 }
 
 // WaitForOperatorRunning waits for an operator to be running
-func WaitForOperatorRunning(namespace, operatorPackageName, operatorSource string) error {
-	return waitFor(namespace, fmt.Sprintf("%s operator running", operatorPackageName), time.Minute*5, func() (bool, error) {
+func WaitForOperatorRunning(namespace, operatorPackageName, operatorSource string, timeoutInMin int) error {
+	return WaitFor(namespace, fmt.Sprintf("%s operator running", operatorPackageName), time.Minute*time.Duration(timeoutInMin), func() (bool, error) {
 		return IsOperatorRunning(namespace, operatorPackageName, operatorSource)
 	})
 }
@@ -152,8 +202,8 @@ func CreateOperatorGroupIfNotExists(namespace, operatorGroupName string) (*olmap
 	return operatorGroup, nil
 }
 
-// CreateNamespaceSubscriptionIfNotExist create a namespaced subscription if not exists
-func CreateNamespaceSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, operatorSource string, channel string) (*olmapiv1alpha1.Subscription, error) {
+// CreateNamespacedSubscriptionIfNotExist create a namespaced subscription if not exists
+func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, operatorSource string, channel string) (*olmapiv1alpha1.Subscription, error) {
 	subscription := &olmapiv1alpha1.Subscription{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
 	"fmt"
@@ -28,7 +28,8 @@ const (
 	defaultPrometheusService = "prometheus-operated"
 )
 
-func deployPrometheusInstance(namespace, labelName, labelValue string) error {
+// DeployPrometheusInstance deploys an instance of Prometheus
+func DeployPrometheusInstance(namespace, labelName, labelValue string) error {
 	GetLogger(namespace).Info("Creating Prometheus CR to spin up instance.")
 
 	replicas := int32(1)

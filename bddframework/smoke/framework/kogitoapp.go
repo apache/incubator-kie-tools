@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
 	"fmt"
@@ -140,23 +140,23 @@ func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 }
 
 func getS2IImageSteamTag() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_S2I_IMAGE_STREAM_TAG", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_S2I_IMAGE_STREAM_TAG", "")
 }
 func getS2IImageSteamName() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAME", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAME", "")
 }
 func getS2IImageSteamNamespace() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAMESPACE", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAMESPACE", "")
 }
 
 func getRuntimeImageSteamTag() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG", "")
 }
 func getRuntimeImageSteamName() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAME", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAME", "")
 }
 func getRuntimeImageSteamNamespace() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAMESPACE", "")
+	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAMESPACE", "")
 }
 
 func getExamplesRepositoryURI() string {
