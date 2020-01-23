@@ -448,13 +448,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Get Module's project.imports path
         final KieModule module = moduleService.resolveModule(context);
         final Path externalImportsPath = module.getImportsPath();
-        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert(externalImportsPath);
 
         //Load existing PackageImports
-        ProjectImports projectImports = new ProjectImports();
-        if (Files.exists(nioExternalImportsPath)) {
-            projectImports = importsService.load(externalImportsPath);
-        }
+        final ProjectImports projectImports = loadProjectImports(externalImportsPath);
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
         List<String> existingImports = new ArrayList<String>();
@@ -481,6 +477,15 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                 metadata,
                                 "Imports added during XLS conversion");
         }
+    }
+
+    ProjectImports loadProjectImports(final Path externalImportsPath) {
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert(externalImportsPath);
+        ProjectImports projectImports = new ProjectImports();
+        if (Files.exists(nioExternalImportsPath)) {
+            projectImports = importsService.load(externalImportsPath);
+        }
+        return projectImports;
     }
 
     private void createNewDecisionTables(final Path context,
