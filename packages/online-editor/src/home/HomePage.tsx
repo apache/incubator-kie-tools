@@ -141,7 +141,7 @@ export function HomePage(props: Props) {
   return (
     <Page>
       <PageSection variant="light">
-        <Bullseye style={{ height: "calc(100vh - 5px)" }}>
+        <Bullseye>
           <Grid gutter="lg" className="pf-m-all-12-col pf-m-all-6-col-on-md">
             <GridItem className="pf-u-text-align-center pf-m-12-col">
               <img src={"images/kogito_logo.png"} alt="Kogito Logo" />
