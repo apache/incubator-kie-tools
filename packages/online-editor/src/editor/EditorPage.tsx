@@ -21,10 +21,9 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -155,7 +154,7 @@ export function EditorPage(props: Props) {
 
   return (
     <Page>
-      <PageSection variant="light" noPadding={true}>
+      <PageSection variant="light" noPadding={true} style={{ flexBasis: "100%" }}>
         {copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
@@ -166,7 +165,7 @@ export function EditorPage(props: Props) {
           </div>
         )}
         <Stack>
-          <StackItem>
+          <StackItem style={{ flexBasis: "1%" }}>
             {!fullscreen && (
               <EditorToolbar
                 onFullScreen={enterFullscreen}
@@ -179,7 +178,7 @@ export function EditorPage(props: Props) {
             )}
             {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
           </StackItem>
-          <StackItem className="pf-m-fill">
+          <StackItem isFilled={true} style={{ flexBasis: "100%" }}>
             <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
           </StackItem>
         </Stack>

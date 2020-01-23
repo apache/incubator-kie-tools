@@ -140,7 +140,7 @@ export function HomePage(props: Props) {
 
   return (
     <Page>
-      <PageSection variant="light">
+      <PageSection variant="light" style={{ flexBasis: "100%" }}>
         <Bullseye>
           <Grid gutter="lg" className="pf-m-all-12-col pf-m-all-6-col-on-md">
             <GridItem className="pf-u-text-align-center pf-m-12-col">

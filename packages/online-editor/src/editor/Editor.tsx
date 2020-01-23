@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { ResourceContent, ResourcesList, ChannelType } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 interface Props {
   fullscreen: boolean;
@@ -89,6 +89,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
 
   return (
     <iframe
+      style={{ display: "flex" }}
       ref={iframeRef}
       id={"kogito-iframe"}
       className="kogito--editor"
