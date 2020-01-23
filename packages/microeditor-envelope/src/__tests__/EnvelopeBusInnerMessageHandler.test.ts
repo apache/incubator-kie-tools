@@ -45,6 +45,12 @@ beforeEach(() => {
       },
       receive_resourceContentList: (resourcesList: ResourcesList) => {
         receivedMessages.push(["resourceContentList", resourcesList]);
+      },
+      receive_request_editor_redo(): void {
+        receivedMessages.push(["request_editor_redo", undefined]);
+      },
+      receive_request_editor_undo(): void {
+        receivedMessages.push(["request_editor_undo", undefined]);
       }
     })
   );

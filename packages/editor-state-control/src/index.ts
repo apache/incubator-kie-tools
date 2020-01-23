@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,27 +14,7 @@
  * limitations under the License.
  */
 
-export enum EnvelopeBusMessageType {
-  REQUEST_LANGUAGE,
-  RETURN_LANGUAGE,
-
-  REQUEST_INIT,
-  RETURN_INIT,
-
-  REQUEST_CONTENT,
-  RETURN_CONTENT,
-
-  NOTIFY_SET_CONTENT_ERROR,
-  NOTIFY_DIRTY_INDICATOR_CHANGE,
-  NOTIFY_READY,
-
-  REQUEST_RESOURCE_CONTENT,
-  RETURN_RESOURCE_CONTENT,
-
-  REQUEST_RESOURCE_LIST,
-  RETURN_RESOURCE_LIST,
-
-  REQUEST_EDITOR_UNDO,
-  REQUEST_EDITOR_REDO,
-  REQUEST_EDITOR_NEW_EDIT
-}
+export * from "./Command";
+export * from "./StateControl";
+export * from "./KogitoEdit";
+export * from "./registry/KogitoCommandRegistry"

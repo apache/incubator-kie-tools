@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/microeditor-envelope",
+  "name": "@kogito-tooling/editor-state-control",
   "version": "0.2.8",
   "description": "",
   "license": "Apache-2.0",
@@ -11,12 +11,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
-  },
-  "dependencies": {
-    "@kogito-tooling/core-api": "0.2.8",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.8",
-    "@kogito-tooling/editor-state-control": "0.2.8",
-    "@patternfly/patternfly": "2.40.2"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

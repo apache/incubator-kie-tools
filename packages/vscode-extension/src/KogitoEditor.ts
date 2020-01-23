@@ -97,6 +97,13 @@ export class KogitoEditor {
         },
         receive_ready(): void {
           /**/
+        },
+        request_editor_undo: () => {
+          this.requestUndo();
+        },
+
+        request_editor_redo: () => {
+          this.requestRedo();
         }
       })
     );
@@ -114,6 +121,14 @@ export class KogitoEditor {
 
   public requestSave() {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
+  }
+
+  public requestUndo() {
+    this.envelopeBusOuterMessageHandler.request_editor_undo();
+  }
+
+  public requestRedo() {
+    this.envelopeBusOuterMessageHandler.request_editor_redo();
   }
 
   public setupEnvelopeBus() {

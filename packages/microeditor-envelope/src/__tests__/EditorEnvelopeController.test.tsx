@@ -21,6 +21,19 @@ import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/micr
 import { LanguageData } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
+import { KogitoCommand, OnNewCommand, StateControl } from "@kogito-tooling/editor-state-control";
+
+const KogitoCommandRegistryMock = jest.fn(() =>({
+  setOnNewCommand: jest.fn( (callback: OnNewCommand) => {return;})
+}));
+
+const StateControlMock = jest.fn(() => ({
+  undo: jest.fn(),
+  redo: jest.fn(),
+  registry: new KogitoCommandRegistryMock()
+}));
+
+let stateControl:any;
 
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
@@ -51,6 +64,8 @@ let mockComponent: ReturnType<typeof mount>;
 beforeEach(() => {
   sentMessages = [];
 
+  stateControl = new StateControlMock();
+
   controller = new EditorEnvelopeController(
     {
       postMessage: message => {
@@ -69,7 +84,8 @@ beforeEach(() => {
         callback();
       }
     },
-    new ResourceContentEditorCoordinator()
+    new ResourceContentEditorCoordinator(),
+    stateControl
   );
 });
 
@@ -140,4 +156,14 @@ describe("EditorEnvelopeController", () => {
     expect(sentMessages).toEqual([]);
     expect(render.update()).toMatchSnapshot();
   });
+
+  test("test notify undo/redo", async () => {
+    const render = await startController();
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_UNDO, data: "commandID" });
+    expect(stateControl.undo).toBeCalledTimes(1);
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_REDO, data: "commandID" });
+    expect(stateControl.redo).toBeCalledTimes(1);
+  })
 });

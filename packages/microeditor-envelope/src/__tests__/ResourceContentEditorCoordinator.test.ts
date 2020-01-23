@@ -28,6 +28,12 @@ const handler = new EnvelopeBusInnerMessageHandler(
     },
     receive_resourceContentList: (resourcesList: ResourcesList) => {
       // do nothing
+    },
+    receive_request_editor_redo(): void {
+      // do nothing
+    },
+    receive_request_editor_undo(): void {
+      // do nothing
     }
   })
 );

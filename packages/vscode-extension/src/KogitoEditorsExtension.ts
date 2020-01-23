@@ -58,6 +58,10 @@ export class KogitoEditorsExtension {
     );
   }
 
+  public registerStateControl() {
+    // here we should register the calls to editor undo/redo
+  }
+
   public startReplacingTextEditorsByKogitoEditorsAsTheyOpenIfLanguageIsSupported() {
     this.context.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor(async (textEditor?: vscode.TextEditor) => {
