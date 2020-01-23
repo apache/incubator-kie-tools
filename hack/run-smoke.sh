@@ -34,7 +34,19 @@ function usage(){
   printf "\n"
 }
 
-FEATURE=""
+smokeType=$1
+TEST_FOLDER=
+if [ "${smokeType}" = "ope" ]; then
+  TEST_FOLDER="operator"
+elif [ "${smokeType}" = "cli" ]; then
+  TEST_FOLDER="cli"
+else
+  echo "Unknown Smoke Tests Type ${smokeType}"
+  exit 1
+fi
+shift
+
+FEATURE="features/${TEST_FOLDER}"
 
 while (( $# ))
 do
@@ -57,7 +69,7 @@ case $1 in
   ;;
   --feature)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="features/${1}.feature"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="${FEATURE}/${1}.feature"; shift; fi
   ;;
   --local)
     shift
@@ -81,4 +93,4 @@ go get github.com/DATA-DOG/godog/cmd/godog
 
 echo "-------- Running smoke tests"
 
-cd test/smoke && godog -c 2 --random -f progress ${FEATURE}
+cd test/smoke/ && godog -c 2 --random -f progress ${FEATURE}
