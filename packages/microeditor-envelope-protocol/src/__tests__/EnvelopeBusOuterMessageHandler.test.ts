@@ -17,7 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
-import { ChannelType } from "@kogito-tooling/core-api";
+import { EditorContent } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -43,8 +43,8 @@ beforeEach(() => {
       receive_contentRequest() {
         receivedMessages.push("contentRequest");
       },
-      receive_contentResponse(content: string) {
-        receivedMessages.push("contentResponse_" + content);
+      receive_contentResponse(content: EditorContent) {
+        receivedMessages.push("contentResponse_" + content.content);
       },
       receive_setContentError: (errorMessage: string) => {
         receivedMessages.push("setContentError_" + errorMessage);
@@ -131,7 +131,7 @@ describe("receive", () => {
   });
 
   test("content response", () => {
-    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "foo" } });
     expect(receivedMessages).toEqual(["contentResponse_foo"]);
   });
 
@@ -159,7 +159,9 @@ describe("send", () => {
 
   test("request init", () => {
     handler.request_initResponse("test-origin");
-    expect(sentMessages).toEqual([{ busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }]);
+    expect(sentMessages).toEqual([
+      { busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }
+    ]);
   });
 
   test("respond languageRequest", () => {
@@ -169,8 +171,7 @@ describe("send", () => {
   });
 
   test("respond contentRequest", () => {
-    const content = { content: "bar" };
-    handler.respond_contentRequest(content);
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content }]);
+    handler.respond_contentRequest({ content: "bar" });
+    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "bar" } }]);
   });
 });

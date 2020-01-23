@@ -16,7 +16,7 @@
 
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData, ResourcesList, ResourceContent, EditorContent } from "@kogito-tooling/core-api";
+import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];
@@ -180,19 +180,24 @@ describe("send", () => {
   });
 
   test("respond contentRequest", () => {
-    const content = { content: "some" };
-    handler.respond_contentRequest(content);
-    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content }, "tgt-orgn"]]);
+    handler.respond_contentRequest({ content: "some" });
+    expect(sentMessages).toEqual([
+      [{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "some" } }, "tgt-orgn"]
+    ]);
   });
 
   test("notify setContentError", () => {
     handler.notify_setContentError("error msg");
-    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "error msg" }, "tgt-orgn"]]);
+    expect(sentMessages).toEqual([
+      [{ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "error msg" }, "tgt-orgn"]
+    ]);
   });
 
   test("notify dirtyIndicatorChange", () => {
     handler.notify_dirtyIndicatorChange(true);
-    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true }, "tgt-orgn"]]);
+    expect(sentMessages).toEqual([
+      [{ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true }, "tgt-orgn"]
+    ]);
   });
 
   test("notify ready", () => {

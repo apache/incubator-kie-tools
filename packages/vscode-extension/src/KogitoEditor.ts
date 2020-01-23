@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { Router, ResourceContentService, ResourceContent, ChannelType } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContent, ResourceContentService, Router } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -32,7 +32,7 @@ export class KogitoEditor {
   private readonly editorStore: KogitoEditorStore;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
   private readonly resourceContentService: ResourceContentService;
-  
+
   public constructor(
     relativePath: string,
     path: string,
@@ -65,16 +65,15 @@ export class KogitoEditor {
           const pathFileExtension = this.path.split(".").pop()!;
           self.respond_languageRequest(this.router.getLanguageData(pathFileExtension));
         },
-        receive_contentResponse: (content: string) => {
-          fs.writeFileSync(this.path, content);
+        receive_contentResponse: (content: EditorContent) => {
+          fs.writeFileSync(this.path, content.content);
           vscode.window.setStatusBarMessage("Saved successfully!", 3000);
         },
         receive_contentRequest: () => {
-          const content = {
+          self.respond_contentRequest({
             content: fs.readFileSync(this.path).toString(),
             path: this.relativePath
-          };
-          self.respond_contentRequest(content);
+          });
         },
         receive_setContentError: (errorMessage: string) => {
           vscode.window.showErrorMessage(errorMessage);

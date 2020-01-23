@@ -18,11 +18,11 @@ import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 interface Props {
   fullscreen: boolean;
-  onContentResponse: (content: string) => void;
+  onContentResponse: (content: EditorContent) => void;
 }
 
 export type EditorRef = {
@@ -44,7 +44,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_languageRequest() {
         self.respond_languageRequest(context.router.getLanguageData(editorType)!);
       },
-      receive_contentResponse(content: string) {
+      receive_contentResponse(content: EditorContent) {
         props.onContentResponse(content);
       },
       receive_contentRequest() {
