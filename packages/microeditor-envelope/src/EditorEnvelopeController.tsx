@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { LanguageData, ResourceContent, ResourcesList, EditorContent } from "@kogito-tooling/core-api";
+import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -24,7 +24,6 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
-import { EditorContext } from "./EditorContext";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
@@ -63,7 +62,7 @@ export class EditorEnvelopeController {
       receive_contentRequest: () => {
         const editor = this.getEditor();
         if (editor) {
-          editor.getContent().then(content => self.respond_contentRequest({content: content}));
+          editor.getContent().then(content => self.respond_contentRequest({ content: content }));
         }
       },
       receive_languageResponse: (languageData: LanguageData) => {
@@ -128,5 +127,4 @@ export class EditorEnvelopeController {
   public stop() {
     this.envelopeBusInnerMessageHandler.stopListening();
   }
-
 }

@@ -21,10 +21,10 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
+import { EditorContent } from "@kogito-tooling/core-api";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -96,23 +96,23 @@ export function EditorPage(props: Props) {
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
 
   const onContentResponse = useCallback(
-    (content: string) => {
+    (content: EditorContent) => {
       if (action === ActionType.SAVE) {
         window.dispatchEvent(
           new CustomEvent("saveOnlineEditor", {
             detail: {
               fileName: fileNameWithExtension,
-              fileContent: content,
+              fileContent: content.content,
               senderTabId: context.senderTabId!
             }
           })
         );
       } else if (action === ActionType.DOWNLOAD && downloadRef.current) {
-        const fileBlob = new Blob([content], { type: "text/plain" });
+        const fileBlob = new Blob([content.content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
       } else if (action === ActionType.COPY && copyContentTextArea.current) {
-        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.value = content.content;
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
           setCopySuccessAlertVisible(true);
