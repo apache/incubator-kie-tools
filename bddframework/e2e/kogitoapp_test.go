@@ -270,8 +270,8 @@ func deployKogitoServiceApp(t *testing.T, kogitoService *v1alpha1.KogitoApp, f *
 	log.Infof("Using image tag %s", tag)
 
 	// set tags (used in devel for non-released versions)
-	kogitoService.Spec.Build.ImageRuntime.ImageStreamTag = tag
-	kogitoService.Spec.Build.ImageS2I.ImageStreamTag = tag
+	kogitoService.Spec.Build.ImageRuntimeTag = tag
+	kogitoService.Spec.Build.ImageS2ITag = tag
 
 	err = f.Client.Create(goctx.TODO(), kogitoService, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil {

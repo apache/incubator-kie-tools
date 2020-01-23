@@ -131,12 +131,8 @@ func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 	// If "KOGITO_BUILD_IMAGE_STREAM_[TAG|NAME|NAMESPACE]" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage
-	kogitoApp.Spec.Build.ImageS2I.ImageStreamTag = getS2IImageSteamTag()
-	kogitoApp.Spec.Build.ImageS2I.ImageStreamName = getS2IImageSteamName()
-	kogitoApp.Spec.Build.ImageS2I.ImageStreamNamespace = getS2IImageSteamNamespace()
-	kogitoApp.Spec.Build.ImageRuntime.ImageStreamTag = getRuntimeImageSteamTag()
-	kogitoApp.Spec.Build.ImageRuntime.ImageStreamName = getRuntimeImageSteamName()
-	kogitoApp.Spec.Build.ImageRuntime.ImageStreamNamespace = getRuntimeImageSteamNamespace()
+	kogitoApp.Spec.Build.ImageS2ITag = getS2IImageSteamTag()
+	kogitoApp.Spec.Build.ImageRuntimeTag = getRuntimeImageSteamTag()
 }
 
 func getS2IImageSteamTag() string {
