@@ -188,7 +188,7 @@ public class OverviewWidgetViewImpl
 
     @Override
     public void showVersionHistory() {
-        ((TabListItem) navTabs.getWidget(VERSION_HISTORY_TAB)).setActive(true);
+        ((TabListItem) navTabs.getWidget(VERSION_HISTORY_TAB)).showTab();
     }
 
     @Override
