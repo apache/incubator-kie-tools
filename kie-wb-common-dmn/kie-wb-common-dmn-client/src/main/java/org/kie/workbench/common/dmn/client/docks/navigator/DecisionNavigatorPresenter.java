@@ -56,23 +56,27 @@ public class DecisionNavigatorPresenter {
 
     public static final String IDENTIFIER = "org.kie.dmn.decision.navigator";
 
-    private final View view;
+    private View view;
 
-    private final DecisionNavigatorTreePresenter treePresenter;
+    private DecisionNavigatorTreePresenter treePresenter;
 
-    private final DecisionComponents decisionComponents;
+    private DecisionComponents decisionComponents;
 
-    private final DecisionNavigatorObserver decisionNavigatorObserver;
+    private DecisionNavigatorObserver decisionNavigatorObserver;
 
-    private final DecisionNavigatorChildrenTraverse navigatorChildrenTraverse;
+    private DecisionNavigatorChildrenTraverse navigatorChildrenTraverse;
 
-    private final DecisionNavigatorItemFactory itemFactory;
+    private DecisionNavigatorItemFactory itemFactory;
 
-    private final TranslationService translationService;
+    private TranslationService translationService;
 
-    private final IsKogito isKogito;
+    private IsKogito isKogito;
 
     private CanvasHandler handler;
+
+    protected DecisionNavigatorPresenter() {
+        //CDI proxy
+    }
 
     @Inject
     public DecisionNavigatorPresenter(final View view,
@@ -232,6 +236,5 @@ public class DecisionNavigatorPresenter {
         void showDecisionComponentsContainer();
 
         void hideDecisionComponentsContainer();
-
     }
 }

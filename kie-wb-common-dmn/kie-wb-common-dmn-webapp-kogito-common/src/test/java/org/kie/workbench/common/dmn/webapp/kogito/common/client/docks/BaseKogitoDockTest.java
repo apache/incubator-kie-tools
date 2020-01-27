@@ -37,9 +37,9 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class BaseKogitoDockTest {
+public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
 
-    private static final String PERSPECTIVE_ID = "perspectiveId";
+    protected static final String PERSPECTIVE_ID = "perspectiveId";
 
     @Mock
     protected UberfireDocks uberfireDocks;
@@ -51,9 +51,9 @@ public abstract class BaseKogitoDockTest {
     protected TranslationService translationService;
 
     @Captor
-    private ArgumentCaptor<UberfireDock> dockArgumentCaptor;
+    protected ArgumentCaptor<UberfireDock> dockArgumentCaptor;
 
-    private DiagramEditorDock dock;
+    protected DOCK dock;
 
     @Before
     public void setup() {
@@ -62,7 +62,7 @@ public abstract class BaseKogitoDockTest {
         dock.init(PERSPECTIVE_ID);
     }
 
-    protected abstract DiagramEditorDock makeDock();
+    protected abstract DOCK makeDock();
 
     protected abstract UberfireDockPosition position();
 

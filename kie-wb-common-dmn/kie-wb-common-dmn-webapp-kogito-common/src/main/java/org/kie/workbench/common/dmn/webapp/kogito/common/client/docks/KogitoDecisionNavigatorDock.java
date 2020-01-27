@@ -19,6 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
+import org.appformer.kogito.bridge.client.context.EditorContextProvider;
+import org.appformer.kogito.bridge.client.context.KogitoChannel;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
@@ -29,6 +31,8 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 @ApplicationScoped
 public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
 
+    private EditorContextProvider context;
+
     public KogitoDecisionNavigatorDock() {
         // CDI proxy
     }
@@ -36,10 +40,12 @@ public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
     @Inject
     public KogitoDecisionNavigatorDock(final UberfireDocks uberfireDocks,
                                        final DecisionNavigatorPresenter decisionNavigatorPresenter,
-                                       final TranslationService translationService) {
+                                       final TranslationService translationService,
+                                       final EditorContextProvider context) {
         super(uberfireDocks,
               decisionNavigatorPresenter,
               translationService);
+        this.context = context;
     }
 
     @Override
@@ -73,6 +79,17 @@ public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
 
     @Override
     protected UberfireDockPosition position() {
-        return UberfireDockPosition.EAST;
+        return getUberfireDockPosition();
+    }
+
+    UberfireDockPosition getUberfireDockPosition() {
+        final KogitoChannel channel = context.getChannel();
+        switch (channel) {
+            case GITHUB:
+            case VSCODE:
+                return UberfireDockPosition.EAST;
+            default:
+                return UberfireDockPosition.WEST;
+        }
     }
 }

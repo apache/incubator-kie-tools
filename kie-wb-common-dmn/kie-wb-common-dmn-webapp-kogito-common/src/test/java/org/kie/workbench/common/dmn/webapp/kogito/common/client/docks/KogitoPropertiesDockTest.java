@@ -15,14 +15,13 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.docks;
 
-import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
 import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
-public class KogitoPropertiesDockTest extends BaseKogitoDockTest {
+public class KogitoPropertiesDockTest extends BaseKogitoDockTest<KogitoPropertiesDock> {
 
     @Override
-    protected DiagramEditorDock makeDock() {
+    protected KogitoPropertiesDock makeDock() {
         return new KogitoPropertiesDock(uberfireDocks,
                                         translationService);
     }

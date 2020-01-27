@@ -16,13 +16,12 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.docks;
 
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramScreen;
-import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
-public class KogitoPreviewDiagramDockTest extends BaseKogitoDockTest {
+public class KogitoPreviewDiagramDockTest extends BaseKogitoDockTest<KogitoPreviewDiagramDock> {
 
     @Override
-    protected DiagramEditorDock makeDock() {
+    protected KogitoPreviewDiagramDock makeDock() {
         return new KogitoPreviewDiagramDock(uberfireDocks,
                                             translationService);
     }
