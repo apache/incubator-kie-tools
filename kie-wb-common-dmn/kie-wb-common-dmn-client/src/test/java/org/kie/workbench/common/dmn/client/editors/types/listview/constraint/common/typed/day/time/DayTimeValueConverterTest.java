@@ -208,6 +208,21 @@ public class DayTimeValueConverterTest {
     }
 
     @Test
+    public void testCombineSingularsPluralsEmpty() {
+
+        final String rawValue = "duration(\"P2DT0H1M0S\")";
+        final DayTimeValue value = new DayTimeValue(2, 0, 1, 0);
+        doReturn(value).when(converter).fromDMNString(rawValue);
+        when(translationService.format(DayTimeValueConverter_Days)).thenReturn("days");
+        when(translationService.format(DayTimeValueConverter_Minute)).thenReturn("minute");
+
+        final String actual = converter.toDisplayValue(rawValue);
+        final String expected = "2 days, 1 minute";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void testNumber() {
 
         final JSONValue actual = converter.number(1);
