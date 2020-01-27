@@ -20,6 +20,8 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.DOM;
 import org.drools.workbench.screens.scenariosimulation.client.domelements.ScenarioCellTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioInputEvent;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ExpressionUtils;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -27,7 +29,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.EXPRESSION_VALUE_PREFIX;
 
 public class ScenarioExpressionCellTextAreaSingletonDOMElementFactory extends AbstractTextBoxSingletonDOMElementFactory<BaseDOMElement<String, TextArea>> {
 
@@ -47,7 +48,7 @@ public class ScenarioExpressionCellTextAreaSingletonDOMElementFactory extends Ab
     @Override
     public TextArea createWidget() {
         TextArea textArea = super.createWidget();
-        DOM.sinkBitlessEvent(textArea.getElement(), "input");
+        DOM.sinkBitlessEvent(textArea.getElement(), ConstantHolder.INPUT);
         textArea.addHandler(scenarioInputEvent -> checkExpressionSyntax(), ScenarioInputEvent.getType());
         textArea.addFocusHandler(focusEvent -> checkExpressionSyntax());
         textArea.addBlurHandler(blurEvent -> checkEmptyExpression());
@@ -56,16 +57,7 @@ public class ScenarioExpressionCellTextAreaSingletonDOMElementFactory extends Ab
     }
 
     protected void checkExpressionSyntax() {
-        final String value = getValue();
-        if (!value.startsWith(EXPRESSION_VALUE_PREFIX)) {
-            if (value.startsWith(MVEL_ESCAPE_SYMBOL)) {
-                widget.setValue(value.replaceFirst(MVEL_ESCAPE_SYMBOL, EXPRESSION_VALUE_PREFIX));
-            } else if (value.startsWith(" ")) {
-                widget.setValue(value.replaceFirst(" ", EXPRESSION_VALUE_PREFIX));
-            } else {
-                widget.setValue(EXPRESSION_VALUE_PREFIX + value);
-            }
-        }
+        widget.setValue(ExpressionUtils.ensureExpressionSyntax(getValue()));
     }
 
     protected void checkEmptyExpression(KeyDownEvent event) {

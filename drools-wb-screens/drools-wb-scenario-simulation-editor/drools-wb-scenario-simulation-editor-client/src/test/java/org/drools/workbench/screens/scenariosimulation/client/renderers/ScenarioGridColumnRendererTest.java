@@ -32,6 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPRESSION_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAP_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
@@ -154,6 +155,23 @@ public class ScenarioGridColumnRendererTest {
         verify(scenarioGridColumnRenderer, times(1)).getCollectionString(eq(MAP_VALUE), eq(false));
         reset(scenarioGridColumnRenderer);
 
+        cell = new ScenarioGridCell(new ScenarioGridCellValue(EXPRESSION_VALUE));
+        ((ScenarioGridCell) cell).setListMap(true);
+        retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
+        assertNotNull(retrieved);
+        verify(scenarioGridColumnRenderer, times(1)).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(EXPRESSION_VALUE));
+        verify(scenarioGridColumnRenderer, times(1)).getCollectionString(eq(EXPRESSION_VALUE), eq(true));
+        reset(scenarioGridColumnRenderer);
+
+        cell = new ScenarioGridCell(new ScenarioGridCellValue(EXPRESSION_VALUE));
+        ((ScenarioGridCell) cell).setListMap(false);
+        retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
+        assertNotNull(retrieved);
+        verify(scenarioGridColumnRenderer, times(1)).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(EXPRESSION_VALUE));
+        verify(scenarioGridColumnRenderer, times(1)).getCollectionString(eq(EXPRESSION_VALUE), eq(false));
+        reset(scenarioGridColumnRenderer);
+
+
         cell = new ScenarioGridCell(new ScenarioGridCellValue(MULTIPART_VALUE));
         ((ScenarioGridCell) cell).setErrorMode(true);
         retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
@@ -201,6 +219,12 @@ public class ScenarioGridColumnRendererTest {
         cell = new ScenarioGridCell(new ScenarioGridCellValue(MAP_VALUE));
         cell.setListMap(false);
         commonGetValueToShow(cell, false, MAP_VALUE, false);
+        cell = new ScenarioGridCell(new ScenarioGridCellValue(EXPRESSION_VALUE));
+        cell.setListMap(true);
+        commonGetValueToShow(cell, false, EXPRESSION_VALUE, true);
+        cell = new ScenarioGridCell(new ScenarioGridCellValue(EXPRESSION_VALUE));
+        cell.setListMap(false);
+        commonGetValueToShow(cell, false, EXPRESSION_VALUE, false);
     }
 
     private void commonGetValueToShow(ScenarioGridCell scenarioGridCell, boolean expectedNull, String jsonString, boolean isList) {

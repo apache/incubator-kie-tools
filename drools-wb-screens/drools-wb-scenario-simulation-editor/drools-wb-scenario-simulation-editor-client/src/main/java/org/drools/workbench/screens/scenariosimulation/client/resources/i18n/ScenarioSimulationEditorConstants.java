@@ -363,4 +363,32 @@ public interface ScenarioSimulationEditorConstants
     String testToolClearSelection();
 
     String commonCheatSheetBackground(String background, String model);
+
+    String saveButton();
+
+    String removeButton();
+
+    String cancelButton();
+
+    String collectionEditorAddNewItem();
+
+    String createLabelList();
+
+    String createLabelMap();
+
+    String collectionListCreation();
+
+    String collectionMapCreation();
+
+    String createLabelListDescription();
+
+    String defineLabelList();
+
+    String defineLabelMap();
+
+    String defineLabelListDescription();
+
+    String createLabelMapDescription();
+
+    String defineLabelMapDescription();
 }

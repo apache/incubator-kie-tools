@@ -19,10 +19,10 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.HeadingElement;
-import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 
 /**
  * Interface defining the contract for actual implementations
@@ -130,10 +130,9 @@ public interface CollectionView {
     String getValue();
 
     /**
-     * @param listWidget set to <code>true</code> if the current instance will manage a <code>List</code>,
-     * <code>false</code> for a <code>Map</code>.
+     * Returns <code>true</code> if the current instance is managing an user defined expression.
      */
-    void setListWidget(boolean listWidget);
+    boolean isExpressionWidget();
 
     /**
      * Returns <code>true</code> if the current instance will manage a <code>List</code>,
@@ -143,8 +142,6 @@ public interface CollectionView {
     boolean isListWidget();
 
     UListElement getElementsContainer();
-
-    LIElement getObjectSeparator();
 
     HeadingElement getEditorTitle();
 
@@ -157,6 +154,10 @@ public interface CollectionView {
     ButtonElement getRemoveButton();
 
     ButtonElement getSaveButton();
+
+    String getExpression();
+
+    void setExpression(String expressionValue);
 
     void toggleRowExpansion();
 
@@ -183,10 +184,11 @@ public interface CollectionView {
      * Set the <b>name</b> of the property and the <code>Map</code> to be used to create the skeleton of the current <code>CollectionViewImpl</code> editor
      * showing a <b>List</b> of elements
      * @param key The key representing the property, i.e Classname#propertyname (e.g Author#books)
-     * @param instancePropertyMap
+     * @param simplePropertiesMap
      * @param expandablePropertiesMap
+     * @param type
      */
-    void initListStructure(String key, Map<String, String> instancePropertyMap, Map<String, Map<String, String>> expandablePropertiesMap);
+    void initListStructure(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap, ScenarioSimulationModel.Type type);
 
     /**
      * Set the <b>name</b> of the property and the <code>Map</code>s to be used to create the skeleton of the current <code>CollectionViewImpl</code> editor
@@ -194,8 +196,9 @@ public interface CollectionView {
      * @param key The key representing the property, i.e Classname#propertyname (e.g Author#books)
      * @param keyPropertyMap
      * @param valuePropertyMap
+     * @param type
      */
-    void initMapStructure(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap);
+    void initMapStructure(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap, ScenarioSimulationModel.Type type);
 
     void setFixedHeight(double value, Style.Unit px);
 

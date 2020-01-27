@@ -32,6 +32,7 @@ public class ConstantHolder {
     public static final String NODE_HIDDEN = "node-hidden";
     public static final String DISABLED = "disabled";
     public static final String SELECTED = "selected";
+    public static final String INPUT = "input";
 
     public static final String EXPRESSION = "expression";
     public static final String EXPRESSION_INSTANCE_PLACEHOLDER = EXPRESSION + " </>";

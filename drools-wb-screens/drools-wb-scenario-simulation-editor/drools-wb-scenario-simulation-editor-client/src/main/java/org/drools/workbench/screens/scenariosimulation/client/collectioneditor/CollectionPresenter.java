@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -73,8 +72,6 @@ public class CollectionPresenter implements CollectionView.Presenter {
 
     protected CollectionView collectionView;
 
-    protected LIElement objectSeparatorLI;
-
     @Override
     public void initListStructure(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap, CollectionView collectionView) {
         commonInit(key, collectionView);
@@ -101,10 +98,22 @@ public class CollectionPresenter implements CollectionView.Presenter {
             return;
         }
         JSONValue jsonValue = getJSONValue(jsonString);
-        if (collectionView.isListWidget()) {
-            populateList(jsonValue);
+        if (jsonValue instanceof JSONString) {
+            populateExpression(jsonValue);
         } else {
-            populateMap(jsonValue);
+            populateCreateCollection(jsonValue);
+        }
+    }
+
+    /**
+     * It populates the guided "Create Collection" editor
+     * @param value
+     */
+    protected void populateCreateCollection(JSONValue value) {
+        if (collectionView.isListWidget()) {
+            populateList(value);
+        } else {
+            populateMap(value);
         }
     }
 
@@ -160,14 +169,25 @@ public class CollectionPresenter implements CollectionView.Presenter {
     public void save() {
         try {
             String updatedValue;
-            if (collectionView.isListWidget()) {
-                updatedValue = getListValue();
+            if (collectionView.isExpressionWidget()) {
+                updatedValue = getExpressionValue();
             } else {
-                updatedValue = getMapValue();
+                updatedValue = getValueFromCreateCollection();
             }
             collectionView.updateValue(updatedValue);
         } catch (IllegalStateException e) {
             confirmPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.collectionError(), e.getMessage());
+        }
+    }
+
+    /**
+     * It gets the guided "Create Collection" editor
+     */
+    protected String getValueFromCreateCollection() {
+        if (collectionView.isListWidget()) {
+            return getListValue();
+        } else {
+            return getMapValue();
         }
     }
 
@@ -206,12 +226,9 @@ public class CollectionPresenter implements CollectionView.Presenter {
 
     protected void commonInit(String key, CollectionView collectionView) {
         this.collectionView = collectionView;
-        String propertyName = key.substring(key.lastIndexOf("#") + 1);
+        String propertyName = key.substring(key.lastIndexOf('#') + 1);
         this.collectionView.getEditorTitle().setInnerText(key);
         this.collectionView.getPropertyTitle().setInnerText(propertyName);
-        objectSeparatorLI = collectionView.getObjectSeparator();
-        objectSeparatorLI.addClassName("kie-object-list");
-        objectSeparatorLI.getStyle().setPadding(5, Style.Unit.PX);
     }
 
     protected void populateList(JSONValue jsonValue) {
@@ -246,6 +263,11 @@ public class CollectionPresenter implements CollectionView.Presenter {
         });
     }
 
+    protected void populateExpression(JSONValue jsonValue) {
+        final JSONString jsonString = jsonValue.isString();
+        collectionView.setExpression(jsonString.stringValue());
+    }
+
     protected JSONObject getJSONObject(String jsonString) {
         try {
             return getJSONValue(jsonString).isObject();
@@ -260,6 +282,11 @@ public class CollectionPresenter implements CollectionView.Presenter {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    protected String getExpressionValue() {
+        final JSONString jsonString = new JSONString(collectionView.getExpression());
+        return jsonString.toString();
     }
 
     protected String getListValue() {
@@ -317,8 +344,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
         jsonObject.keySet().forEach(propertyName -> {
             final JSONValue jsonValue = jsonObject.get(propertyName);
             if (jsonValue.isObject() != null) {
-                final Map<String, String> simplePropertiesMap = getSimplePropertiesMap(jsonValue.isObject());
-                toReturn.put(propertyName, simplePropertiesMap);
+                toReturn.put(propertyName, getSimplePropertiesMap(jsonValue.isObject()));
             }
         });
         return toReturn;
@@ -327,7 +353,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
     /**
      * @return
      */
-    protected String getMapValue() throws IllegalStateException {
+    protected String getMapValue() {
         Map<Map<String, String>, Map<String, String>> itemsProperties = mapElementPresenter.getItemsProperties();
         JSONObject toReturnModel = new JSONObject();
         itemsProperties.forEach((keyPropertiesValues, valuePropertiesMap) -> {

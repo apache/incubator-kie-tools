@@ -114,4 +114,7 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     @ClassName("kie-coverage__dl-horizontal")
     String kieCoverageDlHorizontal();
+
+    @ClassName("collection-editor-expression_textarea")
+    String collectionEditorExpressionTextarea();
 }

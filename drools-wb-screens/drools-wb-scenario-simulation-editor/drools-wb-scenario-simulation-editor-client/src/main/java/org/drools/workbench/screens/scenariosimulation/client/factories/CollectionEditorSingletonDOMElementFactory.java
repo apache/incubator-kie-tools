@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.CollectionViewImpl;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -102,14 +103,13 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         }
         String key = className + "#" + propertyName;
         String genericTypeName0 = genericTypes.get(0);
-        boolean isRule = RULE.equals(scenarioSimulationContext.getSettings().getType());
-        if (isRule && !isSimpleJavaType(genericTypeName0)) {
+        if (RULE.equals(scenarioSimulationContext.getSettings().getType()) && !isSimpleJavaType(genericTypeName0)) {
             genericTypeName0 = getRuleComplexType(genericTypeName0);
         }
         if (ScenarioSimulationSharedUtils.isList(propertyClass)) {
-            manageList(collectionEditorView, key, genericTypeName0);
+            manageList(collectionEditorView, key, genericTypeName0, scenarioSimulationContext.getSettings().getType());
         } else {
-            manageMap(collectionEditorView, key, genericTypeName0, genericTypes.get(1), isRule);
+            manageMap(collectionEditorView, key, genericTypeName0, genericTypes.get(1), scenarioSimulationContext.getSettings().getType());
         }
     }
 
@@ -117,17 +117,15 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         return genericTypeName0.substring(genericTypeName0.lastIndexOf('.') + 1);
     }
 
-    protected void manageList(CollectionViewImpl collectionEditorView, String key, String genericTypeName0) {
-        collectionEditorView.setListWidget(true);
-        collectionEditorView.initListStructure(key, getSimplePropertiesMap(genericTypeName0), getExpandablePropertiesMap(genericTypeName0));
+    protected void manageList(CollectionViewImpl collectionEditorView, String key, String genericTypeName0, ScenarioSimulationModel.Type type) {
+        collectionEditorView.initListStructure(key, getSimplePropertiesMap(genericTypeName0), getExpandablePropertiesMap(genericTypeName0), type);
     }
 
-    protected void manageMap(CollectionViewImpl collectionEditorView, String key, String genericTypeName0, String genericTypeName1, boolean isRule) {
-        if (isRule && !isSimpleJavaType(genericTypeName1)) {
+    protected void manageMap(CollectionViewImpl collectionEditorView, String key, String genericTypeName0, String genericTypeName1, ScenarioSimulationModel.Type type) {
+        if (RULE.equals(type) && !isSimpleJavaType(genericTypeName1)) {
             genericTypeName1 = getRuleComplexType(genericTypeName1);
         }
-        collectionEditorView.setListWidget(false);
-        collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1));
+        collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1), type);
     }
 
     @Override

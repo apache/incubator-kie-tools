@@ -23,23 +23,32 @@ import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.HeadingElement;
-import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FocusWidget;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.events.CloseCompositeEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SaveEditorEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.CloseCompositeEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.HasCloseCompositeHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.HasSaveEditorHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SaveEditorEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ExpressionUtils;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
 
 /**
  * This class is used as <code>Collection</code> <b>editor</b>
@@ -74,22 +83,28 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     protected UListElement elementsContainer = Document.get().createULElement();
 
     @DataField("closeCollectionEditorButton")
-    protected ButtonElement closeCollectionEditorButton = Document.get().createButtonElement();
+    protected ButtonElement closeCollectionEditorButton = Document.get().createPushButtonElement();
 
-    @DataField("objectSeparator")
-    protected LIElement objectSeparator = Document.get().createLIElement();
+    @DataField("addItemButtonContainer")
+    protected DivElement addItemButtonContainer = Document.get().createDivElement();
+
+    @DataField("createCollectionRadio")
+    protected InputElement createCollectionRadio = Document.get().createRadioInputElement("collectionRadio");
+
+    @DataField("defineCollectionRadio")
+    protected InputElement defineCollectionRadio = Document.get().createRadioInputElement("collectionRadio");
 
     @DataField("cancelButton")
-    protected ButtonElement cancelButton = Document.get().createButtonElement();
+    protected ButtonElement cancelButton = Document.get().createPushButtonElement();
 
     @DataField("removeButton")
-    protected ButtonElement removeButton = Document.get().createButtonElement();
+    protected ButtonElement removeButton = Document.get().createPushButtonElement();
 
     @DataField("saveButton")
-    protected ButtonElement saveButton = Document.get().createButtonElement();
+    protected ButtonElement saveButton = Document.get().createPushButtonElement();
 
     @DataField("addItemButton")
-    protected ButtonElement addItemButton = Document.get().createButtonElement();
+    protected ButtonElement addItemButton = Document.get().createPushButtonElement();
 
     @DataField("editorTitle")
     protected HeadingElement editorTitle = Document.get().createHElement(4);
@@ -100,10 +115,45 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @DataField("propertyTitle")
     protected SpanElement propertyTitle = Document.get().createSpanElement();
 
+    @DataField("defineCollectionContainer")
+    protected DivElement defineCollectionContainer = Document.get().createDivElement();
+
+    @DataField("createCollectionContainer")
+    protected DivElement createCollectionContainer = Document.get().createDivElement();
+
+    @DataField("addItemButtonLabel")
+    protected SpanElement addItemButtonLabel = Document.get().createSpanElement();
+
+    @DataField("createLabel")
+    protected LabelElement createLabel = Document.get().createLabelElement();
+
+    @DataField("collectionCreationModeLabel")
+    protected LabelElement collectionCreationModeLabel = Document.get().createLabelElement();
+
+    @DataField("collectionCreationCreateLabel")
+    protected SpanElement collectionCreationCreateLabel = Document.get().createSpanElement();
+
+    @DataField("collectionCreationCreateSpan")
+    protected SpanElement collectionCreationCreateSpan = Document.get().createSpanElement();
+
+    @DataField("collectionCreationDefineLabel")
+    protected SpanElement collectionCreationDefineLabel = Document.get().createSpanElement();
+
+    @DataField("collectionCreationDefineSpan")
+    protected SpanElement collectionCreationDefineSpan = Document.get().createSpanElement();
+
+    @DataField("expressionElement")
+    protected TextAreaElement expressionElement = Document.get().createTextAreaElement();
+
     /**
      * Flag to indicate if this <code>CollectionEditorViewImpl</code> will manage a <code>List</code> or a <code>Map</code>.
      */
     protected boolean listWidget;
+
+    /**
+     * Flag to indicate if this <code>CollectionEditorViewImpl</code> is opened in DMN or RULE scenario
+     */
+    protected ScenarioSimulationModel.Type scenarioType;
 
     /**
      * The <b>json</b> representation of the values of this editor
@@ -112,22 +162,9 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
 
     protected double left;
 
-    protected Style.Unit leftUnit;
-
-
-
     public CollectionViewImpl() {
         setElement(collectionEditor);
         addKeyDownHandler(DomEvent::stopPropagation);
-    }
-
-    /**
-     * @param listWidget set to <code>true</code> if the current instance will manage a <code>List</code>,
-     * <code>false</code> for a <code>Map</code>.
-     */
-    @Override
-    public void setListWidget(boolean listWidget) {
-        this.listWidget = listWidget;
     }
 
     /**
@@ -136,9 +173,18 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
      * @param key The key representing the property, i.e Classname#propertyname (e.g Author#books)
      * @param simplePropertiesMap
      * @param expandablePropertiesMap
+     * @param type
      */
     @Override
-    public void initListStructure(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap) {
+    public void initListStructure(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap, ScenarioSimulationModel.Type type) {
+        listWidget = true;
+        commonInit(type);
+        createLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelList());
+        collectionCreationModeLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.collectionListCreation());
+        collectionCreationCreateLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelList());
+        collectionCreationCreateSpan.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelListDescription());
+        collectionCreationDefineLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.defineLabelList());
+        collectionCreationDefineSpan.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.defineLabelListDescription());
         presenter.initListStructure(key, simplePropertiesMap, expandablePropertiesMap, this);
     }
 
@@ -148,10 +194,44 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
      * @param key The key representing the property, i.e Classname#propertyname (e.g Author#books)
      * @param keyPropertyMap
      * @param valuePropertyMap
+     * @param type
+     *
      */
     @Override
-    public void initMapStructure(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap) {
+    public void initMapStructure(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap, ScenarioSimulationModel.Type type) {
+        listWidget = false;
+        commonInit(type);
+        createLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelMap());
+        collectionCreationModeLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.collectionMapCreation());
+        collectionCreationCreateLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelMap());
+        collectionCreationCreateSpan.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelMapDescription());
+        collectionCreationDefineLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.defineLabelMap());
+        collectionCreationDefineSpan.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.defineLabelMapDescription());
         presenter.initMapStructure(key, keyPropertyMap, valuePropertyMap, this);
+    }
+
+    protected void commonInit(ScenarioSimulationModel.Type type) {
+        scenarioType = type ;
+        saveButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
+        cancelButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
+        removeButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
+        addItemButtonLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.collectionEditorAddNewItem());
+        enableCreateCollectionContainer(true);
+        if (RULE.equals(scenarioType)) {
+            initAndRegisterHandlerForExpressionTextArea();
+        }
+    }
+
+    /**
+     * It inits and registers the native "input" , which is not managed by GWT
+     */
+    protected void initAndRegisterHandlerForExpressionTextArea() {
+        ensureExpressionSyntax();
+        DOM.sinkBitlessEvent(expressionElement, ConstantHolder.INPUT);
+        DOM.setEventListener(expressionElement, event -> {
+            if (ConstantHolder.INPUT.contains(event.getType()))  {
+                ensureExpressionSyntax();}
+        });
     }
 
     @Override
@@ -175,6 +255,11 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     }
 
     @Override
+    public boolean isExpressionWidget() {
+        return defineCollectionRadio.isChecked();
+    }
+
+    @Override
     public boolean isListWidget() {
         return listWidget;
     }
@@ -182,11 +267,6 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @Override
     public UListElement getElementsContainer() {
         return elementsContainer;
-    }
-
-    @Override
-    public LIElement getObjectSeparator() {
-        return objectSeparator;
     }
 
     @Override
@@ -217,6 +297,42 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @Override
     public ButtonElement getSaveButton() {
         return saveButton;
+    }
+
+    @Override
+    public String getExpression() {
+        return expressionElement.getValue();
+    }
+
+    @Override
+    public void setExpression(String expressionValue) {
+        enableCreateCollectionContainer(false);
+        expressionElement.setValue(expressionValue);
+    }
+
+    @EventHandler("createCollectionRadio")
+    public void onCreateCollectionClick(ClickEvent clickEvent) {
+        enableCreateCollectionContainer(true);
+        clickEvent.stopPropagation();
+    }
+
+    @EventHandler("defineCollectionRadio")
+    public void onDefineCollectionClick(ClickEvent clickEvent) {
+        enableCreateCollectionContainer(false);
+        clickEvent.stopPropagation();
+    }
+
+    protected void enableCreateCollectionContainer(boolean toEnable) {
+        showCreateCollectionContainer(toEnable);
+        showDefineCollectionContainer(!toEnable);
+        showAddItemButtonContainer(toEnable);
+        createCollectionRadio.setChecked(toEnable);
+        defineCollectionRadio.setChecked(!toEnable);
+        if (listWidget) {
+            createLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelList());
+        } else {
+            createLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.createLabelMap());
+        }
     }
 
     @EventHandler("collectionEditor")
@@ -280,8 +396,8 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
         clickEvent.stopPropagation();
     }
 
-    @EventHandler("objectSeparator")
-    public void onObjectSeparatorClick(ClickEvent clickEvent) {
+    @EventHandler("addItemButtonContainer")
+    public void onAddItemButtonContainerClick(ClickEvent clickEvent) {
         clickEvent.stopPropagation();
     }
 
@@ -317,5 +433,35 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
 
     protected void toggleRowExpansion(boolean toExpand) {
         CollectionEditorUtils.toggleRowExpansion(faAngleRight, toExpand);
+    }
+
+    protected void ensureExpressionSyntax() {
+        if (RULE.equals(scenarioType)) {
+            expressionElement.setValue(ExpressionUtils.ensureExpressionSyntax(expressionElement.getValue()));
+        }
+    }
+
+    protected void showCreateCollectionContainer(boolean show) {
+        if (show) {
+            createCollectionContainer.getStyle().setDisplay(Style.Display.BLOCK);
+        } else {
+            createCollectionContainer.getStyle().setDisplay(Style.Display.NONE);
+        }
+    }
+
+    protected void showDefineCollectionContainer(boolean show) {
+        if (show) {
+            defineCollectionContainer.getStyle().setDisplay(Style.Display.BLOCK);
+        } else {
+            defineCollectionContainer.getStyle().setDisplay(Style.Display.NONE);
+        }
+    }
+
+    protected void showAddItemButtonContainer(boolean show) {
+        if (show) {
+            addItemButtonContainer.getStyle().setDisplay(Style.Display.BLOCK);
+        } else {
+            addItemButtonContainer.getStyle().setDisplay(Style.Display.NONE);
+        }
     }
 }

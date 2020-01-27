@@ -91,6 +91,7 @@ public class TestProperties {
     public static final Map<String, String> TEST_VALUE_PROPERTYY_MAP = Collections.singletonMap("TEST-VALUE1", "TEST-VALUE2");
 
     public static final String TEST_JSON = "TEST-JSON";
+    public static final String TEST_JSON_STRING = "\"TEST-JSON\"";
     public static final String TEST_CLASSNAME = "TEST-CLASSNAME";
     public static final String TEST_KEY = TEST_CLASSNAME + "#" + TEST_PROPERTYNAME;
     public static final int CHILD_COUNT = 3;
@@ -179,6 +180,7 @@ public class TestProperties {
     public static final String PLACEHOLDER = "PLACEHOLDER";
     public static final String LIST_VALUE = "[ \"Ford\", \"BMW\", \"Fiat\" ]";
     public static final String MAP_VALUE = "{\"name\":\"myname\",\"age\":29}";
+    public static final String EXPRESSION_VALUE = "\"[1, 2, 3]\"";
 
     public static final String SCENARIO_TYPE = "SCENARIO_TYPE";
     public static final String FILE_NAME = "FILE_NAME";

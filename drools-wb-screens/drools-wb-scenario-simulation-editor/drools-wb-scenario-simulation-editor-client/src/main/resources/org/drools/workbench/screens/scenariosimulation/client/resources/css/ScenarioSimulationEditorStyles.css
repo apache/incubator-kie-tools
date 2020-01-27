@@ -194,3 +194,9 @@ span.kie-list-view-pf-main-info__text {
     white-space: normal;
     text-align: inherit;
 }
+
+.collection-editor-expression_textarea {
+    height: 12em;
+    width: 100%;
+    font-size: 12px;
+}
