@@ -155,7 +155,7 @@ export function EditorPage(props: Props) {
 
   return (
     <Page>
-      <PageSection variant="light" noPadding={true}>
+      <PageSection variant="light" noPadding={true} style={{ flexBasis: "100%" }}>
         {copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
@@ -166,7 +166,7 @@ export function EditorPage(props: Props) {
           </div>
         )}
         <Stack>
-          <StackItem>
+          <StackItem style={{ flexBasis: "1%" }}>
             {!fullscreen && (
               <EditorToolbar
                 onFullScreen={enterFullscreen}
@@ -177,20 +177,15 @@ export function EditorPage(props: Props) {
                 onCopyContentToClipboard={requestCopyContentToClipboard}
               />
             )}
-
             {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
           </StackItem>
-
-          <StackItem
-            className="pf-m-fill"
-            style={fullscreen ? { height: "calc(100vh - 5px)" } : { height: "calc(100vh - 60px)" }}
-          >
+          <StackItem isFilled={true} style={{ flexBasis: "100%" }}>
             <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
           </StackItem>
         </Stack>
-        <a ref={downloadRef} />
-        <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />
       </PageSection>
+      <a ref={downloadRef} />
+      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
     </Page>
   );
 }
