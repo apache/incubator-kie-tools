@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 
@@ -30,6 +31,8 @@ public interface SettingsView
     interface Presenter extends SubDockView.Presenter {
 
         void setScenarioType(ScenarioSimulationModel.Type scenarioType, Settings settings, String fileName);
+
+        void setEventBus(EventBus eventBus);
 
         void syncDmoSession();
 

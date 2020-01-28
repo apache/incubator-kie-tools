@@ -67,6 +67,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.SetInstance
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ValidateSimulationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadTestToolsEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RunSingleScenarioEventHandler;
@@ -481,6 +482,13 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         UnsupportedDMNEvent event = new UnsupportedDMNEvent(DMN_ERROR);
         scenarioSimulationEventHandler.onEvent(event);
         verify(confirmPopupPresenterMock, times(1)).show(anyString(), eq(DMN_ERROR));
+    }
+
+    @Test
+    public void onValidateEvent() {
+        ValidateSimulationEvent event = new ValidateSimulationEvent();
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(scenarioSimulationEditorPresenterMock, times(1)).validateSimulation();
     }
 
     @Test

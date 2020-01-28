@@ -25,9 +25,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.client.dropdown.SettingsScenarioSimulationDropdown;
+import org.drools.workbench.screens.scenariosimulation.client.events.ValidateSimulationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -43,6 +45,8 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     public static final int DEFAULT_PREFERRED_WIDHT = 300;
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.Settings";
+
+    protected EventBus eventBus;
 
     protected Settings settings;
 
@@ -94,6 +98,11 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         settingsScenarioSimulationDropdown.clear();
     }
 
+    @Override
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
     public SettingsView getView() {
         return view;
     }
@@ -114,7 +123,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
         view.getDmnFilePathErrorLabel().setInnerText("");
         settingsScenarioSimulationDropdown.registerOnMissingValueHandler(this::setDmnErrorPath);
-        settingsScenarioSimulationDropdown.registerOnChangeHandler(this::validateDmnPath);
+        settingsScenarioSimulationDropdown.registerOnChangeHandler(this::validateSimulation);
         settingsScenarioSimulationDropdown.loadAssets(settings.getDmnFilePath());
     }
 
@@ -145,7 +154,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     /**
-     * It sets an error message to <code>dmnPathErrorLabel</code> span element and it disables the <code>saveButton</code>
+     * It sets an error message to <code>dmnPathErrorLabel</code> span element
      * This method should be called in case of INVALID DMN file path.
      */
     protected void setDmnErrorPath() {
@@ -155,11 +164,11 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     /**
-     * It checks if a user selected DMN path is valid or not. If valid, it enables the <code>saveButton</code>
-     * and it clears the <code>dmnPathErrorLabel</code> span element. If not valid, the otherwise.
+     * It checks if a user selected DMN path is valid or not. If valid, it clears the <code>dmnPathErrorLabel</code>
+     * span element and it validates the whole Simulation. If not valid, the otherwise.
      * This method should be called everytime a value is selected in <code>{@link SettingsScenarioSimulationDropdown}</code> widget
      */
-    protected void validateDmnPath() {
+    protected void validateSimulation() {
         final Optional<KieAssetsDropdownItem> value = settingsScenarioSimulationDropdown.getValue();
         String selectedPath = value.map(KieAssetsDropdownItem::getValue).orElse(null);
         boolean isValid = selectedPath != null && !selectedPath.isEmpty();
@@ -170,6 +179,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
             this.syncDmnFilePath();
             view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
             view.getDmnFilePathErrorLabel().setInnerText("");
+            eventBus.fireEvent(new ValidateSimulationEvent());
         }
     }
 

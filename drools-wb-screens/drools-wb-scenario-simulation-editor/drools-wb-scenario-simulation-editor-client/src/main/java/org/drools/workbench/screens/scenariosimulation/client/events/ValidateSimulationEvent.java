@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,22 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.RunSingleScenarioEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ValidateSimulationEventHandler;
 
 /**
- * <code>GwtEvent</code> to <b>run</b> a scenario
+ * <code>GwtEvent</code> to <b>validate</b> a <code>Simulation</code>
  */
-public class RunSingleScenarioEvent extends GwtEvent<RunSingleScenarioEventHandler> {
+public class ValidateSimulationEvent extends GwtEvent<ValidateSimulationEventHandler> {
 
-    public static final Type<RunSingleScenarioEventHandler> TYPE = new Type<>();
-
-    private int rowIndex;
-
-    public RunSingleScenarioEvent(int rowIndex) {
-        this.rowIndex = rowIndex;
-    }
+    public static final Type<ValidateSimulationEventHandler> TYPE = new Type<>();
 
     @Override
-    public Type<RunSingleScenarioEventHandler> getAssociatedType() {
+    public Type<ValidateSimulationEventHandler> getAssociatedType() {
         return TYPE;
     }
 
-    public int getRowIndex() {
-        return rowIndex;
-    }
-
     @Override
-    protected void dispatch(RunSingleScenarioEventHandler handler) {
+    protected void dispatch(ValidateSimulationEventHandler handler) {
         handler.onEvent(this);
     }
 }

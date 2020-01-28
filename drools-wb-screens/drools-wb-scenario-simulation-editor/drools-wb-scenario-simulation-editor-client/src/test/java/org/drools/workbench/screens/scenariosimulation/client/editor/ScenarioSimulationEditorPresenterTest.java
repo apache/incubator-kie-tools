@@ -695,6 +695,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     }
 
     @Test
+    public void validateSimulation() {
+        presenterSpy.validateSimulation();
+        verify(scenarioSimulationEditorWrapperMock, times(1)).validate(eq(simulationMock), eq(settingsLocal), isA(RemoteCallback.class));
+    }
+
+    @Test
     public void selectSimulationTab() {
         presenterSpy.selectSimulationTab();
         verify(scenarioSimulationEditorWrapperMock, times(1)).selectSimulationTab();
