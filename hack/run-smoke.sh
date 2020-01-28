@@ -25,38 +25,21 @@ function usage(){
   printf "\nOptions:"
   printf "\n"
   printf "\n-h | --help\n\tPrint the usage of this script."
-  printf "\n--deploy_uri {URI}\n\tURI where you can find operator deployment yaml files and crds."
   printf "\n--ope_name {URI}\n\tOperator image name."
   printf "\n--ope_tag {URI}\n\tOperator image tag."
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
-  printf "\n--feature {FEATURE_NAME}\n\tRun a specific feature. Name should be without the '.feature' extension"
+  printf "\n--feature {FEATURE_NAME}\n\tRun a specific feature file."
   printf "\n--local ${BOOLEAN}\n\tSpecify whether you run test in local"
   printf "\n-c or --concurrent ${NUMBER}\n\Set the number of concurrent tests. Default is 1."
   printf "\n"
 }
 
-smokeType=$1
-TEST_FOLDER=
-if [ "${smokeType}" = "ope" ]; then
-  TEST_FOLDER="operator"
-elif [ "${smokeType}" = "cli" ]; then
-  TEST_FOLDER="cli"
-else
-  echo "Unknown Smoke Tests Type ${smokeType}"
-  exit 1
-fi
-shift
-
-FEATURE="features/${TEST_FOLDER}"
+FEATURE=""
 CONCURRENT=1
 
 while (( $# ))
 do
 case $1 in
-  --deploy_uri)
-    shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_DEPLOY_FOLDER="${1}"; shift; fi
-  ;;
   --ope_name)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_IMAGE_NAME="${1}"; shift; fi
@@ -71,7 +54,7 @@ case $1 in
   ;;
   --feature)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="${FEATURE}/${1}.feature"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="${1}"; shift; fi
   ;;
   --local)
     shift
