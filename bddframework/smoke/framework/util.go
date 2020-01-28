@@ -19,11 +19,11 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 
 	"go.uber.org/zap"
 )
@@ -37,8 +37,8 @@ func GetLogger(namespace string) *zap.SugaredLogger {
 func GenerateNamespaceName() string {
 	rand.Seed(time.Now().UnixNano())
 	ns := fmt.Sprintf("cucumber-%s", RandSeq(4))
-	if local := util.GetOSEnv("LOCAL_TESTS", "false"); local == "true" {
-		username := util.GetOSEnv("USERNAME", "none")
+	if local := getEnvLocalTests(); local == "true" {
+		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
 	}
 	return ns
@@ -57,7 +57,6 @@ func RandSeq(size int) string {
 // ReadFromURI reads string content from given URI (URL or Filesystem)
 func ReadFromURI(uri string) (string, error) {
 	var data []byte
-	var err error
 	if strings.HasPrefix(uri, "http") {
 		resp, err := http.Get(uri)
 		if err != nil {
@@ -66,7 +65,9 @@ func ReadFromURI(uri string) (string, error) {
 		defer resp.Body.Close()
 		data, err = ioutil.ReadAll(resp.Body)
 	} else {
-		data, err = ioutil.ReadFile(uri)
+		// It should be a Filesystem uri
+		absPath, err := filepath.Abs(uri)
+		data, err = ioutil.ReadFile(absPath)
 		if err != nil {
 			return "", err
 		}
@@ -97,9 +98,4 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 			}
 		}
 	}
-}
-
-// GetOsMultipleEnv get environment variables from 2 of them or returns defaultValue. env1 > env2 > defaultValue.
-func GetOsMultipleEnv(env1, env2, defaultValue string) string {
-	return util.GetOSEnv(env1, util.GetOSEnv(env2, defaultValue))
 }

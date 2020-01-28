@@ -26,7 +26,6 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 	"github.com/kiegroup/kogito-cloud-operator/version"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
@@ -34,9 +33,6 @@ import (
 )
 
 const (
-	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
-	defaultOperatorDeployURI = "https://raw.githubusercontent.com/kiegroup/kogito-cloud-operator/master/deploy/"
-
 	kogitoCrdGroupName       = "app.kiegroup.org"
 	kogitoAppCrdName         = "kogitoapps"
 	kogitoInfraCrdName       = "kogitoinfras"
@@ -88,7 +84,7 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 		return err
 	}
 
-	var deployURI = getOperatorDeployURI()
+	var deployURI = getEnvOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
 	loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil)
@@ -237,7 +233,7 @@ func deployCrdIfNeeded(namespace, crdName string) error {
 	if exists, err := kubernetes.ResourceC(kubeClient).Fetch(crdEntity); err != nil {
 		return fmt.Errorf("Error while trying to look for Kogito Operator installation: %v", err)
 	} else if !exists {
-		crdURI := getOperatorDeployURI() + "crds/" + buildCrdFilename(crdName)
+		crdURI := getEnvOperatorDeployURI() + "crds/" + buildCrdFilename(crdName)
 		GetLogger(namespace).Infof("deployCrd %s", crdURI)
 		return loadResource("", crdURI, &apiextensionsv1beta1.CustomResourceDefinition{}, nil)
 	}
@@ -253,15 +249,6 @@ func buildCrdFilename(crdName string) string {
 	return kogitoCrdGroupName + "_" + crdName + "_crd.yaml"
 }
 
-func getOperatorDeployURI() string {
-	return util.GetOSEnv("OPERATOR_DEPLOY_FOLDER", defaultOperatorDeployURI)
-}
-func getOperatorImageName() string {
-	return util.GetOSEnv("OPERATOR_IMAGE_NAME", defaultOperatorImageName)
-}
-func getOperatorImageTag() string {
-	return util.GetOSEnv("OPERATOR_IMAGE_TAG", defaultOperatorImageTag)
-}
 func getOperatorImageNameAndTag() string {
-	return fmt.Sprintf("%s:%s", getOperatorImageName(), getOperatorImageTag())
+	return fmt.Sprintf("%s:%s", getEnvOperatorImageName(), getEnvOperatorImageTag())
 }

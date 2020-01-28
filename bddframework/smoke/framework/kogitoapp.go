@@ -23,7 +23,6 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 )
 
 const (
@@ -51,14 +50,14 @@ func DeployExample(namespace, appName, contextDir, runtime string, native, persi
 		kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
 	}
 
-	gitProjectURI := getExamplesRepositoryURI()
+	gitProjectURI := getEnvExamplesRepositoryURI()
 	kogitoApp.Spec.Build.Native = native
 	kogitoApp.Spec.Build.GitSource.URI = &gitProjectURI
 	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
-	kogitoApp.Spec.Build.GitSource.Reference = getExamplesRepositoryRef()
+	kogitoApp.Spec.Build.GitSource.Reference = getEnvExamplesRepositoryRef()
 
 	if persistence {
-		appendNewEnvToKogitoAppBuild(kogitoApp, "MAVEN_ARGS_APPEND", "-Ppersistence")
+		appendNewEnvToKogitoAppBuild(kogitoApp, mavenArgsAppendEnvVar, "-Ppersistence")
 		kogitoApp.Spec.Infra.InstallInfinispan = v1alpha1.KogitoAppInfraInstallInfinispanAlways
 	}
 
@@ -102,8 +101,8 @@ func getKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 		},
 	}
 
-	if mavenMirrorURL := util.GetOSEnv("MAVEN_MIRROR_URL", ""); mavenMirrorURL != "" {
-		appendNewEnvToKogitoAppBuild(kogitoApp, "MAVEN_MIRROR_URL", util.GetOSEnv("MAVEN_MIRROR_URL", ""))
+	if mavenMirrorURL := getEnvMavenMirrorURL(); mavenMirrorURL != "" {
+		appendNewEnvToKogitoAppBuild(kogitoApp, mavenMirrorURLEnvVar, mavenMirrorURL)
 	}
 
 	return kogitoApp
@@ -131,33 +130,6 @@ func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 	// If "KOGITO_BUILD_IMAGE_STREAM_[TAG|NAME|NAMESPACE]" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage
-	kogitoApp.Spec.Build.ImageS2ITag = getS2IImageSteamTag()
-	kogitoApp.Spec.Build.ImageRuntimeTag = getRuntimeImageSteamTag()
-}
-
-func getS2IImageSteamTag() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_S2I_IMAGE_STREAM_TAG", "")
-}
-func getS2IImageSteamName() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAME", "")
-}
-func getS2IImageSteamNamespace() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAMESPACE", "")
-}
-
-func getRuntimeImageSteamTag() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG", "")
-}
-func getRuntimeImageSteamName() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAME", "")
-}
-func getRuntimeImageSteamNamespace() string {
-	return GetOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAMESPACE", "")
-}
-
-func getExamplesRepositoryURI() string {
-	return util.GetOSEnv("KOGITO_EXAMPLES_REPOSITORY_URI", defaultKogitoExamplesURI)
-}
-func getExamplesRepositoryRef() string {
-	return util.GetOSEnv("KOGITO_EXAMPLES_REPOSITORY_REF", "")
+	kogitoApp.Spec.Build.ImageS2ITag = getEnvS2IImageSteamTag()
+	kogitoApp.Spec.Build.ImageRuntimeTag = getEnvRuntimeImageSteamTag()
 }

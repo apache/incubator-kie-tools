@@ -17,20 +17,12 @@ package framework
 import (
 	"fmt"
 	"os/exec"
-	"path/filepath"
-
-	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
-)
-
-var (
-	// Default use the binary built in the project
-	defaultCliPath = "../../build/_output/bin/kogito"
 )
 
 // ExecuteCliCommand executes a kogito cli command for a given namespace
 func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 	GetLogger(namespace).Infof("Execute CLI %v", args)
-	path, err := getCliPath()
+	path, err := getEnvOperatorCliPath()
 	if err != nil {
 		return "", err
 	}
@@ -59,24 +51,24 @@ func CliDeploySpringBootExample(namespace, appName, contextDir string, persisten
 
 // CliDeployExample deploys an example with the CLI
 func CliDeployExample(namespace, appName, contextDir, runtime string, native, persistence bool) error {
-	cmd := []string{"deploy-service", appName, getExamplesRepositoryURI()}
+	cmd := []string{"deploy-service", appName, getEnvExamplesRepositoryURI()}
 
 	cmd = append(cmd, "-c", contextDir)
 	cmd = append(cmd, "-r", runtime)
 	if native {
 		cmd = append(cmd, "--native")
 	}
-	if ref := getExamplesRepositoryRef(); ref != "" {
+	if ref := getEnvExamplesRepositoryRef(); ref != "" {
 		cmd = append(cmd, "-b", ref)
 	}
 
-	if mavenMirrorURL := util.GetOSEnv("MAVEN_MIRROR_URL", ""); mavenMirrorURL != "" {
-		cmd = append(cmd, "--build-env", fmt.Sprintf("MAVEN_MIRROR_URL=%s", mavenMirrorURL))
+	if mavenMirrorURL := getEnvMavenMirrorURL(); mavenMirrorURL != "" {
+		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=%s", mavenMirrorURLEnvVar, mavenMirrorURL))
 	}
 
 	if persistence {
 		cmd = append(cmd, "--install-infinispan", "Always")
-		cmd = append(cmd, "--build-env", fmt.Sprintf("MAVEN_ARGS_APPEND=-Ppersistence"))
+		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=-Ppersistence", mavenArgsAppendEnvVar))
 	}
 
 	// TODO setupBuildImageStreams(kogitoApp)
@@ -96,12 +88,4 @@ func CliInstallKogitoJobsService(namespace string, replicas int, persistence boo
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 
-}
-
-func getCliPath() (string, error) {
-	defaultPath, err := filepath.Abs(defaultCliPath)
-	if err != nil {
-		return "", err
-	}
-	return util.GetOSEnv("OPERATOR_CLI_PATH", defaultPath), nil
 }

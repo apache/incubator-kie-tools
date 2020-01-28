@@ -2,7 +2,7 @@
 
 Smoke tests are using [Cucumber](https://cucumber.io/) and [Gherkin syntax](https://cucumber.io/docs/gherkin).
 
-Ti is using the [Godog](https://github.com/DATA-DOG/godog) framework.
+It is using the [Godog](https://github.com/DATA-DOG/godog) framework.
 
 ### Configuration
 
@@ -11,7 +11,12 @@ You can add some environment variables which will be taken into account by the t
 * **OPERATOR_DEPLOY_FOLDER**
 
   URI where you can find operator deployment yaml files and crds
-  Default: "https://raw.githubusercontent.com/kiegroup/kogito-cloud-operator/master/deploy/"
+  Default: "../../deploy/" (as tests are run into "test/smoke" folder)
+
+* **OPERATOR_CLI_PATH**
+
+    URI where you can find the built cli binary
+    Default: "../../build/_output/bin/kogito" (as tests are run into "test/smoke" folder)
 
 * **OPERATOR_IMAGE_NAME** 
 
