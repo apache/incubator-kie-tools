@@ -53,4 +53,6 @@ public interface WorkItemsEditorConstants
     String CustomEditor();
 
     String ParameterValues();
+
+    String DefaultHandler();
 }

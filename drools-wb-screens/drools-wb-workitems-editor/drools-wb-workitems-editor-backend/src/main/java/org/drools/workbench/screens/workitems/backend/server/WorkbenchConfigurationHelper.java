@@ -72,7 +72,8 @@ public class WorkbenchConfigurationHelper {
 
         group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR,
                                                                "\"customEditor\" : \"true\""));
-
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFAULT_HANDLER,
+                                                               "\"defaultHandler\" : \"mvel: new DefaultHandler()\""));
         return group;
     }
 

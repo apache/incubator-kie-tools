@@ -46,7 +46,7 @@ public class WorkbenchConfigurationHelperTest {
         assertEquals(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS, group.getName());
         assertEquals("", group.getDescription());
 
-        assertEquals(6, group.getItems().size());
+        assertEquals(7, group.getItems().size());
 
         assertEquals("\"customEditor\" : \"true\"", group.getConfigItemValue(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR));
 
@@ -55,6 +55,7 @@ public class WorkbenchConfigurationHelperTest {
                 "   \"MySecondParam\" : \"X,Y,Z\"\n" +
                 "]", group.getConfigItemValue(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES));
 
+        assertEquals(group.getConfigItemValue(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFAULT_HANDLER), "\"defaultHandler\" : \"mvel: new DefaultHandler()\"");
     }
 
 }

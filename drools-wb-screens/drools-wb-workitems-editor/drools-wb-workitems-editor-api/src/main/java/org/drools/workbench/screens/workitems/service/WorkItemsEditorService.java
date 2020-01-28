@@ -59,6 +59,8 @@ public interface WorkItemsEditorService
 
     public static final String WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES = "ParameterValues";
 
+    public static final String WORK_ITEMS_EDITOR_SETTINGS_DEFAULT_HANDLER = "DefaultHandler";
+
     WorkItemsModelContent loadContent(final Path path);
 
     WorkItemDefinitionElements loadDefinitionElements();
