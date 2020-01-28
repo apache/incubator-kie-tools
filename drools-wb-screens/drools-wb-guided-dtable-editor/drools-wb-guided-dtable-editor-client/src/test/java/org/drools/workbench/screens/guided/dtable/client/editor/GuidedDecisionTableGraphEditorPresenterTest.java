@@ -187,6 +187,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Mock
     private EventSourceMock<SearchPerformedEvent> searchPerformed;
 
+    @Mock
+    private AnalysisReportScreen analysisReportScreen;
+
     private Event<SaveInProgressEvent> saveInProgressEvent = spy(new EventSourceMock<SaveInProgressEvent>() {
         @Override
         public void fire(final SaveInProgressEvent event) {
@@ -223,7 +226,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
                                                            mock(GuidedDecisionTableDocksHandler.class),
-                                                           mock(AnalysisReportScreen.class),
+                                                           analysisReportScreen,
                                                            validationPopup,
                                                            dtGraphResourceType,
                                                            editMenuBuilder,
@@ -267,6 +270,11 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                 return pathPlaceRequest;
             }
         };
+    }
+
+    @Test
+    public void analysisScreenIsSetForModeller() {
+        verify(modeller).analysisReportScreen(analysisReportScreen);
     }
 
     @Test
