@@ -31,6 +31,7 @@ function usage(){
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
   printf "\n--feature {FEATURE_NAME}\n\tRun a specific feature. Name should be without the '.feature' extension"
   printf "\n--local ${BOOLEAN}\n\tSpecify whether you run test in local"
+  printf "\n-c or --concurrent ${NUMBER}\n\Set the number of concurrent tests. Default is 1."
   printf "\n"
 }
 
@@ -47,6 +48,7 @@ fi
 shift
 
 FEATURE="features/${TEST_FOLDER}"
+CONCURRENT=1
 
 while (( $# ))
 do
@@ -75,6 +77,10 @@ case $1 in
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then if [ "${1}" = "true" ]; then export LOCAL_TESTS=true; fi; shift; fi
   ;;
+  -c|--concurrent)
+    shift
+    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export CONCURRENT="${1}"; shift; fi
+  ;;
   -h|--help)
     usage
     exit 0
@@ -93,4 +99,4 @@ go get github.com/DATA-DOG/godog/cmd/godog
 
 echo "-------- Running smoke tests"
 
-cd test/smoke/ && godog -c 2 --random -f progress ${FEATURE}
+cd test/smoke/ && godog -c ${CONCURRENT} --random -f progress ${FEATURE}
