@@ -39,6 +39,12 @@ func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 	return string(out[:]), err
 }
 
+// ExecuteCliCommandInNamespace executes a kogito cli command in a specific namespace
+func ExecuteCliCommandInNamespace(namespace string, args ...string) (string, error) {
+	args = append(args, "-p", namespace)
+	return ExecuteCliCommand(namespace, args...)
+}
+
 // CliDeployQuarkusExample deploy a Quarkus example with the CLI
 func CliDeployQuarkusExample(namespace, appName, contextDir string, native, persistence bool) error {
 	GetLogger(namespace).Infof("CLI Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
@@ -55,7 +61,6 @@ func CliDeploySpringBootExample(namespace, appName, contextDir string, persisten
 func CliDeployExample(namespace, appName, contextDir, runtime string, native, persistence bool) error {
 	cmd := []string{"deploy-service", appName, getExamplesRepositoryURI()}
 
-	cmd = append(cmd, "-p", namespace)
 	cmd = append(cmd, "-c", contextDir)
 	cmd = append(cmd, "-r", runtime)
 	if native {
@@ -76,20 +81,19 @@ func CliDeployExample(namespace, appName, contextDir, runtime string, native, pe
 
 	// TODO setupBuildImageStreams(kogitoApp)
 
-	_, err := ExecuteCliCommand(namespace, cmd...)
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 }
 
 // CliInstallKogitoJobsService installs the Kogito Jobs Service
 func CliInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
 	cmd := []string{"install", "jobs-service"}
-	cmd = append(cmd, "-p", namespace)
 
 	if persistence {
 		cmd = append(cmd, "--enable-persistence")
 	}
 
-	_, err := ExecuteCliCommand(namespace, cmd...)
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 
 }

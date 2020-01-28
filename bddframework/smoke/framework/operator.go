@@ -65,6 +65,10 @@ var (
 			timeoutInMin: 5,
 			channel:      "stable",
 		},
+		"keycloak-operator": dependentOperator{
+			timeoutInMin: 5,
+			channel:      "alpha",
+		},
 	}
 )
 

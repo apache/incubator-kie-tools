@@ -25,10 +25,19 @@ import (
 func registerCliSteps(s *godog.Suite, data *Data) {
 	s.Step(`^CLI create namespace$`, data.cliCreateNamespace)
 	s.Step(`^CLI use namespace$`, data.cliUseNamespace)
+
 	s.Step(`^CLI install Kogito operator$`, data.cliInstallOperator)
 	s.Step(`^CLI install Kogito Data Index with (\d+) replicas$`, data.cliInstallDataIndexWithReplicas)
 	s.Step(`^CLI install Kogito Jobs Service with (\d+) replicas$`, data.cliInstallKogitoJobsServiceWithReplicas)
 	s.Step(`^CLI install Kogito Jobs Service with persistence and (\d+) replicas$`, data.cliInstallKogitoJobsServiceWithPersistenceAndReplicas)
+	s.Step(`^CLI install Kogito Infra Infinispan$`, data.cliInstallKogitoInfraInfinispan)
+	s.Step(`^CLI install Kogito Infra Kafka$`, data.cliInstallKogitoInfraKafka)
+	s.Step(`^CLI install Kogito Infra Keycloak$`, data.cliInstallKogitoInfraKeycloak)
+
+	s.Step(`^CLI remove Kogito Infra Infinispan$`, data.cliRemoveKogitoInfraInfinispan)
+	s.Step(`^CLI remove Kogito Infra Kafka$`, data.cliRemoveKogitoInfraKafka)
+	s.Step(`^CLI remove Kogito Infra Keycloak$`, data.cliRemoveKogitoInfraKeycloak)
+
 	s.Step(`^CLI deploy quarkus example service "([^"]*)" with native "([^"]*)"$`, data.cliDeployQuarkusExampleServiceWithNative)
 	s.Step(`^CLI deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)"$`, data.cliDeployQuarkusExampleServiceWithPersistenceAndNative)
 	s.Step(`^CLI deploy spring boot example service "([^"]*)"$`, data.cliDeploySpringBootExampleService)
@@ -49,7 +58,7 @@ func (data *Data) cliUseNamespace() error {
 
 // cliInstallOperator install the Kogito Operator with the CLI
 func (data *Data) cliInstallOperator() error {
-	_, err := framework.ExecuteCliCommand(data.Namespace, "install", "operator", "-p", data.Namespace)
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "operator")
 	return err
 }
 
@@ -70,7 +79,7 @@ func (data *Data) cliDeploySpringBootExampleServiceWithPersistence(contextDir st
 }
 
 func (data *Data) cliInstallDataIndexWithReplicas(replicas int) error {
-	_, err := framework.ExecuteCliCommand(data.Namespace, "install", "data-index", "-p", data.Namespace)
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "data-index")
 	return err
 }
 
@@ -80,4 +89,34 @@ func (data *Data) cliInstallKogitoJobsServiceWithReplicas(replicas int) error {
 
 func (data *Data) cliInstallKogitoJobsServiceWithPersistenceAndReplicas(replicas int) error {
 	return framework.CliInstallKogitoJobsService(data.Namespace, replicas, true)
+}
+
+func (data *Data) cliInstallKogitoInfraInfinispan() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "infinispan")
+	return err
+}
+
+func (data *Data) cliInstallKogitoInfraKafka() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "kafka")
+	return err
+}
+
+func (data *Data) cliInstallKogitoInfraKeycloak() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "keycloak")
+	return err
+}
+
+func (data *Data) cliRemoveKogitoInfraInfinispan() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "remove", "infinispan")
+	return err
+}
+
+func (data *Data) cliRemoveKogitoInfraKafka() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "remove", "kafka")
+	return err
+}
+
+func (data *Data) cliRemoveKogitoInfraKeycloak() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "remove", "keycloak")
+	return err
 }

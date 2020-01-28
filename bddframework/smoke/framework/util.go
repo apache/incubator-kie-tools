@@ -22,7 +22,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DATA-DOG/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 
@@ -43,25 +42,6 @@ func GenerateNamespaceName() string {
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
 	}
 	return ns
-}
-
-// GenerateExamplesString generates a string of values from
-func GenerateExamplesString(examples []*gherkin.Examples) string {
-	values := ""
-	for i := range examples {
-		for j := range examples[i].TableBody {
-			for k := range examples[i].TableBody[j].Cells {
-				cell := examples[i].TableBody[j].Cells[k]
-				if values == "" {
-					values += cell.Value
-				} else {
-					values += ", " + cell.Value
-				}
-			}
-
-		}
-	}
-	return values
 }
 
 // RandSeq returns a generated string

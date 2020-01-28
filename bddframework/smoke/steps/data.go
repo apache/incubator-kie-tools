@@ -37,11 +37,11 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerHTTPSteps(s, data)
 	registerKogitoAppSteps(s, data)
 	registerKogitoDataIndexServiceSteps(s, data)
+	registerKogitoInfraSteps(s, data)
 	registerKogitoJobsServiceSteps(s, data)
 	registerKubernetesSteps(s, data)
 	registerOperatorSteps(s, data)
 	registerPrometheusSteps(s, data)
-	registerKafkaSteps(s, data)
 }
 
 // BeforeScenario configure the data before a scenario is launched
@@ -49,11 +49,7 @@ func (data *Data) BeforeScenario(s interface{}) {
 	data.StartTime = time.Now()
 	data.Namespace = framework.GenerateNamespaceName()
 
-	msg := fmt.Sprintf("Scenario %s", getScenarioName(s))
-	if scenarioOutline, ok := s.(*gherkin.ScenarioOutline); ok {
-		msg += fmt.Sprintf(" with values %s", framework.GenerateExamplesString(scenarioOutline.Examples))
-	}
-	framework.GetLogger(data.Namespace).Info(msg)
+	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", getScenarioName(s)))
 }
 
 // BeforeStep configure the data before a scenario is launched
@@ -68,7 +64,7 @@ func (data *Data) AfterScenario(s interface{}, err error) {
 	framework.GetLogger(data.Namespace).Infof("Scenario '%s'. Duration = %s", getScenarioName(s), duration.String())
 
 	if err != nil {
-		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", err)
+		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", getScenarioName(s), err)
 	}
 }
 
