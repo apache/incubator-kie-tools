@@ -17,19 +17,19 @@
 import * as Octokit from "@octokit/rest";
 
 export function fetchFile(octokit: Octokit, org: string, repo: string, ref: string, path: string) {
-    return octokit.repos
-        .getContents({
-            repo: repo,
-            owner: org,
-            ref: ref,
-            path: path,
-            headers: {"cache-control": "no-cache"}
-        })
-        .then(res => atob((res.data as any).content))
-        .catch(e => {
-            console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-            return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(res =>
-                res.ok ? res.text() : Promise.resolve(undefined)
-            );
-        });
+  return octokit.repos
+    .getContents({
+      repo: repo,
+      owner: org,
+      ref: ref,
+      path: path,
+      headers: { "cache-control": "no-cache" }
+    })
+    .then(res => atob((res.data as any).content))
+    .catch(e => {
+      console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
+      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(res =>
+        res.ok ? res.text() : Promise.resolve(undefined)
+      );
+    });
 }

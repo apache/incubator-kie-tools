@@ -15,7 +15,7 @@
  */
 
 describe("EditorEnvelopeController", () => {
-    test("opens", async () => {
-        expect(true).toBeTruthy();
-    });
+  test("opens", async () => {
+    expect(true).toBeTruthy();
+  });
 });

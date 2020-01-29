@@ -15,82 +15,82 @@
  */
 
 import * as React from "react";
-import {useEffect, useState} from "react";
-import {useGlobals} from "../common/GlobalContext";
-import {Router} from "@kogito-tooling/core-api";
+import { useEffect, useState } from "react";
+import { useGlobals } from "../common/GlobalContext";
+import { Router } from "@kogito-tooling/core-api";
 import * as dependencies__ from "../../dependencies";
-import {getOriginalFilePath, IsolatedPrEditor, PrInfo} from "./IsolatedPrEditor";
-import {Logger} from "../../../Logger";
+import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
+import { Logger } from "../../../Logger";
 
-export function PrEditorsApp(props: { prInfo: PrInfo, contentPath: string }) {
-    const globals = useGlobals();
-    const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globals.logger, globals.router));
+export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
+  const globals = useGlobals();
+  const [prFileContainers, setPrFileContainers] = useState(supportedPrFileElements(globals.logger, globals.router));
 
-    useMutationObserverEffect(
-        new MutationObserver(mutations => {
-            const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
+  useMutationObserverEffect(
+    new MutationObserver(mutations => {
+      const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
 
-            if (addedNodes.length <= 0) {
-                return;
-            }
+      if (addedNodes.length <= 0) {
+        return;
+      }
 
-            const newContainers = supportedPrFileElements(globals.logger, globals.router);
-            if (newContainers.length !== prFileContainers.length) {
-                globals.logger.log("Found new containers...");
-                setPrFileContainers(newContainers);
-            }
-        }),
-        {
-            childList: true,
-            subtree: true
-        }
-    );
+      const newContainers = supportedPrFileElements(globals.logger, globals.router);
+      if (newContainers.length !== prFileContainers.length) {
+        globals.logger.log("Found new containers...");
+        setPrFileContainers(newContainers);
+      }
+    }),
+    {
+      childList: true,
+      subtree: true
+    }
+  );
 
-    return (
-        <>
-            {prFileContainers.map(container => (
-                <IsolatedPrEditor
-                    key={getUnprocessedFilePath(container)}
-                    prInfo={props.prInfo}
-                    contentPath={props.contentPath}
-                    prFileContainer={container}
-                    fileExtension={getFileExtension(container)}
-                    unprocessedFilePath={getUnprocessedFilePath(container)}
-                    githubTextEditorToReplace={dependencies__.prView.githubTextEditorToReplaceElement(container) as HTMLElement}
-                />
-            ))}
-        </>
-    );
+  return (
+    <>
+      {prFileContainers.map(container => (
+        <IsolatedPrEditor
+          key={getUnprocessedFilePath(container)}
+          prInfo={props.prInfo}
+          contentPath={props.contentPath}
+          prFileContainer={container}
+          fileExtension={getFileExtension(container)}
+          unprocessedFilePath={getUnprocessedFilePath(container)}
+          githubTextEditorToReplace={dependencies__.prView.githubTextEditorToReplaceElement(container) as HTMLElement}
+        />
+      ))}
+    </>
+  );
 }
 
 function supportedPrFileElements(logger: Logger, router: Router) {
-    return prFileElements(logger).filter(container => router.getLanguageData(getFileExtension(container)));
+  return prFileElements(logger).filter(container => router.getLanguageData(getFileExtension(container)));
 }
 
 function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
-    useEffect(() => {
-        observer.observe(dependencies__.all.pr__mutationObserverTarget()!, options);
-        return () => observer.disconnect();
-    }, []);
+  useEffect(() => {
+    observer.observe(dependencies__.all.pr__mutationObserverTarget()!, options);
+    return () => observer.disconnect();
+  }, []);
 }
 
 function prFileElements(logger: Logger) {
-    const elements = dependencies__.all.array.pr__supportedPrFileContainers();
-    if (!elements) {
-        logger.log("Could not find file containers...");
-        return [];
-    }
+  const elements = dependencies__.all.array.pr__supportedPrFileContainers();
+  if (!elements) {
+    logger.log("Could not find file containers...");
+    return [];
+  }
 
-    return elements;
+  return elements;
 }
 
 function getFileExtension(prFileContainer: HTMLElement) {
-    const unprocessedFilePath = getUnprocessedFilePath(prFileContainer);
-    return getOriginalFilePath(unprocessedFilePath)
-        .split(".")
-        .pop()!;
+  const unprocessedFilePath = getUnprocessedFilePath(prFileContainer);
+  return getOriginalFilePath(unprocessedFilePath)
+    .split(".")
+    .pop()!;
 }
 
 export function getUnprocessedFilePath(prFileContainer: HTMLElement) {
-    return dependencies__.all.pr__unprocessedFilePathContainer(prFileContainer)!.title;
+  return dependencies__.all.pr__unprocessedFilePathContainer(prFileContainer)!.title;
 }

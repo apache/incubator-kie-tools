@@ -15,14 +15,14 @@
  */
 
 export interface ExternalEditorManager {
-    name: string;
+  name: string;
 
-    open(filePath: string, fileContent: string, readonly: boolean): void;
+  open(filePath: string, fileContent: string, readonly: boolean): void;
 
-    getLink(filePath: string): string;
+  getLink(filePath: string): string;
 
-    listenToComeBack(
-        setFileName: (fileName: string) => unknown,
-        setFileContent: (content: string) => unknown
-    ): { stopListening: () => void };
+  listenToComeBack(
+    setFileName: (fileName: string) => unknown,
+    setFileContent: (content: string) => unknown
+  ): { stopListening: () => void };
 }

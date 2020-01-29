@@ -19,32 +19,32 @@ import {
   KOGITO_MAIN_CONTAINER_CLASS,
   KOGITO_MENU_CONTAINER_CLASS
 } from "./constants";
-import {Logger} from "../Logger";
+import { Logger } from "../Logger";
 
 export function runScriptOnPage(scriptString: string) {
-    const scriptTag = document.createElement("script");
-    scriptTag.setAttribute("type", "text/javascript");
-    scriptTag.innerText = scriptString;
-    document.body.appendChild(scriptTag);
-    scriptTag.remove();
+  const scriptTag = document.createElement("script");
+  scriptTag.setAttribute("type", "text/javascript");
+  scriptTag.innerText = scriptString;
+  document.body.appendChild(scriptTag);
+  scriptTag.remove();
 }
 
 let lastUri = window.location.pathname;
 
 export function runAfterUriChange(logger: Logger, callback: () => void) {
-    const checkUriThenCallback = () => {
-        const currentUri = window.location.pathname;
+  const checkUriThenCallback = () => {
+    const currentUri = window.location.pathname;
 
-        if (lastUri === currentUri) {
-            return;
-        }
+    if (lastUri === currentUri) {
+      return;
+    }
 
-        logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
-        lastUri = currentUri;
-        callback();
-    };
+    logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    lastUri = currentUri;
+    callback();
+  };
 
-    runScriptOnPage(`
+  runScriptOnPage(`
   var _wr = function(type) {
       var orig = history[type];
       return function() {
@@ -57,58 +57,58 @@ export function runAfterUriChange(logger: Logger, callback: () => void) {
   };
   history.replaceState = _wr('replaceState');`);
 
-    window.addEventListener("replaceState", () => {
-        logger.log("replaceState event happened");
-        checkUriThenCallback();
-    });
-    window.addEventListener("popstate", () => {
-        logger.log("popstate event happened");
-        checkUriThenCallback();
-    });
+  window.addEventListener("replaceState", () => {
+    logger.log("replaceState event happened");
+    checkUriThenCallback();
+  });
+  window.addEventListener("popstate", () => {
+    logger.log("popstate event happened");
+    checkUriThenCallback();
+  });
 }
 
 export function removeAllChildren(node: Node) {
-    while (node.firstChild) {
-        node.removeChild(node.firstChild);
-    }
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
 }
 
 export function mainContainer(id: string, container: HTMLElement) {
-    return container.querySelector(`.${KOGITO_MAIN_CONTAINER_CLASS}.${id}`);
+  return container.querySelector(`.${KOGITO_MAIN_CONTAINER_CLASS}.${id}`);
 }
 
 export function createAndGetMainContainer(id: string, container: HTMLElement) {
-    if (!mainContainer(id, container)) {
-        container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`);
-    }
-    return mainContainer(id, container)!;
+  if (!mainContainer(id, container)) {
+    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`);
+  }
+  return mainContainer(id, container)!;
 }
 
 export function iframeFullscreenContainer(id: string, container: HTMLElement) {
-    const element = () => document.querySelector(`.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`)!;
-    if (!element()) {
-        container.insertAdjacentHTML(
-            "afterbegin",
-            `<div class="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS} ${id}" class="hidden"></div>`
-        );
-    }
-    return element();
+  const element = () => document.querySelector(`.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`)!;
+  if (!element()) {
+    container.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS} ${id}" class="hidden"></div>`
+    );
+  }
+  return element();
 }
 
 export function kogitoMenuContainer(id: string, container: HTMLElement) {
-    const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
+  const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
-    if (!element()) {
-        container.insertAdjacentHTML("beforebegin", `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`);
-    }
+  if (!element()) {
+    container.insertAdjacentHTML("beforebegin", `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`);
+  }
 
-    return element();
+  return element();
 }
 
 export function extractOpenFileExtension(url: string) {
-    return url
-        .split(".")
-        .pop()
-        ?.match(/[\w\d]+/)
-        ?.pop();
+  return url
+    .split(".")
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
 }

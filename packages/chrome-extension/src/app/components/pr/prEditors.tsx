@@ -16,77 +16,77 @@
 
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import {PrEditorsApp} from "./PrEditorsApp";
-import {createAndGetMainContainer, removeAllChildren} from "../../utils";
-import {Globals, Main} from "../common/Main";
+import { PrEditorsApp } from "./PrEditorsApp";
+import { createAndGetMainContainer, removeAllChildren } from "../../utils";
+import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as dependencies__ from "../../dependencies";
-import {PrInfo} from "./IsolatedPrEditor";
+import { PrInfo } from "./IsolatedPrEditor";
 
 export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
-    // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-    // Without this method you can observe duplicated elements when using back/forward browser buttons.
-    cleanup(args.id);
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
 
-    ReactDOM.render(
-        <Main
-            id={args.id}
-            router={args.router}
-            logger={args.logger}
-            githubAuthTokenCookieName={args.githubAuthTokenCookieName}
-            extensionIconUrl={args.extensionIconUrl}
-            editorIndexPath={args.editorIndexPath}
-            resourceContentServiceFactory={args.resourceContentServiceFactory}
-            externalEditorManager={args.externalEditorManager}
-        >
-            <PrEditorsApp prInfo={parsePrInfo()} contentPath={args.contentPath}/>
-        </Main>,
-        createAndGetMainContainer(args.id, dependencies__.all.body()),
-        () => args.logger.log("Mounted.")
-    );
+  ReactDOM.render(
+    <Main
+      id={args.id}
+      router={args.router}
+      logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+      extensionIconUrl={args.extensionIconUrl}
+      editorIndexPath={args.editorIndexPath}
+      resourceContentServiceFactory={args.resourceContentServiceFactory}
+      externalEditorManager={args.externalEditorManager}
+    >
+      <PrEditorsApp prInfo={parsePrInfo()} contentPath={args.contentPath} />
+    </Main>,
+    createAndGetMainContainer(args.id, dependencies__.all.body()),
+    () => args.logger.log("Mounted.")
+  );
 }
 
 export function parsePrInfo(): PrInfo {
-    const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
+  const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
-    const targetOrganization = window.location.pathname.split("/")[1];
-    const repository = window.location.pathname.split("/")[2];
+  const targetOrganization = window.location.pathname.split("/")[1];
+  const repository = window.location.pathname.split("/")[2];
 
-    // PR is within the same organization
-    if (prInfos.length < 6) {
-        return {
-            repo: repository,
-            targetOrg: targetOrganization,
-            targetGitRef: prInfos[1],
-            org: targetOrganization,
-            gitRef: prInfos[3]
-        };
-    }
-
-    // PR is from a fork to an upstream
+  // PR is within the same organization
+  if (prInfos.length < 6) {
     return {
-        repo: repository,
-        targetOrg: targetOrganization,
-        targetGitRef: prInfos[2],
-        org: prInfos[4],
-        gitRef: prInfos[5]
+      repo: repository,
+      targetOrg: targetOrganization,
+      targetGitRef: prInfos[1],
+      org: targetOrganization,
+      gitRef: prInfos[3]
     };
+  }
+
+  // PR is from a fork to an upstream
+  return {
+    repo: repository,
+    targetOrg: targetOrganization,
+    targetGitRef: prInfos[2],
+    org: prInfos[4],
+    gitRef: prInfos[5]
+  };
 }
 
 function cleanup(id: string) {
-    Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
-        removeAllChildren(e);
-    });
+  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+    removeAllChildren(e);
+  });
 
-    Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
-        removeAllChildren(e);
-    });
+  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+    removeAllChildren(e);
+  });
 
-    Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
-        removeAllChildren(e);
-    });
+  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+    removeAllChildren(e);
+  });
 }

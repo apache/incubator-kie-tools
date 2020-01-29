@@ -15,66 +15,66 @@
  */
 
 import * as React from "react";
-import {FileStatusOnPr} from "./FileStatusOnPr";
+import { FileStatusOnPr } from "./FileStatusOnPr";
 
 export function PrToolbar(props: {
-    onSeeAsDiagram: () => void;
-    toggleOriginal: () => void;
-    closeDiagram: () => void;
-    textMode: boolean;
-    showOriginalChangesToggle: boolean;
-    originalDiagram: boolean;
-    fileStatusOnPr: FileStatusOnPr;
+  onSeeAsDiagram: () => void;
+  toggleOriginal: () => void;
+  closeDiagram: () => void;
+  textMode: boolean;
+  showOriginalChangesToggle: boolean;
+  originalDiagram: boolean;
+  fileStatusOnPr: FileStatusOnPr;
 }) {
-    const closeDiagram = (e: any) => {
-        e.preventDefault();
-        props.closeDiagram();
-    };
+  const closeDiagram = (e: any) => {
+    e.preventDefault();
+    props.closeDiagram();
+  };
 
-    const seeAsDiagram = (e: any) => {
-        e.preventDefault();
-        props.onSeeAsDiagram();
-    };
+  const seeAsDiagram = (e: any) => {
+    e.preventDefault();
+    props.onSeeAsDiagram();
+  };
 
-    const toggleOriginal = (e: any) => {
-        e.preventDefault();
-        props.toggleOriginal();
-    };
+  const toggleOriginal = (e: any) => {
+    e.preventDefault();
+    props.toggleOriginal();
+  };
 
-    return (
-        <>
-            {!props.textMode && (
-                <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
-                    Close diagram
-                </button>
-            )}
+  return (
+    <>
+      {!props.textMode && (
+        <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
+          Close diagram
+        </button>
+      )}
 
-            {props.textMode && (
-                <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-                    See as diagram
-                </button>
-            )}
+      {props.textMode && (
+        <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+          See as diagram
+        </button>
+      )}
 
-            {!props.textMode && props.fileStatusOnPr === FileStatusOnPr.CHANGED && props.showOriginalChangesToggle && (
-                <div className="BtnGroup mr-1">
-                    <button
-                        disabled={props.originalDiagram}
-                        className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
-                        type={"button"}
-                        onClick={toggleOriginal}
-                    >
-                        Original
-                    </button>
-                    <button
-                        disabled={!props.originalDiagram}
-                        className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
-                        type={"button"}
-                        onClick={toggleOriginal}
-                    >
-                        Changes
-                    </button>
-                </div>
-            )}
-        </>
-    );
+      {!props.textMode && props.fileStatusOnPr === FileStatusOnPr.CHANGED && props.showOriginalChangesToggle && (
+        <div className="BtnGroup mr-1">
+          <button
+            disabled={props.originalDiagram}
+            className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
+            type={"button"}
+            onClick={toggleOriginal}
+          >
+            Original
+          </button>
+          <button
+            disabled={!props.originalDiagram}
+            className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
+            type={"button"}
+            onClick={toggleOriginal}
+          >
+            Changes
+          </button>
+        </div>
+      )}
+    </>
+  );
 }

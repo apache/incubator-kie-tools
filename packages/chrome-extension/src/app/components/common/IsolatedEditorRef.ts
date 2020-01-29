@@ -15,5 +15,5 @@
  */
 
 export type IsolatedEditorRef = {
-    setContent(content: string): Promise<void>;
+  setContent(content: string): Promise<void>;
 } | null;

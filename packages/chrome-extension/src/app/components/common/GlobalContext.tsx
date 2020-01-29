@@ -15,22 +15,22 @@
  */
 
 import * as React from "react";
-import {Router} from "@kogito-tooling/core-api";
-import {Logger} from "../../../Logger";
-import {ExternalEditorManager} from "../../../ExternalEditorManager";
-import {ResourceContentServiceFactory} from "./ChromeResourceContentService";
+import { Router } from "@kogito-tooling/core-api";
+import { Logger } from "../../../Logger";
+import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 
 export const GlobalContext = React.createContext<{
-    id: string;
-    githubAuthTokenCookieName: string;
-    router: Router;
-    logger: Logger;
-    extensionIconUrl: string;
-    editorIndexPath: string;
-    resourceContentServiceFactory: ResourceContentServiceFactory;
-    externalEditorManager?: ExternalEditorManager;
+  id: string;
+  githubAuthTokenCookieName: string;
+  router: Router;
+  logger: Logger;
+  extensionIconUrl: string;
+  editorIndexPath: string;
+  resourceContentServiceFactory: ResourceContentServiceFactory;
+  externalEditorManager?: ExternalEditorManager;
 }>({} as any);
 
 export function useGlobals() {
-    return React.useContext(GlobalContext);
+  return React.useContext(GlobalContext);
 }
