@@ -73,6 +73,7 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.util.Cookie;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
@@ -186,6 +187,9 @@ public class LibraryPlacesTest {
     @Mock
     private Logger logger;
 
+    @Mock
+    private Cookie cookie;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -238,7 +242,8 @@ public class LibraryPlacesTest {
                                               new SyncPromises(),
                                               mock(OrganizationalUnitController.class),
                                               organizationalUnitServiceCaller,
-                                              logger) {
+                                              logger,
+                                              cookie) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -287,6 +292,8 @@ public class LibraryPlacesTest {
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any());
 
         doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
+
+        doReturn("").when(cookie).get(any());
     }
 
     @Test
@@ -479,6 +486,20 @@ public class LibraryPlacesTest {
         verify(projectContextChangeEvent, times(1)).fire(projectContextChangeEventArgumentCaptor.capture());
         assertEquals(activeOrganizationalUnit, projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
         verify(libraryPlaces).goToLibrary();
+        verify(cookie).set(any(), eq("space"));
+    }
+
+    @Test
+    public void goToInvalidSpaceTest() {
+        doReturn(null).when(organizationalUnitService).getOrganizationalUnit(any());
+        doReturn(Optional.of(activeOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+
+        libraryPlaces.nativeGoToSpace("space");
+
+        verify(projectContextChangeEvent, times(1)).fire(projectContextChangeEventArgumentCaptor.capture());
+        assertEquals(null, projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
+        verify(libraryPlaces).goToLibrary();
+        verify(cookie).clear(any());
     }
 
     @Test
@@ -596,6 +617,27 @@ public class LibraryPlacesTest {
         verify(libraryBreadcrumbs).setupForSpacesScreen();
         verify(projectContextChangeEvent,
                times(1)).fire(any(WorkspaceProjectContextChangeEvent.class));
+    }
+
+    @Test
+    public void goToLibrarySpaceWhenCookieExists() {
+        doReturn("space").when(cookie).get(any());
+        when(projectContext.getActiveOrganizationalUnit())
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        libraryPlaces.goToLibrary();
+
+        verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(libraryBreadcrumbs).setupForSpacesScreen();
+        verify(projectContextChangeEvent, times(2)).fire(projectContextChangeEventArgumentCaptor.capture());
+        assertNotNull(projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
     }
 
     @Test
