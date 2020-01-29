@@ -34,7 +34,6 @@ public class KieEditorWrapperViewImpl
         implements KieEditorWrapperView {
 
     protected static final int EDITOR_TAB_INDEX = 0;
-    protected static final int OVERVIEW_TAB_INDEX = 1;
 
     private KieEditorWrapperPresenter presenter;
 
@@ -125,7 +124,7 @@ public class KieEditorWrapperViewImpl
 
     @Override
     public boolean isOverviewTabSelected() {
-        return selectedPage() == OVERVIEW_TAB_INDEX;
+        return selectedPage() == getOverviewTabIndex();
     }
 
     @Override
@@ -135,7 +134,7 @@ public class KieEditorWrapperViewImpl
 
     @Override
     public void selectOverviewTab() {
-        setSelectedTab(OVERVIEW_TAB_INDEX);
+        setSelectedTab(getOverviewTabIndex());
     }
 
     @Override
@@ -147,4 +146,9 @@ public class KieEditorWrapperViewImpl
     public void setSelectedTab(int tabIndex) {
         selectPage(tabIndex);
     }
+
+    private int getOverviewTabIndex() {
+        return getView().getPageIndex(CommonConstants.INSTANCE.Overview());
+    }
+
 }

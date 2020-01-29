@@ -35,6 +35,7 @@ import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderBaseView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -118,6 +119,8 @@ public class KieEditorTest {
     private DefaultEditorDock docks;
     @Mock
     private PerspectiveManager perspectiveManager;
+    @Mock
+    private OverviewWidgetPresenter overviewWidget;
 
     @Before
     public void setup() {
@@ -440,6 +443,14 @@ public class KieEditorTest {
         verify(placeHolderView, never()).setWidget(widget);
     }
 
+    @Test
+    public void testShowVersions() {
+        presenter.showVersions();
+
+        verify(kieView).selectOverviewTab();
+        verify(overviewWidget).showVersionsTab();
+    }
+
     class KieEditorFake extends KieEditor<String> {
 
         public static final String EDITOR_ID = "KieEditorFake";
@@ -461,6 +472,7 @@ public class KieEditorTest {
             perspectiveManager = KieEditorTest.this.perspectiveManager;
             placeManager = KieEditorTest.this.placeManager;
             promises = KieEditorTest.this.promises;
+            overviewWidget = KieEditorTest.this.overviewWidget;
         }
 
         @Override
