@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.multipage;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
@@ -128,6 +129,20 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
 
         tab.removeStyleName("disabled");
         enableWidget(tab);
+    }
+
+    @Override
+    public int getPageIndex(final String title) {
+        final int tabsCount = getTabBar().getWidgetCount();
+        for (int tabIndex = 0; tabIndex < tabsCount; tabIndex++) {
+            if (getTabBar().getWidget(tabIndex) instanceof TabListItem) {
+                final TabListItem tab = (TabListItem) getTabBar().getWidget(tabIndex);
+                if (Objects.equals(tab.getText(), title)) {
+                    return tabIndex;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Page with title: '" + title + "' doesn't exist.");
     }
 
     boolean isValid(final int index) {

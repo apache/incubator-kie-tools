@@ -20,6 +20,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.gwtbootstrap3.client.shared.event.TabShownEvent;
 import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabListItem;
@@ -202,5 +203,31 @@ public class MultiPageEditorViewImplTest {
         verify(selectedPageEvent).fire(pageEvent.capture());
         verify(page).onLostFocus();
         assertEquals(pageIndex, pageEvent.getValue().getSelectedPage());
+    }
+
+    @Test
+    public void testGetPageIndex() {
+        final NavTabs navTabs = mock(NavTabs.class);
+        doReturn(navTabs).when(view).getTabBar();
+
+        final TabListItem pageOne = mock(TabListItem.class);
+        final TabListItem pageTwo = mock(TabListItem.class);
+        final TabListItem pageThree = mock(TabListItem.class);
+
+        doReturn(3).when(navTabs).getWidgetCount();
+        doReturn(pageOne).when(navTabs).getWidget(0);
+        doReturn(pageTwo).when(navTabs).getWidget(1);
+        doReturn(pageThree).when(navTabs).getWidget(2);
+
+        doReturn("page 1").when(pageOne).getText();
+        doReturn("page 2").when(pageTwo).getText();
+        doReturn("page 3").when(pageThree).getText();
+
+        Assertions.assertThat(view.getPageIndex("page 3")).isEqualTo(2);
+        Assertions.assertThat(view.getPageIndex("page 2")).isEqualTo(1);
+        Assertions.assertThat(view.getPageIndex("page 1")).isEqualTo(0);
+
+        Assertions.assertThatThrownBy(() -> view.getPageIndex("xyz"))
+                .hasMessage("Page with title: 'xyz' doesn't exist.");
     }
 }
