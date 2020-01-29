@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
+import {Router, Routes} from "@kogito-tooling/core-api";
 
 export class DefaultChromeRouter extends Router {
     constructor(...routesArray: Routes[]) {

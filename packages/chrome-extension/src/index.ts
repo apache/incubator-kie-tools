@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { GitHubPageType } from "./app/github/GitHubPageType";
-import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
-import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
-import { renderPrEditorsApp } from "./app/components/pr/prEditors";
-import { mainContainer, runAfterUriChange } from "./app/utils";
+import {GitHubPageType} from "./app/github/GitHubPageType";
+import {renderSingleEditorApp} from "./app/components/single/singleEditorEdit";
+import {renderSingleEditorReadonlyApp} from "./app/components/single/singleEditorView";
+import {renderPrEditorsApp} from "./app/components/pr/prEditors";
+import {mainContainer, runAfterUriChange} from "./app/utils";
 import * as dependencies__ from "./app/dependencies";
 import * as ReactDOM from "react-dom";
-import { Router } from "@kogito-tooling/core-api";
+import {Router} from "@kogito-tooling/core-api";
 import "../resources/style.css";
-import { Logger } from "./Logger";
-import { Globals } from "./app/components/common/Main";
-import { ExternalEditorManager } from "./ExternalEditorManager";
-import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
+import {Logger} from "./Logger";
+import {Globals} from "./app/components/common/Main";
+import {ExternalEditorManager} from "./ExternalEditorManager";
+import {ResourceContentServiceFactory} from "./app/components/common/ChromeResourceContentService";
 
 /**
  * Starts a Kogito extension.
@@ -36,134 +36,134 @@ import { ResourceContentServiceFactory } from "./app/components/common/ChromeRes
  *  @param args.router The Router to be used to find resources for each language.
  */
 export function startExtension(args: {
-  name: string;
-  editorIndexPath: string;
-  extensionIconUrl: string;
-  githubAuthTokenCookieName: string;
-  router: Router;
-  externalEditorManager?: ExternalEditorManager;
+    name: string;
+    editorIndexPath: string;
+    extensionIconUrl: string;
+    githubAuthTokenCookieName: string;
+    router: Router;
+    externalEditorManager?: ExternalEditorManager;
 }) {
-  const logger = new Logger(args.name);
-  const resourceContentServiceFactory = new ResourceContentServiceFactory();
+    const logger = new Logger(args.name);
+    const resourceContentServiceFactory = new ResourceContentServiceFactory();
 
-  const runInit = () =>
-    init({
-      id: chrome.runtime.id,
-      logger: logger,
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      editorIndexPath: args.editorIndexPath,
-      extensionIconUrl: args.extensionIconUrl,
-      router: args.router,
-      resourceContentServiceFactory: resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
-    });
+    const runInit = () =>
+        init({
+            id: chrome.runtime.id,
+            logger: logger,
+            githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+            editorIndexPath: args.editorIndexPath,
+            extensionIconUrl: args.extensionIconUrl,
+            router: args.router,
+            resourceContentServiceFactory: resourceContentServiceFactory,
+            externalEditorManager: args.externalEditorManager
+        });
 
-  runAfterUriChange(logger, () => setTimeout(runInit, 0));
-  setTimeout(runInit, 0);
+    runAfterUriChange(logger, () => setTimeout(runInit, 0));
+    setTimeout(runInit, 0);
 }
 
 function init(args: Globals) {
-  args.logger.log(`---`);
-  args.logger.log(`Starting GitHub extension.`);
+    args.logger.log(`---`);
+    args.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.id, args.logger);
+    unmountPreviouslyRenderedFeatures(args.id, args.logger);
 
-  const split = window.location.pathname.split("/");
+    const split = window.location.pathname.split("/");
 
-  const fileInfo = {
-    gitRef: split[4],
-    repo: split[2],
-    org: split[1],
-    path: split.slice(5).join("/")
-  }
+    const fileInfo = {
+        gitRef: split[4],
+        repo: split[2],
+        org: split[1],
+        path: split.slice(5).join("/")
+    };
 
-  const pageType = discoverCurrentGitHubPageType();
-  if (pageType === GitHubPageType.ANY) {
-    args.logger.log(`This GitHub page is not supported.`);
-    return;
-  }
+    const pageType = discoverCurrentGitHubPageType();
+    if (pageType === GitHubPageType.ANY) {
+        args.logger.log(`This GitHub page is not supported.`);
+        return;
+    }
 
-  if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({
-      id: args.id,
-      logger: args.logger,
-      router: args.router,
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
-      externalEditorManager: args.externalEditorManager,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      fileInfo: fileInfo
-    });
-    return;
-  }
+    if (pageType === GitHubPageType.EDIT) {
+        renderSingleEditorApp({
+            id: args.id,
+            logger: args.logger,
+            router: args.router,
+            githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+            extensionIconUrl: args.extensionIconUrl,
+            editorIndexPath: args.editorIndexPath,
+            externalEditorManager: args.externalEditorManager,
+            resourceContentServiceFactory: args.resourceContentServiceFactory,
+            fileInfo: fileInfo
+        });
+        return;
+    }
 
-  if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({
-      id: args.id,
-      logger: args.logger,
-      router: args.router,
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
-      fileInfo: fileInfo,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
-    });
-    return;
-  }
+    if (pageType === GitHubPageType.VIEW) {
+        renderSingleEditorReadonlyApp({
+            id: args.id,
+            logger: args.logger,
+            router: args.router,
+            githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+            extensionIconUrl: args.extensionIconUrl,
+            editorIndexPath: args.editorIndexPath,
+            fileInfo: fileInfo,
+            resourceContentServiceFactory: args.resourceContentServiceFactory,
+            externalEditorManager: args.externalEditorManager
+        });
+        return;
+    }
 
-  if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      id: args.id,
-      logger: args.logger,
-      router: args.router,
-      extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager,
-      contentPath: fileInfo.path
-    });
-    return;
-  }
+    if (pageType === GitHubPageType.PR) {
+        renderPrEditorsApp({
+            githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+            id: args.id,
+            logger: args.logger,
+            router: args.router,
+            extensionIconUrl: args.extensionIconUrl,
+            editorIndexPath: args.editorIndexPath,
+            resourceContentServiceFactory: args.resourceContentServiceFactory,
+            externalEditorManager: args.externalEditorManager,
+            contentPath: fileInfo.path
+        });
+        return;
+    }
 
-  throw new Error(`Unknown GitHubPageType ${pageType}`);
+    throw new Error(`Unknown GitHubPageType ${pageType}`);
 }
 
 function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
-  try {
-    if (mainContainer(id, dependencies__.all.body())) {
-      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies__.all.body())!);
-      logger.log("Unmounted previous features.");
+    try {
+        if (mainContainer(id, dependencies__.all.body())) {
+            ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies__.all.body())!);
+            logger.log("Unmounted previous features.");
+        }
+    } catch (e) {
+        logger.log("Ignoring exception while unmounting features.");
     }
-  } catch (e) {
-    logger.log("Ignoring exception while unmounting features.");
-  }
 }
 
 function uriMatches(regex: string) {
-  return !!window.location.pathname.match(new RegExp(regex));
+    return !!window.location.pathname.match(new RegExp(regex));
 }
 
 function discoverCurrentGitHubPageType() {
-  if (uriMatches(`.*/.*/edit/.*`)) {
-      return GitHubPageType.EDIT;
-  }
+    if (uriMatches(`.*/.*/edit/.*`)) {
+        return GitHubPageType.EDIT;
+    }
 
-  if (uriMatches(`.*/.*/blob/.*`)) {
-      return GitHubPageType.VIEW;
-  }
+    if (uriMatches(`.*/.*/blob/.*`)) {
+        return GitHubPageType.VIEW;
+    }
 
-  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-      return GitHubPageType.PR;
-  }
+    if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
+        return GitHubPageType.PR;
+    }
 
-  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-      return GitHubPageType.PR;
-  }
+    if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
+        return GitHubPageType.PR;
+    }
 
-  return GitHubPageType.ANY;
+    return GitHubPageType.ANY;
 }
 
 export * from "./DefaultChromeRouter";

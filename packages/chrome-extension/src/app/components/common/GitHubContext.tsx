@@ -16,82 +16,82 @@
 
 import * as Octokit from "@octokit/rest";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
-import { useGlobals } from "./GlobalContext";
+import {useCallback, useContext, useEffect, useLayoutEffect, useState} from "react";
+import {useGlobals} from "./GlobalContext";
 import * as dependencies__ from "../../dependencies";
 
 export const GitHubContext = React.createContext<{
-  octokit: () => Octokit;
-  setToken: (token: string) => void;
-  token?: string;
-  userIsLoggedIn: () => boolean;
+    octokit: () => Octokit;
+    setToken: (token: string) => void;
+    token?: string;
+    userIsLoggedIn: () => boolean;
 }>({} as any);
 
 export function useGitHubApi() {
-  return useContext(GitHubContext);
+    return useContext(GitHubContext);
 }
 
 export function setCookie(name: string, value: string) {
-  const date = new Date();
+    const date = new Date();
 
-  // Set it expire in 10 years
-  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60);
+    // Set it expire in 10 years
+    date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60);
 
-  // Set it
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+    // Set it
+    document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
 export function getCookie(name: string) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
 
-  if (parts.length === 2) {
-    return parts
-      .pop()!
-      .split(";")
-      .shift();
-  }
+    if (parts.length === 2) {
+        return parts
+            .pop()!
+            .split(";")
+            .shift();
+    }
 }
 
 let octokitInstance: Octokit;
 
 export const GitHubContextProvider: React.FC<{}> = props => {
-  const globals = useGlobals();
-  const [ready, setReady] = useState(false);
-  const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
+    const globals = useGlobals();
+    const [ready, setReady] = useState(false);
+    const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
 
-  useEffect(() => {
-    if (token) {
-      octokitInstance = new Octokit({ auth: token });
-      console.debug("Token found");
-    } else {
-      octokitInstance = new Octokit();
-      console.debug("Token not found.");
-    }
-    setReady(true);
-  }, []);
+    useEffect(() => {
+        if (token) {
+            octokitInstance = new Octokit({auth: token});
+            console.debug("Token found");
+        } else {
+            octokitInstance = new Octokit();
+            console.debug("Token not found.");
+        }
+        setReady(true);
+    }, []);
 
-  const userIsLoggedIn = useCallback(() => {
-    return !!dependencies__.all.notificationIndicator();
-  }, []);
+    const userIsLoggedIn = useCallback(() => {
+        return !!dependencies__.all.notificationIndicator();
+    }, []);
 
-  useLayoutEffect(() => {
-    if (!token) {
-      setCookie(globals.githubAuthTokenCookieName, "");
-      octokitInstance = new Octokit();
-    } else {
-      setCookie(globals.githubAuthTokenCookieName, token);
-      octokitInstance = new Octokit({ auth: token });
-    }
-  }, [token]);
+    useLayoutEffect(() => {
+        if (!token) {
+            setCookie(globals.githubAuthTokenCookieName, "");
+            octokitInstance = new Octokit();
+        } else {
+            setCookie(globals.githubAuthTokenCookieName, token);
+            octokitInstance = new Octokit({auth: token});
+        }
+    }, [token]);
 
-  const octokit = useCallback(() => {
-    return octokitInstance;
-  }, []);
+    const octokit = useCallback(() => {
+        return octokitInstance;
+    }, []);
 
-  return (
-    <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>
-      {ready && props.children}
-    </GitHubContext.Provider>
-  );
+    return (
+        <GitHubContext.Provider value={{token, setToken, octokit, userIsLoggedIn}}>
+            {ready && props.children}
+        </GitHubContext.Provider>
+    );
 };

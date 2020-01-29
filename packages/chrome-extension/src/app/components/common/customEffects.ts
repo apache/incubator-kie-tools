@@ -14,52 +14,52 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef } from "react";
+import {DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef} from "react";
 
 export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
-  const firstRender = useRef(true);
+    const firstRender = useRef(true);
 
-  useEffect(() => {
-    if (!firstRender.current) {
-      func();
-    } else {
-      firstRender.current = false;
-    }
-  }, deps);
+    useEffect(() => {
+        if (!firstRender.current) {
+            func();
+        } else {
+            firstRender.current = false;
+        }
+    }, deps);
 }
 
 export function useIsolatedEditorTogglingEffect(
-  textMode: boolean,
-  iframeContainer: HTMLElement,
-  githubTextEditorToReplace: HTMLElement
+    textMode: boolean,
+    iframeContainer: HTMLElement,
+    githubTextEditorToReplace: HTMLElement
 ) {
-  useLayoutEffect(
-    () => {
-      if (textMode) {
-        githubTextEditorToReplace.classList.remove("hidden");
-        iframeContainer.classList.add("hidden");
-      } else {
-        githubTextEditorToReplace.classList.add("hidden");
-        iframeContainer.classList.remove("hidden");
-      }
-    },
-    [textMode]
-  );
+    useLayoutEffect(
+        () => {
+            if (textMode) {
+                githubTextEditorToReplace.classList.remove("hidden");
+                iframeContainer.classList.add("hidden");
+            } else {
+                githubTextEditorToReplace.classList.add("hidden");
+                iframeContainer.classList.remove("hidden");
+            }
+        },
+        [textMode]
+    );
 }
 
 export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
-  useEffect(() => {
-    let canceled = false;
-    promise().then(arg => {
-      if (canceled) {
-        return;
-      }
+    useEffect(() => {
+        let canceled = false;
+        promise().then(arg => {
+            if (canceled) {
+                return;
+            }
 
-      callback(arg);
-    });
+            callback(arg);
+        });
 
-    return () => {
-      canceled = true;
-    };
-  }, []);
+        return () => {
+            canceled = true;
+        };
+    }, []);
 }

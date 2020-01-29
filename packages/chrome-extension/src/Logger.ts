@@ -15,13 +15,13 @@
  */
 
 export class Logger {
-  private readonly extensionName: string;
+    private readonly extensionName: string;
 
-  constructor(extensionName: string) {
-    this.extensionName = extensionName;
-  }
+    constructor(extensionName: string) {
+        this.extensionName = extensionName;
+    }
 
-  public log(...args: any[]) {
-    console.debug(`[${this.extensionName}] -> `, ...args);
-  }
+    public log(...args: any[]) {
+        console.debug(`[${this.extensionName}] -> `, ...args);
+    }
 }

@@ -17,11 +17,11 @@
 import * as React from "react";
 
 export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
-  return (
-    <div className={"kogito-iframe-fullscreen-toolbar"}>
-      <a href={"#"} onClick={props.onExitFullScreen}>
-        Exit full screen
-      </a>
-    </div>
-  );
+    return (
+        <div className={"kogito-iframe-fullscreen-toolbar"}>
+            <a href={"#"} onClick={props.onExitFullScreen}>
+                Exit full screen
+            </a>
+        </div>
+    );
 }

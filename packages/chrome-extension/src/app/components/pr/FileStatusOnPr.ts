@@ -15,8 +15,8 @@
  */
 
 export enum FileStatusOnPr {
-  UNKNOWN,
-  ADDED,
-  DELETED,
-  CHANGED
+    UNKNOWN,
+    ADDED,
+    DELETED,
+    CHANGED
 }

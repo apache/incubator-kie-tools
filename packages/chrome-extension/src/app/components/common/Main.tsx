@@ -15,60 +15,60 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { GlobalContext } from "./GlobalContext";
-import { Logger } from "../../../Logger";
-import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";
+import {Router} from "@kogito-tooling/core-api";
+import {GlobalContext} from "./GlobalContext";
+import {Logger} from "../../../Logger";
+import {GitHubContextProvider, useGitHubApi} from "./GitHubContext";
 import * as ReactDOM from "react-dom";
-import { KogitoMenu } from "./KogitoMenu";
+import {KogitoMenu} from "./KogitoMenu";
 import * as dependencies__ from "../../dependencies";
-import { kogitoMenuContainer } from "../../utils";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
-import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
+import {kogitoMenuContainer} from "../../utils";
+import {ExternalEditorManager} from "../../../ExternalEditorManager";
+import {ResourceContentServiceFactory} from "./ChromeResourceContentService";
 
 export interface Globals {
-  id: string;
-  router: Router;
-  logger: Logger;
-  githubAuthTokenCookieName: string;
-  extensionIconUrl: string;
-  editorIndexPath: string;
-  resourceContentServiceFactory: ResourceContentServiceFactory;
-  externalEditorManager?: ExternalEditorManager;
+    id: string;
+    router: Router;
+    logger: Logger;
+    githubAuthTokenCookieName: string;
+    extensionIconUrl: string;
+    editorIndexPath: string;
+    resourceContentServiceFactory: ResourceContentServiceFactory;
+    externalEditorManager?: ExternalEditorManager;
 }
 
 function KogitoMenuPortal(props: { id: string }) {
-  const githubApi = useGitHubApi();
+    const githubApi = useGitHubApi();
 
-  return (
-    <>
-      {githubApi.userIsLoggedIn() &&
-        ReactDOM.createPortal(
-          <KogitoMenu />,
-          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
-        )}
-    </>
-  );
+    return (
+        <>
+            {githubApi.userIsLoggedIn() &&
+            ReactDOM.createPortal(
+                <KogitoMenu/>,
+                kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
+            )}
+        </>
+    );
 }
 
 export const Main: React.FunctionComponent<Globals> = props => {
-  return (
-    <GlobalContext.Provider
-      value={{
-        id: props.id,
-        logger: props.logger,
-        router: props.router,
-        githubAuthTokenCookieName: props.githubAuthTokenCookieName,
-        extensionIconUrl: props.extensionIconUrl,
-        editorIndexPath: props.editorIndexPath,
-        resourceContentServiceFactory: props.resourceContentServiceFactory,
-        externalEditorManager: props.externalEditorManager
-      }}
-    >
-      <GitHubContextProvider>
-        <KogitoMenuPortal id={props.id} />
-        {props.children}
-      </GitHubContextProvider>
-    </GlobalContext.Provider>
-  );
+    return (
+        <GlobalContext.Provider
+            value={{
+                id: props.id,
+                logger: props.logger,
+                router: props.router,
+                githubAuthTokenCookieName: props.githubAuthTokenCookieName,
+                extensionIconUrl: props.extensionIconUrl,
+                editorIndexPath: props.editorIndexPath,
+                resourceContentServiceFactory: props.resourceContentServiceFactory,
+                externalEditorManager: props.externalEditorManager
+            }}
+        >
+            <GitHubContextProvider>
+                <KogitoMenuPortal id={props.id}/>
+                {props.children}
+            </GitHubContextProvider>
+        </GlobalContext.Provider>
+    );
 };
