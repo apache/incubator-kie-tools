@@ -15,14 +15,19 @@
 package steps
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/DATA-DOG/godog"
 	"github.com/DATA-DOG/godog/gherkin"
+	dataindex "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitodataindex/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/smoke/framework"
 )
 
 // registerHTTPSteps register all HTTP steps existing
 func registerGraphQLSteps(s *godog.Suite, data *Data) {
 	s.Step(`^GraphQL request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes)
+	s.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes)
 }
 
 func (data *Data) graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes(serviceName string, timeoutInMin int, path string, query *gherkin.DocString) error {
@@ -32,4 +37,28 @@ func (data *Data) graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinute
 		return err
 	}
 	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.Content, timeoutInMin)
+}
+
+func (data *Data) graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes(processName string, timeoutInMin int) error {
+	query := getProcessInstancesNameQuery
+	path := "graphql"
+	serviceName := dataindex.DefaultDataIndexName
+	framework.GetLogger(data.Namespace).Debugf("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitFor(data.Namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful and contain process name '%s'", query, path, processName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+		response := GraphqlDataIndexProcessInstanceQueryResponse{}
+		if err := framework.ExecuteGraphQLRequest(data.Namespace, routeURI, path, query, &response); err != nil {
+			return false, err
+		}
+		for _, processInstance := range response.ProcessInstances {
+			if processInstance.ProcessName == processName {
+				return true, nil
+			}
+		}
+		return false, nil
+	})
 }

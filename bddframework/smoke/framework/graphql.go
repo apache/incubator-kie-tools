@@ -25,8 +25,8 @@ import (
 // WaitForSuccessfulGraphQLRequest waits for an GraphQL request to be successful
 func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeoutInMin int) error {
 	return WaitFor(namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful", query, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		var response graphqlGenericResponseObject
-		return IsGraphQLRequestSuccessful(namespace, uri, path, query, &response)
+		var response interface{}
+		return IsGraphQLRequestSuccessful(namespace, uri, path, query, response)
 	})
 }
 
@@ -51,7 +51,4 @@ func IsGraphQLRequestSuccessful(namespace, uri, path, query string, response int
 		return false, err
 	}
 	return true, nil
-}
-
-type graphqlGenericResponseObject struct {
 }

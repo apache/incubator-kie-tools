@@ -30,19 +30,19 @@ const (
 )
 
 // DeployQuarkusExample deploy a Quarkus example
-func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence bool) error {
+func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool) error {
 	GetLogger(namespace).Infof("Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
-	return DeployExample(namespace, appName, contextDir, "quarkus", native, persistence)
+	return DeployExample(namespace, appName, contextDir, "quarkus", native, persistence, events)
 }
 
 // DeploySpringBootExample deploys a Spring boot example
-func DeploySpringBootExample(namespace, appName, contextDir string, persistence bool) error {
+func DeploySpringBootExample(namespace, appName, contextDir string, persistence, events bool) error {
 	GetLogger(namespace).Infof("Deploy spring boot example %s with name %s and persistence %v", contextDir, appName, persistence)
-	return DeployExample(namespace, appName, contextDir, "springboot", false, persistence)
+	return DeployExample(namespace, appName, contextDir, "springboot", false, persistence, events)
 }
 
 // DeployExample deploys an example
-func DeployExample(namespace, appName, contextDir, runtime string, native, persistence bool) error {
+func DeployExample(namespace, appName, contextDir, runtime string, native, persistence, events bool) error {
 	kogitoApp := getKogitoAppStub(namespace, appName)
 	if runtime == "quarkus" {
 		kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
@@ -56,9 +56,20 @@ func DeployExample(namespace, appName, contextDir, runtime string, native, persi
 	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
 	kogitoApp.Spec.Build.GitSource.Reference = getEnvExamplesRepositoryRef()
 
+	profiles := ""
 	if persistence {
-		appendNewEnvToKogitoAppBuild(kogitoApp, mavenArgsAppendEnvVar, "-Ppersistence")
+		profiles = profiles + "persistence,"
 		kogitoApp.Spec.Infra.InstallInfinispan = v1alpha1.KogitoAppInfraInstallInfinispanAlways
+	}
+	if events {
+		profiles = profiles + "events,"
+		kogitoApp.Spec.Infra.InstallKafka = v1alpha1.KogitoAppInfraInstallKafkaAlways
+		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
+		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
+	}
+
+	if len(profiles) > 0 {
+		appendNewEnvToKogitoAppBuild(kogitoApp, mavenArgsAppendEnvVar, "-P"+profiles)
 	}
 
 	setupBuildImageStreams(kogitoApp)
@@ -124,6 +135,14 @@ func appendNewEnvToKogitoAppBuild(kogitoApp *v1alpha1.KogitoApp, name, value str
 		Value: value,
 	}
 	kogitoApp.Spec.Build.Env = append(kogitoApp.Spec.Build.Env, env)
+}
+
+func appendNewEnvToKogitoApp(kogitoApp *v1alpha1.KogitoApp, name, value string) {
+	env := v1alpha1.Env{
+		Name:  name,
+		Value: value,
+	}
+	kogitoApp.Spec.Env = append(kogitoApp.Spec.Env, env)
 }
 
 func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {

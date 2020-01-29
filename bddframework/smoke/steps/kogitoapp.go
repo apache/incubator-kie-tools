@@ -26,6 +26,7 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native "([^"]*)"$`, data.deployQuarkusExampleServiceWithNative)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)"$`, data.deployQuarkusExampleServiceWithPersistenceAndNative)
+	s.Step(`^Deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)" and events "([^"]*)"$`, data.deployQuarkusExampleServiceWithPersistenceAndNativeAndEvents)
 	s.Step(`^Deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
 	s.Step(`^Deploy spring boot example service "([^"]*)" with persistence enabled$`, data.deploySpringBootExampleServiceWithPersistence)
 
@@ -41,19 +42,23 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 
 // Deploy service steps
 func (data *Data) deployQuarkusExampleServiceWithNative(contextDir, native string) error {
-	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false)
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false, false)
 }
 
 func (data *Data) deployQuarkusExampleServiceWithPersistenceAndNative(contextDir, native string) error {
-	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true)
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, false)
+}
+
+func (data *Data) deployQuarkusExampleServiceWithPersistenceAndNativeAndEvents(contextDir, native, events string) error {
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, events == "enabled")
 }
 
 func (data *Data) deploySpringBootExampleService(contextDir string) error {
-	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, false)
+	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, false, false)
 }
 
 func (data *Data) deploySpringBootExampleServiceWithPersistence(contextDir string) error {
-	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, true)
+	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, true, false)
 }
 
 // Build steps
