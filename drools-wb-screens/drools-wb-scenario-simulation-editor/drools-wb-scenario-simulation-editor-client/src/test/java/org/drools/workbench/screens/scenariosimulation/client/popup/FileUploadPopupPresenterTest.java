@@ -74,4 +74,12 @@ public class FileUploadPopupPresenterTest {
         assertEquals(FILE_CONTENTS, fileUploadPopupPresenter.getFileContents());
         verify(fileUploadPopupViewMock, times(1)).getFileContents();
     }
+
+    @Test
+    public void getFileName() {
+        String fileName = "fileName";
+        when(fileUploadPopupViewMock.getFileName()).thenReturn(fileName);
+        assertEquals(fileName, fileUploadPopupPresenter.getFileName());
+        verify(fileUploadPopupViewMock, times(1)).getFileName();
+    }
 }

@@ -133,8 +133,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Mock
     private AssetUpdateValidator assetUpdateValidatorMock;
     @Mock
-    private Supplier<ScenarioSimulationModel> contentSupplierMock;
-    @Mock
     private ProjectController projectControllerMock;
     @Mock
     private MultiPageEditor multiPageEditorMock;
@@ -195,7 +193,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         when(scenarioSimulationEditorPresenterMock.getJsonModel(any())).thenReturn("");
         when(scenarioSimulationEditorPresenterMock.getView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationEditorPresenterMock.getModel()).thenReturn(scenarioSimulationModelMock);
-        when(scenarioSimulationEditorPresenterMock.getContentSupplier()).thenReturn(contentSupplierMock);
         when(scenarioSimulationEditorPresenterMock.getContext()).thenReturn(scenarioSimulationContextLocal);
         when(alertsButtonMenuItemBuilderMock.build()).thenReturn(alertsButtonMenuItemMock);
         when(versionRecordManagerMock.buildMenu()).thenReturn(versionRecordMenuItemMock);
@@ -338,16 +335,10 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     }
 
     @Test
-    public void getContentSupplier() {
-        scenarioSimulationEditorBusinessClientWrapper.getContentSupplier();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).getContentSupplier();
-    }
-
-    @Test
     public void save() {
         String saveMessage = "Save";
         scenarioSimulationEditorBusinessClientWrapper.save(saveMessage);
-        verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).synchronizeColumnsDimension();
+        verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).synchronizeColumnsDimension(eq(scenarioGridPanelMock), eq(backgroundGridPanelMock));
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModel();
         verify(scenarioSimulationCaller, times(1)).call(isA(RemoteCallback.class), isA(HasBusyIndicatorDefaultErrorCallback.class));
         verify(scenarioSimulationServiceMock, times(1)).save(eq(observablePathMock), eq(scenarioSimulationModelMock), eq(metaDataMock), eq(saveMessage));
@@ -355,8 +346,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
 
     @Test
     public void synchronizeColumnsDimension() {
-        scenarioSimulationEditorBusinessClientWrapper.synchronizeColumnsDimension();
+        scenarioSimulationEditorBusinessClientWrapper.synchronizeColumnsDimension(scenarioGridPanelMock, backgroundGridPanelMock);
         verify(scenarioGridPanelMock, times(1)).synchronizeFactMappingsWidths();
+        verify(backgroundGridPanelMock, times(1)).synchronizeFactMappingsWidths();
     }
 
     @Test

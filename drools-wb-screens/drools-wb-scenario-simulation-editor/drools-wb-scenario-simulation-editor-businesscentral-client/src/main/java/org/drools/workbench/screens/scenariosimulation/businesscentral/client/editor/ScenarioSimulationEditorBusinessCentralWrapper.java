@@ -343,12 +343,13 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
 
     @Override
     protected Supplier<ScenarioSimulationModel> getContentSupplier() {
-        return scenarioSimulationEditorPresenter.getContentSupplier();
+        return () -> scenarioSimulationEditorPresenter.getModel();
     }
 
     @Override
     protected void save(final String commitMessage) {
-        synchronizeColumnsDimension();
+        synchronizeColumnsDimension(scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.SIMULATION),
+                                    scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND));
         final ScenarioSimulationModel model = scenarioSimulationEditorPresenter.getModel();
         RemoteCallback<Path> saveSuccessCallback = getSaveSuccessCallback(scenarioSimulationEditorPresenter.getJsonModel(model).hashCode());
         service.call(saveSuccessCallback,
@@ -360,12 +361,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
 
     @Override
     protected Command getBeforeSaveAndRenameCommand() {
-        return this::synchronizeColumnsDimension;
-    }
-
-    protected void synchronizeColumnsDimension() {
-        scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.SIMULATION).synchronizeFactMappingsWidths();
-        scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND).synchronizeFactMappingsWidths();
+        return () -> synchronizeColumnsDimension(scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.SIMULATION),
+                                                 scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND));
     }
 
     @Override

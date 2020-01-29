@@ -61,4 +61,9 @@ public class FileUploadPopupPresenter implements FileUploadPopup.Presenter {
     public String getFileContents() {
         return fileUploadPopup.getFileContents();
     }
+
+    @Override
+    public String getFileName() {
+        return fileUploadPopup.getFileName();
+    }
 }

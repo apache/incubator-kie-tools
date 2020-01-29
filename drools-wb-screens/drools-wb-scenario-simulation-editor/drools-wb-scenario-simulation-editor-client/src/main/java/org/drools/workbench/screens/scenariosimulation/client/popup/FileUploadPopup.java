@@ -38,11 +38,15 @@ public interface FileUploadPopup extends AbstractScenarioPopup {
                   final Command okCommand);
 
         String getFileContents();
+
+        String getFileName();
     }
 
     HTMLElement getElement();
 
     String getFileContents();
+
+    String getFileName();
 
     void setAcceptedExtension(List<String> acceptedExtension);
 

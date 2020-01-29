@@ -52,6 +52,8 @@ public class FileUploadPopupView extends AbstractScenarioPopupView implements Fi
 
     protected static String fileContents;
 
+    protected static String fileName = null;
+
     public static void fileLoaded(String fileContents) {
         FileUploadPopupView.fileContents = fileContents;
     }
@@ -62,7 +64,7 @@ public class FileUploadPopupView extends AbstractScenarioPopupView implements Fi
                      final Command okCommand) {
         fileContents = "";
         fileText.setValue("");
-        if (acceptedExtension.size() > 0) {
+        if (!acceptedExtension.isEmpty()) {
             file.setAccept(String.join(",", acceptedExtension));
         }
         uploadWarning.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.uploadWarning());
@@ -74,6 +76,11 @@ public class FileUploadPopupView extends AbstractScenarioPopupView implements Fi
     @Override
     public String getFileContents() {
         return fileContents;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
     @Override
@@ -89,7 +96,7 @@ public class FileUploadPopupView extends AbstractScenarioPopupView implements Fi
 
     @EventHandler("file")
     public void onFileChangeEvent(ChangeEvent event) {
-        String fileName = file.getValue();
+        fileName = file.getValue();
         if (fileName.toLowerCase().startsWith(FAKEPATH)) {
             fileName = fileName.substring(FAKEPATH.length());
         }
