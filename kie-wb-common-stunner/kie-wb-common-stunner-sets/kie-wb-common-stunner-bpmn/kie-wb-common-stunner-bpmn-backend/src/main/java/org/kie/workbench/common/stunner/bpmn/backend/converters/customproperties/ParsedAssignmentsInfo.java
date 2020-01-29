@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -196,15 +197,30 @@ public class ParsedAssignmentsInfo {
     }
 
     public List<InitializedOutputVariable> createInitializedOutputVariables(String parentId, VariableScope variableScope) {
-        return getOutputs()
+        List<InitializedOutputVariable> initializedOutputVariables = new ArrayList<>();
+
+        getOutputs()
                 .getDeclarations()
-                .stream()
-                .map(varDecl -> InitializedVariable.outputOf(
-                        parentId,
-                        variableScope,
-                        varDecl,
-                        associations.lookupOutput(varDecl.getTypedIdentifier().getName())))
-                .collect(Collectors.toList());
+                .forEach(varDecl -> {
+                    if (associations.lookupOutputs(varDecl.getTypedIdentifier().getName()).isEmpty()) {
+                        initializedOutputVariables.add(InitializedVariable.outputOf(
+                                parentId,
+                                variableScope,
+                                varDecl,
+                                null));
+                    } else {
+                        initializedOutputVariables.addAll(associations.lookupOutputs(varDecl.getTypedIdentifier().getName())
+                                                                  .stream()
+                                                                  .map(outputDec -> InitializedVariable.outputOf(
+                                                                          parentId,
+                                                                          variableScope,
+                                                                          getOutputs().lookup(outputDec.getSource().replace(" ", "-")),
+                                                                          outputDec))
+                                                                  .collect(Collectors.toList()));
+                    }
+                });
+
+        return initializedOutputVariables;
     }
 
     public boolean isEmpty() {
