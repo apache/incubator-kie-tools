@@ -15,7 +15,7 @@
  */
 
 module.exports = {
-  reporters: ["default", "jest-junit"],
+  reporters: ["default"],
   moduleDirectories: ["node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
