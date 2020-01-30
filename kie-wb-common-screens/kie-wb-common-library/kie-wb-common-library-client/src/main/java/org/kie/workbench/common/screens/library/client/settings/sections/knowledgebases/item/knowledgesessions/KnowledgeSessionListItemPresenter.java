@@ -27,8 +27,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.listener.ListenerListItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.workitemhandler.WorkItemHandlerListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
-import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
@@ -40,7 +38,6 @@ public class KnowledgeSessionListItemPresenter extends ListItemPresenter<KSessio
     private final Event<DefaultKnowledgeSessionChange> defaultKnowledgeSessionChangeEvent;
     private final WorkItemHandlersListPresenter workItemHandlersListPresenter;
     private final ListenersListPresenter listenersListPresenter;
-    private final KieEnumSelectElement<ClockTypeOption> clockSelect;
 
     KSessionModel kSessionModel;
     KnowledgeSessionsModal parentPresenter;
@@ -49,13 +46,11 @@ public class KnowledgeSessionListItemPresenter extends ListItemPresenter<KSessio
     public KnowledgeSessionListItemPresenter(final View view,
                                              final Event<DefaultKnowledgeSessionChange> defaultKnowledgeSessionChangeEvent,
                                              final WorkItemHandlersListPresenter workItemHandlersListPresenter,
-                                             final ListenersListPresenter listenersListPresenter,
-                                             final KieEnumSelectElement<ClockTypeOption> clockSelect) {
+                                             final ListenersListPresenter listenersListPresenter) {
         super(view);
         this.defaultKnowledgeSessionChangeEvent = defaultKnowledgeSessionChangeEvent;
         this.workItemHandlersListPresenter = workItemHandlersListPresenter;
         this.listenersListPresenter = listenersListPresenter;
-        this.clockSelect = clockSelect;
     }
 
     @Override
@@ -82,14 +77,7 @@ public class KnowledgeSessionListItemPresenter extends ListItemPresenter<KSessio
                 kSessionModel.getWorkItemHandelerModels(),
                 (workItemHandler, presenter) -> presenter.setup(workItemHandler, this));
 
-        clockSelect.setup(
-                view.getClockSelectContainer(),
-                ClockTypeOption.values(),
-                kSessionModel.getClockType(),
-                clockTypeOption -> {
-                    kSessionModel.setClockType(clockTypeOption);
-                    parentPresenter.fireChangeEvent();
-                });
+        view.setupClockElement(kSessionModel, parentPresenter);
 
         view.initListViewCompoundExpandableItems();
 
@@ -186,7 +174,7 @@ public class KnowledgeSessionListItemPresenter extends ListItemPresenter<KSessio
 
         void setType(final String type);
 
-        HTMLElement getClockSelectContainer();
+        void setupClockElement(final KSessionModel kSessionModel,final KnowledgeSessionsModal parentPresenter);
 
         HTMLElement getListenersContainer();
 

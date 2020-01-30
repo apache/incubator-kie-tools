@@ -26,6 +26,7 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.repositories.Branch;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
@@ -141,6 +142,11 @@ public class MockKieModuleServiceImpl implements KieModuleService {
 
     @Override
     public void reImport(final Path pathToPomXML) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
+
+    @Override
+    public KieModulePackages resolveModulePackages(final Module activeModule) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
 }

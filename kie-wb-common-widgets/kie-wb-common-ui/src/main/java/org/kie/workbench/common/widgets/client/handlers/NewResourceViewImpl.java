@@ -122,6 +122,8 @@ public class NewResourceViewImpl implements NewResourceView,
 
         clearErrors();
 
+        packageListBox.clearSelectElement();
+
         modal.show();
     }
 

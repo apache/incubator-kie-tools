@@ -29,9 +29,6 @@ import org.kie.workbench.common.screens.library.client.settings.sections.knowled
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionsModal;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.packages.PackageItemPresenter;
 import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
-import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
-import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
-import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemView;
@@ -41,8 +38,6 @@ import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, KnowledgeBasesPresenter, KnowledgeBaseItemPresenter.View> {
 
     private final Event<DefaultKnowledgeBaseChange> defaultKnowledgeBaseChangeEvent;
-    private final KieEnumSelectElement<AssertBehaviorOption> equalsBehaviorSelect;
-    private final KieEnumSelectElement<EventProcessingOption> eventProcessingModeSelect;
     private final KnowledgeSessionsModal knowledgeSessionsModal;
     private final IncludedKnowledgeBasesListPresenter includedKnowledgeBasesListPresenter;
     private final PackageListPresenter packageListPresenter;
@@ -53,15 +48,11 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
     @Inject
     public KnowledgeBaseItemPresenter(final View view,
                                       final Event<DefaultKnowledgeBaseChange> defaultKnowledgeBaseChangeEvent,
-                                      final KieEnumSelectElement<AssertBehaviorOption> equalsBehaviorSelect,
-                                      final KieEnumSelectElement<EventProcessingOption> eventProcessingModeSelect,
                                       final KnowledgeSessionsModal knowledgeSessionsModal,
                                       final IncludedKnowledgeBasesListPresenter includedKnowledgeBasesListPresenter,
                                       final PackageListPresenter packageListPresenter) {
         super(view);
         this.defaultKnowledgeBaseChangeEvent = defaultKnowledgeBaseChangeEvent;
-        this.equalsBehaviorSelect = equalsBehaviorSelect;
-        this.eventProcessingModeSelect = eventProcessingModeSelect;
         this.knowledgeSessionsModal = knowledgeSessionsModal;
         this.includedKnowledgeBasesListPresenter = includedKnowledgeBasesListPresenter;
         this.packageListPresenter = packageListPresenter;
@@ -81,23 +72,8 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
 
         knowledgeSessionsModal.setup(this);
 
-        equalsBehaviorSelect.setup(
-                view.getEqualsBehaviorSelectContainer(),
-                AssertBehaviorOption.values(),
-                kBaseModel.getEqualsBehavior(),
-                equalsBehavior -> {
-                    kBaseModel.setEqualsBehavior(equalsBehavior);
-                    fireChangeEvent();
-                });
-
-        eventProcessingModeSelect.setup(
-                view.getEventProcessingModelSelectContainer(),
-                EventProcessingOption.values(),
-                kBaseModel.getEventProcessingMode(),
-                eventProcessingMode -> {
-                    kBaseModel.setEventProcessingMode(eventProcessingMode);
-                    fireChangeEvent();
-                });
+        view.setupEqualBehaviorSelect(kBaseModel);
+        view.setupEventProcessingModelSelect(kBaseModel);
 
         includedKnowledgeBasesListPresenter.setup(
                 view.getIncludedKnowledgeBasesListElement(),
@@ -175,9 +151,9 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
 
         void setDefault(final boolean isDefault);
 
-        Element getEqualsBehaviorSelectContainer();
+        void setupEqualBehaviorSelect(final KBaseModel kBaseModel);
 
-        Element getEventProcessingModelSelectContainer();
+        void setupEventProcessingModelSelect(final KBaseModel kBaseModel);
 
         void setKnowledgeSessionsCount(final int size);
 

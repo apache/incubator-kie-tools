@@ -26,4 +26,6 @@ public interface PackageListBoxView
                final Map<String, String> packageNames);
 
     void setPresenter(final PackageListBox packageListBox);
+
+    void clearSelectElement();
 }

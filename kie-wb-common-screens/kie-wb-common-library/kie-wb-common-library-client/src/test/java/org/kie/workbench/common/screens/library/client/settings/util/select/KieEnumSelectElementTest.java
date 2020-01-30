@@ -40,6 +40,9 @@ import static org.mockito.Mockito.verify;
 public class KieEnumSelectElementTest {
 
     @Mock
+    private KieEnumSelectElement.View view;
+
+    @Mock
     private KieSelectElement kieSelectElement;
 
     @Mock
@@ -54,7 +57,7 @@ public class KieEnumSelectElementTest {
 
     @Before
     public void before() {
-        kieEnumSelectElement = spy(new KieEnumSelectElement<TestEnum>(kieSelectElement, translationService));
+        kieEnumSelectElement = spy(new KieEnumSelectElement<TestEnum>(view, kieSelectElement, translationService));
     }
 
     @Test
@@ -66,14 +69,13 @@ public class KieEnumSelectElementTest {
         doReturn(options).when(kieEnumSelectElement).buildOptions(any());
 
         kieEnumSelectElement.setup(
-                container,
                 TestEnum.values(),
                 TestEnum.FOO,
                 value -> {
                 });
 
         assertEquals(TestEnum.class, kieEnumSelectElement.componentType);
-        verify(kieSelectElement).setup(eq(container), eq(options), eq("FOO"), any());
+        verify(view).setupKieSelectElement(eq(options), eq("FOO"), any());
     }
 
     @Test

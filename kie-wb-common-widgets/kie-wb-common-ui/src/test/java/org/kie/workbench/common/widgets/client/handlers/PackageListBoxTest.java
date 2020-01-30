@@ -28,6 +28,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -66,6 +67,8 @@ public class PackageListBoxTest {
 
     private PackageListBox packageListBox;
 
+    private KieModulePackages kieModulePackages;
+
     @Before
     public void setup() {
         moduleServiceCaller = new CallerMock<>(moduleService);
@@ -84,8 +87,8 @@ public class PackageListBoxTest {
         packages.add(defaultPackage);
         packages.add(createPackage("com.myteam.mymodule.mypackage"));
 
-        doReturn(new HashSet<>(packages)).when(moduleService).resolvePackages(any(Module.class));
-        doReturn(defaultPackage).when(moduleService).resolveDefaultWorkspacePackage(any());
+        kieModulePackages = new KieModulePackages(new HashSet<>(packages), defaultPackage);
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any(Module.class));
     }
 
     @Test
@@ -137,7 +140,8 @@ public class PackageListBoxTest {
     @Test
     public void setContextTestDropDefaultDefaultPackageInTheList() {
         setupPackageList();
-        doReturn(mock(Package.class)).when(moduleService).resolveDefaultWorkspacePackage(any());
+        kieModulePackages.setDefaultPackage(createPackage(""));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any());
 
         final Command packagesLoadedCommand = mock(Command.class);
 
@@ -161,7 +165,8 @@ public class PackageListBoxTest {
     @Test
     public void setContextTestDropDefaultNoDefaultPackageInTheList() {
         setupPackageList();
-        doReturn(mock(Package.class)).when(moduleService).resolveDefaultWorkspacePackage(any());
+        kieModulePackages.setDefaultPackage(createPackage("com"));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any());
 
         final Command packagesLoadedCommand = mock(Command.class);
 

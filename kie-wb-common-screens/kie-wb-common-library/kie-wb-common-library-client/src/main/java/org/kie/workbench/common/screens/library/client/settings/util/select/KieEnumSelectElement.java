@@ -20,43 +20,50 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
+import org.uberfire.client.mvp.UberElemental;
 
 import static java.util.stream.Collectors.toList;
 
 @Dependent
-public class KieEnumSelectElement<T extends Enum<T>> {
+public class KieEnumSelectElement<T extends Enum<T>> implements IsElement {
 
+    private final View view;
     private final KieSelectElement kieSelectElement;
     private final TranslationService translationService;
 
     Class<T> componentType;
 
     @Inject
-    public KieEnumSelectElement(final KieSelectElement kieSelectElement,
+    public KieEnumSelectElement(final View view,
+                                final KieSelectElement kieSelectElement,
                                 final TranslationService translationService) {
-
+        this.view = view;
         this.kieSelectElement = kieSelectElement;
         this.translationService = translationService;
     }
 
+    @PostConstruct
+    public void init() {
+        view.init(this);
+    }
+
     @SuppressWarnings("unchecked")
-    public void setup(final Element element,
-                      final T[] values,
+    public void setup(final T[] values,
                       final T initialValue,
                       final Consumer<T> onChange) {
 
         componentType = (Class<T>) values.getClass().getComponentType();
 
-        kieSelectElement.setup(
-                element,
-                buildOptions(values),
+        view.setupKieSelectElement(buildOptions(values),
                 initialValue.name(),
                 name -> onChange.accept(toEnum(name)));
     }
@@ -79,5 +86,16 @@ public class KieEnumSelectElement<T extends Enum<T>> {
 
     T toEnum(final String value) {
         return Enum.valueOf(componentType, value);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
+    }
+
+    public interface View extends UberElemental<KieEnumSelectElement> {
+        
+        void setupKieSelectElement(final List<KieSelectOption> options,final String initialValue,
+                                   final Consumer<String> onChange);
     }
 }

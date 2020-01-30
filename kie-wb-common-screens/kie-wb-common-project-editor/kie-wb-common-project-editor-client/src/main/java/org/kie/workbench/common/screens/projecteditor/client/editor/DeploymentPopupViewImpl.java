@@ -89,7 +89,7 @@ public class DeploymentPopupViewImpl implements DeploymentPopupView, IsElement {
 
     @Inject
     @DataField
-    private HTMLDivElement serverTemplateDropdownContainer;
+    private KieSelectElement serverTemplateDropdownSelect;
 
     @Inject
     private KieSelectElement serverTemplateDropdown;
@@ -182,7 +182,7 @@ public class DeploymentPopupViewImpl implements DeploymentPopupView, IsElement {
     @Override
     public void initServerTemplates(final Collection<ServerTemplate> allServerTemplates, final ServerTemplate serverTemplate) {
         serverTemplateGroup.hidden = false;
-        serverTemplateDropdown.setup(serverTemplateDropdownContainer,
+        serverTemplateDropdown.setup(
                 allServerTemplates.stream().map(template -> new KieSelectOption(template.getId(), template.getId())).collect(Collectors.toList()),
                 serverTemplate.getId(),
                 s -> {

@@ -31,6 +31,10 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
+import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
+import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
+import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 
 @Templated("#root")
 public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
@@ -61,11 +65,11 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
 
     @Inject
     @DataField("equals-behavior-select-container")
-    private HTMLDivElement equalsBehaviorSelectContainer;
+    private KieEnumSelectElement<AssertBehaviorOption> equalsBehaviorSelect;
 
     @Inject
     @DataField("event-processing-model-select-container")
-    private HTMLDivElement eventProcessingModelSelectContainer;
+    private KieEnumSelectElement<EventProcessingOption> eventProcessingModelSelect;
 
     @Inject
     @DataField("packages-list")
@@ -134,18 +138,30 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
     }
 
     @Override
-    public Element getEqualsBehaviorSelectContainer() {
-        return equalsBehaviorSelectContainer;
-    }
-
-    @Override
-    public Element getEventProcessingModelSelectContainer() {
-        return eventProcessingModelSelectContainer;
-    }
-
-    @Override
     public void setKnowledgeSessionsCount(final int size) {
         knowledgeSessionsCount.textContent = Integer.toString(size);
+    }
+
+    @Override
+    public void setupEqualBehaviorSelect(final KBaseModel kBaseModel) {
+        equalsBehaviorSelect.setup(
+                AssertBehaviorOption.values(),
+                kBaseModel.getEqualsBehavior(),
+                equalsBehavior -> {
+                    kBaseModel.setEqualsBehavior(equalsBehavior);
+                    presenter.fireChangeEvent();
+                });
+    }
+
+    @Override
+    public void setupEventProcessingModelSelect(final KBaseModel kBaseModel) {
+        eventProcessingModelSelect.setup(
+                EventProcessingOption.values(),
+                kBaseModel.getEventProcessingMode(),
+                eventProcessingMode -> {
+                    kBaseModel.setEventProcessingMode(eventProcessingMode);
+                    presenter.fireChangeEvent();
+                });
     }
 
     @EventHandler("name")

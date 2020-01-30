@@ -3,14 +3,12 @@ package org.kie.workbench.common.screens.library.client.settings.generalsettings
 import java.util.Arrays;
 
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.HTMLTextAreaElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.generalsettings.GitUrlsPresenter.View;
 import org.kie.workbench.common.screens.projecteditor.model.GitUrl;
-import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.util.Clipboard;
@@ -40,9 +38,6 @@ public class GitUrlsPresenterTest {
     private TranslationService translationService;
 
     @Mock
-    private KieSelectElement kieSelectElement;
-
-    @Mock
     private Clipboard clipboard;
 
     private GitUrlsPresenter presenter;
@@ -51,7 +46,6 @@ public class GitUrlsPresenterTest {
     public void before() {
         presenter = spy(new GitUrlsPresenter(view,
                                              notificationEvent,
-                                             kieSelectElement,
                                              translationService,
                                              clipboard));
     }
@@ -71,6 +65,7 @@ public class GitUrlsPresenterTest {
         presenter.setup(Arrays.asList(gitUrl, sshUrl));
 
         verify(presenter, times(1)).update();
+        verify(view, times(1)).setupProtocols(any(),any(), any());
 
         assertEquals("ssh",
                      presenter.selectedProtocol);

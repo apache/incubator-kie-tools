@@ -40,6 +40,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
@@ -115,6 +116,11 @@ public class KieModuleServiceImpl
             throw new GAVAlreadyExistsException(pom.getGav(),
                                                 repositories);
         }
+    }
+
+    @Override
+    public KieModulePackages resolveModulePackages(Module activeModule) {
+        return new KieModulePackages(resolvePackages(activeModule), resolveDefaultWorkspacePackage(activeModule));
     }
 
     @Override

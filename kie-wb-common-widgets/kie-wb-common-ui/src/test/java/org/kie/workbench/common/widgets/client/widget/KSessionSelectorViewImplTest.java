@@ -36,12 +36,6 @@ public class KSessionSelectorViewImplTest {
     private HTMLDocument document;
 
     @Mock
-    private HTMLDivElement kBaseSelect;
-
-    @Mock
-    private HTMLDivElement kSessionSelect;
-
-    @Mock
     private HTMLLabelElement warningLabel;
 
     @Mock
@@ -52,8 +46,6 @@ public class KSessionSelectorViewImplTest {
     @Before
     public void setUp() throws Exception {
         kSessionSelectorView = spy(new KSessionSelectorViewImpl(document,
-                                                                kBaseSelect,
-                                                                kSessionSelect,
                                                                 mock(KieSelectElement.class),
                                                                 mock(KieSelectElement.class),
                                                                 warningLabel));

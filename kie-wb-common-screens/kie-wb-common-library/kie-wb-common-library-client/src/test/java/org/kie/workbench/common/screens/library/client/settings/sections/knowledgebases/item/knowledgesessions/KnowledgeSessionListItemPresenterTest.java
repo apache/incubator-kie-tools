@@ -49,8 +49,7 @@ public class KnowledgeSessionListItemPresenterTest {
         knowledgeSessionListItemPresenter = spy(new KnowledgeSessionListItemPresenter(view,
                                                                                       defaultKnowledgeSessionChangeEvent,
                                                                                       workItemHandlersListPresenter,
-                                                                                      listenersListPresenter,
-                                                                                      clockSelect));
+                                                                                      listenersListPresenter));
     }
 
     @Test
@@ -65,7 +64,7 @@ public class KnowledgeSessionListItemPresenterTest {
         verify(view).initListViewCompoundExpandableItems();
         verify(listenersListPresenter).setup(any(), any(), any());
         verify(workItemHandlersListPresenter).setup(any(), any(), any());
-        verify(clockSelect).setup(any(), any(), any(), any());
+        verify(view).setupClockElement(any(), any());
     }
 
     @Test

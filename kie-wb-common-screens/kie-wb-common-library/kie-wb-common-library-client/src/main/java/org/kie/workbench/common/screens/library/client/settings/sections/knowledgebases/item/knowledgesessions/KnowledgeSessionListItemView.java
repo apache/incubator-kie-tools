@@ -30,6 +30,9 @@ import elemental2.dom.HTMLTableSectionElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
+import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
 @Templated
 public class KnowledgeSessionListItemView implements KnowledgeSessionListItemPresenter.View {
@@ -48,7 +51,7 @@ public class KnowledgeSessionListItemView implements KnowledgeSessionListItemPre
 
     @Inject
     @DataField("clock-select-container")
-    private HTMLDivElement clockSelectContainer;
+    private KieEnumSelectElement<ClockTypeOption> clockSelect;
 
     @Inject
     @DataField("listeners-button")
@@ -226,7 +229,14 @@ public class KnowledgeSessionListItemView implements KnowledgeSessionListItemPre
     }
 
     @Override
-    public HTMLElement getClockSelectContainer() {
-        return clockSelectContainer;
+    public void setupClockElement(final KSessionModel kSessionModel,
+                                  final KnowledgeSessionsModal parentPresenter) {
+        clockSelect.setup(
+                ClockTypeOption.values(),
+                kSessionModel.getClockType(),
+                clockTypeOption -> {
+                    kSessionModel.setClockType(clockTypeOption);
+                    parentPresenter.fireChangeEvent();
+                });
     }
 }

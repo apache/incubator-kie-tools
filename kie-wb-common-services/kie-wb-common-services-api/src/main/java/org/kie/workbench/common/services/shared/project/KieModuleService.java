@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.services.shared.project;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -24,5 +25,5 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface KieModuleService
         extends ModuleService<KieModule> {
-
+    KieModulePackages resolveModulePackages(Module activeModule);
 }

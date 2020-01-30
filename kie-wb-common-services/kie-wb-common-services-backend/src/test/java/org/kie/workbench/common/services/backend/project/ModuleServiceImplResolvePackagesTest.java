@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
@@ -28,6 +29,7 @@ import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 
 import static org.junit.Assert.*;
@@ -69,6 +71,13 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
             Set<Package> packages = moduleService.resolvePackages((Package) null);
             assertEquals(0,
                          packages.size());
+        }
+
+        {
+            when(pom.getGav()).thenReturn(new GAV("org.mygroup","my-project","1.0.0"));
+            KieModulePackages kieModulePackages = moduleService.resolveModulePackages(module);
+            assertEquals(kieModulePackages.getPackages(), moduleService.resolvePackages(module));
+            assertEquals("<default>", moduleService.resolveDefaultPackage(module).getCaption());
         }
 
         Package defaultPkg = null;

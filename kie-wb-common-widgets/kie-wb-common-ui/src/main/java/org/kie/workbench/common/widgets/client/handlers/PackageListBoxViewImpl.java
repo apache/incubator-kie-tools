@@ -21,7 +21,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
@@ -31,11 +30,9 @@ import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 public class PackageListBoxViewImpl
         implements PackageListBoxView {
 
-    private KieSelectElement kieSelectElement;
-
     @Inject
-    @DataField("packageSelectContainer")
-    HTMLDivElement packageSelectContainer;
+    @DataField
+    private KieSelectElement kieSelectElement;
 
     private PackageListBox presenter;
 
@@ -53,8 +50,7 @@ public class PackageListBoxViewImpl
     public void setUp(final String activePackage,
                       final Map<String, String> packageNames) {
 
-        kieSelectElement.setup(packageSelectContainer,
-                               buildOptions(packageNames),
+        kieSelectElement.setup(buildOptions(packageNames),
                                activePackage,
                                s -> onSelectionChange());
     }
@@ -67,6 +63,10 @@ public class PackageListBoxViewImpl
             options.add(newOption(entry.getKey(), entry.getValue()));
         }
         return options;
+    }
+
+    public void clearSelectElement() {
+        kieSelectElement.clear();
     }
 
     KieSelectOption newOption(final String name, String value) {

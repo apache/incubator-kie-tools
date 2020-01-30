@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
-import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLLabelElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -36,14 +35,10 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
     HTMLDocument document;
 
     @DataField("kbaseSelectContainer")
-    HTMLDivElement kbaseSelectContainer;
-
     KieSelectElement kbaseSelect;
 
     @Inject
     @DataField("ksessionSelectContainer")
-    HTMLDivElement ksessionSelectContainer;
-
     KieSelectElement ksessionSelect;
 
     @Inject
@@ -57,14 +52,10 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
 
     @Inject
     public KSessionSelectorViewImpl(final HTMLDocument document,
-                                    final HTMLDivElement kbaseSelectContainer,
-                                    final HTMLDivElement ksessionSelectContainer,
                                     final KieSelectElement kbaseSelect,
                                     final KieSelectElement ksessionSelect,
                                     final HTMLLabelElement warningLabel) {
         this.document = document;
-        this.kbaseSelectContainer = kbaseSelectContainer;
-        this.ksessionSelectContainer = ksessionSelectContainer;
         this.kbaseSelect = kbaseSelect;
         this.ksessionSelect = ksessionSelect;
         this.warningLabel = warningLabel;
@@ -87,8 +78,7 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
     @Override
     public void addKBases(final String... names) {
 
-        kbaseSelect.setup(kbaseSelectContainer,
-                          buildOptions(names),
+        kbaseSelect.setup(buildOptions(names),
                           names[0],
                           new Consumer<String>() {
                               @Override
@@ -109,8 +99,7 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
     @Override
     public void setKSessions(final List<String> ksessions) {
         String[] names = ksessions.toArray(new String[ksessions.size()]);
-        ksessionSelect.setup(ksessionSelectContainer,
-                             buildOptions(names),
+        ksessionSelect.setup(buildOptions(names),
                              names[0],
                              s -> onSelectionChange());
     }

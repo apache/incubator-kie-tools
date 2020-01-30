@@ -32,8 +32,7 @@ public class ListenerListItemPresenterTest {
 
     @Before
     public void before() {
-        listenerListItemPresenter = spy(new ListenerListItemPresenter(view,
-                                                                      kindSelect));
+        listenerListItemPresenter = spy(new ListenerListItemPresenter(view));
     }
 
     @Test
@@ -43,7 +42,6 @@ public class ListenerListItemPresenterTest {
         listenerModel.setKind(ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER);
 
         final HTMLElement selectContainer = mock(HTMLElement.class);
-        doReturn(selectContainer).when(view).getKindSelectContainer();
 
         final ListenerListItemPresenter result = listenerListItemPresenter.setup(listenerModel,
                                                                                  mock(KnowledgeSessionListItemPresenter.class));
@@ -51,10 +49,7 @@ public class ListenerListItemPresenterTest {
         Assert.assertEquals(result, listenerListItemPresenter);
         verify(view).init(eq(listenerListItemPresenter));
         verify(view).setType(eq("Type"));
-        verify(kindSelect).setup(eq(selectContainer),
-                                 eq(ListenerModel.Kind.values()),
-                                 eq(ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER),
-                                 any());
+        verify(view).setupKindSelect(eq(listenerModel), any());
     }
 
     @Test

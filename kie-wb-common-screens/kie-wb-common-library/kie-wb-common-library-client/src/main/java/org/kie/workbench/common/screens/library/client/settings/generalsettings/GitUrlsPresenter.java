@@ -18,17 +18,16 @@ package org.kie.workbench.common.screens.library.client.settings.generalsettings
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.projecteditor.model.GitUrl;
-import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.util.Clipboard;
@@ -49,7 +48,6 @@ public class GitUrlsPresenter {
     private final View view;
     private final Event<NotificationEvent> notificationEventEvent;
     private final TranslationService translationService;
-    private final KieSelectElement protocolSelect;
     private final Clipboard clipboard;
 
     Map<String, GitUrl> gitUrlsByProtocol;
@@ -59,13 +57,11 @@ public class GitUrlsPresenter {
     @Inject
     public GitUrlsPresenter(final View view,
                             final Event<NotificationEvent> notificationEventEvent,
-                            final KieSelectElement protocolSelect,
                             final TranslationService translationService,
                             final Clipboard clipboard) {
 
         this.view = view;
         this.notificationEventEvent = notificationEventEvent;
-        this.protocolSelect = protocolSelect;
         this.translationService = translationService;
         this.clipboard = clipboard;
     }
@@ -83,8 +79,7 @@ public class GitUrlsPresenter {
                 ? DEFAULT_SELECTED_PROTOCOL
                 : gitUrls.get(0).getProtocol();
 
-        protocolSelect.setup(view.getProtocolSelectContainer(),
-                             gitUrls.stream().map(GitUrl::getProtocol).map(p -> new KieSelectOption(p, p)).collect(toList()),
+        view.setupProtocols(gitUrls.stream().map(GitUrl::getProtocol).map(p -> new KieSelectOption(p, p)).collect(toList()),
                              selectedProtocol,
                              this::setSelectedProtocol);
 
@@ -119,6 +114,8 @@ public class GitUrlsPresenter {
 
         void setUrl(final String url);
 
-        HTMLElement getProtocolSelectContainer();
+        void setupProtocols(List<KieSelectOption> protocols,
+                            String selectedProtocol,
+                            Consumer<String> onChange);
     }
 }

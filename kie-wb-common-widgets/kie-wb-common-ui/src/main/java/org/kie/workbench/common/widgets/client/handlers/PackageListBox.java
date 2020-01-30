@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.mvp.Command;
 
@@ -72,30 +73,32 @@ public class PackageListBox
                            packagesLoadedCommand);
     }
 
+    public void clearSelectElement() {
+        view.clearSelectElement();
+    }
+
     private void showListOfPackages(final boolean includeDefaultPackage,
                                     final Command packagesLoadedCommand) {
         final Module activeModule = projectContext.getActiveModule().orElse(null);
         if (activeModule == null) {
             return;
         } else {
-            moduleService.call((Set<Package> pkgs) -> {
-                moduleService.call((Package activePackage) -> {
-                    //Sort by caption
+            moduleService.call((KieModulePackages kieModulePackages) -> {
+                //Sort by caption
                     final List<Package> sortedPackages = getSortedPackages(includeDefaultPackage,
-                                                                           pkgs);
+                                                                           kieModulePackages.getPackages());
 
                     // Disable and set default content if no Packages available
                     if (sortedPackages.isEmpty()) {
                         return;
                     }
                     addPackagesToSelect(sortedPackages,
-                                        activePackage);
+                                        kieModulePackages.getDefaultPackage());
 
                     if (packagesLoadedCommand != null) {
                         packagesLoadedCommand.execute();
                     }
-                }).resolveDefaultWorkspacePackage(activeModule);
-            }).resolvePackages(activeModule);
+             }).resolveModulePackages(activeModule);
         }
     }
 

@@ -21,19 +21,21 @@ import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionListItemPresenter;
+import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 
 @Templated("#root")
 public class ListenerListItemView implements ListenerListItemPresenter.View {
 
     @Inject
     @DataField("kind-select-container")
-    private HTMLDivElement kindSelectContainer;
+    private KieEnumSelectElement<ListenerModel.Kind> kindSelect;
 
     @Inject
     @DataField("type")
@@ -67,7 +69,14 @@ public class ListenerListItemView implements ListenerListItemPresenter.View {
     }
 
     @Override
-    public HTMLElement getKindSelectContainer() {
-        return kindSelectContainer;
+    public void setupKindSelect(final ListenerModel model,
+                                final KnowledgeSessionListItemPresenter parentPresenter) {
+        kindSelect.setup(
+                ListenerModel.Kind.values(),
+                model.getKind(),
+                kind -> {
+                    model.setKind(kind);
+                    parentPresenter.fireChangeEvent();
+                });
     }
 }

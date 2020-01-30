@@ -2,14 +2,12 @@ package org.kie.workbench.common.screens.library.client.settings.sections.knowle
 
 import javax.enterprise.event.Event;
 
-import elemental2.dom.HTMLInputElement;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.KnowledgeBasesPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionsModal;
-import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
 import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
 import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
@@ -25,7 +23,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KnowledgeBaseItemPresenterTest {
@@ -57,8 +54,6 @@ public class KnowledgeBaseItemPresenterTest {
     public void before() {
         knowledgeBaseItemPresenter = spy(new KnowledgeBaseItemPresenter(view,
                                                                         defaultKnowledgeBaseChangeEvent,
-                                                                        equalsBehaviorSelect,
-                                                                        eventProcessingModeSelect,
                                                                         knowledgeSessionsModal,
                                                                         includedKnowledgeBasesListPresenter,
                                                                         packageListPresenter));
@@ -80,8 +75,8 @@ public class KnowledgeBaseItemPresenterTest {
         verify(packageListPresenter).setup(any(), any(), any());
         verify(includedKnowledgeBasesListPresenter).setup(any(), any(), any());
 
-        verify(eventProcessingModeSelect).setup(any(), any(), any(), any());
-        verify(equalsBehaviorSelect).setup(any(), any(), any(), any());
+        verify(view).setupEventProcessingModelSelect(any());
+        verify(view).setupEqualBehaviorSelect(any());
     }
 
     @Test

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.screens.library.client.settings.generalsettings;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.MouseEvent;
@@ -27,6 +29,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 
 @Templated
 public class GitUrlsView implements GitUrlsPresenter.View {
@@ -41,8 +45,8 @@ public class GitUrlsView implements GitUrlsPresenter.View {
     private HTMLElement copyToClipboardButton;
 
     @Inject
-    @DataField("protocol-select-container")
-    private HTMLDivElement protocolSelectContainer;
+    @DataField
+    private KieSelectElement protocolSelector;
 
     private GitUrlsPresenter presenter;
 
@@ -62,7 +66,9 @@ public class GitUrlsView implements GitUrlsPresenter.View {
     }
 
     @Override
-    public HTMLElement getProtocolSelectContainer() {
-        return protocolSelectContainer;
+    public void setupProtocols(final List<KieSelectOption> protocols,
+                               final String selectedProtocol,
+                               final Consumer<String> onChange) {
+        protocolSelector.setup(protocols, selectedProtocol, onChange);
     }
 }

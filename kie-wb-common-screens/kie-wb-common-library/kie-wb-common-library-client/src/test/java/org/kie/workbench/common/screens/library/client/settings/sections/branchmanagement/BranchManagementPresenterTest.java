@@ -111,7 +111,7 @@ public class BranchManagementPresenterTest {
         presenter.setup(mock(ProjectScreenModel.class)).then(v -> {
             verify(view).init(presenter);
             verify(view).showEmptyState();
-            verify(branchesSelect, never()).setup(any(), any(), any(), any());
+            verify(branchesSelect, never()).setup(any(), any(), any());
             verify(libraryService, never()).loadBranchPermissions(anyString(), anyString(), anyString());
 
             return promises.resolve();
@@ -134,7 +134,7 @@ public class BranchManagementPresenterTest {
             assertEquals("myBranch", presenter.selectedBranch);
             verify(view).init(presenter);
             verify(view, never()).showEmptyState();
-            verify(branchesSelect).setup(any(), any(), any(), any());
+            verify(branchesSelect).setup(any(), any(), any());
             verify(libraryService).loadBranchPermissions("mySpace", "myProject", "myBranch");
 
             return promises.resolve();

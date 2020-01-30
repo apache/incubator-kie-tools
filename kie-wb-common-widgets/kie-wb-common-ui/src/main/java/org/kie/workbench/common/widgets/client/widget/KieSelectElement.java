@@ -23,27 +23,25 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLSelectElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.uberfire.client.mvp.UberElemental;
 
 @Dependent
-public class KieSelectElement implements KieSelectElementBase {
+public class KieSelectElement implements KieSelectElementBase,
+                                         IsElement {
 
     private final View view;
     private final KieSelectOptionsListPresenter optionsListPresenter;
-    private final Elemental2DomUtil elemental2DomUtil;
 
     Consumer<String> onChange;
 
     @Inject
     public KieSelectElement(final View view,
-                            final KieSelectOptionsListPresenter optionsListPresenter,
-                            final Elemental2DomUtil elemental2DomUtil) {
+                            final KieSelectOptionsListPresenter optionsListPresenter) {
         this.view = view;
         this.optionsListPresenter = optionsListPresenter;
-        this.elemental2DomUtil = elemental2DomUtil;
         this.onChange = i -> {
         };
     }
@@ -53,13 +51,9 @@ public class KieSelectElement implements KieSelectElementBase {
         view.init(this);
     }
 
-    public void setup(final Element element,
-                      final List<KieSelectOption> options,
+    public void setup(final List<KieSelectOption> options,
                       final String initialValue,
                       final Consumer<String> onChange) {
-
-        elemental2DomUtil.removeAllElementChildren(element);
-        element.appendChild(view.getElement());
 
         optionsListPresenter.setup(
                 view.getSelect(),
@@ -67,10 +61,12 @@ public class KieSelectElement implements KieSelectElementBase {
                 (item, presenter) -> presenter.setup(item, this));
 
         view.setValue(initialValue);
-
-        this.onChange = onChange;
-
         view.initSelect();
+        this.onChange = onChange;
+    }
+
+    public void clear() {
+        view.clear();
     }
 
     public void onChange() {
@@ -94,5 +90,12 @@ public class KieSelectElement implements KieSelectElementBase {
         void setValue(final String value);
 
         String getValue();
+
+        void clear();
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

@@ -102,8 +102,7 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
 
             selectedBranch = libraryPlaces.getActiveWorkspace().getBranch().getName();
 
-            branchesSelect.setup(view.getBranchesSelectContainer(),
-                                 branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
+            branchesSelect.setup(branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
                                  selectedBranch,
                                  this::setBranch);
 

@@ -19,10 +19,8 @@ package org.kie.workbench.common.screens.library.client.settings.sections.knowle
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemView;
@@ -30,16 +28,12 @@ import org.kie.workbench.common.widgets.client.widget.ListItemView;
 @Dependent
 public class ListenerListItemPresenter extends ListItemPresenter<ListenerModel, KnowledgeSessionListItemPresenter, ListenerListItemPresenter.View> {
 
-    private final KieEnumSelectElement<ListenerModel.Kind> kindSelect;
-
     ListenerModel model;
     KnowledgeSessionListItemPresenter parentPresenter;
 
     @Inject
-    public ListenerListItemPresenter(final View view,
-                                     final KieEnumSelectElement<ListenerModel.Kind> kindSelect) {
+    public ListenerListItemPresenter(final View view) {
         super(view);
-        this.kindSelect = kindSelect;
     }
 
     @Override
@@ -52,14 +46,7 @@ public class ListenerListItemPresenter extends ListItemPresenter<ListenerModel, 
         view.init(this);
         view.setType(model.getType());
 
-        kindSelect.setup(
-                view.getKindSelectContainer(),
-                ListenerModel.Kind.values(),
-                model.getKind(),
-                kind -> {
-                    model.setKind(kind);
-                    parentPresenter.fireChangeEvent();
-                });
+        view.setupKindSelect(model, parentPresenter);
 
         return this;
     }
@@ -86,6 +73,6 @@ public class ListenerListItemPresenter extends ListItemPresenter<ListenerModel, 
 
         void setType(final String type);
 
-        HTMLElement getKindSelectContainer();
+        void setupKindSelect(final ListenerModel model,final KnowledgeSessionListItemPresenter parentPresenter);
     }
 }
