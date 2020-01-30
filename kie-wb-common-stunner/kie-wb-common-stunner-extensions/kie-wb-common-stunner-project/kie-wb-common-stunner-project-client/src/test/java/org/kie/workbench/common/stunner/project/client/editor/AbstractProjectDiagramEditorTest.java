@@ -569,7 +569,7 @@ public class AbstractProjectDiagramEditorTest {
         final ProjectMetadata metadata = mock(ProjectMetadata.class);
         final Overview overview = mock(Overview.class);
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getTitle()).thenReturn(TITLE);
+        when(diagram.getName()).thenReturn(TITLE);
         when(metadata.getOverview()).thenReturn(overview);
         final Graph graph = mock(Graph.class);
         final DefinitionSet definitionSet = mock(DefinitionSet.class);

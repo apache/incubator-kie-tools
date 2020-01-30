@@ -273,7 +273,7 @@ public class ProjectDiagramEditorTest {
         }).when(sessionEditorPresenter).open(any(Diagram.class),
                                              any(SessionPresenter.SessionPresenterCallback.class));
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getTitle()).thenReturn("Title");
+        when(diagram.getName()).thenReturn("Title");
         when(metadata.getOverview()).thenReturn(overview);
         when(overview.getMetadata()).thenReturn(kieMetadata);
         when(fullSession.getCanvasHandler()).thenReturn(canvasHandler);
