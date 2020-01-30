@@ -68,16 +68,9 @@ function init(args: Globals) {
 
   unmountPreviouslyRenderedFeatures(args.id, args.logger);
 
-  const split = window.location.pathname.split("/");
-
-  const fileInfo = {
-    gitRef: split[4],
-    repo: split[2],
-    org: split[1],
-    path: split.slice(5).join("/")
-  };
-
+  const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
+
   if (pageType === GitHubPageType.ANY) {
     args.logger.log(`This GitHub page is not supported.`);
     return;
@@ -95,10 +88,7 @@ function init(args: Globals) {
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       fileInfo: fileInfo
     });
-    return;
-  }
-
-  if (pageType === GitHubPageType.VIEW) {
+  } else if (pageType === GitHubPageType.VIEW) {
     renderSingleEditorReadonlyApp({
       id: args.id,
       logger: args.logger,
@@ -110,10 +100,7 @@ function init(args: Globals) {
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
-    return;
-  }
-
-  if (pageType === GitHubPageType.PR) {
+  } else if (pageType === GitHubPageType.PR) {
     renderPrEditorsApp({
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       id: args.id,
@@ -125,10 +112,19 @@ function init(args: Globals) {
       externalEditorManager: args.externalEditorManager,
       contentPath: fileInfo.path
     });
-    return;
   }
 
   throw new Error(`Unknown GitHubPageType ${pageType}`);
+}
+
+function extractFileInfoFromUrl() {
+  const split = window.location.pathname.split("/");
+  return {
+    gitRef: split[4],
+    repo: split[2],
+    org: split[1],
+    path: split.slice(5).join("/")
+  };
 }
 
 function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {

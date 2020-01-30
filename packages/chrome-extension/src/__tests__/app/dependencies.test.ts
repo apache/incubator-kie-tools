@@ -14,8 +14,3 @@
  * limitations under the License.
  */
 
-describe("EditorEnvelopeController", () => {
-  test("opens", async () => {
-    expect(true).toBeTruthy();
-  });
-});

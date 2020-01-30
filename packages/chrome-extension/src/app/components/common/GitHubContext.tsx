@@ -60,6 +60,14 @@ export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
 
+  const userIsLoggedIn = useCallback(() => {
+    return !!dependencies__.all.notificationIndicator();
+  }, []);
+
+  const octokit = useCallback(() => {
+    return octokitInstance;
+  }, []);
+
   useEffect(() => {
     if (token) {
       octokitInstance = new Octokit({ auth: token });
@@ -71,10 +79,6 @@ export const GitHubContextProvider: React.FC<{}> = props => {
     setReady(true);
   }, []);
 
-  const userIsLoggedIn = useCallback(() => {
-    return !!dependencies__.all.notificationIndicator();
-  }, []);
-
   useLayoutEffect(() => {
     if (!token) {
       setCookie(globals.githubAuthTokenCookieName, "");
@@ -84,10 +88,6 @@ export const GitHubContextProvider: React.FC<{}> = props => {
       octokitInstance = new Octokit({ auth: token });
     }
   }, [token]);
-
-  const octokit = useCallback(() => {
-    return octokitInstance;
-  }, []);
 
   return (
     <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export class RepoInfo {
-  public owner: string;
-  public repo: string;
-  public gitref: string;
-}
+describe("Testing", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
