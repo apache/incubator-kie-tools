@@ -22,7 +22,8 @@
 
     <script>
         function loadDiagram(diagram) {
-            window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(diagram);
+            var path = "somePath";
+            window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(path, diagram);
         }
 
         var openFile = function (event) {

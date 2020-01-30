@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.http.client.URL;
 import org.eclipse.bpmn2.Assignment;
@@ -25,6 +27,7 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingMessage;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
 
@@ -34,20 +37,23 @@ public class InputAssignmentReader {
 
     private final AssociationDeclaration associationDeclaration;
 
-    public static InputAssignmentReader fromAssociation(DataInputAssociation in) {
+    private static Logger logger = Logger.getLogger(InputAssignmentReader.class.getName());
+
+    public static Optional<InputAssignmentReader> fromAssociation(DataInputAssociation in) {
         List<ItemAwareElement> sourceList = in.getSourceRef();
         List<Assignment> assignmentList = in.getAssignment();
         String targetName = ((DataInput) in.getTargetRef()).getName();
         if (isReservedIdentifier(targetName)) {
-            return null;
+            return Optional.empty();
         }
 
         if (!sourceList.isEmpty()) {
-            return new InputAssignmentReader(sourceList.get(0), targetName);
+            return Optional.of(new InputAssignmentReader(sourceList.get(0), targetName));
         } else if (!assignmentList.isEmpty()) {
-            return new InputAssignmentReader(assignmentList.get(0), targetName);
+            return Optional.of(new InputAssignmentReader(assignmentList.get(0), targetName));
         } else {
-            throw new IllegalArgumentException("Cannot find SourceRef or Assignment for Target " + targetName);
+            logger.log(Level.SEVERE, MarshallingMessage.builder().message("Cannot find SourceRef or Assignment for Target ").toString() + targetName);
+            return Optional.empty();
         }
     }
 

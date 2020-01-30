@@ -139,7 +139,8 @@ public class AssignmentsInfos {
         return inputAssociations
                 .stream()
                 .map(InputAssignmentReader::fromAssociation)
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(InputAssignmentReader::getAssociationDeclaration)
                 .collect(Collectors.toList());
     }

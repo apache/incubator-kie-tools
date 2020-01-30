@@ -18,19 +18,35 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 import org.eclipse.bpmn2.Assignment;
+import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.emf.common.util.ArrayDelegatingEList;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InputAssignmentReaderTest {
 
     public static final String ID = "PARENT_ID";
+
+    @Mock
+    private DataInputAssociation association;
+
+    @Mock
+    DataInput element;
 
     // TODO: Kogito - @Test
     public void urlEncodeConstants() throws UnsupportedEncodingException {
@@ -68,5 +84,29 @@ public class InputAssignmentReaderTest {
 
         assertEquals(AssociationDeclaration.Type.FromTo, associationDeclaration.getType());
         assertEquals("", associationDeclaration.getSource());
+    }
+
+    @Test
+    public void testNullAssociations() {
+
+        when(association.getSourceRef()).thenReturn(new ArrayDelegatingEList<ItemAwareElement>() {
+            @Override
+            public Object[] data() {
+                return null;
+            }
+        });
+        when(association.getAssignment()).thenReturn(new ArrayDelegatingEList<Assignment>() {
+            @Override
+            public Object[] data() {
+                return null;
+            }
+        });
+
+        when(association.getTargetRef()).thenReturn(element);
+
+        when(element.getName()).thenReturn("someName");
+
+        final Optional<InputAssignmentReader> reader = InputAssignmentReader.fromAssociation(association);
+        assertEquals(false, reader.isPresent());
     }
 }
