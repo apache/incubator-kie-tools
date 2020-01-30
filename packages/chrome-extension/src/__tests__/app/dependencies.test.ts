@@ -14,3 +14,8 @@
  * limitations under the License.
  */
 
+describe("open github and test dependencies", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});

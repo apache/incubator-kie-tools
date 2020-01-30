@@ -117,7 +117,7 @@ function init(args: Globals) {
   throw new Error(`Unknown GitHubPageType ${pageType}`);
 }
 
-function extractFileInfoFromUrl() {
+export function extractFileInfoFromUrl() {
   const split = window.location.pathname.split("/");
   return {
     gitRef: split[4],
@@ -142,7 +142,7 @@ function uriMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
 }
 
-function discoverCurrentGitHubPageType() {
+export function discoverCurrentGitHubPageType() {
   if (uriMatches(`.*/.*/edit/.*`)) {
     return GitHubPageType.EDIT;
   }

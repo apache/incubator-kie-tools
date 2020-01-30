@@ -14,3 +14,50 @@
  * limitations under the License.
  */
 
+describe("runScriptOnPage", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("runAfterUriChange", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("removeAllChildren", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("mainContainer", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("createAndGetMainContainer", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("iframeFullscreenContainer", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("kogitoMenuContainer", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("extractOpenFileExtension", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-describe("Testing", () => {
+describe("extractFileInfoFromUrl", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
+
+describe("discoverCurrentGitHubPageType", () => {
   test("test 1", async () => {
     expect(true).toBeTruthy();
   });
