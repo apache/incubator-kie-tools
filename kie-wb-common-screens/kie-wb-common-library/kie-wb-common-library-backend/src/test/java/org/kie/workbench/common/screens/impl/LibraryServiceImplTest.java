@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -50,6 +51,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -355,6 +357,7 @@ public class LibraryServiceImplTest {
         doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
         doReturn(spaceContributors).when(organizationalUnit).getContributors();
         doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+        doReturn(Optional.empty()).when(archetypeService).getBaseKieTemplateRepository();
 
         final POM pom = mock(POM.class);
 
@@ -372,6 +375,7 @@ public class LibraryServiceImplTest {
                                           pom,
                                           DeploymentMode.VALIDATED,
                                           projectContributors,
+                                          null,
                                           null);
     }
 
@@ -409,7 +413,48 @@ public class LibraryServiceImplTest {
                                           pom,
                                           DeploymentMode.VALIDATED,
                                           projectContributors,
-                                          templateRepository);
+                                          templateRepository,
+                                          null);
+    }
+
+    @Test
+    public void createProjectFromBaseKieTemplateWithRemoteUrlTest() {
+        final String remoteRepositoryUrl = "myRemoteUrl";
+
+        final List<Contributor> spaceContributors = new ArrayList<>();
+        spaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        spaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        spaceContributors.add(new Contributor("admin", ContributorType.CONTRIBUTOR));
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou").when(organizationalUnit).getName();
+        doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
+        doReturn(spaceContributors).when(organizationalUnit).getContributors();
+        doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+
+        final Repository kieBaseTemplate = mock(Repository.class);
+        doReturn(Optional.of(kieBaseTemplate)).when(archetypeService).getBaseKieTemplateRepository();
+
+        final Archetype baseKieArchetype = mock(Archetype.class);
+        doReturn(Optional.of(baseKieArchetype)).when(archetypeService).getBaseKieArchetype();
+
+
+        libraryService.createProject(organizationalUnit,
+                                     remoteRepositoryUrl,
+                                     "myRemoteRepository");
+
+        final List<Contributor> projectContributors = new ArrayList<>();
+        projectContributors.add(new Contributor("user1", ContributorType.OWNER));
+        projectContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        projectContributors.add(new Contributor("admin", ContributorType.OWNER));
+
+        verify(archetypeService).getBaseKieArchetype();
+        verify(projectService).newProject(eq(organizationalUnit),
+                                          any(POM.class),
+                                          eq(DeploymentMode.VALIDATED),
+                                          eq(projectContributors),
+                                          eq(kieBaseTemplate),
+                                          eq(remoteRepositoryUrl));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -448,6 +493,7 @@ public class LibraryServiceImplTest {
         doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
         doReturn(spaceContributors).when(organizationalUnit).getContributors();
         doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+        doReturn(Optional.empty()).when(archetypeService).getBaseKieTemplateRepository();
 
         final POM pom = mock(POM.class);
 
@@ -471,6 +517,7 @@ public class LibraryServiceImplTest {
                                           pom,
                                           DeploymentMode.VALIDATED,
                                           projectContributors,
+                                          null,
                                           null);
     }
 

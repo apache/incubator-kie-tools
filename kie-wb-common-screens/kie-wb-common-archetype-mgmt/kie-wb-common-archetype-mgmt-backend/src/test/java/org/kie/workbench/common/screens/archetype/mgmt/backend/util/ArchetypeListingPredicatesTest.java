@@ -23,6 +23,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
@@ -45,6 +46,29 @@ public class ArchetypeListingPredicatesTest {
                 .collect(Collectors.toList());
 
         assertThat(filteredList).hasSize(5);
+    }
+
+    @Test
+    public void matchGavTest() {
+        final Function<GAV, Archetype> createArchetypeMock = gav -> {
+            final Archetype archetype = mock(Archetype.class);
+            doReturn(gav).when(archetype).getGav();
+            return archetype;
+        };
+
+        final GAV expectedGav = createGav("myArtifact1");
+
+        final List<Archetype> archetypes = Arrays.asList(createArchetypeMock.apply(expectedGav),
+                                                         createArchetypeMock.apply(createGav("myArtifact2")),
+                                                         createArchetypeMock.apply(createGav("myArtifact3")),
+                                                         createArchetypeMock.apply(createGav("myArtifact4")));
+
+        final List<Archetype> filteredList = archetypes.stream()
+                .filter(ArchetypeListingPredicates.matchGav(expectedGav))
+                .collect(Collectors.toList());
+
+        assertThat(filteredList).hasSize(1);
+        assertThat(filteredList.get(0).getGav()).isSameAs(expectedGav);
     }
 
     @Test
@@ -109,5 +133,11 @@ public class ArchetypeListingPredicatesTest {
                 .collect(Collectors.toList());
 
         assertThat(filteredList).hasSize(2);
+    }
+
+    private GAV createGav(final String artifactId) {
+        return new GAV("com.myspace",
+                       artifactId,
+                       "1.0.0");
     }
 }

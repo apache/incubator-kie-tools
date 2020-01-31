@@ -149,4 +149,9 @@ public class MockKieModuleServiceImpl implements KieModuleService {
     public KieModulePackages resolveModulePackages(final Module activeModule) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
+
+    @Override
+    public void createModuleDirectories(final Path repositoryRoot) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
 }

@@ -52,6 +52,7 @@ import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.exception.EmptyRemoteRepositoryException;
 import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -197,6 +198,14 @@ public class ProjectImportServiceImplTest {
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
+    }
+
+    @Test(expected = EmptyRemoteRepositoryException.class)
+    public void testGetProjects_EmptyRepository() {
+        doReturn(mock(GitRepository.class)).when(repositoryFactory).newRepository(any(RepositoryInfo.class));
+
+        service.getProjects(organizationalUnit,
+                            new ExampleRepository("https://github.com/myuser/myRepository"));
     }
 
     @Test

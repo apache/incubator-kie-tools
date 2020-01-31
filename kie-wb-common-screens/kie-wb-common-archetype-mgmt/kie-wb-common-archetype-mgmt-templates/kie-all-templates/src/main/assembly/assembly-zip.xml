@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+  <id>project</id>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <useDefaultExcludes>false</useDefaultExcludes>
+      <includes>
+        <include>*/pom.xml</include>
+      </includes>
+      <excludes>
+        <exclude>kie-*/pom.xml</exclude>
+      </excludes>
+      <directory>target/kie-wb-common-archetype-mgmt-templates-xslt</directory>
+      <outputDirectory>/</outputDirectory>
+      <filtered>true</filtered>
+    </fileSet>
+    <fileSet>
+      <directory>../</directory>
+      <useDefaultExcludes>false</useDefaultExcludes>
+      <includes>
+        <include>base-kie-project/**</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.iws</exclude>
+        <exclude>**/*.ipr</exclude>
+        <exclude>**/*.iml</exclude>
+        <exclude>*/nbproject/**</exclude>
+        <exclude>**/.idea/**</exclude>
+        <exclude>*/target/**</exclude>
+        <exclude>*/pom.xml</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>

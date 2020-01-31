@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.archetype.mgmt.backend.util;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.model.ArchetypeStatus;
 
@@ -30,6 +31,10 @@ public class ArchetypeListingPredicates {
 
     public static Predicate<Archetype> matchAll() {
         return elem -> true;
+    }
+
+    public static Predicate<Archetype> matchGav(final GAV gav) {
+        return elem -> elem.getGav().equals(gav);
     }
 
     public static Predicate<Archetype> matchSearchFilter(final String searchFilter,

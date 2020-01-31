@@ -409,7 +409,7 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
-    public void archetypesAddedTest() {
+    public void archetypesAllowedTest() {
         doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
                                                             any(User.class));
         defaultAdminPageHelper.setup();
@@ -417,10 +417,16 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
-    public void archetypesNotAddedTest() {
+    public void archetypesNotAllowedTest() {
         doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
                                                              any(User.class));
         defaultAdminPageHelper.setup();
+        verifyArchetypesAdded(false);
+    }
+
+    @Test
+    public void archetypesCannotBeAddedWithoutLibraryTest() {
+        defaultAdminPageHelper.setup(false, true, true);
         verifyArchetypesAdded(false);
     }
 

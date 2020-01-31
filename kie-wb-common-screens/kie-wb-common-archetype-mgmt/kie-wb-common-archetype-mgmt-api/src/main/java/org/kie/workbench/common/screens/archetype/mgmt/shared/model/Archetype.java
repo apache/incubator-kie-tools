@@ -36,6 +36,7 @@ public class Archetype {
     private final Date createdDate;
     private final ArchetypeStatus status;
     private final String message;
+    private final Boolean internal;
 
     public Archetype(final String alias,
                      final GAV gav,
@@ -48,16 +49,44 @@ public class Archetype {
              DEFAULT_MESSAGE);
     }
 
+    public Archetype(final String alias,
+                     final GAV gav,
+                     final Date createdDate,
+                     final ArchetypeStatus status,
+                     final Boolean internal) {
+        this(alias,
+             gav,
+             createdDate,
+             status,
+             DEFAULT_MESSAGE,
+             internal);
+    }
+
+    public Archetype(final String alias,
+                     final GAV gav,
+                     final Date createdDate,
+                     final ArchetypeStatus status,
+                     final String message) {
+        this(alias,
+             gav,
+             createdDate,
+             status,
+             message,
+             false);
+    }
+
     public Archetype(@MapsTo("alias") final String alias,
                      @MapsTo("gav") final GAV gav,
                      @MapsTo("createdDate") final Date createdDate,
                      @MapsTo("status") final ArchetypeStatus status,
-                     @MapsTo("message") final String message) {
+                     @MapsTo("message") final String message,
+                     @MapsTo("internal") final Boolean internal) {
         this.alias = checkNotEmpty("alias", alias);
         this.gav = checkNotNull("gav", gav);
         this.createdDate = checkNotNull("createdDate", createdDate);
         this.status = checkNotNull("status", status);
         this.message = message == null || message.isEmpty() ? DEFAULT_MESSAGE : message;
+        this.internal = internal != null && internal;
     }
 
     public String getAlias() {
@@ -80,6 +109,10 @@ public class Archetype {
         return message;
     }
 
+    public Boolean isInternal() {
+        return internal;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,11 +126,12 @@ public class Archetype {
                 gav.equals(archetype.gav) &&
                 createdDate.equals(archetype.createdDate) &&
                 status == archetype.status &&
-                message.equals(archetype.message);
+                message.equals(archetype.message) &&
+                internal.equals(archetype.internal);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alias, gav, createdDate, status, message);
+        return Objects.hash(alias, gav, createdDate, status, message, internal);
     }
 }

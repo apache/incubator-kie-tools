@@ -22,3 +22,8 @@
     color: rgb(185, 74, 72);
     vertical-align: super;
 }
+
+.add-archetype-modal .error-title {
+    font-weight: 600;
+    display: block;
+}

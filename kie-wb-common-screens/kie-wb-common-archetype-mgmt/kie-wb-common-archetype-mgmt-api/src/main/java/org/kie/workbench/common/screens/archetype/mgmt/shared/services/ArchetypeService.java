@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.archetype.mgmt.shared.services;
 
+import java.util.Optional;
+
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -33,18 +35,18 @@ public interface ArchetypeService {
      * Make the given {@link Archetype archetype} available to be used.
      * The final template will have the same groupId, artifactId, and version.
      *
-     * @param archetypeGAV groupId, artifactId, and version of the archetype
+     * @param archetypeGav groupId, artifactId, and version of the archetype
      */
-    void add(GAV archetypeGAV);
+    void add(GAV archetypeGav);
 
     /**
      * Make the given {@link Archetype archetype} available to be used.
      *
-     * @param archetypeGAV groupId, artifactId, and version of the archetype
-     * @param templateGAV  groupId, artifactId, and version of the final template
+     * @param archetypeGav groupId, artifactId, and version of the archetype
+     * @param templateGav  groupId, artifactId, and version of the final template
      */
-    void add(GAV archetypeGAV,
-             GAV templateGAV);
+    void add(GAV archetypeGav,
+             GAV templateGav);
 
     /**
      * List registered {@link Archetype archetypes}
@@ -100,4 +102,18 @@ public interface ArchetypeService {
      * @return repository of the archetype
      */
     Repository getTemplateRepository(String alias);
+
+    /**
+     * Return the base KIE project repository where the {@link Archetype archetype} is stored.
+     *
+     * @return repository of the archetype
+     */
+    Optional<Repository> getBaseKieTemplateRepository();
+
+    /**
+     * Return the {@link Archetype archetype} associated with the base KIE project.
+     *
+     * @return the base KIE project archetype
+     */
+    Optional<Archetype> getBaseKieArchetype();
 }

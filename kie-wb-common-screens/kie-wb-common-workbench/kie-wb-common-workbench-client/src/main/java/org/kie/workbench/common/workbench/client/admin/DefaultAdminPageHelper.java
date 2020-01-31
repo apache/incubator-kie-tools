@@ -122,7 +122,10 @@ public class DefaultAdminPageHelper {
         addSSHKeys();
         addProfilePreferences();
         addDataTransferPerspective();
-        addArchetypesPerspective();
+
+        if (libraryPreferencesEnabled) {
+            addArchetypesPerspective();
+        }
     }
 
     private void addDataTransferPerspective() {

@@ -50,6 +50,7 @@ import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.examples.exception.EmptyRemoteRepositoryException;
 import org.kie.workbench.common.screens.examples.exception.ProjectAlreadyExistException;
 import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
@@ -275,6 +276,10 @@ public abstract class BaseProjectImportService implements ImportService {
 
         if (gitRepository == null) {
             return Collections.emptySet();
+        }
+
+        if (gitRepository.getBranches().isEmpty()) {
+            throw new EmptyRemoteRepositoryException(gitRepository.getAlias());
         }
 
         Set<ImportProject> importProjects = convert(gitRepository.getBranch("master").get(),

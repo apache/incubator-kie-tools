@@ -51,6 +51,7 @@ import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
+import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -95,6 +96,8 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class LibraryServiceImpl implements LibraryService {
 
     private static final Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);
+
+    private static final String DEFAULT_PROJECT_NAME = "MyProject";
 
     private RefactoringQueryService refactoringQueryService;
     private OrganizationalUnitService ouService;
@@ -186,6 +189,29 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    public WorkspaceProject createProject(final OrganizationalUnit organizationalUnit,
+                                          final String remoteRepositoryUrl,
+                                          final String repositoryAlias) {
+        final String projectName = repositoryAlias != null ? repositoryAlias : DEFAULT_PROJECT_NAME;
+
+        final Optional<Archetype> baseArchetype = archetypeService.getBaseKieArchetype();
+
+        final String baseArchetypeAlias = baseArchetype.map(Archetype::getAlias).orElse(null);
+
+        final GAV gav = createGAV(projectName,
+                                  organizationalUnit);
+        final POM pom = createPOM(projectName,
+                                  projectName,
+                                  gav);
+
+        return createProject(organizationalUnit,
+                             pom,
+                             DeploymentMode.VALIDATED,
+                             baseArchetypeAlias,
+                             remoteRepositoryUrl);
+    }
+
+    @Override
     public WorkspaceProject createProject(final String projectName,
                                           final OrganizationalUnit selectedOrganizationalUnit,
                                           final String projectDescription,
@@ -217,11 +243,25 @@ public class LibraryServiceImpl implements LibraryService {
                                           final POM pom,
                                           final DeploymentMode mode,
                                           final String templateId) {
+        return createProject(activeOrganizationalUnit,
+                             pom,
+                             mode,
+                             templateId,
+                             null);
+    }
+
+    @Override
+    public WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
+                                          final POM pom,
+                                          final DeploymentMode mode,
+                                          final String templateId,
+                                          final String remoteRepositoryUrl) {
         return projectService.newProject(activeOrganizationalUnit,
                                          pom,
                                          mode,
                                          getRepositoryContributors(activeOrganizationalUnit),
-                                         resolveTemplateRepository(templateId));
+                                         resolveTemplateRepository(templateId),
+                                         remoteRepositoryUrl);
     }
 
     private List<Contributor> getRepositoryContributors(final OrganizationalUnit organizationalUnit) {
@@ -246,7 +286,11 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private Repository resolveTemplateRepository(final String templateId) {
-        return templateId != null ? archetypeService.getTemplateRepository(templateId) : null;
+        if (templateId != null) {
+            return archetypeService.getTemplateRepository(templateId);
+        } else {
+            return archetypeService.getBaseKieTemplateRepository().orElse(null);
+        }
     }
 
     @Override

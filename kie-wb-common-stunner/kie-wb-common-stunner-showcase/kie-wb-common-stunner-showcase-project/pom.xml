@@ -87,6 +87,10 @@
       <artifactId>kie-wb-common-archetype-mgmt-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-all-templates</artifactId>
+    </dependency>
 
     <!-- errai-cdi-jboss provides gwt-dev with the proper dependency exclusions and should be first on the classpath -->
     <dependency>

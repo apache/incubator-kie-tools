@@ -41,6 +41,10 @@ public interface LibraryService {
 
     LibraryInfo getLibraryInfo(final OrganizationalUnit organizationalUnit);
 
+    WorkspaceProject createProject(final OrganizationalUnit organizationalUnit,
+                                   final String remoteRepositoryUrl,
+                                   final String repositoryAlias);
+
     WorkspaceProject createProject(final String projectName,
                                    final OrganizationalUnit selectedOrganizationalUnit,
                                    final String description,
@@ -54,6 +58,12 @@ public interface LibraryService {
                                    final POM pom,
                                    final DeploymentMode mode,
                                    final String templateId);
+
+    WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
+                                   final POM pom,
+                                   final DeploymentMode mode,
+                                   final String templateId,
+                                   final String remoteRepositoryUrl);
 
     Boolean thereIsAProjectInTheWorkbench();
 
