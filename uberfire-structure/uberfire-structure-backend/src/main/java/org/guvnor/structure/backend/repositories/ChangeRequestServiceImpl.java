@@ -46,6 +46,7 @@ import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestAlreadyOpenException;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestComment;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCommit;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCountSummary;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestDiff;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestListUpdatedEvent;
@@ -67,11 +68,12 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
+import org.uberfire.java.nio.fs.jgit.util.model.MessageCommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitWatchEvent;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.SpacesAPI;
-import org.jboss.errai.security.shared.api.identity.User;
 
 import static java.lang.Integer.min;
 import static java.util.stream.Collectors.toMap;
@@ -86,6 +88,7 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     private static final String REPOSITORY_ALIAS_PARAM = "repositoryAlias";
     private static final String STATUS_LIST_PARAM = "statusList";
     private static final String CHANGE_REQUEST_ID_PARAM = "changeRequestId";
+    private static final String COMMIT_MESSAGE_PARAM = "commitMessage";
     private static final String PAGE_PARAM = "page";
     private static final String PAGE_SIZE_PARAM = "pageSize";
     private static final String SOURCE_BRANCH_PARAM = "sourceBranch";
@@ -464,9 +467,9 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     }
 
     @Override
-    public Boolean acceptChangeRequest(final String spaceName,
-                                       final String repositoryAlias,
-                                       final Long changeRequestId) {
+    public Boolean mergeChangeRequest(final String spaceName,
+                                      final String repositoryAlias,
+                                      final Long changeRequestId) {
         checkNotEmpty(SPACE_NAME_PARAM, spaceName);
         checkNotEmpty(REPOSITORY_ALIAS_PARAM, repositoryAlias);
         checkNotNull(CHANGE_REQUEST_ID_PARAM, changeRequestId);
@@ -483,8 +486,13 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
         final Repository repository = resolveRepository(spaceName,
                                                         repositoryAlias);
 
+        final CommitInfo commitInfo = buildCommitInfo(String.format(MessageCommitInfo.MERGE_MESSAGE,
+                                                                    changeRequest.getSourceBranch()));
+
         return tryMergeChangeRequest(repository,
-                                     changeRequest);
+                                     changeRequest,
+                                     commitInfo,
+                                     false);
     }
 
     @Override
@@ -721,6 +729,66 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
         changeRequestUpdatedEvent.fire(new ChangeRequestUpdatedEvent(repository.getIdentifier(),
                                                                      changeRequestId,
                                                                      sessionInfo.getIdentity().getIdentifier()));
+    }
+
+    @Override
+    public List<ChangeRequestCommit> getCommits(final String spaceName,
+                                                final String repositoryAlias,
+                                                final Long changeRequestId) {
+        checkNotEmpty(SPACE_NAME_PARAM, spaceName);
+        checkNotEmpty(REPOSITORY_ALIAS_PARAM, repositoryAlias);
+        checkNotNull(CHANGE_REQUEST_ID_PARAM, changeRequestId);
+
+        final Repository repository = resolveRepository(spaceName,
+                                                        repositoryAlias);
+
+        final ChangeRequest changeRequest = getChangeRequestById(spaceName,
+                                                                 repositoryAlias,
+                                                                 false,
+                                                                 changeRequestId);
+
+        final Git git = getGitFromBranch(repository,
+                                         changeRequest.getSourceBranch());
+
+        final String startCommitId = changeRequest.getStartCommitId();
+        final String endCommitId = git.getLastCommit(changeRequest.getSourceBranch()).getName();
+
+        return git.listCommits(startCommitId, endCommitId)
+                .stream()
+                .map(c -> new ChangeRequestCommit(c.getName(),
+                                                  c.getFullMessage()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean squashChangeRequest(final String spaceName,
+                                       final String repositoryAlias,
+                                       final Long changeRequestId,
+                                       final String commitMessage) {
+
+        checkNotEmpty(SPACE_NAME_PARAM, spaceName);
+        checkNotEmpty(REPOSITORY_ALIAS_PARAM, repositoryAlias);
+        checkNotNull(CHANGE_REQUEST_ID_PARAM, changeRequestId);
+        checkNotNull(COMMIT_MESSAGE_PARAM, commitMessage);
+
+        final ChangeRequest changeRequest = getChangeRequestById(spaceName,
+                                                                 repositoryAlias,
+                                                                 false,
+                                                                 changeRequestId);
+
+        if (changeRequest.getStatus() != ChangeRequestStatus.OPEN) {
+            throw new IllegalStateException("Cannot squash a change request that is not open");
+        }
+
+        final Repository repository = resolveRepository(spaceName,
+                                                        repositoryAlias);
+
+        final CommitInfo commitInfo = buildCommitInfo(commitMessage);
+
+        return tryMergeChangeRequest(repository,
+                                     changeRequest,
+                                     commitInfo,
+                                     true);
     }
 
     private ChangeRequest getChangeRequestById(final String spaceName,
@@ -1068,7 +1136,9 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     }
 
     private boolean tryMergeChangeRequest(final Repository repository,
-                                          final ChangeRequest changeRequest) {
+                                          final ChangeRequest changeRequest,
+                                          final CommitInfo commitInfo,
+                                          final boolean squash) {
         final String sourceBranchName = changeRequest.getSourceBranch();
         final String targetBranchName = changeRequest.getTargetBranch();
 
@@ -1082,7 +1152,9 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
 
             final List<String> mergeCommitIds = new ArrayList<>(fs.getGit().merge(sourceBranchName,
                                                                                   targetBranchName,
-                                                                                  true));
+                                                                                  true,
+                                                                                  squash,
+                                                                                  commitInfo));
 
             if (mergeCommitIds.isEmpty()) {
                 throw new NothingToMergeException();
@@ -1333,6 +1405,15 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                                  final String branchName) {
         return getFileSystemFromBranch(repository,
                                        branchName).getGit();
+    }
+
+    private CommitInfo buildCommitInfo(final String message) {
+        return new CommitInfo(sessionInfo.getId(),
+                              sessionInfo.getIdentity().getIdentifier(),
+                              null,
+                              message,
+                              null,
+                              null);
     }
 
     String getFullCommitMessage(final RevCommit commit) {

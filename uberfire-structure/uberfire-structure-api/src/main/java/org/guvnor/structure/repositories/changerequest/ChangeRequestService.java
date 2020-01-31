@@ -19,6 +19,7 @@ package org.guvnor.structure.repositories.changerequest;
 import java.util.List;
 
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCommit;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCountSummary;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestDiff;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
@@ -221,16 +222,16 @@ public interface ChangeRequestService {
                              final Long changeRequestId);
 
     /**
-     * Accepts the change request.
+     * Merges the change request.
      *
      * @param spaceName       the space containing the origin repository
      * @param repositoryAlias the repository used as a filter
      * @param changeRequestId the id of the change request
-     * @return True if the accept operation succeeded, otherwise false.
+     * @return True if the merge operation succeeded, otherwise false.
      */
-    Boolean acceptChangeRequest(final String spaceName,
-                                final String repositoryAlias,
-                                final Long changeRequestId);
+    Boolean mergeChangeRequest(final String spaceName,
+                               final String repositoryAlias,
+                               final Long changeRequestId);
 
     /**
      * Reverts the change request.
@@ -333,4 +334,30 @@ public interface ChangeRequestService {
                        final String repositoryAlias,
                        final Long changeRequestId,
                        final Long commentId);
+
+    /**
+     * Get commits from the change request.
+     *
+     * @param spaceName       the space containing the origin repository
+     * @param repositoryAlias the repository used as a filter
+     * @param changeRequestId the id of the change request
+     * @return The list of commits
+     */
+    List<ChangeRequestCommit> getCommits(final String spaceName,
+                                         final String repositoryAlias,
+                                         final Long changeRequestId);
+
+    /**
+     * Squash change request.
+     *
+     * @param spaceName       the space containing the origin repository
+     * @param repositoryAlias the repository used as a filter
+     * @param changeRequestId the id of the change request
+     * @param commitMessage   the comment of squash commit
+     * @return True if the squash operation succeeded, otherwise false.
+     */
+    Boolean squashChangeRequest(final String spaceName,
+                                final String repositoryAlias,
+                                final Long changeRequestId,
+                                final String commitMessage);
 }

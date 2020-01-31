@@ -252,7 +252,10 @@ public interface Git {
 
     List<String> merge(final String source,
                        final String target,
-                       final boolean noFastForward);
+                       final boolean noFastForward,
+                       final boolean squash,
+                       final CommitInfo commitInfo);
+
 
     boolean revertMerge(final String source,
                         final String target,

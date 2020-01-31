@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -35,6 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
+import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.MergeCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.MessageCommitInfo;
 
@@ -57,6 +58,8 @@ public class Merge {
     private final String sourceBranch;
     private final String targetBranch;
     private final boolean noFastForward;
+    private final boolean squash;
+    private final CommitInfo commitInfo;
 
     public Merge(final Git git,
                  final String sourceBranch,
@@ -64,13 +67,17 @@ public class Merge {
         this(git,
              sourceBranch,
              targetBranch,
-             false);
+             false,
+             false,
+             MessageCommitInfo.createMergeMessage(sourceBranch));
     }
 
     public Merge(final Git git,
                  final String sourceBranch,
                  final String targetBranch,
-                 final boolean noFastForward) {
+                 final boolean noFastForward,
+                 final boolean squash,
+                 final CommitInfo commitInfo) {
 
         this.git = checkNotNull("git",
                                 git);
@@ -78,8 +85,10 @@ public class Merge {
                                           sourceBranch);
         this.targetBranch = checkNotEmpty("targetBranch",
                                           targetBranch);
-
         this.noFastForward = noFastForward;
+        this.squash = squash;
+        this.commitInfo = checkNotNull("commitInfo",
+                                       commitInfo);
     }
 
     public List<String> execute() {
@@ -185,28 +194,41 @@ public class Merge {
                                  final RevCommit lastSourceCommit,
                                  final RevCommit lastTargetCommit) {
         try {
-            final Map<String, File> contents = git.mapDiffContent(sourceBranch,
-                                                                  commonAncestorCommit.getName(),
-                                                                  lastSourceCommit.getName());
-
-            final List<RevCommit> parents = Stream.of(lastTargetCommit,
-                                                      lastSourceCommit).collect(Collectors.toList());
-
+            final CommitContent commitContent = createCommitContent(commonAncestorCommit,
+                                                                    lastSourceCommit,
+                                                                    lastTargetCommit);
             final boolean effective = git.commit(targetBranch,
-                                                 MessageCommitInfo.createMergeMessage(sourceBranch),
+                                                 commitInfo,
                                                  false,
                                                  lastTargetCommit,
-                                                 new MergeCommitContent(contents,
-                                                                        parents));
+                                                 commitContent);
+
             if (effective) {
                 return Collections.singletonList(git.getLastCommit(targetBranch).getName());
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+
+            throw new GitException(String.format("Cannot merge branches from <%s> to <%s>",
+                                                 sourceBranch,
+                                                 targetBranch));
         }
 
-        throw new GitException(String.format("Cannot merge branches from <%s> to <%s>",
-                                             sourceBranch,
-                                             targetBranch));
+        return Collections.emptyList();
+    }
+
+    private CommitContent createCommitContent(final RevCommit commonAncestorCommit,
+                                              final RevCommit lastSourceCommit,
+                                              final RevCommit lastTargetCommit) {
+        final Map<String, File> contents = git.mapDiffContent(sourceBranch,
+                                                              commonAncestorCommit.getName(),
+                                                              lastSourceCommit.getName());
+        if (squash) {
+            return new DefaultCommitContent(contents);
+        } else {
+            final List<RevCommit> parents = Arrays.asList(lastTargetCommit, lastSourceCommit);
+            return new MergeCommitContent(contents,
+                                          parents);
+        }
     }
 }

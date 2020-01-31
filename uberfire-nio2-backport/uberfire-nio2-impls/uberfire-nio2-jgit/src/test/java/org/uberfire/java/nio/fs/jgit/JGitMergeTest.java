@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Test;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
@@ -32,6 +33,7 @@ import org.uberfire.java.nio.fs.jgit.util.commands.GetTreeFromRef;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.commands.Merge;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
+import org.uberfire.java.nio.fs.jgit.util.model.MessageCommitInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -209,7 +211,9 @@ public class JGitMergeTest extends AbstractTestInfra {
         new Merge(origin,
                   "develop",
                   "master",
-                  true).execute();
+                  true,
+                  false,
+                  MessageCommitInfo.createMergeMessage("develop")).execute();
 
         final List<DiffEntry> result = new ListDiffs(origin,
                                                      new GetTreeFromRef(origin,
@@ -218,6 +222,104 @@ public class JGitMergeTest extends AbstractTestInfra {
                                                                         "develop").execute()).execute();
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void testMergeWithSquashSuccessful() throws IOException {
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+        final Git origin = new CreateRepository(gitSource).execute().get();
+
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "master-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file1.txt",
+                           tempFile("temp1"));
+                   }}).execute();
+
+        RevCommit commitBeforeMerge = origin.getLastCommit("master");
+
+        new CreateBranch((GitImpl) origin,
+                         "master",
+                         "develop").execute();
+
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file2.txt",
+                           tempFile("temp2"));
+                   }}).execute();
+
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-2",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file3.txt",
+                           tempFile("temp3"));
+                   }}).execute();
+
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-3",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file4.txt",
+                           tempFile("temp4"));
+                   }}).execute();
+
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-4",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file5.txt",
+                           tempFile("temp5"));
+                   }}).execute();
+
+        new Merge(origin,
+                  "develop",
+                  "master",
+                  true,
+                  true,
+                  MessageCommitInfo.createMergeMessage("develop")).execute();
+
+        RevCommit commitAfterMerge = origin.getLastCommit("master");
+
+        final List<DiffEntry> result = new ListDiffs(origin,
+                                                     new GetTreeFromRef(origin,
+                                                                        "master").execute(),
+                                                     new GetTreeFromRef(origin,
+                                                                        "develop").execute()).execute();
+
+        assertThat(result).isEmpty();
+        assertThat(commitAfterMerge.getParent(0)).isEqualTo(commitBeforeMerge);
     }
 
     @Test

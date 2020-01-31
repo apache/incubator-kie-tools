@@ -299,11 +299,15 @@ public class GitImpl implements Git {
     @Override
     public List<String> merge(final String source,
                               final String target,
-                              final boolean noFastForward) {
+                              final boolean noFastForward,
+                              final boolean squash,
+                              final CommitInfo commitInfo) {
         return new Merge(this,
                          source,
                          target,
-                         noFastForward).execute();
+                         noFastForward,
+                         squash,
+                         commitInfo).execute();
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateBranch;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
+import org.uberfire.java.nio.fs.jgit.util.model.MessageCommitInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -150,7 +151,9 @@ public class JGitRevertMergeTest extends AbstractTestInfra {
     private String doMerge() {
         git.merge(DEVELOP_BRANCH,
                   MASTER_BRANCH,
-                  true);
+                  true,
+                  false,
+                  MessageCommitInfo.createMergeMessage(DEVELOP_BRANCH));
 
         return git.getLastCommit(MASTER_BRANCH).getName();
     }

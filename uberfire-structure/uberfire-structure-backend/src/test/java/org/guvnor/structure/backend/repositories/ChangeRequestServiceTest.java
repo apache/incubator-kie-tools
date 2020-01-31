@@ -791,7 +791,7 @@ public class ChangeRequestServiceTest {
     }
 
     @Test
-    public void acceptChangeRequestSuccessTest() {
+    public void mergeChangeRequestSuccessTest() {
         List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.OPEN));
         doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
 
@@ -809,15 +809,19 @@ public class ChangeRequestServiceTest {
         List<String> commitList = Stream.of("commit-id").collect(Collectors.toList());
         doReturn(commitList).when(git).merge(anyString(),
                                              anyString(),
-                                             eq(true));
+                                             eq(true),
+                                             eq(false),
+                                             any());
 
-        boolean result = service.acceptChangeRequest("mySpace",
-                                                     "myRepository",
-                                                     1L);
+        boolean result = service.mergeChangeRequest("mySpace",
+                                                    "myRepository",
+                                                    1L);
 
         verify(git).merge(anyString(),
                           anyString(),
-                          eq(true));
+                          eq(true),
+                          eq(false),
+                          any());
 
         verify(fs).publishEvents(any(org.uberfire.java.nio.file.Path.class),
                                  anyList());
@@ -831,7 +835,7 @@ public class ChangeRequestServiceTest {
     }
 
     @Test(expected = NothingToMergeException.class)
-    public void acceptChangeRequestFailWhenThereIsNoChangesTest() {
+    public void mergeChangeRequestFailWhenThereIsNoChangesTest() {
         List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.OPEN));
         doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
 
@@ -848,21 +852,23 @@ public class ChangeRequestServiceTest {
 
         doReturn(Collections.emptyList()).when(git).merge(anyString(),
                                                           anyString(),
-                                                          eq(true));
+                                                          eq(true),
+                                                          eq(false),
+                                                          any());
 
-        service.acceptChangeRequest("mySpace",
-                                                     "myRepository",
-                                                     1L);
+        service.mergeChangeRequest("mySpace",
+                                   "myRepository",
+                                   1L);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void acceptChangeRequestFailWhenChangeRequestNotOpenTest() {
+    public void mergeChangeRequestFailWhenChangeRequestNotOpenTest() {
         List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.ACCEPTED));
         doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
 
-        service.acceptChangeRequest("mySpace",
-                                    "myRepository",
-                                    1L);
+        service.mergeChangeRequest("mySpace",
+                                   "myRepository",
+                                   1L);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -1056,6 +1062,103 @@ public class ChangeRequestServiceTest {
                                                                                      eq(1L),
                                                                                      eq(1L));
         verify(changeRequestUpdatedEvent).fire(any(ChangeRequestUpdatedEvent.class));
+    }
+
+    @Test
+    public void squashChangeRequestSuccessTest() {
+        List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.OPEN));
+        doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
+
+        DiffEntry diffEntry = mock(DiffEntry.class);
+        doReturn("old/file/path").when(diffEntry).getOldPath();
+        doReturn("new/file/path").when(diffEntry).getNewPath();
+        doReturn(DiffEntry.ChangeType.MODIFY).when(diffEntry).getChangeType();
+        List<DiffEntry> diffList = Collections.nCopies(10, diffEntry);
+
+        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(anyString(),
+                                                                            anyString());
+        doReturn(diffList).when(git).listDiffs(anyString(),
+                                               anyString());
+
+        List<String> commitList = Stream.of("commit-id").collect(Collectors.toList());
+        doReturn(commitList).when(git).merge(anyString(),
+                                             anyString(),
+                                             eq(true),
+                                             eq(true),
+                                             any(CommitInfo.class));
+
+        boolean result = service.squashChangeRequest("mySpace",
+                                                     "myRepository",
+                                                     1L,
+                                                     "myComment");
+
+        verify(git).merge(anyString(),
+                          anyString(),
+                          eq(true),
+                          eq(true),
+                          any(CommitInfo.class));
+
+        verify(fs).publishEvents(any(org.uberfire.java.nio.file.Path.class),
+                                 anyList());
+
+        verify(spaceConfigStorage).saveChangeRequest(eq("myRepository"),
+                                                     any(ChangeRequest.class));
+
+        verify(changeRequestStatusUpdatedEventEvent).fire(any(ChangeRequestStatusUpdatedEvent.class));
+
+        assertTrue(result);
+    }
+
+    @Test(expected = NothingToMergeException.class)
+    public void squashChangeRequestFailWhenThereIsNoChangesTest() {
+        List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.OPEN));
+        doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
+
+        DiffEntry diffEntry = mock(DiffEntry.class);
+        doReturn("old/file/path").when(diffEntry).getOldPath();
+        doReturn("new/file/path").when(diffEntry).getNewPath();
+        doReturn(DiffEntry.ChangeType.MODIFY).when(diffEntry).getChangeType();
+        List<DiffEntry> diffList = Collections.nCopies(10, diffEntry);
+
+        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(anyString(),
+                                                                            anyString());
+        doReturn(diffList).when(git).listDiffs(anyString(),
+                                               anyString());
+
+        doReturn(Collections.emptyList()).when(git).merge(anyString(),
+                                                          anyString(),
+                                                          eq(true),
+                                                          eq(true),
+                                                          any(CommitInfo.class));
+
+        service.squashChangeRequest("mySpace",
+                                   "myRepository",
+                                   1L,
+                                   "myComment");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void squashChangeRequestFailWhenChangeRequestNotOpenTest() {
+        List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.ACCEPTED));
+        doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
+
+        service.squashChangeRequest("mySpace",
+                                   "myRepository",
+                                   1L,
+                                   "myComment");
+    }
+
+    @Test
+    public void getCommitsTest() {
+        List<ChangeRequest> crList = Collections.nCopies(3, createCommonChangeRequestWithStatus(ChangeRequestStatus.OPEN));
+        doReturn(crList).when(spaceConfigStorage).loadChangeRequests("myRepository");
+
+        service.getCommits("mySpace",
+                           "myRepository",
+                           1L);
+
+        verify(git).listCommits("commonCommitId",
+                                lastCommit.getName());
     }
 
     private ChangeRequest createCommonChangeRequestWithFields(final Long id,
