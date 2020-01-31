@@ -778,4 +778,10 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String SpacePermissionsChanged = "SpacePermissionsChanged";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SquashAndMerge = "SquashAndMerge";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvalidCommitMessage = "InvalidCommitMessage";
 }

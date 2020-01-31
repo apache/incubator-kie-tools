@@ -81,8 +81,20 @@ public class ChangeRequestReviewScreenView implements ChangeRequestReviewScreenP
     private HTMLButtonElement reopenButton;
 
     @Inject
-    @DataField("accept-button")
-    private HTMLButtonElement acceptButton;
+    @DataField("accept-options-group")
+    private HTMLDivElement acceptOptionsGroup;
+
+    @Inject
+    @DataField("squash-button")
+    private HTMLButtonElement squashButton;
+
+    @Inject
+    @DataField("accept-options-dropdown")
+    private HTMLButtonElement acceptOptionsDropdown;
+
+    @Inject
+    @DataField("merge-button")
+    private HTMLAnchorElement mergeButton;
 
     @Inject
     @DataField("revert-button")
@@ -123,12 +135,13 @@ public class ChangeRequestReviewScreenView implements ChangeRequestReviewScreenP
 
     @Override
     public void showAcceptButton(final boolean isVisible) {
-        this.acceptButton.hidden = !isVisible;
+        this.acceptOptionsGroup.hidden = !isVisible;
     }
 
     @Override
     public void enableAcceptButton(final boolean isEnabled) {
-        this.acceptButton.disabled = !isEnabled;
+        this.squashButton.disabled = !isEnabled;
+        this.acceptOptionsDropdown.disabled = !isEnabled;
     }
 
     @Override
@@ -205,9 +218,14 @@ public class ChangeRequestReviewScreenView implements ChangeRequestReviewScreenP
         presenter.reopen();
     }
 
-    @EventHandler("accept-button")
-    public void onAcceptClicked(final ClickEvent event) {
-        presenter.accept();
+    @EventHandler("squash-button")
+    public void onSquashClicked(final ClickEvent event) {
+        presenter.squash();
+    }
+
+    @EventHandler("merge-button")
+    public void onMergeClicked(final ClickEvent event) {
+        presenter.merge();
     }
 
     @EventHandler("revert-button")

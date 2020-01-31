@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.changerequest.review;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
@@ -113,6 +114,9 @@ public class ChangeRequestReviewScreenPresenterTest {
     @Mock
     private ChangeRequest changeRequest;
 
+    @Mock
+    private SquashChangeRequestPopUpPresenter squashChangeRequestPopUpPresenter;
+
     @Before
     public void setUp() {
         promises = new SyncPromises();
@@ -140,7 +144,8 @@ public class ChangeRequestReviewScreenPresenterTest {
                                                                     promises,
                                                                     projectController,
                                                                     notificationEvent,
-                                                                    sessionInfo));
+                                                                    sessionInfo,
+                                                                    squashChangeRequestPopUpPresenter));
     }
 
     @Test
@@ -402,7 +407,7 @@ public class ChangeRequestReviewScreenPresenterTest {
     }
 
     @Test
-    public void acceptWhenHasPermissionTest() throws NoSuchFieldException {
+    public void mergeWhenHasPermissionTest() throws NoSuchFieldException {
         new FieldSetter(presenter,
                         ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
                 .set(workspaceProject);
@@ -419,20 +424,20 @@ public class ChangeRequestReviewScreenPresenterTest {
                                  branch);
 
         doReturn(true).when(changeRequestService)
-                .acceptChangeRequest(anyString(),
-                                     anyString(),
-                                     anyLong());
+                .mergeChangeRequest(anyString(),
+                                    anyString(),
+                                    anyLong());
 
-        presenter.accept();
+        presenter.merge();
 
-        verify(changeRequestService).acceptChangeRequest(anyString(),
-                                                         anyString(),
-                                                         anyLong());
+        verify(changeRequestService).mergeChangeRequest(anyString(),
+                                                        anyString(),
+                                                        anyLong());
         verify(notificationEvent).fire(any(NotificationEvent.class));
     }
 
     @Test
-    public void acceptWhenNotAllowedTest() throws NoSuchFieldException {
+    public void mergeWhenNotAllowedTest() throws NoSuchFieldException {
         new FieldSetter(presenter,
                         ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
                 .set(workspaceProject);
@@ -445,11 +450,11 @@ public class ChangeRequestReviewScreenPresenterTest {
                 .canUpdateBranch(workspaceProject,
                                  branch);
 
-        presenter.accept();
+        presenter.merge();
 
-        verify(changeRequestService, never()).acceptChangeRequest(anyString(),
-                                                                  anyString(),
-                                                                  anyLong());
+        verify(changeRequestService, never()).mergeChangeRequest(anyString(),
+                                                                 anyString(),
+                                                                 anyLong());
     }
 
     @Test
@@ -501,5 +506,64 @@ public class ChangeRequestReviewScreenPresenterTest {
         verify(changeRequestService, never()).revertChangeRequest(anyString(),
                                                                   anyString(),
                                                                   anyLong());
+    }
+
+    @Test
+    public void squashWhenHasPermissionTest() throws NoSuchFieldException {
+        new FieldSetter(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
+                .set(workspaceProject);
+
+        new FieldSetter(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
+                .set(repository);
+
+        doReturn(promises.resolve(true))
+                .when(projectController)
+                .canUpdateBranch(workspaceProject,
+                                 branch);
+
+        doReturn(true)
+                .when(changeRequestService)
+                .squashChangeRequest(anyString(),
+                                     anyString(),
+                                     anyLong(),
+                                     anyString());
+
+        presenter.squash();
+
+        verify(squashChangeRequestPopUpPresenter)
+            .show(any(),
+                  any());
+    }
+
+    @Test
+    public void squashWhenNotAllowedTest() throws NoSuchFieldException {
+        new FieldSetter(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
+                .set(workspaceProject);
+
+        new FieldSetter(presenter,
+                ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
+        .set(repository);
+
+        doReturn(promises.resolve(false))
+                .when(projectController)
+                .canUpdateBranch(workspaceProject,
+                                 branch);
+
+        doReturn(new ArrayList())
+                .when(changeRequestService)
+                .getCommits(any(),
+                            any(),
+                            any());
+
+        presenter.squash();
+
+        verify(changeRequestService, never())
+                .squashChangeRequest(anyString(),
+                                     anyString(),
+                                     anyLong(),
+                                     anyString());
     }
 }

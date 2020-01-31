@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.changerequest.review;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -31,6 +34,7 @@ import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestAlreadyOpenException;
+import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCommit;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatusUpdatedEvent;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestUpdatedEvent;
@@ -54,6 +58,7 @@ import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -75,6 +80,7 @@ public class ChangeRequestReviewScreenPresenter {
     private final Event<NotificationEvent> notificationEvent;
     private final SessionInfo sessionInfo;
     private WorkspaceProject workspaceProject;
+    private SquashChangeRequestPopUpPresenter squashChangeRequestPopUpPresenter;
     private long currentChangeRequestId;
     private Branch currentSourceBranch;
     private Branch currentTargetBranch;
@@ -95,7 +101,8 @@ public class ChangeRequestReviewScreenPresenter {
                                               final Promises promises,
                                               final ProjectController projectController,
                                               final Event<NotificationEvent> notificationEvent,
-                                              final SessionInfo sessionInfo) {
+                                              final SessionInfo sessionInfo,
+                                              final SquashChangeRequestPopUpPresenter squashChangeRequestPopUpPresenter) {
         this.view = view;
         this.ts = ts;
         this.libraryPlaces = libraryPlaces;
@@ -108,6 +115,7 @@ public class ChangeRequestReviewScreenPresenter {
         this.projectController = projectController;
         this.notificationEvent = notificationEvent;
         this.sessionInfo = sessionInfo;
+        this.squashChangeRequestPopUpPresenter = squashChangeRequestPopUpPresenter;
     }
 
     @PostConstruct
@@ -203,8 +211,15 @@ public class ChangeRequestReviewScreenPresenter {
         this.doActionIfAllowed(this::rejectChangeRequestAction);
     }
 
-    public void accept() {
-        this.doActionIfAllowed(this::acceptChangeRequestAction);
+    public void squash() {
+        changeRequestService.call((RemoteCallback<List<ChangeRequestCommit>>) this::showSquashPopUp)
+                .getCommits(workspaceProject.getSpace().getName(),
+                            repository.getAlias(),
+                            currentChangeRequestId);
+    }
+
+    public void merge() {
+        this.doActionIfAllowed(this::mergeChangeRequestAction);
     }
 
     public void revert() {
@@ -221,6 +236,16 @@ public class ChangeRequestReviewScreenPresenter {
         if (isUserAuthor()) {
             reopenChangeRequestAction();
         }
+    }
+
+    private void showSquashPopUp(final List<ChangeRequestCommit> commits) {
+        String messages = commits.stream()
+                                 .map(ChangeRequestCommit::getMessage)
+                                 .collect(Collectors.joining("\n"));
+        ParameterizedCommand<String> command = message -> {
+            doActionIfAllowed(() -> squashChangeRequestAction(message));
+        };
+        squashChangeRequestPopUpPresenter.show(messages, command);
     }
 
     private void notifyOtherUsers(final String userWhoMadeUpdates) {
@@ -388,7 +413,7 @@ public class ChangeRequestReviewScreenPresenter {
                                      currentChangeRequestId);
     }
 
-    private void acceptChangeRequestAction() {
+    private void squashChangeRequestAction(String message) {
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.Loading));
 
         this.changeRequestService.call((final Boolean succeeded) -> {
@@ -399,13 +424,31 @@ public class ChangeRequestReviewScreenPresenter {
             }
 
             busyIndicatorView.hideBusyIndicator();
-        }, acceptChangeRequestErrorCallback())
-                .acceptChangeRequest(workspaceProject.getSpace().getName(),
+        }, mergeChangeRequestErrorCallback())
+                .squashChangeRequest(workspaceProject.getSpace().getName(),
+                                     repository.getAlias(),
+                                     currentChangeRequestId,
+                                     message);
+    }
+
+    private void mergeChangeRequestAction() {
+        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.Loading));
+
+        this.changeRequestService.call((final Boolean succeeded) -> {
+            if (Boolean.TRUE.equals(succeeded)) {
+                fireNotificationEvent(ts.format(LibraryConstants.ChangeRequestAcceptMessage,
+                                                currentChangeRequestId),
+                                      NotificationEvent.NotificationType.SUCCESS);
+            }
+
+            busyIndicatorView.hideBusyIndicator();
+        }, mergeChangeRequestErrorCallback())
+                .mergeChangeRequest(workspaceProject.getSpace().getName(),
                                      repository.getAlias(),
                                      currentChangeRequestId);
     }
 
-    private ErrorCallback<Object> acceptChangeRequestErrorCallback() {
+    private ErrorCallback<Object> mergeChangeRequestErrorCallback() {
         return (message, throwable) -> {
             busyIndicatorView.hideBusyIndicator();
 

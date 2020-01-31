@@ -25,7 +25,15 @@
                         <button class="btn btn-default" data-field="close-button" data-i18n-key="Close"></button>
                         <button class="btn btn-default" data-field="reject-button" data-i18n-key="Reject"></button>
                         <button class="btn btn-primary" data-field="reopen-button" data-i18n-key="Reopen"></button>
-                        <button class="btn btn-primary" data-field="accept-button" data-i18n-key="Accept"></button>
+                        <div class="dropdown dropdown-kebab-pf" data-field="accept-options-group">
+                            <button class="btn btn-default" type="button" data-field="squash-button" data-i18n-key="SquashAndMerge" ></button>
+                            <button class="btn btn-default dropdown-toggle" type="button" data-field="accept-options-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a data-field="merge-button" data-i18n-key="Merge"></a></li>
+                            </ul>
+                        </div>
                         <button class="btn btn-primary" data-field="revert-button" data-i18n-key="Revert"></button>
                     </div>
                 </div>
