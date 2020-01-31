@@ -341,4 +341,7 @@ public interface Git {
 
     void removeRemote(String remote,
                       String ref);
+
+    void addRemote(String remote,
+                   String url);
 }

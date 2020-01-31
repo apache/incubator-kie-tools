@@ -36,6 +36,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.project.ModuleFactory;
 import org.guvnor.common.services.project.service.ModuleServiceCore;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.utils.ModuleResourcePaths;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -255,6 +256,29 @@ public abstract class AbstractModuleService<T extends Module>
                                                                       path));
         } catch (final Exception e) {
             throw ExceptionUtilities.handleException(e);
+        }
+    }
+
+    @Override
+    public void createModuleDirectories(final Path repositoryRoot) {
+        final org.uberfire.java.nio.file.Path modulePath = Paths.convert(repositoryRoot);
+
+        try {
+            ioService.startBatch(modulePath.getFileSystem(),
+                                 commentedOptionFactory.makeCommentedOption("Adding module directories"));
+
+            final Path mainResourcesPath = Paths.convert(modulePath.resolve(ModuleResourcePaths.MAIN_RESOURCES_PATH));
+            final Package defaultPackage = resourceResolver.resolvePackage(mainResourcesPath);
+
+            final Path pomPath = Paths.convert(modulePath.resolve(POMServiceImpl.POM_XML));
+            final POM modulePom = pomService.load(pomPath);
+            final String workspacePath = resourceResolver.getDefaultWorkspacePath(modulePom.getGav());
+
+            resourceResolver.newPackage(defaultPackage,
+                                        workspacePath,
+                                        false);
+        } finally {
+            ioService.endBatch();
         }
     }
 }

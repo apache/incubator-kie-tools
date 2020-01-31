@@ -73,4 +73,6 @@ public interface ModuleServiceCore<T> {
               final String comment);
 
     void reImport(final Path pathToPomXML);
+
+    void createModuleDirectories(final Path repositoryRoot);
 }

@@ -229,6 +229,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
         final POM templatePom = createPOM("my template");
         doReturn(templatePom).when(pomService).load(pomPath);
 
+        doNothing().when(moduleService).createModuleDirectories(any(Path.class));
         doReturn(module).when(moduleService).resolveModule(any(Path.class));
 
         final Path branchRoot = PathFactory.newPath("testFile",
@@ -251,6 +252,67 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                                                    any(),
                                                    any());
         verify(spaceConfigStorage).endBatch();
+    }
+
+    @Test
+    public void newProjectFromTemplateWithRemoteUrlTest() {
+        final String remoteUrl = "myUrl";
+        final WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) spy(this.workspaceProjectService);
+
+        final Repository templateRepository = mock(Repository.class);
+        final Branch templateRepositoryBranch = mock(Branch.class);
+        doReturn(Optional.of(templateRepositoryBranch)).when(templateRepository).getDefaultBranch();
+        doReturn(repositoryRoot).when(templateRepositoryBranch).getPath();
+
+        final JGitPathImpl nioPath = mock(JGitPathImpl.class);
+        final JGitFileSystem fs = mock(JGitFileSystem.class);
+        final Git git = mock(Git.class);
+        doNothing().when(git).removeRemote(anyString(),
+                                           anyString());
+        doNothing().when(git).addRemote(anyString(),
+                                        anyString());
+        doReturn(git).when(fs).getGit();
+        doReturn(fs).when(nioPath).getFileSystem();
+        doReturn(nioPath).when(pathUtil).convert(any(Path.class));
+
+        final org.eclipse.jgit.lib.Repository gitRepository = mock(org.eclipse.jgit.lib.Repository.class);
+        final File repositoryDirectory = new File("repositoryDirectory");
+        doReturn(repositoryDirectory).when(gitRepository).getDirectory();
+        doReturn(gitRepository).when(git).getRepository();
+
+        final Path pomPath = mock(Path.class);
+        doReturn(pomPath).when(impl).resolvePathFromParent(any(Path.class),
+                                                           eq(POMServiceImpl.POM_XML));
+
+        final POM templatePom = createPOM("my template");
+        doReturn(templatePom).when(pomService).load(pomPath);
+
+        doNothing().when(moduleService).createModuleDirectories(any(Path.class));
+        doReturn(module).when(moduleService).resolveModule(any(Path.class));
+
+        final Path branchRoot = PathFactory.newPath("testFile",
+                                                    "file:///branchRoot/");
+        doReturn(branchRoot).when(branch).getPath();
+
+        final WorkspaceProject workspaceProject = impl.newProject(ou,
+                                                                  pom,
+                                                                  DeploymentMode.VALIDATED,
+                                                                  null,
+                                                                  templateRepository,
+                                                                  remoteUrl);
+
+        assertProject(workspaceProject);
+        verify(newProjectEvent).fire(any());
+
+        verify(spaceConfigStorage).startBatch();
+        verify(repositoryService).createRepository(eq(ou),
+                                                   eq("git"),
+                                                   eq("myproject"),
+                                                   any(),
+                                                   any());
+        verify(spaceConfigStorage).endBatch();
+        verify(git).addRemote(anyString(),
+                              eq(remoteUrl));
     }
 
     @Test

@@ -57,6 +57,7 @@ import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.base.TextualDiff;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
+import org.uberfire.java.nio.fs.jgit.util.commands.AddRemote;
 import org.uberfire.java.nio.fs.jgit.util.commands.BlobAsInputStream;
 import org.uberfire.java.nio.fs.jgit.util.commands.CherryPick;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
@@ -564,6 +565,14 @@ public class GitImpl implements Git {
         new RemoveRemote(this,
                          remote,
                          ref).execute();
+    }
+
+    @Override
+    public void addRemote(final String remote,
+                          final String url) {
+        new AddRemote(this,
+                      remote,
+                      url).execute();
     }
 
     //just for test purposes

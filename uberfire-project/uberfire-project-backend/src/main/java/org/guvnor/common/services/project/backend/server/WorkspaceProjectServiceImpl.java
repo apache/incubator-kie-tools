@@ -215,6 +215,21 @@ public class WorkspaceProjectServiceImpl
                                        final DeploymentMode mode,
                                        final List<Contributor> contributors,
                                        final Repository templateRepository) {
+        return newProject(organizationalUnit,
+                          pom,
+                          mode,
+                          contributors,
+                          templateRepository,
+                          null);
+    }
+
+    @Override
+    public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
+                                       final POM pom,
+                                       final DeploymentMode mode,
+                                       final List<Contributor> contributors,
+                                       final Repository templateRepository,
+                                       final String remoteRepositoryUrl) {
 
         return spaceConfigStorageRegistry.getBatch(organizationalUnit.getSpace().getName())
                 .run(context -> {
@@ -245,6 +260,11 @@ public class WorkspaceProjectServiceImpl
                         final Module module = createFromTemplate
                                 ? finishCreateFromTemplate(repository, templateRepository, pom)
                                 : moduleService.newModule(defaultBranch.getPath(), pom, mode);
+
+                        if (remoteRepositoryUrl != null) {
+                            addRemoteOrigin(repository,
+                                            remoteRepositoryUrl);
+                        }
 
                         final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,
                                                                                        repository,
@@ -309,6 +329,8 @@ public class WorkspaceProjectServiceImpl
 
         final Branch defaultBranch = resolveDefaultBranch(projectRepository);
 
+        moduleService.createModuleDirectories(defaultBranch.getPath());
+
         return moduleService.resolveModule(Paths.convert(Paths.convert(defaultBranch.getPath()).getRoot()));
     }
 
@@ -317,6 +339,14 @@ public class WorkspaceProjectServiceImpl
 
         git.removeRemote(ORIGIN_KEY,
                          REMOTE_ORIGIN_REF);
+    }
+
+    private void addRemoteOrigin(final Repository repository,
+                                 final String remoteRepositoryUrl) {
+        final org.uberfire.java.nio.fs.jgit.util.Git git = resolveGit(repository);
+
+        git.addRemote(ORIGIN_KEY,
+                      remoteRepositoryUrl);
     }
 
     private void updateTemplatePOM(final Repository projectRepository,
@@ -330,7 +360,6 @@ public class WorkspaceProjectServiceImpl
 
         templatePom.setName(pom.getName());
         templatePom.setDescription(pom.getDescription());
-        templatePom.setPackaging(pom.getPackaging());
 
         templatePom.getGav().setGroupId(pom.getGav().getGroupId());
         templatePom.getGav().setArtifactId(pom.getGav().getArtifactId());

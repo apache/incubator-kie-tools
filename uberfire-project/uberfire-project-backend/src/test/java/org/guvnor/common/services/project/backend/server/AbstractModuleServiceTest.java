@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.Repository;
@@ -155,5 +156,22 @@ public class AbstractModuleServiceTest {
 
         verify(repoService, times(0)).removeRepository(any(), any());
         verify(ioService).delete(eq(Paths.get("file://space/project1/subproject")), anyVararg());
+    }
+
+    @Test
+    public void createModuleDirectoriesTest() {
+        final String workspacePath = "workspacePath";
+        final Package defaultPackage = mock(Package.class);
+
+        when(path.toURI()).thenReturn("file://space/project1/");
+        when(pomService.load(any())).thenReturn(mock(POM.class));
+        when(resourceResolver.getDefaultWorkspacePath(any())).thenReturn(workspacePath);
+        when(resourceResolver.resolvePackage(any())).thenReturn(defaultPackage);
+
+        abstractProjectService.createModuleDirectories(path);
+
+        verify(resourceResolver).newPackage(defaultPackage,
+                                            workspacePath,
+                                            false);
     }
 }

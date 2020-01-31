@@ -126,4 +126,9 @@ public class ModuleServiceMock
     public void reImport(Path pathToPomXML) {
 
     }
+
+    @Override
+    public void createModuleDirectories(Path repositoryRoot) {
+
+    }
 }
