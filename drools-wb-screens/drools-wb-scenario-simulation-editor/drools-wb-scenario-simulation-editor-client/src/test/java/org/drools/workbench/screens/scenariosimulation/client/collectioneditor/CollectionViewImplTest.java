@@ -19,6 +19,7 @@ import java.util.Collections;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
@@ -74,6 +75,12 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     @Mock
     private ButtonElement removeButtonMock;
     @Mock
+    private ButtonElement addItemButtonMock;
+    @Mock
+    private InputElement createCollectionRadioMock;
+    @Mock
+    private InputElement defineCollectionRadioMock;
+    @Mock
     private SpanElement addItemButtonLabelMock;
     @Mock
     private DivElement createCollectionContainerMock;
@@ -114,6 +121,9 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
                 this.cancelButton = cancelButtonMock;
                 this.removeButton = removeButtonMock;
                 this.addItemButtonLabel = addItemButtonLabelMock;
+                this.addItemButton = addItemButtonMock;
+                this.createCollectionRadio = createCollectionRadioMock;
+                this.defineCollectionRadio = defineCollectionRadioMock;
             }
         });
     }
@@ -309,6 +319,28 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
         collectionEditorViewImplSpy.setExpression("test");
         verify(collectionEditorViewImplSpy, times(1)).enableCreateCollectionContainer(eq(false));
         verify(expressionElementMock, times(1)).setValue(eq("test"));
+    }
+
+    @Test
+    public void enableEditingMode_False() {
+        collectionEditorViewImplSpy.enableEditingMode(false);
+        verify(createCollectionRadioMock).setDisabled(eq(false));
+        verify(defineCollectionRadioMock).setDisabled(eq(false));
+        verify(addItemButtonMock).setDisabled(eq(false));
+        verify(cancelButtonMock).setDisabled(eq(false));
+        verify(removeButtonMock).setDisabled(eq(false));
+        verify(saveButtonMock).setDisabled(eq(false));
+    }
+
+    @Test
+    public void enableEditingMode_True() {
+        collectionEditorViewImplSpy.enableEditingMode(true);
+        verify(createCollectionRadioMock).setDisabled(eq(true));
+        verify(defineCollectionRadioMock).setDisabled(eq(true));
+        verify(addItemButtonMock).setDisabled(eq(true));
+        verify(cancelButtonMock).setDisabled(eq(true));
+        verify(removeButtonMock).setDisabled(eq(true));
+        verify(saveButtonMock).setDisabled(eq(true));
     }
 
     @Test

@@ -160,8 +160,6 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
      */
     protected String value;
 
-    protected double left;
-
     public CollectionViewImpl() {
         setElement(collectionEditor);
         addKeyDownHandler(DomEvent::stopPropagation);
@@ -277,26 +275,6 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @Override
     public SpanElement getPropertyTitle() {
         return propertyTitle;
-    }
-
-    @Override
-    public ButtonElement getAddItemButton() {
-        return addItemButton;
-    }
-
-    @Override
-    public ButtonElement getCancelButton() {
-        return cancelButton;
-    }
-
-    @Override
-    public ButtonElement getRemoveButton() {
-        return removeButton;
-    }
-
-    @Override
-    public ButtonElement getSaveButton() {
-        return saveButton;
     }
 
     @Override
@@ -425,6 +403,16 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @Override
     public void setFixedHeight(double value, Style.Unit unit) {
         collectionEditorModalBody.getStyle().setHeight(value, unit);
+    }
+
+    @Override
+    public void enableEditingMode(boolean isEditingMode) {
+        createCollectionRadio.setDisabled(isEditingMode);
+        defineCollectionRadio.setDisabled(isEditingMode);
+        addItemButton.setDisabled(isEditingMode);
+        cancelButton.setDisabled(isEditingMode);
+        removeButton.setDisabled(isEditingMode);
+        saveButton.setDisabled(isEditingMode);
     }
 
     protected boolean isShown() {

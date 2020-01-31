@@ -204,13 +204,10 @@ public class CollectionPresenter implements CollectionView.Presenter {
     }
 
     @Override
-    public void toggleEditingStatus(boolean toDisable) {
-        collectionView.getAddItemButton().setDisabled(toDisable);
-        collectionView.getCancelButton().setDisabled(toDisable);
-        collectionView.getRemoveButton().setDisabled(toDisable);
-        collectionView.getSaveButton().setDisabled(toDisable);
-        mapElementPresenter.toggleEditingStatus(toDisable);
-        listElementPresenter.toggleEditingStatus(toDisable);
+    public void toggleEditingStatus(boolean editingStatus) {
+        collectionView.enableEditingMode(editingStatus);
+        mapElementPresenter.toggleEditingStatus(editingStatus);
+        listElementPresenter.toggleEditingStatus(editingStatus);
     }
 
     // Indirection add for test

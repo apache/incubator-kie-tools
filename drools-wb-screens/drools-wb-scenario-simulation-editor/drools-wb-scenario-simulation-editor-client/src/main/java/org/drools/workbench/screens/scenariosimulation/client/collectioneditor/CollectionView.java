@@ -17,7 +17,6 @@ package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
 import java.util.Map;
 
-import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
@@ -147,13 +146,11 @@ public interface CollectionView {
 
     SpanElement getPropertyTitle();
 
-    ButtonElement getAddItemButton();
-
-    ButtonElement getCancelButton();
-
-    ButtonElement getRemoveButton();
-
-    ButtonElement getSaveButton();
+    /**
+     * It enable the view to Editing Mode of the Guided collection editor
+     * @param isEditingMode
+     */
+    void enableEditingMode(boolean isEditingMode);
 
     String getExpression();
 
