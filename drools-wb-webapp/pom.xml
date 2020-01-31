@@ -101,6 +101,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-all-templates</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-command-api</artifactId>
     </dependency>
