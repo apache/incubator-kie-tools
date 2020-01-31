@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as dependencies__ from "../../dependencies";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
@@ -135,7 +134,7 @@ export function IsolatedPrEditor(props: {
           viewOriginalFileLinkContainer(
             globals.id,
             props.prFileContainer,
-            dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
           )
         )}
 
@@ -146,7 +145,7 @@ export function IsolatedPrEditor(props: {
           </a>,
           openWithExternalEditorLinkContainer(
             props.prFileContainer,
-            dependencies__.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
           )
         )}
 
@@ -163,7 +162,7 @@ export function IsolatedPrEditor(props: {
         toolbarContainer(
           globals.id,
           props.prFileContainer,
-          dependencies__.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
+          globals.dependencies.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
         )
       )}
 
@@ -177,7 +176,10 @@ export function IsolatedPrEditor(props: {
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,
-        iframeContainer(globals.id, dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
+        iframeContainer(
+          globals.id,
+          globals.dependencies.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement
+        )
       )}
     </IsolatedEditorContext.Provider>
   );

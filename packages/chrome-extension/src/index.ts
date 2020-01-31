@@ -19,7 +19,7 @@ import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit"
 import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
-import * as dependencies__ from "./app/dependencies";
+import { Dependencies } from "./app/dependencies";
 import * as ReactDOM from "react-dom";
 import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";
@@ -33,7 +33,10 @@ import { ResourceContentServiceFactory } from "./app/components/common/ChromeRes
  *
  *  @param args.name The extension name. Used to differentiate logs from other extensions.
  *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
+ *  @param args.extensionIconUrl The relative path to search for an image that will be the icon used for your extension.
+ *  @param args.githubAuthTokenCookieName The name of the cookie that will hold a GitHub PAT for your extension.
  *  @param args.router The Router to be used to find resources for each language.
+ *  @param args.externalEditorManager The implementation of ExternalEditorManager for your extension.
  */
 export function startExtension(args: {
   name: string;
@@ -45,11 +48,13 @@ export function startExtension(args: {
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
+  const dependencies = new Dependencies();
 
   const runInit = () =>
     init({
       id: chrome.runtime.id,
       logger: logger,
+      dependencies: dependencies,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
@@ -66,7 +71,7 @@ function init(args: Globals) {
   args.logger.log(`---`);
   args.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.id, args.logger);
+  unmountPreviouslyRenderedFeatures(args.id, args.logger, args.dependencies);
 
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
@@ -80,6 +85,7 @@ function init(args: Globals) {
     renderSingleEditorApp({
       id: args.id,
       logger: args.logger,
+      dependencies: args.dependencies,
       router: args.router,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
@@ -92,6 +98,7 @@ function init(args: Globals) {
     renderSingleEditorReadonlyApp({
       id: args.id,
       logger: args.logger,
+      dependencies: args.dependencies,
       router: args.router,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
@@ -105,6 +112,7 @@ function init(args: Globals) {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       id: args.id,
       logger: args.logger,
+      dependencies: args.dependencies,
       router: args.router,
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
@@ -112,9 +120,9 @@ function init(args: Globals) {
       externalEditorManager: args.externalEditorManager,
       contentPath: fileInfo.path
     });
+  } else {
+    throw new Error(`Unknown GitHubPageType ${pageType}`);
   }
-
-  throw new Error(`Unknown GitHubPageType ${pageType}`);
 }
 
 export function extractFileInfoFromUrl() {
@@ -127,10 +135,10 @@ export function extractFileInfoFromUrl() {
   };
 }
 
-function unmountPreviouslyRenderedFeatures(id: string, logger: Logger) {
+function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependencies: Dependencies) {
   try {
-    if (mainContainer(id, dependencies__.all.body())) {
-      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies__.all.body())!);
+    if (mainContainer(id, dependencies.all.body())) {
+      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
       logger.log("Unmounted previous features.");
     }
   } catch (e) {

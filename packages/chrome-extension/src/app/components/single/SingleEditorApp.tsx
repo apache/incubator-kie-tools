@@ -23,7 +23,6 @@ import { useIsolatedEditorTogglingEffect } from "../common/customEffects";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
 import { IsolatedEditor } from "../common/IsolatedEditor";
-import * as dependencies__ from "../../dependencies";
 import { useGlobals } from "../common/GlobalContext";
 import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { FileInfo } from "./singleEditorView";
@@ -32,9 +31,9 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   const globals = useGlobals();
   useLayoutEffect(() => {
     if (!fullscreen) {
-      iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.add("hidden");
+      iframeFullscreenContainer(globals.id, globals.dependencies.all.body()).classList.add("hidden");
     } else {
-      iframeFullscreenContainer(globals.id, dependencies__.all.body()).classList.remove("hidden");
+      iframeFullscreenContainer(globals.id, globals.dependencies.all.body()).classList.remove("hidden");
     }
   }, [fullscreen]);
 }
@@ -93,7 +92,7 @@ export function SingleEditorApp(props: {
 
   useEffect(() => {
     const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
-      dependencies__.all.edit__githubFileNameInput()!.value = fileName;
+      globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
     }, isolatedEditorRef.current?.setContent!);
 
     return () => {
@@ -138,11 +137,11 @@ export function SingleEditorApp(props: {
           <>
             {ReactDOM.createPortal(
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
-              iframeFullscreenContainer(globals.id, dependencies__.all.body())
+              iframeFullscreenContainer(globals.id, globals.dependencies.all.body())
             )}
             {ReactDOM.createPortal(
               IsolatedEditorComponent,
-              iframeFullscreenContainer(globals.id, dependencies__.all.body())
+              iframeFullscreenContainer(globals.id, globals.dependencies.all.body())
             )}
           </>
         )}

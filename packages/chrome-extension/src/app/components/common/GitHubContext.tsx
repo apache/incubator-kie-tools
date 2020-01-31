@@ -18,7 +18,6 @@ import * as Octokit from "@octokit/rest";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useGlobals } from "./GlobalContext";
-import * as dependencies__ from "../../dependencies";
 
 export const GitHubContext = React.createContext<{
   octokit: () => Octokit;
@@ -61,7 +60,7 @@ export const GitHubContextProvider: React.FC<{}> = props => {
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
 
   const userIsLoggedIn = useCallback(() => {
-    return !!dependencies__.all.notificationIndicator();
+    return !!globals.dependencies.all.notificationIndicator();
   }, []);
 
   const octokit = useCallback(() => {
