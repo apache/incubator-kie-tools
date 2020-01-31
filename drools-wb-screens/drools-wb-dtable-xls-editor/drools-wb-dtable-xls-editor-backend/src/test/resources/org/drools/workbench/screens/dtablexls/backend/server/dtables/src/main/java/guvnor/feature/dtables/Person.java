@@ -13,19 +13,23 @@ public class Person {
     
     private int dummy;
 
+    private String helloMsg;
+
+    private boolean married;
+
     public Person() {
     }
 
-    public Person(int value, String name, int dummy, String sex, int age) {
-        this.value = value;
-        this.name = name;
-        this.dummy = dummy;
+    public Person(String sex, int age, String name, int value, int dummy, String helloMsg, boolean married) {
         this.sex = sex;
         this.age = age;
+        this.name = name;
+        this.value = value;
+        this.dummy = dummy;
+        this.helloMsg = helloMsg;
+        this.married = married;
     }
 
-
-    
     public String getSex() {
         return this.sex;
     }
@@ -66,7 +70,19 @@ public class Person {
         this.dummy = dummy;
     }
 
+    public String getHelloMsg() {
+        return helloMsg;
+    }
 
+    public void setHelloMsg(String helloMsg) {
+        this.helloMsg = helloMsg;
+    }
 
+    public boolean isMarried() {
+        return married;
+    }
 
+    public void setMarried(boolean married) {
+        this.married = married;
+    }
 }

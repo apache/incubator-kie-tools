@@ -111,6 +111,22 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
     }
 
     @Test
+    public void testConvertFunctionInSpreadhseet() throws Exception {
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/test_functions.xls";
+        final ConversionResult conversionResult = convertResource(resourcePath);
+        final List<ConversionMessage> messages = conversionResult.getMessages();
+        Assertions.assertThat(messages).hasSize(2);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(messages.get(0).getMessage())
+                    .startsWith("Created Function 'Function 1")
+                    .endsWith(".drl'");
+            softly.assertThat(messages.get(1).getMessage())
+                    .startsWith("Created Guided Decision Table 'Hello RuleTable")
+                    .endsWith(").gdst'");
+        });
+    }
+
+    @Test
     public void testValidateMultiplePatterns() throws Exception {
         final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/SampleDTExt1.xls";
         final List<ValidationMessage> messages = validateResource(resourcePath);
