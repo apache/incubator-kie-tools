@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { EditorContent, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContent, ResourcesList, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 interface Props {
   fullscreen: boolean;
@@ -59,9 +59,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_ready() {
         console.info(`Editor is ready`);
       },
-      receive_resourceContentRequest(uri: string) {
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
         console.debug(`Resource Content Request`);
-        self.respond_resourceContent(new ResourceContent(uri, undefined));
+        self.respond_resourceContent(new ResourceContent(resourceContentRequest.path, undefined));
       },
       receive_resourceListRequest(globPattern: string) {
         console.debug(`Resource List Request`);

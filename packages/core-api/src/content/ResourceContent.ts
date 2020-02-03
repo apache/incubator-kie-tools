@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+type ContentType = ("text" | "binary");
+
 export class ResourceContent {
   public readonly path: string;
   public readonly content?: string;
+  public readonly type: ContentType;
 
   constructor(path: string,
-    content: string | undefined) {
+    content: string | undefined,
+    type?: ContentType) {
     this.path = path;
     this.content = content;
+    this.type = type || "text";
   }
-
 }

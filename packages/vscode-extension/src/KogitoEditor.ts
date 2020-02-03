@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { EditorContent, ResourceContent, ResourceContentService, Router } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContent, ResourceContentService, Router, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -81,8 +81,8 @@ export class KogitoEditor {
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
         },
-        receive_resourceContentRequest: (uri: string) => {
-          this.resourceContentService.get(uri).then((v: ResourceContent) => self.respond_resourceContent(v));
+        receive_resourceContentRequest: (resourceContentRequest: ResourceContentRequest) => {
+          this.resourceContentService.get(resourceContentRequest).then((v: ResourceContent) => self.respond_resourceContent(v));
         },
         receive_resourceListRequest: (pattern: string) => {
           this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));

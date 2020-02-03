@@ -1,19 +1,25 @@
 import * as vscode from "vscode";
-import { ResourcesList, ResourceContent, ResourceContentService } from "@kogito-tooling/core-api";
+import { Options, ResourcesList, ResourceContent, ResourceContentService, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 export class VsCodeResourceContentService implements ResourceContentService {
 
-  public get(uri: string): Promise<ResourceContent | undefined> {
-    const contentPath: string = this.resolvePath(uri)!;
+  public get(resourceRequest: ResourceContentRequest): Promise<ResourceContent | undefined> {
+    const uri = resourceRequest.path;
+    const contentPath = this.resolvePath(resourceRequest.path)!;
+    const type = resourceRequest.opts ? resourceRequest.opts.type : "text";
     if (contentPath) {
-      const content = vscode.workspace.openTextDocument(contentPath);
-      return new Promise((resolve, error) => {
-        content.then(textDoc => {
-          resolve(new ResourceContent(uri, textDoc.getText()));
-        }, errorMsg => {
-          console.log(`Error retrieving file ${uri}: ${errorMsg}`);
-          resolve(new ResourceContent(uri, undefined));
-        });
+      return new Promise(resolve => {
+        if (type === "binary") {
+          vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(content => {
+            const base64Content = new Buffer(content).toString("base64");
+            resolve(new ResourceContent(uri, base64Content, "binary"));
+          }, this.errorRetrievingFile(contentPath, resolve));
+        } else {
+          vscode.workspace.openTextDocument(contentPath).then(textDoc => {
+            const textContent = textDoc.getText();
+            resolve(new ResourceContent(uri, textContent, "text"))
+          }, this.errorRetrievingFile(contentPath, resolve));
+        }
       });
     }
     return Promise.resolve(new ResourceContent(uri, undefined));
@@ -40,5 +46,13 @@ export class VsCodeResourceContentService implements ResourceContentService {
     }
     return null;
   }
+
+  private errorRetrievingFile(uri: string, resolve: (value?: any) => void): ((reason: any) => void | Thenable<void>) | undefined {
+    return errorMsg => {
+      console.error(`Error retrieving file ${uri}: ${errorMsg}`);
+      resolve(new ResourceContent(uri, undefined));
+    };
+  }
+
 
 }
