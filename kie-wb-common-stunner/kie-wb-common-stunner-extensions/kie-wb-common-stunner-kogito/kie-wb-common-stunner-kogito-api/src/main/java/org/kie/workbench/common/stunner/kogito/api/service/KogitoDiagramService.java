@@ -25,5 +25,9 @@ public interface KogitoDiagramService {
 
     Diagram transform(final String xml);
 
+    default Diagram transform(final String fileName, final String xml) {
+        return transform(xml);
+    }
+
     String transform(final Diagram diagram);
 }

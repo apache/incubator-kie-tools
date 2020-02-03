@@ -27,6 +27,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -56,6 +57,8 @@ public class BPMNStandaloneDiagramServiceImpl implements KogitoDiagramService {
     private static final Logger LOG = LoggerFactory.getLogger(BPMNStandaloneDiagramServiceImpl.class);
 
     private static final String DIAGRAMS_PATH = "diagrams";
+
+    public static final String DEFAULT_PROCESS_ID = "default";
 
     //This path is needed by DiagramsNavigatorImpl's use of AbstractClientDiagramService.lookup(..) to retrieve a list of diagrams
     private static final String ROOT = "default://master@system/stunner/" + DIAGRAMS_PATH;
@@ -89,7 +92,15 @@ public class BPMNStandaloneDiagramServiceImpl implements KogitoDiagramService {
         if (Objects.isNull(xml) || xml.isEmpty()) {
             return doNewDiagram();
         }
-        return doTransformation(xml);
+        return doTransformation(DEFAULT_PROCESS_ID, xml);
+    }
+
+    @Override
+    public Diagram transform(final String fileName, final String xml) {
+        if (Objects.isNull(xml) || xml.isEmpty()) {
+            return doNewDiagram();
+        }
+        return doTransformation(fileName, xml);
     }
 
     private Diagram doNewDiagram() {
@@ -109,7 +120,7 @@ public class BPMNStandaloneDiagramServiceImpl implements KogitoDiagramService {
     }
 
     @SuppressWarnings("unchecked")
-    private Diagram doTransformation(final String xml) {
+    private Diagram doTransformation(final String fileName, final String xml) {
         final String defSetId = getDefinitionSetId(backendService);
         final Metadata metadata = buildMetadataInstance(defSetId);
         final InputStream is = new ByteArrayInputStream(xml.getBytes());
@@ -121,6 +132,11 @@ public class BPMNStandaloneDiagramServiceImpl implements KogitoDiagramService {
             if (null == diagramNode) {
                 throw new RuntimeException("No BPMN Diagram can be found.");
             }
+
+            final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
+            diagramSet.getName().setValue(fileName);
+            diagramSet.getId().setValue(fileName);
+
             final String title = diagramNode.getContent().getDefinition().getDiagramSet().getName().getValue();
             metadata.setTitle(title);
 

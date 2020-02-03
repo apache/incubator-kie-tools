@@ -25,6 +25,7 @@ import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.ConverterUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -39,7 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
@@ -55,6 +55,7 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     private final BPMNDiagramFactory diagramFactory;
     private final ShapeManager shapeManager;
     private final Promises promises;
+    public static final String DEFAULT_PROCESS_ID = "default";
 
     //CDI proxy
     protected BPMNClientDiagramService() {
@@ -80,7 +81,15 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
         // TODO: handle errors?
-        Diagram diagram = transform(xml);
+        Diagram diagram = transform(DEFAULT_PROCESS_ID, xml);
+        callback.onSuccess(diagram);
+    }
+
+    @Override
+    public void transform(final String fileName, final String xml,
+                          final ServiceCallback<Diagram> callback) {
+        // TODO: handle errors?
+        Diagram diagram = transform(fileName, xml);
         callback.onSuccess(diagram);
     }
 
@@ -92,11 +101,11 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
         return promises.resolve(resource.xmlDiagram().orElse("DiagramType is XML_DIAGRAM however no instance present"));
     }
 
-    public Diagram transform(final String xml) {
+    public Diagram transform(final String fileName, final String xml) {
         if (Objects.isNull(xml) || xml.isEmpty()) {
             return doNewDiagram();
         }
-        return doTransformation(xml);
+        return doTransformation(fileName, xml);
     }
 
     public String transform(final Diagram diagram) {
@@ -104,7 +113,7 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     }
 
     private Diagram doNewDiagram() {
-        final String title = UUID.uuid();
+        final String title = DEFAULT_PROCESS_ID;
         final String defSetId = BPMNClientMarshalling.getDefinitionSetId();
         final Metadata metadata = createMetadata();
         metadata.setTitle(title);
@@ -116,13 +125,24 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     }
 
     @SuppressWarnings("unchecked")
-    private Diagram doTransformation(final String raw) {
+    private Diagram doTransformation(final String fileName, final String raw) {
         final Metadata metadata = createMetadata();
         final Graph<DefinitionSet, ?> graph = marshalling.unmarshall(metadata, raw);
         final Node<Definition<BPMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, BPMNDiagramImpl.class);
         if (null == diagramNode) {
             throw new RuntimeException("No BPMN Diagram can be found.");
         }
+
+        final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
+
+        if (diagramSet.getName().getValue().isEmpty()) {
+            diagramSet.getName().setValue(fileName);
+        }
+
+        if (diagramSet.getId().getValue().isEmpty()) {
+            diagramSet.getId().setValue(fileName);
+        }
+
         final String title = diagramNode.getContent().getDefinition().getDiagramSet().getName().getValue();
         metadata.setTitle(title);
         final Diagram diagram = diagramFactory.build(title,

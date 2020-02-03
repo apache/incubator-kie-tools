@@ -25,5 +25,15 @@ public interface KogitoClientDiagramService {
     void transform(final String xml,
                    final ServiceCallback<Diagram> callback);
 
+    /**
+     * Transforms an XML into a Diagram. The fileName is provided to set a Id and Name same as fileName
+     * @param fileName FileName of file
+     * @param xml XML representation
+     * @param callback Callback to signal success or failure
+     */
+    default void transform(final String fileName, final String xml, final ServiceCallback<Diagram> callback) {
+        transform(xml, callback);
+    }
+
     Promise<String> transform(final KogitoDiagramResourceImpl resource);
 }

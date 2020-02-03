@@ -76,6 +76,15 @@ public class BPMNStandaloneClientDiagramServiceImpl implements KogitoClientDiagr
     //Kogito requirements
 
     @Override
+    public void transform(final String fileName, final String xml,
+                          final ServiceCallback<Diagram> callback) {
+        kogitoDiagramServiceCaller.call((Diagram d) -> {
+            updateClientMetadata(d);
+            callback.onSuccess(d);
+        }).transform(fileName, xml);
+    }
+
+    @Override
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
         kogitoDiagramServiceCaller.call((Diagram d) -> {
