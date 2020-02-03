@@ -1,0 +1,33 @@
+<?xml version='1.0' ?>
+<dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/'
+                 xmlns='https://kiegroup.org/dmn/_C2D2AB29-EF4A-4433-96BE-63269CC93E50'
+                 xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/'
+                 xmlns:kie='http://www.drools.org/kie/dmn/1.2'
+                 xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/'
+                 xmlns:dc='http://www.omg.org/spec/DMN/20180521/DC/'
+                 id='_00A9F40B-F8FF-4039-83B0-3FC0DAD93FEC'
+                 name='87AF93DE-25C6-458A-8F69-BC7DF258F92A'
+                 typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/'
+                 namespace='https://kiegroup.org/dmn/_C2D2AB29-EF4A-4433-96BE-63269CC93E50'>
+  <dmn:extensionElements/>
+  <dmn:knowledgeSource id='_1A16186A-53A5-4E7C-8289-302DF0AC1D56' name='KnowledgeSource-1' locationURI=''>
+    <dmn:extensionElements/>
+    <dmn:type/>
+  </dmn:knowledgeSource>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+      <dmndi:DMNShape id='dmnshape-_1A16186A-53A5-4E7C-8289-302DF0AC1D56' dmnElementRef='_1A16186A-53A5-4E7C-8289-302DF0AC1D56' isCollapsed='false'>
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red='255' green='255' blue='255'/>
+          <dmndi:StrokeColor red='0' green='0' blue='0'/>
+          <dmndi:FontColor red='0' green='0' blue='0'/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x='615' y='139' width='100' height='50'/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,34 @@
+<?xml version='1.0' ?>
+<dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/' 
+                 xmlns='https://kiegroup.org/dmn/_F3783067-F66D-4E8B-8FA5-7EFA799438E3' 
+                 xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/' 
+                 xmlns:kie='http://www.drools.org/kie/dmn/1.2' 
+                 xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/' 
+                 xmlns:dc='http://www.omg.org/spec/DMN/20180521/DC/' 
+                 xmlns:feel='http://www.omg.org/spec/DMN/20180521/FEEL/' 
+                 id='_3DE14371-84A1-4B96-B530-3392A44CCA01' 
+                 name='4AA07971-1957-4CC8-BB54-47A892B78468' 
+                 typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/' 
+                 namespace='https://kiegroup.org/dmn/_F3783067-F66D-4E8B-8FA5-7EFA799438E3'>
+  <dmn:extensionElements/>
+  <dmn:decision id='_79A42B69-2DF9-417A-8CEE-F9685DABA837' name='Decision-1'>
+    <dmn:extensionElements/>
+    <dmn:variable id='_AC9A089D-7D9D-4A6D-A19F-D90A74F6FE94' name='Decision-1'/>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+      <dmndi:DMNShape id='dmnshape-_79A42B69-2DF9-417A-8CEE-F9685DABA837' dmnElementRef='_79A42B69-2DF9-417A-8CEE-F9685DABA837' isCollapsed='false'>
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red='255' green='255' blue='255'/>
+          <dmndi:StrokeColor red='0' green='0' blue='0'/>
+          <dmndi:FontColor red='0' green='0' blue='0'/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x='475' y='137' width='100' height='50'/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

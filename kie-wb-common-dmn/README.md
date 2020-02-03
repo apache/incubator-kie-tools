@@ -40,12 +40,13 @@ Client-side marshaller for _kogito_.
 9) `kie-wb-common-dmn-webapp-kogito-runtime`
 
 Webapp targeting _kogito_ integration with VSCode etc. No decorations.
-To run this module launch the `gwt` plugin with the `kogito` profile; i.e. `mvn clean process-resources gwt:run -Pkogito`.
-To package this module for use in the VSCode/GitHub plugin build the `war` with the `kogito` profile; i.e. `mvn clean install -Pkogito`.
+To run this module launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
+To package this module for use in the VSCode/GitHub plugin build the `war`; i.e. `mvn clean install`.
+
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 
 Webapp used for development of _kogito_ decorated with a diagram _navigator_ to emulate integration with VSCode etc. 
-To run this module launch the `gwt` plugin with the `kogito` profile; i.e. `mvn clean process-resources gwt:run -Pkogito`.
+To run this module launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
 
 11) `kie-wb-common-dmn-webapp-standalone`
 
