@@ -53,7 +53,10 @@ export class GithubService {
                 repo: fileInfo.repo,
                 owner: fileInfo.org,
                 ref: fileInfo.gitRef,
-                path: fileInfo.path
+                path: fileInfo.path,
+                headers: {
+                    'If-None-Match': ''
+                }
             })
             .then(res => atob((res.data as any).content))
             .catch(e => {
