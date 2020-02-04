@@ -21,7 +21,6 @@ import (
 	coreapps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"
-	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -33,12 +32,6 @@ import (
 )
 
 const (
-	kogitoCrdGroupName       = "app.kiegroup.org"
-	kogitoAppCrdName         = "kogitoapps"
-	kogitoInfraCrdName       = "kogitoinfras"
-	kogitoDataIndexCrdName   = "kogitodataindices"
-	kogitoJobsServiceCrdName = "kogitojobsservices"
-
 	kogitoOperatorTimeoutInMin = 5
 
 	communityCatalog = "community-operators"
@@ -70,20 +63,6 @@ var (
 
 // DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files
 func DeployKogitoOperatorFromYaml(namespace string) error {
-	// Create crds files if needed
-	if err := deployCrdIfNeeded(namespace, kogitoAppCrdName); err != nil {
-		return err
-	}
-	if err := deployCrdIfNeeded(namespace, kogitoInfraCrdName); err != nil {
-		return err
-	}
-	if err := deployCrdIfNeeded(namespace, kogitoDataIndexCrdName); err != nil {
-		return err
-	}
-	if err := deployCrdIfNeeded(namespace, kogitoJobsServiceCrdName); err != nil {
-		return err
-	}
-
 	var deployURI = getEnvOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
@@ -221,32 +200,6 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 	}
 
 	return subscription, nil
-}
-
-func deployCrdIfNeeded(namespace, crdName string) error {
-	crdFullName := buildCrdFullName(crdName)
-	crdEntity := &apiextensionsv1beta1.CustomResourceDefinition{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: crdFullName,
-		},
-	}
-	if exists, err := kubernetes.ResourceC(kubeClient).Fetch(crdEntity); err != nil {
-		return fmt.Errorf("Error while trying to look for Kogito Operator installation: %v", err)
-	} else if !exists {
-		crdURI := getEnvOperatorDeployURI() + "crds/" + buildCrdFilename(crdName)
-		GetLogger(namespace).Infof("deployCrd %s", crdURI)
-		return loadResource("", crdURI, &apiextensionsv1beta1.CustomResourceDefinition{}, nil)
-	}
-
-	return nil
-}
-
-func buildCrdFullName(crdName string) string {
-	return crdName + "." + kogitoCrdGroupName
-}
-
-func buildCrdFilename(crdName string) string {
-	return kogitoCrdGroupName + "_" + crdName + "_crd.yaml"
 }
 
 func getOperatorImageNameAndTag() string {
