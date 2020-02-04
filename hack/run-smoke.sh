@@ -40,6 +40,7 @@ function usage(){
   printf "\n-f or --feature {FEATURE_NAME}\n\tRun a specific feature file."
   printf "\n-l or --local ${BOOLEAN}\n\tSpecify whether you run test in local"
   printf "\n-c or --concurrent ${NUMBER}\n\tSet the number of concurrent tests. Default is 1."
+  printf "\n--build_image_version \n\tSet the image version. Default to current operator version"
   printf "\n-t or --tags ${tags}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
       printf "\n\t\t- '@wip': run all scenarios with wip tag"
@@ -113,6 +114,9 @@ case $1 in
   -t|--tags)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export TAGS="${1}"; shift; fi
+  --build_image_version)
+    shift
+    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export KOGITO_BUILD_IMAGE_VERSION="${1}"; shift; fi
   ;;
   -h|--help)
     usage
