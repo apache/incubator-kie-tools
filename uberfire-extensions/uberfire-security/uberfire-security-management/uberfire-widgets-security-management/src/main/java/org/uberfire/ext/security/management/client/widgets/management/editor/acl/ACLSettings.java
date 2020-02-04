@@ -18,12 +18,14 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.ac
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
+import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UberView;
@@ -45,6 +47,7 @@ public class ACLSettings implements IsWidget {
     Event<PriorityChangedEvent> priorityChangedEvent;
     AuthorizationPolicy authzPolicy;
     boolean isEditMode;
+
     @Inject
     public ACLSettings(View view,
                        PermissionManager permissionManager,
@@ -158,6 +161,10 @@ public class ACLSettings implements IsWidget {
         int priority = getPriority();
         priorityChangedEvent.fire(new PriorityChangedEvent(this,
                                                            priority));
+    }
+
+    public void updateAuthzPolicy(@Observes AuthorizationPolicySavedEvent authzPolicySavedEvent) {
+        this.authzPolicy = authzPolicySavedEvent.getPolicy();
     }
 
     public interface View extends UberView<ACLSettings> {

@@ -25,11 +25,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.ext.security.management.client.widgets.management.events.HomePerspectiveChangedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.PriorityChangedEvent;
 import org.uberfire.ext.widgets.common.client.dropdown.PerspectiveDropDown;
+import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
@@ -69,10 +71,9 @@ public class ACLSettingsTest {
         permissionManager = spy(new DefaultPermissionManager(new DefaultPermissionTypeRegistry()));
 
         permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
-                                                         .role("admin").home("HomeAdmin").priority(10)
-                                                         .group("group1").home("HomeGroup1").priority(DEFAULT_PRIORITY)
-                                                         .build()
-        );
+                                                                  .role("admin").home("HomeAdmin").priority(10)
+                                                                  .group("group1").home("HomeGroup1").priority(DEFAULT_PRIORITY)
+                                                                  .build());
 
         presenter = new ACLSettings(view,
                                     permissionManager,
@@ -177,5 +178,24 @@ public class ACLSettingsTest {
         presenter.onPrioritySelected();
 
         verify(priorityChangedEvent).fire(any());
+    }
+
+    @Test
+    public void testAuthorizationPolicyChange() {
+        
+        final int NEW_PRIORITY = 100;
+        final String NEW_PERSPECTIVE = "NewHomeAdmin";
+
+        final AuthorizationPolicy newPolicy = permissionManager.newAuthorizationPolicy()
+                                                               .role("admin").home(NEW_PERSPECTIVE).priority(NEW_PRIORITY)
+                                                               .group("group1").home("HomeGroup1").priority(DEFAULT_PRIORITY)
+                                                               .build();
+        
+        presenter.updateAuthzPolicy(new AuthorizationPolicySavedEvent(newPolicy));
+
+        presenter.edit(new RoleImpl("admin"));
+
+        verify(homePerspectiveDropDown).setSelectedPerspective(NEW_PERSPECTIVE);
+        verify(priorityDropDown).setSelectedPriority(NEW_PRIORITY);
     }
 }
