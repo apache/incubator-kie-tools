@@ -1,3 +1,4 @@
+@cli
 Feature: CLI: Install Kogito Infra Component
 
   Background:

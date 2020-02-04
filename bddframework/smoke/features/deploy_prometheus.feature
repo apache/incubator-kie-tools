@@ -1,4 +1,5 @@
 # Disabled until image metadata label processing is fixed in OCP 4.x or https://issues.redhat.com/browse/KOGITO-731 is implemented
+@disabled
 Feature: Service Deployment: Prometheus
 
   Background:

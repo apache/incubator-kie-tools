@@ -1,3 +1,4 @@
+@cr
 Feature: Install Keycloak
 
   Background:

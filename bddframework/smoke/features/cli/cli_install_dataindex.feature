@@ -1,3 +1,5 @@
+@cli
+@dataindex
 Feature: CLI: Install Kogito Data Index
 
   Scenario: CLI install Kogito Data Index

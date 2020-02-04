@@ -1,3 +1,5 @@
+@cli
+@quarkus
 Feature: CLI: Deploy quarkus service
 
   Background:
@@ -18,6 +20,7 @@ Feature: CLI: Deploy quarkus service
 
 #####
 
+  @persistence
   Scenario Outline: CLI deploy jbpm-quarkus-example service with persistence
     Given Kogito Operator is deployed with dependencies
     And CLI deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native>

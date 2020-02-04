@@ -1,3 +1,5 @@
+@cr
+@dataindex
 Feature: Install Kogito Data Index Service
 
   Background:
@@ -17,6 +19,10 @@ Feature: Install Kogito Data Index Service
     }
     """
 
+#####
+
+  @events
+  @persistence
   Scenario Outline: Process instance events are stored in Data Index
     Given Install Kogito Data Index with 1 replicas
     And Deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native> and events "enabled"

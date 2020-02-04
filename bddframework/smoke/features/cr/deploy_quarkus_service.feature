@@ -1,3 +1,5 @@
+@cr
+@quarkus
 Feature: Service Deployment: Quarkus
 
   Background:
@@ -18,6 +20,7 @@ Feature: Service Deployment: Quarkus
 
 #####
 
+  @persistence
   Scenario Outline: Deploy jbpm-quarkus-example service with persistence
     Given Kogito Operator is deployed with dependencies
     And Deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native>
