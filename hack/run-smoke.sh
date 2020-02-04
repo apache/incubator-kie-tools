@@ -89,34 +89,77 @@ do
 case $1 in
   -on|--ope_name)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_IMAGE_NAME="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export OPERATOR_IMAGE_NAME="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -ot|--ope_tag)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_IMAGE_TAG="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export OPERATOR_IMAGE_TAG="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -mm|--maven_mirror)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export MAVEN_MIRROR_URL="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export MAVEN_MIRROR_URL="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -f|--feature)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        FEATURE="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -l|--local)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then if [ "${1}" = "true" ]; then export LOCAL_TESTS=true; fi; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        if [ "${1}" = "true" ]; then 
+          export LOCAL_TESTS=true; 
+        fi
+      fi; 
+      shift; 
+    fi
   ;;
   -c|--concurrent)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export CONCURRENT="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        CONCURRENT="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -t|--tags)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export TAGS="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        TAGS="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
   --build_image_version)
     shift
-    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export KOGITO_BUILD_IMAGE_VERSION="${1}"; shift; fi
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_BUILD_IMAGE_VERSION="${1}"; 
+      fi; 
+      shift; 
+    fi
   ;;
   -h|--help)
     usage
