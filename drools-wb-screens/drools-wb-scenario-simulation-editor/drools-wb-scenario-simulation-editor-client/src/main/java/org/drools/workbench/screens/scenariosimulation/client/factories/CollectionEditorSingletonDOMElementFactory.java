@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -74,6 +78,16 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
             this.widget.close();
         }
         this.widget = createWidget();
+        /* Don't propagate MouseWheel and RightClick events to the Grid */
+        this.widget.addDomHandler(MouseWheelEvent::stopPropagation,
+                                  MouseWheelEvent.getType());
+        this.widget.addDomHandler(event -> {event.stopPropagation();
+                                            event.preventDefault();},
+                                  ContextMenuEvent.getType());
+        this.widget.addDomHandler(ClickEvent::stopPropagation,
+                                  ClickEvent.getType());
+        this.widget.addDomHandler(KeyDownEvent::stopPropagation,
+                                  KeyDownEvent.getType());
         final AbstractScesimGridModel<? extends AbstractScesimModel, ? extends AbstractScesimData> model = ((ScenarioGrid) gridWidget).getModel();
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
         final Optional<GridColumn<?>> selectedColumn = model.getColumns().stream()

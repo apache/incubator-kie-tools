@@ -191,35 +191,30 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     public void onCloseCollectionEditorButtonClick() {
         collectionEditorViewImplSpy.onCloseCollectionEditorButtonClick(clickEventMock);
         verify(collectionEditorViewImplSpy, times(1)).fireEvent(isA(CloseCompositeEvent.class));
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test
     public void onCancelButtonClick() {
         collectionEditorViewImplSpy.onCancelButtonClick(clickEventMock);
         verify(collectionEditorViewImplSpy, times(1)).close();
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test
     public void onRemoveButtonClick() {
         collectionEditorViewImplSpy.onRemoveButtonClick(clickEventMock);
         verify(collectionPresenterMock, times(1)).remove();
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test
     public void onSaveButtonClick() {
         collectionEditorViewImplSpy.onSaveButtonClick(clickEventMock);
         verify(collectionPresenterMock, times(1)).save();
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test
     public void onAddItemButton() {
         collectionEditorViewImplSpy.onAddItemButton(clickEventMock);
         verify(collectionPresenterMock, times(1)).showEditingBox();
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test
@@ -227,13 +222,11 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
         doReturn(true).when(collectionEditorViewImplSpy).isShown();
         collectionEditorViewImplSpy.onFaAngleRightClick(clickEventMock);
         verify(collectionPresenterMock, times(1)).onToggleRowExpansion(eq(true));
-        verify(clickEventMock, times(1)).stopPropagation();
         reset(collectionPresenterMock);
         reset(clickEventMock);
         doReturn(false).when(collectionEditorViewImplSpy).isShown();
         collectionEditorViewImplSpy.onFaAngleRightClick(clickEventMock);
         verify(collectionPresenterMock, times(1)).onToggleRowExpansion(eq(false));
-        verify(clickEventMock, times(1)).stopPropagation();
     }
 
     @Test

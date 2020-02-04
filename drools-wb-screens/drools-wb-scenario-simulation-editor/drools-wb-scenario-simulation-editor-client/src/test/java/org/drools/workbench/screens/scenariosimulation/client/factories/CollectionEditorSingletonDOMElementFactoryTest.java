@@ -21,6 +21,10 @@ import java.util.Map;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.CollectionPresenter;
@@ -33,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.DMN;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
@@ -96,14 +101,15 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         });
 
         this.collectionEditorSingletonDOMElementFactorySpy = spy(new CollectionEditorSingletonDOMElementFactory(scenarioGridPanelMock,
-                                                                                                                 scenarioGridLayerMock,
-                                                                                                                 scenarioGridMock,
-                                                                                                                 scenarioSimulationContextLocal,
-                                                                                                                 viewsProviderMock));
+                                                                                                                scenarioGridLayerMock,
+                                                                                                                scenarioGridMock,
+                                                                                                                scenarioSimulationContextLocal,
+                                                                                                                viewsProviderMock));
         factMappingMock.getGenericTypes().add(STRING_CLASS_NAME);
         factMappingMock.getGenericTypes().add(NUMBER_CLASS_NAME);
         when(factMappingMock.getFactAlias()).thenReturn(FULL_CLASS_NAME);
         when(scenarioSimulationContextLocal.getDataObjectFieldsMap().get(any())).thenReturn(factModelTreeMock);
+        when(collectionEditorSingletonDOMElementFactorySpy.createWidget()).thenReturn(collectionEditorViewImpl);
         /* This FactModelTree is used to test setCollectionEditorStructureData() method (return null in any case) */
         when(factModelTreeMock.getSimpleProperties()).thenReturn(new HashMap<>());
         when(factModelTreeMock.getExpandableProperties()).thenReturn(new HashMap<>());
@@ -122,6 +128,16 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         when(factModelTreeMock3.getSimpleProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2);
         when(factModelTreeMock3.getExpandableProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3);
         EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3.put("a", FULL_CLASS_NAME);
+    }
+
+    @Test
+    public void createDomElement() {
+        when(scenarioGridModelMock.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
+        when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
+        collectionEditorSingletonDOMElementFactorySpy.createDomElement(scenarioGridLayerMock, scenarioGridMock);
+        verify(collectionEditorViewImpl, times(1)).addDomHandler(isA(MouseWheelHandler.class), eq(MouseWheelEvent.getType()));
+        verify(collectionEditorViewImpl, times(1)).addDomHandler(isA(ContextMenuHandler.class), eq(ContextMenuEvent.getType()));
     }
 
     @Test
