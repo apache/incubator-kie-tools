@@ -34,12 +34,19 @@ function usage(){
   printf "\nOptions:"
   printf "\n"
   printf "\n-h | --help\n\tPrint the usage of this script."
-  printf "\n--ope_name {NAME}\n\tOperator image name."
-  printf "\n--ope_tag {TAG}\n\tOperator image tag."
-  printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
-  printf "\n--feature {FEATURE_NAME}\n\tRun a specific feature file."
-  printf "\n--local ${BOOLEAN}\n\tSpecify whether you run test in local"
-  printf "\n-c or --concurrent ${NUMBER}\n\Set the number of concurrent tests. Default is 1."
+  printf "\n-on or --ope_name {NAME}\n\tOperator image name."
+  printf "\n-ot or --ope_tag {TAG}\n\tOperator image tag."
+  printf "\n-mm or --maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
+  printf "\n-f or --feature {FEATURE_NAME}\n\tRun a specific feature file."
+  printf "\n-l or --local ${BOOLEAN}\n\tSpecify whether you run test in local"
+  printf "\n-c or --concurrent ${NUMBER}\n\tSet the number of concurrent tests. Default is 1."
+  printf "\n-t or --tags ${tags}\n\tFilter scenarios by tags."
+    printf "\n\tExpressions can be:"
+      printf "\n\t\t- '@wip': run all scenarios with wip tag"
+      printf "\n\t\t- '~@wip': exclude all scenarios with wip tag"
+      printf "\n\t\t- '@wip && ~@new': run wip scenarios, but exclude new"
+      printf "\n\t\t- '@wip,@undone': run wip or undone scenarios"
+    printf "\n\t Scenarios with '@disabled' tag are always ignored."
   printf "\n"
 }
 
@@ -74,33 +81,38 @@ function delete_and_apply_crds(){
 
 FEATURE=""
 CONCURRENT=1
+TAGS=""
 
 while (( $# ))
 do
 case $1 in
-  --ope_name)
+  -on|--ope_name)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_IMAGE_NAME="${1}"; shift; fi
   ;;
-  --ope_tag)
+  -ot|--ope_tag)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export OPERATOR_IMAGE_TAG="${1}"; shift; fi
   ;;
-  --maven_mirror)
+  -mm|--maven_mirror)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export MAVEN_MIRROR_URL="${1}"; shift; fi
   ;;
-  --feature)
+  -f|--feature)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then FEATURE="${1}"; shift; fi
   ;;
-  --local)
+  -l|--local)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then if [ "${1}" = "true" ]; then export LOCAL_TESTS=true; fi; shift; fi
   ;;
   -c|--concurrent)
     shift
     if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export CONCURRENT="${1}"; shift; fi
+  ;;
+  -t|--tags)
+    shift
+    if [[ ! ${1} =~ ^-.* ]] && [[ ! -z "${1}" ]]; then export TAGS="${1}"; shift; fi
   ;;
   -h|--help)
     usage
@@ -114,6 +126,13 @@ case $1 in
 esac
 done
 
+# Always adding @disabled tags
+if [[ ! -z ${TAGS} ]]; then
+  TAGS="${TAGS} && ~@disabled"
+else
+  TAGS="~@disabled"
+fi
+TAGS="--tags=${TAGS}"
 
 echo "-------- Retrieve godog"
 
@@ -137,7 +156,7 @@ delete_and_apply_crds ${deploy_folder}
 
 echo "-------- Running smoke tests"
 
-cd ${SCRIPT_DIR}/../test/smoke/ && godog -c ${CONCURRENT} --random -f progress ${FEATURE}
+cd ${SCRIPT_DIR}/../test/smoke/ && godog -c ${CONCURRENT} --random -f progress "${TAGS}" ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
 
