@@ -170,28 +170,16 @@ public class DMNScenarioValidationTest {
         List<FactMappingValidationError> errorsTest3 = validationSpy.validate(test3, settingsLocal, null);
         checkResult(errorsTest3);
 
-        // Test 4 - complex type changed
+        // Test 4 - not existing node
         Simulation test4 = new Simulation();
-        FactMapping factMappingChanged = test4.getScesimModelDescriptor().addFactMapping(
-                FactIdentifier.create("mySimpleType", "tMYSIMPLETYPE"),
-                ExpressionIdentifier.create(VALUE, FactMappingType.GIVEN));
-        factMappingChanged.addExpressionElement("tMYSIMPLETYPE", "tMYSIMPLETYPE");
-
-        createDMNType("mySimpleType", "mySimpleType", "name");
-
-        List<FactMappingValidationError> errorsTest4 = validationSpy.validate(test4, settingsLocal, null);
-        checkResult(errorsTest4, "Node type has changed: old 'tMYSIMPLETYPE', current 'tMYSIMPLETYPE'");
-
-        // Test 5 - not existing node
-        Simulation test5 = new Simulation();
-        FactMapping factMappingNodeRemoved = test5.getScesimModelDescriptor().addFactMapping(
+        FactMapping factMappingNodeRemoved = test4.getScesimModelDescriptor().addFactMapping(
                 FactIdentifier.create("mySimpleType", "tMYSIMPLETYPE"),
                 ExpressionIdentifier.create(VALUE, FactMappingType.GIVEN));
         factMappingNodeRemoved.addExpressionElement("tMYSIMPLETYPE", "tMYSIMPLETYPE");
 
         when(dmnModelMock.getDecisionByName(anyString())).thenReturn(null);
-        List<FactMappingValidationError> errorsTest5 = validationSpy.validate(test5, settingsLocal, null);
-        checkResult(errorsTest5, "Node type has changed: old 'tMYSIMPLETYPE', current 'node not found'");
+        List<FactMappingValidationError> errorsTest4 = validationSpy.validate(test4, settingsLocal, null);
+        checkResult(errorsTest4, "Node type has changed: old 'tMYSIMPLETYPE', current 'node not found'");
     }
 
     private void checkResult(List<FactMappingValidationError> validationErrors, String... expectedErrors) {

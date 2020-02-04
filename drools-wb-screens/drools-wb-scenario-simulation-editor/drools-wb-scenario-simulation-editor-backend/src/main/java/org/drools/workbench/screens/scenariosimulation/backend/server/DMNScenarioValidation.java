@@ -37,7 +37,6 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.uti
 import static org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError.createFieldChangedError;
 import static org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError.createGenericError;
 import static org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError.createNodeChangedError;
-import static org.kie.dmn.feel.lang.types.BuiltInType.CONTEXT;
 import static org.kie.dmn.feel.lang.types.BuiltInType.UNKNOWN;
 
 public class DMNScenarioValidation extends AbstractScenarioValidation {
@@ -81,14 +80,6 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
             }
 
             List<String> steps = expressionElementToString(factMapping);
-
-            // error if direct mapping (= simple type) but it is a composite
-            // NOTE: context is a special case so it is composite even if no fields are declared
-            Type rootType = getRootType((BaseDMNTypeImpl) rootDMNType);
-            if (!CONTEXT.equals(rootType) && steps.isEmpty() && rootDMNType.isComposite()) {
-                errors.add(createNodeChangedError(factMapping, rootDMNType.getName()));
-                continue;
-            }
 
             try {
                 DMNType fieldType = navigateDMNType(rootDMNType, steps);
