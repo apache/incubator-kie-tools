@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import elemental2.dom.Element;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.mvp.HasPresenter;
@@ -32,11 +34,15 @@ public class DataTypeListShortcuts {
 
     private DataTypeList dataTypeList;
 
-    private View view;
+    private final View view;
+
+    private final DataTypeUtils dataTypeUtils;
 
     @Inject
-    public DataTypeListShortcuts(final View view) {
+    public DataTypeListShortcuts(final View view,
+                                 final DataTypeUtils dataTypeUtils) {
         this.view = view;
+        this.dataTypeUtils = dataTypeUtils;
     }
 
     @PostConstruct
@@ -78,7 +84,9 @@ public class DataTypeListShortcuts {
         final Optional<DataTypeListItem> currentDataTypeListItem = getCurrentDataTypeListItem();
 
         if (currentDataTypeListItem.isPresent()) {
-            currentDataTypeListItem.get().disableEditMode();
+            final DataTypeListItem dataTypeListItem = currentDataTypeListItem.get();
+            dataTypeListItem.disableEditMode();
+            highlight(dataTypeListItem.getDragAndDropElement());
         } else {
             getVisibleDataTypeListItems().forEach(DataTypeListItem::disableEditMode);
             reset();
@@ -121,10 +129,6 @@ public class DataTypeListShortcuts {
         view.focusIn();
     }
 
-    public void highlight(final Element dataTypeElement) {
-        view.highlight(dataTypeElement);
-    }
-
     public void reset() {
         view.reset();
     }
@@ -139,6 +143,26 @@ public class DataTypeListShortcuts {
                 dataTypeListItemConsumer.accept(dataTypeListItem);
             }
         });
+    }
+
+    DataType getTopLevelParent(final DataType dataType) {
+        return dataTypeUtils.getTopLevelParent(dataType);
+    }
+
+    void highlight(final Element element) {
+        dataTypeList.highlight(element);
+    }
+
+    void highlightLevel(final Element element) {
+        dataTypeList.highlightLevel(element);
+    }
+
+    void cleanLevelHighlightClass() {
+        dataTypeList.cleanLevelHighlightClass();
+    }
+
+    void cleanHighlightClass() {
+        dataTypeList.cleanHighlightClass();
     }
 
     public interface View extends HasPresenter<DataTypeListShortcuts> {

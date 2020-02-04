@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,25 +157,47 @@ public class DNDDataTypesHandlerTest {
         final DataType current = mock(DataType.class);
         final DataType clone = mock(DataType.class);
         final DataType reference = mock(DataType.class);
+        final DataType cloneParent1 = mock(DataType.class);
+        final DataType cloneParent2 = mock(DataType.class);
         final DNDDataTypesHandlerShiftStrategy strategy = INSERT_INTO_HOVERED_DATA_TYPE;
         final String referenceHash = "referenceHash";
+        final String cloneHash = "cloneHash";
         final DataTypeListItem oldItem = mock(DataTypeListItem.class);
         final DataTypeListItem referenceItem = mock(DataTypeListItem.class);
-        final DataTypeListItem newItem = mock(DataTypeListItem.class);
+        final DataTypeListItem cloneItem = mock(DataTypeListItem.class);
+        final HTMLElement cloneHTMLElement = mock(HTMLElement.class);
+        final String cloneParent1UUID = "cloneParent1UUID";
+        final String cloneParent2UUID = "cloneParent2UUID";
+        final DataTypeListItem cloneParent1Item = mock(DataTypeListItem.class);
+        final DataTypeListItem cloneParent2Item = mock(DataTypeListItem.class);
 
         doReturn(clone).when(handler).cloneDataType(current);
         doReturn(true).when(handler).isTopLevelShiftOperation(current, strategy);
         when(dataTypeList.calculateHash(reference)).thenReturn(referenceHash);
+        when(dataTypeList.calculateHash(clone)).thenReturn(cloneHash);
         when(dataTypeList.findItem(current)).thenReturn(Optional.of(oldItem));
-        when(dataTypeList.findItem(clone)).thenReturn(Optional.of(newItem));
         when(dataTypeList.findItemByDataTypeHash(referenceHash)).thenReturn(Optional.of(referenceItem));
+        when(dataTypeList.findItemByDataTypeHash(cloneHash)).thenReturn(Optional.of(cloneItem));
+        when(cloneItem.getDragAndDropElement()).thenReturn(cloneHTMLElement);
         when(oldItem.isCollapsed()).thenReturn(true);
+        when(cloneItem.getDataType()).thenReturn(clone);
+        when(clone.getParentUUID()).thenReturn(cloneParent1UUID);
+        when(cloneParent1.getParentUUID()).thenReturn(cloneParent2UUID);
+        when(cloneParent1.getUUID()).thenReturn(cloneParent1UUID);
+        when(cloneParent2.getUUID()).thenReturn(cloneParent2UUID);
+        when(dataTypeStore.get(cloneParent1UUID)).thenReturn(cloneParent1);
+        when(dataTypeStore.get(cloneParent2UUID)).thenReturn(cloneParent2);
+        when(dataTypeList.findItem(cloneParent1)).thenReturn(Optional.of(cloneParent1Item));
+        when(dataTypeList.findItem(cloneParent2)).thenReturn(Optional.of(cloneParent2Item));
 
         handler.shiftCurrentByReference(current, reference, strategy);
 
-        verify(newItem).collapse();
+        verify(cloneItem).collapse();
         verify(oldItem).destroyWithoutDependentTypes();
         verify(referenceItem).insertNestedField(clone);
+        verify(dataTypeList).highlightLevel(cloneHTMLElement);
+        verify(cloneParent1Item).expand();
+        verify(cloneParent2Item).expand();
     }
 
     @Test
@@ -183,25 +206,47 @@ public class DNDDataTypesHandlerTest {
         final DataType current = mock(DataType.class);
         final DataType clone = mock(DataType.class);
         final DataType reference = mock(DataType.class);
+        final DataType cloneParent1 = mock(DataType.class);
+        final DataType cloneParent2 = mock(DataType.class);
         final DNDDataTypesHandlerShiftStrategy strategy = INSERT_INTO_HOVERED_DATA_TYPE;
         final String referenceHash = "referenceHash";
+        final String cloneHash = "cloneHash";
         final DataTypeListItem oldItem = mock(DataTypeListItem.class);
         final DataTypeListItem referenceItem = mock(DataTypeListItem.class);
-        final DataTypeListItem newItem = mock(DataTypeListItem.class);
+        final DataTypeListItem cloneItem = mock(DataTypeListItem.class);
+        final HTMLElement cloneHTMLElement = mock(HTMLElement.class);
+        final String cloneParent1UUID = "cloneParent1UUID";
+        final String cloneParent2UUID = "cloneParent2UUID";
+        final DataTypeListItem cloneParent1Item = mock(DataTypeListItem.class);
+        final DataTypeListItem cloneParent2Item = mock(DataTypeListItem.class);
 
         doReturn(clone).when(handler).cloneDataType(current);
         doReturn(false).when(handler).isTopLevelShiftOperation(current, strategy);
         when(dataTypeList.calculateHash(reference)).thenReturn(referenceHash);
+        when(dataTypeList.calculateHash(clone)).thenReturn(cloneHash);
         when(dataTypeList.findItem(current)).thenReturn(Optional.of(oldItem));
-        when(dataTypeList.findItem(clone)).thenReturn(Optional.of(newItem));
         when(dataTypeList.findItemByDataTypeHash(referenceHash)).thenReturn(Optional.of(referenceItem));
+        when(dataTypeList.findItemByDataTypeHash(cloneHash)).thenReturn(Optional.of(cloneItem));
+        when(cloneItem.getDragAndDropElement()).thenReturn(cloneHTMLElement);
         when(oldItem.isCollapsed()).thenReturn(false);
+        when(cloneItem.getDataType()).thenReturn(clone);
+        when(clone.getParentUUID()).thenReturn(cloneParent1UUID);
+        when(cloneParent1.getParentUUID()).thenReturn(cloneParent2UUID);
+        when(cloneParent1.getUUID()).thenReturn(cloneParent1UUID);
+        when(cloneParent2.getUUID()).thenReturn(cloneParent2UUID);
+        when(dataTypeStore.get(cloneParent1UUID)).thenReturn(cloneParent1);
+        when(dataTypeStore.get(cloneParent2UUID)).thenReturn(cloneParent2);
+        when(dataTypeList.findItem(cloneParent1)).thenReturn(Optional.of(cloneParent1Item));
+        when(dataTypeList.findItem(cloneParent2)).thenReturn(Optional.of(cloneParent2Item));
 
         handler.shiftCurrentByReference(current, reference, strategy);
 
-        verify(newItem).expand();
+        verify(cloneItem).expand();
         verify(oldItem).destroyWithDependentTypes();
         verify(referenceItem).insertNestedField(clone);
+        verify(dataTypeList).highlightLevel(cloneHTMLElement);
+        verify(cloneParent1Item).expand();
+        verify(cloneParent2Item).expand();
     }
 
     @Test

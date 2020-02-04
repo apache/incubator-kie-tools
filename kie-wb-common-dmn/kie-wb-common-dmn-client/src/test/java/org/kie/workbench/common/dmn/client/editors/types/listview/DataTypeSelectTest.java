@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -31,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -157,7 +157,8 @@ public class DataTypeSelectTest {
 
         final String typeName = "typeName";
         final DataType parent = mock(DataType.class);
-        final List<DataType> expectedDataTypes = Collections.singletonList(mock(DataType.class));
+        final DataType subDataType = mock(DataType.class);
+        final List<DataType> expectedDataTypes = singletonList(subDataType);
 
         doReturn(parent).when(dataTypeSelect).getDataType();
         when(dataTypeManager.from(parent)).thenReturn(dataTypeManager);
@@ -169,6 +170,8 @@ public class DataTypeSelectTest {
         assertEquals(expectedDataTypes, dataTypeSelect.getSubDataTypes());
         verify(listItem).refreshSubItems(expectedDataTypes, false);
         verify(listItem).refreshConstraintComponent();
+        verify(listItem).expand();
+        verify(listItem).highlightLevel(subDataType);
     }
 
     @Test

@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent.View;
 import org.mockito.Mock;
 
@@ -48,11 +49,14 @@ public class DNDListComponentTest {
     @Mock
     private View view;
 
+    @Mock
+    private DataTypeList dataTypeList;
+
     private DNDListComponent dndListComponent;
 
     @Before
     public void setup() {
-        dndListComponent = spy(new DNDListComponent(view));
+        dndListComponent = spy(new DNDListComponent(view, dataTypeList));
     }
 
     @Test
@@ -211,9 +215,9 @@ public class DNDListComponentTest {
 
         dndListComponent.setInitialPositionY(dragAndDropElement, children);
 
-        verify(child0).setAttribute(DATA_Y_POSITION, 5);
-        verify(child1).setAttribute(DATA_Y_POSITION, 6);
-        verify(child2).setAttribute(DATA_Y_POSITION, 7);
+        verify(child0).setAttribute(DATA_Y_POSITION, 4.001);
+        verify(child1).setAttribute(DATA_Y_POSITION, 4.002);
+        verify(child2).setAttribute(DATA_Y_POSITION, 4.003);
     }
 
     @Test
@@ -223,5 +227,12 @@ public class DNDListComponentTest {
         dndListComponent.setInitialHiddenPositionY(element);
 
         verify(element).setAttribute(DATA_Y_POSITION, HIDDEN_Y_POSITION);
+    }
+
+    @Test
+    public void testHighlightLevel() {
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+        dndListComponent.highlightLevel(htmlElement);
+        verify(dataTypeList).highlightLevel(htmlElement);
     }
 }

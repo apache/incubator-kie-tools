@@ -28,12 +28,15 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListDOMHelper.Position;
 import org.uberfire.client.mvp.UberElemental;
 
 public class DNDListComponent {
 
     private final View view;
+
+    private final DataTypeList dataTypeList;
 
     private BiConsumer<Element, Element> onDropItem = (current, hover) -> {/* Nothing. */};
 
@@ -42,8 +45,10 @@ public class DNDListComponent {
     static int DEFAULT_INDENTATION_SIZE = 60;
 
     @Inject
-    public DNDListComponent(final View view) {
+    public DNDListComponent(final View view,
+                            final DataTypeList dataTypeList) {
         this.view = view;
+        this.dataTypeList = dataTypeList;
     }
 
     @PostConstruct
@@ -141,14 +146,25 @@ public class DNDListComponent {
 
     public void setInitialPositionY(final HTMLElement dragAndDropElement,
                                     final List<HTMLElement> children) {
-        Integer parentY = Position.getY(dragAndDropElement);
-        for (final Element element : children) {
-            Position.setY(element, ++parentY);
+
+        final Integer parentY = Position.getY(dragAndDropElement);
+        final double incrementValue = 0.001;
+
+        for (int j = 1; j <= children.size(); j++) {
+
+            final double childPositionY = parentY + (j * incrementValue);
+            final HTMLElement child = children.get(j - 1);
+
+            Position.setY(child, childPositionY);
         }
     }
 
     public void setInitialHiddenPositionY(final HTMLElement itemElement) {
         Position.setY(itemElement, DNDListDOMHelper.HIDDEN_Y_POSITION);
+    }
+
+    public void highlightLevel(final HTMLElement htmlElement) {
+        dataTypeList.highlightLevel(htmlElement);
     }
 
     public interface View extends UberElemental<DNDListComponent>,

@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.NodeList;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
@@ -41,8 +40,6 @@ import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
 @Dependent
 public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
-
-    static final String HIGHLIGHT = "key-highlight";
 
     private final ScrollHelper scrollHelper;
 
@@ -104,10 +101,10 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
 
     @Override
     public void highlight(final Element element) {
-        cleanCurrentHighlight();
         setCurrentUUID(getUUID(element));
         addHighlightClass(element);
         scrollTo(element);
+        highlightLevel(element);
     }
 
     @Override
@@ -125,24 +122,22 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
         scrollHelper.scrollTo(target, container, padding);
     }
 
+    void highlightLevel(final Element element) {
+        presenter.highlightLevel(element);
+    }
+
     public void reset() {
         cleanCurrentHighlight();
         setCurrentUUID("");
     }
 
     void cleanCurrentHighlight() {
-        final NodeList<Element> highlightedElements = querySelectorAll("." + HIGHLIGHT);
-        for (int i = 0; i < highlightedElements.length; i++) {
-            highlightedElements.getAt(i).classList.remove(HIGHLIGHT);
-        }
-    }
-
-    NodeList<Element> querySelectorAll(final String selector) {
-        return getDataTypeList().getElement().querySelectorAll(selector);
+        presenter.cleanLevelHighlightClass();
+        presenter.cleanHighlightClass();
     }
 
     void addHighlightClass(final Element element) {
-        element.classList.add(HIGHLIGHT);
+        presenter.highlight(element);
     }
 
     Optional<DataTypeListItem> getDataTypeListItem(final String uuid) {

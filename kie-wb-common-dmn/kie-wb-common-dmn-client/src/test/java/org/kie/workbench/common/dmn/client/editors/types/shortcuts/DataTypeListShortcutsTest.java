@@ -26,6 +26,8 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.mockito.ArgumentCaptor;
@@ -34,6 +36,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -52,6 +55,9 @@ public class DataTypeListShortcutsTest {
     @Mock
     private DataTypeListItem listItem;
 
+    @Mock
+    private DataTypeUtils dataTypeUtils;
+
     @Captor
     private ArgumentCaptor<Consumer<DataTypeListItem>> onDataTypeListItemUpdateArgumentCaptor;
 
@@ -60,7 +66,7 @@ public class DataTypeListShortcutsTest {
     @Before
     public void setup() {
         when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-        shortcuts = spy(new DataTypeListShortcuts(view));
+        shortcuts = spy(new DataTypeListShortcuts(view, dataTypeUtils));
         shortcuts.init(dataTypeList);
     }
 
@@ -143,9 +149,14 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnEscapeWhenCurrentDataTypeListItemIsPresent() {
 
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+
+        when(listItem.getDragAndDropElement()).thenReturn(htmlElement);
+
         shortcuts.onEscape();
 
         verify(listItem).disableEditMode();
+        verify(shortcuts).highlight(htmlElement);
         verify(shortcuts, never()).reset();
     }
 
@@ -162,6 +173,7 @@ public class DataTypeListShortcutsTest {
 
         verify(listItem1).disableEditMode();
         verify(listItem2).disableEditMode();
+        verify(shortcuts, never()).highlight(any());
         verify(shortcuts).reset();
     }
 
@@ -223,8 +235,26 @@ public class DataTypeListShortcutsTest {
     public void testHighlight() {
         final Element element = mock(Element.class);
         shortcuts.highlight(element);
+        verify(dataTypeList).highlight(element);
+    }
 
-        verify(view).highlight(element);
+    @Test
+    public void testHighlightLevel() {
+        final Element element = mock(Element.class);
+        shortcuts.highlightLevel(element);
+        verify(dataTypeList).highlightLevel(element);
+    }
+
+    @Test
+    public void testCleanLevelHighlightClass() {
+        shortcuts.cleanLevelHighlightClass();
+        verify(dataTypeList).cleanLevelHighlightClass();
+    }
+
+    @Test
+    public void testCleanHighlightClass() {
+        shortcuts.cleanHighlightClass();
+        verify(dataTypeList).cleanHighlightClass();
     }
 
     @Test
@@ -279,5 +309,17 @@ public class DataTypeListShortcutsTest {
         shortcuts.onCtrlD();
 
         verify(listItem, never()).insertFieldBelow();
+    }
+
+    @Test
+    public void testGetTopLevelParent() {
+
+        final DataType expectedDataType = mock(DataType.class);
+
+        when(dataTypeUtils.getTopLevelParent(expectedDataType)).thenReturn(expectedDataType);
+
+        final DataType actualDataType = shortcuts.getTopLevelParent(expectedDataType);
+
+        assertEquals(expectedDataType, actualDataType);
     }
 }

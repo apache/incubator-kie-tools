@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
@@ -96,13 +97,30 @@ public class DNDDataTypesHandler {
         });
 
         // keep the state of the new data type item consistent
-        getDataTypeList().findItem(clone).ifPresent(item -> {
+        dataTypeList.findItemByDataTypeHash(getDataTypeList().calculateHash(clone)).ifPresent(item -> {
             if (isCurrentItemCollapsed) {
                 item.collapse();
             } else {
                 item.expand();
             }
+            expandParents(item.getDataType());
+            highlightLevel(item.getDragAndDropElement());
         });
+    }
+
+    private void highlightLevel(final HTMLElement dragAndDropElement) {
+        dataTypeList.highlightLevel(dragAndDropElement);
+    }
+
+    private void expandParents(final DataType dataType) {
+
+        final String parentUUID = dataType.getParentUUID();
+
+        Optional.ofNullable(dataTypeStore.get(parentUUID))
+                .ifPresent(parent -> {
+                    dataTypeList.findItem(parent).ifPresent(DataTypeListItem::expand);
+                    expandParents(parent);
+                });
     }
 
     public void deleteKeepingReferences(final DataType existing) {

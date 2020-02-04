@@ -286,6 +286,7 @@ public class DNDListComponentView implements DNDListComponent.View {
             final boolean isNotDragging = !DNDListDOMHelper.isDraggingElement(hover);
             if (isNotDragging) {
                 asHover(hover);
+                highlightLevel(hover);
             }
         });
     }
@@ -573,6 +574,10 @@ public class DNDListComponentView implements DNDListComponent.View {
 
     private void setDragging(HTMLElement dragging) {
         this.dragging = dragging;
+    }
+
+    private void highlightLevel(final HTMLElement htmlElement) {
+        presenter.highlightLevel(htmlElement);
     }
 
     private class DNDMinMaxTuple {

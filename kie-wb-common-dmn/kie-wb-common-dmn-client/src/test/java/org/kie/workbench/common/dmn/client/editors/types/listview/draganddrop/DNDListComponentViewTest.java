@@ -698,6 +698,7 @@ public class DNDListComponentViewTest {
 
         verify(view).clearHover();
         verify(hoverElement.classList, never()).add(HOVER);
+        verify(presenter, never()).highlightLevel(hoverElement);
     }
 
     @Test
@@ -715,6 +716,7 @@ public class DNDListComponentViewTest {
 
         verify(view).clearHover();
         verify(hoverElement.classList).add(HOVER);
+        verify(presenter).highlightLevel(hoverElement);
     }
 
     @Test

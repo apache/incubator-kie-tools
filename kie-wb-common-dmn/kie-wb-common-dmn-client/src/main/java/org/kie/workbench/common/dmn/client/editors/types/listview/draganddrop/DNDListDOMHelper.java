@@ -29,11 +29,11 @@ import elemental2.dom.NodeList;
 
 import static java.util.stream.Collectors.toList;
 
-class DNDListDOMHelper {
+public class DNDListDOMHelper {
+
+    public static final String DRAGGING = "kie-dnd-current-dragging";
 
     static final String DRAGGABLE = "kie-dnd-draggable";
-
-    static final String DRAGGING = "kie-dnd-current-dragging";
 
     static final String HOVER = "kie-dnd-hover";
 

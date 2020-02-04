@@ -105,6 +105,8 @@ public class DataTypeSelect {
         subDataTypes = dataTypeManager.from(getDataType()).makeExternalDataTypes(typeName);
         listItem.refreshSubItems(subDataTypes, false);
         listItem.refreshConstraintComponent();
+        listItem.expand();
+        subDataTypes.forEach(listItem::highlightLevel);
     }
 
     public String getValue() {

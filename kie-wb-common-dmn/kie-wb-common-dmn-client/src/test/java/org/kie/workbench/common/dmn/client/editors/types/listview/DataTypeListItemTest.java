@@ -278,17 +278,27 @@ public class DataTypeListItemTest {
     @Test
     public void testCollapse() {
 
+        final HTMLElement dragAndDropElement = mock(HTMLElement.class);
+
+        doReturn(dragAndDropElement).when(listItem).getDragAndDropElement();
+
         listItem.collapse();
 
         verify(view).collapse();
+        verify(dataTypeList).highlightLevel(dragAndDropElement);
     }
 
     @Test
     public void testExpand() {
 
+        final HTMLElement dragAndDropElement = mock(HTMLElement.class);
+
+        doReturn(dragAndDropElement).when(listItem).getDragAndDropElement();
+
         listItem.expand();
 
         verify(view).expand();
+        verify(dataTypeList).highlightLevel(dragAndDropElement);
     }
 
     @Test
@@ -303,6 +313,7 @@ public class DataTypeListItemTest {
         verify(listItem, never()).expandOrCollapseSubTypes();
         verify(view).enableFocusMode();
         verify(view).toggleArrow(anyBoolean());
+        verify(dataTypeList).highlightLevel(dataType);
     }
 
     @Test
@@ -317,6 +328,7 @@ public class DataTypeListItemTest {
         verify(listItem, never()).expandOrCollapseSubTypes();
         verify(view, never()).enableFocusMode();
         verify(view).toggleArrow(anyBoolean());
+        verify(dataTypeList).highlightLevel(dataType);
     }
 
     @Test
@@ -963,12 +975,14 @@ public class DataTypeListItemTest {
 
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
+        final DataTypeListItem referenceItem = mock(DataTypeListItem.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
         final String referenceDataTypeHash = "tDataType.id";
         final String newDataTypeHash = "tDataType.id.value";
 
         when(newDataType.create(reference, NESTED)).thenReturn(updatedDataTypes);
         when(dataTypeList.calculateHash(reference)).thenReturn(referenceDataTypeHash);
+        when(dataTypeList.findItemByDataTypeHash(referenceDataTypeHash)).thenReturn(Optional.of(referenceItem));
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
@@ -978,6 +992,7 @@ public class DataTypeListItemTest {
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
         verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
+        verify(referenceItem).expand();
     }
 
     @Test
@@ -1338,6 +1353,13 @@ public class DataTypeListItemTest {
 
         verify(listItems).removeChild(element0);
         verify(listItems).removeChild(element1);
+    }
+
+    @Test
+    public void testHighlight() {
+        final DataType dataType = mock(DataType.class);
+        listItem.highlightLevel(dataType);
+        verify(dataTypeList).highlightLevel(dataType);
     }
 
     private DataType makeDataType() {

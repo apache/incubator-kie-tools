@@ -212,10 +212,12 @@ public class DataTypeListItem {
 
     public void expand() {
         view.expand();
+        dataTypeList.highlightLevel(getDragAndDropElement());
     }
 
     public void collapse() {
         view.collapse();
+        dataTypeList.highlightLevel(getDragAndDropElement());
     }
 
     void refreshSubItems(final List<DataType> dataTypes,
@@ -229,6 +231,7 @@ public class DataTypeListItem {
             view.enableFocusMode();
         }
         view.toggleArrow(!dataTypes.isEmpty());
+        dataTypes.forEach(dataTypeList::highlightLevel);
     }
 
     public void enableEditMode() {
@@ -550,11 +553,24 @@ public class DataTypeListItem {
 
     public void insertNestedField(final DataType newDataType) {
 
+        final String referenceDataTypeHash = dataTypeList.calculateHash(getDataType());
+
         closeEditMode();
         expand();
 
         final List<DataType> updatedDataTypes = newDataType.create(getDataType(), NESTED);
+
+        refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        expandAndHighlight(referenceDataTypeHash);
+    }
+
+    private void refreshItemsByUpdatedDataTypes(final List<DataType> updatedDataTypes) {
         dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes.stream().distinct().collect(Collectors.toList()));
+    }
+
+    private void expandAndHighlight(final String dataTypeHash) {
+        final Optional<DataTypeListItem> dataTypeListItem = dataTypeList.findItemByDataTypeHash(dataTypeHash);
+        dataTypeListItem.ifPresent(DataTypeListItem::expand);
     }
 
     void enableEditModeAndUpdateCallbacks(final String dataTypeHash) {
@@ -653,6 +669,10 @@ public class DataTypeListItem {
 
     void setupIndentationLevel() {
         setPositionX(getDragAndDropElement(), getLevel() - 1d);
+    }
+
+    public void highlightLevel(final DataType dataType) {
+        dataTypeList.highlightLevel(dataType);
     }
 
     public interface View extends UberElemental<DataTypeListItem> {

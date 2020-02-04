@@ -100,6 +100,9 @@ public class DataTypeListTest {
     private DNDDataTypesHandler dndDataTypesHandler;
 
     @Mock
+    private DataTypeListHighlightHelper highlightHelper;
+
+    @Mock
     private IsKogito isKogito;
 
     private DataTypeStore dataTypeStore;
@@ -125,6 +128,7 @@ public class DataTypeListTest {
                                             dndListComponent,
                                             dataTypeStackHash,
                                             dndDataTypesHandler,
+                                            highlightHelper,
                                             isKogito));
         when(listItems.get()).thenReturn(treeGridItem);
     }
@@ -139,6 +143,7 @@ public class DataTypeListTest {
         dataTypeList.setup();
 
         verify(view).init(dataTypeList);
+        verify(highlightHelper).init(dataTypeList);
         verify(view).showImportDataObjectButton();
         verify(dndDataTypesHandler).init(dataTypeList);
         verify(dndListComponent).setOnDropItem(consumer);
@@ -1178,6 +1183,39 @@ public class DataTypeListTest {
         assertTrue(names.contains(name1));
         assertFalse(names.contains(name2));
         assertTrue(names.contains(name3));
+    }
+
+    @Test
+    public void testHighlightLevelWithDataType() {
+        final DataType dataType = mock(DataType.class);
+        dataTypeList.highlightLevel(dataType);
+        verify(highlightHelper).highlightLevel(dataType);
+    }
+
+    @Test
+    public void testHighlightLevelWithElement() {
+        final Element element = mock(Element.class);
+        dataTypeList.highlightLevel(element);
+        verify(highlightHelper).highlightLevel(element);
+    }
+
+    @Test
+    public void testHighlight() {
+        final Element element = mock(Element.class);
+        dataTypeList.highlight(element);
+        verify(highlightHelper).highlight(element);
+    }
+
+    @Test
+    public void testCleanLevelHighlightClass() {
+        dataTypeList.cleanLevelHighlightClass();
+        verify(highlightHelper).cleanLevelHighlightClass();
+    }
+
+    @Test
+    public void testCleanHighlightClass() {
+        dataTypeList.cleanHighlightClass();
+        verify(highlightHelper).cleanHighlightClass();
     }
 
     private DataTypeListItem listItem(final DataType dataType) {

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +42,12 @@ public class DataTypeUtils {
                          final DataTypeManager dataTypeManager) {
         this.dataTypeStore = dataTypeStore;
         this.dataTypeManager = dataTypeManager;
+    }
+
+    public DataType getTopLevelParent(final DataType dataType) {
+        final String parentUUID = dataType.getParentUUID();
+        final Optional<DataType> parent = Optional.ofNullable(dataTypeStore.get(parentUUID));
+        return parent.map(this::getTopLevelParent).orElse(dataType);
     }
 
     public List<DataType> defaultDataTypes() {

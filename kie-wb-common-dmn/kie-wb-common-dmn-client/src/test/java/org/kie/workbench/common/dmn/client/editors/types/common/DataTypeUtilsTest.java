@@ -107,4 +107,31 @@ public class DataTypeUtilsTest {
 
         assertEquals(expectedDataTypes, actualDataTypes);
     }
+
+    @Test
+    public void testGetTopLevelParent() {
+
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final DataType dataType3 = mock(DataType.class);
+        final String uuid1 = "0000";
+        final String uuid2 = "1111";
+        final String uuid3 = "2222";
+
+        when(dataType1.getUUID()).thenReturn(uuid1);
+        when(dataType2.getUUID()).thenReturn(uuid2);
+        when(dataType3.getUUID()).thenReturn(uuid3);
+
+        when(dataType1.getParentUUID()).thenReturn("");
+        when(dataType2.getParentUUID()).thenReturn(uuid1);
+        when(dataType3.getParentUUID()).thenReturn(uuid2);
+
+        when(dataTypeStore.get(uuid1)).thenReturn(dataType1);
+        when(dataTypeStore.get(uuid2)).thenReturn(dataType2);
+        when(dataTypeStore.get(uuid3)).thenReturn(dataType3);
+
+        final DataType topLevelParent = utils.getTopLevelParent(dataType3);
+
+        assertEquals(dataType1, topLevelParent);
+    }
 }

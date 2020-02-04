@@ -70,6 +70,8 @@ public class DataTypeList {
 
     private final DNDDataTypesHandler dndDataTypesHandler;
 
+    private final DataTypeListHighlightHelper highlightHelper;
+
     private final IsKogito isKogito;
 
     private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
@@ -90,6 +92,7 @@ public class DataTypeList {
                         final DNDListComponent dndListComponent,
                         final DataTypeStackHash dataTypeStackHash,
                         final DNDDataTypesHandler dndDataTypesHandler,
+                        final DataTypeListHighlightHelper highlightHelper,
                         final IsKogito isKogito) {
         this.view = view;
         this.listItems = listItems;
@@ -98,6 +101,7 @@ public class DataTypeList {
         this.dndListComponent = dndListComponent;
         this.dataTypeStackHash = dataTypeStackHash;
         this.dndDataTypesHandler = dndDataTypesHandler;
+        this.highlightHelper = highlightHelper;
         this.isKogito = isKogito;
         this.importedNamesOccurrencesCount = new HashMap<>();
         this.renamedImportedDataTypes = new HashMap<>();
@@ -106,6 +110,7 @@ public class DataTypeList {
     @PostConstruct
     void setup() {
         view.init(this);
+        highlightHelper.init(this);
         dndDataTypesHandler.init(this);
         dndListComponent.setOnDropItem(getOnDropDataType());
 
@@ -524,6 +529,26 @@ public class DataTypeList {
                 .filter(item -> item.getDataType().isTopLevel())
                 .map(item -> item.getDataType().getName())
                 .collect(Collectors.toList());
+    }
+
+    public void highlightLevel(final DataType dataType) {
+        highlightHelper.highlightLevel(dataType);
+    }
+
+    public void highlightLevel(final Element element) {
+        highlightHelper.highlightLevel(element);
+    }
+
+    public void highlight(final Element element) {
+        highlightHelper.highlight(element);
+    }
+
+    public void cleanLevelHighlightClass() {
+        highlightHelper.cleanLevelHighlightClass();
+    }
+
+    public void cleanHighlightClass() {
+        highlightHelper.cleanHighlightClass();
     }
 
     public interface View extends UberElemental<DataTypeList>,

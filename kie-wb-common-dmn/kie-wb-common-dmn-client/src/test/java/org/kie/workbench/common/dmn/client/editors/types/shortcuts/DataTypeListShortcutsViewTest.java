@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.NodeList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +39,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeListShortcutsView.HIGHLIGHT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -249,13 +246,14 @@ public class DataTypeListShortcutsViewTest {
         doNothing().when(view).setCurrentUUID(anyString());
         doNothing().when(view).addHighlightClass(any());
         doNothing().when(view).scrollTo(any());
+        doNothing().when(view).highlightLevel(any());
 
         view.highlight(element);
 
-        verify(view).cleanCurrentHighlight();
         verify(view).setCurrentUUID(uuid);
         verify(view).addHighlightClass(element);
         verify(view).scrollTo(element);
+        verify(view).highlightLevel(element);
     }
 
     @Test
@@ -271,33 +269,26 @@ public class DataTypeListShortcutsViewTest {
     }
 
     @Test
+    public void testHighlightLevel() {
+        final Element element = mock(Element.class);
+        view.highlightLevel(element);
+        verify(presenter).highlightLevel(element);
+    }
+
+    @Test
     public void testCleanCurrentHighlight() {
-
-        final Element element1 = fakeDataTypeRow("uuid1");
-        final Element element2 = fakeDataTypeRow("uuid2");
-        final NodeList<Element> elements = spy(new NodeList<>());
-
-        element1.classList = mock(DOMTokenList.class);
-        element2.classList = mock(DOMTokenList.class);
-        elements.length = 2;
-        doReturn(element1).when(elements).getAt(0);
-        doReturn(element2).when(elements).getAt(1);
-        doReturn(elements).when(view).querySelectorAll("." + HIGHLIGHT);
 
         view.cleanCurrentHighlight();
 
-        verify(element1.classList).remove(HIGHLIGHT);
-        verify(element2.classList).remove(HIGHLIGHT);
+        verify(presenter).cleanLevelHighlightClass();
+        verify(presenter).cleanHighlightClass();
     }
 
     @Test
     public void testAddHighlightClass() {
-        final Element element = fakeDataTypeRow("uuid");
-        element.classList = mock(DOMTokenList.class);
-
+        final Element element = mock(Element.class);
         view.addHighlightClass(element);
-
-        verify(element.classList).add(HIGHLIGHT);
+        verify(presenter).highlight(element);
     }
 
     @Test
