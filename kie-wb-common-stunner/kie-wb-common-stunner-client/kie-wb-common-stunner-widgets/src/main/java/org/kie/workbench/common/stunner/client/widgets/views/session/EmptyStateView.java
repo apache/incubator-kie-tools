@@ -30,10 +30,14 @@ public class EmptyStateView {
     public static final String TEXT_FONT_FAMILY = "Open Sans,Helvetica,Arial,sans-serif";
 
     public static final int TEXT_ALPHA = 1;
-    public static final String TEXT_FILL_COLOR = "#363636";
 
     public static final String TEXT_STROKE_COLOR = ColorName.TRANSPARENT.toString();
     public static final int TEXT_STROKE_WIDTH = 0;
+
+    //See PF Empty State: https://www.patternfly.org/v3/pattern-library/communication/empty-state/
+    public static final String BACKGROUND_FILL_COLOR = "#f5f5f5";
+    public static final String CURSOR_FILL_COLOR = "#9c9c9c";
+    public static final String TEXT_FILL_COLOR = "#363636";
 
     private LienzoLayer lienzoLayer;
     private String captionText;

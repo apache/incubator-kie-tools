@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.shared.core.types.Color;
 
 class EmptyStateLayer extends Layer {
 
@@ -57,7 +57,7 @@ class EmptyStateLayer extends Layer {
                                      "3.5-17.5-0.5-21-8.5l-47.75-113-78 78c-3 3-7 4.75-11.25 4.75-2 " +
                                      "0-4.25-0.5-6-1.25-6-2.5-10-8.25-10-14.75v-376c0-6.5 4-12.25 " +
                                      "10-14.75 1.75-0.75 4-1.25 6-1.25 4.25 0 8.25 1.5 11.25 4.75z");
-        cursor.setFillColor(ColorName.DARKGRAY.toString());
+        cursor.setFillColor(Color.fromColorString(EmptyStateView.CURSOR_FILL_COLOR));
         add(cursor);
     }
 
@@ -85,8 +85,7 @@ class EmptyStateLayer extends Layer {
 
     private void drawBackground(final Context2D context) {
         context.save();
-        context.setGlobalAlpha(.5);
-        context.setFillColor(ColorName.LIGHTGREY.toString());
+        context.setFillColor(Color.fromColorString(EmptyStateView.BACKGROUND_FILL_COLOR));
 
         context.fillRect(0, 0, getWidth(), this.getHeight());
 
