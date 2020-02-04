@@ -53,8 +53,7 @@ export class GithubService {
                 repo: fileInfo.repo,
                 owner: fileInfo.org,
                 ref: fileInfo.gitRef,
-                path: fileInfo.path,
-                headers: { "cache-control": "no-cache" }
+                path: fileInfo.path
             })
             .then(res => atob((res.data as any).content))
             .catch(e => {
