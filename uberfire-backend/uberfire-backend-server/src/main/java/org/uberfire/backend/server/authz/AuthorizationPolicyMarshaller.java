@@ -323,6 +323,39 @@ public class AuthorizationPolicyMarshaller {
         }
     }
 
+    public void remove(Group group, AuthorizationPolicy policy,
+                       Map out) {
+
+        write(policy, out);
+
+        for (Group subject : policy.getGroups()) {
+            if (group.getName().equals(subject.getName())) {
+                remove(subject,
+                       out);
+                remove(subject,
+                       policy.getPermissions(subject),
+                       out);
+            }
+        }
+    }
+
+    private void remove(Group group,
+                       Map out) {
+        String homePerspectiveKey = GROUP + "." + group.getName() + "." + HOME;
+        String priorityKey = GROUP + "." + group.getName() + "." + PRIORITY;
+        out.remove(priorityKey);
+        out.remove(homePerspectiveKey);
+    }
+
+    private void remove(Group group,
+                       PermissionCollection permissions,
+                       Map out) {
+        for (Permission p : permissions.collection()) {
+            String key = GROUP + "." + group.getName() + "." + PERMISSION + "." + p.getName();
+            out.remove(key);
+        }
+    }
+
     public Key parse(String key) {
         int _idx = 0;
         String _key = key.endsWith(".*") ? key.substring(0,

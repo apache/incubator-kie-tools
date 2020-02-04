@@ -15,6 +15,7 @@
  */
 package org.uberfire.backend.authz;
 
+import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.security.authz.AuthorizationPolicy;
 
 /**
@@ -34,4 +35,11 @@ public interface AuthorizationPolicyStorage {
      * @param policy The authorization policy to store
      */
     void savePolicy(AuthorizationPolicy policy);
+
+    /**
+     * Deletes the group from  {@link AuthorizationPolicy} instance stored in the backend
+     * @param policy The authorization policy to store
+     * @param group Group instance
+     */
+    void deletePolicyByGroup(Group group, AuthorizationPolicy policy);
 }

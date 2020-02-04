@@ -15,9 +15,6 @@
  */
 package org.uberfire.backend.server.authz;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.Files.walkFileTree;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
@@ -28,10 +25,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.security.shared.api.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
-import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -46,6 +43,9 @@ import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
 import org.uberfire.spaces.SpacesAPI;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.Files.walkFileTree;
+
 /**
  * An implementation that stores the authorization policy in property files.
  */
@@ -59,6 +59,7 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
     private IOService ioService;
     private FileSystem fileSystem;
     private Path root;
+    public static final String POLICY_FILE = "security-policy.properties";
 
     public AuthorizationPolicyVfsStorage() {
     }
@@ -84,7 +85,13 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
 
     @Override
     public synchronized void savePolicy(AuthorizationPolicy policy) {
-        savePolicyIntoVfs(policy,
+
+        // Dump the entire authz policy into a properties map
+        AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
+        NonEscapedProperties entries = new NonEscapedProperties();
+        marshaller.write(policy,
+                         entries);
+        savePolicyIntoVfs(entries,
                           "system",
                           "Save policy");
     }
@@ -149,13 +156,24 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
 
     public boolean isPolicyFile(Path p) {
         String fileName = p.getName(p.getNameCount() - 1).toString();
-        return fileName.equals("security-policy.properties") || fileName.startsWith("security-module-");
+        return fileName.equals(POLICY_FILE) || fileName.startsWith("security-module-");
     }
 
-    public void savePolicyIntoVfs(AuthorizationPolicy policy,
+    @Override
+    public void deletePolicyByGroup(Group group, AuthorizationPolicy policy) {
+
+        AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
+        NonEscapedProperties entries = new NonEscapedProperties();
+        marshaller.remove(group, policy,
+                          entries);
+        savePolicyIntoVfs(entries,
+                          "system",
+                          "Delete Policy");
+    }
+
+    public void savePolicyIntoVfs(NonEscapedProperties entries,
                                   String subjectId,
                                   String message) {
-
         if (subjectId == null || message == null) {
             ioService.startBatch(fileSystem);
         } else {
@@ -163,21 +181,13 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
                                  new CommentedOption(subjectId,
                                                      message));
         }
-
-        try {
-            // Dump the entire authz policy into a properties map
-            AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
-            NonEscapedProperties entries = new NonEscapedProperties();
-            marshaller.write(policy,
-                             entries);
-
+        try (StringWriter sw = new StringWriter()) {
             // Store the entries into a properties file
-            StringWriter sw = new StringWriter();
             entries.store(sw,
                           "Authorization Policy",
                           "Last update: " + new Date().toString());
             String policyContent = sw.toString();
-            Path policyPath = getAuthzPath().resolve("security-policy.properties");
+            Path policyPath = getAuthzPath().resolve(POLICY_FILE);
             ioService.write(policyPath,
                             policyContent);
         } catch (Exception e) {

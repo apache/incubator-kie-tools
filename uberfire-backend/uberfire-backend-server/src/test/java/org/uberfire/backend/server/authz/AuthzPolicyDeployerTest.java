@@ -15,13 +15,17 @@
  */
 package org.uberfire.backend.server.authz;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.junit.Before;
@@ -34,6 +38,9 @@ import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
 import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.backend.server.security.RoleRegistry;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.mocks.FileSystemTestingUtils;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
@@ -42,30 +49,60 @@ import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.authz.PermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthzPolicyDeployerTest {
 
     @Mock
+    protected SpacesAPI spaces;
+
+    @Mock
     AuthorizationPolicyStorage storage;
+
+    AuthorizationPolicyVfsStorage vfsstorage;
+
+    private FileSystem fileSystem;
 
     @Mock
     Event<AuthorizationPolicyDeployedEvent> event;
 
+    private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
+
     AuthorizationPolicyDeployer deployer;
+
     PermissionManager permissionManager;
 
+    IOService ioService;
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        fileSystemTestingUtils.setup();
+        fileSystem = fileSystemTestingUtils.getFileSystem();
+        ioService = spy(fileSystemTestingUtils.getIoService());
+        doNothing().when(ioService).startBatch(any(FileSystem.class));
+        doNothing().when(ioService).endBatch();
+        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
         PermissionTypeRegistry permissionTypeRegistry = new DefaultPermissionTypeRegistry();
         permissionManager = spy(new DefaultPermissionManager(permissionTypeRegistry));
-        deployer = new AuthorizationPolicyDeployer(storage,
-                                                   permissionManager,
-                                                   event);
+
+        vfsstorage = new AuthorizationPolicyVfsStorage(ioService, permissionManager, spaces);
+        deployer = new AuthorizationPolicyDeployer(storage, permissionManager, event);
+        vfsstorage.initFileSystem();
         RoleRegistry.get().clear();
     }
 
@@ -93,6 +130,43 @@ public class AuthzPolicyDeployerTest {
     @Test
     public void testPolicyLoad2() throws Exception {
         testPolicyLoad("WEB-INF/classes/split/security-policy.properties");
+    }
+
+    @Test
+    public void testPolicyDelete() throws Exception {
+        testPolicyDelete("WEB-INF/classes/security-policy.properties");
+    }
+
+    public void testPolicyDelete(String path) throws Exception {
+        URL fileURL = Thread.currentThread().getContextClassLoader().getResource(path);
+        Path policyDir = Paths.get(fileURL.toURI()).getParent();
+
+        assertTrue(RoleRegistry.get().getRegisteredRoles().isEmpty());
+
+        deployer.deployPolicy(policyDir);
+
+        ArgumentCaptor<AuthorizationPolicy> policyCaptor = ArgumentCaptor.forClass(AuthorizationPolicy.class);
+        verify(storage).loadPolicy();
+        verify(storage).savePolicy(policyCaptor.capture());
+        vfsstorage.savePolicy(policyCaptor.getValue());
+
+        AuthorizationPolicy policy = vfsstorage.loadPolicyFromVfs();
+        Set<Group> groups = policy.getGroups();
+        assertEquals(1, groups.size());
+
+        Group group = new GroupImpl("group1");
+        PermissionCollection permissions = policy.getPermissions(group);
+        Permission permission = permissions.get("perspective.read");
+        assertNotNull(permission);
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, permission.getResult());
+
+        vfsstorage.deletePolicyByGroup(group, policyCaptor.getValue());
+        verify(event).fire(any());
+
+        policy = vfsstorage.loadPolicyFromVfs();
+        groups = policy.getGroups();
+        assertEquals(0, groups.size());
+
     }
 
     public void testPolicyLoad(String path) throws Exception {

@@ -26,6 +26,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -42,8 +44,13 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AuthzPolicyMarshallerTest {
 
@@ -385,5 +392,30 @@ public class AuthzPolicyMarshallerTest {
                      "false");
         assertEquals(output.get("default.permission.p2"),
                      "true");
+    }
+
+    @Test
+    public void testPolicyRemove() {
+        builder.group("group2").priority(3).home("B")
+                .permission("p1",
+                            false)
+                .permission("p2",
+                            true);
+
+        AuthorizationPolicy policy = builder.build();
+        TreeMap<String, String> output = new TreeMap<>();
+        marshaller.write(policy,
+                         output);
+        Group g = new GroupImpl("group2");
+        assertEquals("B", output.get("group.group2.home"));
+        assertEquals("3", output.get("group.group2.priority"));
+        assertEquals("false", output.get("group.group2.permission.p1"));
+        assertEquals("true", output.get("group.group2.permission.p2"));
+        marshaller.remove(g, policy, output);
+
+        assertEquals(null, output.get("group.group2.home"));
+        assertEquals(null, output.get("group.group2.priority"));
+        assertEquals(null, output.get("group.group2.permission.p1"));
+        assertEquals(null, output.get("group.group2.permission.p2"));
     }
 }

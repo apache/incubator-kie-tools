@@ -74,6 +74,7 @@ public class GroupEditorWorkflow implements IsWidget {
     PermissionManager permissionManager;
     Event<OnErrorEvent> errorEvent;
     protected final ErrorCallback<Message> errorCallback = (Message message, Throwable throwable) -> {
+        hideLoadingBox();
         showError(throwable);
         return false;
     };
@@ -163,12 +164,23 @@ public class GroupEditorWorkflow implements IsWidget {
     void delete() {
         final String name = group.getName();
         userSystemManager.groups((Void v) -> {
-                                     deleteGroupEvent.fire(new DeleteGroupEvent(name));
-                                     workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupRemoved(name),
-                                                                                      INFO));
+                                     doDelete();
                                      clear();
                                  },
                                  errorCallback).delete(name);
+    }
+
+    protected void doDelete(){
+        final String name = group.getName();
+        AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
+        showLoadingBox();
+        authorizationService.call(r -> {
+                                      hideLoadingBox();
+                                      deleteGroupEvent.fire(new DeleteGroupEvent(name));
+                                      workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupRemoved(name),
+                                                                                       INFO));
+                                  },
+                                  errorCallback).deletePolicyByGroup(group, authzPolicy);
     }
 
     protected void doShow(final String groupName) {

@@ -40,6 +40,7 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnE
 import org.uberfire.ext.security.management.client.widgets.management.events.SaveGroupEvent;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.PermissionCollection;
@@ -59,7 +60,9 @@ import static org.mockito.Mockito.*;
 public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
 
     @Mock
-    Caller<AuthorizationService> authorizationService;
+    AuthorizationService authorizationService;
+    Caller<AuthorizationService> authorizationServiceCaller;
+
     @Mock
     EventSourceMock<OnErrorEvent> errorEvent;
     @Mock
@@ -108,9 +111,9 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(view.setSaveButtonText(anyString())).thenReturn(view);
         when(view.showNotification(anyString())).thenReturn(view);
         when(groupsManagerService.get(anyString())).thenReturn(group);
-
+        authorizationServiceCaller = new CallerMock<>(authorizationService);
         tested = spy(new GroupEditorWorkflow(userSystemManager,
-                                             authorizationService,
+                                             authorizationServiceCaller,
                                              permissionManager,
                                              errorEvent,
                                              confirmBox,
@@ -178,7 +181,7 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
     }
 
     @Test
-    public void testOnDeleteUserEvent() {
+    public void testOnDeleteGroupEvent() {
         final OnDeleteEvent onDeleteEvent = mock(OnDeleteEvent.class);
         when(onDeleteEvent.getContext()).thenReturn(groupEditor);
         doAnswer(new Answer<Void>() {

@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
@@ -30,14 +31,18 @@ import org.uberfire.security.authz.PermissionManager;
 @ApplicationScoped
 public class AuthorizationServiceImpl implements AuthorizationService {
 
-    @Inject
     private AuthorizationPolicyStorage storage;
 
-    @Inject
     private PermissionManager permissionManager;
 
-    @Inject
     private Event<AuthorizationPolicySavedEvent> savedEvent;
+
+    @Inject
+    public AuthorizationServiceImpl(final AuthorizationPolicyStorage storage, final PermissionManager permissionManager, final Event<AuthorizationPolicySavedEvent> savedEvent) {
+        this.storage = storage;
+        this.permissionManager = permissionManager;
+        this.savedEvent = savedEvent;
+    }
 
     @Override
     public AuthorizationPolicy loadPolicy() {
@@ -49,5 +54,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         storage.savePolicy(policy);
         permissionManager.setAuthorizationPolicy(policy);
         savedEvent.fire(new AuthorizationPolicySavedEvent(policy));
+    }
+
+    @Override
+    public void deletePolicyByGroup(Group group, AuthorizationPolicy policy) {
+        storage.deletePolicyByGroup(group, policy);
+        AuthorizationPolicy newPolicy = storage.loadPolicy();
+        permissionManager.setAuthorizationPolicy(newPolicy);
+        savedEvent.fire(new AuthorizationPolicySavedEvent(newPolicy));
     }
 }

@@ -18,6 +18,7 @@ package org.uberfire.client.auth;
 import javax.inject.Singleton;
 
 import org.jboss.errai.bus.server.annotations.ShadowService;
+import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.impl.authz.DefaultAuthorizationPolicy;
@@ -39,6 +40,11 @@ public class ShadowedAuthorizationService implements AuthorizationService {
 
     @Override
     public void savePolicy(AuthorizationPolicy policy) {
+        this.policy = policy;
+    }
+
+    @Override
+    public void deletePolicyByGroup(Group group , AuthorizationPolicy policy) {
         this.policy = policy;
     }
 }
