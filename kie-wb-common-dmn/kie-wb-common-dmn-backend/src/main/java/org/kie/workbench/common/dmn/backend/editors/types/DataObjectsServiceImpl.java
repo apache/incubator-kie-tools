@@ -15,12 +15,6 @@
  */
 package org.kie.workbench.common.dmn.backend.editors.types;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +26,8 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
@@ -152,24 +148,32 @@ public class DataObjectsServiceImpl implements DataObjectsService {
     }
 
     private BuiltInType determineBuiltInTypeFromClass(final Class<?> clazz) {
-        if (Objects.isNull(clazz)) {
-            return BuiltInType.UNDEFINED;
-        } else if (Number.class.isAssignableFrom(clazz)) {
-            return BuiltInType.NUMBER;
-        } else if (String.class.isAssignableFrom(clazz)) {
-            return BuiltInType.STRING;
-        } else if (Character.class.isAssignableFrom(clazz)) {
-            return BuiltInType.STRING;
-        } else if (LocalDate.class.isAssignableFrom(clazz)) {
-            return BuiltInType.DATE;
-        } else if (LocalTime.class.isAssignableFrom(clazz) || OffsetTime.class.isAssignableFrom(clazz)) {
-            return BuiltInType.TIME;
-        } else if (ZonedDateTime.class.isAssignableFrom(clazz) || OffsetDateTime.class.isAssignableFrom(clazz) || LocalDateTime.class.isAssignableFrom(clazz)) {
-            return BuiltInType.DATE_TIME;
-        } else if (Boolean.class.isAssignableFrom(clazz)) {
-            return BuiltInType.BOOLEAN;
-        } else if (Map.class.isAssignableFrom(clazz)) {
-            return BuiltInType.CONTEXT;
+        final Type type = JavaBackedType.determineTypeFromClass(clazz);
+        if (type instanceof org.kie.dmn.feel.lang.types.BuiltInType) {
+            org.kie.dmn.feel.lang.types.BuiltInType builtIn = (org.kie.dmn.feel.lang.types.BuiltInType) type;
+            switch (builtIn) {
+                case UNKNOWN:
+                case DURATION:
+                case RANGE:
+                case FUNCTION:
+                case LIST:
+                case UNARY_TEST:
+                    return BuiltInType.ANY;
+                case NUMBER:
+                    return BuiltInType.NUMBER;
+                case STRING:
+                    return BuiltInType.STRING;
+                case DATE:
+                    return BuiltInType.DATE;
+                case TIME:
+                    return BuiltInType.TIME;
+                case DATE_TIME:
+                    return BuiltInType.DATE_TIME;
+                case BOOLEAN:
+                    return BuiltInType.BOOLEAN;
+                case CONTEXT:
+                    return BuiltInType.CONTEXT;
+            }
         }
         return BuiltInType.ANY;
     }

@@ -24,6 +24,7 @@ import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -278,12 +279,14 @@ public class DataObjectsServiceImplTest {
                                                      DataType.TYPE_OBJECT),
                                        newModelField("listField",
                                                      List.class.getName(),
-                                                     List.class.getSimpleName())
+                                                     List.class.getSimpleName()),
+                                       newModelField("localDateField",
+                                                     Date.class.getName(),
+                                                     DataType.TYPE_LOCAL_DATE)
                                });
 
         final Map<String, ModelField[]> modelFields = modelFieldsBuilder.build();
         dataModelOracle.addModuleModelFields(modelFields);
-
 
         final Maps.Builder<String, String> modelFieldsParametersTypeBuilder = new Maps.Builder<>();
         modelFieldsParametersTypeBuilder.put(APerson.class.getName() + "#listField", String.class.getName());
@@ -296,7 +299,7 @@ public class DataObjectsServiceImplTest {
         assertThat(dataObjects).hasSize(1);
 
         assertThat(dataObjects.get(0).getClassType()).isEqualTo(APerson.class.getName());
-        assertThat(dataObjects.get(0).getProperties()).hasSize(11);
+        assertThat(dataObjects.get(0).getProperties()).hasSize(12);
         assertThat(dataObjects.get(0).getProperties().get(0).getProperty()).isEqualTo("stringField");
         assertThat(dataObjects.get(0).getProperties().get(0).getType()).isEqualTo(BuiltInType.STRING.getName());
         assertThat(dataObjects.get(0).getProperties().get(0).isList()).isFalse();
@@ -330,10 +333,13 @@ public class DataObjectsServiceImplTest {
         assertThat(dataObjects.get(0).getProperties().get(10).getProperty()).isEqualTo("listField");
         assertThat(dataObjects.get(0).getProperties().get(10).getType()).isEqualTo(BuiltInType.STRING.getName());
         assertThat(dataObjects.get(0).getProperties().get(10).isList()).isTrue();
+        assertThat(dataObjects.get(0).getProperties().get(11).getProperty()).isEqualTo("localDateField");
+        assertThat(dataObjects.get(0).getProperties().get(11).getType()).isEqualTo(BuiltInType.DATE_TIME.getName());
+        assertThat(dataObjects.get(0).getProperties().get(11).isList()).isFalse();
     }
 
     @Test
-    public void testLoadDataObjects_Lists(){
+    public void testLoadDataObjects_Lists() {
         final Maps.Builder<String, ModelField[]> modelFieldsBuilder = new Maps.Builder<>();
         modelFieldsBuilder.put(APerson.class.getName(),
                                new ModelField[]{
