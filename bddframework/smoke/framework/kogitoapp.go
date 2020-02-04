@@ -146,9 +146,11 @@ func appendNewEnvToKogitoApp(kogitoApp *v1alpha1.KogitoApp, name, value string) 
 }
 
 func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
-	// If "KOGITO_BUILD_IMAGE_STREAM_[TAG|NAME|NAMESPACE]" is defined, it is taken into account
+	// If "KOGITO_BUILD_IMAGE_STREAM_TAG" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage
-	kogitoApp.Spec.Build.ImageS2ITag = getEnvS2IImageSteamTag()
-	kogitoApp.Spec.Build.ImageRuntimeTag = getEnvRuntimeImageSteamTag()
+	kogitoApp.Spec.Build.ImageS2ITag = getEnvS2IImageStreamTag()
+	kogitoApp.Spec.Build.ImageRuntimeTag = getEnvRuntimeImageStreamTag()
+	// If "KOGITO_BUILD_IMAGE_VERSION" is defined, it's taken into account, otherwise set the current version
+	kogitoApp.Spec.Build.ImageVersion = getEnvImageVersion()
 }

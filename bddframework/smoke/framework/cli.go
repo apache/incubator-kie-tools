@@ -71,7 +71,7 @@ func CliDeployExample(namespace, appName, contextDir, runtime string, native, pe
 		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=-Ppersistence", mavenArgsAppendEnvVar))
 	}
 
-	// TODO setupBuildImageStreams(kogitoApp)
+	cmd = append(cmd, "--image-version", getEnvImageVersion())
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err

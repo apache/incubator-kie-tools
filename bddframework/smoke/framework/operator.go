@@ -46,16 +46,16 @@ var (
 	defaultOperatorImageTag = version.Version
 
 	kogitoOperatorCommunityDependencies = map[string]dependentOperator{
-		"infinispan": dependentOperator{
-			timeoutInMin: 5,
+		"infinispan": {
+			timeoutInMin: 20,
 			channel:      "stable",
 		},
-		"strimzi-kafka-operator": dependentOperator{
-			timeoutInMin: 5,
+		"strimzi-kafka-operator": {
+			timeoutInMin: 20,
 			channel:      "stable",
 		},
-		"keycloak-operator": dependentOperator{
-			timeoutInMin: 5,
+		"keycloak-operator": {
+			timeoutInMin: 20,
 			channel:      "alpha",
 		},
 	}
@@ -66,6 +66,7 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 	var deployURI = getEnvOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
+	// TODO: error handling, go lint is screaming about this
 	loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil)
 	loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil)
 	loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil)

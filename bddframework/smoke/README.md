@@ -30,11 +30,15 @@ You can add some environment variables which will be taken into account by the t
 
   Url for Maven repository to be used in builds
 
-* **KOGITO_BUILD_IMAGE_STREAM_[TAG|NAME|NAMESPACE]**
+* **KOGITO_BUILD_IMAGE_STREAM_TAG**
 
-  Image stream tag / name / namespace to be used for building the application
-  Default to current version
-  You can also define 'KOGITO_BUILD_S2I_IMAGE_STREAM_*' and 'KOGITO_BUILD_RUNTIME_IMAGE_STREAM_*' separately
+  Image tag to be used for building the application (e.g. `quay.io/mynamespace/myimage:tag`)
+  Default to operator current version and Kiegroup images
+
+* **KOGITO_BUILD_IMAGE_VERSION**
+
+  Image version to be used for the Image Streams created internally by the operator
+  Default to operator current version
 
 * **LOCAL_TESTS**
 

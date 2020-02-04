@@ -14,7 +14,7 @@ Feature: Install Keycloak
       | component | timeoutInMinutes |
       | Infinispan | 5 |
       | Kafka | 5 |
-      | Keycloak | 5 |
+      | Keycloak | 10 |
 
   Scenario Outline: Remove Component
     Given Install Kogito Infra <component>
@@ -28,4 +28,4 @@ Feature: Install Keycloak
       | component | installTimeoutInMinutes | removeTimeoutInMinutes |
       | Infinispan | 5 | 2 |
       | Kafka | 10 | 2 |
-      | Keycloak | 5 | 2 |
+      | Keycloak | 10 | 5 |

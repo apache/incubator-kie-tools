@@ -15,6 +15,7 @@
 package framework
 
 import (
+	"github.com/kiegroup/kogito-cloud-operator/version"
 	"path/filepath"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
@@ -58,28 +59,16 @@ func getEnvExamplesRepositoryRef() string {
 	return util.GetOSEnv("KOGITO_EXAMPLES_REPOSITORY_REF", "")
 }
 
-func getEnvS2IImageSteamTag() string {
+func getEnvImageVersion() string {
+	return util.GetOSEnv("KOGITO_BUILD_IMAGE_VERSION", version.Version)
+}
+
+func getEnvS2IImageStreamTag() string {
 	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_S2I_IMAGE_STREAM_TAG", "")
 }
 
-func getEnvS2IImageSteamName() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAME", "")
-}
-
-func getEnvS2IImageSteamNamespace() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_S2I_IMAGE_STREAM_NAMESPACE", "")
-}
-
-func getEnvRuntimeImageSteamTag() string {
+func getEnvRuntimeImageStreamTag() string {
 	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG", "")
-}
-
-func getEnvRuntimeImageSteamName() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAME", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAME", "")
-}
-
-func getEnvRuntimeImageSteamNamespace() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_NAMESPACE", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_NAMESPACE", "")
 }
 
 func getEnvLocalTests() string {

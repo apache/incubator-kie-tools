@@ -14,7 +14,7 @@ Feature: CLI: Install Kogito Infra Component
       | component | timeoutInMinutes |
       | Infinispan | 5 |
       | Kafka | 10 |
-      | Keycloak | 5 |
+      | Keycloak | 10 |
 
   Scenario Outline: CLI remove Component
     Given Install Kogito Infra <component>
@@ -28,4 +28,4 @@ Feature: CLI: Install Kogito Infra Component
       | component | installTimeoutInMinutes | removeTimeoutInMinutes |
       | Infinispan | 5 | 2 |
       | Kafka | 10 | 2 |
-      | Keycloak | 5 | 2 |
+      | Keycloak | 10 | 5 |
