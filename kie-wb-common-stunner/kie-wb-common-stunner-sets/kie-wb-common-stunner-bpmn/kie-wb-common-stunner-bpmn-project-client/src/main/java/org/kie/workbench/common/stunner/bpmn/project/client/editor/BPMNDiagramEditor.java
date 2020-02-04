@@ -26,8 +26,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandler;
-import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandlerProvider;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -63,7 +61,6 @@ import org.uberfire.lifecycle.OnLostFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -75,7 +72,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     public static final String EDITOR_ID = "BPMNDiagramEditor";
 
-    private final IntegrationHandlerProvider integrationHandlerProvider;
     private final UberfireDocks uberfireDocks;
     private final StunnerDocksHandler stunnerDocksHandler;
 
@@ -99,7 +95,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ClientTranslationService translationService,
                              final ClientProjectDiagramService projectDiagramServices,
                              final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
-                             final IntegrationHandlerProvider integrationHandlerProvider,
                              final UberfireDocks uberfireDocks,
                              final StunnerDocksHandler stunnerDocksHandler) {
         super(view,
@@ -118,15 +113,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               translationService,
               projectDiagramServices,
               projectDiagramResourceServiceCaller);
-        this.integrationHandlerProvider = integrationHandlerProvider;
         this.uberfireDocks = uberfireDocks;
         this.stunnerDocksHandler = stunnerDocksHandler;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        integrationHandlerProvider.getIntegrationHandler().ifPresent(integrationHandler -> getBPMNSessionItems().setOnMigrate(() -> onMigrate(integrationHandler)));
     }
 
     @OnStartup
@@ -167,21 +155,25 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         super.doLostFocus();
     }
 
+    @Override
     @WorkbenchPartTitleDecoration
     public IsWidget getTitle() {
         return super.getTitle();
     }
 
+    @Override
     @WorkbenchPartTitle
     public String getTitleText() {
         return super.getTitleText();
     }
 
+    @Override
     @WorkbenchMenu
     public void getMenus(final Consumer<Menus> menusConsumer) {
         super.getMenus(menusConsumer);
     }
 
+    @Override
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();
@@ -190,15 +182,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     @OnMayClose
     public boolean onMayClose() {
         return super.mayClose(getCurrentDiagramHash());
-    }
-
-    protected void onMigrate(IntegrationHandler integrationHandler) {
-        final ParameterizedCommand<Consumer<Boolean>> saveCommand = saveCallback -> {
-            isMigrating = true;
-            this.saveCallback = saveCallback;
-            BPMNDiagramEditor.super.save();
-        };
-        integrationHandler.migrateFromStunnerToJBPMDesigner(versionRecordManager.getCurrentPath(), place, isDirty(getCurrentContentHash()), saveCommand);
     }
 
     @Override
@@ -217,9 +200,5 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
             isMigrating = false;
             saveCallback.accept(false);
         }
-    }
-
-    private BPMNProjectEditorMenuSessionItems getBPMNSessionItems() {
-        return (BPMNProjectEditorMenuSessionItems) getMenuSessionItems();
     }
 }

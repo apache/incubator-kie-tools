@@ -18,19 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandler;
-import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandlerProvider;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -54,23 +50,16 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,12 +76,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Mock
     private BPMNProjectEditorMenuSessionItems bpmnMenuSessionItems;
-
-    @Mock
-    private IntegrationHandlerProvider integrationHandlerProvider;
-
-    @Mock
-    private IntegrationHandler integrationHandler;
 
     @Mock
     private UberfireDocks uberfireDocks;
@@ -115,21 +98,12 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private PerspectiveActivity currentPerspective;
 
-    @Mock
-    private ProjectMetadata projectMetadata;
-
-    @Mock
-    private Overview projectOverview;
-
-    private ArgumentCaptor<Command> commandCaptor;
-
     private BPMNDiagramEditor diagramEditor;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
         super.setUp();
-        commandCaptor = ArgumentCaptor.forClass(Command.class);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
     }
 
@@ -149,7 +123,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     @Override
     protected AbstractProjectDiagramEditor createDiagramEditor() {
-        when(integrationHandlerProvider.getIntegrationHandler()).thenReturn(Optional.empty());
         diagramEditor = spy(new BPMNDiagramEditor(view,
                                                   xmlEditorView,
                                                   sessionEditorPresenters,
@@ -166,7 +139,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                   translationService,
                                                   clientProjectDiagramService,
                                                   projectDiagramResourceServiceCaller,
-                                                  integrationHandlerProvider,
                                                   uberfireDocks,
                                                   stunnerDocksHandler) {
             {
@@ -229,32 +201,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     }
 
     @Test
-    public void testInitWhenIntegrationIsPresent() {
-        Optional<IntegrationHandler> optional = Optional.of(integrationHandler);
-        when(integrationHandlerProvider.getIntegrationHandler()).thenReturn(optional);
-        diagramEditor.init();
-        verify(bpmnMenuSessionItems).setOnMigrate(any(Command.class));
-    }
-
-    @Test
-    public void testInitWhenIntegrationIsNotPresent() {
-        Optional<IntegrationHandler> optional = Optional.empty();
-        when(integrationHandlerProvider.getIntegrationHandler()).thenReturn(optional);
-        diagramEditor.init();
-        verify(bpmnMenuSessionItems, never()).setOnMigrate(any(Command.class));
-    }
-
-    @Test
-    public void testMigrateWhenNotDirty() {
-        testMigrate(false);
-    }
-
-    @Test
-    public void testMigrateWhenDirty() {
-        testMigrate(true);
-    }
-
-    @Test
     public void testOnOpen() {
         Collection<UberfireDock> stunnerDocks = new ArrayList<>();
         stunnerDocks.add(propertiesDock);
@@ -275,19 +221,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         diagramEditor.onOpen();
         verify(uberfireDocks, times(1)).open(propertiesDock);
-    }
-
-    private void testMigrate(boolean isDirty) {
-        ObservablePath currentPath = mock(ObservablePath.class);
-        when(versionRecordManager.getCurrentPath()).thenReturn(currentPath);
-        doReturn(isDirty).when(diagramEditor).isDirty(any(Integer.class));
-
-        Optional<IntegrationHandler> optional = Optional.of(integrationHandler);
-        when(integrationHandlerProvider.getIntegrationHandler()).thenReturn(optional);
-        diagramEditor.init();
-        verify(bpmnMenuSessionItems).setOnMigrate(commandCaptor.capture());
-        commandCaptor.getValue().execute();
-        verify(integrationHandler).migrateFromStunnerToJBPMDesigner(eq(currentPath), eq(currentPlace), eq(isDirty), any(ParameterizedCommand.class));
     }
 
     @Test

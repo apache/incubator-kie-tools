@@ -20,55 +20,17 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
-import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 @Typed(BPMNProjectEditorMenuSessionItems.class)
 public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEditorMenuSessionItems<BPMNProjectDiagramEditorMenuItemsBuilder> {
 
-    private Command onMigrate;
-    private MenuItem migrateMenuItem;
-
     @Inject
     public BPMNProjectEditorMenuSessionItems(final BPMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
                                              final @BPMN BPMNEditorSessionCommands sessionCommands) {
         super(itemsBuilder, sessionCommands);
-    }
-
-    public BPMNProjectEditorMenuSessionItems setOnMigrate(final Command onMigrate) {
-        this.onMigrate = onMigrate;
-        return this;
-    }
-
-    @Override
-    public void populateMenu(final FileMenuBuilder menu) {
-        super.populateMenu(menu);
-        if (onMigrate != null) {
-            migrateMenuItem = newMigrateMenuItem();
-            menu.addNewTopLevelMenu(migrateMenuItem);
-        }
-    }
-
-    @Override
-    public void setEnabled(final boolean enabled) {
-        super.setEnabled(enabled);
-        if (migrateMenuItem != null) {
-            migrateMenuItem.setEnabled(enabled);
-        }
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        onMigrate = null;
-        migrateMenuItem = null;
     }
 
     @Override
@@ -89,14 +51,5 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEdi
     @Override
     protected String getEditorFormGenerationTitlePropertyKey() {
         return BPMNClientConstants.EditorFormGenerationTitle;
-    }
-
-    private MenuItem newMigrateMenuItem() {
-        final MenuUtils.HasEnabledIsWidget buttonWrapper = MenuUtils.buildHasEnabledWidget(new Button() {{
-            setSize(ButtonSize.SMALL);
-            setText(getTranslationService().getValue(BPMNClientConstants.EditorMigrateActionMenu));
-            addClickHandler(clickEvent -> onMigrate.execute());
-        }});
-        return MenuUtils.buildItem(buttonWrapper);
     }
 }
