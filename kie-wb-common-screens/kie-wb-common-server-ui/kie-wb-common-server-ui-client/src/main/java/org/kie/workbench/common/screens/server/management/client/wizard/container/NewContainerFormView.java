@@ -346,6 +346,11 @@ public class NewContainerFormView extends Composite
         return translationService.getTranslation(Constants.NewContainerFormView_NewContainerWizardSaveError);
     }
 
+    @Override
+    public String getNewContainerGAVNotExist(final String gav) {
+        return translationService.format(Constants.NewContainer_GAVNotExist, gav);
+    }
+
     private String getTitleText() {
         return translationService.getTranslation(Constants.NewContainerFormView_TitleText);
     }

@@ -236,4 +236,7 @@ public class Constants {
     @TranslationKey(defaultValue = "")
     public static final String ContainerUpdateEvent_SuccessMessage = "ContainerUpdateEvent.SuccessMessage";
 
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainer_GAVNotExist = "NewContainer.GAVNotExist";
+
 }

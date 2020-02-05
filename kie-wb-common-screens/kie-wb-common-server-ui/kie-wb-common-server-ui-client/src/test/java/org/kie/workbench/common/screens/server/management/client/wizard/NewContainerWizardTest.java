@@ -17,15 +17,22 @@
 package org.kie.workbench.common.screens.server.management.client.wizard;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.model.JarListPageRow;
+import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
+import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.wizard.config.process.ProcessConfigPagePresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter;
@@ -35,9 +42,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
@@ -60,11 +69,19 @@ public class NewContainerWizardTest {
     @Mock
     SpecManagementService specManagementService;
 
+    Caller<M2RepoService> m2RepoServiceCaller;
+
+    @Mock
+    M2RepoService m2RepoService;
+
     @Spy
     Event<NotificationEvent> notification = new EventSourceMock<NotificationEvent>();
 
     @Spy
     Event<ServerTemplateSelected> serverTemplateSelectedEvent = new EventSourceMock<ServerTemplateSelected>();
+
+    @Mock
+    Event<DependencyPathSelectedEvent> dependencyPathSelectedEvent = new EventSourceMock<DependencyPathSelectedEvent>();
 
     @Mock
     WizardView view;
@@ -76,13 +93,16 @@ public class NewContainerWizardTest {
         doNothing().when( notification ).fire( any( NotificationEvent.class ) );
         doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
         specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
+        m2RepoServiceCaller = new CallerMock<>(m2RepoService);
         when( newContainerFormPresenter.getView() ).thenReturn( newContainerFormPresenterView );
         newContainerWizard = spy( new NewContainerWizard(
                 newContainerFormPresenter,
                 processConfigPagePresenter,
                 specManagementServiceCaller,
                 notification,
-                serverTemplateSelectedEvent
+                serverTemplateSelectedEvent,
+                dependencyPathSelectedEvent,
+                m2RepoServiceCaller
         ) );
 
         final Field field = AbstractWizard.class.getDeclaredField( "view" );
@@ -111,6 +131,7 @@ public class NewContainerWizardTest {
         verify( processConfigPagePresenter ).clear();
         assertEquals( 1, newContainerWizard.getPages().size() );
         assertTrue( newContainerWizard.getPages().contains( newContainerFormPresenter ) );
+        assertFalse(newContainerWizard.isSelected);
     }
 
     @Test
@@ -132,10 +153,20 @@ public class NewContainerWizardTest {
         serverTemplate.getCapabilities().add( Capability.PROCESS.toString() );
         final ContainerSpec containerSpec = new ContainerSpec();
         containerSpec.setId( "containerSpecId" );
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "1.0");
+        containerSpec.setReleasedId(new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
+
+        jarListPageRow.setGav(gav);
+        jarListPageRow.setPath("test_path");
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
         when( newContainerFormPresenter.buildContainerSpec( eq( serverTemplate.getId() ), anyMap() ) ).thenReturn( containerSpec );
         when( newContainerFormPresenter.getServerTemplate() ).thenReturn( serverTemplate );
         final String successMessage = "SUCCESS";
         when( newContainerFormPresenterView.getNewContainerWizardSaveSuccess() ).thenReturn( successMessage );
+
 
         newContainerWizard.setServerTemplate( serverTemplate );
         newContainerWizard.complete();
@@ -170,10 +201,152 @@ public class NewContainerWizardTest {
     }
 
     @Test
+    public void testCompleteByCanNotFind() {
+        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateId", "ServerTemplateName");
+        serverTemplate.getCapabilities().add(Capability.PROCESS.toString());
+        final ContainerSpec containerSpec = new ContainerSpec();
+        containerSpec.setId("containerSpecId");
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "1.0");
+        containerSpec.setReleasedId(new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
+        jarListPageRow.setGav(new GAV("test1", "test1", "1.0"));
+        jarListPageRow.setPath("test_path");
+
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
+        when(newContainerFormPresenter.buildContainerSpec(eq(serverTemplate.getId()), anyMap())).thenReturn(containerSpec);
+        when(newContainerFormPresenter.getServerTemplate()).thenReturn(serverTemplate);
+        final String gavNotFind = "NOTFIND";
+        when(newContainerFormPresenterView.getNewContainerGAVNotExist(any())).thenReturn(gavNotFind);
+
+        newContainerWizard.setServerTemplate(serverTemplate);
+        newContainerWizard.complete();
+
+        verify(processConfigPagePresenter).buildProcessConfig();
+        verify(newContainerFormPresenter).buildContainerSpec(eq(serverTemplate.getId()), anyMap());
+
+        final ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+        verify(notification).fire(eventCaptor.capture());
+        final NotificationEvent event = eventCaptor.getValue();
+        assertEquals(gavNotFind, event.getNotification());
+    }
+
+    @Test
     public void testClose() {
         newContainerWizard.close();
 
         verifyClear();
     }
 
+    @Test
+    public void testPageSelectedPageTwo() {
+        preparePageSelected();
+
+        newContainerWizard.pageSelected(1);
+        verify(dependencyPathSelectedEvent).fire(any());
+    }
+
+    private void preparePageSelected() {
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "");
+        jarListPageRow.setGav(gav);
+        jarListPageRow.setPath("test_path");
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
+        when(newContainerFormPresenter.getCurrentGAV()).thenReturn(gav);
+
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.pages.add(mock(WizardPage.class));
+    }
+
+    @Test
+    public void testPageSelectedPageOne() {
+        preparePageSelected();
+
+        newContainerWizard.pageSelected(0);
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
+    public void testPageSelectedIsSelected() {
+        preparePageSelected();
+        newContainerWizard.isSelected = true;
+        newContainerWizard.pageSelected(1);
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
+    public void testPageSelectedWithEmptyPath() {
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "");
+        jarListPageRow.setGav(gav);
+        jarListPageRow.setPath("");
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
+        when(newContainerFormPresenter.getCurrentGAV()).thenReturn(gav);
+
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.pages.add(mock(WizardPage.class));
+
+        newContainerWizard.pageSelected(1);
+
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
+    public void testPageSelectedWithNullPath() {
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "");
+        jarListPageRow.setGav(gav);
+        jarListPageRow.setPath(null);
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
+        when(newContainerFormPresenter.getCurrentGAV()).thenReturn(gav);
+
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.pages.add(mock(WizardPage.class));
+
+        newContainerWizard.pageSelected(1);
+
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
+    public void testPageSelectedCanNotFind() {
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        JarListPageRow jarListPageRow = new JarListPageRow();
+        GAV gav = new GAV("test", "test", "");
+        jarListPageRow.setGav(new GAV("test1", "test1", "1.0"));
+        jarListPageRow.setPath("test_path");
+        response.setPageRowList(Arrays.asList(jarListPageRow));
+        when(m2RepoService.listArtifacts(any())).thenReturn(response);
+        when(newContainerFormPresenter.getCurrentGAV()).thenReturn(gav);
+        final String gavNotFind = "NOTFIND";
+        when(newContainerFormPresenterView.getNewContainerGAVNotExist(any())).thenReturn(gavNotFind);
+
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.pages.add(mock(WizardPage.class));
+
+        newContainerWizard.pageSelected(1);
+
+        final ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+        verify(notification).fire(eventCaptor.capture());
+        final NotificationEvent event = eventCaptor.getValue();
+        assertEquals(gavNotFind, event.getNotification());
+    }
+
+    @Test
+    public void testOnDependencyPathSelectedEvent() {
+        assertFalse(newContainerWizard.isSelected);
+        newContainerWizard.onDependencyPathSelectedEvent(new DependencyPathSelectedEvent("null", "test"));
+        assertTrue(newContainerWizard.isSelected);
+    }
 }

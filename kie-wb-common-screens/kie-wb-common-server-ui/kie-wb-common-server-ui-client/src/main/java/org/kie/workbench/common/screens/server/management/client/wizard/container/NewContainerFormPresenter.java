@@ -322,6 +322,10 @@ public class NewContainerFormPresenter implements WizardPage {
         MANDATORY
     }
 
+    public GAV getCurrentGAV() {
+        return new GAV(view.getGroupId(), view.getArtifactId(), view.getVersion());
+    }
+
     public interface View extends UberView<NewContainerFormPresenter> {
 
         String getTitle();
@@ -383,5 +387,7 @@ public class NewContainerFormPresenter implements WizardPage {
         String getNewContainerWizardSaveSuccess();
 
         String getNewContainerWizardSaveError();
+
+        String getNewContainerGAVNotExist(String gav);
     }
 }
