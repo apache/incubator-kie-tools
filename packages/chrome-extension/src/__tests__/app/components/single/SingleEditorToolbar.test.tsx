@@ -14,8 +14,213 @@
  * limitations under the License.
  */
 
-describe("test", () => {
-  test("test 1", async () => {
-    expect(true).toBeTruthy();
+import * as React from "react";
+import { fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
+import { SingleEditorToolbar } from "../../../../app/components/single/SingleEditorToolbar";
+import { usingTestingGlobalContext } from "../../../testing_utils";
+
+beforeEach(() => {
+  document.execCommand = () => true;
+});
+
+describe("SingleEditorToolbar", () => {
+  test("see as diagram", () => {
+    const onSeeAsSource = jest.fn();
+    const onSeeAsDiagram = jest.fn();
+
+    const component = render(
+      <SingleEditorToolbar
+        readonly={true}
+        textMode={true}
+        textModeEnabled={true}
+        onFullScreen={undefined as any}
+        onSeeAsSource={onSeeAsSource}
+        onSeeAsDiagram={onSeeAsDiagram}
+        onOpenInExternalEditor={undefined as any}
+        linkToExternalEditor={"test.com/editor"}
+      />
+    );
+
+    expect(component.asFragment()).toMatchSnapshot();
+
+    fireEvent.click(component.getByTestId("see-as-diagram-button"));
+    expect(onSeeAsDiagram).toHaveBeenCalled();
+  });
+
+  test("readonly false | textMode true | textModeEnabled true", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={false}
+          textMode={true}
+          textModeEnabled={true}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("readonly false | textMode false | textModeEnabled true", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={true}
+          textMode={false}
+          textModeEnabled={true}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("see as source", () => {
+    const onSeeAsSource = jest.fn();
+    const onSeeAsDiagram = jest.fn();
+
+    const component = render(
+      <SingleEditorToolbar
+        readonly={false}
+        textMode={false}
+        textModeEnabled={true}
+        onFullScreen={undefined as any}
+        onSeeAsSource={onSeeAsSource}
+        onSeeAsDiagram={onSeeAsDiagram}
+        onOpenInExternalEditor={undefined as any}
+        linkToExternalEditor={"test.com/editor"}
+      />
+    );
+
+    fireEvent.click(component.getByTestId("see-as-source-button"));
+    expect(onSeeAsSource).toHaveBeenCalled();
+
+    expect(component.asFragment()).toMatchSnapshot();
+  });
+
+  test("readonly true | textMode true | textModeEnabled false", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={true}
+          textMode={true}
+          textModeEnabled={false}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("readonly false | textMode true | textModeEnabled false", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={false}
+          textMode={true}
+          textModeEnabled={false}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("readonly true | textMode false | textModeEnabled false", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={true}
+          textMode={false}
+          textModeEnabled={false}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("readonly false | textMode false | textModeEnabled false", () => {
+    expect(
+      render(
+        <SingleEditorToolbar
+          readonly={false}
+          textMode={false}
+          textModeEnabled={false}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      ).asFragment()
+    ).toMatchSnapshot();
+  });
+
+  test("button actions", () => {
+    const onFullScreen = jest.fn();
+    const onSeeAsSource = jest.fn();
+    const onSeeAsDiagram = jest.fn();
+    const onOpenInExternalEditor = jest.fn();
+
+    const component = render(
+      usingTestingGlobalContext(
+        <SingleEditorToolbar
+          readonly={false}
+          textMode={false}
+          textModeEnabled={false}
+          onFullScreen={onFullScreen}
+          onSeeAsSource={onSeeAsSource}
+          onSeeAsDiagram={onSeeAsDiagram}
+          onOpenInExternalEditor={onOpenInExternalEditor}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      )
+    );
+
+    fireEvent.click(component.getByTestId("go-fullscreen-button"));
+    expect(onFullScreen).toHaveBeenCalled();
+
+    fireEvent.click(component.getByTestId("open-ext-editor-button"));
+    expect(onOpenInExternalEditor).toHaveBeenCalled();
+
+    fireEvent.click(component.getByTestId("copy-link-button"));
+    expect(component.asFragment()).toMatchSnapshot();
+  });
+
+  test("copied to clipboard message", async () => {
+    const component = render(
+      usingTestingGlobalContext(
+        <SingleEditorToolbar
+          readonly={false}
+          textMode={false}
+          textModeEnabled={false}
+          onFullScreen={undefined as any}
+          onSeeAsSource={undefined as any}
+          onSeeAsDiagram={undefined as any}
+          onOpenInExternalEditor={undefined as any}
+          linkToExternalEditor={"test.com/editor"}
+        />
+      )
+    );
+
+    fireEvent.click(component.getByTestId("copy-link-button"));
+    await waitForElementToBeRemoved(() => component.queryByTestId("link-copied-alert"));
+    expect(component.asFragment()).toMatchSnapshot();
   });
 });

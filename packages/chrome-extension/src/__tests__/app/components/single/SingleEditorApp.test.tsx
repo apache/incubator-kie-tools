@@ -14,8 +14,140 @@
  * limitations under the License.
  */
 
-describe("test", () => {
-  test("test 1", async () => {
-    expect(true).toBeTruthy();
+import * as React from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { SingleEditorApp } from "../../../../app/components/single/SingleEditorApp";
+import { usingTestingGitHubContext, usingTestingGlobalContext } from "../../../testing_utils";
+
+beforeAll(() => {
+  chrome.extension = {
+    getURL: (path: string) => {
+      return `chrome-testing://${path}`;
+    }
+  } as any;
+});
+
+const testFileInfo = {
+  repo: "test-repo",
+  org: "test-org",
+  path: "test/path/to/file.txt",
+  gitRef: "test-branch"
+};
+
+function newDivOnBody() {
+  const div = document.createElement("div");
+  document.body.appendChild(div);
+  return div;
+}
+
+describe("SingleEditorApp", () => {
+  test("readonly", async () => {
+    render(
+      usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={".txt"}
+            readonly={false}
+            getFileName={jest.fn()}
+            getFileContents={jest.fn()}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        )
+      )
+    );
+
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("not readonly", async () => {
+    render(
+      usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={".txt"}
+            readonly={true}
+            getFileName={jest.fn()}
+            getFileContents={jest.fn()}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        )
+      )
+    );
+
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("go fullscreen", async () => {
+    render(
+      usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={".txt"}
+            readonly={false}
+            getFileName={jest.fn()}
+            getFileContents={jest.fn()}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        )
+      )
+    );
+
+    fireEvent.click(screen.getByTestId("go-fullscreen-button"));
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("go fullscreen and back", async () => {
+    render(
+      usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={".txt"}
+            readonly={false}
+            getFileName={jest.fn()}
+            getFileContents={jest.fn()}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        )
+      )
+    );
+
+    fireEvent.click(screen.getByTestId("go-fullscreen-button"));
+    fireEvent.click(screen.getByTestId("exit-fullscreen-button"));
+
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("open external editor", async () => {
+    render(
+      usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={".txt"}
+            readonly={false}
+            getFileName={jest.fn(() => "file.txt")}
+            getFileContents={jest.fn(() => Promise.resolve("file contents"))}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        )
+      )
+    );
+
+    fireEvent.click(screen.getByTestId("open-ext-editor-button"));
+    expect(document.body).toMatchSnapshot();
   });
 });

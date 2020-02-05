@@ -19,12 +19,13 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useGlobals } from "./GlobalContext";
 
-export const GitHubContext = React.createContext<{
+export interface GitHubContextType {
   octokit: () => Octokit;
   setToken: (token: string) => void;
   token?: string;
   userIsLoggedIn: () => boolean;
-}>({} as any);
+}
+export const GitHubContext = React.createContext<GitHubContextType>({} as any);
 
 export function useGitHubApi() {
   return useContext(GitHubContext);

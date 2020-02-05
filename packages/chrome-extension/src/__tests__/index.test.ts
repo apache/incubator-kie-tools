@@ -13,15 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as index from "../index";
+import { GitHubPageType } from "../app/github/GitHubPageType";
+
+function setWindowLocationPathname(pathname: string) {
+  window = Object.create(window);
+  delete window.location;
+  window.location = { pathname: pathname } as any;
+}
 
 describe("extractFileInfoFromUrl", () => {
-  test("test 1", async () => {
-    expect(true).toBeTruthy();
+  test("", async () => {
+    setWindowLocationPathname("/org/repo/blob/my-branch/this/is/a/foo.test");
+    const fileInfo = index.extractFileInfoFromUrl();
+
+    expect(fileInfo).toStrictEqual({
+      gitRef: "my-branch",
+      repo: "repo",
+      org: "org",
+      path: "this/is/a/foo.test"
+    });
   });
 });
 
 describe("discoverCurrentGitHubPageType", () => {
-  test("test 1", async () => {
-    expect(true).toBeTruthy();
+  test("view", async () => {
+    setWindowLocationPathname("/org/repo/blob/my-branch/this/is/a/foo.test");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.VIEW);
+  });
+
+  test("edit", async () => {
+    setWindowLocationPathname("/org/repo/edit/my-branch/this/is/a/foo.test");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.EDIT);
+  });
+
+  test("pr files", async () => {
+    setWindowLocationPathname("/org/repo/pull/1/files");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.PR);
+  });
+
+  test("pr commit", async () => {
+    setWindowLocationPathname("/org/repo/pull/1/commits");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.PR);
+  });
+
+  test("any", async () => {
+    setWindowLocationPathname("/");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.ANY);
   });
 });

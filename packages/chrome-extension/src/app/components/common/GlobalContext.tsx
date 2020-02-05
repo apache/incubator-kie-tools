@@ -21,7 +21,7 @@ import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { Dependencies } from "../../dependencies";
 
-export const GlobalContext = React.createContext<{
+export interface GlobalContextType {
   id: string;
   githubAuthTokenCookieName: string;
   router: Router;
@@ -31,7 +31,9 @@ export const GlobalContext = React.createContext<{
   editorIndexPath: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
-}>({} as any);
+}
+
+export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function useGlobals() {
   return React.useContext(GlobalContext);

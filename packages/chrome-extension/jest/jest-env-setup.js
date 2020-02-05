@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+require("jest-webextension-mock");
+
 import { configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 
