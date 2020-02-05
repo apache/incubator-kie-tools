@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
@@ -30,15 +29,10 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -54,32 +48,16 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 @Default
 public class ConnectionAcceptorControlImpl
         extends AbstractAcceptorControl
-        implements ConnectionAcceptorControl<AbstractCanvasHandler>,
-                   CanvasControl.SessionAware<EditorSession> {
+        implements ConnectionAcceptorControl<AbstractCanvasHandler> {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private final Event<CancelCanvasAction> cancelCanvasActionEvent;
     private final CanvasHighlight canvasHighlight;
 
     @Inject
     public ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                         final Event<CancelCanvasAction> cancelCanvasActionEvent,
                                          final CanvasHighlight canvasHighlight) {
         this.canvasCommandFactory = canvasCommandFactory;
-        this.cancelCanvasActionEvent = cancelCanvasActionEvent;
         this.canvasHighlight = canvasHighlight;
-    }
-
-    @Override
-    public void bind(final EditorSession session) {
-        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
-    }
-
-    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        if (KeysMatcher.doKeysMatch(keys,
-                                    KeyboardEvent.Key.ESC)) {
-            cancelCanvasActionEvent.fire(new CancelCanvasAction(getCanvasHandler().getCanvas()));
-        }
     }
 
     @Override

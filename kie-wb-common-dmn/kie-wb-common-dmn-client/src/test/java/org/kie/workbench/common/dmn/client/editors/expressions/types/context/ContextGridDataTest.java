@@ -107,7 +107,7 @@ public class ContextGridDataTest {
 
     @Test
     public void testMoveRowToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
+        doReturn(GraphCommandResultBuilder.failed()).when(sessionCommandManager).allow(eq(canvasHandler),
                                                                                      any(MoveRowsCommand.class));
 
         uiModel.moveRowTo(0,
@@ -120,7 +120,7 @@ public class ContextGridDataTest {
 
     @Test
     public void testMoveRowsToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
+        doReturn(GraphCommandResultBuilder.failed()).when(sessionCommandManager).allow(eq(canvasHandler),
                                                                                      any(MoveRowsCommand.class));
 
         uiModel.moveRowsTo(0,

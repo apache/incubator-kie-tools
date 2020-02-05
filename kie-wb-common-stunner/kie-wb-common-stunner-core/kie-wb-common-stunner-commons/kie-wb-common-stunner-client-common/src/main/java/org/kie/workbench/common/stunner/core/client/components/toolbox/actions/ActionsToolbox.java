@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
@@ -58,7 +59,6 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
 
     public ActionsToolbox<V> init() {
         getView().init(this);
-        actions.forEach(this::addButton);
         return this;
     }
 
@@ -80,8 +80,12 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
         return uuid;
     }
 
+    public AbstractCanvasHandler getCanvasHandler() {
+        return canvasHandlerSupplier.get();
+    }
+
     public AbstractCanvas getCanvas() {
-        return canvasHandlerSupplier.get().getAbstractCanvas();
+        return getCanvasHandler().getAbstractCanvas();
     }
 
     public Shape<?> getShape() {
@@ -125,14 +129,13 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
         return view;
     }
 
-    private void addButton(final ToolboxAction<AbstractCanvasHandler> action) {
+    public Glyph getGlyph(final ToolboxAction<AbstractCanvasHandler> action) {
         final AbstractCanvasHandler canvasHandler = canvasHandlerSupplier.get();
-        getView().addButton(action.getGlyph(canvasHandler,
-                                            uuid),
-                            action.getTitle(canvasHandler,
-                                            uuid),
-                            event -> action.onMouseClick(canvasHandler,
-                                                         uuid,
-                                                         event));
+        return action.getGlyph(canvasHandler, uuid);
+    }
+
+    public String getTitle(final ToolboxAction<AbstractCanvasHandler> action) {
+        final AbstractCanvasHandler canvasHandler = canvasHandlerSupplier.get();
+        return action.getTitle(canvasHandler, uuid);
     }
 }

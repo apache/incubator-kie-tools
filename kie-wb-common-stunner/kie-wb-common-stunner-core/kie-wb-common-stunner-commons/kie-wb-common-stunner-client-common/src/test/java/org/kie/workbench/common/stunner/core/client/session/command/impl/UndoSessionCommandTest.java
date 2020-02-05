@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -38,6 +39,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -72,7 +74,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         super.setup();
-        when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
+        when(session.getCommandRegistry()).thenReturn(commandRegistry);
         commandHistory = new ArrayList<>();
         when(commandRegistry.getCommandHistory()).thenReturn(commandHistory);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
@@ -98,13 +100,14 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteSuccess() {
+        when(commandRegistry.isEmpty()).thenReturn(false);
         command.bind(session);
-        when(sessionCommandManager.undo(canvasHandler)).thenReturn(null);
+        when(sessionCommandManager.undo(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
 
         command.execute(callback);
 
         verify(sessionCommandManager,
-               times(1)).undo(canvasHandler);
+               times(1)).undo(eq(canvasHandler));
         verify(selectionControl,
                times(1)).clearSelection();
         verify(callback,
@@ -116,14 +119,15 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteWithErrors() {
+        when(commandRegistry.isEmpty()).thenReturn(false);
         command.bind(session);
-        when(sessionCommandManager.undo(canvasHandler)).thenReturn(commandResult);
+        when(sessionCommandManager.undo(eq(canvasHandler))).thenReturn(commandResult);
         when(commandResult.getType()).thenReturn(CommandResult.Type.ERROR);
 
         command.execute(callback);
 
         verify(sessionCommandManager,
-               times(1)).undo(canvasHandler);
+               times(1)).undo(eq(canvasHandler));
         verify(selectionControl,
                times(1)).clearSelection();
         verify(callback,

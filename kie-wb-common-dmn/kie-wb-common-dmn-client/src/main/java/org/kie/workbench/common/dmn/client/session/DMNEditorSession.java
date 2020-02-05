@@ -52,10 +52,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Key
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultEditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -69,13 +67,11 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
     @Inject
     public DMNEditorSession(final ManagedSession session,
                             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
+                            final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry) {
         super(session,
               canvasCommandManager,
               sessionCommandManager,
-              requestCommandManager,
               clientCommandRegistry);
     }
 

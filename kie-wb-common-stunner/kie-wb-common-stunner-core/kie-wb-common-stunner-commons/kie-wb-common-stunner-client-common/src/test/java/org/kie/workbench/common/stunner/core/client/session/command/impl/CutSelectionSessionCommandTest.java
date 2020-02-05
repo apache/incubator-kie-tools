@@ -97,7 +97,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         clipboardControl = spy(new LocalClipboardControl());
-        when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
+        when(session.getCommandRegistry()).thenReturn(commandRegistry);
         when(commandRegistry.peek()).thenReturn(deleteNodeCommand);
         when(session.getClipboardControl()).thenReturn(clipboardControl);
         when(sessionManager.getCurrentSession()).thenReturn(session);
@@ -128,7 +128,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
 
         //success
         callbackArgumentCaptor.getValue().onSuccess();
-        verify(sessionCommandManager.getRegistry(), atLeastOnce()).peek();
+        verify(session.getCommandRegistry(), atLeastOnce()).peek();
         verify(clipboardControl, atLeastOnce()).setRollbackCommand(deleteNodeCommand);
         verify(commandExecutedEvent, times(1)).fire(commandExecutedEventCaptor.capture());
         assertEquals(session, commandExecutedEventCaptor.getValue().getClientSession());
@@ -142,7 +142,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
 
     @Override
     protected CutSelectionSessionCommand getCommand() {
-        return new CutSelectionSessionCommand(sessionCommandManager, commandExecutedEvent, sessionManager);
+        return new CutSelectionSessionCommand(commandExecutedEvent, sessionManager);
     }
 
     @Override

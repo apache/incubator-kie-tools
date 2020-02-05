@@ -17,24 +17,27 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.actions;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.decorator.BoxDecorator;
+import com.ait.lienzo.client.core.shape.toolbox.items.impl.ToolboxFactory;
+import com.ait.lienzo.client.core.shape.toolbox.items.impl.WiresShapeToolbox;
+import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.IsToolboxActionDraggable;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseMoveEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.ButtonItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.impl.ToolboxFactory;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.impl.WiresShapeToolbox;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.tooltip.ToolboxTextTooltip;
 
 public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolboxView>
         implements ActionsToolboxView<V> {
@@ -68,28 +71,6 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     }
 
     @Override
-    public V addButton(Glyph glyph,
-                       String title,
-                       Consumer<MouseClickEvent> clickEventConsumer) {
-        final ButtonItem button =
-                toolboxFactory.buttons()
-                        .button(renderGlyph(glyph,
-                                            getGlyphSize()))
-                        .decorate(createDecorator())
-                        .tooltip(tooltip.createItem(title))
-                        .onMouseEnter(event -> onMouseEnter())
-                        .onMouseExit(event -> onMouseExit())
-                        .onClick(event -> clickEventConsumer.accept(new MouseClickEvent(event.getX(),
-                                                                                        event.getY(),
-                                                                                        event.getMouseEvent()
-                                                                                                .getClientX(),
-                                                                                        event.getMouseEvent()
-                                                                                                .getClientY())));
-        addButton(button);
-        return cast();
-    }
-
-    @Override
     public V show() {
         toolboxView.show();
         return cast();
@@ -117,6 +98,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
         destroy();
     }
 
+    @SuppressWarnings("unchecked")
     protected V init(final ActionsToolbox toolbox,
                      final WiresCanvas canvas,
                      final WiresShape shape) {
@@ -129,11 +111,82 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                         .attachTo(topLayer);
         configure(toolbox);
         tooltip = createTooltip(toolbox);
+        initButtons(toolbox);
         return cast();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initButtons(final ActionsToolbox<ActionsToolboxView<?>> toolbox) {
+        for (ToolboxAction toolboxAction : toolbox) {
+            final ButtonItem button = addButton(toolbox.getGlyph(toolboxAction),
+                                                toolbox.getTitle(toolboxAction));
+            button.onClick(event -> {
+                onButtonClick(toolbox, toolboxAction, button, event);
+            });
+            if (toolboxAction instanceof IsToolboxActionDraggable) {
+                button.onMoveStart(event -> {
+                    onButtonMoveStart(toolbox, (IsToolboxActionDraggable) toolboxAction, button, event);
+                });
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void onButtonClick(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
+                                 final ToolboxAction toolboxAction,
+                                 final ButtonItem button,
+                                 final AbstractNodeMouseEvent event) {
+        toolboxAction.onMouseClick(toolbox.getCanvasHandler(),
+                                   toolbox.getElementUUID(),
+                                   new MouseClickEvent(event.getX(),
+                                                       event.getY(),
+                                                       event.getMouseEvent().getClientX(),
+                                                       event.getMouseEvent().getClientY()));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void onButtonMoveStart(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
+                                     final IsToolboxActionDraggable toolboxAction,
+                                     final ButtonItem button,
+                                     final AbstractNodeMouseEvent event) {
+        toolboxAction.onMoveStart(toolbox.getCanvasHandler(),
+                                  toolbox.getElementUUID(),
+                                  new MouseMoveEvent(event.getX(),
+                                                     event.getY(),
+                                                     event.getMouseEvent().getClientX(),
+                                                     event.getMouseEvent().getClientY()));
+    }
+
+    ButtonItem addButton(final Glyph glyph,
+                         final String title) {
+        final ButtonItem button =
+                toolboxFactory.buttons()
+                        .button(renderGlyph(glyph,
+                                            getGlyphSize()))
+                        .decorate(createDecorator())
+                        .tooltip(tooltip.createItem(title))
+                        .onMouseEnter(event -> onMouseEnter())
+                        .onMouseExit(event -> onMouseExit());
+        addButton(button);
+        return button;
     }
 
     protected void addButton(final ButtonItem buttonItem) {
         toolboxView.add(buttonItem);
+    }
+
+    protected com.ait.tooling.common.api.java.util.function.Consumer<Text> defaultTextConsumer() {
+        return text -> text
+                .setFontSize(10)
+                .setFontFamily("Verdana");
+    }
+
+    protected WiresShapeToolbox getToolboxView() {
+        return toolboxView;
+    }
+
+    protected ToolboxFactory getToolboxFactory() {
+        return toolboxFactory;
     }
 
     protected Group renderGlyph(final Glyph glyph,
@@ -144,36 +197,22 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                         size);
     }
 
-    protected DecoratorItem<?> createDecorator() {
+    protected BoxDecorator createDecorator() {
         return getToolboxFactory()
                 .decorators()
                 .box();
     }
 
-    protected Consumer<Text> defaultTextConsumer() {
-        return text -> text
-                .setFontSize(10)
-                .setFontFamily("Verdana");
-    }
-
-    protected WiresShapeToolbox getToolboxView() {
-        return toolboxView;
-    }
-
-    protected void onMouseEnter() {
+    private void onMouseEnter() {
         if (null != canvas) {
             canvas.getView().setCursor(AbstractCanvas.Cursors.POINTER);
         }
     }
 
-    protected void onMouseExit() {
+    private void onMouseExit() {
         if (null != canvas) {
             canvas.getView().setCursor(AbstractCanvas.Cursors.DEFAULT);
         }
-    }
-
-    protected ToolboxFactory getToolboxFactory() {
-        return toolboxFactory;
     }
 
     @SuppressWarnings("unchecked")

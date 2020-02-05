@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.keyboard.shortcut;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
@@ -41,7 +42,7 @@ public class AppendDecisionShortcut extends AbstractAppendNodeShortcut implement
     @Inject
     public AppendDecisionShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                   final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                  final @DMNEditor GeneralCreateNodeAction generalCreateNodeAction) {
+                                  final @Default GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 

@@ -56,8 +56,8 @@ public class DMNCommonActionsToolboxFactory
                                           final @Any ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
                                           final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views,
                                           final CanvasCommandManager<AbstractCanvasHandler> commandManager,
-                                          final @Any @DMNEditor DefaultCanvasCommandFactory commandFactory,
-                                          final @Any @DMNEditor ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions) {
+                                          final @DMNEditor DefaultCanvasCommandFactory commandFactory,
+                                          final @Any ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions) {
         super(commandManager, commandFactory, deleteNodeActions, views);
 
         this.editDecisionToolboxActions = editDecisionToolboxActions;
@@ -128,7 +128,7 @@ public class DMNCommonActionsToolboxFactory
     }
 
     protected boolean superIsAllowed(final AbstractCanvasHandler canvasHandler,
-                                     final Node node){
+                                     final Node node) {
         return super.isAllowed(canvasHandler, node);
     }
 }

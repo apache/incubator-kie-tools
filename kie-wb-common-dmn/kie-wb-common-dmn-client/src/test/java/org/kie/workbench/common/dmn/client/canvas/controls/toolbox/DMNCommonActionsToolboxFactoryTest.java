@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.DeleteNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -54,7 +52,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -137,10 +134,6 @@ public class DMNCommonActionsToolboxFactoryTest {
                      actionsToolbox.iterator().next());
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(viewInstance,
-               times(1)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
     }
 
     @Test
@@ -171,10 +164,6 @@ public class DMNCommonActionsToolboxFactoryTest {
         assertFalse(actionsIt.hasNext());
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(viewInstance,
-               times(2)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
     }
 
     @Test
@@ -205,10 +194,6 @@ public class DMNCommonActionsToolboxFactoryTest {
         assertFalse(actionsIt.hasNext());
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(viewInstance,
-               times(2)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
     }
 
     @Test

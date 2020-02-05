@@ -42,9 +42,9 @@ import static org.mockito.Mockito.when;
 public class AbstractCanvasGraphCommandTest {
 
     private static CommandResult<RuleViolation> GRAPH_COMMAND_SUCCESS = GraphCommandResultBuilder.SUCCESS;
-    private static CommandResult<RuleViolation> GRAPH_COMMAND_FAILED = GraphCommandResultBuilder.FAILED;
+    private static CommandResult<RuleViolation> GRAPH_COMMAND_FAILED = GraphCommandResultBuilder.failed();
     private static CommandResult<CanvasViolation> CANVAS_COMMAND_SUCCESS = CanvasCommandResultBuilder.SUCCESS;
-    private static CommandResult<CanvasViolation> CANVAS_COMMAND_FAILED = CanvasCommandResultBuilder.FAILED;
+    private static CommandResult<CanvasViolation> CANVAS_COMMAND_FAILED = CanvasCommandResultBuilder.failed();
 
     @Mock
     private Command<GraphCommandExecutionContext, RuleViolation> graphCommand;

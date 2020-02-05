@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.Iterator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +28,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -66,20 +62,6 @@ public class UpdateCanvasElementPositionCommandTest extends AbstractCanvasComman
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
-        verify(canvasHandler,
-               times(1)).updateElementPosition(eq(candidate),
-                                               any(MutationContext.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOutOfBoundsWarn() {
-        tested = new UpdateCanvasElementPositionCommand(candidate, Point2D.create(550d, 550d));
-        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
-        assertEquals(CommandResult.Type.WARNING,
-                     result.getType());
-        Iterator<CanvasViolation> violationsIt = result.getViolations().iterator();
-        assertTrue(violationsIt.hasNext());
         verify(canvasHandler,
                times(1)).updateElementPosition(eq(candidate),
                                                any(MutationContext.class));

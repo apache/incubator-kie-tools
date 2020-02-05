@@ -18,8 +18,9 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Item;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -51,10 +52,10 @@ public class BS3PaletteWidgetViewImplTest {
     private Glyph glyph;
 
     @Captor
-    private ArgumentCaptor<ShapeGlyphDragHandler.Item> dragItemCaptor;
+    private ArgumentCaptor<Item> dragItemCaptor;
 
     @Captor
-    private ArgumentCaptor<DragProxyCallback> dragProxyCallbackCaptor;
+    private ArgumentCaptor<Callback> dragProxyCallbackCaptor;
 
     private BS3PaletteWidgetViewImpl view;
 
@@ -78,7 +79,7 @@ public class BS3PaletteWidgetViewImplTest {
                                            eq((int) Y),
                                            dragProxyCallbackCaptor.capture());
 
-        final ShapeGlyphDragHandler.Item dragItem = dragItemCaptor.getValue();
+        final Item dragItem = dragItemCaptor.getValue();
         assertEquals(glyph,
                      dragItem.getShape());
         assertEquals(WIDTH,
@@ -88,7 +89,7 @@ public class BS3PaletteWidgetViewImplTest {
                      dragItem.getHeight(),
                      0.0);
 
-        final DragProxyCallback dragProxyCallback = dragProxyCallbackCaptor.getValue();
+        final Callback dragProxyCallback = dragProxyCallbackCaptor.getValue();
         dragProxyCallback.onStart((int) X, (int) Y);
         verify(presenter).onDragStart(ITEM_ID, (int) X, (int) Y);
 

@@ -23,16 +23,17 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactoryStub;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -63,6 +65,9 @@ import static org.mockito.Mockito.when;
 public class GeneralCreateNodeActionTest {
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private ClientFactoryManager clientFactoryManager;
 
     @Mock
@@ -74,18 +79,22 @@ public class GeneralCreateNodeActionTest {
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new CanvasCommandFactoryStub();
+    private ManagedInstanceStub<DefaultCanvasCommandFactory> canvasCommandFactories;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     private GeneralCreateNodeAction createNodeAction;
 
     @Before
     public void setUp() throws Exception {
 
-        createNodeAction = new GeneralCreateNodeAction(clientFactoryManager,
+        canvasCommandFactory = new CanvasCommandFactoryStub();
+        canvasCommandFactories = new ManagedInstanceStub<>(canvasCommandFactory);
+        createNodeAction = new GeneralCreateNodeAction(definitionUtils,
+                                                       clientFactoryManager,
                                                        canvasLayoutUtils,
                                                        selectionEvent,
                                                        sessionCommandManager,
-                                                       canvasCommandFactory) {
+                                                       canvasCommandFactories) {
 
         };
     }

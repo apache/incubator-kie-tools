@@ -34,13 +34,11 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasVi
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionSourceNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -51,9 +49,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -62,7 +58,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -96,9 +91,6 @@ public class ConnectionAcceptorControlImplTest {
     private ViewConnector edgeContent;
     @Mock
     private Connection connection;
-
-    @Mock
-    private EventSourceMock<CancelCanvasAction> cancelCanvasActionEvent;
 
     private ConnectionAcceptorControlImpl tested;
     private SetConnectionSourceNodeCommand setConnectionSourceNodeCommand;
@@ -148,7 +140,6 @@ public class ConnectionAcceptorControlImplTest {
         when(commandManager.execute(eq(canvasHandler),
                                     eq(setConnectionTargetNodeCommand))).thenReturn(result);
         this.tested = new ConnectionAcceptorControlImpl(canvasCommandFactory,
-                                                        cancelCanvasActionEvent,
                                                         highlight);
         this.tested.setCommandManagerProvider(() -> commandManager);
     }
@@ -419,19 +410,5 @@ public class ConnectionAcceptorControlImplTest {
         assertNull(ConnectionAcceptorControlImpl.createConnection(null));
         assertNull(ConnectionAcceptorControlImpl.createConnection(null,
                                                                   null));
-    }
-
-    @Test
-    public void onKeyDownEventTest() {
-        InOrder inOrder = inOrder(cancelCanvasActionEvent);
-
-        tested.init(canvasHandler);
-        tested.onKeyDownEvent(KeyboardEvent.Key.ESC);
-        tested.onKeyDownEvent(KeyboardEvent.Key.CONTROL);
-        tested.onKeyDownEvent(KeyboardEvent.Key.ARROW_RIGHT);
-
-        inOrder.verify(cancelCanvasActionEvent, times(1)).fire(any(CancelCanvasAction.class));
-        inOrder.verify(cancelCanvasActionEvent, never()).fire(any(CancelCanvasAction.class));
-        inOrder.verify(cancelCanvasActionEvent, never()).fire(any(CancelCanvasAction.class));
     }
 }

@@ -49,7 +49,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -64,6 +63,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.util.Counter;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -77,7 +77,7 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
 @Default
 public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
-    public static final int DEFAULT_PADDING = 15;
+    static final int DEFAULT_PADDING = 15;
     private static Logger LOGGER = Logger.getLogger(PasteSelectionSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -97,7 +97,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
     }
 
     @Inject
-    public PasteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+    public PasteSelectionSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                         @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                         final Event<CanvasSelectionEvent> selectionEvent,
                                         final DefinitionUtils definitionUtils,
@@ -226,13 +226,14 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
     }
 
     private void updateCommandsRegistry() {
-        Command<AbstractCanvasHandler, CanvasViolation> connectorsExecutedCommand = sessionCommandManager.getRegistry().pop();
-        Command<AbstractCanvasHandler, CanvasViolation> nodesExecutedCommand = sessionCommandManager.getRegistry().pop();
-        sessionCommandManager.getRegistry().register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                                                             .addCommand(nodesExecutedCommand)
-                                                             .addCommand(connectorsExecutedCommand)
-                                                             .reverse()
-                                                             .build());
+        final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry = getSession().getCommandRegistry();
+        Command<AbstractCanvasHandler, CanvasViolation> connectorsExecutedCommand = commandRegistry.pop();
+        Command<AbstractCanvasHandler, CanvasViolation> nodesExecutedCommand = commandRegistry.pop();
+        commandRegistry.register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                                         .addCommand(nodesExecutedCommand)
+                                         .addCommand(connectorsExecutedCommand)
+                                         .reverse()
+                                         .build());
     }
 
     private CommandResult<CanvasViolation> processConnectors(Counter processedNodesCountdown) {

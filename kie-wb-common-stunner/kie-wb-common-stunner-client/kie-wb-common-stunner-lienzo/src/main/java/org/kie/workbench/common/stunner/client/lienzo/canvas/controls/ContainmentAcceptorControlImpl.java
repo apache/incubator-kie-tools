@@ -105,7 +105,7 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
             return false;
         }
         boolean success = true;
-        if (children.length > 0 && !areInSameParent(parent, children)) {
+        if (!areInSameParent(parent, children)) {
             final Collection<Node> childNodes = Stream.of(children).collect(Collectors.toSet());
             final CanvasCommand<AbstractCanvasHandler> command =
                     canvasCommandFactory.updateChildren((Node) parent, childNodes);

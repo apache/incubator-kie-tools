@@ -20,16 +20,20 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -48,16 +52,26 @@ public class DeleteNodeToolboxActionTest {
     private static final String E_UUID = "e1";
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private ClientTranslationService translationService;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
+    private DefaultCanvasCommandFactory commandFactory;
+    private ManagedInstanceStub<DefaultCanvasCommandFactory> commandFactories;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
 
     @Mock
     private Node element;
@@ -75,13 +89,17 @@ public class DeleteNodeToolboxActionTest {
 
     @Before
     public void setup() throws Exception {
+        commandFactories = new ManagedInstanceStub<>(commandFactory);
         when(commandFactory.deleteNode(eq(element))).thenReturn(deleteNodeCommand);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
         when(graphIndex.get(eq(E_UUID))).thenReturn(element);
         when(element.asNode()).thenReturn(element);
         this.tested = new DeleteNodeToolboxAction(translationService,
                                                   sessionCommandManager,
-                                                  commandFactory,
+                                                  commandFactories,
+                                                  definitionUtils,
                                                   action -> true,
                                                   clearSelectionEventEventSourceMock);
     }
@@ -107,7 +125,8 @@ public class DeleteNodeToolboxActionTest {
     public void testSkipAction() {
         this.tested = new DeleteNodeToolboxAction(translationService,
                                                   sessionCommandManager,
-                                                  commandFactory,
+                                                  commandFactories,
+                                                  definitionUtils,
                                                   action -> false,
                                                   clearSelectionEventEventSourceMock);
         final MouseClickEvent event = mock(MouseClickEvent.class);

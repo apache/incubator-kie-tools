@@ -16,11 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +38,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
-import org.uberfire.mvp.Command;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+
+import static org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils.lookup;
 
 /**
  * This factory builds a toolbox with a button for each candidate connector and target node that
@@ -59,47 +60,26 @@ import org.uberfire.mvp.Command;
 public class FlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
+    private final DefinitionUtils definitionUtils;
     private final ToolboxDomainLookups toolboxDomainLookups;
     private final DomainProfileManager profileManager;
-    private final Supplier<CreateConnectorToolboxAction> createConnectorActions;
-    private final Command createConnectorActionsDestroyer;
-    private final Supplier<CreateNodeToolboxAction> createNodeActions;
-    private final Command createNodeActionsDestroyer;
-    private final Supplier<ActionsToolboxView> views;
-    private final Command viewsDestroyer;
+    private final ManagedInstance<CreateConnectorToolboxAction> createConnectorActions;
+    private final ManagedInstance<CreateNodeToolboxAction> createNodeActions;
+    private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
-    public FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
+    public FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
+                                     final ToolboxDomainLookups toolboxDomainLookups,
                                      final DomainProfileManager profileManager,
                                      final @Any ManagedInstance<CreateConnectorToolboxAction> createConnectorActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<CreateNodeToolboxAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this(toolboxDomainLookups,
-             profileManager,
-             createConnectorActions::get,
-             createConnectorActions::destroyAll,
-             createNodeActions::get,
-             createNodeActions::destroyAll,
-             views::get,
-             views::destroyAll);
-    }
-
-    FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
-                              final DomainProfileManager profileManager,
-                              final Supplier<CreateConnectorToolboxAction> createConnectorActions,
-                              final Command createConnectorActionsDestroyer,
-                              final Supplier<CreateNodeToolboxAction> createNodeActions,
-                              final Command createNodeActionsDestroyer,
-                              final Supplier<ActionsToolboxView> views,
-                              final Command viewsDestroyer) {
+        this.definitionUtils = definitionUtils;
         this.toolboxDomainLookups = toolboxDomainLookups;
         this.profileManager = profileManager;
         this.createConnectorActions = createConnectorActions;
-        this.createConnectorActionsDestroyer = createConnectorActionsDestroyer;
         this.createNodeActions = createNodeActions;
-        this.createNodeActionsDestroyer = createNodeActionsDestroyer;
         this.views = views;
-        this.viewsDestroyer = viewsDestroyer;
     }
 
     @Override
@@ -114,13 +94,13 @@ public class FlowActionsToolboxFactory
         final Diagram diagram = canvasHandler.getDiagram();
         final Metadata metadata = diagram.getMetadata();
         final String defSetId = metadata.getDefinitionSetId();
-        final Set<ToolboxAction<AbstractCanvasHandler>> actions = new LinkedHashSet<>();
+        final Annotation qualifier = definitionUtils.getQualifier(defSetId);
         final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         // Look for the default connector type and create a button for it.
         final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
         final Set<String> targetConnectors = lookup.lookupTargetConnectors(node);
         return Stream.concat(targetConnectors.stream()
-                                     .map(connectorDefId -> createConnectorActions.get().setEdgeId(connectorDefId)),
+                                     .map(connectorDefId -> newCreateConnectorToolboxAction(qualifier).setEdgeId(connectorDefId)),
                              targetConnectors.stream()
                                      .flatMap(defaultConnectorId -> {
                                          final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
@@ -129,17 +109,25 @@ public class FlowActionsToolboxFactory
                                                                                               defaultConnectorId,
                                                                                               definitionsAllowedFilter);
                                          final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
-                                         return morphTargets.stream().map(defId -> createNodeActions.get()
+                                         return morphTargets.stream().map(defId -> newCreateNodeToolboxAction(qualifier)
                                                  .setEdgeId(defaultConnectorId)
                                                  .setNodeId(defId));
                                      }))
                 .collect(Collectors.toList());
     }
 
+    private CreateConnectorToolboxAction newCreateConnectorToolboxAction(final Annotation qualifier) {
+        return lookup(createConnectorActions, qualifier);
+    }
+
+    private CreateNodeToolboxAction newCreateNodeToolboxAction(final Annotation qualifier) {
+        return lookup(createNodeActions, qualifier);
+    }
+
     @PreDestroy
     public void destroy() {
-        createConnectorActionsDestroyer.execute();
-        createNodeActionsDestroyer.execute();
-        viewsDestroyer.execute();
+        createConnectorActions.destroyAll();
+        createNodeActions.destroyAll();
+        views.destroyAll();
     }
 }

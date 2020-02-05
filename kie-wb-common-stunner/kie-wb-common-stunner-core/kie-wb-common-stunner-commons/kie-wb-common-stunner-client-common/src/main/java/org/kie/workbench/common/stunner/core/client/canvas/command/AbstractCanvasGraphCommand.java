@@ -153,15 +153,19 @@ public abstract class AbstractCanvasGraphCommand
         getGraphCommand(context);
 
         final Command<AbstractCanvasHandler, CanvasViolation> command = getCanvasCommand(context);
+        CommandResult<CanvasViolation> result = null;
         switch (op) {
             case ALLOW:
-                return command.allow(context);
+                result = command.allow(context);
+                break;
             case EXECUTE:
-                return command.execute(context);
+                result = command.execute(context);
+                break;
             case UNDO:
-                return command.undo(context);
+                result = command.undo(context);
+                break;
         }
-        return CanvasCommandResultBuilder.FAILED;
+        return result;
     }
 
     private boolean canDoNexOperation(CommandResult<CanvasViolation> result) {

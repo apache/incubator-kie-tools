@@ -26,18 +26,18 @@ public interface CommandManager<T, V> {
     /**
      * Check whether the given command can be executed.
      */
-    CommandResult<V> allow(final T context,
-                           final Command<T, V> command);
+    CommandResult<V> allow(T context,
+                           Command<T, V> command);
 
     /**
      * Execute the given command.
      */
-    CommandResult<V> execute(final T context,
-                             final Command<T, V> command);
+    CommandResult<V> execute(T context,
+                             Command<T, V> command);
 
     /**
      * Undo an executed command.
      */
-    CommandResult<V> undo(final T context,
-                          final Command<T, V> command);
+    CommandResult<V> undo(T context,
+                          Command<T, V> command);
 }

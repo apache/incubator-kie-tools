@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.UndoableLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -42,7 +41,7 @@ public class PerformAutomaticLayoutCommand extends AbstractClientSessionCommand<
 
     @Inject
     public PerformAutomaticLayoutCommand(final LayoutHelper layoutHelper,
-                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final Event<LockRequiredEvent> locker) {
         super(true);
 

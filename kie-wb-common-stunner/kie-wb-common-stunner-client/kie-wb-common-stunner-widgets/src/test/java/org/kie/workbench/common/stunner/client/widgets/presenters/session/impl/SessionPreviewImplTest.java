@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -25,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
@@ -45,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.MouseRequestLifecycle;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -58,12 +61,15 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionS
 import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -127,6 +133,9 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+
+    @Mock
+    private MouseRequestLifecycle requestLifecycle;
 
     @Mock
     private Metadata metaData;
@@ -220,6 +229,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               graphUtils,
                                               shapeManager,
                                               textPropertyProviderFactory,
+                                              requestLifecycle,
                                               canvases,
                                               canvasPanels,
                                               canvasHandlerFactories,
@@ -229,6 +239,40 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               canvasCommandManagers,
                                               view,
                                               preferencesRegistries);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInit() {
+        preview.init();
+        ArgumentCaptor<Supplier> targetCaptor = ArgumentCaptor.forClass(Supplier.class);
+        verify(requestLifecycle, times(1)).listen(targetCaptor.capture());
+        Supplier target = targetCaptor.getValue();
+        assertEquals(preview, target.get());
+    }
+
+    @Test
+    public void testStartRequest() {
+        checkCanvasHandler(false,
+                           (c) -> {
+                               WiresLayer layer = mock(WiresLayer.class);
+                               when(canvasView.getLayer()).thenReturn(layer);
+                               preview.init();
+                               preview.start();
+                               verify(layer, times(1)).setSkipDraw(eq(true));
+                           });
+    }
+
+    @Test
+    public void testCompleteRequest() {
+        checkCanvasHandler(false,
+                           (c) -> {
+                               WiresLayer layer = mock(WiresLayer.class);
+                               when(canvasView.getLayer()).thenReturn(layer);
+                               preview.init();
+                               preview.complete();
+                               verify(layer, times(1)).setSkipDraw(eq(false));
+                           });
     }
 
     @Test

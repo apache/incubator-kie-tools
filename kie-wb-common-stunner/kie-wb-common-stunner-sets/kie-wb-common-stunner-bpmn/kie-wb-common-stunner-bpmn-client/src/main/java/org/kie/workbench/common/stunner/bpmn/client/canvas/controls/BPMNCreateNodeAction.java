@@ -18,38 +18,42 @@ package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 @BPMN
 public class BPMNCreateNodeAction extends GeneralCreateNodeAction {
 
     @Inject
-    public BPMNCreateNodeAction(final ClientFactoryManager clientFactoryManager,
+    public BPMNCreateNodeAction(final DefinitionUtils definitionUtils,
+                                final ClientFactoryManager clientFactoryManager,
                                 final CanvasLayoutUtils canvasLayoutUtils,
                                 final Event<CanvasSelectionEvent> selectionEvent,
-                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
-        super(clientFactoryManager,
+                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                final @Any ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories) {
+        super(definitionUtils,
+              clientFactoryManager,
               canvasLayoutUtils,
               selectionEvent,
               sessionCommandManager,
-              canvasCommandFactory);
+              canvasCommandFactories);
     }
 
     @Override
@@ -70,6 +74,6 @@ public class BPMNCreateNodeAction extends GeneralCreateNodeAction {
     }
 
     private static boolean isGateway(final Object bean) {
-        return null != bean && bean instanceof BaseGateway;
+        return bean instanceof BaseGateway;
     }
 }

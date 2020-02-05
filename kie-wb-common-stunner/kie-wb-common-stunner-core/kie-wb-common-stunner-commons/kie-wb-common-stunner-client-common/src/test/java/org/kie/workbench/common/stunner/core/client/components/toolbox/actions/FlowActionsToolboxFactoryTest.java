@@ -19,18 +19,18 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -41,7 +41,6 @@ import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,6 +48,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,21 +77,15 @@ public class FlowActionsToolboxFactoryTest {
 
     @Mock
     private CreateConnectorToolboxAction createConnectorAction;
-
-    @Mock
-    private Command createConnectorActionDestroyer;
+    private ManagedInstance<CreateConnectorToolboxAction> createConnectorActions;
 
     @Mock
     private CreateNodeToolboxAction createNodeAction;
-
-    @Mock
-    private Command createNodeActionDestroyer;
+    private ManagedInstance<CreateNodeToolboxAction> createNodeActions;
 
     @Mock
     private ActionsToolboxView view;
-
-    @Mock
-    private Command viewDestroyer;
+    private ManagedInstance<ActionsToolboxView> views;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -116,6 +110,9 @@ public class FlowActionsToolboxFactoryTest {
         when(createConnectorAction.setEdgeId(anyString())).thenReturn(createConnectorAction);
         when(createNodeAction.setEdgeId(anyString())).thenReturn(createNodeAction);
         when(createNodeAction.setNodeId(anyString())).thenReturn(createNodeAction);
+        createConnectorActions = spy(new ManagedInstanceStub<>(createConnectorAction));
+        createNodeActions = spy(new ManagedInstanceStub<>(createNodeAction));
+        views = spy(new ManagedInstanceStub<>(view));
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
@@ -142,14 +139,12 @@ public class FlowActionsToolboxFactoryTest {
         when(domainLookups.lookupMorphBaseDefinitions(Stream.of(NODE_ID2).collect(Collectors.toSet())))
                 .thenReturn(Collections.singleton(NODE_ID2));
 
-        this.tested = new FlowActionsToolboxFactory(toolboxLookups,
+        this.tested = new FlowActionsToolboxFactory(definitionUtils,
+                                                    toolboxLookups,
                                                     profileManager,
-                                                    () -> createConnectorAction,
-                                                    createConnectorActionDestroyer,
-                                                    () -> createNodeAction,
-                                                    createNodeActionDestroyer,
-                                                    () -> view,
-                                                    viewDestroyer);
+                                                    createConnectorActions,
+                                                    createNodeActions,
+                                                    views);
     }
 
     @Test
@@ -203,17 +198,13 @@ public class FlowActionsToolboxFactoryTest {
 
         verify(view,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
-               times(actionsToolbox.size())).addButton(any(Glyph.class),
-                                                       anyString(),
-                                                       any(Consumer.class));
     }
 
     @Test
     public void testDestroy() {
         tested.destroy();
-        verify(createConnectorActionDestroyer, times(1)).execute();
-        verify(createNodeActionDestroyer, times(1)).execute();
-        verify(viewDestroyer, times(1)).execute();
+        verify(createConnectorActions, times(1)).destroyAll();
+        verify(createNodeActions, times(1)).destroyAll();
+        verify(views, times(1)).destroyAll();
     }
 }

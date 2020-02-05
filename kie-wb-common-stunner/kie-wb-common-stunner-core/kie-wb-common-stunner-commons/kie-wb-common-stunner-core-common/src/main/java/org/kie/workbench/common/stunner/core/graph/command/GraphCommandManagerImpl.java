@@ -75,7 +75,7 @@ public class GraphCommandManagerImpl
             LOGGER.log(Level.SEVERE,
                        "Error while executing graph command. Message [" + e.getMessage() + "].");
         }
-        return GraphCommandResultBuilder.FAILED;
+        return GraphCommandResultBuilder.failed();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class GraphCommandManagerImpl
             LOGGER.log(Level.SEVERE,
                        "Error while checking allow for graph command. Message [" + e.getMessage() + "].");
         }
-        return GraphCommandResultBuilder.FAILED;
+        return GraphCommandResultBuilder.failed();
     }
 
     @Override

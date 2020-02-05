@@ -39,11 +39,11 @@ import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.client.DMNShapeSet;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.NamespaceHandler;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -79,7 +79,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
     private final SessionManager sessionManager;
 
-    private final ShapeGlyphDragHandler<?> shapeGlyphDragHandler;
+    private final ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     private final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent;
 
@@ -95,7 +95,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
                                       final HTMLParagraphElement file,
                                       final DMNShapeSet dmnShapeSet,
                                       final SessionManager sessionManager,
-                                      final ShapeGlyphDragHandler<?> shapeGlyphDragHandler,
+                                      final ShapeGlyphDragHandler shapeGlyphDragHandler,
                                       final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent,
                                       final HTMLDivElement decisionComponentItem,
                                       final Event<NotificationEvent> notificationEvent,
@@ -141,13 +141,13 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
         final ShapeFactory factory = dmnShapeSet.getShapeFactory();
         final Glyph glyph = factory.getGlyph(drgElement.getClass().getName());
         final ShapeGlyphDragHandler.Item item = makeDragHandler(glyph);
-        final DragProxyCallback proxy = makeDragProxyCallbackImpl(drgElement, factory);
+        final Callback proxy = makeDragProxyCallbackImpl(drgElement, factory);
 
         shapeGlyphDragHandler.show(item, mouseDownEvent.getX(), mouseDownEvent.getY(), proxy);
     }
 
-    DragProxyCallback makeDragProxyCallbackImpl(final DRGElement drgElement,
-                                                final ShapeFactory factory) {
+    Callback makeDragProxyCallbackImpl(final DRGElement drgElement,
+                                       final ShapeFactory factory) {
 
         final Map<String, String> nsContext = getNsContext();
 
@@ -177,7 +177,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
         return new DragHandler(glyph);
     }
 
-    class DragProxyCallbackImpl implements DragProxyCallback {
+    class DragProxyCallbackImpl implements Callback {
 
         private final DRGElement drgElement;
 

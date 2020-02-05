@@ -177,18 +177,4 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
         assertEquals(bounds.getUpperLeft(), Bound.create(600d, 600d));
         assertEquals(bounds.getLowerRight(), Bound.create(650d, 650d));
     }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOutOfBoundsWarn() {
-        ViewImpl<Object> view = new ViewImpl<>(mock(Object.class),
-                                               Bounds.create(0d, 0d, 100d, 100d));
-        when(candidate.getContent()).thenReturn(view);
-        tested = new UpdateElementPositionCommand(candidate,
-                                                  Point2D.create(550d, 550d));
-        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        assertEquals(CommandResult.Type.ERROR, result.getType());
-        assertEquals(view.getBounds().getUpperLeft(), Bound.create(550d, 550d));
-        assertEquals(view.getBounds().getLowerRight(), Bound.create(650d, 650d));
-    }
 }

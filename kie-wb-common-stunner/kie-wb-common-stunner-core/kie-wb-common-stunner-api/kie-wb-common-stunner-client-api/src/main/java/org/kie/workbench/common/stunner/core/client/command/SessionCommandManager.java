@@ -17,13 +17,15 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.command.CommandListener;
-import org.kie.workbench.common.stunner.core.command.HasCommandListener;
-import org.kie.workbench.common.stunner.core.command.HasCommandRegistry;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 
+/**
+ * Delegates the operations to the <code>CanvasCommandManager</code> given by a <code>ClientSession</code> instance.
+ * Provides <code>CommandRequestLifecycle</code> support.
+ */
 public interface SessionCommandManager<H extends CanvasHandler>
         extends CanvasCommandManager<H>,
-                HasCommandRegistry<H, CanvasViolation>,
-                HasCommandListener<CommandListener<H, CanvasViolation>> {
+                CommandRequestLifecycle {
 
+    CommandResult<CanvasViolation> undo(H context);
 }

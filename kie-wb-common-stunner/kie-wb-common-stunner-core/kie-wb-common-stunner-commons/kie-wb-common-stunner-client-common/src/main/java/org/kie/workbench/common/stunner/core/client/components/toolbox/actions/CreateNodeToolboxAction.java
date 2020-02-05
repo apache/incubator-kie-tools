@@ -21,15 +21,26 @@ import java.lang.annotation.Annotation;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.components.proxies.NodeProxy;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseMoveEvent;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils.lookup;
 
@@ -39,22 +50,31 @@ import static org.kie.workbench.common.stunner.core.client.session.impl.Instance
  */
 @Dependent
 @FlowActionsToolbox
-public class CreateNodeToolboxAction extends AbstractToolboxAction {
+@Default
+public class CreateNodeToolboxAction
+        extends AbstractToolboxAction
+        implements IsToolboxActionDraggable<AbstractCanvasHandler> {
 
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewNode";
 
-    private final ManagedInstance<GeneralCreateNodeAction> actions;
+    private final ManagedInstance<GeneralCreateNodeAction> createNodeActions;
+    private final ClientFactoryManager clientFactoryManager;
+    private final NodeProxy nodeProxy;
 
     private String nodeId;
     private String edgeId;
 
     @Inject
-    public CreateNodeToolboxAction(final DefinitionUtils definitionUtils,
+    public CreateNodeToolboxAction(final @Any ManagedInstance<GeneralCreateNodeAction> createNodeActions,
+                                   final DefinitionUtils definitionUtils,
                                    final ClientTranslationService translationService,
-                                   final @Any ManagedInstance<GeneralCreateNodeAction> actions) {
+                                   final ClientFactoryManager clientFactoryManager,
+                                   final NodeProxy nodeProxy) {
         super(definitionUtils,
               translationService);
-        this.actions = actions;
+        this.createNodeActions = createNodeActions;
+        this.clientFactoryManager = clientFactoryManager;
+        this.nodeProxy = nodeProxy;
     }
 
     public String getNodeId() {
@@ -94,21 +114,69 @@ public class CreateNodeToolboxAction extends AbstractToolboxAction {
     public ToolboxAction<AbstractCanvasHandler> onMouseClick(final AbstractCanvasHandler canvasHandler,
                                                              final String uuid,
                                                              final MouseClickEvent event) {
-        final Metadata metadata = canvasHandler.getDiagram().getMetadata();
-        final Annotation qualifier = getDefinitionUtils().getQualifier(metadata.getDefinitionSetId());
-        final GeneralCreateNodeAction action = lookup(actions, qualifier);
+        final GeneralCreateNodeAction action = lookupAction(canvasHandler, uuid);
         action.executeAction(canvasHandler,
                              uuid,
                              nodeId,
                              edgeId);
+        return this;
+    }
+
+    private GeneralCreateNodeAction lookupAction(final AbstractCanvasHandler canvasHandler,
+                                                 final String uuid) {
+        final Metadata metadata = canvasHandler.getDiagram().getMetadata();
+        final Annotation qualifier = getDefinitionUtils().getQualifier(metadata.getDefinitionSetId());
+        return lookup(createNodeActions, qualifier);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ToolboxAction<AbstractCanvasHandler> onMoveStart(final AbstractCanvasHandler canvasHandler,
+                                                            final String uuid,
+                                                            final MouseMoveEvent event) {
+        final Node<View<?>, Edge> sourceNode = getSourceNode(canvasHandler, uuid);
+        final Edge<ViewConnector<?>, Node> connector = buildEdge();
+        final Node<View<?>, Edge> targetNode = buildTargetNode();
+        nodeProxy
+                .setTargetNode(targetNode)
+                .setEdge(connector)
+                .setSourceNode(sourceNode)
+                .setCanvasHandler(canvasHandler)
+                .start(event);
 
         return this;
     }
 
     @PreDestroy
     public void destroy() {
+        createNodeActions.destroyAll();
+        nodeProxy.destroy();
         nodeId = null;
         edgeId = null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<View<?>, Edge> getSourceNode(final AbstractCanvasHandler canvasHandler,
+                                              final String uuid) {
+        final Element<View<?>> sourceElement = (Element<View<?>>) CanvasLayoutUtils.getElement(canvasHandler,
+                                                                                               uuid);
+        return sourceElement.asNode();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Edge<ViewConnector<?>, Node> buildEdge() {
+        return (Edge<ViewConnector<?>, Node>) clientFactoryManager
+                .newElement(UUID.uuid(),
+                            edgeId)
+                .asEdge();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<View<?>, Edge> buildTargetNode() {
+        return (Node<View<?>, Edge>) clientFactoryManager
+                .newElement(UUID.uuid(),
+                            nodeId)
+                .asNode();
     }
 
     @Override

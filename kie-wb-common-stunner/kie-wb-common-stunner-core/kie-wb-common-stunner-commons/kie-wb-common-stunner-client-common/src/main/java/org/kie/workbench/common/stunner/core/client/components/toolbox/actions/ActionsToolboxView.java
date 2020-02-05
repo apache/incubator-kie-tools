@@ -16,16 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
-import java.util.function.Consumer;
-
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-
 public interface ActionsToolboxView<V extends ActionsToolboxView> {
 
     V init(ActionsToolbox toolbox);
-
-    V addButton(Glyph glyph, String title, Consumer<MouseClickEvent> clickEventConsumer);
 
     V show();
 

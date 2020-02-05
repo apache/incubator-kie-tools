@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -93,8 +94,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
-        assertEquals(GraphCommandResultBuilder.FAILED,
-                     c.allow(gce));
+        assertEquals(CommandResult.Type.ERROR, c.allow(gce).getType());
     }
 
     @Test

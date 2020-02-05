@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -29,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -38,8 +36,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -110,15 +106,11 @@ public class CommonActionsToolboxFactoryTest {
                      actionsToolbox.iterator().next());
         verify(view,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
-               times(1)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
     }
 
     @Test
     public void testBuildToolboxNotAllowed() {
-        when(commandManager.allow(eq(canvasHandler), eq(deleteNodeCommand))).thenReturn(CanvasCommandResultBuilder.FAILED);
+        when(commandManager.allow(eq(canvasHandler), eq(deleteNodeCommand))).thenReturn(CanvasCommandResultBuilder.failed());
         final Optional<Toolbox<?>> toolbox =
                 tested.build(canvasHandler,
                              element);

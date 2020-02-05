@@ -48,7 +48,7 @@ public interface ToolboxAction<H extends CanvasHandler> {
                     String uuid);
 
     /**
-     * The operation to perform once cliking on the toolbox' button.
+     * The operation to perform once clicking on the toolbox' button.
      * @param canvasHandler The toolbox' canvas handler instance.
      * @param uuid The toolbox' element identifier.
      * @return This instance (cascade).

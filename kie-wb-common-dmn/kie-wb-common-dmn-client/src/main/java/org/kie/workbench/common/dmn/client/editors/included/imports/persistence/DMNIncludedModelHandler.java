@@ -35,7 +35,6 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -56,7 +55,7 @@ public class DMNIncludedModelHandler implements DRGElementHandler {
     @Inject
     public DMNIncludedModelHandler(final DMNGraphUtils dmnGraphUtils,
                                    final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
-                                   final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                   final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final DefinitionUtils definitionUtils) {
         this.dmnGraphUtils = dmnGraphUtils;
         this.canvasCommandFactory = canvasCommandFactory;

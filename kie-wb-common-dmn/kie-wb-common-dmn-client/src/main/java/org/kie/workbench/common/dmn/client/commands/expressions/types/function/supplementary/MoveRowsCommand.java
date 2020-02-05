@@ -110,7 +110,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             @Override
             public CommandResult<CanvasViolation> allow(AbstractCanvasHandler context) {
                 if (index == uiModel.getRowCount() - 1) {
-                    return CanvasCommandResultBuilder.FAILED;
+                    return CanvasCommandResultBuilder.failed();
                 }
                 return CanvasCommandResultBuilder.SUCCESS;
             }

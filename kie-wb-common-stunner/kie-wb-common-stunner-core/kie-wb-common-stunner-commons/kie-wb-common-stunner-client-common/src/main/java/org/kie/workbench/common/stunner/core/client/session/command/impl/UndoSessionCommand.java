@@ -27,11 +27,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -43,7 +44,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Inject
-    public UndoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+    public UndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
     }
@@ -79,14 +80,14 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
         checkNotNull("callback",
                      callback);
-        final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
-        if (null != scm) {
-            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo(getSession().getCanvasHandler());
+        final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> registry = getSession().getCommandRegistry();
+        if (!registry.isEmpty()) {
+            final CommandResult<CanvasViolation> result = sessionCommandManager.undo(getSession().getCanvasHandler());
             checkState();
             if (CommandUtils.isError(result)) {
                 callback.onError((V) result);
                 // Clear the actual command registry otherwise the undo will continuously fail as it's same command.
-                getSessionCommandManager().getRegistry().clear();
+                getSession().getCommandRegistry().clear();
             } else {
                 callback.onSuccess();
             }
@@ -107,9 +108,5 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
             setEnabled(!getSession().getCommandRegistry().getCommandHistory().isEmpty());
             fire();
         }
-    }
-
-    private SessionCommandManager<AbstractCanvasHandler> getSessionCommandManager() {
-        return sessionCommandManager;
     }
 }

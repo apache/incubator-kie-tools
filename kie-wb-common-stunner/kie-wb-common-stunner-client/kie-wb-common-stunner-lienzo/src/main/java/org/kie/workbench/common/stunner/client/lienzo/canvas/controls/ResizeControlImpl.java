@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeContro
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -47,10 +46,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -206,16 +202,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     private CommandResult<CanvasViolation> doResize(final Element<? extends View<?>> element,
                                                     final double w,
                                                     final double h) {
-        final Point2D current = GraphUtils.getPosition(element.getContent());
-        final Bounds newBounds = Bounds.create(current.getX(),
-                                               current.getY(),
-                                               current.getX() + w,
-                                               current.getY() + h);
-
-        if (CanvasUtils.areBoundsExceeded(canvasHandler, newBounds)) {
-            return CanvasUtils.createBoundsExceededCommandResult(canvasHandler, newBounds);
-        }
-
         return getCommandManager().execute(canvasHandler,
                                            canvasCommandFactory.resize(element, new BoundingBox(0, 0, w, h)));
     }

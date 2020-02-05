@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -66,7 +65,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<EditorSess
 
     @Inject
     public ClearSessionCommand(final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
-                               final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent,
                                final DefinitionUtils definitionUtils) {
         super(true);
@@ -109,6 +108,6 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<EditorSess
     private void cleanSessionRegistry() {
         LOGGER.log(FINE,
                    "Clear Session Command executed - Cleaning the session's command registry...");
-        sessionCommandManager.getRegistry().clear();
+        getSession().getCommandRegistry().clear();
     }
 }

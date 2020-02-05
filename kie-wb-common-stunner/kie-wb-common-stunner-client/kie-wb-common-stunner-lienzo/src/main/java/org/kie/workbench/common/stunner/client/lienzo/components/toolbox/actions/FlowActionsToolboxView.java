@@ -13,20 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// TODO
 package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.actions;
+
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.shape.toolbox.ToolboxVisibilityExecutors;
+import com.ait.lienzo.client.core.shape.toolbox.grid.AutoGrid;
+import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.decorator.BoxDecorator;
+import com.ait.lienzo.client.core.shape.toolbox.items.impl.ItemsToolboxHighlight;
+import com.ait.lienzo.client.core.shape.toolbox.items.impl.ToolboxFactory;
+import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip;
+import com.ait.lienzo.client.core.types.Shadow;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox;
-import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxVisibilityExecutors;
-import org.kie.workbench.common.stunner.lienzo.toolbox.grid.AutoGrid;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.impl.ToolboxFactory;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.tooltip.ToolboxTextTooltip;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.IsToolboxActionDraggable;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 
 /**
  * It renders the toolbox' actions as first level button items.
@@ -38,6 +49,8 @@ public class FlowActionsToolboxView
 
     static final Direction TOOLBOX_AT = Direction.NORTH_EAST;
     static final Direction GRID_TOWARDS = Direction.SOUTH_EAST;
+
+    private ItemsToolboxHighlight highlight;
 
     @Inject
     public FlowActionsToolboxView(final LienzoGlyphRenderers glyphRenderers) {
@@ -63,6 +76,7 @@ public class FlowActionsToolboxView
                               .build())
                 .useShowExecutor(ToolboxVisibilityExecutors.upScaleX())
                 .useHideExecutor(ToolboxVisibilityExecutors.downScaleX());
+        highlight = new ItemsToolboxHighlight(getToolboxView());
     }
 
     @Override
@@ -74,7 +88,43 @@ public class FlowActionsToolboxView
     }
 
     @Override
+    protected BoxDecorator createDecorator() {
+        final BoxDecorator decorator = super.createDecorator();
+        decorator.configure(path -> {
+            path.setStrokeWidth(1)
+                    .setStrokeColor("#0000FF")
+                    .setShadow(new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3));
+        });
+        return decorator;
+    }
+
+    @Override
+    protected void onButtonClick(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
+                                 final ToolboxAction toolboxAction,
+                                 final ButtonItem button,
+                                 final AbstractNodeMouseEvent event) {
+        highlight.highlight(button);
+        super.onButtonClick(toolbox, toolboxAction, button, event);
+    }
+
+    @Override
+    protected void onButtonMoveStart(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
+                                     final IsToolboxActionDraggable toolboxAction,
+                                     final ButtonItem button,
+                                     final AbstractNodeMouseEvent event) {
+        highlight.highlight(button);
+        super.onButtonMoveStart(toolbox, toolboxAction, button, event);
+    }
+
+    @Override
     protected double getGlyphSize() {
         return BUTTON_SIZE;
+    }
+
+    @Override
+    public void destroy() {
+        Optional.ofNullable(highlight).ifPresent(ItemsToolboxHighlight::restore);
+        highlight = null;
+        super.destroy();
     }
 }

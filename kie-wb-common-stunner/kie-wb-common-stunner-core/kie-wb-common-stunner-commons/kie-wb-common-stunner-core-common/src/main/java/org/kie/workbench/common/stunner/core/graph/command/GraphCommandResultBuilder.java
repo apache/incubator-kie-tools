@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.command;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
@@ -33,9 +34,9 @@ public class GraphCommandResultBuilder extends CommandResultBuilder<RuleViolatio
                                                                                        new LinkedList<>()
     );
 
-    public static final CommandResult<RuleViolation> FAILED = new CommandResultImpl<>(CommandResult.Type.ERROR,
-                                                                                      new LinkedList<>()
-    );
+    public static CommandResult<RuleViolation> failed() {
+        return new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.emptyList());
+    }
 
     public GraphCommandResultBuilder() {
     }

@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -29,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,26 +68,6 @@ public class CommandManagerImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testAllowWithListener() {
-        CommandListener<Object, Object> listener = mock(CommandListener.class);
-        tested.setCommandListener(listener);
-        testAllow();
-        verify(listener,
-               times(1)).onAllow(eq(context),
-                                 eq(command),
-                                 eq(commandResult));
-        verify(listener,
-               times(0)).onExecute(anyObject(),
-                                   anyObject(),
-                                   anyObject());
-        verify(listener,
-               times(0)).onUndo(anyObject(),
-                                anyObject(),
-                                anyObject());
-    }
-
-    @Test
     public void testExecute() {
         when(command.execute(context)).thenReturn(commandResult);
         CommandResult<Object> result = tested.execute(context,
@@ -106,26 +84,6 @@ public class CommandManagerImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testExecuteWithListener() {
-        CommandListener<Object, Object> listener = mock(CommandListener.class);
-        tested.setCommandListener(listener);
-        testExecute();
-        verify(listener,
-               times(0)).onAllow(anyObject(),
-                                 anyObject(),
-                                 anyObject());
-        verify(listener,
-               times(1)).onExecute(eq(context),
-                                   eq(command),
-                                   eq(commandResult));
-        verify(listener,
-               times(0)).onUndo(anyObject(),
-                                anyObject(),
-                                anyObject());
-    }
-
-    @Test
     public void testUndo() {
         when(command.undo(context)).thenReturn(commandResult);
         CommandResult<Object> result = tested.undo(context,
@@ -139,25 +97,5 @@ public class CommandManagerImplTest {
         assertNotNull(result);
         assertEquals(commandResult,
                      result);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testUndoWithListener() {
-        CommandListener<Object, Object> listener = mock(CommandListener.class);
-        tested.setCommandListener(listener);
-        testUndo();
-        verify(listener,
-               times(0)).onAllow(anyObject(),
-                                 anyObject(),
-                                 anyObject());
-        verify(listener,
-               times(0)).onExecute(anyObject(),
-                                   anyObject(),
-                                   anyObject());
-        verify(listener,
-               times(1)).onUndo(eq(context),
-                                eq(command),
-                                eq(commandResult));
     }
 }

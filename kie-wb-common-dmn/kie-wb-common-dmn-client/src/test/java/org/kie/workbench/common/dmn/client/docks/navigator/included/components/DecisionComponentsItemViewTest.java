@@ -37,12 +37,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.DMNShapeSet;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.shape.factory.DMNShapeFactory;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Item;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
-import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler.Item;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -90,7 +90,7 @@ public class DecisionComponentsItemViewTest {
     private SessionManager sessionManager;
 
     @Mock
-    private ShapeGlyphDragHandler<?> shapeGlyphDragHandler;
+    private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     @Mock
     private EventSourceMock<BuildCanvasShapeEvent> buildCanvasShapeEvent;
@@ -155,7 +155,7 @@ public class DecisionComponentsItemViewTest {
     public void testDecisionComponentItemMouseDown() {
 
         final MouseDownEvent mouseDownEvent = mock(MouseDownEvent.class);
-        final DragProxyCallback proxy = mock(DragProxyCallback.class);
+        final Callback proxy = mock(Callback.class);
         final DRGElement drgElement = mock(DRGElement.class);
         final DMNShapeFactory factory = mock(DMNShapeFactory.class);
         final ShapeGlyphDragHandler.Item item = mock(ShapeGlyphDragHandler.Item.class);

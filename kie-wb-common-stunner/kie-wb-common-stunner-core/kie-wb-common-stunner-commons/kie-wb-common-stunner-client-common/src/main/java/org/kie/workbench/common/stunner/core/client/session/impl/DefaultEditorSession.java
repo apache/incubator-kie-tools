@@ -46,12 +46,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Key
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
@@ -64,19 +62,16 @@ public class DefaultEditorSession
     private final ManagedSession session;
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
     private final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Inject
     public DefaultEditorSession(final ManagedSession session,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
+                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry) {
         this.session = session;
         this.commandRegistry = clientCommandRegistry;
         this.sessionCommandManager = sessionCommandManager;
-        this.requestCommandManager = requestCommandManager;
         this.canvasCommandManager = canvasCommandManager;
     }
 
@@ -201,16 +196,7 @@ public class DefaultEditorSession
     @SuppressWarnings("unchecked")
     private void onCanvasHandlerControlRegistered(final CanvasControl<AbstractCanvasHandler> control) {
         if (control instanceof RequiresCommandManager) {
-            // TODO: Improve this
-            if (control instanceof LocationControl ||
-                    control instanceof ConnectionAcceptorControl ||
-                    control instanceof ControlPointControl ||
-                    control instanceof DockingAcceptorControl ||
-                    control instanceof ContainmentAcceptorControl) {
-                ((RequiresCommandManager) control).setCommandManagerProvider(() -> requestCommandManager);
-            } else {
-                ((RequiresCommandManager) control).setCommandManagerProvider(() -> sessionCommandManager);
-            }
+            ((RequiresCommandManager) control).setCommandManagerProvider(() -> sessionCommandManager);
         }
         onControlRegistered(control);
     }

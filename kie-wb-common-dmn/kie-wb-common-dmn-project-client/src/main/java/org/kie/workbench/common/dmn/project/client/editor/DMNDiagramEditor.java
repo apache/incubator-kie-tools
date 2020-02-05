@@ -61,7 +61,6 @@ import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelp
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
@@ -150,7 +149,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final ClientProjectDiagramService projectDiagramServices,
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                             final SessionManager sessionManager,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final LayoutHelper layoutHelper,

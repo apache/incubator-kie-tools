@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,6 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.T
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -50,7 +48,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -168,9 +165,5 @@ public class DMNFlowActionsToolboxFactoryTest {
                times(1)).setNodeId(eq(NODE_ID));
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(viewInstance,
-               times(2)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
     }
 }

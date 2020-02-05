@@ -54,7 +54,7 @@ public class DMNFlowActionsToolboxFactory
     @Inject
     public DMNFlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                                         final @Any ManagedInstance<CreateConnectorToolboxAction> createConnectorActions,
-                                        final @Any @DMNFlowActionsToolbox ManagedInstance<CreateNodeToolboxAction> createNodeActions,
+                                        final @Any @FlowActionsToolbox ManagedInstance<CreateNodeToolboxAction> createNodeActions,
                                         final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.toolboxDomainLookups = toolboxDomainLookups;
         this.createConnectorActions = createConnectorActions;

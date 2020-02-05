@@ -29,16 +29,13 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -106,7 +103,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final DiagramClientErrorHandler diagramClientErrorHandler,
                              final ClientTranslationService translationService,
                              final DocumentationView documentationView,
-                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                              final DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock,
                              final DiagramEditorPropertiesDock diagramPropertiesDock,
                              final LayoutHelper layoutHelper,

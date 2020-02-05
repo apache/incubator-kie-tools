@@ -73,7 +73,7 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
         return new AbstractGraphCommand() {
             @Override
             protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-                return isColumnInValidSection() ? GraphCommandResultBuilder.SUCCESS : GraphCommandResultBuilder.FAILED;
+                return isColumnInValidSection() ? GraphCommandResultBuilder.SUCCESS : GraphCommandResultBuilder.failed();
             }
 
             private boolean isColumnInValidSection() {
@@ -163,7 +163,7 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
 
                     return GraphCommandResultBuilder.SUCCESS;
                 } else {
-                    return GraphCommandResultBuilder.FAILED;
+                    return GraphCommandResultBuilder.failed();
                 }
             }
 

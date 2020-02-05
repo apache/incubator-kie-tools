@@ -15,9 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,17 +23,14 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 
 /**
  * A Command to update an element's bounds.
@@ -43,14 +38,10 @@ import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViola
 @Portable
 public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
-    private static Logger LOGGER = Logger.getLogger(UpdateElementPositionCommand.class.getName());
-
     private final String uuid;
     private final Point2D location;
     private final Point2D previousLocation;
     private transient Node<? extends View<?>, Edge> node;
-    private Element<? extends View<?>> parent;
-    private Boolean isDocked;
 
     public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
                                         final @MapsTo("location") Point2D location,
@@ -107,52 +98,14 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context,
                                                  final Consumer<Bounds> boundsConsumer) {
-        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
-        final Node<? extends View<?>, Edge> element = getNodeNotNull(context);
-        final Bounds targetBounds = getTargetBounds(element);
-        final Bounds parentBounds = getParentBounds(getNodeNotNull(context), graph);
+        final Bounds targetBounds = getTargetBounds(getNodeNotNull(context));
         boundsConsumer.accept(targetBounds);
-        if (areBoundsExceeded(element, targetBounds, parentBounds)) {
-            return new GraphCommandResultBuilder()
-                    .addViolation(new BoundsExceededViolation(parentBounds)
-                                          .setUUID(node.getUUID()))
-                    .build();
-        }
         return GraphCommandResultBuilder.SUCCESS;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean areBoundsExceeded(final Node<? extends View<?>, Edge> element,
-                                      final Bounds bounds,
-                                      final Bounds parentBounds) {
-        return !(GraphUtils.checkBoundsExceeded(parentBounds, bounds) || isDockedNode(element));
-    }
-
-    private boolean isDockedNode(Node<? extends View<?>, Edge> element) {
-        if (Objects.isNull(isDocked)) {
-            isDocked = GraphUtils.isDockedNode(element);
-        }
-        return isDocked;
     }
 
     @SuppressWarnings("unchecked")
     private Bounds getTargetBounds(final Element<? extends View<?>> element) {
         return computeCandidateBounds(element, location);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Bounds getParentBounds(Element element, final Graph<DefinitionSet, Node> graph) {
-        if (Objects.isNull(parent)) {
-            //set the parent on the first execution, this avoid getting a wrong parent when undoing the command in case the parent has changed
-            parent = (Element<? extends View<?>>) GraphUtils.getParent((Node) element);
-        }
-
-        if (parent != null && !GraphUtils.isRootNode(parent, graph)) {
-            final double[] size = GraphUtils.getNodeSize(parent.getContent());
-            return Bounds.create(0d, 0d, size[0], size[1]);
-        } else {
-            return null;
-        }
     }
 
     @Override

@@ -18,10 +18,16 @@ package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.action
 
 import java.util.function.Consumer;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.toolbox.grid.FixedLayoutGrid;
+import com.ait.lienzo.client.core.shape.toolbox.grid.Point2DGrid;
+import com.ait.lienzo.client.core.shape.toolbox.items.ButtonGridItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.DecoratorItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
+import com.ait.lienzo.client.core.shape.toolbox.items.decorator.BoxDecorator;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -29,13 +35,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.lienzo.toolbox.grid.FixedLayoutGrid;
-import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.ButtonGridItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.ButtonItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
-import org.kie.workbench.common.stunner.lienzo.toolbox.items.decorator.BoxDecorator;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -64,9 +63,10 @@ public class MorphActionsToolboxViewTest
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
+        when(toolbox.size()).thenReturn(2);
         when(buttonsFactory.dropRight(any(Group.class))).thenReturn(buttonGridItem);
         when(decoratorsFactory.button()).thenReturn(buttonDecorator);
-        when(buttonDecorator.configure(any(Consumer.class))).thenReturn(buttonDecorator);
+        when(buttonDecorator.configure(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(buttonDecorator);
         when(buttonDecorator.setBoundingBox(any(BoundingBox.class))).thenReturn(buttonDecorator);
         when(buttonDecorator.setPadding(anyDouble())).thenReturn(buttonDecorator);
         when(buttonDecorator.copy()).thenReturn(buttonDecorator);
@@ -76,7 +76,7 @@ public class MorphActionsToolboxViewTest
         when(buttonGridItem.decorateGrid(any(DecoratorItem.class))).thenReturn(buttonGridItem);
         when(buttonGridItem.onMouseEnter(any(NodeMouseEnterHandler.class))).thenReturn(buttonGridItem);
         when(buttonGridItem.onMouseExit(any(NodeMouseExitHandler.class))).thenReturn(buttonGridItem);
-        when(buttonGridItem.onClick(any(NodeMouseClickHandler.class))).thenReturn(buttonGridItem);
+        when(buttonGridItem.onClick(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(buttonGridItem);
         this.tested = new MorphActionsToolboxView(glyphRenderers,
                                                   toolboxFactory);
         when(toolbox.getView()).thenReturn(tested);
@@ -102,9 +102,8 @@ public class MorphActionsToolboxViewTest
         doInit();
         final Consumer<MouseClickEvent> eventConsumer = mock(Consumer.class);
         tested.addButton(mock(Glyph.class),
-                         "title1",
-                         eventConsumer);
-        super.testAddButton(eventConsumer);
+                         "title1");
+        super.testAddButton("title1");
     }
 
     @Test

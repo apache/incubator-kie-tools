@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHand
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -111,7 +110,7 @@ public class BPMNStandaloneDiagramEditor extends AbstractDiagramEditor {
                                        final ClientTranslationService translationService,
                                        final DocumentationView documentationView,
                                        final SessionManager sessionManager,
-                                       final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                        final DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock,
                                        final DiagramEditorPropertiesDock diagramPropertiesDock,
                                        final LayoutHelper layoutHelper,

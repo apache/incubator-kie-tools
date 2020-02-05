@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -76,7 +75,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     }
 
     @Inject
-    public DeleteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+    public DeleteSelectionSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                          final Event<CanvasClearSelectionEvent> clearSelectionEvent,
                                          final DefinitionUtils definitionUtils,

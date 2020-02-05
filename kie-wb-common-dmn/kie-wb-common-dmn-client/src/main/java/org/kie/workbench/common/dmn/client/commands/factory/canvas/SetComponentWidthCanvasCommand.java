@@ -42,7 +42,7 @@ public class SetComponentWidthCanvasCommand extends AbstractCanvasCommand {
             uiColumn.setWidth(width);
             uiColumn.getGridWidget().batch();
         } catch (Exception e) {
-            return CanvasCommandResultBuilder.FAILED;
+            return CanvasCommandResultBuilder.failed();
         }
         return CanvasCommandResultBuilder.SUCCESS;
     }
@@ -53,7 +53,7 @@ public class SetComponentWidthCanvasCommand extends AbstractCanvasCommand {
             uiColumn.setWidth(oldWidth);
             uiColumn.getGridWidget().batch();
         } catch (Exception e) {
-            return CanvasCommandResultBuilder.FAILED;
+            return CanvasCommandResultBuilder.failed();
         }
         return CanvasCommandResultBuilder.SUCCESS;
     }

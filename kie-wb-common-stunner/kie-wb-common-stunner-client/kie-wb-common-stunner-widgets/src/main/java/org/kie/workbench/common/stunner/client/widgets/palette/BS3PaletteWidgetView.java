@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
-import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.uberfire.client.mvp.UberElement;
 
 public interface BS3PaletteWidgetView extends UberElement<BS3PaletteWidget> {

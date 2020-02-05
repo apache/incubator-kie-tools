@@ -32,8 +32,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.FAILED;
 import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.SUCCESS;
+import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.failed;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -104,7 +104,7 @@ public class DeferredCompositeCommandTest {
         Command c1 = mockCommand(SUCCESS,
                                  SUCCESS);
         //c2 command allowance check failed
-        Command c2 = mockCommand(FAILED,
+        Command c2 = mockCommand(failed(),
                                  SUCCESS);
         //no matter
         Command c3 = mockCommand(SUCCESS,
@@ -142,7 +142,7 @@ public class DeferredCompositeCommandTest {
                                  SUCCESS);
         //c2 command allowance succeeded but execution failed
         Command c2 = mockCommand(SUCCESS,
-                                 FAILED);
+                                 failed());
         //no matter
         Command c3 = mockCommand(SUCCESS,
                                  SUCCESS);

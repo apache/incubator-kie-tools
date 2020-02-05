@@ -114,7 +114,7 @@ public class DecisionServiceMoveDividerControl extends AbstractCanvasHandlerRegi
             final CanvasCommand<AbstractCanvasHandler> command = oCommand.get();
             return getCommandManager().execute(canvasHandler, command);
         }
-        return CanvasCommandResultBuilder.FAILED;
+        return CanvasCommandResultBuilder.failed();
     }
 
     private Optional<CanvasCommand<AbstractCanvasHandler>> getMoveDividerCommand(final Element<? extends Definition<?>> element,

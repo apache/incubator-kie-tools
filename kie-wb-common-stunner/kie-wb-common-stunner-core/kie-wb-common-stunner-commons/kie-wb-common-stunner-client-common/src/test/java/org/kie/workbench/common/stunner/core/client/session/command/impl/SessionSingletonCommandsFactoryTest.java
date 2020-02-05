@@ -22,8 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -45,9 +43,6 @@ public class SessionSingletonCommandsFactoryTest {
     protected SessionManager sessionManager;
 
     @Mock
-    protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-
-    @Mock
     protected Event<CutSelectionSessionCommandExecutedEvent> commandExecutedEvent;
 
     @Before
@@ -63,7 +58,7 @@ public class SessionSingletonCommandsFactoryTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testOnlyAllowedCommands() {
-        final CutSelectionSessionCommand cut = new CutSelectionSessionCommand(sessionCommandManager, commandExecutedEvent, sessionManager);
+        final CutSelectionSessionCommand cut = new CutSelectionSessionCommand(commandExecutedEvent, sessionManager);
         SessionSingletonCommandsFactory.createOrPut(cut, sessionManager);
     }
 

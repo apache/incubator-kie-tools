@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.command.ClientRedoCommandHan
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -53,7 +52,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @Inject
-    public RedoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+    public RedoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final ClientRedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
         super(false);
         this.redoCommandHandler = redoCommandHandler;

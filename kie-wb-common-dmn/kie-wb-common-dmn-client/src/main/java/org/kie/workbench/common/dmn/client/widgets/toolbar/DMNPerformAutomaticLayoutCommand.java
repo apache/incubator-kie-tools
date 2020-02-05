@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PerformAutomaticLayoutCommand;
 import org.uberfire.client.mvp.LockRequiredEvent;
 
@@ -32,7 +31,7 @@ public class DMNPerformAutomaticLayoutCommand extends PerformAutomaticLayoutComm
 
     @Inject
     public DMNPerformAutomaticLayoutCommand(final @Any DMNLayoutHelper layoutHelper,
-                                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                            final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                             final Event<LockRequiredEvent> locker) {
         super(layoutHelper, sessionCommandManager, locker);
     }

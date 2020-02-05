@@ -66,6 +66,7 @@ public interface Canvas<S extends Shape> {
     Canvas clear();
 
     /**
+     * TODO: Remove - never called?
      * A command fired after drawing the canvas.
      */
     void onAfterDraw(Command callback);
