@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.standalone.client.services;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +30,10 @@ public class DataTypeNamesStandaloneService implements DataTypeNamesService {
 
     @Override
     public Promise<List<String>> call(final Path path) {
-        return Promise.resolve(Collections.emptyList());
+        List<String> testString = new ArrayList<>();
+        testString.add("org.standalone.Test1");
+        testString.add("org.standalone.Test2");
+        testString.add("org.standalone.Test3");
+        return Promise.resolve(testString);
     }
 }

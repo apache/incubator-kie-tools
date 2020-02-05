@@ -31,7 +31,6 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
-import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 
@@ -67,15 +66,25 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
     public String getDataInput() {
         return getMultiInstanceLoopCharacteristics()
                 .map(MultiInstanceLoopCharacteristics::getInputDataItem)
-                .map(d -> Optional.ofNullable(d.getName()).orElse(d.getId()))
+                .map(MultipleInstanceActivityPropertyReader::createInputVariable)
                 .orElse("");
+    }
+
+    private static String createInputVariable(DataInput input) {
+        String name = (input.getName() != null) ? input.getName() : input.getId();
+        return name + ":" + input.getItemSubjectRef().getStructureRef();
     }
 
     public String getDataOutput() {
         return getMultiInstanceLoopCharacteristics()
                 .map(MultiInstanceLoopCharacteristics::getOutputDataItem)
-                .map(d -> Optional.ofNullable(d.getName()).orElse(d.getId()))
+                .map(MultipleInstanceActivityPropertyReader::createOutputVariable)
                 .orElse("");
+    }
+
+    private static String createOutputVariable(DataOutput output) {
+        String name = (output.getName() != null) ? output.getName() : output.getId();
+        return name + ":" + output.getItemSubjectRef().getStructureRef();
     }
 
     public String getCompletionCondition() {
@@ -93,10 +102,6 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
 
     private Optional<MultiInstanceLoopCharacteristics> getMultiInstanceLoopCharacteristics() {
         return Optional.ofNullable((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics());
-    }
-
-    private static String getVariableName(Property property) {
-        return ProcessVariableReader.getProcessVariableName(property);
     }
 
     @Override

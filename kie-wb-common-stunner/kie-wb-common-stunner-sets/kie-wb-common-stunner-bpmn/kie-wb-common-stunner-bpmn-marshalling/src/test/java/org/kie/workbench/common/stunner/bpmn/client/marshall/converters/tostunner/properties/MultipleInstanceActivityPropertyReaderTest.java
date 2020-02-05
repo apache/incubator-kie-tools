@@ -49,6 +49,8 @@ public class MultipleInstanceActivityPropertyReaderTest {
     private static final String ITEM_ID = "ITEM_ID";
     private static final String PROPERTY_ID = "PROPERTY_ID";
     private static final String EXPRESSION = "EXPRESSION";
+    private static final String DATA_TYPE = "java.lang.Object";
+    private static final String DELIMITER = ":";
 
     private MultipleInstanceActivityPropertyReader reader;
 
@@ -83,7 +85,7 @@ public class MultipleInstanceActivityPropertyReaderTest {
     public void testGetDataInput() {
         DataInput item = mockDataInput(ITEM_ID, PROPERTY_ID);
         when(miloop.getInputDataItem()).thenReturn(item);
-        assertEquals(PROPERTY_ID, reader.getDataInput());
+        assertEquals(PROPERTY_ID + DELIMITER + DATA_TYPE, reader.getDataInput());
     }
 
     @Test
@@ -99,7 +101,7 @@ public class MultipleInstanceActivityPropertyReaderTest {
     public void testGetDataOutput() {
         DataOutput item = mockDataOutput(ITEM_ID, PROPERTY_ID);
         when(miloop.getOutputDataItem()).thenReturn(item);
-        assertEquals(PROPERTY_ID, reader.getDataOutput());
+        assertEquals(PROPERTY_ID + DELIMITER + DATA_TYPE, reader.getDataOutput());
     }
 
     // TODO: Kogito - @Test

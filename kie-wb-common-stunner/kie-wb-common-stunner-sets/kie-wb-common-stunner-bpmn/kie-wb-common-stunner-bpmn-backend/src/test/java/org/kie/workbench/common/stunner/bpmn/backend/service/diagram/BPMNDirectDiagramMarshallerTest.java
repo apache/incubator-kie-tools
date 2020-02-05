@@ -649,9 +649,9 @@ public class BPMNDirectDiagramMarshallerTest {
         UserTaskExecutionSet executionSet = userTask.getExecutionSet();
         assertTrue(executionSet.getIsMultipleInstance().getValue());
         assertEquals("theInputCollection", executionSet.getMultipleInstanceCollectionInput().getValue());
-        assertEquals("theInputVariable", executionSet.getMultipleInstanceDataInput().getValue());
+        assertEquals("theInputVariable:java.lang.Object", executionSet.getMultipleInstanceDataInput().getValue());
         assertEquals("theOutputCollection", executionSet.getMultipleInstanceCollectionOutput().getValue());
-        assertEquals("theOutputVariable", executionSet.getMultipleInstanceDataOutput().getValue());
+        assertEquals("theOutputVariable:java.lang.Object", executionSet.getMultipleInstanceDataOutput().getValue());
         assertEquals("theCompletionCondition", executionSet.getMultipleInstanceCompletionCondition().getValue());
     }
 
@@ -1013,7 +1013,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
         Edge associationEdge = userTask2Node.getInEdges().stream()
                 .filter(edge -> edge.getUUID().equals("_B41D28D1-FC39-40E8-BF89-C57649989014"))
-                .map(e -> ((Element) e).asEdge())
+                .map(e -> e.asEdge())
                 .findFirst().orElse(null);
         assertNotNull(associationEdge);
         assertNotNull(associationEdge.getContent());
@@ -1886,9 +1886,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("test.SubProcess", executionSet.getCalledElement().getValue());
         assertTrue(executionSet.getIsMultipleInstance().getValue());
         assertEquals("theInputCollection", executionSet.getMultipleInstanceCollectionInput().getValue());
-        assertEquals("theInputVariable", executionSet.getMultipleInstanceDataInput().getValue());
+        assertEquals("theInputVariable:java.lang.Object", executionSet.getMultipleInstanceDataInput().getValue());
         assertEquals("theOutputCollection", executionSet.getMultipleInstanceCollectionOutput().getValue());
-        assertEquals("theOutputVariable", executionSet.getMultipleInstanceDataOutput().getValue());
+        assertEquals("theOutputVariable:java.lang.Object", executionSet.getMultipleInstanceDataOutput().getValue());
         assertEquals("theCompletionCondition", executionSet.getMultipleInstanceCompletionCondition().getValue());
 
         final String SLA_DUE_DATE = "12/25/1983";
@@ -2388,16 +2388,16 @@ public class BPMNDirectDiagramMarshallerTest {
                                                                                                org.eclipse.bpmn2.UserTask.class,
                                                                                                "Self Evaluation");
         assertNotNull(userTask);
-        DataInput dataInput = (DataInput) getDataInput(userTask,
-                                                       "reason");
+        DataInput dataInput = getDataInput(userTask,
+                                           "reason");
 
         // this fails because of type
         validateDataInputOrOutput(dataInput,
                                   "_reasonInputX",
                                   "com.test.Reason",
                                   "_reasonInputXItem");
-        DataOutput dataOutput = (DataOutput) getDataOutput(userTask,
-                                                           "performance");
+        DataOutput dataOutput = getDataOutput(userTask,
+                                              "performance");
         validateDataInputOrOutput(dataOutput,
                                   "_performanceOutputX",
                                   "Object",
@@ -3576,8 +3576,8 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("var1", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionInput().getValue());
         assertEquals("var2", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionOutput().getValue());
-        assertEquals("dataInput", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataInput().getValue());
-        assertEquals("dataOutput", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataOutput().getValue());
+        assertEquals("dataInput:java.lang.Object", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataInput().getValue());
+        assertEquals("dataOutput:java.lang.Object", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataOutput().getValue());
         assertEquals("a=b", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCompletionCondition().getValue());
         assertEquals("onEntryAction",
                      multipleInstanceSubprocess.getExecutionSet().getOnEntryAction().getValue().getValues().get(0).getScript());
@@ -4102,7 +4102,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     private Process getProcess(Definitions definitions) {
         Object o = Arrays.stream(definitions.getRootElements().toArray())
-                .filter(x -> Process.class.isInstance(x))
+                .filter(x -> x instanceof Process)
                 .findFirst()
                 .orElse(null);
         return (Process) o;

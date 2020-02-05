@@ -24,8 +24,11 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.VariablesType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
@@ -38,12 +41,19 @@ public class MultipleInstanceDataOutput implements BPMNProperty {
     @FieldValue
     private String value;
 
+    @Type
+    public static final PropertyType type = new VariablesType();
+
     public MultipleInstanceDataOutput() {
         this("");
     }
 
     public MultipleInstanceDataOutput(final String value) {
         this.value = value;
+    }
+
+    public PropertyType getType() {
+        return type;
     }
 
     public String getValue() {

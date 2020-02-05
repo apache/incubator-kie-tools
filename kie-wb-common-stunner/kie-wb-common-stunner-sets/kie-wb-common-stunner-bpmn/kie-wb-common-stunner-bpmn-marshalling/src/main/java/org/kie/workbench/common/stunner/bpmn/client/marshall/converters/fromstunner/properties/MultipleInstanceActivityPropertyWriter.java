@@ -111,15 +111,19 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
             return;
         }
 
+        String[] variable = name.split(":");
+        String variableName = getVariableName(variable);
+        String variableType = getVariableType(variable);
+
         setUpLoopCharacteristics();
-        DataInput miDataInputElement = createDataInput(name, name);
-        ItemDefinition item = createItemDefinition(name);
+        DataInput miDataInputElement = createDataInput(variableName, variableName);
+        ItemDefinition item = createItemDefinition(variableName, variableType);
         addItemDefinition(item);
         miDataInputElement.setItemSubjectRef(item);
         miloop.setInputDataItem(miDataInputElement);
 
-        String id = Ids.dataInput(activity.getId(), name);
-        DataInput dataInputElement = createDataInput(id, name);
+        String id = Ids.dataInput(activity.getId(), variableName);
+        DataInput dataInputElement = createDataInput(id, variableName);
         dataInputElement.setItemSubjectRef(item);
         addSafe(ioSpec.getDataInputs(), dataInputElement);
         addSafe(inputSet.getDataInputRefs(), dataInputElement);
@@ -132,6 +136,14 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         }
     }
 
+    private String getVariableName(String[] parsedVariable) {
+        return (parsedVariable.length > 0 && !parsedVariable[0].isEmpty()) ? parsedVariable[0] : "";
+    }
+
+    private String getVariableType(String[] parsedVariable) {
+        return (parsedVariable.length > 1 && !parsedVariable[1].isEmpty()) ? parsedVariable[1] : Object.class.getName();
+    }
+
     public void setOutput(String name) {
         setOutput(name, true);
     }
@@ -141,15 +153,19 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
             return;
         }
 
+        String[] variable = name.split(":");
+        String variableName = getVariableName(variable);
+        String variableType = getVariableType(variable);
+
         setUpLoopCharacteristics();
-        DataOutput miDataOutputElement = createDataOutput(name, name);
-        ItemDefinition item = createItemDefinition(name);
+        DataOutput miDataOutputElement = createDataOutput(variableName, variableName);
+        ItemDefinition item = createItemDefinition(variableName, variableType);
         addItemDefinition(item);
         miDataOutputElement.setItemSubjectRef(item);
         miloop.setOutputDataItem(miDataOutputElement);
 
-        String id = Ids.dataOutput(activity.getId(), name);
-        DataOutput dataOutputElement = createDataOutput(id, name);
+        String id = Ids.dataOutput(activity.getId(), variableName);
+        DataOutput dataOutputElement = createDataOutput(id, variableName);
         dataOutputElement.setItemSubjectRef(item);
         addSafe(ioSpec.getDataOutputs(), dataOutputElement);
         addSafe(outputSet.getDataOutputRefs(), dataOutputElement);
@@ -200,10 +216,11 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         return dataOutput;
     }
 
-    protected ItemDefinition createItemDefinition(String name) {
+    protected ItemDefinition createItemDefinition(String name, String type) {
         ItemDefinition item = bpmn2.createItemDefinition();
         item.setId(Ids.multiInstanceItemType(activity.getId(), name));
-        item.setStructureRef(Object.class.getName());
+        String varType = type.isEmpty() ? Object.class.getName() : type;
+        item.setStructureRef(varType);
         return item;
     }
 

@@ -50,8 +50,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
     private static final String DEFAULT_MULTIPLE_INSTANCE_COLLECTION = null;
     private static final String MULTIPLE_INSTANCE_COLLECTION_INPUT = "miCollectionInput";
     private static final String MULTIPLE_INSTANCE_COLLECTION_OUTPUT = "miCollectionOutput";
-    private static final String MULTIPLE_INSTANCE_DATA_INPUT = "collectionItemVarIn";
-    private static final String MULTIPLE_INSTANCE_DATA_OUTPUT = "collectionItemVarOut";
+    private static final String MULTIPLE_INSTANCE_DATA_INPUT = "collectionItemVarIn:java.lang.Object";
+    private static final String MULTIPLE_INSTANCE_DATA_OUTPUT = "collectionItemVarOut:java.lang.Object";
     private static final String MULTIPLE_INSTANCE_COMPLETION_CONDITION = "($ in miCollectionOutput if $ == true).size() == miOutAmountRequired;";
 
     private static final String SUBPROCESS_SCRIPT_JAVA_LANGUAGE = "java";

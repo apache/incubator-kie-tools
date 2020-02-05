@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.emf.common.util.ECollections;
@@ -177,7 +178,11 @@ public class ActivityPropertyReaderTest {
     }
 
     public static DataInput mockDataInput(String id, String name, FeatureMap.Entry... entries) {
+        ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        when(itemDefinition.getStructureRef()).thenReturn("java.lang.Object");
+
         DataInput dataInput = mock(DataInput.class);
+        when(dataInput.getItemSubjectRef()).thenReturn(itemDefinition);
         when(dataInput.getId()).thenReturn(id);
         when(dataInput.getName()).thenReturn(name);
         List<FeatureMap.Entry> entriesList = new ArrayList<>();
@@ -195,7 +200,11 @@ public class ActivityPropertyReaderTest {
     }
 
     public static DataOutput mockDataOutput(String id, String name, FeatureMap.Entry... entries) {
+        ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        when(itemDefinition.getStructureRef()).thenReturn("java.lang.Object");
+
         DataOutput dataOutput = mock(DataOutput.class);
+        when(dataOutput.getItemSubjectRef()).thenReturn(itemDefinition);
         when(dataOutput.getId()).thenReturn(id);
         when(dataOutput.getName()).thenReturn(name);
         List<FeatureMap.Entry> entriesList = new ArrayList<>();

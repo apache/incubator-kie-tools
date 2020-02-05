@@ -70,17 +70,22 @@ public class MultipleInstanceVariableValidator implements CustomFieldValidator<S
         if (params == null) {
             return ValidationResult.valid();
         }
-        if (!VARIABLE_NAME.test(value)) {
+        String variableName = getVariableName(value);
+        if (!VARIABLE_NAME.test(variableName)) {
             return ValidationResult.error(translationService.getValue(INVALID_VARIABLE_NAME_ERROR));
         }
         Set<String> inputNames = decodeInputNames(params.getEncodedAssignmentsInfo());
         Set<String> outputNames = decodeOutputNames(params.getEncodedAssignmentsInfo());
-        if (inputNames.contains(value)) {
+        if (inputNames.contains(variableName)) {
             return ValidationResult.error(translationService.getValue(INPUT_ASSIGNMENT_ALREADY_EXISTS_ERROR, value));
-        } else if (outputNames.contains(value)) {
+        } else if (outputNames.contains(variableName)) {
             return ValidationResult.error(translationService.getValue(OUTPUT_ASSIGNMENT_ALREADY_EXISTS_ERROR, value));
         }
         return ValidationResult.valid();
+    }
+
+    private String getVariableName(String value) {
+        return value.split(ENCODED_NAME_DELIMITER.getSource())[0];
     }
 
     private static ValidationParams buildValidationParams(UserTask userTask) {

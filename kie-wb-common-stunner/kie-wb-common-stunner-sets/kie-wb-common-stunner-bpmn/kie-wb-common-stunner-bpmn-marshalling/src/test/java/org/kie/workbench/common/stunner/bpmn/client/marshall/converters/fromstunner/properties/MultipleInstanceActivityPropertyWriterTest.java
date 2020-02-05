@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.For
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -71,6 +72,28 @@ public class MultipleInstanceActivityPropertyWriterTest {
         Property property = mockProperty(PROPERTY_ID, ITEM_ID);
         when(variable.getTypedIdentifier()).thenReturn(property);
         writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope);
+    }
+
+    @Test
+    public void testSetInputNotFailed() {
+        writer.setInput(null, false);
+        writer.setInput("", false);
+
+        assertNull(activity.getIoSpecification());
+        assertTrue(activity.getDataInputAssociations().isEmpty());
+        assertNull(activity.getLoopCharacteristics());
+    }
+
+    @Test
+    public void testSetEmptyVariable() {
+        final String emptyName = "";
+        writer.setInput(":", false);
+
+        assertInputsInitialized();
+        String inputId = ACTIVITY_ID + "_" + "InputX";
+        String itemSubjectRef = ACTIVITY_ID + "_multiInstanceItemType_";
+        assertHasDataInput(activity.getIoSpecification(), inputId, itemSubjectRef, emptyName);
+        assertDontHasDataInputAssociation(activity, INPUT_VARIABLE_ID, inputId);
     }
 
     @Test

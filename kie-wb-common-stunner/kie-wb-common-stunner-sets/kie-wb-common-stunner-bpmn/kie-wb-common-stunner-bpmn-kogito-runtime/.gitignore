@@ -4,7 +4,7 @@
 /src/main/webapp/WEB-INF/classes/
 /src/main/webapp/WEB-INF/lib/
 /src/main/webapp/org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase/
-
+/src/main/webapp/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
