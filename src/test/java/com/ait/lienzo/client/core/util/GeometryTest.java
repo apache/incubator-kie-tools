@@ -216,4 +216,11 @@ public class GeometryTest {
                                                                new Point2D(0d, 1d));
         assertFalse(result);
     }
+
+    @Test
+    public void testGetProjectionWhenNoIntersection() {
+        Point2D intersection = new Point2D(1, 2);
+        Point2D result = Geometry.getProjection(intersection, intersection, 0);
+        assertEquals(new Point2D(0, 0), result);
+    }
 }

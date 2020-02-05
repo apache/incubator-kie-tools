@@ -68,8 +68,8 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
         wiresDockingControl.doMoveStart(0, 0);
         wiresDockingControl.doMove(50, 50);
         Point2D adjust = wiresDockingControl.getAdjust();
-        assertEquals(adjust.getX(), PARENT_SIZE - SHAPE_SIZE / 2, 0);
-        assertEquals(adjust.getY(), PARENT_SIZE - SHAPE_SIZE / 2, 0);
+        assertEquals(adjust.getX(), 186.42135623730948d, 0);
+        assertEquals(adjust.getY(), 186.42135623730948d, 0);
     }
 
     @Test
@@ -116,8 +116,8 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
     public void testGetCandidateLocation() {
         wiresDockingControl.dock(parent);
         Point2D candidateLocation = wiresDockingControl.getCandidateLocation();
-        assertEquals((SHAPE_SIZE / 2) * -1, candidateLocation.getX(), 0d);
-        assertEquals((SHAPE_SIZE / 2) * -1, candidateLocation.getY(), 0d);
+        assertEquals(-96.42135623730951d, candidateLocation.getX(), 0d);
+        assertEquals(-96.42135623730951d, candidateLocation.getY(), 0d);
     }
 
     @Test

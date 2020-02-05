@@ -230,8 +230,5 @@ public class WiresShapeHandlerImplTest {
         tested.reset();
         verify(dragContext, times(1)).reset();
         verify(control, times(1)).reset();
-        verify(highlight, atLeastOnce()).restore();
-        // Verify index is being cleared.
-        verify(index, times(1)).clear();
     }
 }
