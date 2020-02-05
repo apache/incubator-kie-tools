@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.server.management.utils;
 
 import java.util.Properties;
 
+import org.kie.server.controller.api.KieServerControllerConstants;
+
 import static org.kie.server.common.KeyStoreHelperUtil.loadControllerPassword;
 
 public final class ControllerUtils {
@@ -29,7 +31,6 @@ public final class ControllerUtils {
     public static final String CFG_KIE_CONTROLLER_USER = "org.kie.workbench.controller.user";
     public static final String CFG_KIE_CONTROLLER_PASSWORD = "org.kie.workbench.controller.pwd";
     public static final String CFG_KIE_CONTROLLER_TOKEN = "org.kie.workbench.controller.token";
-    public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.workbench.controller.openshift.enabled";
 
     private static ThreadLocal<Properties> configProps = new ThreadLocal<>().withInitial(System::getProperties);
 
@@ -60,6 +61,6 @@ public final class ControllerUtils {
     }
 
     public static boolean isOpenShiftSupported() {
-        return "true".equals(getConfigProps().getProperty(CFG_KIE_CONTROLLER_OCP_ENABLED, "false"));
+        return "true".equals(getConfigProps().getProperty(KieServerControllerConstants.KIE_CONTROLLER_OPENSHIFT_ENABLED, "false"));
     }
 }

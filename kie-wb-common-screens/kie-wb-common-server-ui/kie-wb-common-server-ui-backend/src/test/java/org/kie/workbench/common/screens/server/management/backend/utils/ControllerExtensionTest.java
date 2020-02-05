@@ -22,12 +22,12 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.server.controller.api.KieServerControllerConstants;
 import org.kie.workbench.common.screens.server.management.backend.KieServerEmbeddedControllerProducer;
 import org.kie.workbench.common.screens.server.management.backend.KieServerStandaloneControllerProducer;
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateOCPStorage;
 import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 
-import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.CFG_KIE_CONTROLLER_OCP_ENABLED;
 import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.KIE_SERVER_CONTROLLER;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -42,7 +42,7 @@ public class ControllerExtensionTest {
     @After
     public void clear() {
         ControllerUtils.getConfigProps().remove(KIE_SERVER_CONTROLLER, "http://localhost:8080/controller");
-        ControllerUtils.getConfigProps().remove(CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
+        ControllerUtils.getConfigProps().remove(KieServerControllerConstants.KIE_CONTROLLER_OPENSHIFT_ENABLED, "true");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ControllerExtensionTest {
 
     @Test
     public void testEmbeddedAnnotationWithServerTemplateOCPStorage() {
-        ControllerUtils.getConfigProps().put(CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
+        ControllerUtils.getConfigProps().put(KieServerControllerConstants.KIE_CONTROLLER_OPENSHIFT_ENABLED, "true");
         final ProcessAnnotatedType annotatedType = createAnnotatedType(ServerTemplateOCPStorage.class);
 
         extension.processEmbeddedController(annotatedType);
