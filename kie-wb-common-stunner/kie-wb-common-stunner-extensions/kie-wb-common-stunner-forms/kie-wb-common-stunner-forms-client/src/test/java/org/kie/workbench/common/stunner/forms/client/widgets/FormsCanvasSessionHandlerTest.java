@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +49,7 @@ import org.uberfire.mvp.Command;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -214,15 +214,29 @@ public class FormsCanvasSessionHandlerTest {
     public void testOnCanvasSelectionEventSameSession() {
         handler.bind(session);
 
+        doAnswer(i -> {
+            ((com.google.gwt.user.client.Command) i.getArguments()[0]).execute();
+            return null;
+        }).when(handler).scheduleRender(any());
+
         canvasSelectionEvent = new CanvasSelectionEvent(abstractCanvasHandler, UUID);
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        new Timer() {
-            @Override
-            public void run() {
-                verify(formRenderer).render(anyString(), eq(element), any(Command.class));
-            }
-        }.schedule(200);
+        verify(formRenderer, times(1)).render(anyString(), eq(element), any(Command.class));
+    }
+
+    @Test
+    public void testOnUpdateScheduleTimer() {
+        handler.bind(session);
+
+        doAnswer(i -> {
+            ((com.google.gwt.user.client.Command) i.getArguments()[0]).execute();
+            return null;
+        }).when(handler).scheduleRender(any());
+
+        handler.getFormsCanvasListener().update(element);
+
+        verify(formRenderer, times(1)).render(anyString(), eq(element), any(Command.class));
     }
 
     @Test

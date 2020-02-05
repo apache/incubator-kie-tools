@@ -188,20 +188,22 @@ public class FormsCanvasSessionHandler {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
                 final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), uuid);
-                final Timer timer = new Timer() {
-                    @Override
-                    public void run() {
-                        render(element);
-                    }
-                };
-
-                timer.schedule(100);
+                scheduleRender(() -> render(element));
             } else {
                 // Select root canvas
                 final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), this.getDiagram().getMetadata().getCanvasRootUUID());
                 render(element);
             }
         }
+    }
+
+    protected void scheduleRender(final com.google.gwt.user.client.Command command) {
+        new Timer() {
+            @Override
+            public void run() {
+                command.execute();
+            }
+        }.schedule(100);
     }
 
     void onDomainObjectSelectionEvent(@Observes DomainObjectSelectionEvent event) {
@@ -444,7 +446,7 @@ public class FormsCanvasSessionHandler {
             }
 
             if (!areFormsProcessing) {
-                render(item);
+                scheduleRender(() -> render(item));
             }
         }
 
