@@ -362,24 +362,32 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
                 shape.moveToTop();
             }
 
-            m_headConnectionControl = m_wiresManager.getControlFactory()
-                                                    .newConnectionControl(m_connector,
-                                                                          true,
-                                                                          m_wiresManager);
+            initHeadConnection();
             Shape<?>          head                  = m_connector.getHeadConnection().getControl().asShape();
             ConnectionHandler headConnectionHandler = new ConnectionHandler(m_headConnectionControl, head, m_connector.getHeadConnection());
             head.setDragConstraints(headConnectionHandler);
             m_HandlerRegistrationManager.register(head.addNodeDragEndHandler(headConnectionHandler));
 
-            m_tailConnectionControl = m_wiresManager.getControlFactory()
-                                                    .newConnectionControl(m_connector,
-                                                                          false,
-                                                                          m_wiresManager);
+            initTailConnection();
             Shape<?>          tail                  = m_connector.getTailConnection().getControl().asShape();
             ConnectionHandler tailConnectionHandler = new ConnectionHandler(m_tailConnectionControl, tail, m_connector.getTailConnection());
             tail.setDragConstraints(tailConnectionHandler);
             m_HandlerRegistrationManager.register(tail.addNodeDragEndHandler(tailConnectionHandler));
         }
+    }
+
+    public void initHeadConnection() {
+        m_headConnectionControl = m_wiresManager.getControlFactory()
+                .newConnectionControl(m_connector,
+                                      true,
+                                      m_wiresManager);
+    }
+
+    public void initTailConnection() {
+        m_tailConnectionControl = m_wiresManager.getControlFactory()
+                .newConnectionControl(m_connector,
+                                      false,
+                                      m_wiresManager);
     }
 
     private void destroyPointHandlesRegistrations()
@@ -500,6 +508,14 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     @Override
     public void destroy()
     {
+        if (null != m_headConnectionControl) {
+            m_headConnectionControl.destroy();
+            m_headConnectionControl = null;
+        }
+        if (null != m_tailConnectionControl) {
+            m_tailConnectionControl.destroy();
+            m_tailConnectionControl = null;
+        }
         clear();
         destroyPointHandlesRegistrations();
         m_cpBuilder.destroy();

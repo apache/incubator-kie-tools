@@ -189,24 +189,32 @@ public final class WiresManager
     public WiresShapeControl register(final WiresShape shape,
                                       final boolean addIntoIndex)
     {
+        return register(shape, addIntoIndex, true);
+    }
+
+    public WiresShapeControl register(final WiresShape shape,
+                                      final boolean addIntoIndex,
+                                      final boolean addHandlers)
+    {
         shape.setWiresManager(this);
 
         final WiresShapeControl control = getControlFactory().newShapeControl(shape, this);
         shape.setControl(control);
 
-        final WiresShapeHandler handler =
-                getWiresHandlerFactory()
-                        .newShapeHandler(shape,
-                                         getControlFactory().newShapeHighlight(this),
-                                         this);
-
         final HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
 
-        addWiresShapeHandler(shape, registrationManager, handler);
+        if (addHandlers) {
+            final WiresShapeHandler handler =
+                    getWiresHandlerFactory()
+                            .newShapeHandler(shape,
+                                             getControlFactory().newShapeHighlight(this),
+                                             this);
+            addWiresShapeHandler(shape, registrationManager, handler);
+        }
 
         if (addIntoIndex)
         {
-            addAlignAndDistributeHandlers(shape, handler, registrationManager);
+            addAlignAndDistributeHandlers(shape, registrationManager);
         }
 
         // Shapes added to the canvas layer by default.
@@ -217,16 +225,17 @@ public final class WiresManager
         m_shapesMap.put(uuid, shape);
         m_shapeHandlersMap.put(uuid, registrationManager);
 
-        return handler.getControl();
+        return control;
     }
 
-    private void addAlignAndDistributeHandlers(final WiresShape shape, final WiresShapeHandler handler, final HandlerRegistrationManager registrationManager)
+    private void addAlignAndDistributeHandlers(final WiresShape shape,
+                                               final HandlerRegistrationManager registrationManager)
     {
         // Shapes added to the align and distribute index.
         // Treat a resize like a drag.
         // Except right now we cannot A&D during steps (TODO)
         final AlignAndDistributeControl alignAndDistrControl = addToIndex(shape);
-        handler.getControl().setAlignAndDistributeControl(alignAndDistrControl);
+        shape.getControl().setAlignAndDistributeControl(alignAndDistrControl);
 
         registrationManager.register(shape.addWiresResizeStartHandler(new WiresResizeStartHandler()
         {
@@ -262,50 +271,56 @@ public final class WiresManager
         final String uuid = shape.uuid();
         deselect(shape);
         removeHandlers(uuid);
-        removeFromIndex(shape);
         shape.destroy();
+        removeFromIndex(shape);
         getLayer().remove(shape);
         m_shapesMap.remove(uuid);
     }
 
     public WiresConnectorControl register(final WiresConnector connector)
     {
+        return register(connector, true);
+    }
+
+    public WiresConnectorControl register(final WiresConnector connector,
+                                          final boolean addHandlers)
+    {
         final String uuid = connector.uuid();
+
+        final WiresConnectorControl control = getControlFactory().newConnectorControl(connector, this);
+        connector.setControl(control);
 
         final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
 
-        final WiresConnectorControl control = getControlFactory().newConnectorControl(connector,
-                                                                                              this);
+        if (addHandlers) {
+            final WiresConnectorHandler handler = getWiresHandlerFactory().newConnectorHandler(connector, this);
 
-        connector.setControl(control);
+            m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
+            m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
+            m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
 
-        final WiresConnectorHandler handler = getWiresHandlerFactory().newConnectorHandler(connector, this);
+            m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
+            m_registrationManager.register(connector.getLine().addNodeMouseDownHandler(handler));
+            m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
+            m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
+            m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
 
-        m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
-        m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
-        m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
-
-        m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
-        m_registrationManager.register(connector.getLine().addNodeMouseDownHandler(handler));
-        m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
-        m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
-        m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
-
-        m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
-        m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
-        m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
-        m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
-        m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
-        m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
-        m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
-        m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
+        }
 
         getConnectorList().add(connector);
         m_shapeHandlersMap.put(uuid, m_registrationManager);
 
         connector.addToLayer(getLayer().getLayer());
 
-        return handler.getControl();
+        return control;
     }
 
     public void deregister(final WiresConnector connector)

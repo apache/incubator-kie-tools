@@ -60,6 +60,7 @@ public class WiresShapeControlImpl
     private Point2D m_adjust;
     private boolean c_accept;
     private boolean d_accept;
+    private boolean accepted;
     private WiresConnector[] m_connectorsWithSpecialConnections;
     private Collection<WiresConnector> m_connectors;
 
@@ -103,6 +104,7 @@ public class WiresShapeControlImpl
         m_adjust = new Point2D(0, 0);
         d_accept = false;
         c_accept = false;
+        accepted = false;
 
         // Delegate move start to the shape's parent control
         parentPickerControl.onMoveStart(x,
@@ -267,6 +269,7 @@ public class WiresShapeControlImpl
                     .accept(new WiresShape[]{getShape()},
                             new Point2D[]{location});
         }
+        accepted = accept;
         return accept;
     }
 
@@ -289,6 +292,11 @@ public class WiresShapeControlImpl
                 control.onMoveComplete();
             }
         });
+    }
+
+    @Override
+    public boolean isAccepted() {
+        return accepted;
     }
 
     @Override
@@ -407,13 +415,15 @@ public class WiresShapeControlImpl
     }
 
     @Override
-    public void useIndex(Supplier<WiresLayerIndex> index) {
+    public WiresShapeControl useIndex(Supplier<WiresLayerIndex> index) {
         this.index = index;
+        return this;
     }
 
     @Override
-    public void setAlignAndDistributeControl(AlignAndDistributeControl control) {
+    public WiresShapeControl setAlignAndDistributeControl(AlignAndDistributeControl control) {
         this.m_alignAndDistributeControl = control;
+        return this;
     }
 
     @Override
