@@ -264,7 +264,7 @@ fi
 
 echo "-------- Retrieve godog"
 
-go get github.com/DATA-DOG/godog/cmd/godog
+go get github.com/cucumber/godog/cmd/godog
 
 
 echo "-------- Setup CRD files"
