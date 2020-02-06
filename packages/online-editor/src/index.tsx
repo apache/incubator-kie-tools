@@ -83,7 +83,7 @@ function openFileByUrl() {
 function openFile(filePath: string, getFileContent: Promise<string>) {
   const file = {
     fileName: removeFileExtension(removeDirectories(filePath)!)!,
-    getFileContents: () =>  getFileContent
+    getFileContents: () => getFileContent
 
   };
   ReactDOM.render(

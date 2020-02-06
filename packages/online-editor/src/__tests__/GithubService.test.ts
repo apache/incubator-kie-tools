@@ -16,7 +16,6 @@
 
 import { GithubService } from "../common/GithubService";
 
-
 const githubService = new GithubService();
 
 describe("githubService::isGithub", () => {
