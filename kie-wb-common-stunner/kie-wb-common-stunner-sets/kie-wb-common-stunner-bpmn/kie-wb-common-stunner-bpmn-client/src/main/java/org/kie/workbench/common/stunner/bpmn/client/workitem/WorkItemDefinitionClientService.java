@@ -21,10 +21,8 @@ import java.util.Collection;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.kogito.api.Kogito;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientService;
 
-@Kogito
 public interface WorkItemDefinitionClientService extends KogitoClientService<Metadata, Collection<WorkItemDefinition>> {
 
     WorkItemDefinitionRegistry getRegistry();

@@ -21,11 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
@@ -45,12 +47,16 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
@@ -60,17 +66,32 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BPMNClientDiagramServiceTest {
 
+    private static final String DEF_SET_ID = BPMNClientMarshalling.getDefinitionSetId();
+    private static final String SHAPE_SET_ID = BPMNClientMarshalling.getDefinitionSetId() + "ShapeSet";
+    private static final WorkItemDefinition WID1 = new WorkItemDefinition().setName("wid1");
+    private static final WorkItemDefinition WID2 = new WorkItemDefinition().setName("wid2");
+    private static final WorkItemDefinition WID3 = new WorkItemDefinition().setName("wid3");
+    private static final Collection<WorkItemDefinition> WIDS = Arrays.asList(WID1, WID2, WID3);
     private static final String PATH_DIAGRAM = "org/kie/workbench/common/stunner/bpmn/client/marshall/testFlight.bpmn";
 
     private static String xml;
@@ -83,7 +104,7 @@ public class BPMNClientDiagramServiceTest {
         }
     }
 
-    private BPMNClientDiagramService service;
+    private BPMNClientDiagramService tested;
 
     @Mock
     private DefinitionManager definitionManager;
@@ -101,13 +122,15 @@ public class BPMNClientDiagramServiceTest {
     private ShapeManager shapeManager;
 
     @Mock
+    private WorkItemDefinitionClientService widService;
+
     private Promises promises;
 
     @Mock
-    public TypeDefinitionSetRegistry definitionSetRegistry;
+    private TypeDefinitionSetRegistry definitionSetRegistry;
 
     @Mock
-    Graph<DefinitionSet, Node> graph;
+    private Graph<DefinitionSet, Node> graph;
 
     private Name processName;
 
@@ -143,7 +166,15 @@ public class BPMNClientDiagramServiceTest {
 
     @Before
     public void setUp() {
-        service = new BPMNClientDiagramService(definitionManager, marshalling, factoryManager, diagramFactory, shapeManager, promises);
+        promises = new SyncPromises();
+
+        ShapeSet shapeSet = mock(ShapeSet.class);
+        when(shapeSet.getId()).thenReturn(SHAPE_SET_ID);
+        when(shapeManager.getDefaultShapeSet(eq(DEF_SET_ID)))
+                .thenReturn(shapeSet);
+        when(definitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));
+        when(widService.call(any())).thenReturn(promises.create((resolve, reject) -> resolve.onInvoke(WIDS)));
+
         //DiagramSet
         processName = new Name("");
         processId = new Id("");
@@ -178,6 +209,8 @@ public class BPMNClientDiagramServiceTest {
         );
 
         nodes = Arrays.asList(createNode(bpmnDiagram));
+
+        tested = new BPMNClientDiagramService(definitionManager, marshalling, factoryManager, diagramFactory, shapeManager, promises, widService);
     }
 
     public static String loadStreamAsString(final String path) throws IOException {
@@ -206,19 +239,19 @@ public class BPMNClientDiagramServiceTest {
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
 
-        service.transform("someFile", xml,
-                          new ServiceCallback<Diagram>() {
+        tested.transform("someFile", xml,
+                         new ServiceCallback<Diagram>() {
 
-                              @Override
-                              public void onSuccess(Diagram item) {
+                             @Override
+                             public void onSuccess(Diagram item) {
 
-                              }
+                             }
 
-                              @Override
-                              public void onError(ClientRuntimeError error) {
+                             @Override
+                             public void onError(ClientRuntimeError error) {
 
-                              }
-                          });
+                             }
+                         });
 
         assertEquals("someFile", diagramSet.getName().getValue());
         assertEquals("someFile", diagramSet.getId().getValue());
@@ -230,20 +263,20 @@ public class BPMNClientDiagramServiceTest {
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
-        service.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
 
-                          new ServiceCallback<Diagram>() {
+                         new ServiceCallback<Diagram>() {
 
-                              @Override
-                              public void onSuccess(Diagram item) {
+                             @Override
+                             public void onSuccess(Diagram item) {
 
-                              }
+                             }
 
-                              @Override
-                              public void onError(ClientRuntimeError error) {
+                             @Override
+                             public void onError(ClientRuntimeError error) {
 
-                              }
-                          });
+                             }
+                         });
 
         assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getName().getValue());
         assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getId().getValue());
@@ -258,20 +291,20 @@ public class BPMNClientDiagramServiceTest {
         diagramSet.getName().setValue("somePreviousName");
         diagramSet.getId().setValue("somePreviousId");
 
-        service.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
 
-                          new ServiceCallback<Diagram>() {
+                         new ServiceCallback<Diagram>() {
 
-                              @Override
-                              public void onSuccess(Diagram item) {
+                             @Override
+                             public void onSuccess(Diagram item) {
 
-                              }
+                             }
 
-                              @Override
-                              public void onError(ClientRuntimeError error) {
+                             @Override
+                             public void onError(ClientRuntimeError error) {
 
-                              }
-                          });
+                             }
+                         });
 
         assertEquals("somePreviousName", diagramSet.getName().getValue());
         assertEquals("somePreviousId", diagramSet.getId().getValue());
@@ -283,22 +316,47 @@ public class BPMNClientDiagramServiceTest {
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
-        service.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
 
-                          new ServiceCallback<Diagram>() {
+                         new ServiceCallback<Diagram>() {
 
-                              @Override
-                              public void onSuccess(Diagram item) {
+                             @Override
+                             public void onSuccess(Diagram item) {
 
-                              }
+                             }
 
-                              @Override
-                              public void onError(ClientRuntimeError error) {
+                             @Override
+                             public void onError(ClientRuntimeError error) {
 
-                              }
-                          });
+                             }
+                         });
 
         assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getName().getValue());
         assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getId().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTransformNewDiagram() {
+
+        ServiceCallback<Diagram> callback = mock(ServiceCallback.class);
+        String xml = "";
+
+        MetadataImpl metadata = new MetadataImpl();
+        metadata.setDefinitionSetId(DEF_SET_ID);
+        Diagram result = new DiagramImpl("result", metadata);
+        when(factoryManager.newDiagram(anyString(), eq(DEF_SET_ID), any()))
+                .thenReturn(result);
+
+        tested.transform(xml, callback);
+
+        verify(callback, never()).onError(any());
+
+        ArgumentCaptor<Diagram> diagramArgumentCaptor = ArgumentCaptor.forClass(Diagram.class);
+        verify(callback, times(1)).onSuccess(diagramArgumentCaptor.capture());
+        Diagram diagram = diagramArgumentCaptor.getValue();
+        assertNotNull(diagram);
+        assertEquals(result, diagram);
+        assertEquals(SHAPE_SET_ID, diagram.getMetadata().getShapeSetId());
     }
 }

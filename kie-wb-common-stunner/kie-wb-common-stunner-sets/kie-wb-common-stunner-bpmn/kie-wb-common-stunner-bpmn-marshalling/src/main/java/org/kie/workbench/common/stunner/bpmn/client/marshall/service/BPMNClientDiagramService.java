@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.service;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,13 +24,16 @@ import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.ConverterUtils;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
@@ -49,17 +53,19 @@ import org.uberfire.client.promise.Promises;
 @ApplicationScoped
 public class BPMNClientDiagramService implements KogitoClientDiagramService {
 
+    static final String DEFAULT_PROCESS_ID = "default";
+
     private final DefinitionManager definitionManager;
     private final BPMNClientMarshalling marshalling;
     private final FactoryManager factoryManager;
     private final BPMNDiagramFactory diagramFactory;
     private final ShapeManager shapeManager;
     private final Promises promises;
-    public static final String DEFAULT_PROCESS_ID = "default";
+    private final WorkItemDefinitionClientService widService;
 
     //CDI proxy
     protected BPMNClientDiagramService() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
     @Inject
@@ -68,29 +74,28 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
                                     final FactoryManager factoryManager,
                                     final BPMNDiagramFactory diagramFactory,
                                     final ShapeManager shapeManager,
-                                    final Promises promises) {
+                                    final Promises promises,
+                                    final WorkItemDefinitionClientService widService) {
         this.definitionManager = definitionManager;
         this.marshalling = marshalling;
         this.factoryManager = factoryManager;
         this.diagramFactory = diagramFactory;
         this.shapeManager = shapeManager;
         this.promises = promises;
+        this.widService = widService;
     }
 
     @Override
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
-        // TODO: handle errors?
-        Diagram diagram = transform(DEFAULT_PROCESS_ID, xml);
-        callback.onSuccess(diagram);
+        doTransform(DEFAULT_PROCESS_ID, xml, callback);
     }
 
     @Override
-    public void transform(final String fileName, final String xml,
+    public void transform(final String fileName,
+                          final String xml,
                           final ServiceCallback<Diagram> callback) {
-        // TODO: handle errors?
-        Diagram diagram = transform(fileName, xml);
-        callback.onSuccess(diagram);
+        doTransform(fileName, xml, callback);
     }
 
     @Override
@@ -101,18 +106,37 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
         return promises.resolve(resource.xmlDiagram().orElse("DiagramType is XML_DIAGRAM however no instance present"));
     }
 
-    public Diagram transform(final String fileName, final String xml) {
+    private void doTransform(final String fileName,
+                             final String xml,
+                             final ServiceCallback<Diagram> callback) {
+        final Metadata metadata = createMetadata();
+        widService
+                .call(metadata)
+                .then(wid -> {
+                    Diagram diagram = doTransform(fileName, xml);
+                    callback.onSuccess(diagram);
+                    return promises.resolve();
+                })
+                .catch_((Promise.CatchOnRejectedCallbackFn<Collection<WorkItemDefinition>>) error -> {
+                    callback.onError(new ClientRuntimeError(error.toString()));
+                    return promises.resolve();
+                });
+    }
+
+    private Diagram doTransform(final String fileName,
+                                final String xml) {
+
         if (Objects.isNull(xml) || xml.isEmpty()) {
-            return doNewDiagram();
+            return createNewDiagram();
         }
-        return doTransformation(fileName, xml);
+        return parse(fileName, xml);
     }
 
     public String transform(final Diagram diagram) {
         return marshalling.marshall(convert(diagram));
     }
 
-    private Diagram doNewDiagram() {
+    private Diagram createNewDiagram() {
         final String title = DEFAULT_PROCESS_ID;
         final String defSetId = BPMNClientMarshalling.getDefinitionSetId();
         final Metadata metadata = createMetadata();
@@ -125,7 +149,7 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     }
 
     @SuppressWarnings("unchecked")
-    private Diagram doTransformation(final String fileName, final String raw) {
+    private Diagram parse(final String fileName, final String raw) {
         final Metadata metadata = createMetadata();
         final Graph<DefinitionSet, ?> graph = marshalling.unmarshall(metadata, raw);
         final Node<Definition<BPMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, BPMNDiagramImpl.class);
@@ -152,7 +176,6 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
         return diagram;
     }
 
-    // TODO: Necessary?
     private static final String ROOT_PATH = "default://master@system/stunner/diagrams";
 
     private Metadata createMetadata() {

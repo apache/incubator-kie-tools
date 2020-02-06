@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.service;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +27,7 @@ import javax.inject.Inject;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.jboss.drools.DroolsPackage;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.client.emf.Bpmn2Marshalling;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingRequest;
@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.GraphBuilder;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -65,18 +66,21 @@ public class BPMNClientMarshalling {
     private final TypedFactoryManager typedFactoryManager;
     private final GraphCommandFactory commandFactory;
     private final GraphCommandManager commandManager;
+    private final ManagedInstance<WorkItemDefinitionRegistry> widRegistries;
 
     @Inject
     public BPMNClientMarshalling(final DefinitionManager definitionManager,
                                  final RuleManager ruleManager,
                                  final FactoryManager factoryManager,
                                  final GraphCommandFactory commandFactory,
-                                 final GraphCommandManager commandManager) {
+                                 final GraphCommandManager commandManager,
+                                 final ManagedInstance<WorkItemDefinitionRegistry> widRegistries) {
         this.definitionManager = definitionManager;
         this.ruleManager = ruleManager;
         this.typedFactoryManager = new TypedFactoryManager(factoryManager);
         this.commandFactory = commandFactory;
         this.commandManager = commandManager;
+        this.widRegistries = widRegistries;
     }
 
     @PostConstruct
@@ -144,9 +148,8 @@ public class BPMNClientMarshalling {
         return graph;
     }
 
-    // TODO: Use the right WID registry.
-    private static Collection<WorkItemDefinition> getWorkItemDefinitions() {
-        return Collections.emptyList();
+    private Collection<WorkItemDefinition> getWorkItemDefinitions() {
+        return widRegistries.get().items();
     }
 
     public static Class<?> getDiagramClass() {
