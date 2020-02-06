@@ -63,13 +63,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.spaces.Space;
 
 import static junit.framework.TestCase.assertSame;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -88,7 +88,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class ArchetypeServiceImplTest {
 
-    private final String COMMON_ARCHETYPE_ALIAS = "myArchetype";
+    private static final String COMMON_ARCHETYPE_ALIAS = "myArchetype";
     private ArchetypeServiceImpl service;
     @Mock
     private IOService ioService;
@@ -397,6 +397,8 @@ public class ArchetypeServiceImplTest {
     public void createArchetypeRepositorySuccessTest() {
         final GAV templateGav = createTemplateGav();
 
+        final String repositoryAlias = service.makeRepositoryAlias(templateGav.toString());
+
         final OrganizationalUnit orgUnit = mockArchetypesOrgUnit();
 
         final Repository expectedRepository = mock(Repository.class);
@@ -405,7 +407,7 @@ public class ArchetypeServiceImplTest {
         doReturn(expectedRepository)
                 .when(repositoryService).createRepository(eq(orgUnit),
                                                           eq(GitRepository.SCHEME.toString()),
-                                                          eq(templateGav.toString()),
+                                                          eq(repositoryAlias),
                                                           any(RepositoryEnvironmentConfigurations.class));
 
         final Git git = mock(Git.class);
@@ -889,6 +891,9 @@ public class ArchetypeServiceImplTest {
     public void unpackArchetypeTest() throws GitAPIException {
         mockArchetypesOrgUnit();
 
+        final Path tempPath = mock(Path.class);
+        doReturn(tempPath).when(service).createTempDirectory(anyString());
+
         final Repository repository = mock(Repository.class);
 
         doReturn(repository).when(repositoryService).getRepositoryFromSpace(any(Space.class),
@@ -903,10 +908,9 @@ public class ArchetypeServiceImplTest {
         doNothing().when(service).cloneRepository(any(File.class),
                                                   any(File.class));
 
-        service.unpackArchetype(repository);
+        final Path unpackedPath = service.unpackArchetype(repository);
 
-        verify(ioService).deleteIfExists(any(Path.class),
-                                         eq(StandardDeleteOption.NON_EMPTY_DIRECTORIES));
+        assertEquals(tempPath, unpackedPath);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -937,10 +941,12 @@ public class ArchetypeServiceImplTest {
         doReturn(ArchetypeStatus.VALID).when(archetype).getStatus();
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
 
+        final String repositoryAlias = service.makeRepositoryAlias(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_GAV);
+
         final Repository expectedRepository = mock(Repository.class);
         doReturn(expectedRepository)
                 .when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                eq(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_ALIAS));
+                                                                eq(repositoryAlias));
 
         final Optional<Repository> repository = service.getBaseKieTemplateRepository();
 
@@ -976,16 +982,20 @@ public class ArchetypeServiceImplTest {
     public void getBaseKieArchetypeTest() {
         service.getBaseKieArchetype();
 
-        verify(archetypeConfigStorage).loadArchetype(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_ALIAS);
+        final String repositoryAlias = service.makeRepositoryAlias(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_GAV);
+
+        verify(archetypeConfigStorage).loadArchetype(repositoryAlias);
     }
 
     @Test
     public void getBaseKieArchetypeWhenNotAvailableTest() {
-        doReturn(null).when(archetypeConfigStorage).loadArchetype(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_ALIAS);
+        doReturn(null).when(archetypeConfigStorage).loadArchetype(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_GAV);
 
         final Optional<Archetype> archetype = service.getBaseKieArchetype();
 
-        verify(archetypeConfigStorage).loadArchetype(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_ALIAS);
+        final String repositoryAlias = service.makeRepositoryAlias(ArchetypeServiceImpl.BASE_KIE_PROJECT_TEMPLATE_GAV);
+
+        verify(archetypeConfigStorage).loadArchetype(repositoryAlias);
         assertFalse(archetype.isPresent());
     }
 

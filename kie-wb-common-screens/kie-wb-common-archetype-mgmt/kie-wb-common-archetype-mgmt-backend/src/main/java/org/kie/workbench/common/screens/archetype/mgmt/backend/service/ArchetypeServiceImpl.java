@@ -83,7 +83,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
@@ -98,7 +97,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 public class ArchetypeServiceImpl implements ArchetypeService {
 
-    protected static final String BASE_KIE_PROJECT_TEMPLATE_ALIAS = "org.kie.templates:base-kie-project:1.0.0-TEMPLATE";
+    protected static final String BASE_KIE_PROJECT_TEMPLATE_GAV = "org.kie.templates:base-kie-project:1.0.0-TEMPLATE";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArchetypeServiceImpl.class);
 
@@ -110,8 +109,6 @@ public class ArchetypeServiceImpl implements ArchetypeService {
     private static final String TEMPLATE = "TEMPLATE";
     private static final String TEMPLATE_SUFFIX = "-" + TEMPLATE;
 
-    private static final String GIT = "git";
-    private static final String GIT_FOLDER = "." + GIT;
     private static final String REMOTE_ORIGIN_REF = "refs/remotes/origin/master";
 
     private static final String ORIGIN_KEY = "origin";
@@ -343,12 +340,16 @@ public class ArchetypeServiceImpl implements ArchetypeService {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(resolveRepository(BASE_KIE_PROJECT_TEMPLATE_ALIAS));
+        final String repositoryAlias = makeRepositoryAlias(BASE_KIE_PROJECT_TEMPLATE_GAV);
+
+        return Optional.ofNullable(resolveRepository(repositoryAlias));
     }
 
     @Override
     public Optional<Archetype> getBaseKieArchetype() {
-        final Archetype archetype = archetypeConfigStorage.loadArchetype(BASE_KIE_PROJECT_TEMPLATE_ALIAS);
+        final String repositoryAlias = makeRepositoryAlias(BASE_KIE_PROJECT_TEMPLATE_GAV);
+
+        final Archetype archetype = archetypeConfigStorage.loadArchetype(repositoryAlias);
 
         if (archetype == null) {
             LOGGER.warn("The base kie project archetype is not registered.");
@@ -732,9 +733,6 @@ public class ArchetypeServiceImpl implements ArchetypeService {
             cloneRepository(repositoryDirectory,
                             targetDirectory.getAbsoluteFile());
 
-            ioService.deleteIfExists(targetDirectoryPath.resolve(GIT_FOLDER),
-                                     StandardDeleteOption.NON_EMPTY_DIRECTORIES);
-
             return targetDirectoryPath;
         } catch (Exception e) {
             final String msg = String.format("Failed to unpack the repository %s",
@@ -751,7 +749,7 @@ public class ArchetypeServiceImpl implements ArchetypeService {
         if (archetypesOU != null) {
             final Repository repository = repositoryService.createRepository(archetypesOU,
                                                                              GitRepository.SCHEME.toString(),
-                                                                             templateGav.toString(),
+                                                                             makeRepositoryAlias(templateGav.toString()),
                                                                              createRepositoryConfig(repositoryUri));
 
             cleanUpOrigin(repository);
@@ -760,6 +758,10 @@ public class ArchetypeServiceImpl implements ArchetypeService {
         } else {
             throw new IllegalStateException("Cannot create an archetype when there is no archetype space available.");
         }
+    }
+
+    String makeRepositoryAlias(final String gavString) {
+        return gavString.replaceAll("[.:]", "-");
     }
 
     void throwMavenExecutionException(final List<Throwable> exceptions) {
