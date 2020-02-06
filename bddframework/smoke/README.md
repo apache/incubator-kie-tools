@@ -2,7 +2,7 @@
 
 Smoke tests are using [Cucumber](https://cucumber.io/) and [Gherkin syntax](https://cucumber.io/docs/gherkin).
 
-It is using the [Godog](https://github.com/DATA-DOG/godog) framework.
+It is using the [Godog](https://github.com/cucumber/godog) framework.
 
 ### Configuration
 
@@ -54,7 +54,7 @@ You can add some environment variables which will be taken into account by the t
 
 ### Run
 
-* Install godog: https://github.com/DATA-DOG/godog
+* Install godog: https://github.com/cucumber/godog
 * Go to `./go`
 * Authenticate to OCP cluster (need clusteradmin to install crds if not available)
 * export MAVEN_MIRROR_URL if needed => `export MAVEN_MIRROR_URL=<uri>`

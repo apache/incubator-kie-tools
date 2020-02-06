@@ -17,7 +17,7 @@ package steps
 import (
 	"fmt"
 
-	"github.com/DATA-DOG/godog"
+	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/smoke/framework"
 )
 

@@ -15,7 +15,7 @@
 package steps
 
 import (
-	"github.com/DATA-DOG/godog"
+	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitodataindex/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/smoke/framework"
 )
