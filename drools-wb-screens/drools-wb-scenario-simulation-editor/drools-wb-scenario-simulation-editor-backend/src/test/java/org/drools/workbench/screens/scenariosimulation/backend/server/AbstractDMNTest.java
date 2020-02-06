@@ -210,8 +210,7 @@ public class AbstractDMNTest {
      */
     protected CompositeTypeImpl getCompositeCollection() {
         // Complex object retrieve
-        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null);
-        toReturn.setCollection(true);
+        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null, true);
         CompositeTypeImpl phoneNumberCompositeCollection = getPhoneNumberComposite(true);
 
         CompositeTypeImpl detailsComposite = new CompositeTypeImpl(null, "tDetails", "tDetails");
