@@ -22,18 +22,30 @@ import { EMPTY_FILE, File as UploadFile } from "../common/File";
 import {
   Bullseye,
   Button,
-  Grid,
-  GridItem,
   Page,
   PageSection,
-  Select,
-  SelectOption,
-  Stack,
-  StackItem,
   Title,
   Toolbar,
-  ToolbarItem
+  ToolbarItem,
+  PageHeader,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Gallery,
+  TextInput,
+  FormGroup,
+  ToolbarGroup,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  Text,
+  TextVariants,
+  TextContent,
+  Brand
 } from "@patternfly/react-core";
+import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import { Link } from "react-router-dom";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -97,97 +109,159 @@ export function HomePage(props: Props) {
     }
   }, [onFileUpload]);
 
-  const editorTypeOptions = useMemo(() => [{ value: "BPMN" }, { value: "DMN" }], []);
+  const createFile = useCallback((fileType: string) => {
+    props.onFileOpened(EMPTY_FILE);
+    history.replace(context.routes.editor.url({ type: fileType }));
+  }, [context, history]);
 
-  const [fileTypeSelect, setFileTypeSelect] = useState({ isExpanded: false, value: "BPMN" });
-
-  const onSelectFileType = useCallback((event, selection) => {
-    setFileTypeSelect({
-      isExpanded: false,
-      value: selection
-    });
-  }, []);
-
-  const onToggleFileType = useCallback(
-    isExpanded => {
-      setFileTypeSelect({
-        isExpanded: isExpanded,
-        value: fileTypeSelect.value
-      });
-    },
-    [fileTypeSelect]
-  );
-
-  const createFile = useCallback(() => {
-    if (fileTypeSelect && fileTypeSelect.value) {
-      props.onFileOpened(EMPTY_FILE);
-      history.replace(context.routes.editor.url({ type: fileTypeSelect.value!.toLowerCase() }));
-    }
-  }, [context, history, fileTypeSelect]);
-
-  const trySample = useCallback(() => {
-    if (fileTypeSelect?.value) {
+  const trySample = useCallback((fileType: string) => {
       const fileName = "sample";
-      const fileExtension = fileTypeSelect.value!.toLowerCase();
-      const filePath = `samples/${fileName}.${fileExtension}`;
+      const filePath = `samples/${fileName}.${fileType}`;
       props.onFileOpened({
         fileName: fileName,
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    }
-  }, [context, history, fileTypeSelect]);
+      history.replace(context.routes.editor.url({ type: fileType }));
+  }, [context, history]);
+
+  const logoProps = {
+    // TODO: Is this the correct link?
+    href: 'https://www.kiegroup.org/',
+    target: '_blank'
+  };
+
+  const linkDropdownItems = [
+    <DropdownItem key="">
+      {/* TODO: Need url */}
+      <Link to ={'/'}>Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-mx-sm" /></Link>
+    </DropdownItem>,
+    <DropdownItem key="">
+      {/* TODO: Need url */}
+      <Link to ={'/'}>Get VSCode extension <ExternalLinkAltIcon className="pf-u-mx-sm" /></Link>
+    </DropdownItem>
+];
+
+  const userDropdownItems = [
+    <DropdownItem key="">
+      {/* TODO: Need url */}
+      <Link to ={'/'}>Documentation</Link>
+    </DropdownItem>,
+    <DropdownItem key="">
+      {/* TODO: Need url */}
+      <Link to ={'/'}>Online forum</Link>
+    </DropdownItem>,
+  ];
+  
+  const [isUserDropdownOpen, setisUserDropdownOpen] = useState(false);
+  const [isLinkDropdownOpen, setIsLinkDropdownOpen] = useState(false);
+
+
+  const headerToolbar = (
+    <React.Fragment>
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
+            <Button variant="plain">
+              Get GitHub Chrome extension 
+              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+            </Button>
+            <Button variant="plain">
+              Get VSCode extension
+              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+            </Button>
+          </ToolbarItem>
+          <ToolbarItem  className="pf-u-display-none-on-lg">
+            <Dropdown
+              isPlain={true}
+              position="right"
+              isOpen={isLinkDropdownOpen}
+              toggle={
+                <DropdownToggle iconComponent={null} onToggle={setIsLinkDropdownOpen} aria-label="External links to extensions">
+                  <ExternalLinkAltIcon />
+                </DropdownToggle>
+              }
+              dropdownItems={linkDropdownItems}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <Dropdown
+              isPlain={true}
+              position="right"
+              isOpen={isUserDropdownOpen}
+              toggle={
+                <DropdownToggle iconComponent={null} onToggle={setisUserDropdownOpen} aria-label="Links">
+                  <OutlinedQuestionCircleIcon />
+                </DropdownToggle>
+              }
+              dropdownItems={userDropdownItems}
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
+    </React.Fragment>
+  );
+  
+  const Header = (
+    <PageHeader
+      logo={<Brand src={"images/IntelliApp_Logo_342x76.svg"} alt="Kogito Logo" />}
+      logoProps={logoProps}
+      toolbar={headerToolbar}
+    />
+  );
 
   return (
-    <Page>
-      <PageSection variant="light" style={{ flexBasis: "100%" }}>
-        <Bullseye>
-          <Grid gutter="lg" className="pf-m-all-12-col pf-m-all-6-col-on-md">
-            <GridItem className="pf-u-text-align-center pf-m-12-col">
-              <img src={"images/kogito_logo.png"} alt="Kogito Logo" />
-            </GridItem>
-            <GridItem>
-              {/* Create side */}
-              <Stack gutter="lg">
-                <StackItem>
-                  <Title headingLevel="h2" size="3xl">
-                    Create
-                  </Title>
-                </StackItem>
-                <StackItem>
-                  <Toolbar>
-                    <ToolbarItem>
-                      <Select
-                        onSelect={onSelectFileType}
-                        onToggle={onToggleFileType}
-                        isExpanded={fileTypeSelect.isExpanded}
-                        selections={fileTypeSelect.value}
-                        width={"7em"}
-                      >
-                        {editorTypeOptions.map((option, index) => (
-                          <SelectOption key={index} value={option.value} />
-                        ))}
-                      </Select>
-                      <Button className="pf-u-ml-md" variant="secondary" onClick={createFile}>
-                        Create
-                      </Button>
-                      <Button className="pf-u-ml-md" variant="secondary" onClick={trySample}>
-                        Try Sample
-                      </Button>
-                    </ToolbarItem>
-                  </Toolbar>
-                </StackItem>
-              </Stack>
-            </GridItem>
-            <GridItem>
-              {/* Edit side */}
-              <Stack gutter="lg">
-                <StackItem>
-                  <Title headingLevel="h2" size="3xl">
-                    Edit
-                  </Title>
-                </StackItem>
-                <StackItem className="kogito--upload-box">
+    <Page header={Header} className="kogito--editor-landing">
+      <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
+        <TextContent>
+        <Title size="3xl" headingLevel="h1">Asset Editor for Kogito and Process Automation</Title>
+        <Text>Welcome to the Asset Editor! This simple BPMN and DMN editor is here to allow you to collaborate in an easy way and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch in the forum or review the documentation for more information.
+          </Text> 
+        <Text component={TextVariants.small} className="pf-u-text-align-right">Powered by <Brand src={"images/kogito_logo_white.png"} alt="Kogito Logo" style={{height: "1em", verticalAlign: "text-bottom"}}/></Text>
+          </TextContent>
+      </PageSection>
+      <PageSection className="pf-u-px-2xl-on-lg">
+        <Gallery gutter="lg" className="kogito--editor-landing__gallery">
+            <Card>
+              <CardHeader>
+                <Title headingLevel="h2" size="2xl">Workflow (.BPMN)</Title>
+              </CardHeader>
+              <CardBody isFilled={false}>
+                BPMN files are used to generate business processes.
+              </CardBody>
+              <CardBody isFilled={true}>
+                <Button variant="link" isInline={true} onClick={() => trySample("bpmn")}>
+                  Try Sample
+                </Button>
+              </CardBody>
+              <CardFooter>
+                <Button variant="secondary" onClick={() => createFile("bpmn")}>
+                  Create new workflow
+                </Button>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader>
+              <Title headingLevel="h2" size="2xl">Decision model (.DMN)</Title>
+              </CardHeader>
+              <CardBody isFilled={false}>
+                DMN files are used to generate decision models
+              </CardBody>
+              <CardBody isFilled={true}>
+                <Button variant="link" isInline={true} onClick={() => trySample("dmn")}>
+                  Try Sample
+                </Button>
+              </CardBody>
+              <CardFooter>
+                <Button variant="secondary" onClick={() => createFile("dmn")}>
+                  Create new decision model
+                </Button>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader>
+              <Title headingLevel="h2" size="2xl">Edit existing file</Title>
+              </CardHeader>
+              <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
                   {/* Upload Drag Target */}
                   <div
                     ref={uploadBoxRef}
@@ -197,20 +271,47 @@ export function HomePage(props: Props) {
                   >
                     <Bullseye>Drop a BPMN or DMN file here</Bullseye>
                   </div>
-                </StackItem>
-                <StackItem className="kogito--upload-btn-container">
+                </CardBody>
+                <CardBody>
                   or
-                  <div className="kogito--upload-btn">
-                    <Button className="pf-u-ml-md" variant="secondary" onClick={editFile}>
+                </CardBody>
+              <CardFooter>
+                    <Button variant="secondary" onClick={editFile}  className="kogito--editor-landing__upload-btn">
                       Choose a local file
+                      {/* Transparent file input overlays the button */}
+                      <input className="pf-c-button" type="file" aria-label="File selection" ref={uploadInputRef} onChange={editFile} />
                     </Button>
-                    <input className="pf-c-button" type="file" ref={uploadInputRef} onChange={editFile} />
-                  </div>
-                </StackItem>
-              </Stack>
-            </GridItem>
-          </Grid>
-        </Bullseye>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader>
+              <Title headingLevel="h2" size="2xl">Import source code</Title>
+              </CardHeader>
+              <CardBody isFilled={false}>
+                Paste a URL to a source code link (GitHub, Dropbox, etc.)
+              </CardBody>
+              <CardBody isFilled={true}>
+              {/* TODO New feature upload from source code needs to be implemented */}
+                <FormGroup
+                  label="URL"
+                  fieldId="url-text-input"
+                  helperText="http://"
+                >
+                  <TextInput
+                    type="url"
+                    id="url-text-input"
+                    name="urlText"
+                    aria-describedby="url-text-input-helper"
+                  />
+                </FormGroup>
+              </CardBody>
+              <CardFooter>
+                <Button variant="secondary">
+                  Import source code
+                </Button>
+              </CardFooter>
+            </Card>
+        </Gallery>
       </PageSection>
     </Page>
   );

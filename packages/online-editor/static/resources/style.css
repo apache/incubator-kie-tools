@@ -13,20 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ .kogito--editor-landing {
+  /* this adjusts the max specifically for our logo */
+  --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+ }
 
-.kogito--upload-box > div {
+ .kogito--editor-landing__gallery {
+    --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(20em, 1fr));
+ }
+
+ .kogito--editor-landing__title-section.pf-m-dark-200 {
+  --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--dark-200);
+  color: var(--pf-global--Color--light-200);
+ }
+
+ .kogito--editor-landing__title-section .pf-c-title {
+  color: var(--pf-global--Color--light-200);
+ }
+
+.kogito--editor-landing__upload-box > div {
   box-sizing: border-box;
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--100);
-  width: 23em;
-  height: 20em;
+  width: 100%;
+  height: 100%;
+  min-height: 12em;
+  min-width: 15em;
+  max-width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: var(--pf-global--spacer--xl);
 }
 
-.kogito--upload-box > div.hover {
+.kogito--editor-landing__upload-box > div.hover {
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--200);
+}
+
+.kogito--editor-landing__upload-btn {
+  position: relative;
+}
+
+/* overlays a file input on the button */
+.kogito--editor-landing__upload-btn input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  z-index: var(--pf-global--ZIndex--xs);
 }
 
 .kogito--editor {
@@ -84,32 +120,6 @@
   display: flex;
   justify-content: center;
   width: 100%;
-}
-
-.kogito--upload-btn-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.kogito--upload-btn {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-  margin-left: 1em;
-}
-
-.kogito--upload-btn button {
-  margin-left: 0 !important;
-}
-
-.kogito--upload-btn input[type="file"] {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 10.2em;
 }
 
 .kogito--right {
