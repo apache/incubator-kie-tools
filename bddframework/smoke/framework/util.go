@@ -37,7 +37,7 @@ func GetLogger(namespace string) *zap.SugaredLogger {
 func GenerateNamespaceName() string {
 	rand.Seed(time.Now().UnixNano())
 	ns := fmt.Sprintf("cucumber-%s", RandSeq(4))
-	if local := getEnvLocalTests(); local == "true" {
+	if getEnvLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
 	}

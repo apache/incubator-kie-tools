@@ -25,6 +25,11 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 )
 
+const (
+	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
+	mavenMirrorURLEnvVar  = "MAVEN_MIRROR_URL"
+)
+
 // DeployQuarkusExample deploy a Quarkus example
 func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool) error {
 	GetLogger(namespace).Infof("Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)

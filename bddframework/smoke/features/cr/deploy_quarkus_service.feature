@@ -1,11 +1,11 @@
 @cr
 @quarkus
-Feature: Service Deployment: Quarkus
+Feature: CR: Deploy quarkus service
 
   Background:
     Given Namespace is created
 
-  Scenario Outline: Deploy drools-quarkus-example service
+  Scenario Outline: CR deploy drools-quarkus-example service
     Given Kogito Operator is deployed
     
     When Deploy quarkus example service "drools-quarkus-example" with native <native>
@@ -21,7 +21,7 @@ Feature: Service Deployment: Quarkus
 #####
 
   @persistence
-  Scenario Outline: Deploy jbpm-quarkus-example service with persistence
+  Scenario Outline: CR deploy jbpm-quarkus-example service with persistence
     Given Kogito Operator is deployed with dependencies
     And Deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native>
     And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes

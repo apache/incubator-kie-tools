@@ -5,7 +5,7 @@ Feature: CLI: Install Kogito Infra Component
     Given Namespace is created
     And Kogito Operator is deployed with dependencies
 
-  Scenario Outline: CLI install Component
+  Scenario Outline: CLI install Kogito Infra Component
     When CLI install Kogito Infra <component>
 
     Then Kogito Infra <component> should be running within <timeoutInMinutes> minutes
@@ -16,7 +16,7 @@ Feature: CLI: Install Kogito Infra Component
       | Kafka | 10 |
       | Keycloak | 10 |
 
-  Scenario Outline: CLI remove Component
+  Scenario Outline: CLI remove Kogito Infra Component
     Given Install Kogito Infra <component>
     And Kogito Infra <component> should be running within <installTimeoutInMinutes> minutes
 

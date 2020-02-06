@@ -1,6 +1,7 @@
 # Disabled until OLM dev deployment is in place => https://issues.redhat.com/browse/KOGITO-940
 @disabled
 @olm
+@cli
 Feature: CLI: Project
 
   Scenario: CLI create project    

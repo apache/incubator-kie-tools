@@ -16,8 +16,25 @@ package framework
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 )
+
+// CheckCliBinaryExist checks if the CLI binary does exist
+func CheckCliBinaryExist() (bool, error) {
+	path, err := getEnvOperatorCliPath()
+	if err != nil {
+		return false, err
+	}
+
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
 
 // ExecuteCliCommand executes a kogito cli command for a given namespace
 func ExecuteCliCommand(namespace string, args ...string) (string, error) {

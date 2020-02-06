@@ -1,11 +1,11 @@
 @cli
 @springboot
-Feature: CLI: Deploy Spring Boot service
+Feature: CLI: Deploy spring boot service
 
   Background:
     Given Namespace is created
 
-  Scenario: CLI deploy drools-quarkus-example service
+  Scenario: CLI deploy jbpm-springboot-example service
     Given Kogito Operator is deployed
 
     When CLI deploy spring boot example service "jbpm-springboot-example"

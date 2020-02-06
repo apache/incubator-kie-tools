@@ -25,7 +25,6 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/version"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -43,8 +42,6 @@ type dependentOperator struct {
 }
 
 var (
-	defaultOperatorImageTag = version.Version
-
 	kogitoOperatorCommunityDependencies = map[string]dependentOperator{
 		"infinispan": {
 			timeoutInMin: 20,

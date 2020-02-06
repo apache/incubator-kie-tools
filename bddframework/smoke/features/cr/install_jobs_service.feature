@@ -1,11 +1,11 @@
 @cr
 @jobsservice
-Feature: Install Kogito Jobs Service
+Feature: CR: Install Kogito Jobs Service
 
   Background:
     Given Namespace is created
 
-  Scenario: Install Kogito Jobs Service
+  Scenario: CR install Kogito Jobs Service
     Given Kogito Operator is deployed
 
     When Deploy Kogito Jobs Service with 1 replicas
@@ -27,7 +27,7 @@ Feature: Install Kogito Jobs Service
   # Disabled as long as https://issues.redhat.com/browse/KOGITO-943 is not solved
   @disabled
   @persistence
-  Scenario: Install Kogito Jobs Service with persistence
+  Scenario: CR install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with dependencies
     
     When Deploy Kogito Jobs Service with persistence and 1 replicas

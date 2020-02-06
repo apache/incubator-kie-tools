@@ -1,11 +1,11 @@
 @cr
-Feature: Install Keycloak
+Feature: CR: Kogito Infra
 
   Background:
     Given Namespace is created
     And Kogito Operator is deployed with dependencies
 
-  Scenario Outline: Install Component
+  Scenario Outline: CR install Kogito Infra component
     When Install Kogito Infra <component>
 
     Then Kogito Infra <component> should be running within <timeoutInMinutes> minutes
@@ -16,7 +16,7 @@ Feature: Install Keycloak
       | Kafka | 5 |
       | Keycloak | 10 |
 
-  Scenario Outline: Remove Component
+  Scenario Outline: CR remove Kogito Infra Component
     Given Install Kogito Infra <component>
     And Kogito Infra <component> should be running within <installTimeoutInMinutes> minutes
 

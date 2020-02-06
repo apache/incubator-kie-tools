@@ -1,11 +1,11 @@
 @cr
 @springboot
-Feature: Service Deployment: Spring Boot with persistence
+Feature: CR: Deploy spring boot service with persistence
 
   Background:
     Given Namespace is created
 
-  Scenario: CLI: Deploy jbpm-springboot-example service
+  Scenario: CR deploy jbpm-springboot-example service
     Given Kogito Operator is deployed
     
     When Deploy spring boot example service "jbpm-springboot-example"
@@ -18,7 +18,7 @@ Feature: Service Deployment: Spring Boot with persistence
   # Disabled because of https://issues.redhat.com/browse/KOGITO-948
   @disabled
   @persistence
-  Scenario: Deploy jbpm-springboot-example service with persistence
+  Scenario: CR deploy jbpm-springboot-example service with persistence
     Given Kogito Operator is deployed with dependencies
     And Deploy spring boot example service "jbpm-springboot-example" with persistence enabled
     And Kogito application "jbpm-springboot-example" has 1 pods running within 10 minutes

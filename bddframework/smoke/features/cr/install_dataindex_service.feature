@@ -1,12 +1,12 @@
 @cr
 @dataindex
-Feature: Install Kogito Data Index Service
+Feature: CR: Install Kogito Data Index
 
   Background:
     Given Namespace is created
     And Kogito Operator is deployed with dependencies
 
-  Scenario: Install Kogito Data Index Service
+  Scenario: CR: Install Kogito Data Index
     When Install Kogito Data Index with 1 replicas
 
     Then Kogito Data Index has 1 pods running within 5 minutes
@@ -23,7 +23,7 @@ Feature: Install Kogito Data Index Service
 
   @events
   @persistence
-  Scenario Outline: Process instance events are stored in Data Index
+  Scenario Outline: CR: Process instance events are stored in Data Index
     Given Install Kogito Data Index with 1 replicas
     And Deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native> and events "enabled"
     And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes

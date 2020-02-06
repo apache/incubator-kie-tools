@@ -15,72 +15,109 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/version"
+	"flag"
 	"path/filepath"
+
+	"github.com/kiegroup/kogito-cloud-operator/version"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 )
 
-const (
-	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
+// SmokeEnv contains the information about the smoke tests environment
+type SmokeEnv struct {
+	LocalTests bool
 
+	OperatorImageName string
+	OperatorImageTag  string
+
+	OperatorDeployURI string
+	CliPath           string
+
+	MavenMirrorURL       string
+	BuildImageVersion    string
+	BuildS2iImageTag     string
+	BuildRuntimeImageTag string
+
+	ExamplesRepositoryURI string
+	ExamplesRepositoryRef string
+}
+
+const (
 	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
+
 	defaultOperatorDeployURI = "../../deploy/"
 	defaultCliPath           = "../../build/_output/bin/kogito"
 
-	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
-	mavenMirrorURLEnvVar  = "MAVEN_MIRROR_URL"
+	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
 )
 
+var (
+	defaultOperatorImageTag = version.Version
+
+	env = SmokeEnv{}
+)
+
+// BindEnvFlags binds smoke tests env flags to given flag set
+func BindEnvFlags(set *flag.FlagSet) {
+	prefix := "smoke."
+
+	set.BoolVar(&env.LocalTests, prefix+"local", false, "If tests are launch on local machine")
+	set.StringVar(&env.OperatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
+	set.StringVar(&env.OperatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
+	set.StringVar(&env.OperatorDeployURI, prefix+"operator-deploy-uri", defaultOperatorDeployURI, "Url or Path to operator 'deploy' folder")
+	set.StringVar(&env.CliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
+	set.StringVar(&env.MavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
+	set.StringVar(&env.BuildImageVersion, prefix+"build-image-version", version.Version, "Set the build image version")
+	set.StringVar(&env.BuildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
+	set.StringVar(&env.BuildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
+	set.StringVar(&env.ExamplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
+	set.StringVar(&env.ExamplesRepositoryRef, prefix+"examples-ref", "", "Set the branch for the kogito-examples repository")
+}
+
 func getEnvMavenMirrorURL() string {
-	return util.GetOSEnv(mavenMirrorURLEnvVar, "")
+	return env.MavenMirrorURL
 }
 
 func getEnvOperatorCliPath() (string, error) {
-	path := util.GetOSEnv("OPERATOR_CLI_PATH", defaultCliPath)
-	return filepath.Abs(path)
+	return filepath.Abs(env.CliPath)
 }
 
 func getEnvOperatorDeployURI() string {
-	return util.GetOSEnv("OPERATOR_DEPLOY_FOLDER", defaultOperatorDeployURI)
+	return env.OperatorDeployURI
 }
 
 func getEnvOperatorImageName() string {
-	return util.GetOSEnv("OPERATOR_IMAGE_NAME", defaultOperatorImageName)
+	return env.OperatorImageName
 }
 
 func getEnvOperatorImageTag() string {
-	return util.GetOSEnv("OPERATOR_IMAGE_TAG", defaultOperatorImageTag)
+	return env.OperatorImageTag
 }
 
 func getEnvExamplesRepositoryURI() string {
-	return util.GetOSEnv("KOGITO_EXAMPLES_REPOSITORY_URI", defaultKogitoExamplesURI)
+	return env.ExamplesRepositoryURI
 }
 
 func getEnvExamplesRepositoryRef() string {
-	return util.GetOSEnv("KOGITO_EXAMPLES_REPOSITORY_REF", "")
+	return env.ExamplesRepositoryRef
 }
 
 func getEnvImageVersion() string {
-	return util.GetOSEnv("KOGITO_BUILD_IMAGE_VERSION", version.Version)
+	return env.BuildImageVersion
 }
 
 func getEnvS2IImageStreamTag() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_S2I_IMAGE_STREAM_TAG", "")
+	return env.BuildS2iImageTag
 }
 
 func getEnvRuntimeImageStreamTag() string {
-	return getOsMultipleEnv("KOGITO_BUILD_IMAGE_STREAM_TAG", "KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG", "")
+	return env.BuildRuntimeImageTag
 }
 
-func getEnvLocalTests() string {
-	return util.GetOSEnv("LOCAL_TESTS", "false")
+func getEnvLocalTests() bool {
+	return env.LocalTests
 }
 
 func getEnvUsername() string {
 	return util.GetOSEnv("USERNAME", "nouser")
-}
-
-func getOsMultipleEnv(env1, env2, defaultValue string) string {
-	return util.GetOSEnv(env1, util.GetOSEnv(env2, defaultValue))
 }
