@@ -43,6 +43,7 @@ function usage(){
     printf "\n\t Scenarios with '@disabled' tag are always ignored."
   printf "\n--concurrent {NUMBER}\n\tSet the number of concurrent tests. Default is 1."
   printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
+  printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall run in minutes. Default is 240."
   printf "\n--local {BOOLEAN}\n\tSpecify whether you run test in local."
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
@@ -87,150 +88,138 @@ function delete_and_apply_crds(){
   done
 }
 
+function addParam(){
+  PARAMS="${PARAMS} ${1}"
+}
+
+function addParamKeyValueIfAccepted(){
+  key=${1}
+  value=${2}
+  if isValueNotOption ${value}; then 
+    if isValueNotEmpty ${value}; then
+      addParam "${key}=${value}"
+    fi
+    return 0
+  fi
+  return 1
+}
+
+function isValueNotOption(){
+  if [[ ! ${1} =~ ^-.* ]]; then 
+    return 0
+  fi
+  return 1
+}
+
+function isValueNotEmpty(){
+  if [[ ! -z "${1}" ]]; then 
+    return 0
+  fi; 
+  return 1
+}
+
+PARAMS=""
+TAGS="" # tags are parsed independently as there could be whitespace to be handled correctly
 FEATURE=""
-CONCURRENT=1
-TAGS=""
+TIMEOUT=240
+DEBUG=false
 DRY_RUN=
 
 while (( $# ))
 do
 case $1 in
+  --feature)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        FEATURE=${1}
+      fi
+      shift
+    fi
+  ;;
+  --timeout)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        TIMEOUT=${1}
+      fi
+      shift
+    fi
+  ;;
+  --debug)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        if [[ "${1}" = "true" ]]; then
+          DEBUG=true
+        fi
+      fi
+      shift
+    fi
+  ;;
   --tags)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        TAGS="${1}"; 
-      fi; 
-      shift; 
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        TAGS="${1}"
+      fi
+      shift
     fi
   ;;
   --concurrent)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        CONCURRENT="${1}"; 
-      fi; 
-      shift; 
-    fi
-  ;;
-  --feature)
-    shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        FEATURE="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--godog.concurrency" ${1}; then shift; fi
   ;;
   --local)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        if [ "${1}" = "true" ]; then 
-          export LOCAL_TESTS=true; 
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        if [[ "${1}" = "true" ]]; then
+          addParam "--smoke.local"
         fi
-      fi; 
-      shift; 
+      fi
+      shift
     fi
   ;;
   --operator_image)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_IMAGE_NAME="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.operator-image-name" ${1}; then shift; fi
   ;;
   --operator_tag)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_IMAGE_TAG="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.operator-image-tag" ${1}; then shift; fi
   ;;
   --cli_path)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_CLI_PATH="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.cli-path" ${1}; then shift; fi
   ;;
   --deploy_uri)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_DEPLOY_FOLDER="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.operator-deploy-uri" ${1}; then shift; fi
   ;;
   --maven_mirror)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export MAVEN_MIRROR_URL="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.maven-mirror-url" ${1}; then shift; fi
   ;;
   --build_image_version)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_BUILD_IMAGE_VERSION="${1}"; 
-      fi; 
-      shift; 
-    fi
-  ;;
-  --build_image_tag)
-    shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_BUILD_IMAGE_STREAM_TAG="${1}"
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.build-image-version" ${1}; then shift; fi
   ;;
   --build_s2i_image_tag)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_BUILD_S2I_IMAGE_STREAM_TAG="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.build-s2i-image-tag" ${1}; then shift; fi
   ;;
   --build_runtime_image_tag)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.build-runtime-image-tag" ${1}; then shift; fi
   ;;
   --examples_uri)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_EXAMPLES_REPOSITORY_URI="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.examples-uri" ${1}; then shift; fi
   ;;
   --examples_ref)
     shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export KOGITO_EXAMPLES_REPOSITORY_REF="${1}"; 
-      fi; 
-      shift; 
-    fi
+    if addParamKeyValueIfAccepted "--smoke.examples-ref" ${1}; then shift; fi
   ;;
   --dry-run)
     DRY_RUN=true
@@ -248,24 +237,11 @@ case $1 in
 esac
 done
 
-# Always adding @disabled tags
-if [[ ! -z ${TAGS} ]]; then
-  TAGS="${TAGS} && ~@disabled"
-else
-  TAGS="~@disabled"
-fi
-TAGS="--tags=${TAGS}"
+echo "DEBUG=${DEBUG} go test ./test/smoke -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
 
 if [[ ${DRY_RUN} ]]; then
-  echo "godog -c ${CONCURRENT} --random -f progress "${TAGS}" ${FEATURE}"
-  env
   exit 0
 fi
-
-echo "-------- Retrieve godog"
-
-go get github.com/cucumber/godog/cmd/godog
-
 
 echo "-------- Setup CRD files"
 
@@ -284,7 +260,7 @@ delete_and_apply_crds ${deploy_folder}
 
 echo "-------- Running smoke tests"
 
-cd ${SCRIPT_DIR}/../test/smoke/ && godog -c ${CONCURRENT} --random -f progress "${TAGS}" ${FEATURE}
+DEBUG=${DEBUG} go test ./test/smoke -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
 
