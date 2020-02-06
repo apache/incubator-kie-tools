@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -66,20 +65,14 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("placeholder")
     private final HTMLDivElement placeholder;
 
-    @DataField("collapsed-description")
-    private final HTMLDivElement collapsedDescription;
-
-    @DataField("expanded-description")
-    private final HTMLDivElement expandedDescription;
-
-    @DataField("view-more")
-    private final HTMLAnchorElement viewMore;
-
-    @DataField("view-less")
-    private final HTMLAnchorElement viewLess;
-
     @DataField("add-button")
     private final HTMLButtonElement addButton;
+
+    @DataField("add-button-placeholder")
+    private final HTMLButtonElement addButtonPlaceholder;
+
+    @DataField("data-type-button")
+    private final HTMLDivElement dataTypeButton;
 
     @DataField("search-bar-container")
     private final HTMLDivElement searchBarContainer;
@@ -114,11 +107,9 @@ public class DataTypeListView implements DataTypeList.View {
 
     @Inject
     public DataTypeListView(final HTMLDivElement listItems,
-                            final HTMLDivElement collapsedDescription,
-                            final HTMLDivElement expandedDescription,
-                            final HTMLAnchorElement viewMore,
-                            final HTMLAnchorElement viewLess,
                             final HTMLButtonElement addButton,
+                            final HTMLButtonElement addButtonPlaceholder,
+                            final HTMLDivElement dataTypeButton,
                             final HTMLDivElement placeholder,
                             final HTMLDivElement searchBarContainer,
                             final HTMLAnchorElement expandAll,
@@ -132,11 +123,9 @@ public class DataTypeListView implements DataTypeList.View {
                             final Event<FlashMessage> flashMessageEvent,
                             final TranslationService translationService) {
         this.listItems = listItems;
-        this.collapsedDescription = collapsedDescription;
-        this.expandedDescription = expandedDescription;
-        this.viewMore = viewMore;
-        this.viewLess = viewLess;
         this.addButton = addButton;
+        this.addButtonPlaceholder = addButtonPlaceholder;
+        this.dataTypeButton = dataTypeButton;
         this.placeholder = placeholder;
         this.searchBarContainer = searchBarContainer;
         this.expandAll = expandAll;
@@ -176,11 +165,6 @@ public class DataTypeListView implements DataTypeList.View {
 
     private void setupSearchBar() {
         searchBarContainer.appendChild(presenter.getSearchBar().getElement());
-    }
-
-    @PostConstruct
-    public void setup() {
-        collapseDescription();
     }
 
     private void setupListElement() {
@@ -235,8 +219,8 @@ public class DataTypeListView implements DataTypeList.View {
         presenter.collapseAll();
     }
 
-    @EventHandler("add-button")
-    public void onAddClick(final ClickEvent e) {
+    @EventHandler({"add-button", "add-button-placeholder"})
+    public void onAddButtonClick(final ClickEvent e) {
         scrollHelper.animatedScrollToBottom(listItems);
         presenter.addDataType();
     }
@@ -342,30 +326,6 @@ public class DataTypeListView implements DataTypeList.View {
         return isRightArrow(arrow);
     }
 
-    @EventHandler("view-more")
-    public void onClickViewMore(final ClickEvent event) {
-        expandDescription();
-    }
-
-    @EventHandler("view-less")
-    public void onClickViewLess(final ClickEvent event) {
-        collapseDescription();
-    }
-
-    void expandDescription() {
-        collapsedDescription.hidden = true;
-        expandedDescription.hidden = false;
-        viewLess.hidden = false;
-        viewMore.hidden = true;
-    }
-
-    void collapseDescription() {
-        collapsedDescription.hidden = false;
-        expandedDescription.hidden = true;
-        viewLess.hidden = true;
-        viewMore.hidden = false;
-    }
-
     Element getDataTypeRow(final DataType dataType) {
         return listItems.querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
     }
@@ -413,12 +373,14 @@ public class DataTypeListView implements DataTypeList.View {
     void showListItems() {
         hide(noDataTypesFound);
         hide(placeholder);
+        show(dataTypeButton);
         show(listItems);
     }
 
     void showPlaceHolder() {
         hide(noDataTypesFound);
         show(placeholder);
+        hide(dataTypeButton);
         hide(listItems);
     }
 

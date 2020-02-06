@@ -46,8 +46,6 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
@@ -70,18 +68,6 @@ public class DataTypeListViewTest {
 
     @Mock
     private HTMLDivElement listItems;
-
-    @Mock
-    private HTMLDivElement collapsedDescription;
-
-    @Mock
-    private HTMLDivElement expandedDescription;
-
-    @Mock
-    private HTMLAnchorElement viewMore;
-
-    @Mock
-    private HTMLAnchorElement viewLess;
 
     @Mock
     private HTMLElement element;
@@ -140,6 +126,12 @@ public class DataTypeListViewTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private HTMLButtonElement addButtonPlaceholder;
+
+    @Mock
+    private HTMLDivElement dataTypeButton;
+
     @Captor
     private ArgumentCaptor<FlashMessage> flashMessageCaptor;
 
@@ -156,9 +148,10 @@ public class DataTypeListViewTest {
         placeholder.classList = mock(DOMTokenList.class);
         noDataTypesFound.classList = mock(DOMTokenList.class);
         listItems.classList = mock(DOMTokenList.class);
+        dataTypeButton.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService));
+        view = spy(new DataTypeListView(listItems, addButton, addButtonPlaceholder, dataTypeButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -210,10 +203,6 @@ public class DataTypeListViewTest {
     @Test
     public void testShowNoDataTypesFound() {
 
-        noDataTypesFound.classList = mock(DOMTokenList.class);
-        placeholder.classList = mock(DOMTokenList.class);
-        listItems.classList = mock(DOMTokenList.class);
-
         view.showNoDataTypesFound();
 
         verify(noDataTypesFound.classList).remove(HIDDEN_CSS_CLASS);
@@ -224,29 +213,23 @@ public class DataTypeListViewTest {
     @Test
     public void testShowListItems() {
 
-        noDataTypesFound.classList = mock(DOMTokenList.class);
-        placeholder.classList = mock(DOMTokenList.class);
-        listItems.classList = mock(DOMTokenList.class);
-
         view.showListItems();
 
         verify(noDataTypesFound.classList).add(HIDDEN_CSS_CLASS);
         verify(placeholder.classList).add(HIDDEN_CSS_CLASS);
         verify(listItems.classList).remove(HIDDEN_CSS_CLASS);
+        verify(dataTypeButton.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
     public void testShowPlaceHolder() {
-
-        noDataTypesFound.classList = mock(DOMTokenList.class);
-        placeholder.classList = mock(DOMTokenList.class);
-        listItems.classList = mock(DOMTokenList.class);
 
         view.showPlaceHolder();
 
         verify(noDataTypesFound.classList).add(HIDDEN_CSS_CLASS);
         verify(placeholder.classList).remove(HIDDEN_CSS_CLASS);
         verify(listItems.classList).add(HIDDEN_CSS_CLASS);
+        verify(dataTypeButton.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -333,7 +316,7 @@ public class DataTypeListViewTest {
 
         final ClickEvent event = mock(ClickEvent.class);
 
-        view.onAddClick(event);
+        view.onAddButtonClick(event);
 
         verify(scrollHelper).animatedScrollToBottom(listItems);
         verify(presenter).addDataType();
@@ -464,47 +447,6 @@ public class DataTypeListViewTest {
         view.showArrowIconIfDataTypeHasChildren(dataType);
 
         verify(arrowClassList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testSetup() {
-        view.setup();
-
-        verify(view).collapseDescription();
-    }
-
-    @Test
-    public void testOnClickViewMore() {
-        view.onClickViewMore(mock(ClickEvent.class));
-
-        verify(view).expandDescription();
-    }
-
-    @Test
-    public void testOnClickViewLess() {
-        view.onClickViewLess(mock(ClickEvent.class));
-
-        verify(view).collapseDescription();
-    }
-
-    @Test
-    public void testExpandDescription() {
-        view.expandDescription();
-
-        assertTrue(collapsedDescription.hidden);
-        assertFalse(expandedDescription.hidden);
-        assertFalse(viewLess.hidden);
-        assertTrue(viewMore.hidden);
-    }
-
-    @Test
-    public void testCollapseDescription() {
-        view.collapseDescription();
-
-        assertFalse(collapsedDescription.hidden);
-        assertTrue(expandedDescription.hidden);
-        assertTrue(viewLess.hidden);
-        assertFalse(viewMore.hidden);
     }
 
     @Test

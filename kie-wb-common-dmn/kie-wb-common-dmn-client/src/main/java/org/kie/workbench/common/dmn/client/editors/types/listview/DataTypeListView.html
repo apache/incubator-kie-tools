@@ -16,52 +16,34 @@
 
 <div>
     <h3 data-i18n-key="Title"></h3>
-    <div class="description" data-field="collapsed-description">
-        <p data-i18n-key="CollapsedText"></p>
-    </div>
-    <div class="description" data-field="expanded-description">
-        <p data-i18n-key="ExpandedText1"></p>
-        <p data-i18n-key="ExpandedText2">
-        </p>
-        <ul>
-            <li>
-                <b data-i18n-key="Simple"></b>
-                <span data-i18n-key="ExpandedText3"></span>
-            </li>
-            <li>
-                <b data-i18n-key="Structured"></b>
-                <span data-i18n-key="ExpandedText4"></span>
-            </li>
-        </ul>
-    </div>
-    <div class="description-buttons">
-        <a data-field="view-more" href="#"><span data-i18n-key="ViewMore"></span> »</a>
-        <a data-field="view-less" href="#">« <span data-i18n-key="ViewLess"></span></a>
-
-        <div>
-            <div>
-                <a data-field="expand-all" href="#" data-i18n-key="ExpandAll"></a>
-                <span>/</span>
-                <a data-field="collapse-all" href="#" data-i18n-key="CollapseAll"></a>
-                <button data-field="add-button" class="btn btn-sm btn-primary">
-                    <i class="fa fa-plus-circle"></i>
-                    <span data-i18n-key="Add"></span>
-                </button>
-                <button data-field="import-data-object-button" class="btn btn-sm btn-default">
-                    <span data-i18n-key="ImportDataObject"></span>
-                </button>
-            </div>
-
-            <div data-field="search-bar-container"></div>
+    <div data-field="data-type-button" class="data-type-button hidden">
+        <div class="expand-collapse">
+            <a data-field="expand-all" href="#" data-i18n-key="ExpandAll"></a>
+            <span>|</span>
+            <a data-field="collapse-all" href="#" data-i18n-key="CollapseAll"></a>
+        </div>
+        <div class="search-bar-container" data-field="search-bar-container"></div>
+        <div class="action-button">
+            <button data-field="add-button" class="btn btn-default">
+                <span data-i18n-key="NewDataType"></span>
+            </button>
+            <button data-field="import-data-object-button" class="btn btn-default">
+                <span data-i18n-key="ImportDataObject"></span>
+            </button>
         </div>
     </div>
+
     <div data-field="placeholder" class="hidden kie-data-types-placeholder">
         <div>
-            <i class="fa fa-plus-circle"></i>
+            <i class="fa fa-object-group"></i>
             <br/>
             <h1 data-i18n-key="NoCustomDataTitle"></h1>
             <p data-i18n-key="NoCustomData1"></p>
             <p data-i18n-key="NoCustomData2"></p>
+            <button data-field="add-button-placeholder" class="btn btn-primary">
+                <i class="fa fa-plus-circle"></i>
+                <span data-i18n-key="AddACustomDataType"></span>
+            </button>
         </div>
     </div>
     <div data-field="no-data-types-found" class="hidden kie-data-types-placeholder">

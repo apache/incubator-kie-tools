@@ -299,6 +299,21 @@ public class DMNEditorConstants {
     public static final String DataTypeListItemView_ArrowKeysTooltip = "DataTypeListItemView.ArrowKeysTooltip";
 
     @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Edit = "DataTypeListItemView.Edit";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Save = "DataTypeListItemView.Save";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_AddRowBelow = "DataTypeListItemView.AddRowBelow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Remove = "DataTypeListItemView.Remove";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Cancel = "DataTypeListItemView.Cancel";
+
+    @TranslationKey(defaultValue = "")
     public static final String DataTypesPage_Title = "DataTypesPage.Title";
 
     @TranslationKey(defaultValue = "")

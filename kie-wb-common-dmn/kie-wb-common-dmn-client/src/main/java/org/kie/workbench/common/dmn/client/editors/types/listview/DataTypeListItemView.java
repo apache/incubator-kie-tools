@@ -48,7 +48,12 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_AddRowBelow;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_ArrowKeysTooltip;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Cancel;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Edit;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Remove;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Save;
 
 @Dependent
 @Templated
@@ -182,7 +187,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void showEditButton() {
         show(getEditButton());
-        show(getInsertNestedFieldButton());
+        show(getAddDataTypeRowButton());
         show(getRemoveButton());
         hide(getSaveButton());
         hide(getCloseButton());
@@ -191,7 +196,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void showSaveButton() {
         hide(getEditButton());
-        hide(getInsertNestedFieldButton());
+        hide(getAddDataTypeRowButton());
         hide(getRemoveButton());
         show(getSaveButton());
         show(getCloseButton());
@@ -366,11 +371,11 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         final String arrowKeysTooltip = translationService.format(DataTypeListItemView_ArrowKeysTooltip);
 
-        setTitleAttribute(getEditButton(), "Ctrl + E");
-        setTitleAttribute(getSaveButton(), "Ctrl + S");
-        setTitleAttribute(getInsertNestedFieldButton(), "Ctrl + B");
-        setTitleAttribute(getRemoveButton(), "Ctrl + Backspace");
-        setTitleAttribute(getCloseButton(), "Esc");
+        setTitleAttribute(getEditButton(), translationService.format(DataTypeListItemView_Edit));
+        setTitleAttribute(getSaveButton(), translationService.format(DataTypeListItemView_Save));
+        setTitleAttribute(getAddDataTypeRowButton(), translationService.format(DataTypeListItemView_AddRowBelow));
+        setTitleAttribute(getRemoveButton(), translationService.format(DataTypeListItemView_Remove));
+        setTitleAttribute(getCloseButton(), translationService.format(DataTypeListItemView_Cancel));
         setTitleAttribute(getArrow(), arrowKeysTooltip);
         setupTooltips();
     }
@@ -390,7 +395,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         getSaveButton().onclick = getOnSaveAction();
         getCloseButton().onclick = getOnCloseAction();
         getArrow().onclick = getOnArrowClickAction();
-        getInsertNestedFieldButton().onclick = getOnInsertNestedFieldAction();
+        getAddDataTypeRowButton().onclick = getOnAddDataTypeRowAction();
         getRemoveButton().onclick = getOnRemoveButtonAction();
     }
 
@@ -430,9 +435,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         };
     }
 
-    OnclickCallbackFn getOnInsertNestedFieldAction() {
+    OnclickCallbackFn getOnAddDataTypeRowAction() {
         return (e) -> {
-            presenter.insertNestedField();
+            presenter.addDataTypeRow();
             return true;
         };
     }
@@ -492,8 +497,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         return querySelector("remove-button");
     }
 
-    Element getInsertNestedFieldButton() {
-        return querySelector("insert-nested-field");
+    Element getAddDataTypeRowButton() {
+        return querySelector("add-data-type-row-button");
     }
 
     NodeList<Element> getLabels() {

@@ -45,7 +45,12 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_AddRowBelow;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_ArrowKeysTooltip;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Cancel;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Edit;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Remove;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Save;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -92,7 +97,7 @@ public class DataTypeListItemViewTest {
     private HTMLButtonElement closeButton;
 
     @Mock
-    private HTMLButtonElement insertNestedFieldButton;
+    private HTMLButtonElement addDataTypeRow;
 
     @Mock
     private HTMLButtonElement removeButton;
@@ -305,27 +310,37 @@ public class DataTypeListItemViewTest {
 
         final Element editButton = mock(Element.class);
         final Element saveButton = mock(Element.class);
-        final Element insertNestedField = mock(Element.class);
+        final Element addDataTypeRow = mock(Element.class);
         final Element closeButton = mock(Element.class);
         final Element removeButton = mock(Element.class);
         final Element arrow = mock(Element.class);
         final String arrowKeysTooltip = "arrowKeysTooltip";
+        final String dataTypeListItemViewEditKey = "Edit (Ctrl + E)";
+        final String dataTypeListItemViewSaveKey = "Save (Ctrl + S)";
+        final String dataTypeListItemViewAddRowBelowKey = "Add row below (Ctrl + B)";
+        final String dataTypeListItemViewRemoveKey = "Remove (Ctrl + Backspace)";
+        final String dataTypeListItemViewCancelKey = "Cancel (Esc)";
 
         doReturn(editButton).when(view).getEditButton();
         doReturn(saveButton).when(view).getSaveButton();
-        doReturn(insertNestedField).when(view).getInsertNestedFieldButton();
+        doReturn(addDataTypeRow).when(view).getAddDataTypeRowButton();
         doReturn(closeButton).when(view).getCloseButton();
         doReturn(removeButton).when(view).getRemoveButton();
         doReturn(arrow).when(view).getArrow();
         when(translationService.format(DataTypeListItemView_ArrowKeysTooltip)).thenReturn(arrowKeysTooltip);
+        when(translationService.format(DataTypeListItemView_Edit)).thenReturn(dataTypeListItemViewEditKey);
+        when(translationService.format(DataTypeListItemView_Save)).thenReturn(dataTypeListItemViewSaveKey);
+        when(translationService.format(DataTypeListItemView_AddRowBelow)).thenReturn(dataTypeListItemViewAddRowBelowKey);
+        when(translationService.format(DataTypeListItemView_Remove)).thenReturn(dataTypeListItemViewRemoveKey);
+        when(translationService.format(DataTypeListItemView_Cancel)).thenReturn(dataTypeListItemViewCancelKey);
 
         view.setupShortcutsTooltips();
 
-        verify(editButton).setAttribute("data-title", "Ctrl + E");
-        verify(saveButton).setAttribute("data-title", "Ctrl + S");
-        verify(insertNestedField).setAttribute("data-title", "Ctrl + B");
-        verify(closeButton).setAttribute("data-title", "Esc");
-        verify(removeButton).setAttribute("data-title", "Ctrl + Backspace");
+        verify(editButton).setAttribute("data-title", dataTypeListItemViewEditKey);
+        verify(saveButton).setAttribute("data-title", dataTypeListItemViewSaveKey);
+        verify(addDataTypeRow).setAttribute("data-title", dataTypeListItemViewAddRowBelowKey);
+        verify(removeButton).setAttribute("data-title", dataTypeListItemViewRemoveKey);
+        verify(closeButton).setAttribute("data-title", dataTypeListItemViewCancelKey);
         verify(arrow).setAttribute("data-title", arrowKeysTooltip);
         verify(view).setupTooltips();
     }
@@ -343,33 +358,33 @@ public class DataTypeListItemViewTest {
         final Element saveButton = mock(Element.class);
         final Element closeButton = mock(Element.class);
         final Element arrow = mock(Element.class);
-        final Element insertNestedField = mock(Element.class);
+        final Element addDataTypeRow = mock(Element.class);
         final Element removeButton = mock(Element.class);
         final OnclickCallbackFn onEditAction = mock(OnclickCallbackFn.class);
         final OnclickCallbackFn onSaveAction = mock(OnclickCallbackFn.class);
         final OnclickCallbackFn onCloseAction = mock(OnclickCallbackFn.class);
         final OnclickCallbackFn onArrowClickAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onInsertNestedFieldAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onAddDataTypeRowAction = mock(OnclickCallbackFn.class);
         final OnclickCallbackFn onRemoveButtonAction = mock(OnclickCallbackFn.class);
 
         doReturn(editButton).when(view).getEditButton();
         doReturn(saveButton).when(view).getSaveButton();
         doReturn(closeButton).when(view).getCloseButton();
         doReturn(arrow).when(view).getArrow();
-        doReturn(insertNestedField).when(view).getInsertNestedFieldButton();
+        doReturn(addDataTypeRow).when(view).getAddDataTypeRowButton();
         doReturn(removeButton).when(view).getRemoveButton();
         doReturn(onEditAction).when(view).getOnEditAction();
         doReturn(onSaveAction).when(view).getOnSaveAction();
         doReturn(onCloseAction).when(view).getOnCloseAction();
         doReturn(onArrowClickAction).when(view).getOnArrowClickAction();
-        doReturn(onInsertNestedFieldAction).when(view).getOnInsertNestedFieldAction();
+        doReturn(onAddDataTypeRowAction).when(view).getOnAddDataTypeRowAction();
         doReturn(onRemoveButtonAction).when(view).getOnRemoveButtonAction();
 
         editButton.onclick = null;
         saveButton.onclick = null;
         closeButton.onclick = null;
         arrow.onclick = null;
-        insertNestedField.onclick = null;
+        addDataTypeRow.onclick = null;
         removeButton.onclick = null;
 
         view.setupEventHandlers();
@@ -378,7 +393,7 @@ public class DataTypeListItemViewTest {
         assertEquals(onSaveAction, saveButton.onclick);
         assertEquals(onCloseAction, closeButton.onclick);
         assertEquals(onArrowClickAction, arrow.onclick);
-        assertEquals(onInsertNestedFieldAction, insertNestedField.onclick);
+        assertEquals(onAddDataTypeRowAction, addDataTypeRow.onclick);
         assertEquals(onRemoveButtonAction, removeButton.onclick);
     }
 
@@ -393,12 +408,12 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
-    public void testOnInsertNestedField() {
-        final OnclickCallbackFn action = view.getOnInsertNestedFieldAction();
+    public void testOnAddDataTypeRowAction() {
+        final OnclickCallbackFn action = view.getOnAddDataTypeRowAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
-        verify(presenter).insertNestedField();
+        verify(presenter).addDataTypeRow();
     }
 
     @Test
@@ -558,13 +573,13 @@ public class DataTypeListItemViewTest {
     public void testShowEditButton() {
 
         editButton.classList = mock(DOMTokenList.class);
-        insertNestedFieldButton.classList = mock(DOMTokenList.class);
+        addDataTypeRow.classList = mock(DOMTokenList.class);
         removeButton.classList = mock(DOMTokenList.class);
         saveButton.classList = mock(DOMTokenList.class);
         closeButton.classList = mock(DOMTokenList.class);
 
         doReturn(editButton).when(view).getEditButton();
-        doReturn(insertNestedFieldButton).when(view).getInsertNestedFieldButton();
+        doReturn(addDataTypeRow).when(view).getAddDataTypeRowButton();
         doReturn(removeButton).when(view).getRemoveButton();
         doReturn(saveButton).when(view).getSaveButton();
         doReturn(closeButton).when(view).getCloseButton();
@@ -572,7 +587,7 @@ public class DataTypeListItemViewTest {
         view.showEditButton();
 
         verify(editButton.classList).remove(HIDDEN_CSS_CLASS);
-        verify(insertNestedFieldButton.classList).remove(HIDDEN_CSS_CLASS);
+        verify(addDataTypeRow.classList).remove(HIDDEN_CSS_CLASS);
         verify(removeButton.classList).remove(HIDDEN_CSS_CLASS);
         verify(saveButton.classList).add(HIDDEN_CSS_CLASS);
         verify(closeButton.classList).add(HIDDEN_CSS_CLASS);
@@ -582,13 +597,13 @@ public class DataTypeListItemViewTest {
     public void testShowSaveButton() {
 
         editButton.classList = mock(DOMTokenList.class);
-        insertNestedFieldButton.classList = mock(DOMTokenList.class);
+        addDataTypeRow.classList = mock(DOMTokenList.class);
         removeButton.classList = mock(DOMTokenList.class);
         saveButton.classList = mock(DOMTokenList.class);
         closeButton.classList = mock(DOMTokenList.class);
 
         doReturn(editButton).when(view).getEditButton();
-        doReturn(insertNestedFieldButton).when(view).getInsertNestedFieldButton();
+        doReturn(addDataTypeRow).when(view).getAddDataTypeRowButton();
         doReturn(removeButton).when(view).getRemoveButton();
         doReturn(saveButton).when(view).getSaveButton();
         doReturn(closeButton).when(view).getCloseButton();
@@ -596,7 +611,7 @@ public class DataTypeListItemViewTest {
         view.showSaveButton();
 
         verify(editButton.classList).add(HIDDEN_CSS_CLASS);
-        verify(insertNestedFieldButton.classList).add(HIDDEN_CSS_CLASS);
+        verify(addDataTypeRow.classList).add(HIDDEN_CSS_CLASS);
         verify(removeButton.classList).add(HIDDEN_CSS_CLASS);
         verify(saveButton.classList).remove(HIDDEN_CSS_CLASS);
         verify(closeButton.classList).remove(HIDDEN_CSS_CLASS);
@@ -972,10 +987,10 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
-    public void testGetInsertNestedField() {
+    public void tesGetAddDataTypeRowButton() {
         final Element element = mock(Element.class);
-        doReturn(element).when(view).querySelector("insert-nested-field");
-        assertEquals(element, view.getInsertNestedFieldButton());
+        doReturn(element).when(view).querySelector("add-data-type-row-button");
+        assertEquals(element, view.getAddDataTypeRowButton());
     }
 
     @Test

@@ -1333,6 +1333,28 @@ public class DataTypeListItemTest {
     }
 
     @Test
+    public void testAddDataTypeRowWhenDataTypeIsStructure() {
+
+        doReturn(true).when(listItem).isStructureType();
+        doNothing().when(listItem).insertNestedField();
+
+        listItem.addDataTypeRow();
+
+        verify(listItem).insertNestedField();
+    }
+
+    @Test
+    public void testAddDataTypeRowWhenDataTypeIsNotStructure() {
+
+        doReturn(false).when(listItem).isStructureType();
+        doNothing().when(listItem).insertFieldBelow();
+
+        listItem.addDataTypeRow();
+
+        verify(listItem).insertFieldBelow();
+    }
+
+    @Test
     public void testHideTooltips() {
 
         final HTMLElement listItems = mock(HTMLElement.class);

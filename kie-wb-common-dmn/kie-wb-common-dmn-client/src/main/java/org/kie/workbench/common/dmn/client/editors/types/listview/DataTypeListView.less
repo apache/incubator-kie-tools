@@ -17,50 +17,24 @@
 [data-i18n-prefix="DataTypeListView."] {
   min-width: 835px;
   padding: 1px 20px 10px;
-  height: ~"calc(100% - 15px)";
+  height: calc(~"100% - 15px");
 
-  .description-buttons {
-    text-align: right;
-    margin-bottom: 15px;
+  .data-type-button {
+    height: 40px;
+    margin-top: 20px;
 
-    & > div {
-      clear: both;
-      padding-top: 15px;
-      padding-bottom: 5px;
-
-      & > div {
-        float: right;
-        text-align: right;
-
-        [data-field="add-button"],
-        [data-field="expand-all"],
-        [data-field="collapse-all"] {
-          display: inline-block;
-          vertical-align: middle;
-        }
-
-        [data-field="expand-all"],
-        [data-field="collapse-all"] {
-          padding: 5px;
-        }
-      }
-
-      [data-field="search-bar-container"] {
-        float: none;
-      }
+    .expand-collapse {
+      float: right;
+      margin: 7px 10px 0 14px;
     }
 
-    & > a {
-      float: left;
+    .search-bar-container {
+      float: right;
     }
 
-    .btn {
-      padding-right: 15px;
-      padding-left: 15px;
-
-      i {
-        padding-right: 3px;
-      }
+    .action-button button {
+      padding: 4px 10px;
+      margin: 0 5px 0 0;
     }
   }
 
@@ -73,40 +47,65 @@
   }
 
   [data-field="list-items"] {
-    height: ~"calc(100% - 120px)";
+    height: calc(~"100% - 120px");
     overflow-y: scroll;
     flex: 1 1 auto;
+  }
 
-    .result {
-      display: inherit;
-    }
+  [data-field="list-items"] .result {
+    display: inherit;
   }
 
   .alert.opened[data-field="read-only-message"] {
     margin: 5px 0 20px;
+  }
 
-    .close {
-      margin-right: 15px;
-      outline: none;
-    }
+  .alert.opened[data-field="read-only-message"] .close {
+    margin-right: 15px;
+    outline: none;
   }
 
   .kie-data-types-placeholder {
     //See PF Empty State: https://www.patternfly.org/v3/pattern-library/communication/empty-state/
     background-color: #f5f5f5;
     text-align: center;
-    height: ~"calc(100% - 120px)";
-    width: ~"calc(100%)";
+    height: calc(~"100% - 80px");
+    width: calc(~"100%");
     display: flex;
     align-items: center;
     justify-content: center;
     overflow-y: hidden;
     flex: 1 1 auto;
+    margin-top: 20px;
 
-    i {
+    &[data-field="no-data-types-found"] {
+      height: calc(~"100% - 140px");
+    }
+
+    i.fa-object-group,
+    i.fa-search-minus {
       //See PF Empty State: https://www.patternfly.org/v3/pattern-library/communication/empty-state/
       color: #9c9c9c;
-      font-size: 5em;
+      font-size: 4.75em;
+      margin-top: 10px;
+    }
+
+    .btn.btn-primary {
+      font-size: 1.1em;
+      padding: 6px 12px;
+      margin-top: 5px;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+
+    p {
+      color: #555;
+      margin: 20px 0;
+      max-width: 575px;
+      text-align: center;
+      font-size: 1.1em;
     }
   }
 }

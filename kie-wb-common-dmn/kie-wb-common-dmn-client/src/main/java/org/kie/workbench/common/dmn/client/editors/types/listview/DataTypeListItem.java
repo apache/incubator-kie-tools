@@ -675,6 +675,14 @@ public class DataTypeListItem {
         dataTypeList.highlightLevel(dataType);
     }
 
+    void addDataTypeRow() {
+        if (isStructureType()) {
+            insertNestedField();
+        } else {
+            insertFieldBelow();
+        }
+    }
+
     public interface View extends UberElemental<DataTypeListItem> {
 
         void setDataType(final DataType dataType);

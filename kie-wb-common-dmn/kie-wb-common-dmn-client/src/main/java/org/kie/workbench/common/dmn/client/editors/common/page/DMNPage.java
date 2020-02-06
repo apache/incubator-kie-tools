@@ -25,7 +25,7 @@ import static org.jboss.errai.common.client.ui.ElementWrapperWidget.getWidget;
 
 public abstract class DMNPage extends PageImpl {
 
-    static final String DMN_PAGE_CSS_CLASS = "kie-dmn-page";
+    protected static final String DMN_PAGE_CSS_CLASS = "kie-dmn-page";
 
     private final HTMLDivElement pageView;
 
