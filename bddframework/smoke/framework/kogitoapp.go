@@ -109,7 +109,7 @@ func getKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 	}
 
 	if mavenMirrorURL := getEnvMavenMirrorURL(); mavenMirrorURL != "" {
-		appendNewEnvToKogitoAppBuild(kogitoApp, mavenMirrorURLEnvVar, mavenMirrorURL)
+		kogitoApp.Spec.Build.MavenMirrorURL = mavenMirrorURL
 	}
 
 	return kogitoApp

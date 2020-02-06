@@ -63,7 +63,7 @@ func CliDeployExample(namespace, appName, contextDir, runtime string, native, pe
 	}
 
 	if mavenMirrorURL := getEnvMavenMirrorURL(); mavenMirrorURL != "" {
-		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=%s", mavenMirrorURLEnvVar, mavenMirrorURL))
+		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
 	}
 
 	if persistence {
