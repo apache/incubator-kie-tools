@@ -25,7 +25,7 @@ import {
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
 import { Globals, Main } from "../common/Main";
-import { Dependencies } from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { useGlobals } from "../common/GlobalContext";
 import { FileInfo } from "./singleEditorView";

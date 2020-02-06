@@ -24,7 +24,7 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
-import { Dependencies } from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
 
 export function renderPrEditorsApp(args: Globals & { contentPath: string }) {

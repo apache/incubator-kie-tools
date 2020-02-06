@@ -19,7 +19,7 @@ import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit"
 import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
-import { Dependencies } from "./app/dependencies";
+import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
 import { Router } from "@kogito-tooling/core-api";
 import "../resources/style.css";

@@ -19,7 +19,7 @@ import { Router } from "@kogito-tooling/core-api";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { Dependencies } from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 
 export interface GlobalContextType {
   id: string;

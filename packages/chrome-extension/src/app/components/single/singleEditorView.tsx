@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Dependencies } from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,

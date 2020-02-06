@@ -18,7 +18,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
 import { Router } from "@kogito-tooling/core-api";
-import { Dependencies } from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
