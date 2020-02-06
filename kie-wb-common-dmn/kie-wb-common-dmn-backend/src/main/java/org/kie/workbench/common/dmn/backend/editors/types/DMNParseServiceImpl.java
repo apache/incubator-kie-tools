@@ -26,6 +26,7 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -92,11 +93,11 @@ public class DMNParseServiceImpl implements DMNParseService {
     }
 
     private FEEL_1_1Parser makeParser(final String source) {
-        return FEELParser.parse(null, source, emptyMap(), emptyMap(), emptyList(), emptyList());
+        return FEELParser.parse(null, source, emptyMap(), emptyMap(), emptyList(), emptyList(), DefaultBuiltinFEELTypeRegistry.INSTANCE);
     }
 
     private ASTBuilderVisitor makeVisitor() {
-        return new ASTBuilderVisitor(emptyMap());
+        return new ASTBuilderVisitor(emptyMap(), DefaultBuiltinFEELTypeRegistry.INSTANCE);
     }
 
     private String asListSource(final String source) {
