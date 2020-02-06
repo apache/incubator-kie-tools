@@ -113,8 +113,8 @@
 }
 
 .kogito-github-action-alert {
-  background-color: #1f1f1f;
-  color: #ffffff;
+  background-color: #1F1F1F;
+  color: #FFFFFF;
   text-align: center;
   padding: 3px 10px;
   font-size: 12px;
@@ -122,7 +122,7 @@
 }
 
 .kogito-github-action-alert:after {
-  border-bottom-color: #1f1f1f;
+  border-bottom-color: #1F1F1F;
 }
 
 .info-icon-container {
