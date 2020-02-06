@@ -34,20 +34,27 @@ function usage(){
   printf "\nOptions:"
   printf "\n"
   printf "\n-h | --help\n\tPrint the usage of this script."
-  printf "\n-on or --ope_name {NAME}\n\tOperator image name."
-  printf "\n-ot or --ope_tag {TAG}\n\tOperator image tag."
-  printf "\n-mm or --maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
-  printf "\n-f or --feature {FEATURE_NAME}\n\tRun a specific feature file."
-  printf "\n-l or --local ${BOOLEAN}\n\tSpecify whether you run test in local"
-  printf "\n-c or --concurrent ${NUMBER}\n\tSet the number of concurrent tests. Default is 1."
-  printf "\n--build_image_version \n\tSet the image version. Default to current operator version"
-  printf "\n-t or --tags ${tags}\n\tFilter scenarios by tags."
+  printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
       printf "\n\t\t- '@wip': run all scenarios with wip tag"
       printf "\n\t\t- '~@wip': exclude all scenarios with wip tag"
       printf "\n\t\t- '@wip && ~@new': run wip scenarios, but exclude new"
       printf "\n\t\t- '@wip,@undone': run wip or undone scenarios"
     printf "\n\t Scenarios with '@disabled' tag are always ignored."
+  printf "\n--concurrent {NUMBER}\n\tSet the number of concurrent tests. Default is 1."
+  printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
+  printf "\n--local {BOOLEAN}\n\tSpecify whether you run test in local."
+  printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
+  printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
+  printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
+  printf "\n--deploy_uri {URI}\n\tUrl or Path to operator 'deploy' folder. Default is local 'deploy/' folder."
+  printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
+  printf "\n--build_image_version\n\tSet the image version. Default to current operator version"
+  printf "\n--build_image_tag\n\tSet the build image full tag."
+  printf "\n--build_s2i_image_tag \n\tSet the S2I build image full tag."
+  printf "\n--build_runtime_image_tag \n\tSet the Runtime build image full tag."
+  printf "\n--examples_uri ${URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
+  printf "\n--examples_ref ${REF}\n\tSet the branch for the kogito-examples repository. Default is none."
   printf "\n"
 }
 
@@ -83,38 +90,30 @@ function delete_and_apply_crds(){
 FEATURE=""
 CONCURRENT=1
 TAGS=""
+DRY_RUN=
 
 while (( $# ))
 do
 case $1 in
-  -on|--ope_name)
+  --tags)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_IMAGE_NAME="${1}"; 
+        TAGS="${1}"; 
       fi; 
       shift; 
     fi
   ;;
-  -ot|--ope_tag)
+  --concurrent)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
-        export OPERATOR_IMAGE_TAG="${1}"; 
+        CONCURRENT="${1}"; 
       fi; 
       shift; 
     fi
   ;;
-  -mm|--maven_mirror)
-    shift
-    if [[ ! ${1} =~ ^-.* ]]; then 
-      if [[ ! -z "${1}" ]]; then 
-        export MAVEN_MIRROR_URL="${1}"; 
-      fi; 
-      shift; 
-    fi
-  ;;
-  -f|--feature)
+  --feature)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
@@ -123,7 +122,7 @@ case $1 in
       shift; 
     fi
   ;;
-  -l|--local)
+  --local)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
@@ -134,20 +133,47 @@ case $1 in
       shift; 
     fi
   ;;
-  -c|--concurrent)
+  --operator_image)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
-        CONCURRENT="${1}"; 
+        export OPERATOR_IMAGE_NAME="${1}"; 
       fi; 
       shift; 
     fi
   ;;
-  -t|--tags)
+  --operator_tag)
     shift
     if [[ ! ${1} =~ ^-.* ]]; then 
       if [[ ! -z "${1}" ]]; then 
-        TAGS="${1}"; 
+        export OPERATOR_IMAGE_TAG="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --cli_path)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export OPERATOR_CLI_PATH="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --deploy_uri)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export OPERATOR_DEPLOY_FOLDER="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --maven_mirror)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export MAVEN_MIRROR_URL="${1}"; 
       fi; 
       shift; 
     fi
@@ -160,6 +186,55 @@ case $1 in
       fi; 
       shift; 
     fi
+  ;;
+  --build_image_tag)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_BUILD_IMAGE_STREAM_TAG="${1}"
+      fi; 
+      shift; 
+    fi
+  ;;
+  --build_s2i_image_tag)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_BUILD_S2I_IMAGE_STREAM_TAG="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --build_runtime_image_tag)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_BUILD_RUNTIME_IMAGE_STREAM_TAG="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --examples_uri)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_EXAMPLES_REPOSITORY_URI="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --examples_ref)
+    shift
+    if [[ ! ${1} =~ ^-.* ]]; then 
+      if [[ ! -z "${1}" ]]; then 
+        export KOGITO_EXAMPLES_REPOSITORY_REF="${1}"; 
+      fi; 
+      shift; 
+    fi
+  ;;
+  --dry-run)
+    DRY_RUN=true
+    shift
   ;;
   -h|--help)
     usage
@@ -180,6 +255,12 @@ else
   TAGS="~@disabled"
 fi
 TAGS="--tags=${TAGS}"
+
+if [[ ${DRY_RUN} ]]; then
+  echo "godog -c ${CONCURRENT} --random -f progress "${TAGS}" ${FEATURE}"
+  env
+  exit 0
+fi
 
 echo "-------- Retrieve godog"
 
