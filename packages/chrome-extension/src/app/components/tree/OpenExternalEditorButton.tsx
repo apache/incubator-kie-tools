@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-export enum GitHubPageType {
-  VIEW,
-  EDIT,
-  PR,
-  TREE,
-  ANY
+import * as React from "react";
+import { EditIcon } from '@patternfly/react-icons'
+
+export function OpenExternalEditorButton(props: {
+    href: string
+}) {
+
+    return (
+        <>
+            <a href={props.href} target="blank" title="Open in Online Editor">
+                <EditIcon />
+            </a>
+        </>
+    );
 }

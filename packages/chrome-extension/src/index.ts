@@ -27,6 +27,7 @@ import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
+import { addExternalEditorLinks } from "./app/components/tree/externalEditorLinkManager";
 
 /**
  * Starts a Kogito extension.
@@ -120,6 +121,12 @@ function init(args: Globals) {
       externalEditorManager: args.externalEditorManager,
       contentPath: fileInfo.path
     });
+  } else if (pageType === GitHubPageType.TREE) {
+    addExternalEditorLinks({
+      router: args.router,
+      externalEditorManager: args.externalEditorManager
+    });
+    return;
   } else {
     throw new Error(`Unknown GitHubPageType ${pageType}`);
   }
@@ -165,6 +172,10 @@ export function discoverCurrentGitHubPageType() {
 
   if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
     return GitHubPageType.PR;
+  }
+
+  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`.*/.*$`)) {
+    return GitHubPageType.TREE;
   }
 
   return GitHubPageType.ANY;
