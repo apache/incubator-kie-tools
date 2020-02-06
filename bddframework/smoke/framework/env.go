@@ -22,6 +22,8 @@ import (
 )
 
 const (
+	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
+
 	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
 	defaultOperatorDeployURI = "../../deploy/"
 	defaultCliPath           = "../../build/_output/bin/kogito"

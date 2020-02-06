@@ -25,10 +25,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 )
 
-const (
-	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
-)
-
 // DeployQuarkusExample deploy a Quarkus example
 func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool) error {
 	GetLogger(namespace).Infof("Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
