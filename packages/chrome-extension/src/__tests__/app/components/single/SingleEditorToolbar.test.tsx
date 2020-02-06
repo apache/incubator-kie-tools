@@ -190,7 +190,7 @@ describe("SingleEditorToolbar", () => {
           onOpenInExternalEditor={onOpenInExternalEditor}
           linkToExternalEditor={"test.com/editor"}
         />
-      )
+      ).wrapper
     );
 
     fireEvent.click(component.getByTestId("go-fullscreen-button"));
@@ -216,7 +216,7 @@ describe("SingleEditorToolbar", () => {
           onOpenInExternalEditor={undefined as any}
           linkToExternalEditor={"test.com/editor"}
         />
-      )
+      ).wrapper
     );
 
     fireEvent.click(component.getByTestId("copy-link-button"));

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SingleEditorApp fullscreen 1`] = `
+exports[`SingleEditorApp go fullscreen 1`] = `
 <body>
   <div
     class="kogito-iframe-fullscreen-container test-extension123"
@@ -26,16 +26,6 @@ exports[`SingleEditorApp fullscreen 1`] = `
     class="hidden"
   />
   <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
 </body>
 `;
 
@@ -43,21 +33,6 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
 <body>
   <div
     class="kogito-iframe-fullscreen-container test-extension123 hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
   />
   <div>
     <div
@@ -118,11 +93,6 @@ exports[`SingleEditorApp not readonly 1`] = `
 <body>
   <div
     class="kogito-iframe-fullscreen-container test-extension123 hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
   />
   <div>
     <div
@@ -186,26 +156,6 @@ exports[`SingleEditorApp open external editor 1`] = `
 <body>
   <div
     class="kogito-iframe-fullscreen-container test-extension123 hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
-  />
-  <div />
-  <div />
-  <div
-    class="hidden"
   />
   <div>
     <div

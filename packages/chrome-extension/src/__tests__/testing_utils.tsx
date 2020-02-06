@@ -26,45 +26,46 @@ export function usingTestingGlobalContext(
   children: React.ReactElement,
   ctx?: Pick<GlobalContextType, keyof GlobalContextType>
 ) {
-  return (
-    <GlobalContext.Provider
-      value={{
-        id: "test-extension123",
-        githubAuthTokenCookieName: "test-github-pat-name",
-        router: new DefaultChromeRouter(),
-        logger: new Logger("test-extension"),
-        dependencies: new Dependencies(),
-        extensionIconUrl: "/extension/icon.jpg",
-        editorIndexPath: "https://my-url.com/",
-        resourceContentServiceFactory: new ResourceContentServiceFactory(),
-        externalEditorManager: {
-          name: "Test Online Editor",
-          getLink: jest.fn(path => `https://external-editor-link/${path}`),
-          listenToComeBack: jest.fn(),
-          open: jest.fn()
-        },
-        ...ctx
-      }}
-    >
-      {children}
-    </GlobalContext.Provider>
-  );
+  const usedCtx = {
+    id: "test-extension123",
+    githubAuthTokenCookieName: "test-github-pat-name",
+    router: new DefaultChromeRouter(),
+    logger: new Logger("test-extension"),
+    dependencies: new Dependencies(),
+    extensionIconUrl: "/extension/icon.jpg",
+    editorIndexPath: "https://my-url.com/",
+    resourceContentServiceFactory: new ResourceContentServiceFactory(),
+    externalEditorManager: {
+      name: "Test Online Editor",
+      getLink: jest.fn(path => `https://external-editor-link/${path}`),
+      listenToComeBack: jest.fn(),
+      open: jest.fn()
+    },
+    ...ctx
+  };
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <GlobalContext.Provider key={""} value={usedCtx}>
+        {children}
+      </GlobalContext.Provider>
+    )
+  };
 }
 
 export function usingTestingGitHubContext(
   children: React.ReactElement,
   ctx?: Pick<GitHubContextType, keyof GitHubContextType>
 ) {
-  return (
-    <GitHubContext.Provider
-      value={{
-        octokit: () => undefined as any,
-        setToken: (token: string) => undefined as any,
-        token: "",
-        userIsLoggedIn: () => true
-      }}
-    >
-      {children}
-    </GitHubContext.Provider>
-  );
+  const usedCtx = {
+    octokit: jest.fn(),
+    setToken: jest.fn(),
+    token: "",
+    userIsLoggedIn: jest.fn(() => true),
+    ...ctx
+  };
+  return {
+    ctx: usedCtx,
+    wrapper: <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+  };
 }

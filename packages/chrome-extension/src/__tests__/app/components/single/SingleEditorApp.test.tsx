@@ -15,16 +15,21 @@
  */
 
 import * as React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, wait } from "@testing-library/react";
 import { SingleEditorApp } from "../../../../app/components/single/SingleEditorApp";
 import { usingTestingGitHubContext, usingTestingGlobalContext } from "../../../testing_utils";
+import { removeAllChildren } from "../../../../app/utils";
 
 beforeAll(() => {
   chrome.extension = {
-    getURL: (path: string) => {
+    getURL: jest.fn((path: string) => {
       return `chrome-testing://${path}`;
-    }
+    })
   } as any;
+});
+
+beforeEach(() => {
+  removeAllChildren(document.body);
 });
 
 const testFileInfo = {
@@ -46,7 +51,7 @@ describe("SingleEditorApp", () => {
       usingTestingGlobalContext(
         usingTestingGitHubContext(
           <SingleEditorApp
-            openFileExtension={".txt"}
+            openFileExtension={"txt"}
             readonly={false}
             getFileName={jest.fn()}
             getFileContents={jest.fn()}
@@ -55,8 +60,8 @@ describe("SingleEditorApp", () => {
             githubTextEditorToReplace={newDivOnBody()}
             fileInfo={testFileInfo}
           />
-        )
-      )
+        ).wrapper
+      ).wrapper
     );
 
     expect(document.body).toMatchSnapshot();
@@ -67,7 +72,7 @@ describe("SingleEditorApp", () => {
       usingTestingGlobalContext(
         usingTestingGitHubContext(
           <SingleEditorApp
-            openFileExtension={".txt"}
+            openFileExtension={"txt"}
             readonly={true}
             getFileName={jest.fn()}
             getFileContents={jest.fn()}
@@ -76,8 +81,8 @@ describe("SingleEditorApp", () => {
             githubTextEditorToReplace={newDivOnBody()}
             fileInfo={testFileInfo}
           />
-        )
-      )
+        ).wrapper
+      ).wrapper
     );
 
     expect(document.body).toMatchSnapshot();
@@ -88,7 +93,7 @@ describe("SingleEditorApp", () => {
       usingTestingGlobalContext(
         usingTestingGitHubContext(
           <SingleEditorApp
-            openFileExtension={".txt"}
+            openFileExtension={"txt"}
             readonly={false}
             getFileName={jest.fn()}
             getFileContents={jest.fn()}
@@ -97,8 +102,8 @@ describe("SingleEditorApp", () => {
             githubTextEditorToReplace={newDivOnBody()}
             fileInfo={testFileInfo}
           />
-        )
-      )
+        ).wrapper
+      ).wrapper
     );
 
     fireEvent.click(screen.getByTestId("go-fullscreen-button"));
@@ -110,7 +115,7 @@ describe("SingleEditorApp", () => {
       usingTestingGlobalContext(
         usingTestingGitHubContext(
           <SingleEditorApp
-            openFileExtension={".txt"}
+            openFileExtension={"txt"}
             readonly={false}
             getFileName={jest.fn()}
             getFileContents={jest.fn()}
@@ -119,8 +124,8 @@ describe("SingleEditorApp", () => {
             githubTextEditorToReplace={newDivOnBody()}
             fileInfo={testFileInfo}
           />
-        )
-      )
+        ).wrapper
+      ).wrapper
     );
 
     fireEvent.click(screen.getByTestId("go-fullscreen-button"));
@@ -130,11 +135,12 @@ describe("SingleEditorApp", () => {
   });
 
   test("open external editor", async () => {
+    let globalContext: ReturnType<typeof usingTestingGlobalContext>;
     render(
-      usingTestingGlobalContext(
+      (globalContext = usingTestingGlobalContext(
         usingTestingGitHubContext(
           <SingleEditorApp
-            openFileExtension={".txt"}
+            openFileExtension={"txt"}
             readonly={false}
             getFileName={jest.fn(() => "file.txt")}
             getFileContents={jest.fn(() => Promise.resolve("file contents"))}
@@ -143,11 +149,39 @@ describe("SingleEditorApp", () => {
             githubTextEditorToReplace={newDivOnBody()}
             fileInfo={testFileInfo}
           />
-        )
-      )
+        ).wrapper
+      )).wrapper
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
+    await wait(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("open external editor and wait for come back", async () => {
+    let globalContext: ReturnType<typeof usingTestingGlobalContext>;
+
+    render(
+      (globalContext = usingTestingGlobalContext(
+        usingTestingGitHubContext(
+          <SingleEditorApp
+            openFileExtension={"txt"}
+            readonly={false}
+            getFileName={jest.fn(() => "file.txt")}
+            getFileContents={jest.fn(() => Promise.resolve("file contents 1"))}
+            toolbarContainer={newDivOnBody()}
+            iframeContainer={newDivOnBody()}
+            githubTextEditorToReplace={newDivOnBody()}
+            fileInfo={testFileInfo}
+          />
+        ).wrapper
+      )).wrapper
+    );
+
+    fireEvent.click(screen.getByTestId("open-ext-editor-button"));
+    await wait(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    //TODO: Simulate comeback
+    //TODO: Match snapshot with new file name and content
     expect(document.body).toMatchSnapshot();
   });
 });
