@@ -28,6 +28,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
@@ -38,6 +39,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
@@ -59,6 +61,7 @@ public class DiagramEditorPropertiesScreen {
     private final SessionManager clientSessionManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final DiagramEditorScreenView view;
+    private final Event<ScreenPreMaximizedStateEvent> screenStateEvent;
 
     private PlaceRequest placeRequest;
     private ClientSession session;
@@ -69,6 +72,7 @@ public class DiagramEditorPropertiesScreen {
         this(null,
              null,
              null,
+             null,
              null);
     }
 
@@ -76,11 +80,13 @@ public class DiagramEditorPropertiesScreen {
     public DiagramEditorPropertiesScreen(final FormPropertiesWidget formPropertiesWidget,
                                          final SessionManager clientSessionManager,
                                          final Event<ChangeTitleWidgetEvent> changeTitleNotification,
-                                         final DiagramEditorScreenView view) {
+                                         final DiagramEditorScreenView view,
+                                         final Event<ScreenPreMaximizedStateEvent> screenStateEvent) {
         this.formPropertiesWidget = formPropertiesWidget;
         this.clientSessionManager = clientSessionManager;
         this.changeTitleNotificationEvent = changeTitleNotification;
         this.view = view;
+        this.screenStateEvent = screenStateEvent;
     }
 
     @PostConstruct
@@ -108,6 +114,10 @@ public class DiagramEditorPropertiesScreen {
             "Closing DiagramEditorPropertiesScreen.");
         open = false;
         destroy();
+    }
+
+    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
+        screenStateEvent.fire(new ScreenPreMaximizedStateEvent(false));
     }
 
     @SuppressWarnings("unchecked")

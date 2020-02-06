@@ -32,6 +32,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
@@ -97,6 +100,15 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Mock
     private PerspectiveActivity currentPerspective;
+
+    @Mock
+    private ScreenMaximizedEvent maximizedEvent;
+
+    @Mock
+    private ScreenMinimizedEvent minimizedEvent;
+
+    @Mock
+    private ScreenPreMaximizedStateEvent preMaximizedStateEvent;
 
     private BPMNDiagramEditor diagramEditor;
 
@@ -236,5 +248,70 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         DocumentationPage documentationPage = documentationPageCaptor.getValue();
         assertEquals(documentationPage.getDocumentationView(), documentationView);
         assertEquals(documentationPage.getLabel(), DOC_LABEL);
+    }
+
+    @Test
+    public void testMaximizedState() {
+        Collection<UberfireDock> stunnerDocks = new ArrayList<>();
+        stunnerDocks.add(propertiesDock);
+        stunnerDocks.add(explorerDock);
+
+        String perspectiveIdentifier = "Test Perspective ID";
+
+        when(perspectiveManagerMock.getCurrentPerspective()).thenReturn(currentPerspective);
+        when(currentPerspective.getIdentifier()).thenReturn(perspectiveIdentifier);
+
+        when(stunnerDocksHandler.provideDocks(perspectiveIdentifier)).thenReturn(stunnerDocks);
+
+        when(propertiesDock.getPlaceRequest()).thenReturn(propertiesPlace);
+        when(propertiesPlace.getIdentifier()).thenReturn(DiagramEditorPropertiesScreen.SCREEN_ID);
+
+        when(explorerDock.getPlaceRequest()).thenReturn(explorerPlace);
+        when(explorerPlace.getIdentifier()).thenReturn(DiagramEditorExplorerScreen.SCREEN_ID);
+
+        diagramEditor.onOpen();
+        verify(uberfireDocks, times(1)).open(propertiesDock);
+
+        diagramEditor.closePropertiesDocks();
+        verify(uberfireDocks, times(1)).close(propertiesDock);
+
+        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
+        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
+
+        // properties should not be opened since it was closed before maximized
+        verify(uberfireDocks, times(1)).open(propertiesDock);
+
+        diagramEditor.openPropertiesDocks();
+        verify(uberfireDocks, times(2)).open(propertiesDock);
+
+        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
+        diagramEditor.onScreenPreMaximizedStateEvent(preMaximizedStateEvent);
+        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
+
+        // properties should be opened since it was opened before maximized
+        verify(uberfireDocks, times(3)).open(propertiesDock);
+
+        diagramEditor.onOpen();
+        verify(uberfireDocks, times(4)).open(propertiesDock);
+
+        diagramEditor.closeExplorerDocks();
+        verify(uberfireDocks, times(1)).close(explorerDock);
+
+        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
+        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
+
+        // explore should not be opened since it was closed before maximized
+        verify(uberfireDocks, times(0)).open(explorerDock);
+
+        diagramEditor.openExplorerDocks();
+        verify(uberfireDocks, times(1)).open(explorerDock);
+
+        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
+        when(preMaximizedStateEvent.isExplorerScreen()).thenReturn(true);
+        diagramEditor.onScreenPreMaximizedStateEvent(preMaximizedStateEvent);
+        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
+
+        // explore should be opened since it was opened before maximized
+        verify(uberfireDocks, times(2)).open(explorerDock);
     }
 }

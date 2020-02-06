@@ -172,7 +172,7 @@ public class BS3PaletteWidgetImplTest {
 
     @Test
     public void checkOnScreenMaximisedDiagramEditor() {
-        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(true);
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(true );
         palette.onScreenMaximized(event);
 
         verify(view).showEmptyView(false);

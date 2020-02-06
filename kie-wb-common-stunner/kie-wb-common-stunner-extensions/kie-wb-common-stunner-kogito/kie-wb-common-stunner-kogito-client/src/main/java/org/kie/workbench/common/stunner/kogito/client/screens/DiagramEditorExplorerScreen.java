@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplore
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
@@ -44,6 +45,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -73,6 +75,7 @@ public class DiagramEditorExplorerScreen {
     private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final ErrorPopupPresenter errorPopupPresenter;
+    private final Event<ScreenPreMaximizedStateEvent> screenStateEvent;
     private final View view;
 
     private PlaceRequest placeRequest;
@@ -86,6 +89,7 @@ public class DiagramEditorExplorerScreen {
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -95,13 +99,15 @@ public class DiagramEditorExplorerScreen {
                                        final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                        final @Any @Default ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews,
                                        final ErrorPopupPresenter errorPopupPresenter,
-                                       final View view) {
+                                       final View view,
+                                       final Event<ScreenPreMaximizedStateEvent> screenStateEvent) {
         this.clientSessionManager = clientSessionManager;
         this.treeExplorers = treeExplorers;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.sessionPreviews = sessionPreviews;
         this.errorPopupPresenter = errorPopupPresenter;
         this.view = view;
+        this.screenStateEvent = screenStateEvent;
     }
 
     @OnStartup
@@ -194,6 +200,10 @@ public class DiagramEditorExplorerScreen {
         explorerWidget = treeExplorers.get();
         explorerWidget.show(session.getCanvasHandler());
         view.setExplorerWidget(explorerWidget);
+    }
+
+    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
+        screenStateEvent.fire(new ScreenPreMaximizedStateEvent(true));
     }
 
     private void showPreview(final ClientSession session) {

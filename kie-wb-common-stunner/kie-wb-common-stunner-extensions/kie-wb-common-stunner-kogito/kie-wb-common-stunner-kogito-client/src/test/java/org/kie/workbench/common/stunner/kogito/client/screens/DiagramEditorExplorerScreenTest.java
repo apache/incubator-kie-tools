@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -61,6 +62,9 @@ public class DiagramEditorExplorerScreenTest {
 
     @Mock
     private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
+
+    @Mock
+    private EventSourceMock<ScreenPreMaximizedStateEvent> screenStateEvent;
 
     @Mock
     private Widget treeExplorerWidget;
@@ -106,7 +110,8 @@ public class DiagramEditorExplorerScreenTest {
                                                       changeTitleNotificationEvent,
                                                       sessionPreviews,
                                                       errorPopupPresenter,
-                                                      view);
+                                                      view,
+                                                      screenStateEvent);
     }
 
     @Test

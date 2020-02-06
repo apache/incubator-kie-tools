@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -32,6 +33,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -39,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
 import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.stunner.project.client.docks.StunnerDocksHandler;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
@@ -77,6 +82,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     private Consumer<Boolean> saveCallback;
     private boolean isMigrating = false;
+    private boolean isPropertiesOpenedBeforeMaximize = false;
+    private boolean isExplorerOpenedBeforeMaximize = false;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -131,12 +138,53 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @OnOpen
     public void onOpen() {
+        openPropertiesDocks();
+        super.doOpen();
+    }
+
+    private void performDockOperation(final String id, final Consumer<? super UberfireDock> action) {
         String currentPerspectiveIdentifier = perspectiveManager.getCurrentPerspective().getIdentifier();
         Collection<UberfireDock> stunnerDocks = stunnerDocksHandler.provideDocks(currentPerspectiveIdentifier);
+
         stunnerDocks.stream()
-                .filter(dock -> dock.getPlaceRequest().getIdentifier().compareTo(DiagramEditorPropertiesScreen.SCREEN_ID) == 0)
-                .forEach(uberfireDocks::open);
-        super.doOpen();
+                .filter(dock -> dock.getPlaceRequest().getIdentifier().compareTo(id) == 0)
+                .forEach(action);
+
+    }
+
+    public void openPropertiesDocks() {
+        performDockOperation(DiagramEditorPropertiesScreen.SCREEN_ID, uberfireDocks::open);
+    }
+
+    public void closePropertiesDocks() {
+        performDockOperation(DiagramEditorPropertiesScreen.SCREEN_ID, uberfireDocks::close);
+    }
+
+    public void openExplorerDocks() {
+        performDockOperation(DiagramEditorExplorerScreen.SCREEN_ID, uberfireDocks::open);
+    }
+
+    public void closeExplorerDocks() {
+        performDockOperation(DiagramEditorExplorerScreen.SCREEN_ID, uberfireDocks::close);
+    }
+
+    public void onScreenMaximizedEvent(@Observes ScreenMaximizedEvent event) {
+        isPropertiesOpenedBeforeMaximize = false;
+        isExplorerOpenedBeforeMaximize = false;
+    }
+
+    public void onScreenPreMaximizedStateEvent(final @Observes ScreenPreMaximizedStateEvent event) {
+        // If Event Fired, it means the properties panel is active, hence it was open before maximized
+        isPropertiesOpenedBeforeMaximize = !event.isExplorerScreen();
+        isExplorerOpenedBeforeMaximize = event.isExplorerScreen();
+    }
+
+    public void onScreenMinimizedEvent(@Observes ScreenMinimizedEvent event) {
+        if (isPropertiesOpenedBeforeMaximize) {
+            openPropertiesDocks();
+        } else if (isExplorerOpenedBeforeMaximize) {
+            openExplorerDocks();
+        }
     }
 
     @OnClose
