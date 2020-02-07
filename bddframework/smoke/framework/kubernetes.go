@@ -39,7 +39,7 @@ func InitKubeClient() error {
 	mux.Lock()
 	defer mux.Unlock()
 	if kubeClient == nil {
-		newClient, err := client.NewClientBuilder().WithDiscoveryClient().WithBuildClient().Build()
+		newClient, err := client.NewClientBuilder().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
 		if err != nil {
 			return fmt.Errorf("Error initializing kube client: %v", err)
 		}
@@ -81,7 +81,7 @@ func IsNamespace(namespace string) (bool, error) {
 // WaitForPods waits for pods with specific label to be available and running
 func WaitForPods(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
 	return WaitFor(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		pods, err := GetPods(namespace, map[string]string{labelName: labelValue})
+		pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
 		if err != nil || (len(pods.Items) != numberOfPods) {
 			return false, err
 		}
@@ -90,8 +90,17 @@ func WaitForPods(namespace, labelName, labelValue string, numberOfPods, timeoutI
 	})
 }
 
-// GetPods retrieves pods based on label name and value
-func GetPods(namespace string, labels map[string]string) (*corev1.PodList, error) {
+// GetPods retrieves all pods in namespace
+func GetPods(namespace string) (*corev1.PodList, error) {
+	pods := &corev1.PodList{}
+	if err := kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, pods); err != nil {
+		return nil, err
+	}
+	return pods, nil
+}
+
+// GetPodsWithLabels retrieves pods based on label name and value
+func GetPodsWithLabels(namespace string, labels map[string]string) (*corev1.PodList, error) {
 	pods := &corev1.PodList{}
 	if err := kubernetes.ResourceC(kubeClient).ListWithNamespaceAndLabel(namespace, pods, labels); err != nil {
 		return nil, err
@@ -102,11 +111,16 @@ func GetPods(namespace string, labels map[string]string) (*corev1.PodList, error
 // CheckPodsAreRunning returns true if all pods are running
 func CheckPodsAreRunning(pods *corev1.PodList) bool {
 	for _, pod := range pods.Items {
-		if pod.Status.Phase != corev1.PodRunning {
+		if !IsPodRunning(&pod) {
 			return false
 		}
 	}
 	return true
+}
+
+// IsPodRunning returns true if pod is running
+func IsPodRunning(pod *corev1.Pod) bool {
+	return pod.Status.Phase == corev1.PodRunning
 }
 
 // WaitForStatefulSetRunning waits for a stateful set to be running, with a specific number of pod

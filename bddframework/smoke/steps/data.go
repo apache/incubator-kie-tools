@@ -50,6 +50,7 @@ func (data *Data) BeforeScenario(s interface{}) {
 	data.Namespace = framework.GenerateNamespaceName()
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", getScenarioName(s)))
+	go framework.StartPodLogCollector(data.Namespace)
 }
 
 // BeforeStep configure the data before a scenario is launched
@@ -59,6 +60,7 @@ func (data *Data) BeforeStep(s *gherkin.Step) {
 
 // AfterScenario executes some actions on data after a scenario is finished
 func (data *Data) AfterScenario(s interface{}, err error) {
+	framework.StopPodLogCollector(data.Namespace)
 	endTime := time.Now()
 	duration := endTime.Sub(data.StartTime)
 	framework.GetLogger(data.Namespace).Infof("Scenario '%s'. Duration = %s", getScenarioName(s), duration.String())
