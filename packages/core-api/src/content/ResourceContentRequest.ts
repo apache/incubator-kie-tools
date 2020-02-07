@@ -16,13 +16,8 @@
 
 import { ResourceContentOptions } from "./ResourceContentOptions";
 
-export class ResourceContentRequest {
-    public readonly path: string;
-    public readonly opts: ResourceContentOptions;
-
-    constructor(path: string, opts: ResourceContentOptions) {
-        this.path = path;
-        this.opts = opts;
-    }
+export interface ResourceContentRequest {
+    path: string;
+    opts: ResourceContentOptions;
 
 }
