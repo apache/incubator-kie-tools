@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContent, ResourceContentService, ResourcesList, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourceContentService, ResourcesList, ResourceContentRequest, Options } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";
@@ -47,20 +47,19 @@ class ChromeResourceContentService implements ResourceContentService {
     this.repoInfo = repoInfo;
   }
 
-  public get(resourceContentRequest: ResourceContentRequest): Promise<ResourceContent | undefined> {
-      let isBin = false;
-    if (resourceContentRequest.opts) {
-      isBin = resourceContentRequest.opts.type === "binary";
+  public get(path: string, opts: Options): Promise<ResourceContent | undefined> {
+    let isBin = false;
+    if (opts) {
+      isBin = opts.type === "binary";
     }
-    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, resourceContentRequest.path, isBin)
+    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, isBin)
       .then(resourceContent => {
         const type = isBin ? "binary" : "text";
-        const path = resourceContentRequest.path;
         return new ResourceContent(path, resourceContent, type);
       })
       .catch(e => {
         console.debug(e);
-        console.debug(`Error retrieving content from URI ${resourceContentRequest.path}`);
+        console.debug(`Error retrieving content from URI ${path}`);
         return undefined;
       });
   }

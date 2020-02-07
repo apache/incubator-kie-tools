@@ -3,26 +3,25 @@ import { Options, ResourcesList, ResourceContent, ResourceContentService, Resour
 
 export class VsCodeResourceContentService implements ResourceContentService {
 
-  public get(resourceRequest: ResourceContentRequest): Promise<ResourceContent | undefined> {
-    const uri = resourceRequest.path;
-    const contentPath = this.resolvePath(resourceRequest.path)!;
-    const type = resourceRequest.opts ? resourceRequest.opts.type : "text";
+  public get(path: string, opts?:Options): Promise<ResourceContent | undefined> {
+    const contentPath = this.resolvePath(path)!;
+    const type = opts?.type;
     if (contentPath) {
       return new Promise(resolve => {
-        if (type === "binary") {
+        if (type && type === "binary") {
           vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(content => {
             const base64Content = new Buffer(content).toString("base64");
-            resolve(new ResourceContent(uri, base64Content, "binary"));
+            resolve(new ResourceContent(path, base64Content, "binary"));
           }, this.errorRetrievingFile(contentPath, resolve));
         } else {
           vscode.workspace.openTextDocument(contentPath).then(textDoc => {
             const textContent = textDoc.getText();
-            resolve(new ResourceContent(uri, textContent, "text"))
+            resolve(new ResourceContent(path, textContent, "text"))
           }, this.errorRetrievingFile(contentPath, resolve));
         }
       });
     }
-    return Promise.resolve(new ResourceContent(uri, undefined));
+    return Promise.resolve(new ResourceContent(path, undefined));
   }
 
   public list(pattern: string): Promise<ResourcesList> {

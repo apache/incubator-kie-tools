@@ -22,7 +22,7 @@ import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useGitHubApi } from "../common/GitHubContext";
-import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { EditorContent } from "@kogito-tooling/core-api";
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
@@ -92,11 +92,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         },
         receive_ready() {
           logger.log(`Editor is ready`);
-          onEditorReady?.();
+          onEditorReady ?.();
         },
         receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
           console.debug(`Trying to read content from ${resourceContentRequest.path}`);
-          resourceContentService.get(resourceContentRequest).then(r => {
+          resourceContentService.get(resourceContentRequest.path, resourceContentRequest.opts).then(r => {
             self.respond_resourceContent(r!);
           });
         },

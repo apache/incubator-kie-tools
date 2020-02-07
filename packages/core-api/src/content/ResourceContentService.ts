@@ -17,11 +17,10 @@
 import { ResourceContent } from "./ResourceContent";
 import { ResourcesList } from "./ResourcesList";
 import { Options } from "./Options";
-import { ResourceContentRequest } from "./ResourceContentRequest";
 
 export interface ResourceContentService {
 
-  get(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
+  get(path: string, opts?: Options): Promise<ResourceContent | undefined>;
 
   list(globPattern: string): Promise<ResourcesList>;
 
