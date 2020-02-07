@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContent, ResourceContentService, ResourcesList, ContentType, ResourceContentOptions } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourceContentService, ResourcesList, ResourceContentOptions } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";
@@ -48,14 +48,9 @@ class ChromeResourceContentService implements ResourceContentService {
   }
 
   public get(path: string, opts: ResourceContentOptions): Promise<ResourceContent | undefined> {
-    let isBin = false;
-    if (opts) {
-      isBin = opts.type === ContentType.BINARY;
-    }
-    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, isBin)
+    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts.type)
       .then(resourceContent => {
-        const type = isBin ? ContentType.BINARY : ContentType.TEXT;
-        return new ResourceContent(path, resourceContent, type);
+        return new ResourceContent(path, resourceContent, opts.type);
       })
       .catch(e => {
         console.debug(e);

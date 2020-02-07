@@ -47,12 +47,11 @@ export class ResourceContentEditorCoordinator {
     const pendingResourceRequests = this.pendingResourceRequests;
     const pendingResourceListRequests = this.pendingResourceListRequests;
     return {
-      get(uri: string, opts?: ResourceContentOptions) {
-        const request = { path: uri, opts: opts || { type: "text" } };
-        messageBus.request_resourceContent(request);
+      get(path: string, opts?: ResourceContentOptions) {
+        messageBus.request_resourceContent(path, opts);
         return new Promise(resolve => {
-          const previousCallback = pendingResourceRequests.get(uri);
-          pendingResourceRequests.set(uri, (value: string) => {
+          const previousCallback = pendingResourceRequests.get(path);
+          pendingResourceRequests.set(path, (value: string) => {
             if (previousCallback) {
               previousCallback(value);
             }

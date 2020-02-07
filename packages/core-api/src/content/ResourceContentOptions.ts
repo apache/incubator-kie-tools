@@ -1,3 +1,5 @@
+import { ContentType } from "./ContentType";
+
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -15,6 +17,6 @@
  */
 
 export interface ResourceContentOptions {
-    type: ("text" | "binary");
+    type: ContentType;
 
 }
