@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitodataindex/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/smoke/framework"
 )
 
@@ -30,5 +29,5 @@ func (data *Data) deployKogitoDataIndexServiceWithReplicas(replicas int) error {
 }
 
 func (data *Data) kogitoDataIndexHasPodsRunningWithinMinutes(podNb, timeoutInMin int) error {
-	return framework.WaitForStatefulSetRunning(data.Namespace, resource.DefaultDataIndexName, podNb, timeoutInMin)
+	return framework.WaitForKogitoDataIndex(data.Namespace, podNb, timeoutInMin)
 }

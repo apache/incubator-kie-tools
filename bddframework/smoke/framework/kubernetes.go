@@ -19,14 +19,11 @@ import (
 	"sync"
 	"time"
 
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
-
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var (
@@ -121,31 +118,6 @@ func CheckPodsAreRunning(pods *corev1.PodList) bool {
 // IsPodRunning returns true if pod is running
 func IsPodRunning(pod *corev1.Pod) bool {
 	return pod.Status.Phase == corev1.PodRunning
-}
-
-// WaitForStatefulSetRunning waits for a stateful set to be running, with a specific number of pod
-func WaitForStatefulSetRunning(namespace, ssName string, podNb int, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("StatefulSet %s running", ssName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		if dc, err := GetStatefulSet(namespace, ssName); err != nil {
-			return false, err
-		} else if dc == nil {
-			return false, nil
-		} else {
-			GetLogger(namespace).Debugf("StatefulSet %s has %d ready replicas\n", ssName, dc.Status.ReadyReplicas)
-			return dc.Status.ReadyReplicas == int32(podNb), nil
-		}
-	})
-}
-
-// GetStatefulSet retrieves a stateful set
-func GetStatefulSet(namespace, ssName string) (*appsv1.StatefulSet, error) {
-	dc := &appsv1.StatefulSet{}
-	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: ssName, Namespace: namespace}, dc); err != nil {
-		return nil, fmt.Errorf("Error while trying to look for DeploymentConfig %s: %v ", ssName, err)
-	} else if !exists {
-		return nil, nil
-	}
-	return dc, nil
 }
 
 func loadResource(namespace, uri string, resourceRef meta.ResourceObject, beforeCreate func(object interface{})) error {

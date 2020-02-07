@@ -45,7 +45,7 @@ func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoJobsService, error)
 	service := &v1alpha1.KogitoJobsService{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: jobsServiceName, Namespace: namespace}, service); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for Kogito jobs service: %v ", err)
-	} else if errors.IsNotFound(err) || !exists {
+	} else if !exists {
 		return nil, nil
 	}
 	return service, nil
