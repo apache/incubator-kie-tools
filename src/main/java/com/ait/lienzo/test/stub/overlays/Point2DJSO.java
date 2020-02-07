@@ -117,7 +117,7 @@ public class Point2DJSO extends JavaScriptObject
     {
         this.x += jso.x;
         this.y += jso.y;
-        return new Point2DJSO(this.x, this.y);
+        return this;
     }
 
     public void offset(final double x, final double y)
