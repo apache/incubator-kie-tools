@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ResourceContentOptions, ResourcesList, ResourceContent, ResourceContentService, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { ContentType, ResourceContentOptions, ResourcesList, ResourceContent, ResourceContentService, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 export class VsCodeResourceContentService implements ResourceContentService {
 
@@ -8,15 +8,15 @@ export class VsCodeResourceContentService implements ResourceContentService {
     const type = opts ?.type;
     if (contentPath) {
       return new Promise(resolve => {
-        if (type && type === "binary") {
+        if (type && type === ContentType.BINARY) {
           vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(content => {
             const base64Content = new Buffer(content).toString("base64");
-            resolve(new ResourceContent(path, base64Content, "binary"));
+            resolve(new ResourceContent(path, base64Content, ContentType.BINARY));
           }, this.errorRetrievingFile(contentPath, resolve));
         } else {
           vscode.workspace.openTextDocument(contentPath).then(textDoc => {
             const textContent = textDoc.getText();
-            resolve(new ResourceContent(path, textContent, "text"))
+            resolve(new ResourceContent(path, textContent, ContentType.TEXT))
           }, this.errorRetrievingFile(contentPath, resolve));
         }
       });
