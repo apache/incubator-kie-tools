@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { Options, ResourcesList, ResourceContent, ResourceContentService, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { ResourceContentOptions, ResourcesList, ResourceContent, ResourceContentService, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 export class VsCodeResourceContentService implements ResourceContentService {
 
-  public get(path: string, opts?:Options): Promise<ResourceContent | undefined> {
+  public get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
     const contentPath = this.resolvePath(path)!;
-    const type = opts?.type;
+    const type = opts ?.type;
     if (contentPath) {
       return new Promise(resolve => {
         if (type && type === "binary") {

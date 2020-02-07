@@ -17,5 +17,5 @@
 export * from "./ResourceContentService";
 export * from "./ResourceContent";
 export * from "./ResourcesList";
-export * from "./Options";
+export * from "./ResourceContentOptions";
 export * from "./ResourceContentRequest";

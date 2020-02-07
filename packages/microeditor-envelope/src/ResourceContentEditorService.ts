@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Options } from "@kogito-tooling/core-api";
+import { ResourceContentOptions } from "@kogito-tooling/core-api";
 
 
 export interface ResourceContentEditorService {
 
-  get(path: string, opts?: Options): Promise<string | undefined>;
+  get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
 
   list(pattern: string): Promise<string[]>;
 

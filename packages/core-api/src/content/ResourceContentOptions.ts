@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface Options {
+export interface ResourceContentOptions {
     type: ("text" | "binary");
 
 }
