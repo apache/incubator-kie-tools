@@ -30,6 +30,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
+import static com.google.gwt.event.dom.client.KeyCodes.KEY_RIGHT;
+
 public abstract class BaseKeyboardOperation implements KeyboardOperation {
 
     protected GridLayer gridLayer;
@@ -61,16 +63,21 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
     }
 
     protected boolean scrollSelectedCellIntoView(final GridWidget gridWidget) {
-        if (!isSelectionOriginSet(gridWidget)) {
+        if (!isSelectionOriginSet(gridWidget) && !isHeaderSelectionOriginSet(gridWidget)) {
             return false;
         }
 
-        if (!(isGridWidgetRendered(gridWidget) || isGridColumnCandidateForScroll(gridWidget))) {
+        boolean isHeaderCellSelected = false;
+        if (!isSelectionOriginSet(gridWidget) && isHeaderSelectionOriginSet(gridWidget)) {
+            isHeaderCellSelected = true;
+        }
+
+        if (!(isGridWidgetRendered(gridWidget) || isGridColumnCandidateForScroll(gridWidget, isHeaderCellSelected))) {
             return false;
         }
 
-        final double dx = getCellScrollDeltaX(gridWidget);
-        final double dy = getCellScrollDeltaY(gridWidget);
+        final double dx = getCellScrollDeltaX(gridWidget, isHeaderCellSelected);
+        final double dy = getCellScrollDeltaY(gridWidget, isHeaderCellSelected);
 
         if (dx != 0 || dy != 0) {
             adjustViewportTransform(gridLayer.getViewport(),
@@ -86,13 +93,18 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         return origin != null;
     }
 
+    private boolean isHeaderSelectionOriginSet(final GridWidget selectedGridWidget) {
+        final GridData gridModel = selectedGridWidget.getModel();
+        return !gridModel.getSelectedHeaderCells().isEmpty();
+    }
+
     private boolean isGridWidgetRendered(final GridWidget gridWidget) {
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         return renderingInformation != null;
     }
 
-    private boolean isGridColumnCandidateForScroll(final GridWidget gridWidget) {
+    private boolean isGridColumnCandidateForScroll(final GridWidget gridWidget, final boolean isHeaderCellSelected) {
         final GridData gridModel = gridWidget.getModel();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
@@ -101,7 +113,7 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         }
 
         final List<GridColumn<?>> columns = gridModel.getColumns();
-        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
+        final GridData.SelectedCell origin = getSelectedCellOrigin(gridModel, isHeaderCellSelected);
         final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(columns,
                                                                          origin.getColumnIndex());
 
@@ -112,10 +124,10 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         return !floatingColumns.contains(column);
     }
 
-    private double getCellScrollDeltaX(final GridWidget gridWidget) {
+    private double getCellScrollDeltaX(final GridWidget gridWidget, final boolean isHeaderCellSelected) {
         final GridData gridModel = gridWidget.getModel();
         final List<GridColumn<?>> columns = gridModel.getColumns();
-        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
+        final GridData.SelectedCell origin = getSelectedCellOrigin(gridModel, isHeaderCellSelected);
         final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(columns,
                                                                          origin.getColumnIndex());
 
@@ -133,24 +145,49 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         return dx;
     }
 
-    private double getCellScrollDeltaY(final GridWidget gridWidget) {
+    private double getCellScrollDeltaY(final GridWidget gridWidget, final boolean isHeaderCellSelected) {
         final GridData gridModel = gridWidget.getModel();
-        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
+        final GridData.SelectedCell origin = getSelectedCellOrigin(gridModel, isHeaderCellSelected);
         final int uiRowIndex = origin.getRowIndex();
 
         double dy = 0;
         final Bounds bounds = gridLayer.getVisibleBounds();
-        final double rowHeight = gridModel.getRow(uiRowIndex).getHeight();
+        final int headerRowCount = gridModel.getHeaderRowCount();
         final double headerHeight = gridWidget.getRenderer().getHeaderHeight();
-        final double gridCellY = gridWidget.getY() + headerHeight + gridWidget.getRendererHelper().getRowOffset(uiRowIndex);
+        final double rowHeight = isHeaderCellSelected ? gridWidget.getRenderer().getHeaderRowHeight() : gridModel.getRow(uiRowIndex).getHeight();
+        final double headerYOffset = isHeaderCellSelected ? headerHeight - headerRowCount * rowHeight : headerHeight;
+        final double rowOffset = isHeaderCellSelected ? rowHeight * uiRowIndex : gridWidget.getRendererHelper().getRowOffset(uiRowIndex);
+        final double gridCellY = gridWidget.getY() + headerYOffset + rowOffset;
 
         if (gridCellY + rowHeight >= bounds.getY() + bounds.getHeight()) {
             dy = bounds.getY() + bounds.getHeight() - gridCellY - rowHeight;
-        } else if (gridCellY <= bounds.getY() + headerHeight) {
-            dy = bounds.getY() + headerHeight - gridCellY;
+        } else if (gridCellY <= bounds.getY() + headerYOffset) {
+            dy = bounds.getY() + headerYOffset - gridCellY;
         }
 
         return dy;
+    }
+
+    /**
+     * It retrieves the selected cell in <code>GridData</code> model, which could be an <b>header</b> cell or a
+     * simple one. In case of an <b>header</b> cell, it manages a possible case where a cell is spanned over multiple
+     * columns: when pressing <code>KEY_RIGHT</code>, it selected the last cell of the selected header cells group in
+     * order to show all the spanned cell. The otherwise in all other cases
+     * @param gridModel
+     * @param isHeaderCellSelected
+     * @return
+     */
+    protected GridData.SelectedCell getSelectedCellOrigin(final GridData gridModel, final boolean isHeaderCellSelected) {
+        if (isHeaderCellSelected) {
+            List<GridData.SelectedCell> selectedHeaderCells = gridModel.getSelectedHeaderCells();
+            if (KEY_RIGHT == getKeyCode()) {
+                return selectedHeaderCells.get(selectedHeaderCells.size() - 1);
+            } else {
+                return selectedHeaderCells.get(0);
+            }
+        } else {
+            return gridModel.getSelectedCellsOrigin();
+        }
     }
 
     private void adjustViewportTransform(final Viewport vp,
