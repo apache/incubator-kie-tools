@@ -62,6 +62,8 @@ public class ScenarioGrid extends BaseGridWidget {
     private ScenarioSimulationContext scenarioSimulationContext;
     private EventBus eventBus;
     private ScenarioSimulationModel.Type type;
+    private int defaultSelectedDataCellX = 0;
+    private int defaultSelectedDataCellY = 0;
 
     public ScenarioGrid(AbstractScesimGridModel model,
                         ScenarioGridLayer scenarioGridLayer,
@@ -95,6 +97,11 @@ public class ScenarioGrid extends BaseGridWidget {
         this.eventBus = eventBus;
         ((AbstractScesimGridModel) model).setEventBus(eventBus);
         scenarioContextMenuRegistry.setEventBus(eventBus);
+    }
+
+    public void setDefaultSelectedDataCell(int cellX, int cellY) {
+        defaultSelectedDataCellX = cellX;
+        defaultSelectedDataCellY = cellY;
     }
 
     public ScenarioSimulationContext getScenarioSimulationContext() {
@@ -143,6 +150,23 @@ public class ScenarioGrid extends BaseGridWidget {
         selectHeaderCell(headerRowIndex, columnIndex, false, false);
         setSelectedColumn(columnIndex);
         getLayer().batch();
+    }
+
+    /**
+     * It ensures there is a selected cell (can be Header / Data cell) in the grid. If not, it selects the one defined
+     * in <code>defaultSelectedDataCellX</code> and <code>defaultSelectedDataCellY</code> fields.
+     */
+    public void ensureCellIsSelected() {
+        /* If model is empty, data are not available / loaded, do nothing */
+        if (model.getColumnCount() == 0) {
+            return;
+        }
+        /* If there isn't a selected cell (Header nor data) it selected the default one */
+        if (model.getSelectedCells().isEmpty() && model.getSelectedHeaderCells().isEmpty()) {
+            selectCell(defaultSelectedDataCellY, defaultSelectedDataCellX, false, false);
+            getLayer().batch();
+        }
+        signalTestTools();
     }
 
     /**

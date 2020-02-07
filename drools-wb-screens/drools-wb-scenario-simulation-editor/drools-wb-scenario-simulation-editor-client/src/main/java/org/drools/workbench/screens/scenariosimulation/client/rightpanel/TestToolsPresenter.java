@@ -204,7 +204,6 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
 
     protected void setGridWidget(GridWidget gridWidget) {
         this.gridWidget = gridWidget;
-        onDisableEditorTab();
         if (GridWidget.BACKGROUND.equals(gridWidget)) {
             hideInstances();
         }

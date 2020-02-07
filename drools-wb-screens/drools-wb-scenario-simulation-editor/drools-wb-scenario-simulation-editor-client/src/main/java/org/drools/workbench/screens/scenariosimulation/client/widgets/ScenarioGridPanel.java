@@ -108,6 +108,10 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     }
 
     public void synchronizeFactMappingsWidths() {
-        ((ScenarioGridLayer) getDefaultGridLayer()).getScenarioGrid().getModel().synchronizeFactMappingsWidths();
+        getScenarioGrid().getModel().synchronizeFactMappingsWidths();
+    }
+
+    public void ensureCellIsSelected() {
+        getScenarioGrid().ensureCellIsSelected();
     }
 }

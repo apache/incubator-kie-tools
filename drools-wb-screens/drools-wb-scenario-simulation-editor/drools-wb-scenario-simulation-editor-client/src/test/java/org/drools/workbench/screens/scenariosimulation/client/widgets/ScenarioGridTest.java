@@ -74,6 +74,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -504,5 +505,13 @@ public class ScenarioGridTest {
         when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(Collections.singletonList(selectedHeaderCell));
         scenarioGridSpy.signalTestToolsHeaderCellSelected(columnMock, selectedHeaderCell, uiColumnIndex);
         verify(eventBusMock, times(1)).fireEvent(isA(ReloadTestToolsEvent.class));
+    }
+
+    @Test
+    public void ensureCellIsSelected_EmptyGrid() {
+        when(scenarioGridModelMock.getColumnCount()).thenReturn(0);
+        scenarioGridSpy.ensureCellIsSelected();
+        verify(scenarioGridSpy, never()).selectCell(anyInt(), anyInt(), anyBoolean(), anyBoolean());
+        verify(scenarioGridSpy, never()).signalTestTools();
     }
 }

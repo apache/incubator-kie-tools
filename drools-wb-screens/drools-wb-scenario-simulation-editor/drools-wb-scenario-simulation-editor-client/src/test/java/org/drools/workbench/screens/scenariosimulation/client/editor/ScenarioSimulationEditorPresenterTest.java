@@ -70,6 +70,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -96,7 +97,9 @@ import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -657,41 +660,37 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Test
     public void onEditTabSelected() {
         presenterSpy.onEditTabSelected();
-        verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
-        verify(presenterSpy, times(1)).setItemMenuEnabled(eq(true));
-        verify(scenarioGridWidgetSpy, times(1)).clearSelections();
-        verify(scenarioGridWidgetSpy, times(1)).select();
-        verify(backgroundGridWidgetSpy, times(1)).deselect();
+        InOrder inOrder = inOrder(presenterSpy, scenarioGridWidgetSpy, backgroundGridWidgetSpy);
+        inOrder.verify(presenterSpy, times(1)).setItemMenuEnabled(eq(true));
+        inOrder.verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
+        inOrder.verify(scenarioGridWidgetSpy, times(1)).selectAndFocus();
+        inOrder.verify(backgroundGridWidgetSpy, times(1)).deselectAndUnFocus();
     }
 
     @Test
     public void onBackgroundTabSelected() {
         presenterSpy.onBackgroundTabSelected();
-        verify(backgroundGridWidgetSpy, times(1)).clearSelections();
-        verify(backgroundGridWidgetSpy, times(1)).select();
-        verify(scenarioGridWidgetSpy, times(1)).deselect();
-        verify(presenterSpy, times(1)).setItemMenuEnabled(eq(true));
-        verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
+        InOrder inOrder = inOrder(presenterSpy, scenarioGridWidgetSpy, backgroundGridWidgetSpy);
+        inOrder.verify(presenterSpy, times(1)).setItemMenuEnabled(eq(true));
+        inOrder.verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
+        inOrder.verify(backgroundGridWidgetSpy, times(1)).selectAndFocus();
+        inOrder.verify(scenarioGridWidgetSpy, times(1)).deselectAndUnFocus();
     }
 
     @Test
     public void onOverviewSelected() {
         presenterSpy.onOverviewSelected();
         verify(presenterSpy, times(1)).setItemMenuEnabled(eq(false));
-        verify(scenarioGridWidgetSpy, times(1)).clearSelections();
-        verify(backgroundGridWidgetSpy, times(1)).clearSelections();
-        verify(scenarioGridWidgetSpy, times(1)).deselect();
-        verify(backgroundGridWidgetSpy, times(1)).deselect();
+        verify(scenarioGridWidgetSpy, times(1)).deselectAndUnFocus();
+        verify(backgroundGridWidgetSpy, times(1)).deselectAndUnFocus();
     }
 
     @Test
     public void onImportsTabSelected() {
         presenterSpy.onImportsTabSelected();
         verify(presenterSpy, times(1)).setItemMenuEnabled(eq(false));
-        verify(scenarioGridWidgetSpy, times(1)).clearSelections();
-        verify(backgroundGridWidgetSpy, times(1)).clearSelections();
-        verify(scenarioGridWidgetSpy, times(1)).deselect();
-        verify(backgroundGridWidgetSpy, times(1)).deselect();
+        verify(scenarioGridWidgetSpy, times(1)).deselectAndUnFocus();
+        verify(backgroundGridWidgetSpy, times(1)).deselectAndUnFocus();
     }
 
     @Test
@@ -835,6 +834,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void getModelSuccessCallbackMethod() {
+        scenarioGridWidgetSpy.selectAndFocus();
         presenterSpy.init(scenarioSimulationEditorWrapperMock, observablePathMock);
         presenterSpy.getModelSuccessCallbackMethod(dataManagementStrategyMock, modelLocal);
         verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
@@ -844,6 +844,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         assertEquals(scenarioSimulationContextLocal.getStatus().getSimulation(), content.getModel().getSimulation());
         assertEquals(scenarioSimulationContextLocal.getStatus().getBackground(), content.getModel().getBackground());
         verify(presenterSpy, times(1)).getValidateCommand();
+        verify(scenarioGridWidgetSpy, atLeastOnce()).selectAndFocus();
     }
 
     @Test

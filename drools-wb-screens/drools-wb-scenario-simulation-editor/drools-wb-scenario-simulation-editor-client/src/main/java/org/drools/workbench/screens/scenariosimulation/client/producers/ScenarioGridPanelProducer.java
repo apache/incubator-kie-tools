@@ -105,8 +105,8 @@ public class ScenarioGridPanelProducer {
     @PostConstruct
     public void init() {
         scenarioSimulationContext = new ScenarioSimulationContext(simulationGridWidget, backgroundGridWidget);
-        initializeGrid(simulationGridLayer, simulationGridPanel, new ScenarioGridModel(false), scenarioSimulationContext);
-        initializeGrid(backgroundGridLayer, backgroundGridPanel, new BackgroundGridModel(false), scenarioSimulationContext);
+        initializeGrid(simulationGridLayer, simulationGridPanel, new ScenarioGridModel(false), scenarioSimulationContext, 1, 0);
+        initializeGrid(backgroundGridLayer, backgroundGridPanel, new BackgroundGridModel(false), scenarioSimulationContext, 0, 0);
     }
 
     public ScenarioSimulationContext getScenarioSimulationContext() {
@@ -138,7 +138,12 @@ public class ScenarioGridPanelProducer {
         return backgroundGridWidget;
     }
 
-    protected void initializeGrid(ScenarioGridLayer scenarioGridLayer, ScenarioGridPanel scenarioGridPanel, AbstractScesimGridModel abstractScesimGridModel, ScenarioSimulationContext scenarioSimulationContext) {
+    protected void initializeGrid(ScenarioGridLayer scenarioGridLayer,
+                                  ScenarioGridPanel scenarioGridPanel,
+                                  AbstractScesimGridModel abstractScesimGridModel,
+                                  ScenarioSimulationContext scenarioSimulationContext,
+                                  int defaultDataCellX,
+                                  int defaultDataCellY) {
         final ScenarioGrid scenarioGrid = new ScenarioGrid(abstractScesimGridModel,
                                                            scenarioGridLayer,
                                                            new ScenarioGridRenderer(false),
@@ -146,6 +151,7 @@ public class ScenarioGridPanelProducer {
         scenarioGridLayer.addScenarioGrid(scenarioGrid);
         scenarioGridPanel.add(scenarioGridLayer);
         scenarioGrid.setScenarioSimulationContext(scenarioSimulationContext);
+        scenarioGrid.setDefaultSelectedDataCell(defaultDataCellX, defaultDataCellY);
         abstractScesimGridModel.setCollectionEditorSingletonDOMElementFactory(
                 new CollectionEditorSingletonDOMElementFactory(scenarioGridPanel,
                                                                scenarioGridLayer,

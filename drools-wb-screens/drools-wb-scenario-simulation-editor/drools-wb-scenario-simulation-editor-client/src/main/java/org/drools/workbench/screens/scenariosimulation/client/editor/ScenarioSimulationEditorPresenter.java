@@ -447,34 +447,28 @@ public class ScenarioSimulationEditorPresenter {
 
     public void onEditTabSelected() {
         setItemMenuEnabled(true);
-        scenarioMainGridWidget.clearSelections();
-        scenarioMainGridWidget.select();
-        scenarioBackgroundGridWidget.deselect();
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
+        scenarioMainGridWidget.selectAndFocus();
+        scenarioBackgroundGridWidget.deselectAndUnFocus();
     }
 
     public void onBackgroundTabSelected() {
         setItemMenuEnabled(true);
-        scenarioBackgroundGridWidget.clearSelections();
-        scenarioBackgroundGridWidget.select();
-        scenarioMainGridWidget.deselect();
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
+        scenarioBackgroundGridWidget.selectAndFocus();
+        scenarioMainGridWidget.deselectAndUnFocus();
     }
 
     public void onOverviewSelected() {
         setItemMenuEnabled(false);
-        scenarioMainGridWidget.clearSelections();
-        scenarioMainGridWidget.deselect();
-        scenarioBackgroundGridWidget.clearSelections();
-        scenarioBackgroundGridWidget.deselect();
+        scenarioMainGridWidget.deselectAndUnFocus();
+        scenarioBackgroundGridWidget.deselectAndUnFocus();
     }
 
     public void onImportsTabSelected() {
         setItemMenuEnabled(false);
-        scenarioMainGridWidget.clearSelections();
-        scenarioMainGridWidget.deselect();
-        scenarioBackgroundGridWidget.clearSelections();
-        scenarioBackgroundGridWidget.deselect();
+        scenarioMainGridWidget.deselectAndUnFocus();
+        scenarioBackgroundGridWidget.deselectAndUnFocus();
     }
 
     public void validateSimulation() {
@@ -642,6 +636,8 @@ public class ScenarioSimulationEditorPresenter {
         context.getStatus().setSimulation(model.getSimulation());
         context.getStatus().setBackground(model.getBackground());
         CustomBusyPopup.close();
+        // Selecting and focusing current selected widget after a data model load
+        context.getSelectedScenarioGridWidget().ifPresent(ScenarioGridWidget::selectAndFocus);
         // check if structure is valid
         getValidateCommand().execute();
     }

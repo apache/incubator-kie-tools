@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -82,5 +84,22 @@ public class ScenarioGridWidgetTest extends AbstractScenarioSimulationTest {
     public void resetErrors() {
         scenarioGridWidget.resetErrors();
         verify(scenarioGridModelMock, times(1)).resetErrors();
+    }
+
+    @Test
+    public void selectAndFocus() {
+        scenarioGridWidget.selectAndFocus();
+        verify(scenarioGridMock, times(1)).select();
+        verify(scenarioGridPanelMock, times(1)).setFocus(eq(true));
+        verify(scenarioGridPanelMock, times(1)).ensureCellIsSelected();
+        assertTrue(scenarioGridWidget.selected);
+    }
+
+    @Test
+    public void deselectAndUnFocus() {
+        scenarioGridWidget.deselectAndUnFocus();
+        verify(scenarioGridMock, times(1)).deselect();
+        verify(scenarioGridPanelMock, times(1)).setFocus(eq(false));
+        assertFalse(scenarioGridWidget.selected);
     }
 }
