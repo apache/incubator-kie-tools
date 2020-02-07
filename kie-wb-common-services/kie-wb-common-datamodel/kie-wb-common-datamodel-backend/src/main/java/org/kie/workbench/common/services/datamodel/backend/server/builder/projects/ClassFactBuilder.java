@@ -272,10 +272,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     @Override
-    public Map<String, FactBuilder> getInternalBuilders() {
-        for (final FactBuilder factBuilder : new ArrayList<FactBuilder>(this.fieldFactBuilders.values())) {
-            this.fieldFactBuilders.putAll(factBuilder.getInternalBuilders());
-        }
-        return fieldFactBuilders;
+    public void addInternalBuilders(Map<String, FactBuilder> builders) {
+        this.fieldFactBuilders.entrySet().stream().filter(e -> !builders.containsKey(e.getKey())).forEach(entry -> {
+            builders.put(entry.getKey(), entry.getValue());
+            entry.getValue().addInternalBuilders(builders);
+        });
     }
 }

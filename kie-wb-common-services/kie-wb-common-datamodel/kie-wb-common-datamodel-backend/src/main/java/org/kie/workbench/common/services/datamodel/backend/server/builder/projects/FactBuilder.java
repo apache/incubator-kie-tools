@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
@@ -26,7 +27,13 @@ public interface FactBuilder {
 
     public ModuleDataModelOracleBuilder end();
 
-    public Map<String, FactBuilder> getInternalBuilders();
+    public default Map<String, FactBuilder> getInternalBuilders() {
+        Map<String, FactBuilder> internalBuilders = new HashMap<>();
+        addInternalBuilders(internalBuilders);
+        return internalBuilders;
+    }
+
+    public void addInternalBuilders(Map<String, FactBuilder> builders);
 
     public void build(final ModuleDataModelOracleImpl oracle);
 }

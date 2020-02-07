@@ -156,9 +156,12 @@ public final class ModuleDataModelOracleBuilder {
 
     private void loadFactTypes() {
 
-        for (final FactBuilder factBuilder : new ArrayList<>(this.factTypeBuilders.values())) {
-            this.factTypeBuilders.putAll(factBuilder.getInternalBuilders());
-        }
+        Map<String, FactBuilder> builders = new HashMap<>();
+        this.factTypeBuilders.entrySet().stream().filter(e -> !builders.containsKey(e.getKey())).forEach(entry -> {
+            builders.put(entry.getKey(), entry.getValue());
+            entry.getValue().addInternalBuilders(builders);
+        });
+        this.factTypeBuilders = builders;
 
         for (final FactBuilder factBuilder : this.factTypeBuilders.values()) {
             factBuilder.build(oracle);

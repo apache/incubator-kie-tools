@@ -15,7 +15,6 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -44,7 +43,6 @@ public class SimpleFactBuilder extends BaseFactBuilder {
     }
 
     @Override
-    public Map<String, FactBuilder> getInternalBuilders() {
-        return Collections.emptyMap();
+    public void addInternalBuilders(Map<String, FactBuilder> builders) {
     }
 }
