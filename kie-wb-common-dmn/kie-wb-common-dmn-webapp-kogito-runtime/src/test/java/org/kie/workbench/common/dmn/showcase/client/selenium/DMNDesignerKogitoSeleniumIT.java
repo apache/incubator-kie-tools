@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -95,6 +96,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testNewDiagram() throws Exception {
         final String expected = loadResource("new-diagram.xml");
         setContent("");
@@ -113,6 +115,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testBasicModel() throws Exception {
         final String expected = loadResource("basic-model.xml");
         setContent(expected);
@@ -130,6 +133,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testBusinessKnowledgeModel() throws Exception {
         final String expected = loadResource("business-knowledge-model.xml");
         setContent(expected);
@@ -144,6 +148,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testInputData() throws Exception {
         final String expected = loadResource("input-data.xml");
         setContent(expected);
@@ -158,6 +163,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testKnowledgeSource() throws Exception {
         final String expected = loadResource("knowledge-source.xml");
         setContent(expected);
@@ -172,6 +178,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testDecisionEmpty() throws Exception {
         final String expected = loadResource("decision-empty.xml");
         setContent(expected);
@@ -186,6 +193,7 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1107")
     public void testDecisionServiceEmpty() throws Exception {
         final String expected = loadResource("decision-service-empty.xml");
         setContent(expected);
