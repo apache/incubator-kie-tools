@@ -16,59 +16,52 @@
 
 import * as Octokit from "@octokit/rest";
 
-
 export interface FileInfo {
-    gitRef: string;
-    repo: string;
-    org: string;
-    path: string;
+  gitRef: string;
+  repo: string;
+  org: string;
+  path: string;
 }
 export class GithubService {
+  private readonly octokit: Octokit;
 
-    private readonly octokit: Octokit;
+  constructor() {
+    this.octokit = new Octokit();
+  }
 
-    constructor() {
-        this.octokit = new Octokit();
-    }
+  public isGithub(url: string): boolean {
+    return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
+  }
 
-    public isGithub(url: string): boolean {
-        return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
-    }
+  public retrieveFileInfo(fileUrl: string): FileInfo {
+    const split = new URL(fileUrl).pathname.split("/");
+    return {
+      gitRef: split[4],
+      repo: split[2],
+      org: split[1],
+      path: split.slice(5).join("/")
+    };
+  }
 
-    public retrieveFileInfo(fileUrl: string): FileInfo {
-        const split = new URL(fileUrl).pathname.split("/");
-        return {
-            gitRef: split[4],
-            repo: split[2],
-            org: split[1],
-            path: split.slice(5).join("/")
+  public fetchGithubFile(fileUrl: string): Promise<string> {
+    const fileInfo = this.retrieveFileInfo(fileUrl);
+
+    return this.octokit.repos
+      .getContents({
+        repo: fileInfo.repo,
+        owner: fileInfo.org,
+        ref: fileInfo.gitRef,
+        path: fileInfo.path,
+        headers: {
+          "If-None-Match": ""
         }
-    }
-
-    public fetchGithubFile(fileUrl: string): Promise<string> {
-        const fileInfo = this.retrieveFileInfo(fileUrl);
-
-        return this.octokit.repos
-            .getContents({
-                repo: fileInfo.repo,
-                owner: fileInfo.org,
-                ref: fileInfo.gitRef,
-                path: fileInfo.path,
-                headers: {
-                    'If-None-Match': ''
-                }
-            })
-            .then(res => atob((res.data as any).content))
-            .catch(e => {
-                console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-                return fetch(`https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`)
-                    .then(res =>
-                        res.ok ?
-                            res.text() :
-                            Promise.reject("Not able to retrieve file content from Github.")
-                    );
-            });
-    }
-
-
+      })
+      .then(res => atob((res.data as any).content))
+      .catch(e => {
+        console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
+        return fetch(
+          `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
+        ).then(res => (res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.")));
+      });
+  }
 }

@@ -59,12 +59,14 @@ function waitForEventWithFileData() {
 function openFileByUrl() {
   const filePath = urlParams.get("file")!;
   if (githubService.isGithub(filePath)) {
-    githubService.fetchGithubFile(filePath)
+    githubService
+      .fetchGithubFile(filePath)
       .then(response => {
         openFile(filePath, Promise.resolve(response));
-      }).catch(error => {
-        showFetchError(error.toString());
       })
+      .catch(error => {
+        showFetchError(error.toString());
+      });
   } else {
     fetch(filePath)
       .then(response => {
@@ -84,7 +86,6 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
   const file = {
     fileName: removeFileExtension(removeDirectories(filePath)!)!,
     getFileContents: () => getFileContent
-
   };
   ReactDOM.render(
     <App iframeTemplateRelativePath={"envelope/index.html"} file={file} readonly={false} external={false} />,

@@ -19,32 +19,32 @@ import { GithubService } from "../common/GithubService";
 const githubService = new GithubService();
 
 describe("githubService::isGithub", () => {
-    test("should be true", () => {
-        [
-            "https://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "http://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "http://www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "https://www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "github.com/the_org/the_repo/blob/the_ref/the_file.bpmn"
-        ].forEach(url => expect(githubService.isGithub(url)).toBeTruthy());
-    });
+  test("should be true", () => {
+    [
+      "https://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "http://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "http://www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "https://www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "www.github.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "github.com/the_org/the_repo/blob/the_ref/the_file.bpmn"
+    ].forEach(url => expect(githubService.isGithub(url)).toBeTruthy());
+  });
 
-    test("should be false", () => {
-        [
-            "https://gathub.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-            "http://redhat.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
-        ].forEach(url => expect(githubService.isGithub(url)).toBeFalsy());
-    });
+  test("should be false", () => {
+    [
+      "https://gathub.com/the_org/the_repo/blob/the_ref/the_file.bpmn",
+      "http://redhat.com/the_org/the_repo/blob/the_ref/the_file.bpmn"
+    ].forEach(url => expect(githubService.isGithub(url)).toBeFalsy());
+  });
 });
 
 describe("githubService::retrieveFileInfo", () => {
-    test("check file info", () => {
-        const fileUrl = "https://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn";
-        const fileInfo = githubService.retrieveFileInfo(fileUrl);
-        expect(fileInfo.org).toEqual("the_org");
-        expect(fileInfo.repo).toEqual("the_repo");
-        expect(fileInfo.gitRef).toEqual("the_ref");
-        expect(fileInfo.path).toEqual("the_file.bpmn")
-    });
+  test("check file info", () => {
+    const fileUrl = "https://github.com/the_org/the_repo/blob/the_ref/the_file.bpmn";
+    const fileInfo = githubService.retrieveFileInfo(fileUrl);
+    expect(fileInfo.org).toEqual("the_org");
+    expect(fileInfo.repo).toEqual("the_repo");
+    expect(fileInfo.gitRef).toEqual("the_ref");
+    expect(fileInfo.path).toEqual("the_file.bpmn");
+  });
 });
