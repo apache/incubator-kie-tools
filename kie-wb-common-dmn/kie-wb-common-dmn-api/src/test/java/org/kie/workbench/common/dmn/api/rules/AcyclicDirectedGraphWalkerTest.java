@@ -116,10 +116,12 @@ public class AcyclicDirectedGraphWalkerTest {
                      nodeStartVisitCaptor.getAllValues().size());
         assertEquals(3,
                      nodeEndVisitCaptor.getAllValues().size());
+        //node1->node2, node2->node3, node3->[no connections]
         assertNodeVisits(nodeStartVisitCaptor.getAllValues(),
                          "node1",
                          "node2",
                          "node3");
+        //node1->node2, node2->node3, node3->[no connections]
         assertNodeVisits(nodeEndVisitCaptor.getAllValues(),
                          "node1",
                          "node2",
@@ -135,6 +137,69 @@ public class AcyclicDirectedGraphWalkerTest {
         assertEdgeVisits(edgeEndVisitCaptor.getAllValues(),
                          "edge1:node1-node2",
                          "edge2:node2-node3");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkDisconnectedTargetNode() {
+        final Node node1 = new NodeImpl<>("node1");
+        final Node node2 = new NodeImpl<>("node2");
+        final Edge c1 = new EdgeImpl<>("edge1:node1-null");
+        final Edge c2 = new EdgeImpl<>("edge2:node1-node2");
+
+        //Connect node1 with nothing!
+        connectNode(node1,
+                    c1);
+
+        graph.addNode(node1);
+        graph.addNode(node2);
+
+        //Propose to connect node12 to node2 with c2
+        walker = new AcyclicDirectedGraphWalker(node1,
+                                                node2,
+                                                c2);
+
+        walker.traverse(graph,
+                        callback);
+
+        verify(callback).startGraphTraversal(eq(graph));
+        verify(callback).endGraphTraversal();
+
+        verify(callback,
+               atLeast(1)).startNodeTraversal(nodeStartVisitCaptor.capture());
+        verify(callback,
+               atLeast(1)).endNodeTraversal(nodeEndVisitCaptor.capture());
+
+        verify(callback,
+               atLeast(1)).startEdgeTraversal(edgeStartVisitCaptor.capture());
+        verify(callback,
+               atLeast(1)).endEdgeTraversal(edgeEndVisitCaptor.capture());
+
+        assertEquals(3,
+                     nodeStartVisitCaptor.getAllValues().size());
+        assertEquals(3,
+                     nodeEndVisitCaptor.getAllValues().size());
+        //node1->null, node1->node2, node2->[no connections]
+        assertNodeVisits(nodeStartVisitCaptor.getAllValues(),
+                         "node1",
+                         "node1",
+                         "node2");
+        //node1->null, node1->node2, node2->[no connections]
+        assertNodeVisits(nodeEndVisitCaptor.getAllValues(),
+                         "node1",
+                         "node1",
+                         "node2");
+
+        assertEquals(2,
+                     edgeStartVisitCaptor.getAllValues().size());
+        assertEquals(2,
+                     edgeEndVisitCaptor.getAllValues().size());
+        assertEdgeVisits(edgeStartVisitCaptor.getAllValues(),
+                         "edge1:node1-null",
+                         "edge2:node1-node2");
+        assertEdgeVisits(edgeEndVisitCaptor.getAllValues(),
+                         "edge1:node1-null",
+                         "edge2:node1-node2");
     }
 
     private void assertNodeVisits(final List<Node> nodes,
@@ -158,6 +223,13 @@ public class AcyclicDirectedGraphWalkerTest {
         final List<String> matches = new ArrayList<>(expectedUUIDs);
         matches.removeAll(actualUUIDs);
         assertTrue(matches.isEmpty());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void connectNode(final Node source,
+                             final Edge connector) {
+        source.getOutEdges().add(connector);
+        connector.setSourceNode(source);
     }
 
     @SuppressWarnings("unchecked")

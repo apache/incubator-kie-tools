@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.rules;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -127,7 +128,10 @@ public class AcyclicDirectedGraphWalker implements TreeWalkTraverseProcessor {
             if (edge.equals(connector)) {
                 startNodeTraversal(target);
             } else {
-                startNodeTraversal(edge.getTargetNode());
+                final Node targetNode = edge.getTargetNode();
+                if (Objects.nonNull(targetNode)) {
+                    startNodeTraversal(targetNode);
+                }
             }
         }
         endEdgeTraversal(edge);
