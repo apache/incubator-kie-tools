@@ -514,7 +514,71 @@
                 <resource>
                   <directory>${project.build.directory}/monaco-editor/META-INF/resources/webjars/monaco-editor/${version.org.webjars.npm.monaco-editor}/</directory>
                   <includes>
-                    <include>**</include>
+                    <include>dev/vs/base/worker/workerMain.js</include>
+                    <include>dev/vs/basic-languages/_.contribution.js</include>
+                    <include>dev/vs/basic-languages/abap/abap.contribution.js</include>
+                    <include>dev/vs/basic-languages/apex/apex.contribution.js</include>
+                    <include>dev/vs/basic-languages/azcli/azcli.contribution.js</include>
+                    <include>dev/vs/basic-languages/bat/bat.contribution.js</include>
+                    <include>dev/vs/basic-languages/clojure/clojure.contribution.js</include>
+                    <include>dev/vs/basic-languages/coffee/coffee.contribution.js</include>
+                    <include>dev/vs/basic-languages/cpp/cpp.contribution.js</include>
+                    <include>dev/vs/basic-languages/csharp/csharp.contribution.js</include>
+                    <include>dev/vs/basic-languages/csp/csp.contribution.js</include>
+                    <include>dev/vs/basic-languages/css/css.contribution.js</include>
+                    <include>dev/vs/basic-languages/dockerfile/dockerfile.contribution.js</include>
+                    <include>dev/vs/basic-languages/fsharp/fsharp.contribution.js</include>
+                    <include>dev/vs/basic-languages/go/go.contribution.js</include>
+                    <include>dev/vs/basic-languages/graphql/graphql.contribution.js</include>
+                    <include>dev/vs/basic-languages/handlebars/handlebars.contribution.js</include>
+                    <include>dev/vs/basic-languages/html/html.contribution.js</include>
+                    <include>dev/vs/basic-languages/ini/ini.contribution.js</include>
+                    <include>dev/vs/basic-languages/java/java.contribution.js</include>
+                    <include>dev/vs/basic-languages/javascript/javascript.contribution.js</include>
+                    <include>dev/vs/basic-languages/kotlin/kotlin.contribution.js</include>
+                    <include>dev/vs/basic-languages/less/less.contribution.js</include>
+                    <include>dev/vs/basic-languages/lua/lua.contribution.js</include>
+                    <include>dev/vs/basic-languages/markdown/markdown.contribution.js</include>
+                    <include>dev/vs/basic-languages/mips/mips.contribution.js</include>
+                    <include>dev/vs/basic-languages/msdax/msdax.contribution.js</include>
+                    <include>dev/vs/basic-languages/mysql/mysql.contribution.js</include>
+                    <include>dev/vs/basic-languages/objective-c/objective-c.contribution.js</include>
+                    <include>dev/vs/basic-languages/pascal/pascal.contribution.js</include>
+                    <include>dev/vs/basic-languages/pascaligo/pascaligo.contribution.js</include>
+                    <include>dev/vs/basic-languages/perl/perl.contribution.js</include>
+                    <include>dev/vs/basic-languages/pgsql/pgsql.contribution.js</include>
+                    <include>dev/vs/basic-languages/php/php.contribution.js</include>
+                    <include>dev/vs/basic-languages/postiats/postiats.contribution.js</include>
+                    <include>dev/vs/basic-languages/powerquery/powerquery.contribution.js</include>
+                    <include>dev/vs/basic-languages/powershell/powershell.contribution.js</include>
+                    <include>dev/vs/basic-languages/pug/pug.contribution.js</include>
+                    <include>dev/vs/basic-languages/python/python.contribution.js</include>
+                    <include>dev/vs/basic-languages/r/r.contribution.js</include>
+                    <include>dev/vs/basic-languages/razor/razor.contribution.js</include>
+                    <include>dev/vs/basic-languages/redis/redis.contribution.js</include>
+                    <include>dev/vs/basic-languages/redshift/redshift.contribution.js</include>
+                    <include>dev/vs/basic-languages/ruby/ruby.contribution.js</include>
+                    <include>dev/vs/basic-languages/rust/rust.contribution.js</include>
+                    <include>dev/vs/basic-languages/sb/sb.contribution.js</include>
+                    <include>dev/vs/basic-languages/scheme/scheme.contribution.js</include>
+                    <include>dev/vs/basic-languages/scss/scss.contribution.js</include>
+                    <include>dev/vs/basic-languages/shell/shell.contribution.js</include>
+                    <include>dev/vs/basic-languages/solidity/solidity.contribution.js</include>
+                    <include>dev/vs/basic-languages/sophia/sophia.contribution.js</include>
+                    <include>dev/vs/basic-languages/sql/sql.contribution.js</include>
+                    <include>dev/vs/basic-languages/st/st.contribution.js</include>
+                    <include>dev/vs/basic-languages/swift/swift.contribution.js</include>
+                    <include>dev/vs/basic-languages/tcl/tcl.contribution.js</include>
+                    <include>dev/vs/basic-languages/twig/twig.contribution.js</include>
+                    <include>dev/vs/basic-languages/typescript/typescript.contribution.js</include>
+                    <include>dev/vs/basic-languages/vb/vb.contribution.js</include>
+                    <include>dev/vs/basic-languages/xml/xml.contribution.js</include>
+                    <include>dev/vs/basic-languages/yaml/yaml.contribution.js</include>
+                    <include>dev/vs/editor/editor.main.css</include>
+                    <include>dev/vs/editor/editor.main.js</include>
+                    <include>dev/vs/editor/editor.main.nls.js</include>
+                    <include>dev/vs/language/typescript/lib/typescriptServicesMetadata.js</include>
+                    <include>dev/vs/loader.js</include>
                   </includes>
                 </resource>
               </resources>
