@@ -51,6 +51,20 @@ export class Dependencies {
     }
   };
 
+  public readonly treeView = {
+    filesContainer: () => {
+      return document.querySelector("div.file-wrap") as HTMLElement | null;
+    },
+  
+    filesLinksContainers: () => {
+      return Array.from(document.querySelectorAll("table.files > tbody > tr > td.content")) as HTMLElement[];
+    },
+  
+    fileLinkTarget(container: HTMLElement) {
+      return container.querySelector("span > a") as HTMLAnchorElement | null;
+    }
+  }
+
   public readonly all = {
     notificationIndicator: () => {
       return document.querySelector(".notification-indicator") as HTMLElement | null;

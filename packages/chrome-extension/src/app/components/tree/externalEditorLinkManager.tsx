@@ -20,10 +20,7 @@ import { Router } from "@kogito-tooling/core-api";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { extractOpenFileExtension } from "../../utils";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
-
-const FILES_CONTAINER_SELECTOR = "div.file-wrap"
-const LINK_CONTAINER_SELECTOR = "table.files > tbody > tr > td.content";
-const LINK_SELECTOR = "span > a";
+import { treeView } from "../../dependencies";
 
 export function addExternalEditorLinks(args: {
     router: Router,
@@ -31,20 +28,20 @@ export function addExternalEditorLinks(args: {
 }) {
     addLinksToExternalEditor(args.router, args.externalEditorManager);
     const observer = new MutationObserver(() => addLinksToExternalEditor(args.router, args.externalEditorManager));
-    observer.observe(document.querySelector(FILES_CONTAINER_SELECTOR)!, { childList: true });
+    observer.observe(treeView.filesContainer()!, { childList: true });
 }
 
 function addLinksToExternalEditor(router: Router, externalEditorManager?: ExternalEditorManager | undefined) {
-    getLinkContainers()
+    treeView.filesLinksContainers()
         .filter(container => container.childElementCount > 0)
-        .filter(container => getLinkToAsset(container)!.pathname.split('/')[3] === 'blob')
+        .filter(container => treeView.fileLinkTarget(container)!.pathname.split('/')[3] === 'blob')
         .filter(container => {
-            const fileLink = getLinkToAsset(container)!;
+            const fileLink = treeView.fileLinkTarget(container)!;
             const ext = extractOpenFileExtension(fileLink.href);
             return router.getLanguageData(ext as any);
         })
         .forEach(container => {
-            const fileLink = getLinkToAsset(container)!;
+            const fileLink = treeView.fileLinkTarget(container);
             if (!fileLink) {
                 return;
             }
@@ -73,13 +70,6 @@ function createTargetUrl(
     split.splice(2, 1);
     const linkToOpen = split.join("/");
     return externalEditorManager!.getLink(linkToOpen);
-}
-
-function getLinkContainers(): HTMLElement[] {
-    return Array.from(document.querySelectorAll(LINK_CONTAINER_SELECTOR));
-}
-function getLinkToAsset(parent: HTMLElement): (HTMLAnchorElement | null) {
-    return parent.querySelector(LINK_SELECTOR);
 }
 
 function getLinkParentId(linkId: string) {
