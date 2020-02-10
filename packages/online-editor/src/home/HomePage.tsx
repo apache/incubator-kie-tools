@@ -33,8 +33,6 @@ import {
   CardBody,
   CardFooter,
   Gallery,
-  TextInput,
-  FormGroup,
   ToolbarGroup,
   Dropdown,
   DropdownToggle,
@@ -45,7 +43,7 @@ import {
   Brand
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
-import { Link } from "react-router-dom";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -109,12 +107,16 @@ export function HomePage(props: Props) {
     }
   }, [onFileUpload]);
 
-  const createFile = useCallback((fileType: string) => {
-    props.onFileOpened(EMPTY_FILE);
-    history.replace(context.routes.editor.url({ type: fileType }));
-  }, [context, history]);
+  const createFile = useCallback(
+    (fileType: string) => {
+      props.onFileOpened(EMPTY_FILE);
+      history.replace(context.routes.editor.url({ type: fileType }));
+    },
+    [context, history]
+  );
 
-  const trySample = useCallback((fileType: string) => {
+  const trySample = useCallback(
+    (fileType: string) => {
       const fileName = "sample";
       const filePath = `samples/${fileName}.${fileType}`;
       props.onFileOpened({
@@ -122,61 +124,69 @@ export function HomePage(props: Props) {
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
       history.replace(context.routes.editor.url({ type: fileType }));
-  }, [context, history]);
+    },
+    [context, history]
+  );
 
   const logoProps = {
-    // TODO: Is this the correct link?
-    href: 'https://www.kiegroup.org/',
-    target: '_blank'
+    href: "/",
+    target: "_blank"
   };
 
   const linkDropdownItems = [
-    <DropdownItem key="">
-      {/* TODO: Need url */}
-      <Link to ={'/'}>Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-mx-sm" /></Link>
+    <DropdownItem key="github-chrome-extension-dropdown-link">
+      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
+        Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
+      </a>
     </DropdownItem>,
-    <DropdownItem key="">
-      {/* TODO: Need url */}
-      <Link to ={'/'}>Get VSCode extension <ExternalLinkAltIcon className="pf-u-mx-sm" /></Link>
+    <DropdownItem key="vscode-extension-dropdown-link">
+      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
+        Get VSCode extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
+      </a>
     </DropdownItem>
-];
+  ];
 
   const userDropdownItems = [
-    <DropdownItem key="">
-      {/* TODO: Need url */}
+    /*<DropdownItem key="">
       <Link to ={'/'}>Documentation</Link>
-    </DropdownItem>,
+    </DropdownItem>,*/
     <DropdownItem key="">
-      {/* TODO: Need url */}
-      <Link to ={'/'}>Online forum</Link>
-    </DropdownItem>,
+      <a href={"https://groups.google.com/forum/#!forum/kogito-development"}>Online forum</a>
+    </DropdownItem>
   ];
-  
-  const [isUserDropdownOpen, setisUserDropdownOpen] = useState(false);
+
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLinkDropdownOpen, setIsLinkDropdownOpen] = useState(false);
 
-
   const headerToolbar = (
-    <React.Fragment>
+    <>
       <Toolbar>
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <Button variant="plain">
-              Get GitHub Chrome extension 
-              <ExternalLinkAltIcon className="pf-u-mx-sm" />
-            </Button>
-            <Button variant="plain">
-              Get VSCode extension
-              <ExternalLinkAltIcon className="pf-u-mx-sm" />
-            </Button>
+            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
+              <Button variant="plain">
+                Get GitHub Chrome extension
+                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              </Button>
+            </a>
+            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
+              <Button variant="plain">
+                Get VSCode extension
+                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              </Button>
+            </a>
           </ToolbarItem>
-          <ToolbarItem  className="pf-u-display-none-on-lg">
+          <ToolbarItem className="pf-u-display-none-on-lg">
             <Dropdown
               isPlain={true}
               position="right"
               isOpen={isLinkDropdownOpen}
               toggle={
-                <DropdownToggle iconComponent={null} onToggle={setIsLinkDropdownOpen} aria-label="External links to extensions">
+                <DropdownToggle
+                  iconComponent={null}
+                  onToggle={setIsLinkDropdownOpen}
+                  aria-label="External links to extensions"
+                >
                   <ExternalLinkAltIcon />
                 </DropdownToggle>
               }
@@ -189,7 +199,7 @@ export function HomePage(props: Props) {
               position="right"
               isOpen={isUserDropdownOpen}
               toggle={
-                <DropdownToggle iconComponent={null} onToggle={setisUserDropdownOpen} aria-label="Links">
+                <DropdownToggle iconComponent={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
                   <OutlinedQuestionCircleIcon />
                 </DropdownToggle>
               }
@@ -198,9 +208,9 @@ export function HomePage(props: Props) {
           </ToolbarItem>
         </ToolbarGroup>
       </Toolbar>
-    </React.Fragment>
+    </>
   );
-  
+
   const Header = (
     <PageHeader
       logo={<Brand src={"images/IntelliApp_Logo_342x76.svg"} alt="Kogito Logo" />}
@@ -213,77 +223,96 @@ export function HomePage(props: Props) {
     <Page header={Header} className="kogito--editor-landing">
       <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
         <TextContent>
-        <Title size="3xl" headingLevel="h1">Asset Editor for Kogito and Process Automation</Title>
-        <Text>Welcome to the Asset Editor! This simple BPMN and DMN editor is here to allow you to collaborate in an easy way and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch in the forum or review the documentation for more information.
-          </Text> 
-        <Text component={TextVariants.small} className="pf-u-text-align-right">Powered by <Brand src={"images/kogito_logo_white.png"} alt="Kogito Logo" style={{height: "1em", verticalAlign: "text-bottom"}}/></Text>
-          </TextContent>
+          <Title size="3xl" headingLevel="h1">
+            Asset Editor for Kogito and Process Automation
+          </Title>
+          <Text>
+            Welcome to the Asset Editor! This simple BPMN and DMN editor is here to allow you to collaborate in an easy
+            way and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in
+            touch in the forum or review the documentation for more information.
+          </Text>
+          <Text component={TextVariants.small} className="pf-u-text-align-right">
+            Powered by{" "}
+            <Brand
+              src={"images/kogito_logo_white.png"}
+              alt="Kogito Logo"
+              style={{ height: "1em", verticalAlign: "text-bottom" }}
+            />
+          </Text>
+        </TextContent>
       </PageSection>
       <PageSection className="pf-u-px-2xl-on-lg">
         <Gallery gutter="lg" className="kogito--editor-landing__gallery">
-            <Card>
-              <CardHeader>
-                <Title headingLevel="h2" size="2xl">Workflow (.BPMN)</Title>
-              </CardHeader>
-              <CardBody isFilled={false}>
-                BPMN files are used to generate business processes.
-              </CardBody>
-              <CardBody isFilled={true}>
-                <Button variant="link" isInline={true} onClick={() => trySample("bpmn")}>
-                  Try Sample
-                </Button>
-              </CardBody>
-              <CardFooter>
-                <Button variant="secondary" onClick={() => createFile("bpmn")}>
-                  Create new workflow
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card>
-              <CardHeader>
-              <Title headingLevel="h2" size="2xl">Decision model (.DMN)</Title>
-              </CardHeader>
-              <CardBody isFilled={false}>
-                DMN files are used to generate decision models
-              </CardBody>
-              <CardBody isFilled={true}>
-                <Button variant="link" isInline={true} onClick={() => trySample("dmn")}>
-                  Try Sample
-                </Button>
-              </CardBody>
-              <CardFooter>
-                <Button variant="secondary" onClick={() => createFile("dmn")}>
-                  Create new decision model
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card>
-              <CardHeader>
-              <Title headingLevel="h2" size="2xl">Edit existing file</Title>
-              </CardHeader>
-              <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
-                  {/* Upload Drag Target */}
-                  <div
-                    ref={uploadBoxRef}
-                    onDragOver={uploadBoxOnDragOver}
-                    onDragLeave={uploadBoxOnDragLeave}
-                    onDrop={uploadBoxOnDrop}
-                  >
-                    <Bullseye>Drop a BPMN or DMN file here</Bullseye>
-                  </div>
-                </CardBody>
-                <CardBody>
-                  or
-                </CardBody>
-              <CardFooter>
-                    <Button variant="secondary" onClick={editFile}  className="kogito--editor-landing__upload-btn">
-                      Choose a local file
-                      {/* Transparent file input overlays the button */}
-                      <input className="pf-c-button" type="file" aria-label="File selection" ref={uploadInputRef} onChange={editFile} />
-                    </Button>
-              </CardFooter>
-            </Card>
-            <Card>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Workflow (.BPMN)
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={false}>BPMN files are used to generate business processes.</CardBody>
+            <CardBody isFilled={true}>
+              <Button variant="link" isInline={true} onClick={() => trySample("bpmn")}>
+                Try Sample
+              </Button>
+            </CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={() => createFile("bpmn")}>
+                Create new workflow
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Decision model (.DMN)
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={false}>DMN files are used to generate decision models</CardBody>
+            <CardBody isFilled={true}>
+              <Button variant="link" isInline={true} onClick={() => trySample("dmn")}>
+                Try Sample
+              </Button>
+            </CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={() => createFile("dmn")}>
+                Create new decision model
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Edit existing file
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
+              {/* Upload Drag Target */}
+              <div
+                ref={uploadBoxRef}
+                onDragOver={uploadBoxOnDragOver}
+                onDragLeave={uploadBoxOnDragLeave}
+                onDrop={uploadBoxOnDrop}
+              >
+                <Bullseye>Drop a BPMN or DMN file here</Bullseye>
+              </div>
+            </CardBody>
+            <CardBody>or</CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={editFile} className="kogito--editor-landing__upload-btn">
+                Choose a local file
+                {/* Transparent file input overlays the button */}
+                <input
+                  className="pf-c-button"
+                  type="file"
+                  aria-label="File selection"
+                  ref={uploadInputRef}
+                  onChange={editFile}
+                />
+              </Button>
+            </CardFooter>
+          </Card>
+          {/* TODO New feature upload from source code needs to be implemented */}
+          {/*<Card>
               <CardHeader>
               <Title headingLevel="h2" size="2xl">Import source code</Title>
               </CardHeader>
@@ -291,7 +320,6 @@ export function HomePage(props: Props) {
                 Paste a URL to a source code link (GitHub, Dropbox, etc.)
               </CardBody>
               <CardBody isFilled={true}>
-              {/* TODO New feature upload from source code needs to be implemented */}
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
@@ -310,27 +338,9 @@ export function HomePage(props: Props) {
                   Import source code
                 </Button>
               </CardFooter>
-            </Card>
+            </Card>*/}
         </Gallery>
       </PageSection>
     </Page>
   );
-}
-
-function extractFileExtension(fileName: string) {
-  return fileName
-    .split(".")
-    .pop()
-    ?.match(/[\w\d]+/)
-    ?.pop();
-}
-
-function removeFileExtension(fileName: string) {
-  const fileExtension = extractFileExtension(fileName);
-
-  if (!fileExtension) {
-    return fileName;
-  }
-
-  return fileName.substr(0, fileName.length - fileExtension.length - 1);
 }
