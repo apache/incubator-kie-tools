@@ -30,6 +30,7 @@ import elemental2.core.RegExp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoLanguages.ProvideCompletionItemsFunction;
 
 import static java.util.Arrays.asList;
@@ -46,6 +47,9 @@ import static org.mockito.Mockito.when;
 public class MonacoPropertiesFactoryTest {
 
     private MonacoPropertiesFactory factory;
+
+    @Mock
+    private MonacoFEELVariableSuggestions variableSuggestions;
 
     @Before
     public void setup() {
@@ -218,7 +222,7 @@ public class MonacoPropertiesFactoryTest {
 
         final JSONArray expectedSuggestions = mock(JSONArray.class);
         final List<JSONValue> functions = new ArrayList<>();
-        final List<List<String>> suggestions = asList(
+        final List<List<String>> functionSuggestions = asList(
                 asList("abs(duration)", "abs($1)"),
                 asList("abs(number)", "abs($1)"),
                 asList("after(range, value)", "after($1, $2)"),
@@ -360,16 +364,35 @@ public class MonacoPropertiesFactoryTest {
                 asList("upper case(string)", "upper case($1)"),
                 asList("week of year(date)", "week of year($1)"),
                 asList("years and months duration(from, to)", "years and months duration($1, $2)"));
+        final List<String> variableSuggestions = asList(
+                "Decision-1",
+                "Decision-2",
+                "Decision-3",
+                "Input-Data-1",
+                "Input-Data-2",
+                "Input-Data-3",
+                "Data-Type-1",
+                "Data-Type-2",
+                "Data-Type-3"
+        );
 
-        suggestions.forEach(suggestion -> {
+        when(this.variableSuggestions.getSuggestions()).thenReturn(variableSuggestions);
+
+        functionSuggestions.forEach(suggestion -> {
             final JSONValue function = mock(JSONValue.class);
             functions.add(function);
             doReturn(function).when(factory).getFunctionSuggestion(suggestion.get(0), suggestion.get(1));
         });
 
+        variableSuggestions.forEach(suggestion -> {
+            final JSONValue function = mock(JSONValue.class);
+            functions.add(function);
+            doReturn(function).when(factory).getVariableSuggestion(suggestion);
+        });
+
         doReturn(expectedSuggestions).when(factory).makeJSONArray();
 
-        final JSONArray actualSuggestions = factory.getSuggestions();
+        final JSONArray actualSuggestions = factory.getSuggestions(this.variableSuggestions);
 
         functions.forEach(function -> {
             verify(factory).push(expectedSuggestions, function);
@@ -400,6 +423,28 @@ public class MonacoPropertiesFactoryTest {
         verify(expectedSuggestion).put("insertTextRules", insertTextRules);
         verify(expectedSuggestion).put("label", labelString);
         verify(expectedSuggestion).put("insertText", insertTextString);
+        assertEquals(expectedSuggestion, actualSuggestion);
+    }
+
+    @Test
+    public void testGetVariableSuggestion() {
+
+        final String variable = "variable";
+        final JSONValue kind = mock(JSONValue.class);
+        final JSONValue insertTextRules = mock(JSONValue.class);
+        final JSONObject expectedSuggestion = mock(JSONObject.class);
+        final JSONString variableStringValue = mock(JSONString.class);
+
+        when(factory.makeJSONNumber(4)).thenReturn(kind, insertTextRules);
+        doReturn(expectedSuggestion).when(factory).makeJSONObject();
+        doReturn(variableStringValue).when(factory).makeJSONString(variable);
+
+        final JSONValue actualSuggestion = factory.getVariableSuggestion(variable);
+
+        verify(expectedSuggestion).put("kind", kind);
+        verify(expectedSuggestion).put("insertTextRules", insertTextRules);
+        verify(expectedSuggestion).put("label", variableStringValue);
+        verify(expectedSuggestion).put("insertText", variableStringValue);
         assertEquals(expectedSuggestion, actualSuggestion);
     }
 
@@ -446,11 +491,11 @@ public class MonacoPropertiesFactoryTest {
         final JSONObject functionObject = mock(JSONObject.class);
         final JavaScriptObject expectedCompletionItemProvider = mock(JavaScriptObject.class);
 
-        doReturn(provideCompletionItemsFunction).when(factory).getProvideCompletionItemsFunction();
+        doReturn(provideCompletionItemsFunction).when(factory).getProvideCompletionItemsFunction(variableSuggestions);
         doReturn(functionObject).when(factory).makeJSONObject(provideCompletionItemsFunction);
         doReturn(expectedCompletionItemProvider).when(factory).makeJavaScriptObject("provideCompletionItems", functionObject);
 
-        final JavaScriptObject actualCompletionItemProvider = factory.getCompletionItemProvider();
+        final JavaScriptObject actualCompletionItemProvider = factory.getCompletionItemProvider(variableSuggestions);
 
         assertEquals(expectedCompletionItemProvider, actualCompletionItemProvider);
     }
@@ -463,10 +508,10 @@ public class MonacoPropertiesFactoryTest {
         final JSONArray suggestions = mock(JSONArray.class);
 
         doReturn(expectedJSONObjectSuggestions).when(factory).makeJSONObject();
-        doReturn(suggestions).when(factory).getSuggestions();
+        doReturn(suggestions).when(factory).getSuggestions(variableSuggestions);
         when(expectedJSONObjectSuggestions.getJavaScriptObject()).thenReturn(expectedSuggestions);
 
-        final JavaScriptObject actualSuggestions = factory.getProvideCompletionItemsFunction().call();
+        final JavaScriptObject actualSuggestions = factory.getProvideCompletionItemsFunction(variableSuggestions).call();
 
         verify(expectedJSONObjectSuggestions).put("suggestions", suggestions);
         assertEquals(expectedSuggestions, actualSuggestions);

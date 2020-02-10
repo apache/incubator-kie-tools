@@ -23,6 +23,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
 import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoEditor;
@@ -46,9 +47,12 @@ public class MonacoFEELInitializerTest {
 
     private MonacoFEELInitializer initializer;
 
+    @Mock
+    private MonacoFEELVariableSuggestions variableSuggestions;
+
     @Before
     public void setup() {
-        initializer = spy(new MonacoFEELInitializer());
+        initializer = spy(new MonacoFEELInitializer(variableSuggestions));
     }
 
     @Test
@@ -110,7 +114,7 @@ public class MonacoFEELInitializerTest {
 
         when(properties.getLanguage()).thenReturn(language);
         when(properties.getLanguageDefinition()).thenReturn(languageDefinition);
-        when(properties.getCompletionItemProvider()).thenReturn(completionItemProvider);
+        when(properties.getCompletionItemProvider(variableSuggestions)).thenReturn(completionItemProvider);
         when(properties.getThemeData()).thenReturn(themeData);
         when(properties.getConstructionOptions()).thenReturn(constructionOptions);
         when(properties.getConstructionOptions()).thenReturn(constructionOptions);

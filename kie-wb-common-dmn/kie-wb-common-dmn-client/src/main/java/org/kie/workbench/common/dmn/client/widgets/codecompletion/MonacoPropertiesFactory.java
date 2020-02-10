@@ -134,18 +134,18 @@ public class MonacoPropertiesFactory {
      * This method returns a JavaScript object with properties specified here:
      * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.completionitemprovider.html
      */
-    public JavaScriptObject getCompletionItemProvider() {
-        return makeJavaScriptObject("provideCompletionItems", makeJSONObject(getProvideCompletionItemsFunction()));
+    public JavaScriptObject getCompletionItemProvider(final MonacoFEELVariableSuggestions variableSuggestions) {
+        return makeJavaScriptObject("provideCompletionItems", makeJSONObject(getProvideCompletionItemsFunction(variableSuggestions)));
     }
 
     /*
      * This method returns a JavaScript object with properties specified here:
      * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.completionlist.html
      */
-    ProvideCompletionItemsFunction getProvideCompletionItemsFunction() {
+    ProvideCompletionItemsFunction getProvideCompletionItemsFunction(final MonacoFEELVariableSuggestions variableSuggestions) {
         return () -> {
             final JSONObject suggestions = makeJSONObject();
-            suggestions.put("suggestions", getSuggestions());
+            suggestions.put("suggestions", getSuggestions(variableSuggestions));
             return suggestions.getJavaScriptObject();
         };
     }
@@ -185,10 +185,24 @@ public class MonacoPropertiesFactory {
         return root;
     }
 
-    public JSONArray getSuggestions() {
+    JSONArray getSuggestions(final MonacoFEELVariableSuggestions variableSuggestions) {
 
         final JSONArray suggestionTypes = makeJSONArray();
 
+        populateVariableSuggestions(variableSuggestions, suggestionTypes);
+        populateFunctionSuggestions(suggestionTypes);
+
+        return suggestionTypes;
+    }
+
+    private void populateVariableSuggestions(final MonacoFEELVariableSuggestions variableSuggestions,
+                                             final JSONArray suggestionArray) {
+        variableSuggestions
+                .getSuggestions()
+                .forEach(variable -> push(suggestionArray, getVariableSuggestion(variable)));
+    }
+
+    private void populateFunctionSuggestions(final JSONArray suggestionTypes) {
         push(suggestionTypes, getFunctionSuggestion("abs(duration)", "abs($1)"));
         push(suggestionTypes, getFunctionSuggestion("abs(number)", "abs($1)"));
         push(suggestionTypes, getFunctionSuggestion("after(range, value)", "after($1, $2)"));
@@ -330,8 +344,6 @@ public class MonacoPropertiesFactory {
         push(suggestionTypes, getFunctionSuggestion("upper case(string)", "upper case($1)"));
         push(suggestionTypes, getFunctionSuggestion("week of year(date)", "week of year($1)"));
         push(suggestionTypes, getFunctionSuggestion("years and months duration(from, to)", "years and months duration($1, $2)"));
-
-        return suggestionTypes;
     }
 
     JSONValue getFunctionSuggestion(final String label,
@@ -345,6 +357,21 @@ public class MonacoPropertiesFactory {
         suggestion.put("insertTextRules", makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
         suggestion.put("label", makeJSONString(label));
         suggestion.put("insertText", makeJSONString(insertText));
+
+        return suggestion;
+    }
+
+    JSONValue getVariableSuggestion(final String variable) {
+
+        final JSONObject suggestion = makeJSONObject();
+        final int completionItemKindVariable = 4;
+        final int completionItemInsertTextRuleInsertAsSnippet = 4;
+        final JSONString variableSuggestion = makeJSONString(variable);
+
+        suggestion.put("kind", makeJSONNumber(completionItemKindVariable));
+        suggestion.put("insertTextRules", makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
+        suggestion.put("label", variableSuggestion);
+        suggestion.put("insertText", variableSuggestion);
 
         return suggestion;
     }

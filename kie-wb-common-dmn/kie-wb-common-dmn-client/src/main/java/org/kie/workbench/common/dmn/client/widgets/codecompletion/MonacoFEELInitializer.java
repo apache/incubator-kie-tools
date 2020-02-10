@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.codecompletion;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
 import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
@@ -33,6 +34,13 @@ import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoP
 public class MonacoFEELInitializer {
 
     private MonacoFEELInitializationStatus initializationStatus = NOT_INITIALIZED;
+
+    private final MonacoFEELVariableSuggestions variableSuggestions;
+
+    @Inject
+    public MonacoFEELInitializer(final MonacoFEELVariableSuggestions variableSuggestions) {
+        this.variableSuggestions = variableSuggestions;
+    }
 
     public void initializeFEELEditor() {
 
@@ -49,7 +57,7 @@ public class MonacoFEELInitializer {
         return monaco -> {
             monaco.languages.register(properties.getLanguage());
             monaco.languages.setMonarchTokensProvider(FEEL_LANGUAGE_ID, properties.getLanguageDefinition());
-            monaco.languages.registerCompletionItemProvider(FEEL_LANGUAGE_ID, properties.getCompletionItemProvider());
+            monaco.languages.registerCompletionItemProvider(FEEL_LANGUAGE_ID, properties.getCompletionItemProvider(variableSuggestions));
             monaco.editor.defineTheme(FEEL_THEME_ID, properties.getThemeData());
             setFEELAsInitialized();
         };
