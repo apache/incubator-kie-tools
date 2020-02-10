@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { EditIcon } from '@patternfly/react-icons'
+import { ArrowIcon } from '@patternfly/react-icons'
 
 export function OpenExternalEditorButton(props: {
     href: string
@@ -24,7 +24,7 @@ export function OpenExternalEditorButton(props: {
     return (
         <>
             <a href={props.href} target="blank" title="Open in Online Editor">
-                <EditIcon />
+                <ArrowIcon />
             </a>
         </>
     );
