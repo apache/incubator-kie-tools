@@ -130,7 +130,6 @@ export function HomePage(props: Props) {
 
   const logoProps = {
     href: "/",
-    target: "_blank"
   };
 
   const linkDropdownItems = [
@@ -151,7 +150,7 @@ export function HomePage(props: Props) {
       <Link to ={'/'}>Documentation</Link>
     </DropdownItem>,*/
     <DropdownItem key="">
-      <a href={"https://groups.google.com/forum/#!forum/kogito-development"}>Online forum</a>
+      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" /></a>
     </DropdownItem>
   ];
 
