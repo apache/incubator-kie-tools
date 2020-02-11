@@ -19,9 +19,11 @@ import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import { EMPTY_FILE } from "./common/File";
 import { removeDirectories, removeFileExtension } from "./common/utils";
-import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
+import { GithubService } from "./common/GithubService";
+import { Alert, AlertVariant, AlertActionLink } from "@patternfly/react-core";
 
 const urlParams = new URLSearchParams(window.location.search);
+const githubService = new GithubService();
 
 if (urlParams.has("ext")) {
   waitForEventWithFileData();
@@ -56,18 +58,28 @@ function waitForEventWithFileData() {
 
 function openFileByUrl() {
   const filePath = urlParams.get("file")!;
-
-  fetch(filePath)
-    .then(response => {
-      if (response.ok) {
-        openFile(filePath, response.text());
-      } else {
-        showResponseError(response.status, response.statusText);
-      }
-    })
-    .catch(error => {
-      showFetchError(error.toString());
-    });
+  if (githubService.isGithub(filePath)) {
+    githubService
+      .fetchGithubFile(filePath)
+      .then(response => {
+        openFile(filePath, Promise.resolve(response));
+      })
+      .catch(error => {
+        showFetchError(error.toString());
+      });
+  } else {
+    fetch(filePath)
+      .then(response => {
+        if (response.ok) {
+          openFile(filePath, response.text());
+        } else {
+          showResponseError(response.status, response.statusText);
+        }
+      })
+      .catch(error => {
+        showFetchError(error.toString());
+      });
+  }
 }
 
 function openFile(filePath: string, getFileContent: Promise<string>) {
