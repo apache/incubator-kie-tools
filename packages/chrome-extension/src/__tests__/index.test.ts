@@ -23,7 +23,7 @@ function setWindowLocationPathname(pathname: string) {
 }
 
 describe("extractFileInfoFromUrl", () => {
-  test("", async () => {
+  test("default", async () => {
     setWindowLocationPathname("/org/repo/blob/my-branch/this/is/a/foo.test");
     const fileInfo = index.extractFileInfoFromUrl();
 
