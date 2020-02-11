@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -28,7 +27,6 @@ import com.google.gwt.user.client.ui.Widget;
 import static com.google.gwt.dom.client.Style.Display.NONE;
 import static com.google.gwt.dom.client.Style.Display.TABLE;
 
-@Dependent
 public abstract class ImportsEditorWidget<T> implements ImportsEditorWidgetView.Presenter<T> {
 
     @Inject

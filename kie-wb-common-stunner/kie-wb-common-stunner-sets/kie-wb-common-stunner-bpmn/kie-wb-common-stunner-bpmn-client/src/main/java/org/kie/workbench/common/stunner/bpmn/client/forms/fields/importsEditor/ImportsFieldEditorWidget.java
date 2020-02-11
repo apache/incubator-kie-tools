@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup.ImportsEditor;
@@ -39,15 +40,18 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 @Templated
 public class ImportsFieldEditorWidget extends Composite implements HasValue<ImportsValue> {
 
+    private ImportsValue importsValue;
+
     @Inject
     protected ImportsEditor importsEditor;
+
     @Inject
     @DataField
-    private Button importsButton;
+    protected Button importsButton;
+
     @Inject
     @DataField
-    private TextBox importsTextBox;
-    private ImportsValue importsValue;
+    protected TextBox importsTextBox;
 
     public ImportsFieldEditorWidget() {
     }
@@ -159,10 +163,12 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         return copy;
     }
 
+    @EventHandler("importsButton")
     public void onClickImportsButton(final ClickEvent clickEvent) {
         showImportsEditor();
     }
 
+    @EventHandler("importsTextBox")
     public void onClickImportsTextBox(final ClickEvent clickEvent) {
         showImportsEditor();
     }
