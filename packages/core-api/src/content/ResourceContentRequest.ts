@@ -17,7 +17,6 @@
 import { ResourceContentOptions } from "./ResourceContentOptions";
 
 export interface ResourceContentRequest {
-    path: string;
-    opts: ResourceContentOptions;
-
+  path: string;
+  opts: ResourceContentOptions;
 }

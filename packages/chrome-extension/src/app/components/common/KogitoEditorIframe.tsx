@@ -92,7 +92,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         },
         receive_ready() {
           logger.log(`Editor is ready`);
-          onEditorReady ?.();
+          onEditorReady?.();
         },
         receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
           console.debug(`Trying to read content from ${resourceContentRequest.path}`);

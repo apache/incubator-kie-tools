@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { ResourceContent, ResourceContentService, ResourcesList, ResourceContentOptions } from "@kogito-tooling/core-api";
+import {
+  ResourceContent,
+  ResourceContentService,
+  ResourcesList,
+  ResourceContentOptions
+} from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";

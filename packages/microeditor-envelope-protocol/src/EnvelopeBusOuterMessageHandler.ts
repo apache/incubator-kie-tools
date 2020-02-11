@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { LanguageData, ResourceContent, ResourcesList, EditorContent, ResourceContentRequest, ResourceContentService } from "@kogito-tooling/core-api";
+import {
+  LanguageData,
+  ResourceContent,
+  ResourcesList,
+  EditorContent,
+  ResourceContentRequest,
+  ResourceContentService
+} from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";

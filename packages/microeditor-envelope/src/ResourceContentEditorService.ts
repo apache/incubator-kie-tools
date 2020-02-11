@@ -16,11 +16,8 @@
 
 import { ResourceContentOptions } from "@kogito-tooling/core-api";
 
-
 export interface ResourceContentEditorService {
-
   get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
 
   list(pattern: string): Promise<string[]>;
-
 }

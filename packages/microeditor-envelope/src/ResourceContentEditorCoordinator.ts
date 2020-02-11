@@ -19,7 +19,6 @@ import { ResourcesList, ResourceContent, ResourceContentOptions } from "@kogito-
 import { ResourceContentEditorService } from "./ResourceContentEditorService";
 
 export class ResourceContentEditorCoordinator {
-
   private pendingResourceRequests = new Map<string, (c: string) => void>();
   private pendingResourceListRequests = new Map<string, (c: string[]) => void>();
 
@@ -29,7 +28,7 @@ export class ResourceContentEditorCoordinator {
       resourceListCallback(resourcesList.paths);
       this.pendingResourceRequests.delete(resourcesList.pattern);
     } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for pattern "${resourcesList.pattern}" not found.`)
+      console.error(`[ResourceContentEditorCoordinator]: Callback for pattern "${resourcesList.pattern}" not found.`);
     }
   }
 
@@ -39,7 +38,7 @@ export class ResourceContentEditorCoordinator {
       resourceContentCallback(resourceContent.content!);
       this.pendingResourceRequests.delete(resourceContent.path);
     } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for resource "${resourceContent.path}" not found.`)
+      console.error(`[ResourceContentEditorCoordinator]: Callback for resource "${resourceContent.path}" not found.`);
     }
   }
 
@@ -74,5 +73,4 @@ export class ResourceContentEditorCoordinator {
       }
     };
   }
-
 }

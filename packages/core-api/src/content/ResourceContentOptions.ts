@@ -17,6 +17,5 @@ import { ContentType } from "./ContentType";
  */
 
 export interface ResourceContentOptions {
-    type: ContentType;
-
+  type: ContentType;
 }

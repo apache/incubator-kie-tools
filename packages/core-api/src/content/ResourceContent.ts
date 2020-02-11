@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 import { ContentType } from "./ContentType";
 
@@ -21,9 +21,7 @@ export class ResourceContent {
   public readonly content?: string;
   public readonly type: ContentType;
 
-  constructor(path: string,
-    content: string | undefined,
-    type?: ContentType) {
+  constructor(path: string, content: string | undefined, type?: ContentType) {
     this.path = path;
     this.content = content;
     this.type = type || ContentType.TEXT;

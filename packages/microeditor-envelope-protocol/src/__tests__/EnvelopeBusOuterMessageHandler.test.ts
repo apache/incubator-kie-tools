@@ -52,7 +52,7 @@ beforeEach(() => {
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       },
-      receive_resourceContentRequest(resourceContentRequest : ResourceContentRequest): void {
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest): void {
         receivedMessages.push("resourceContentRequest_" + resourceContentRequest.path);
       },
       receive_readResourceContentError(errorMessage: string): void {

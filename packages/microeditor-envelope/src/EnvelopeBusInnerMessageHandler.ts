@@ -19,7 +19,15 @@ import {
   EnvelopeBusMessage,
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData, ResourceContent, ResourcesList, EditorContent, ChannelType, ResourceContentRequest, ResourceContentOptions } from "@kogito-tooling/core-api";
+import {
+  LanguageData,
+  ResourceContent,
+  ResourcesList,
+  EditorContent,
+  ChannelType,
+  ResourceContentRequest,
+  ResourceContentOptions
+} from "@kogito-tooling/core-api";
 
 export interface Impl {
   receive_contentResponse(content: EditorContent): void;
@@ -80,7 +88,7 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public notify_setContentError(errorMessage: string) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage })
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage });
   }
 
   public notify_dirtyIndicatorChange(isDirty: boolean) {
@@ -92,7 +100,7 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: {path: path, opts: opts} });
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: path, opts: opts } });
   }
 
   public request_resourceList(pattern: string) {

@@ -16,7 +16,14 @@
 
 import * as Octokit from "@octokit/rest";
 import { ContentType } from "@kogito-tooling/core-api";
-export function fetchFile(octokit: Octokit, org: string, repo: string, ref: string, path: string, contentType?: ContentType) {
+export function fetchFile(
+  octokit: Octokit,
+  org: string,
+  repo: string,
+  ref: string,
+  path: string,
+  contentType?: ContentType
+) {
   return octokit.repos
     .getContents({
       repo: repo,
@@ -25,7 +32,7 @@ export function fetchFile(octokit: Octokit, org: string, repo: string, ref: stri
       path: path,
       headers: { "cache-control": "no-cache" }
     })
-    .then(res => contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content))
+    .then(res => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
     .catch(e => {
       console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
       return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(res =>
