@@ -123,7 +123,13 @@ function init(args: Globals) {
     });
   } else if (pageType === GitHubPageType.TREE) {
     addExternalEditorLinks({
+      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
+      id: args.id,
+      logger: args.logger,
       router: args.router,
+      extensionIconUrl: args.extensionIconUrl,
+      editorIndexPath: args.editorIndexPath,
+      resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
     return;

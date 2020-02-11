@@ -62,7 +62,7 @@ export const treeView = {
   fileLinkTarget(container: HTMLElement) {
     return container.querySelector("span > a") as HTMLAnchorElement | null;
   }
-}
+};
 
 //
 

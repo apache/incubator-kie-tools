@@ -16,62 +16,27 @@
 
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { ExternalEditorManager } from "../../../ExternalEditorManager";
-import { extractOpenFileExtension } from "../../utils";
-import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
-import { treeView } from "../../dependencies";
+import { FileTreeWithExternalLink } from "./FileTreeWithExternalLink";
+import { Main, Globals } from "../common/Main";
+import { createAndGetMainContainer } from "../../utils";
+import * as dependencies__ from "../../dependencies";
 
-export function addExternalEditorLinks(args: {
-    router: Router,
-    externalEditorManager?: ExternalEditorManager
-}) {
-    addLinksToExternalEditor(args.router, args.externalEditorManager);
-    const observer = new MutationObserver(() => addLinksToExternalEditor(args.router, args.externalEditorManager));
-    observer.observe(treeView.filesContainer()!, { childList: true });
-}
-
-function addLinksToExternalEditor(router: Router, externalEditorManager?: ExternalEditorManager | undefined) {
-    treeView.filesLinksContainers()
-        .filter(container => container.childElementCount > 0)
-        .filter(container => treeView.fileLinkTarget(container)!.pathname.split('/')[3] === 'blob')
-        .filter(container => {
-            const fileLink = treeView.fileLinkTarget(container)!;
-            const ext = extractOpenFileExtension(fileLink.href);
-            return router.getLanguageData(ext as any);
-        })
-        .forEach(container => {
-            const fileLink = treeView.fileLinkTarget(container);
-            if (!fileLink) {
-                return;
-            }
-            const parentId = getLinkParentId(fileLink.id);
-            let parentDiv = document.getElementById(parentId);
-            if (!parentDiv) {
-                parentDiv = createLinkParentDiv(parentId);
-                container.append(parentDiv);
-                ReactDOM.render(<OpenExternalEditorButton href={createTargetUrl(fileLink, externalEditorManager)} />, parentDiv);
-            }
-        });
-}
-
-function createLinkParentDiv(id: string) {
-    const parentDiv = document.createElement('div');
-    parentDiv.id = id;
-    parentDiv.className = "float-right";
-    return parentDiv;
-}
-
-function createTargetUrl(
-    fileLink: HTMLAnchorElement,
-    externalEditorManager?: ExternalEditorManager): string {
-    const split = fileLink.pathname.split("/")
-    split.splice(0, 1);
-    split.splice(2, 1);
-    const linkToOpen = split.join("/");
-    return externalEditorManager!.getLink(linkToOpen);
-}
-
-function getLinkParentId(linkId: string) {
-    return "external_link_" + linkId;
+export function addExternalEditorLinks(args: Globals) {
+  if (dependencies__.treeView.filesContainer()) {
+    ReactDOM.render(
+      <Main
+        id={args.id}
+        router={args.router}
+        logger={args.logger}
+        githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+        extensionIconUrl={args.extensionIconUrl}
+        editorIndexPath={args.editorIndexPath}
+        resourceContentServiceFactory={args.resourceContentServiceFactory}
+        externalEditorManager={args.externalEditorManager}
+      >
+        <FileTreeWithExternalLink router={args.router} externalEditorManager={args.externalEditorManager} />
+      </Main>,
+      createAndGetMainContainer(args.id, dependencies__.all.body())
+    );
+  }
 }

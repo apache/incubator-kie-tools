@@ -15,17 +15,20 @@
  */
 
 import * as React from "react";
-import { ArrowIcon } from '@patternfly/react-icons'
+import * as ReactDOM from "react-dom";
+import { ArrowIcon } from "@patternfly/react-icons";
 
-export function OpenExternalEditorButton(props: {
-    href: string
-}) {
-
-    return (
-        <>
-            <a href={props.href} target="blank" title="Open in Online Editor">
-                <ArrowIcon />
-            </a>
-        </>
-    );
+export function OpenExternalEditorButton(props: { id: string; container: HTMLElement; href: string }) {
+  return (
+    <>
+      {ReactDOM.createPortal(
+        <div id={props.id} className="float-right">
+          <a href={props.href} target="blank" title="Open in Online Editor">
+            <ArrowIcon />
+          </a>
+        </div>,
+        props.container
+      )}
+    </>
+  );
 }
