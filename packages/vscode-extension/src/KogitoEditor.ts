@@ -87,10 +87,10 @@ export class KogitoEditor {
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
         },
-        receive_resourceContentRequest: (resourceContentRequest: ResourceContentRequest) => {
+        receive_resourceContentRequest: (request: ResourceContentRequest) => {
           this.resourceContentService
-            .get(resourceContentRequest.path, resourceContentRequest.opts)
-            .then((v: ResourceContent) => self.respond_resourceContent(v));
+            .get(request.path, request.opts)
+            .then(content => self.respond_resourceContent(content!));
         },
         receive_resourceListRequest: (pattern: string) => {
           this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));

@@ -13,7 +13,7 @@ export class VsCodeResourceContentService implements ResourceContentService {
     const type = opts?.type;
     if (contentPath) {
       return new Promise(resolve => {
-        if (type && type === ContentType.BINARY) {
+        if (type === ContentType.BINARY) {
           vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(content => {
             const base64Content = new Buffer(content).toString("base64");
             resolve(new ResourceContent(path, base64Content, ContentType.BINARY));
