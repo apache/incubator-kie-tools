@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-# runs all smoke tests for the operator
+# runs all BDD tests for the operator
 SCRIPT_NAME=`basename $0`
 SCRIPT_DIR=`dirname $0`
 
@@ -27,13 +27,14 @@ CRD_FILES_TO_IMPORT=(
   )
 
 function usage(){
-  printf "Run smoke tests."
+  printf "Run BDD tests."
   printf "\n"
   printf "\n${SCRIPT_NAME} [options]*"
   printf "\n"
   printf "\nOptions:"
   printf "\n"
   printf "\n-h | --help\n\tPrint the usage of this script."
+  printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
       printf "\n\t\t- '@wip': run all scenarios with wip tag"
@@ -42,20 +43,26 @@ function usage(){
       printf "\n\t\t- '@wip,@undone': run wip or undone scenarios"
     printf "\n\t Scenarios with '@disabled' tag are always ignored."
   printf "\n--concurrent {NUMBER}\n\tSet the number of concurrent tests. Default is 1."
-  printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall run in minutes. Default is 240."
+  printf "\n--debug {BOOLEAN}\n\tRun in debug mode."
   printf "\n--local {BOOLEAN}\n\tSpecify whether you run test in local."
+  printf "\n--smoke {BOOLEAN}\n\tFilter to run only the tests tagged with '@smoke'."
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
   printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
   printf "\n--deploy_uri {URI}\n\tUrl or Path to operator 'deploy' folder. Default is local 'deploy/' folder."
+  printf "\n--services_image_version\n\tSet the services image version. Default to current operator version"
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
-  printf "\n--build_image_version\n\tSet the image version. Default to current operator version"
+  printf "\n--build_image_version\n\tSet the build image version. Default to current operator version"
   printf "\n--build_image_tag\n\tSet the build image full tag."
   printf "\n--build_s2i_image_tag \n\tSet the S2I build image full tag."
   printf "\n--build_runtime_image_tag \n\tSet the Runtime build image full tag."
   printf "\n--examples_uri ${URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
   printf "\n--examples_ref ${REF}\n\tSet the branch for the kogito-examples repository. Default is none."
+
+  printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
+  printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
+  printf "\n--dry_run ${REF}\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
   printf "\n"
 }
 
@@ -116,7 +123,7 @@ TAGS="" # tags are parsed independently as there could be whitespace to be handl
 FEATURE=""
 TIMEOUT=240
 DEBUG=false
-DRY_RUN=
+CRDS_UPDATE=true
 
 while (( $# ))
 do
@@ -129,6 +136,19 @@ case $1 in
       fi
       shift
     fi
+  ;;
+  --tags)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        TAGS="${1}"
+      fi
+      shift
+    fi
+  ;;
+  --concurrent)
+    shift
+    if addParamKeyValueIfAccepted "--godog.concurrency" ${1}; then shift; fi
   ;;
   --timeout)
     shift
@@ -150,25 +170,23 @@ case $1 in
       shift
     fi
   ;;
-  --tags)
-    shift
-    if isValueNotOption ${1}; then
-      if isValueNotEmpty ${1}; then
-        TAGS="${1}"
-      fi
-      shift
-    fi
-  ;;
-  --concurrent)
-    shift
-    if addParamKeyValueIfAccepted "--godog.concurrency" ${1}; then shift; fi
-  ;;
   --local)
     shift
     if isValueNotOption ${1}; then
       if isValueNotEmpty ${1}; then
         if [[ "${1}" = "true" ]]; then
-          addParam "--smoke.local"
+          addParam "--tests.local"
+        fi
+      fi
+      shift
+    fi
+  ;;
+  --smoke)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        if [[ "${1}" = "true" ]]; then
+          addParam "--tests.smoke"
         fi
       fi
       shift
@@ -176,50 +194,60 @@ case $1 in
   ;;
   --operator_image)
     shift
-    if addParamKeyValueIfAccepted "--smoke.operator-image-name" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.operator-image-name" ${1}; then shift; fi
   ;;
   --operator_tag)
     shift
-    if addParamKeyValueIfAccepted "--smoke.operator-image-tag" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.operator-image-tag" ${1}; then shift; fi
   ;;
   --cli_path)
     shift
-    if addParamKeyValueIfAccepted "--smoke.cli-path" ${1}; then shift; fi
-  ;;
-  --services_image_version)
-    shift
-    if addParamKeyValueIfAccepted "--smoke.services-image-version" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.cli-path" ${1}; then shift; fi
   ;;
   --deploy_uri)
     shift
-    if addParamKeyValueIfAccepted "--smoke.operator-deploy-uri" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.operator-deploy-uri" ${1}; then shift; fi
+  ;;
+  --services_image_version)
+    shift
+    if addParamKeyValueIfAccepted "--tests.services-image-version" ${1}; then shift; fi
   ;;
   --maven_mirror)
     shift
-    if addParamKeyValueIfAccepted "--smoke.maven-mirror-url" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.maven-mirror-url" ${1}; then shift; fi
   ;;
   --build_image_version)
     shift
-    if addParamKeyValueIfAccepted "--smoke.build-image-version" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.build-image-version" ${1}; then shift; fi
   ;;
   --build_s2i_image_tag)
     shift
-    if addParamKeyValueIfAccepted "--smoke.build-s2i-image-tag" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.build-s2i-image-tag" ${1}; then shift; fi
   ;;
   --build_runtime_image_tag)
     shift
-    if addParamKeyValueIfAccepted "--smoke.build-runtime-image-tag" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.build-runtime-image-tag" ${1}; then shift; fi
   ;;
   --examples_uri)
     shift
-    if addParamKeyValueIfAccepted "--smoke.examples-uri" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.examples-uri" ${1}; then shift; fi
   ;;
   --examples_ref)
     shift
-    if addParamKeyValueIfAccepted "--smoke.examples-ref" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.examples-ref" ${1}; then shift; fi
   ;;
-  --dry-run)
-    DRY_RUN=true
+  --show_scenarios)
+    shift
+    addParam "--tests.show-scenarios"
+  ;;
+  --disabled_crds_update)
+    CRDS_UPDATE=false
+    shift
+  ;;
+  --dry_run)
+    CRDS_UPDATE=false
+    addParam "--tests.show-scenarios"
+    addParam "--tests.dry-run"
     shift
   ;;
   -h|--help)
@@ -234,37 +262,36 @@ case $1 in
 esac
 done
 
-echo "DEBUG=${DEBUG} go test ./test/smoke -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
+if ${CRDS_UPDATE}; then
+  echo "-------- Apply CRD files"
 
-if [[ ${DRY_RUN} ]]; then
-  exit 0
-fi
-
-echo "-------- Apply CRD files"
-
-deploy_folder="${SCRIPT_DIR}/../deploy"
-if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then 
-  # Get crds files from URI if 
-  if [[ ${OPERATOR_DEPLOY_FOLDER} == http://* ]] || [[ ${OPERATOR_DEPLOY_FOLDER} == https://* ]]; then
-    url=${OPERATOR_DEPLOY_FOLDER}
-    deploy_folder=`mktemp -d`
-    download_remote_crds ${deploy_folder} ${url}
-  else
-    deploy_folder="${OPERATOR_DEPLOY_FOLDER}"
+  deploy_folder="${SCRIPT_DIR}/../deploy"
+  if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then 
+    # Get crds files from URI if 
+    if [[ ${OPERATOR_DEPLOY_FOLDER} == http://* ]] || [[ ${OPERATOR_DEPLOY_FOLDER} == https://* ]]; then
+      url=${OPERATOR_DEPLOY_FOLDER}
+      deploy_folder=`mktemp -d`
+      download_remote_crds ${deploy_folder} ${url}
+    else
+      deploy_folder="${OPERATOR_DEPLOY_FOLDER}"
+    fi
   fi
+  apply_crds ${deploy_folder}
 fi
-apply_crds ${deploy_folder}
 
-echo "-------- Running smoke tests"
+echo "-------- Running BDD tests"
 
-DEBUG=${DEBUG} go test ./test/smoke -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
+echo "DEBUG=${DEBUG} go test ./test -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
+DEBUG=${DEBUG} go test ./test -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
 
-echo "-------- Set back master CRD files"
+if ${CRDS_UPDATE}; then
+  echo "-------- Set back master CRD files"
 
-deploy_folder=`mktemp -d`
-download_remote_crds ${deploy_folder} ${MASTER_RAW_URL}
-apply_crds ${deploy_folder}
+  deploy_folder=`mktemp -d`
+  download_remote_crds ${deploy_folder} ${MASTER_RAW_URL}
+  apply_crds ${deploy_folder}
+fi
 
 exit ${exit_code}
