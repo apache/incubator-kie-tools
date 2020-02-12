@@ -1527,6 +1527,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-library-spaces-screen</artifactId>
     </dependency>
@@ -1747,6 +1752,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-management-api</compileSourcesArtifact>
