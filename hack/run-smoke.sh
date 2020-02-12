@@ -71,15 +71,8 @@ function download_remote_crds(){
   done
 }
 
-function delete_and_apply_crds(){
+function apply_crds(){
   deploy_folder=${1}
-
-  OLD_CLUSTER_CRDS=`oc get crds | grep kogito | awk -F' ' '{print $1}'`
-  for crd in ${OLD_CLUSTER_CRDS};
-  do
-    echo "Delete crds ${crd}"
-    oc delete crds ${crd}
-  done
   for file in ${CRD_FILES_TO_IMPORT[*]}
   do
     crd_file="${deploy_folder}/crds/${file}"
@@ -256,7 +249,7 @@ if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then
     deploy_folder="${OPERATOR_DEPLOY_FOLDER}"
   fi
 fi
-delete_and_apply_crds ${deploy_folder}
+apply_crds ${deploy_folder}
 
 echo "-------- Running smoke tests"
 
@@ -268,6 +261,6 @@ echo "-------- Set back master CRD files"
 
 deploy_folder=`mktemp -d`
 download_remote_crds ${deploy_folder} ${MASTER_RAW_URL}
-delete_and_apply_crds ${deploy_folder}
+apply_crds ${deploy_folder}
 
 exit ${exit_code}
