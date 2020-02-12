@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
-import {useGlobals} from "./GlobalContext";
+import { useGlobals } from "./GlobalContext";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 

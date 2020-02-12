@@ -1,0 +1,292 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SingleEditorToolbar button actions 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+      disabled=""
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="open-ext-editor-button"
+    >
+      Open in Test Online Editor
+    </button>
+    <div
+      class="position-relative"
+    >
+      <button
+        class="btn btn-sm kogito-button"
+        data-testid="copy-link-button"
+      >
+        Copy link to Test Online Editor
+      </button>
+      <div
+        class="position-absolute"
+        data-testid="link-copied-alert"
+        style="margin-top: 34px; right: 0px;"
+      >
+        <div
+          class="dropdown-menu dropdown-menu-sw kogito-github-action-alert"
+        >
+          <span>
+            Link copied to clipboard
+          </span>
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar copied to clipboard message 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+      disabled=""
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="open-ext-editor-button"
+    >
+      Open in Test Online Editor
+    </button>
+    <div
+      class="position-relative"
+    >
+      <button
+        class="btn btn-sm kogito-button"
+        data-testid="copy-link-button"
+      >
+        Copy link to Test Online Editor
+      </button>
+    </div>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+      disabled=""
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled true 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+  <h4>
+    🔸️ This is a readonly visualization
+  </h4>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled true 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+      disabled=""
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+  <h4>
+    🔸️ This is a readonly visualization
+  </h4>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly true | textMode true | textModeEnabled false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar see as diagram 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar see as source 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="see-as-source-button"
+    >
+      See as source
+    </button>
+    <button
+      class="btn btn-sm kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full screen
+    </button>
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+  </div>
+</DocumentFragment>
+`;

@@ -99,15 +99,16 @@ export function kogitoMenuContainer(id: string, container: HTMLElement) {
   const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    container.insertAdjacentHTML(
-      "beforebegin",
-      `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`
-    );
+    container.insertAdjacentHTML("beforebegin", `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`);
   }
 
   return element();
 }
 
 export function extractOpenFileExtension(url: string) {
-  return url.split(".").pop()?.match(/[\w\d]+/)?.pop();
+  return url
+    .split(".")
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
 }

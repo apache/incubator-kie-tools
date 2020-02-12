@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as dependencies__ from "../../dependencies";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
@@ -31,8 +30,8 @@ import { IsolatedEditor } from "../common/IsolatedEditor";
 import {
   GITHUB_RENAMED_FILE_ARROW,
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
-  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS,
+  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
 import * as Octokit from "@octokit/rest";
@@ -102,25 +101,30 @@ export function IsolatedPrEditor(props: {
     fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
 
   const openExternalEditor = () => {
-    getFileContents().then(fileContent => globals.externalEditorManager ?.open(filePath, fileContent!, true));
+    getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
   };
   const repoInfo = useMemo(() => {
     return showOriginal
       ? {
-        owner: props.prInfo.targetOrg,
-        gitref: props.prInfo.targetGitRef,
-        repo: props.prInfo.repo
-      }
+          owner: props.prInfo.targetOrg,
+          gitref: props.prInfo.targetGitRef,
+          repo: props.prInfo.repo
+        }
       : {
-        owner: props.prInfo.org,
-        gitref: props.prInfo.gitRef,
-        repo: props.prInfo.repo
-      };
+          owner: props.prInfo.org,
+          gitref: props.prInfo.gitRef,
+          repo: props.prInfo.repo
+        };
   }, [showOriginal]);
 
   return (
     <IsolatedEditorContext.Provider
-      value={{ textMode: textMode, fullscreen: false, repoInfo: repoInfo, onEditorReady: () => setEditorReady(true) }}
+      value={{
+        textMode: textMode,
+        fullscreen: false,
+        repoInfo: repoInfo,
+        onEditorReady: () => setEditorReady(true)
+      }}
     >
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
@@ -130,7 +134,7 @@ export function IsolatedPrEditor(props: {
           viewOriginalFileLinkContainer(
             globals.id,
             props.prFileContainer,
-            dependencies__.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
           )
         )}
 
@@ -141,7 +145,7 @@ export function IsolatedPrEditor(props: {
           </a>,
           openWithExternalEditorLinkContainer(
             props.prFileContainer,
-            dependencies__.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
           )
         )}
 
@@ -158,7 +162,7 @@ export function IsolatedPrEditor(props: {
         toolbarContainer(
           globals.id,
           props.prFileContainer,
-          dependencies__.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
+          globals.dependencies.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
         )
       )}
 
@@ -172,7 +176,10 @@ export function IsolatedPrEditor(props: {
           readonly={true}
           keepRenderedEditorInTextMode={false}
         />,
-        iframeContainer(globals.id, dependencies__.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement)
+        iframeContainer(
+          globals.id,
+          globals.dependencies.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement
+        )
       )}
     </IsolatedEditorContext.Provider>
   );

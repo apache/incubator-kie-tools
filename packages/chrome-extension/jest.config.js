@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-export class RepoInfo {
-  public owner: string;
-  public repo: string;
-  public gitref: string;
-}
+module.exports = {
+  setupFiles: ["<rootDir>/jest/jest-env-setup.js"],
+  snapshotSerializers: ["<rootDir>/../../node_modules/enzyme-to-json/serializer"],
+  reporters: ["default", "jest-junit"],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+  }
+};

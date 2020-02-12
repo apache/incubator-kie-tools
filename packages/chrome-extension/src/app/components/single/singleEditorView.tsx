@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as dependencies__ from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -41,7 +41,7 @@ export interface FileInfo {
 export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
-  if (!dependencies__.singleView.githubTextEditorToReplaceElement()) {
+  if (!args.dependencies.singleView.githubTextEditorToReplaceElement()) {
     args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
     return;
   }
@@ -59,13 +59,14 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
 
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
+  cleanup(args.id, args.dependencies);
 
   ReactDOM.render(
     <Main
       id={args.id}
       router={args.router}
       logger={args.logger}
+      dependencies={args.dependencies}
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
       editorIndexPath={args.editorIndexPath}
@@ -74,7 +75,7 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
     >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
-    createAndGetMainContainer(args.id, dependencies__.all.body()!),
+    createAndGetMainContainer(args.id, args.dependencies.all.body()!),
     () => args.logger.log("Mounted.")
   );
 }
@@ -103,27 +104,27 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       openFileExtension={props.openFileExtension}
       getFileName={getFileName}
       getFileContents={getFileContents}
-      iframeContainer={iframeContainer(globals.id)}
-      toolbarContainer={toolbarContainer(globals.id)}
-      githubTextEditorToReplace={dependencies__.singleView.githubTextEditorToReplaceElement()!}
+      iframeContainer={iframeContainer(globals.id, globals.dependencies)}
+      toolbarContainer={toolbarContainer(globals.id, globals.dependencies)}
+      githubTextEditorToReplace={globals.dependencies.singleView.githubTextEditorToReplaceElement()!}
       fileInfo={props.fileInfo}
     />
   );
 }
 
-function cleanup(id: string) {
+function cleanup(id: string, dependencies: Dependencies) {
   //FIXME: Unchecked dependency use
-  removeAllChildren(iframeContainer(id));
-  removeAllChildren(toolbarContainer(id));
-  removeAllChildren(iframeFullscreenContainer(id, dependencies__.all.body()));
-  removeAllChildren(createAndGetMainContainer(id, dependencies__.all.body()));
+  removeAllChildren(iframeContainer(id, dependencies));
+  removeAllChildren(toolbarContainer(id, dependencies));
+  removeAllChildren(iframeFullscreenContainer(id, dependencies.all.body()));
+  removeAllChildren(createAndGetMainContainer(id, dependencies.all.body()));
 }
 
-function toolbarContainer(id: string) {
+function toolbarContainer(id: string, dependencies: Dependencies) {
   const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleView
+    dependencies.singleView
       .toolbarContainerTarget()!
       .insertAdjacentHTML(
         "beforebegin",
@@ -134,11 +135,11 @@ function toolbarContainer(id: string) {
   return element() as HTMLElement;
 }
 
-function iframeContainer(id: string) {
+function iframeContainer(id: string, dependencies: Dependencies) {
   const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    dependencies__.singleView
+    dependencies.singleView
       .iframeContainerTarget()!
       .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
   }

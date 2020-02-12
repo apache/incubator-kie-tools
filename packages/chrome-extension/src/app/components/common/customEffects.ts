@@ -33,18 +33,15 @@ export function useIsolatedEditorTogglingEffect(
   iframeContainer: HTMLElement,
   githubTextEditorToReplace: HTMLElement
 ) {
-  useLayoutEffect(
-    () => {
-      if (textMode) {
-        githubTextEditorToReplace.classList.remove("hidden");
-        iframeContainer.classList.add("hidden");
-      } else {
-        githubTextEditorToReplace.classList.add("hidden");
-        iframeContainer.classList.remove("hidden");
-      }
-    },
-    [textMode]
-  );
+  useLayoutEffect(() => {
+    if (textMode) {
+      githubTextEditorToReplace.classList.remove("hidden");
+      iframeContainer.classList.add("hidden");
+    } else {
+      githubTextEditorToReplace.classList.add("hidden");
+      iframeContainer.classList.remove("hidden");
+    }
+  }, [textMode]);
 }
 
 export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {

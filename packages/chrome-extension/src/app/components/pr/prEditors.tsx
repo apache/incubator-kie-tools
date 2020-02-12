@@ -24,7 +24,7 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
 } from "../../constants";
-import * as dependencies__ from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
 
 export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
@@ -36,6 +36,7 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
     <Main
       id={args.id}
       router={args.router}
+      dependencies={args.dependencies}
       logger={args.logger}
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
@@ -43,15 +44,15 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <PrEditorsApp prInfo={parsePrInfo()} contentPath={args.contentPath} />
+      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} contentPath={args.contentPath} />
     </Main>,
-    createAndGetMainContainer(args.id, dependencies__.all.body()),
+    createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-export function parsePrInfo(): PrInfo {
-  const prInfos = dependencies__.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
+export function parsePrInfo(dependencies: Dependencies): PrInfo {
+  const prInfos = dependencies.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];

@@ -16,8 +16,11 @@
 
 export interface ExternalEditorManager {
   name: string;
+
   open(filePath: string, fileContent: string, readonly: boolean): void;
+
   getLink(filePath: string): string;
+
   listenToComeBack(
     setFileName: (fileName: string) => unknown,
     setFileContent: (content: string) => unknown

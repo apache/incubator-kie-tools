@@ -15,13 +15,10 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
-import { useState } from "react";
-import { useCallback } from "react";
-import { useEffect } from "react";
 
-const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
+export const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 export function SingleEditorToolbar(props: {
   readonly: boolean;
@@ -38,36 +35,38 @@ export function SingleEditorToolbar(props: {
   const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
 
-  const goFullScreen = (e: any) => {
+  const goFullScreen = useCallback((e: any) => {
     e.preventDefault();
     props.onFullScreen();
-  };
+  }, []);
 
-  const seeAsSource = (e: any) => {
+  const seeAsSource = useCallback((e: any) => {
     e.preventDefault();
     props.onSeeAsSource();
-  };
+  }, []);
 
-  const seeAsDiagram = (e: any) => {
+  const seeAsDiagram = useCallback((e: any) => {
     e.preventDefault();
     props.onSeeAsDiagram();
-  };
+  }, []);
 
-  const openInExternalEditor = (e: any) => {
+  const openInExternalEditor = useCallback((e: any) => {
     e.preventDefault();
     props.onOpenInExternalEditor();
-  };
+  }, []);
 
-  const copyLinkToExternalEditor = (e: any) => {
+  const copyLinkToExternalEditor = useCallback((e: any) => {
     e.preventDefault();
     linkToExternalEditorTextAreaRef.current?.select();
     if (document.execCommand("copy")) {
       setCopyLinkSuccessAlertVisible(true);
     }
     e.target.focus();
-  };
+  }, []);
 
-  const closeCopyLinkSuccessAlert = useCallback(() => setCopyLinkSuccessAlertVisible(false), []);
+  const closeCopyLinkSuccessAlert = useCallback(() => {
+    setCopyLinkSuccessAlertVisible(false);
+  }, []);
 
   useEffect(() => {
     if (closeCopyLinkSuccessAlert) {
@@ -84,27 +83,41 @@ export function SingleEditorToolbar(props: {
     <>
       <div style={{ display: "flex" }}>
         {!props.textMode && (
-          <button disabled={!props.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsSource}>
+          <button
+            data-testid={"see-as-source-button"}
+            disabled={!props.textModeEnabled}
+            className={"btn btn-sm kogito-button"}
+            onClick={seeAsSource}
+          >
             See as source
           </button>
         )}
         {props.textMode && (
-          <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+          <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
             See as diagram
           </button>
         )}
         {globals.externalEditorManager && (
-          <button className={"btn btn-sm kogito-button"} onClick={openInExternalEditor}>
+          <button
+            data-testid={"open-ext-editor-button"}
+            className={"btn btn-sm kogito-button"}
+            onClick={openInExternalEditor}
+          >
             Open in {globals.externalEditorManager.name}
           </button>
         )}
         {globals.externalEditorManager && props.linkToExternalEditor && (
           <div className={"position-relative"}>
-            <button className={"btn btn-sm kogito-button"} onClick={copyLinkToExternalEditor}>
+            <button
+              data-testid={"copy-link-button"}
+              className={"btn btn-sm kogito-button"}
+              onClick={copyLinkToExternalEditor}
+            >
               Copy link to {globals.externalEditorManager.name}
             </button>
             {copyLinkSuccessAlertVisible && (
               <div
+                data-testid={"link-copied-alert"}
                 ref={copyLinkSuccessAlertRef}
                 className={"position-absolute"}
                 style={{ marginTop: "34px", right: "0" }}
@@ -117,7 +130,7 @@ export function SingleEditorToolbar(props: {
           </div>
         )}
         {!props.textMode && (
-          <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+          <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
             Full screen
           </button>
         )}

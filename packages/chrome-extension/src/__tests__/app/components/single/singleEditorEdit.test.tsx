@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
-
-export class DefaultChromeRouter extends Router {
-  constructor(...routesArray: Routes[]) {
-    super(...routesArray);
-  }
-
-  public getRelativePathTo(uri: string): string {
-    return chrome.extension.getURL(uri);
-  }
-
-  public getLanguageData(fileExtension: string) {
-    return this.getLanguageDataByFileExtension().get(fileExtension);
-  }
-
-  public getTargetOrigin(): string {
-    return chrome.extension.getURL("");
-  }
-}
+describe("test", () => {
+  test("test 1", async () => {
+    expect(true).toBeTruthy();
+  });
+});
