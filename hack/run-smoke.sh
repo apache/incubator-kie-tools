@@ -186,6 +186,10 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--smoke.cli-path" ${1}; then shift; fi
   ;;
+  --services_image_version)
+    shift
+    if addParamKeyValueIfAccepted "--smoke.services-image-version" ${1}; then shift; fi
+  ;;
   --deploy_uri)
     shift
     if addParamKeyValueIfAccepted "--smoke.operator-deploy-uri" ${1}; then shift; fi
@@ -236,7 +240,7 @@ if [[ ${DRY_RUN} ]]; then
   exit 0
 fi
 
-echo "-------- Setup CRD files"
+echo "-------- Apply CRD files"
 
 deploy_folder="${SCRIPT_DIR}/../deploy"
 if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then 
