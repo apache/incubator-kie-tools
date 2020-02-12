@@ -33,6 +33,8 @@ type SmokeEnv struct {
 	OperatorDeployURI string
 	CliPath           string
 
+	ServicesImageVersion string
+
 	MavenMirrorURL       string
 	BuildImageVersion    string
 	BuildS2iImageTag     string
@@ -66,24 +68,13 @@ func BindEnvFlags(set *flag.FlagSet) {
 	set.StringVar(&env.OperatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
 	set.StringVar(&env.OperatorDeployURI, prefix+"operator-deploy-uri", defaultOperatorDeployURI, "Url or Path to operator 'deploy' folder")
 	set.StringVar(&env.CliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
+	set.StringVar(&env.ServicesImageVersion, prefix+"services-image-version", version.Version, "Set the services (jobs-service, data-index) image version")
 	set.StringVar(&env.MavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
 	set.StringVar(&env.BuildImageVersion, prefix+"build-image-version", version.Version, "Set the build image version")
 	set.StringVar(&env.BuildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.BuildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
 	set.StringVar(&env.ExamplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
 	set.StringVar(&env.ExamplesRepositoryRef, prefix+"examples-ref", "", "Set the branch for the kogito-examples repository")
-}
-
-func getEnvMavenMirrorURL() string {
-	return env.MavenMirrorURL
-}
-
-func getEnvOperatorCliPath() (string, error) {
-	return filepath.Abs(env.CliPath)
-}
-
-func getEnvOperatorDeployURI() string {
-	return env.OperatorDeployURI
 }
 
 func getEnvOperatorImageName() string {
@@ -94,24 +85,40 @@ func getEnvOperatorImageTag() string {
 	return env.OperatorImageTag
 }
 
+func getEnvOperatorDeployURI() string {
+	return env.OperatorDeployURI
+}
+
+func getEnvOperatorCliPath() (string, error) {
+	return filepath.Abs(env.CliPath)
+}
+
+func getEnvServicesImageVersion() string {
+	return env.ServicesImageVersion
+}
+
+func getEnvMavenMirrorURL() string {
+	return env.MavenMirrorURL
+}
+
+func getEnvBuildImageVersion() string {
+	return env.BuildImageVersion
+}
+
+func getEnvBuildS2IImageStreamTag() string {
+	return env.BuildS2iImageTag
+}
+
+func getEnvBuildRuntimeImageStreamTag() string {
+	return env.BuildRuntimeImageTag
+}
+
 func getEnvExamplesRepositoryURI() string {
 	return env.ExamplesRepositoryURI
 }
 
 func getEnvExamplesRepositoryRef() string {
 	return env.ExamplesRepositoryRef
-}
-
-func getEnvImageVersion() string {
-	return env.BuildImageVersion
-}
-
-func getEnvS2IImageStreamTag() string {
-	return env.BuildS2iImageTag
-}
-
-func getEnvRuntimeImageStreamTag() string {
-	return env.BuildRuntimeImageTag
 }
 
 func getEnvLocalTests() bool {

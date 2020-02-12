@@ -16,24 +16,31 @@ package framework
 
 import (
 	"fmt"
-	"k8s.io/apimachinery/pkg/types"
 	"time"
+
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitodataindex/resource"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployKogitoDataIndexService deploy the Kogito Data Index service
 func DeployKogitoDataIndexService(namespace string, replicas int) error {
+	// Get correct image tag
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
+	image.Tag = getEnvServicesImageVersion()
+
 	kogitoDataIndex := &v1alpha1.KogitoDataIndex{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      resource.DefaultDataIndexName,
+			Name:      infrastructure.DefaultDataIndexName,
 			Namespace: namespace,
 		},
 		Spec: v1alpha1.KogitoDataIndexSpec{
 			Replicas: int32(replicas),
+			Image:    framework.ConvertImageToImageTag(image),
 		},
 	}
 
@@ -43,11 +50,10 @@ func DeployKogitoDataIndexService(namespace string, replicas int) error {
 	return nil
 }
 
-
-// GetKogitoJobsService retrieves the running jobs service
+// GetKogitoDataIndex retrieves the running data index
 func GetKogitoDataIndex(namespace string) (*v1alpha1.KogitoDataIndex, error) {
 	dataIndex := &v1alpha1.KogitoDataIndex{}
-	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: resource.DefaultDataIndexName, Namespace: namespace}, dataIndex); err != nil {
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: infrastructure.DefaultDataIndexName, Namespace: namespace}, dataIndex); err != nil {
 		return nil, fmt.Errorf("Error while trying to look for Kogito Data Index: %v ", err)
 	} else if !exists {
 		return nil, nil

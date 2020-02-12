@@ -20,7 +20,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
-	dataindex "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitodataindex/resource"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/smoke/framework"
 )
 
@@ -42,7 +42,7 @@ func (data *Data) graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinute
 func (data *Data) graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes(processName string, timeoutInMin int) error {
 	query := getProcessInstancesNameQuery
 	path := "graphql"
-	serviceName := dataindex.DefaultDataIndexName
+	serviceName := infrastructure.DefaultDataIndexName
 	framework.GetLogger(data.Namespace).Debugf("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {

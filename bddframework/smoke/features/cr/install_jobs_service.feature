@@ -10,7 +10,7 @@ Feature: CR: Install Kogito Jobs Service
 
     When Deploy Kogito Jobs Service with 1 replicas
     And Kogito Jobs Service has 1 pods running within 5 minutes
-    And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
+    And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
       {
         "id": "1",
@@ -20,7 +20,7 @@ Feature: CR: Install Kogito Jobs Service
       }
       """
 
-    Then HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+    Then HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes
 
 #####
 
@@ -32,7 +32,7 @@ Feature: CR: Install Kogito Jobs Service
     
     When Deploy Kogito Jobs Service with persistence and 1 replicas
     And Kogito Jobs Service has 1 pods running within 5 minutes
-    And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
+    And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
       {
         "id": "1",
@@ -41,8 +41,8 @@ Feature: CR: Install Kogito Jobs Service
         "callbackEndpoint": "http://localhost:8080/callback"
       }
       """
-    And HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+    And HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes
     And Scale Kogito Jobs Service to 0 pods within 2 minutes
     And Scale Kogito Jobs Service to 1 pods within 2 minutes
 
-    Then HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+    Then HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes

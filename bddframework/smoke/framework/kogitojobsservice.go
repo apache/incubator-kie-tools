@@ -20,13 +20,11 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-)
-
-const (
-	jobsServiceName = "jobs-service"
 )
 
 // DeployKogitoJobsService deploy the Kogito Jobs service
@@ -43,7 +41,7 @@ func DeployKogitoJobsService(namespace string, replicas int, persistence bool) e
 // GetKogitoJobsService retrieves the running jobs service
 func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoJobsService, error) {
 	service := &v1alpha1.KogitoJobsService{}
-	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: jobsServiceName, Namespace: namespace}, service); err != nil && !errors.IsNotFound(err) {
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: infrastructure.DefaultJobsServiceName, Namespace: namespace}, service); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for Kogito jobs service: %v ", err)
 	} else if !exists {
 		return nil, nil
@@ -79,9 +77,13 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int) error {
 }
 
 func getJobsServiceStub(namespace string, replicas int, persistence bool) *v1alpha1.KogitoJobsService {
+	// Get correct image for tests
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
+	image.Tag = getEnvServicesImageVersion()
+
 	service := &v1alpha1.KogitoJobsService{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      jobsServiceName,
+			Name:      infrastructure.DefaultJobsServiceName,
 			Namespace: namespace,
 		},
 		Status: v1alpha1.KogitoJobsServiceStatus{
@@ -89,6 +91,7 @@ func getJobsServiceStub(namespace string, replicas int, persistence bool) *v1alp
 		},
 		Spec: v1alpha1.KogitoJobsServiceSpec{
 			Replicas: int32(replicas),
+			Image:    image,
 		},
 	}
 

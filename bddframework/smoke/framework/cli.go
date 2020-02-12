@@ -18,6 +18,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
 
 // CheckCliBinaryExist checks if the CLI binary does exist
@@ -88,7 +91,20 @@ func CliDeployExample(namespace, appName, contextDir, runtime string, native, pe
 		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=-Ppersistence", mavenArgsAppendEnvVar))
 	}
 
-	cmd = append(cmd, "--image-version", getEnvImageVersion())
+	cmd = append(cmd, "--image-version", getEnvBuildImageVersion())
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
+	return err
+}
+
+// CliInstallDataIndex installs the Kogito Data Index
+func CliInstallDataIndex(namespace string, replicas int) error {
+	cmd := []string{"install", "data-index"}
+
+	// Get correct image tag
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
+	image.Tag = getEnvServicesImageVersion()
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
@@ -102,7 +118,11 @@ func CliInstallKogitoJobsService(namespace string, replicas int, persistence boo
 		cmd = append(cmd, "--enable-persistence")
 	}
 
+	// Get correct image tag
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
+	image.Tag = getEnvServicesImageVersion()
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
+
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
-
 }

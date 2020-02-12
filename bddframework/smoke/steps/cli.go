@@ -79,8 +79,7 @@ func (data *Data) cliDeploySpringBootExampleServiceWithPersistence(contextDir st
 }
 
 func (data *Data) cliInstallDataIndexWithReplicas(replicas int) error {
-	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "data-index")
-	return err
+	return framework.CliInstallDataIndex(data.Namespace, replicas)
 }
 
 func (data *Data) cliInstallKogitoJobsServiceWithReplicas(replicas int) error {
