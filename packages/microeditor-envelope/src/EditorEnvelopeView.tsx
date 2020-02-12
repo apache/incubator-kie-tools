@@ -15,13 +15,16 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
+import { KeyBindingService } from "./DefaultKeyBindingService";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
+  keyBindingService: KeyBindingService;
 }
 
 interface State {
@@ -59,9 +62,83 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
+        <KeyBindingsMenuHelp keyBindingService={this.props.keyBindingService} />
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>
     );
   }
+}
+
+function KeyBindingsMenuHelp(props: { keyBindingService: KeyBindingService }) {
+  const [showing, setShowing] = useState(false);
+
+  useEffect(() => {
+    const id = props.keyBindingService.register("shift+/", "Show keyboard shortcuts", async () => setShowing(true));
+    return () => props.keyBindingService.deregister(id);
+  }, []);
+
+  useEffect(() => {
+    let id: number;
+    if (showing) {
+      id = props.keyBindingService.registerOnce("esc", async () => setShowing(false));
+    }
+    return () => {
+      if (showing) {
+        props.keyBindingService.deregister(id);
+      }
+    };
+  }, [showing]);
+
+  return (
+    <>
+      <div
+        onClick={() => setShowing(!showing)}
+        style={{
+          userSelect: "none",
+          zIndex: 999,
+          right: 0,
+          bottom: 0,
+          position: "fixed",
+          padding: "7px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "35px",
+          height: "35px",
+          fontSize: "1.2em",
+          cursor: "pointer"
+        }}
+      >
+        <b>{showing ? "x" : "?"}</b>
+      </div>
+      {showing && (
+        <div
+          style={{
+            userSelect: "none",
+            zIndex: 998,
+            top: 0,
+            left: 0,
+            position: "fixed",
+            width: "100vw",
+            height: "100vh",
+            padding: "40px",
+            backdropFilter: "blur(5px)",
+            background: "#cacacaa6"
+          }}
+        >
+          <h1>Keyboard shortcuts</h1>
+          {props.keyBindingService.registered().map(keyBinding => (
+            <h5 key={keyBinding.combination}>
+              {keyBinding.combination
+                .split("+")
+                .map(w => w.replace(/^\w/, c => c.toUpperCase()))
+                .join(" + ")}{" "}
+              - {keyBinding.label}
+            </h5>
+          ))}
+        </div>
+      )}
+    </>
+  );
 }

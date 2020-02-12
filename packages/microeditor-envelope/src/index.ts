@@ -21,10 +21,10 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
-import { ResourceContentEditorCoordinator, ResourceContentApi } from "./api/resourceContent";
+import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { EditorContext } from "./api/context";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { DefaultKeyBindingService, KeyBindingService } from "./DefaultKeyBindingService";
 
 export * from "./EditorFactory";
 export * from "./api/context/EditorContext";
@@ -36,6 +36,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       editorContext: EditorContext;
       stateControl: StateControlApi;
+      keyBindingService: KeyBindingService;
     };
   }
 }
@@ -61,6 +62,7 @@ export function init(args: {
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
+  const keyBindingService = new DefaultKeyBindingService();
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
@@ -74,11 +76,14 @@ export function init(args: {
     resourceContentEditorCoordinator
   );
 
-  return editorEnvelopeController.start(args.container).then(messageBus => {
-    window.envelope = {
-      resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
-      stateControl: stateControl.exposeApi(messageBus),
-      editorContext: args.editorContext
-    };
-  });
+  return editorEnvelopeController
+    .start({ container: args.container, keyBindingService: keyBindingService })
+    .then(messageBus => {
+      window.envelope = {
+        resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
+        editorContext: args.editorContext,
+        stateControl: stateControl.exposeApi(messageBus),
+        keyBindingService: keyBindingService
+      };
+    });
 }

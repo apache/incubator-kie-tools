@@ -68,18 +68,7 @@ module.exports = {
       },
       {
         test: /\.(woff)$/,
-        include: [
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
-        ],
-        use: {
-          loader: "file-loader",
-          options: {
-            limit: 244,
-            outputPath: "fonts",
-            name: "[name].[ext]"
-          }
-        }
+        loader: "null-loader"
       },
       {
         test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,

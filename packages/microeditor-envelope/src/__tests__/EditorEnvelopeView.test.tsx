@@ -26,7 +26,11 @@ afterEach(() => loadingScreenContainer.remove());
 function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
   let view: EditorEnvelopeView;
   const render = shallow(
-    <EditorEnvelopeView exposing={self => (view = self)} loadingScreenContainer={loadingScreenContainer} />
+    <EditorEnvelopeView
+      keyBindingService={undefined as any}
+      exposing={self => (view = self)}
+      loadingScreenContainer={loadingScreenContainer}
+    />
   );
   return [view!, render];
 }

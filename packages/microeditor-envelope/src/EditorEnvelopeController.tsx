@@ -25,6 +25,7 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
+import { KeyBindingService } from "./DefaultKeyBindingService";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
@@ -114,21 +115,25 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(container: HTMLElement) {
+  private render(args: { container: HTMLElement; keyBindingService: KeyBindingService }) {
     return new Promise<void>(res =>
       this.renderer.render(
         <EditorEnvelopeView
           exposing={self => (this.editorEnvelopeView = self)}
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
+          keyBindingService={args.keyBindingService}
         />,
-        container,
+        args.container,
         res
       )
     );
   }
 
-  public start(container: HTMLElement): Promise<EnvelopeBusInnerMessageHandler> {
-    return this.render(container).then(() => {
+  public start(args: {
+    container: HTMLElement;
+    keyBindingService: KeyBindingService;
+  }): Promise<EnvelopeBusInnerMessageHandler> {
+    return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;
     });
