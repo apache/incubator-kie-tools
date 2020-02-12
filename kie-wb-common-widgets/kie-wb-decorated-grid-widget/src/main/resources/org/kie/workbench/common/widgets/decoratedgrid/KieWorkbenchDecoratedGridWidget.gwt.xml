@@ -29,20 +29,10 @@
 
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
 
-  <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
-
   <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
   <replace-with class="org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellHeightCalculatorImplSafari">
     <when-type-is class="org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellHeightCalculatorImpl"/>
     <when-property-is name="user.agent" value="safari"/>
-  </replace-with>
-  <replace-with class="org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellHeightCalculatorImplIE">
-    <when-type-is class="org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellHeightCalculatorImpl" />
-    <any>
-      <when-property-is name="user.agent" value="ie6" />
-      <when-property-is name="user.agent" value="ie8" />
-      <when-property-is name="user.agent" value="ie9"/>
-    </any>
   </replace-with>
 
 </module>
