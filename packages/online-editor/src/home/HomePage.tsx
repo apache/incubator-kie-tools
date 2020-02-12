@@ -40,13 +40,17 @@ import {
   Text,
   TextVariants,
   TextContent,
-  Brand
+  Brand,
+  TextInput,
+  FormGroup
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { Router } from "@kogito-tooling/core-api";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
+  router: Router;
 }
 
 export function HomePage(props: Props) {
@@ -55,6 +59,10 @@ export function HomePage(props: Props) {
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const uploadBoxRef = useRef<HTMLDivElement>(null);
+
+  const [inputFileUrl, setInputFileUrl] = useState("");
+  const [isValidFileUrl, setIsValidFileUrl] = useState(false);
+  const [invalidFileText, setInvalidFileText] = useState("");
 
   const uploadBoxOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     uploadBoxRef.current!.className = "hover";
@@ -128,8 +136,38 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
+  const inputFileChanged = (fileUrl: string) => {
+    setInputFileUrl(fileUrl);
+    try {
+      new URL(fileUrl);
+      setIsValidFileUrl(true);
+    } catch (e) {
+      setIsValidFileUrl(false);
+      setInvalidFileText("Enter a valid URL");
+    }
+  };
+
+  const openFile = () => {
+    const fileUrl = new URL(inputFileUrl);
+    const fileType = extractFileExtension(fileUrl.pathname);
+
+    if (!fileType) {
+      setInvalidFileText("File URL is not valid");
+      setIsValidFileUrl(false);
+      return;
+    }
+
+    if (!props.router.getLanguageData(fileType)) {
+      setInvalidFileText(`File type ${fileType} is not supported.`);
+      setIsValidFileUrl(false);
+      return;
+    }
+
+    window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
+  };
+
   const logoProps = {
-    href: "/",
+    href: "/"
   };
 
   const linkDropdownItems = [
@@ -150,7 +188,9 @@ export function HomePage(props: Props) {
       <Link to ={'/'}>Documentation</Link>
     </DropdownItem>,*/
     <DropdownItem key="">
-      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" /></a>
+      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
+        Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" />
+      </a>
     </DropdownItem>
   ];
 
@@ -310,34 +350,36 @@ export function HomePage(props: Props) {
               </Button>
             </CardFooter>
           </Card>
-          {/* TODO New feature upload from source code needs to be implemented */}
-          {/*<Card>
-              <CardHeader>
-              <Title headingLevel="h2" size="2xl">Import source code</Title>
-              </CardHeader>
-              <CardBody isFilled={false}>
-                Paste a URL to a source code link (GitHub, Dropbox, etc.)
-              </CardBody>
-              <CardBody isFilled={true}>
-                <FormGroup
-                  label="URL"
-                  fieldId="url-text-input"
-                  helperText="http://"
-                >
-                  <TextInput
-                    type="url"
-                    id="url-text-input"
-                    name="urlText"
-                    aria-describedby="url-text-input-helper"
-                  />
-                </FormGroup>
-              </CardBody>
-              <CardFooter>
-                <Button variant="secondary">
-                  Import source code
-                </Button>
-              </CardFooter>
-            </Card>*/}
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Import source code
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
+            <CardBody isFilled={true}>
+              <FormGroup
+                label="URL"
+                fieldId="url-text-input"
+                isValid={isValidFileUrl}
+                helperTextInvalid={invalidFileText}
+              >
+                <TextInput
+                  value={inputFileUrl}
+                  onChange={inputFileChanged}
+                  type="url"
+                  id="url-text-input"
+                  name="urlText"
+                  aria-describedby="url-text-input-helper"
+                />
+              </FormGroup>
+            </CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={() => openFile()} isDisabled={!isValidFileUrl}>
+                Import source code
+              </Button>
+            </CardFooter>
+          </Card>
         </Gallery>
       </PageSection>
     </Page>
