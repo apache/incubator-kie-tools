@@ -128,8 +128,7 @@ public class AbstractDMNTest {
      */
     protected SimpleTypeImpl getSimpleCollection() {
         // Single property collection retrieve
-        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", SIMPLE_TYPE_NAME, null);
-        simpleCollectionString.setCollection(true);
+        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", SIMPLE_TYPE_NAME, null, true, null, null, null);
         return simpleCollectionString;
     }
 
@@ -141,8 +140,7 @@ public class AbstractDMNTest {
     protected SimpleTypeImpl getSimpleCollection(DMNType typeOfCollection) {
         // Single property collection retrieve
         String name = typeOfCollection.getName() + "list";
-        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", name, null);
-        simpleCollectionString.setCollection(true);
+        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", name, null, true, null, null, null);
         simpleCollectionString.setBaseType(typeOfCollection);
         return simpleCollectionString;
     }
@@ -163,8 +161,7 @@ public class AbstractDMNTest {
 
         SimpleTypeImpl nameSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
 
-        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
-        friendsSimpleCollection.setCollection(true);
+        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null, true, null, null, null);
 
         toReturn.addField("friends", friendsSimpleCollection);
         toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberComposite);
@@ -184,8 +181,7 @@ public class AbstractDMNTest {
 
         CompositeTypeImpl phoneNumberCompositeCollection = new CompositeTypeImpl(null, "tPhoneNumber", null, true);
         phoneNumberCompositeCollection.addField(PHONENUMBER_PREFIX, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
-        SimpleTypeImpl numbers = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
-        numbers.setCollection(true);
+        SimpleTypeImpl numbers = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null, true, null, null, null);
         phoneNumberCompositeCollection.addField("numbers", numbers);
 
         CompositeTypeImpl detailsComposite = new CompositeTypeImpl(null, "tDetails", "tDetails");
@@ -219,8 +215,7 @@ public class AbstractDMNTest {
 
         SimpleTypeImpl nameSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
 
-        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
-        friendsSimpleCollection.setCollection(true);
+        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null, true, null, null, null);
 
         toReturn.addField("friends", friendsSimpleCollection);
         toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberCompositeCollection);
