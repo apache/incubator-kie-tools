@@ -514,9 +514,9 @@ public class AbstractProjectDiagramEditorTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOpenWithInvalidBPMNFile() {
+    public void testLoadContentWithInvalidFile() {
         final String xml = "xml";
-        final Overview overview = openInvalidBPMNFile(xml);
+        final Overview overview = openInvalidFile(xml);
 
         assertEquals(VIEWER_SESSION_XML.hashCode(),
                      presenter.getCurrentDiagramHash());
@@ -538,7 +538,7 @@ public class AbstractProjectDiagramEditorTest {
     }
 
     @SuppressWarnings("unchecked")
-    protected Overview openInvalidBPMNFile(final String xml) {
+    protected Overview openInvalidFile(final String xml) {
         final ClientRuntimeError clientRuntimeError = mock(ClientRuntimeError.class);
         final DiagramParsingException dpe = mock(DiagramParsingException.class);
         final ProjectMetadata metadata = mock(ProjectMetadata.class);
@@ -554,6 +554,61 @@ public class AbstractProjectDiagramEditorTest {
         doAnswer(i -> {
             final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
             serviceCallback.onError(clientRuntimeError);
+            return null;
+        }).when(clientProjectDiagramService).getByPath(any(Path.class),
+                                                       any(ServiceCallback.class));
+
+        presenter.loadContent();
+
+        verify(presenterCore).destroySession();
+
+        return overview;
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testLoadContentWithValidFile() {
+        final String xml = "xml";
+        final Overview overview = openValidFile(xml);
+
+        verify(view).showLoading();
+        verify(view).setWidget(eq(sessionPresenterView));
+        verify(sessionEditorPresenter).withToolbar(eq(false));
+        verify(sessionEditorPresenter).withPalette(eq(true));
+        verify(sessionEditorPresenter).open(eq(diagram),
+                                            any(SessionPresenter.SessionPresenterCallback.class));
+
+        assertEquals(diagram.hashCode(),
+                     presenter.getCurrentDiagramHash());
+        verify(view).hideBusyIndicator();
+
+        //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
+        verify(overviewWidget).setContent(eq(overview),
+                                          eq(filePath));
+        verify(kieView).clear();
+        verify(kieView).addMainEditorPage(eq(view));
+        verify(kieView).addOverviewPage(eq(overviewWidget),
+                                        any(com.google.gwt.user.client.Command.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Overview openValidFile(final String xml) {
+        final ClientRuntimeError clientRuntimeError = mock(ClientRuntimeError.class);
+        final DiagramParsingException dpe = mock(DiagramParsingException.class);
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Overview overview = mock(Overview.class);
+
+        when(metadata.getTitle()).thenReturn(TITLE);
+        when(metadata.getOverview()).thenReturn(overview);
+        when(clientRuntimeError.getThrowable()).thenReturn(dpe);
+        when(dpe.getMetadata()).thenReturn(metadata);
+        when(dpe.getXml()).thenReturn(xml);
+        when(diagram.getName()).thenReturn(TITLE);
+        when(diagram.getMetadata()).thenReturn(metadata);
+
+        doAnswer(i -> {
+            final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
+            serviceCallback.onSuccess(diagram);
             return null;
         }).when(clientProjectDiagramService).getByPath(any(Path.class),
                                                        any(ServiceCallback.class));
@@ -785,7 +840,7 @@ public class AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     private ServiceCallback<String> assertBasicXMLSaveOperation(final String xml) {
         final String commitMessage = "message";
-        final Overview overview = openInvalidBPMNFile(xml);
+        final Overview overview = openInvalidFile(xml);
         final Metadata metadata = overview.getMetadata();
         EditorSessionCommands editorSessionCommands = mock(EditorSessionCommands.class);
         when(getMenuSessionItems().getCommands()).thenReturn(editorSessionCommands);
@@ -839,11 +894,11 @@ public class AbstractProjectDiagramEditorTest {
     }
 
     @Test
-    public void testDiagramHashCodeWithInvalidBPMNFile() {
+    public void testDiagramHashCodeWithInvalidFile() {
         final String xml = "xml";
         when(xmlEditorView.getContent()).thenReturn(xml);
 
-        openInvalidBPMNFile(xml);
+        openInvalidFile(xml);
 
         assertEquals(xml.hashCode(),
                      presenter.getCurrentDiagramHash());

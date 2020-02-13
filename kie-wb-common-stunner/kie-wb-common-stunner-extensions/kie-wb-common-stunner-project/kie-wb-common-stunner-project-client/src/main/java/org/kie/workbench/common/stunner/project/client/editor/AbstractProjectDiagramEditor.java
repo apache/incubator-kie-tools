@@ -335,12 +335,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                          new ServiceCallback<ProjectDiagram>() {
                                              @Override
                                              public void onSuccess(final ProjectDiagram item) {
-                                                 editor.open(item);
+                                                 AbstractProjectDiagramEditor.this.open(item);
                                              }
 
                                              @Override
                                              public void onError(final ClientRuntimeError error) {
-                                                 editor.onLoadError(error);
+                                                 AbstractProjectDiagramEditor.this.editor.onLoadError(error);
                                              }
                                          });
     }

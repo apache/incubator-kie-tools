@@ -479,6 +479,7 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     protected void assertOnDiagramLoad() {
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
+        verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
         verify(dataTypesPage).reload();
     }
 }

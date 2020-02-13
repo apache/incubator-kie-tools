@@ -501,7 +501,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         final String xml = "xml";
 
-        openInvalidBPMNFile(xml);
+        openInvalidFile(xml);
 
         final ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
         verify(notificationEvent).fire(notificationEventCaptor.capture());
@@ -571,5 +571,13 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         inOrder.verify(multiPage).addPage(dataTypesPage);
         inOrder.verify(multiPage).addPage(includedModelsPage);
         inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), any(Command.class));
+    }
+
+    @Test
+    @Override
+    public void testLoadContentWithValidFile() {
+        super.testLoadContentWithValidFile();
+
+        verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
     }
 }

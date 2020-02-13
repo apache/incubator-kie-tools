@@ -397,7 +397,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
                                       @Override
                                       public void onSuccess(final Diagram diagram) {
-                                          getEditor().open(diagram);
+                                          AbstractDMNDiagramEditor.this.open(diagram);
                                       }
 
                                       @Override
