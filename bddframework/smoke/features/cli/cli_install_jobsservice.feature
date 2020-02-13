@@ -24,8 +24,6 @@ Feature: CLI: Install Kogito Jobs Service
 
 #####
 
-  # Disabled as long as https://issues.redhat.com/browse/KOGITO-943 is not solved
-  @disabled
   @persistence
   Scenario: CLI install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with dependencies

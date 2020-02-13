@@ -24,8 +24,6 @@ Feature: CR: Install Kogito Jobs Service
 
 #####
 
-  # Disabled as long as https://issues.redhat.com/browse/KOGITO-943 is not solved
-  @disabled
   @persistence
   Scenario: CR install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with dependencies
