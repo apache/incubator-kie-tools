@@ -52,7 +52,7 @@ public abstract class AbstractToolboxControl
 
         @Override
         public boolean test(String s) {
-            return (null == id && count == 0) || (null != id && count == 1 && id.equals(s));
+            return (null == id && count == 0) || (null != id && count == 1 && id.equals(s)) || (null != id && count > 1 && !id.equals(s));
         }
     }
 

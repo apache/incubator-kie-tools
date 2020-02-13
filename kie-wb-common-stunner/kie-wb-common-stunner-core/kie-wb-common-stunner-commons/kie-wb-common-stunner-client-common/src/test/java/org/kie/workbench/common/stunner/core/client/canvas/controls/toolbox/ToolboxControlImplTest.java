@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndex;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -180,6 +181,22 @@ public class ToolboxControlImplTest {
         tested.show(ELEMENT_UUID);
         verify(toolbox,
                never()).show();
+        verify(toolbox,
+               never()).hide();
+        verify(toolbox,
+               never()).destroy();
+    }
+
+    @Test
+    public void testShowPredicateTrue() {
+        when(showToolboxPredicate.test(anyString())).thenReturn(true);
+        when(canvasHandler.getGraphIndex()).thenReturn(mock(MapIndex.class));
+        when(canvasHandler.getGraphIndex().getNode(anyString())).thenReturn(element);
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.show(element);
+        tested.show(ELEMENT_UUID);
+        verify(toolbox, times(2)).show();
         verify(toolbox,
                never()).hide();
         verify(toolbox,

@@ -59,6 +59,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 /**
  * Default implementation of a {@link SelectionControl} that supports selection of multiple {@link Element}.
+ *
  * @param <H> {@link AbstractCanvasHandler}
  */
 @Dependent
@@ -189,6 +190,9 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         checkNotNull("event",
                      event);
         if (Objects.equals(getCanvasHandler(), event.getCanvasHandler())) {
+            if (event.getIdentifiers().size() == 1) {
+                onClearSelection();
+            }
             selectionShapeProvider.moveShapeToTop();
         }
     }

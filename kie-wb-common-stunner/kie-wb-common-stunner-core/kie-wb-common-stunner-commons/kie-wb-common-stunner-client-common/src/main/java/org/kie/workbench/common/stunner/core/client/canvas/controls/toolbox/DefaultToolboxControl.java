@@ -48,6 +48,17 @@ public class DefaultToolboxControl extends AbstractToolboxControl {
         this.commonActionsToolboxFactories = commonActionsToolboxFactories;
     }
 
+    DefaultToolboxControl(final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories,
+                          final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxFactory> morphActionsToolboxFactories,
+                          final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories,
+                          final ToolboxControlImpl<ActionsToolboxFactory> toolboxControl) {
+
+        super(toolboxControl);
+        this.flowActionsToolboxFactories = flowActionsToolboxFactories;
+        this.morphActionsToolboxFactories = morphActionsToolboxFactories;
+        this.commonActionsToolboxFactories = commonActionsToolboxFactories;
+    }
+
     @Override
     protected List<ActionsToolboxFactory> getFactories() {
         return Arrays.asList(flowActionsToolboxFactories.get(),

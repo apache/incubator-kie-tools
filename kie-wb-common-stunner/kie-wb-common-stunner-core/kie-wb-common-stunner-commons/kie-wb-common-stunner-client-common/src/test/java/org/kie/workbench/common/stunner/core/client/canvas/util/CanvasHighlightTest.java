@@ -139,7 +139,7 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(1)).applyState(eq(ShapeState.NONE));
         verify(canvasView,
-               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
+               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.MOVE));
     }
 
     @Test

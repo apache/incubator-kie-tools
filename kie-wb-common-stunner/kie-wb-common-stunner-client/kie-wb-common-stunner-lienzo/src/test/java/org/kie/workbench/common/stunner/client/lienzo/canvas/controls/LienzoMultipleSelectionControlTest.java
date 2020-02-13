@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,6 +75,10 @@ import static org.mockito.Mockito.when;
 public class LienzoMultipleSelectionControlTest {
 
     private static final String ELEMENT_UUID = "element-uuid1";
+    private static final String ELEMENT_UUID_2 = "element-uuid2";
+    private static final String ELEMENT_UUID_3 = "element-uuid3";
+    private static final String ELEMENT_UUID_4 = "element-uuid4";
+    private static final String ELEMENT_UUID_5 = "element-uuid5";
     private final static MultiPath PATH = new MultiPath();
 
     private final static double MIN_WIDTH = 0D;
@@ -239,6 +244,47 @@ public class LienzoMultipleSelectionControlTest {
         selectedItems.getChanged().getAddedShapes().add(shapeView);
         selectionListener.onChanged(selectedItems);
         verify(selectionControl, times(1)).select(eq(Collections.singletonList(ELEMENT_UUID)));
+    }
+
+    @Test
+    public void testGroupSelectionWithMultipleItems() {
+        final SelectionManager.SelectedItems selectedItems = mock(SelectionManager.SelectedItems.class);
+        final LienzoMultipleSelectionControl.CursoredSelectionShapeProvider ssp =
+                mock(LienzoMultipleSelectionControl.CursoredSelectionShapeProvider.class);
+        tested = new LienzoMultipleSelectionControl<>(selectionControl,
+                                                      canvasSelectionEvent,
+                                                      clearSelectionEvent,
+                                                      ssp);
+
+        tested.init(canvasHandler);
+        when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
+        when(selectionManager.getSelectedItems().isSelectionGroup()).thenReturn(true);
+        tested.onCanvasSelection(new CanvasSelectionEvent(canvasHandler,
+                                                          Arrays.asList(ELEMENT_UUID,
+                                                                        ELEMENT_UUID_2,
+                                                                        ELEMENT_UUID_3,
+                                                                        ELEMENT_UUID_4,
+                                                                        ELEMENT_UUID_5)));
+        verify(selectionControl, never()).clearSelection();
+        verify(selectionManager, never()).clearSelection();
+    }
+
+    @Test
+    public void testSingleSelectionFromGroupSelection() {
+        final SelectionManager.SelectedItems selectedItems = mock(SelectionManager.SelectedItems.class);
+        final LienzoMultipleSelectionControl.CursoredSelectionShapeProvider ssp =
+                mock(LienzoMultipleSelectionControl.CursoredSelectionShapeProvider.class);
+        tested = new LienzoMultipleSelectionControl<>(selectionControl,
+                                                      canvasSelectionEvent,
+                                                      clearSelectionEvent,
+                                                      ssp);
+
+        tested.init(canvasHandler);
+        when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
+        when(selectionManager.getSelectedItems().isSelectionGroup()).thenReturn(true);
+        tested.onCanvasSelection(new CanvasSelectionEvent(canvasHandler, Arrays.asList(ELEMENT_UUID)));
+        verify(selectionControl, never()).clearSelection();
+        verify(selectionManager, times(1)).clearSelection();
     }
 
     @Test

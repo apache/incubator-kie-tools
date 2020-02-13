@@ -88,7 +88,7 @@ public class CanvasHighlight {
                 }
             });
         }
-        setValidCursor();
+        setCursor(AbstractCanvas.Cursors.MOVE);
         return this;
     }
 

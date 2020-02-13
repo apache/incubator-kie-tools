@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.Wires
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactoryStub;
@@ -60,6 +62,7 @@ import static org.mockito.Mockito.when;
 public class ResizeControlImplTest {
 
     private static final String ELEMENT_UUID = "element-uuid1";
+    private static final String ELEMENT_UUID_2 = "element-uuid2";
     private static final Bounds ELEMENT_BOUNDS = Bounds.create(10d, 20d, 30d, 40d);
 
     @Mock
@@ -89,6 +92,9 @@ public class ResizeControlImplTest {
     @Mock
     private WiresShapeViewExt shapeView;
 
+    @Mock
+    private CanvasSelectionEvent elementsSelectedEvent;
+
     private ResizeControlImpl tested;
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
@@ -108,6 +114,8 @@ public class ResizeControlImplTest {
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
+        when(elementsSelectedEvent.getIdentifiers()).thenReturn(Arrays.asList(ELEMENT_UUID,
+                                                                              ELEMENT_UUID_2));
         tested = new ResizeControlImpl(canvasCommandFactory);
         tested.setCommandManagerProvider(() -> commandManager);
     }
@@ -172,5 +180,11 @@ public class ResizeControlImplTest {
         CanvasCommand command = commandArgumentCaptor.getValue();
         assertNotNull(command);
         assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void testOnCanvasSelectionEvent() {
+        tested.onCanvasSelectionEvent(elementsSelectedEvent);
+        verify(elementsSelectedEvent, times(2)).getIdentifiers();
     }
 }
