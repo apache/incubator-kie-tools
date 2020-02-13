@@ -1,4 +1,4 @@
-Kogito Tooling Core API
+Editor State Control
 --
 
-Interfaces to define basic components such as Editors.
+APIs in charge of keep track of the editor commands stack.

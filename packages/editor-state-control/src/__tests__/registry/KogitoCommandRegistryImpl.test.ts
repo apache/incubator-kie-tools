@@ -162,38 +162,6 @@ describe("KogitoCommandRegistryImpl", () => {
     expect(registry.getCommands()).toContain(COMMAND3);
     expect(registry.getCommands()).toContain(COMMAND4);
     expect(registry.isEmpty()).toBeFalsy();
-
-
-    /*
-    * registry.setMaxSize(2);
-
-        registry.register(COMMAND1);
-        registry.register(COMMAND2);
-
-        verify(changeListener, times(2)).notifyRegistryChange();
-        assertFalse(registry.isEmpty());
-
-        Assertions.assertThat(registry.getCommandHistory())
-                .hasSize(2)
-                .containsExactly(COMMAND2, COMMAND1);
-
-        registry.register(COMMAND3);
-
-        verify(changeListener, times(3)).notifyRegistryChange();
-        assertFalse(registry.isEmpty());
-
-        Assertions.assertThat(registry.getCommandHistory())
-                .hasSize(2)
-                .containsExactly(COMMAND3, COMMAND2);
-
-        registry.register(COMMAND4);
-
-        verify(changeListener, times(4)).notifyRegistryChange();
-        assertFalse(registry.isEmpty());
-
-        Assertions.assertThat(registry.getCommandHistory())
-                .hasSize(2)
-                .containsExactly(COMMAND4, COMMAND3);*/
   })
 });
 

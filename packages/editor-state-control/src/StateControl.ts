@@ -19,22 +19,31 @@ import { KogitoCommandRegistry, KogitoCommandRegistryImpl } from "./registry/Kog
 export class StateControl {
 
   public readonly registry: KogitoCommandRegistry<any> = new KogitoCommandRegistryImpl<any>();
-  public undoCommand: () => void;
-  public redoCommand: () => void;
+
+  private undoCommand: () => void;
+  private redoCommand: () => void;
 
   public undo(): void {
-    if(this.undoCommand != null) {
+    if (this.undoCommand) {
       this.undoCommand();
     }
   }
 
   public redo(): void {
-    if(this.redoCommand != null) {
+    if (this.redoCommand) {
       this.redoCommand();
     }
   }
 
   public getCommandRegistry<T>(): KogitoCommandRegistry<T> {
     return this.registry;
+  }
+
+  public setUndoCommand(undoCommand: () => void): void {
+    this.undoCommand = undoCommand;
+  }
+
+  public setRedoCommand(redoCommand: () => void): void {
+    this.redoCommand = redoCommand;
   }
 }
