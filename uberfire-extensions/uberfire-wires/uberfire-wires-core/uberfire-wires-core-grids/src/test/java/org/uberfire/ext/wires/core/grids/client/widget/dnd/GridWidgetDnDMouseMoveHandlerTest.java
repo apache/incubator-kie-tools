@@ -34,7 +34,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -278,9 +280,9 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
-               never()).findResizableColumn(any(GridWidget.class),
-                                            any(BaseGridRendererHelper.RenderingInformation.class),
-                                            any(Double.class));
+               times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(BaseGridRendererHelper.RenderingInformation.class),
+                                             any(Double.class));
 
         verify(state,
                times(1)).setActiveGridWidget(eq(gridWidget));
@@ -385,9 +387,9 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                         any(Double.class),
                                         any(Double.class));
         verify(handler,
-               never()).findResizableColumn(any(GridWidget.class),
-                                            any(BaseGridRendererHelper.RenderingInformation.class),
-                                            any(Double.class));
+               times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(BaseGridRendererHelper.RenderingInformation.class),
+                                             any(Double.class));
 
         verify(state,
                times(1)).setActiveGridWidget(eq(gridWidget));
@@ -404,7 +406,63 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     }
 
     @Test
-    public void findResizableColumns() {
+    public void findResizableColumnsInHeader() {
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
+        //This location is in the GridWidget's header; within a column resize hot-spot, but not within a column move.
+        when(event.getX()).thenReturn(246);
+        when(event.getY()).thenReturn(132);
+
+        //Both COLUMN_MOVE_PENDING and COLUMN_RESIZE_PENDING are detected; however COLUMN_RESIZE_PENGING takes precedence.
+        final InOrder inOrder = Mockito.inOrder(state);
+
+        handler.onNodeMouseMove(event);
+
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
+
+        verify(handler,
+               times(1)).findMovableColumns(any(GridWidget.class),
+                                            any(BaseGridRendererHelper.RenderingInformation.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class));
+        inOrder.verify(state,
+                       times(1)).setActiveGridWidget(eq(gridWidget));
+        inOrder.verify(state,
+                       times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
+        inOrder.verify(state,
+                       times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_MOVE_PENDING));
+
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(BaseGridRendererHelper.RenderingInformation.class),
+                                        any(Double.class),
+                                        any(Double.class));
+
+        verify(handler,
+               times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(BaseGridRendererHelper.RenderingInformation.class),
+                                             any(Double.class));
+        inOrder.verify(state,
+                       times(1)).setActiveGridWidget(eq(gridWidget));
+        inOrder.verify(state,
+                       times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
+        inOrder.verify(state,
+                       times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING));
+
+        final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
+        assertNotNull(uiColumns);
+        assertEquals(1,
+                     uiColumns.size());
+        assertTrue(uiColumns.contains(uiColumn2));
+    }
+
+    @Test
+    public void findResizableColumnsInBody() {
         when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
         when(layer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
@@ -438,9 +496,9 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         verify(state,
                times(1)).setActiveGridWidget(eq(gridWidget));
         verify(state,
-               times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING));
-        verify(state,
                times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING));
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
         assertNotNull(uiColumns);

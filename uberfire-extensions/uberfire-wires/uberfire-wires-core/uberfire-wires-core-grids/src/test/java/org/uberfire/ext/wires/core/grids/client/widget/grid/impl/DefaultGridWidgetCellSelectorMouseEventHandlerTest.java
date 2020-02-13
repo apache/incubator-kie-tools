@@ -23,7 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -101,5 +103,18 @@ public class DefaultGridWidgetCellSelectorMouseEventHandlerTest extends BaseGrid
                                     eq(false));
         verify(layer).batch();
         verify(selectionManager).select(eq(gridWidget));
+    }
+
+    @Test
+    public void checkOnNodeMouseEventDuringDragOperation() {
+        doReturn(true).when(handler).isDNDOperationInProgress(eq(gridWidget));
+
+        assertFalse(handler.onNodeMouseEvent(gridWidget,
+                                             relativeLocation,
+                                             Optional.empty(),
+                                             Optional.empty(),
+                                             Optional.of(0),
+                                             Optional.of(1),
+                                             event));
     }
 }

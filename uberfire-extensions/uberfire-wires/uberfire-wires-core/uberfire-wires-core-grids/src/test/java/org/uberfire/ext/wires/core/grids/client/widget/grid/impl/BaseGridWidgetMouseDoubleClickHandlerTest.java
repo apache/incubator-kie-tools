@@ -32,11 +32,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
 import static org.mockito.Matchers.any;
@@ -57,9 +57,6 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
 
     @Mock
     protected DefaultGridLayer layer;
-
-    @Mock
-    protected GridSelectionManager selectionManager;
 
     @Mock
     protected GridData uiModel;
@@ -85,6 +82,9 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
     @Mock
     private NodeMouseEventHandler eventHandler;
 
+    @Mock
+    private GridWidgetDnDHandlersState state;
+
     protected NodeMouseDoubleClickEvent event;
 
     private BaseGridWidgetMouseDoubleClickHandler mouseDoubleClickHandler;
@@ -107,6 +107,9 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
         when(uiModel.getColumns()).thenReturn(new ArrayList<GridColumn<?>>() {{
             add(uiColumn);
         }});
+
+        when(state.getOperation()).thenReturn(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE);
+        when(layer.getGridWidgetHandlersState()).thenReturn(state);
 
         final BaseGridRendererHelper.RenderingInformation ri = BaseGridWidgetRenderingTestUtils.makeRenderingInformation(uiModel, Collections.emptyList());
         when(helper.getRenderingInformation()).thenReturn(ri);

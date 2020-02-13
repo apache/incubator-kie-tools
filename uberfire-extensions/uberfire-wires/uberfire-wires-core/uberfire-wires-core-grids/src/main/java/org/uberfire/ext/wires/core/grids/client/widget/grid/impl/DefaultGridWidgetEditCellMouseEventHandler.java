@@ -39,6 +39,10 @@ public class DefaultGridWidgetEditCellMouseEventHandler implements NodeMouseEven
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
                                     final AbstractNodeMouseEvent event) {
+        if (isDNDOperationInProgress(gridWidget)) {
+            return false;
+        }
+
         boolean isHandled = false;
         if (uiHeaderRowIndex.isPresent() && uiHeaderColumnIndex.isPresent()) {
             isHandled = handleHeaderCell(gridWidget,

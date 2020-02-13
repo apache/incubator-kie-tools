@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**
  * Defines a generic handler for any type of {@link AbstractNodeMouseEvent}.
@@ -80,5 +82,29 @@ public interface NodeMouseEventHandler {
                                    final int uiColumnIndex,
                                    final AbstractNodeMouseEvent event) {
         return false;
+    }
+
+    /**
+     * Returns whether the {@link AbstractNodeMouseEvent} occurred during a Drag and Drop operation.
+     * @param gridWidget The {@link GridWidget} on which the event occurred.
+     * @return true if the event occurred during a Drag and Drop operation.
+     */
+    default boolean isDNDOperationInProgress(final GridWidget gridWidget) {
+        if (!(gridWidget.getLayer() instanceof GridLayer)) {
+            return false;
+        }
+        final GridLayer gridLayer = (GridLayer) gridWidget.getLayer();
+        final GridWidgetDnDHandlersState.GridWidgetHandlersOperation operation = gridLayer.getGridWidgetHandlersState().getOperation();
+        switch (operation) {
+            case NONE:
+            case COLUMN_RESIZE_PENDING:
+            case COLUMN_MOVE_PENDING:
+            case COLUMN_MOVE_INITIATED:
+            case ROW_MOVE_PENDING:
+            case ROW_MOVE_INITIATED:
+            case GRID_MOVE_PENDING:
+                return false;
+        }
+        return true;
     }
 }

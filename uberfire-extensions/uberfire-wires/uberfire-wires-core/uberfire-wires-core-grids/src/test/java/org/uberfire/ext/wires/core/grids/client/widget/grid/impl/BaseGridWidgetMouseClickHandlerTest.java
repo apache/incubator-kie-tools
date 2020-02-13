@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -82,6 +83,9 @@ public abstract class BaseGridWidgetMouseClickHandlerTest {
     @Mock
     private NodeMouseEventHandler eventHandler;
 
+    @Mock
+    private GridWidgetDnDHandlersState state;
+
     private BaseGridWidgetMouseClickHandler mouseClickHandler;
 
     @Before
@@ -95,6 +99,9 @@ public abstract class BaseGridWidgetMouseClickHandlerTest {
         when(renderer.getHeaderHeight()).thenReturn(64.0);
         when(renderer.getHeaderRowHeight()).thenReturn(32.0);
         when(uiModel.getHeaderRowCount()).thenReturn(2);
+
+        when(state.getOperation()).thenReturn(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE);
+        when(layer.getGridWidgetHandlersState()).thenReturn(state);
 
         final BaseGridRendererHelper.RenderingInformation ri = BaseGridWidgetRenderingTestUtils.makeRenderingInformation(uiModel, Collections.emptyList());
         when(helper.getRenderingInformation()).thenReturn(ri);

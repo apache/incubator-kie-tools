@@ -52,6 +52,10 @@ public class DefaultGridWidgetCollapsedCellMouseEventHandler implements NodeMous
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
                                     final AbstractNodeMouseEvent event) {
+        if (isDNDOperationInProgress(gridWidget)) {
+            return false;
+        }
+
         boolean isHandled = false;
         if (uiRowIndex.isPresent() && uiColumnIndex.isPresent()) {
             isHandled = handleBodyCell(gridWidget,

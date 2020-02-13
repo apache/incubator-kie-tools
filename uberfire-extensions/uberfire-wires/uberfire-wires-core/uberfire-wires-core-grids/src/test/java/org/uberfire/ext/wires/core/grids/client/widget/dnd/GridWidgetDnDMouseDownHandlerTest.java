@@ -198,7 +198,7 @@ public class GridWidgetDnDMouseDownHandlerTest {
                times(1)).showColumnHighlight(eq(gridWidget),
                                              uiColumnsArgumentCaptor.capture());
         verify(state,
-               times(1)).setOperation(GridWidgetHandlersOperation.COLUMN_MOVE);
+               times(1)).setOperation(GridWidgetHandlersOperation.COLUMN_MOVE_INITIATED);
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
         assertNotNull(uiColumns);
@@ -234,7 +234,7 @@ public class GridWidgetDnDMouseDownHandlerTest {
                times(1)).showRowHighlight(eq(gridWidget),
                                           uiRowsArgumentCaptor.capture());
         verify(state,
-               times(1)).setOperation(GridWidgetHandlersOperation.ROW_MOVE);
+               times(1)).setOperation(GridWidgetHandlersOperation.ROW_MOVE_INITIATED);
 
         final List<GridRow> uiRows = uiRowsArgumentCaptor.getValue();
         assertNotNull(uiRows);

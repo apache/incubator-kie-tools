@@ -29,11 +29,13 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -211,5 +213,18 @@ public class DefaultGridWidgetCollapsedCellMouseEventHandlerTest extends BaseGri
                                    eq(0),
                                    eq(0),
                                    eq(2));
+    }
+
+    @Test
+    public void checkOnNodeMouseEventDuringDragOperation() {
+        doReturn(true).when(handler).isDNDOperationInProgress(eq(gridWidget));
+
+        assertFalse(handler.onNodeMouseEvent(gridWidget,
+                                             relativeLocation,
+                                             Optional.empty(),
+                                             Optional.empty(),
+                                             Optional.of(0),
+                                             Optional.of(1),
+                                             event));
     }
 }

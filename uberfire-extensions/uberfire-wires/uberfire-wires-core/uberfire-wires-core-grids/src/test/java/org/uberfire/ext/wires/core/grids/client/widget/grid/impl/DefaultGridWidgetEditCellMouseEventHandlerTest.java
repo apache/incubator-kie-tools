@@ -30,9 +30,11 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -133,5 +135,18 @@ public class DefaultGridWidgetEditCellMouseEventHandlerTest extends BaseGridWidg
 
         verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
         verify(gridWidget, never()).startEditingCell(any(Point2D.class));
+    }
+
+    @Test
+    public void checkOnNodeMouseEventDuringDragOperation() {
+        doReturn(true).when(handler).isDNDOperationInProgress(eq(gridWidget));
+
+        assertFalse(handler.onNodeMouseEvent(gridWidget,
+                                             relativeLocation,
+                                             Optional.empty(),
+                                             Optional.empty(),
+                                             Optional.of(0),
+                                             Optional.of(1),
+                                             event));
     }
 }

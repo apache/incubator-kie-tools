@@ -25,7 +25,9 @@ import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -117,5 +119,18 @@ public class DefaultGridWidgetLinkedColumnMouseEventHandlerTest extends BaseGrid
                never()).select(any(GridWidget.class));
         verify(selectionManager,
                times(1)).selectLinkedColumn(eq(uiLinkedColumn));
+    }
+
+    @Test
+    public void checkOnNodeMouseEventDuringDragOperation() {
+        doReturn(true).when(handler).isDNDOperationInProgress(eq(gridWidget));
+
+        assertFalse(handler.onNodeMouseEvent(gridWidget,
+                                             relativeLocation,
+                                             Optional.empty(),
+                                             Optional.empty(),
+                                             Optional.of(0),
+                                             Optional.of(1),
+                                             event));
     }
 }

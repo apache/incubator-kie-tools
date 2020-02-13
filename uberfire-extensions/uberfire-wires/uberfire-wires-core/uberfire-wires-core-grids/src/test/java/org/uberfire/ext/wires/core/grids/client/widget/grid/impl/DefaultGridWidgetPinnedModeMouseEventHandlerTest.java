@@ -27,7 +27,9 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -113,5 +115,18 @@ public class DefaultGridWidgetPinnedModeMouseEventHandlerTest extends BaseGridWi
                                         any(Command.class));
         verify(pinnedModeManager,
                times(1)).exitPinnedMode(any(Command.class));
+    }
+
+    @Test
+    public void checkOnNodeMouseEventDuringDragOperation() {
+        doReturn(true).when(handler).isDNDOperationInProgress(eq(gridWidget));
+
+        assertFalse(handler.onNodeMouseEvent(gridWidget,
+                                             relativeLocation,
+                                             Optional.empty(),
+                                             Optional.empty(),
+                                             Optional.of(0),
+                                             Optional.of(1),
+                                             event));
     }
 }

@@ -74,10 +74,9 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
                     return;
                 }
 
-                showColumnHighlight(state.getActiveGridWidget(),
-                                    state.getActiveGridColumns());
                 state.setEventInitialX(ap.getX());
-                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE);
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE_INITIATED);
+                showColumnHighlight(state.getActiveGridWidget(), state.getActiveGridColumns());
                 break;
 
             case ROW_MOVE_PENDING:
@@ -85,10 +84,9 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
                     return;
                 }
 
-                showRowHighlight(state.getActiveGridWidget(),
-                                 state.getActiveGridRows());
                 state.setEventInitialX(ap.getX());
-                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE);
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE_INITIATED);
+                showRowHighlight(state.getActiveGridWidget(), state.getActiveGridRows());
                 break;
 
             case GRID_MOVE_PENDING:

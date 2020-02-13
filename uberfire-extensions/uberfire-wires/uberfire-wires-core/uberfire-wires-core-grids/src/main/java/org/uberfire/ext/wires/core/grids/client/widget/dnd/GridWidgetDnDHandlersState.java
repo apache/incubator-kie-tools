@@ -201,14 +201,16 @@ public class GridWidgetDnDHandlersState {
      * The different states of the drag operation.
      */
     public enum GridWidgetHandlersOperation {
-        NONE,
-        COLUMN_RESIZE_PENDING,
-        COLUMN_RESIZE,
-        COLUMN_MOVE_PENDING,
-        COLUMN_MOVE,
-        ROW_MOVE_PENDING,
-        ROW_MOVE,
-        GRID_MOVE_PENDING,
-        GRID_MOVE
+        NONE,                   // Nothing happening!
+        COLUMN_RESIZE_PENDING,  // The ability to resize a column has been detected.
+        COLUMN_RESIZE,          // A column is being resized
+        COLUMN_MOVE_PENDING,    // The ability to move a column has been detected.
+        COLUMN_MOVE_INITIATED,  // A column is able to move but has not _been_ moved to a new position.
+        COLUMN_MOVE,            // A column is able to move and had been moved to a new position.
+        ROW_MOVE_PENDING,       // The ability to move a row has been detected.
+        ROW_MOVE_INITIATED,     // A row is able to move but has not _been_ moved to a new position.
+        ROW_MOVE,               // A row is able to move and has been moved to a new position.
+        GRID_MOVE_PENDING,      // The ability to move a grid has been detected.
+        GRID_MOVE               // A grid has been moved.
     }
 }

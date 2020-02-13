@@ -68,11 +68,13 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 break;
 
             case COLUMN_MOVE:
+            case COLUMN_MOVE_INITIATED:
                 //If we're currently moving a column we don't need to find a column
                 handleColumnMove(event);
                 break;
 
             case ROW_MOVE:
+            case ROW_MOVE_INITIATED:
                 //If we're currently moving a row we don't need to find a row
                 handleRowMove(event);
                 break;
@@ -150,12 +152,12 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                 renderingInformation,
                                 cx,
                                 cy);
-
-                //Check for column resizing
-                findResizableColumn(gridWidget,
-                                    renderingInformation,
-                                    cx);
             }
+
+            //Check for column resizing
+            findResizableColumn(gridWidget,
+                                renderingInformation,
+                                cx);
 
             //If over Grid but no operation has been identified default to Grid dragging; when unpinned
             if (!layer.isGridPinned()) {
@@ -558,6 +560,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                     activeGridModel.moveColumnsTo(candidateBlockEndColumnIndex,
                                                                   activeGridColumns);
                                     state.getEventColumnHighlight().setX(activeGridWidget.getComputedLocation().getX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
+                                    state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE);
                                     layer.batch();
                                     return;
                                 } else {
@@ -565,6 +568,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                     activeGridModel.moveColumnsTo(candidateBlockStartColumnIndex,
                                                                   activeGridColumns);
                                     state.getEventColumnHighlight().setX(activeGridWidget.getComputedLocation().getX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
+                                    state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE);
                                     layer.batch();
                                     return;
                                 }
@@ -640,11 +644,11 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
         //Move row(s) and update highlight
         destroyColumns(allGridColumns);
-        activeGridModel.moveRowsTo(uiRowIndex,
-                                   activeGridRows);
+        activeGridModel.moveRowsTo(uiRowIndex, activeGridRows);
 
         final double rowOffsetY = rendererHelper.getRowOffset(leadRow) + headerHeight;
         state.getEventColumnHighlight().setY(activeGridWidget.getComputedLocation().getY() + rowOffsetY);
+        state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE);
         layer.batch();
     }
 

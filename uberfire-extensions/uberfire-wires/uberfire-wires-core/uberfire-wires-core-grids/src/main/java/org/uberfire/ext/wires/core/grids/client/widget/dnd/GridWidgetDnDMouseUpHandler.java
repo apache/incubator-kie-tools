@@ -17,6 +17,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**
@@ -43,15 +45,23 @@ public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
             case COLUMN_RESIZE:
                 break;
             case COLUMN_MOVE:
+            case COLUMN_MOVE_INITIATED:
             case ROW_MOVE:
+            case ROW_MOVE_INITIATED:
                 //Clean-up the GridWidgetDnDProxy
                 layer.remove(state.getEventColumnHighlight());
                 layer.batch();
                 break;
         }
 
-        //Reset state
-        state.reset();
-        layer.getViewport().getElement().getStyle().setCursor(state.getCursor());
+        //Reset state. Defer until the next browser event loop iteration to enable ClickEvents to be processed.
+        scheduleDeferred(() -> {
+            state.reset();
+            layer.getViewport().getElement().getStyle().setCursor(state.getCursor());
+        });
+    }
+
+    void scheduleDeferred(final Command command) {
+        Scheduler.get().scheduleDeferred(command::execute);
     }
 }
