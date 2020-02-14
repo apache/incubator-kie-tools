@@ -17,6 +17,7 @@ package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
@@ -28,6 +29,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
@@ -80,8 +82,22 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
                        final SafeHtmlRenderer<String> renderer) {
         //Render value
         if (value != null) {
-            String label = getLabel(convertToString(value));
+            final String label = makeLabel(convertToString(value));
+
             sb.append(renderer.render(label));
+        }
+    }
+
+    private String makeLabel(final String convert) {
+        if (listBox.isMultipleSelect()) {
+            String[] array = ListSplitter.splitPreserveQuotes("\"",
+                                                              true,
+                                                              convert);
+            return Arrays.stream(array)
+                    .map(s -> getLabel(s))
+                    .collect(Collectors.joining(","));
+        } else {
+            return getLabel(convert);
         }
     }
 
