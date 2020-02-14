@@ -47,7 +47,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeC
 import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeConfigStorageImpl;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.AbstractMavenCommand;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.ArchetypeGenerateCommand;
-import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.ExecuteGoalsCommand;
+import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.BuildProjectCommand;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.preference.ArchetypePreferencesManager;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.events.ArchetypeListUpdatedEvent;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.exceptions.ArchetypeAlreadyExistsException;
@@ -259,10 +259,10 @@ public class ArchetypeServiceImplTest {
     }
 
     @Test(expected = MavenExecutionException.class)
-    public void addWhenExecuteGoalsThrowsExceptionTest() throws MavenEmbedderException {
+    public void addWhenBuildProjectCommandThrowsExceptionTest() throws MavenEmbedderException {
         doReturn(mock(KieModule.class)).when(moduleService).resolveModule(any());
         doNothing().when(service).executeMaven(any(ArchetypeGenerateCommand.class));
-        doThrow(MavenExecutionException.class).when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doThrow(MavenExecutionException.class).when(service).executeMaven(any(BuildProjectCommand.class));
 
         service.add(createGav());
     }
@@ -464,7 +464,7 @@ public class ArchetypeServiceImplTest {
                 .when(repositoryService).getAllRepositories(any(Space.class));
         doReturn(mock(Path.class)).when(service).unpackArchetype(any(Repository.class));
 
-        doThrow(MavenEmbedderException.class).when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doThrow(MavenEmbedderException.class).when(service).executeMaven(any(BuildProjectCommand.class));
 
         final Archetype archetype = createArchetypeWithStatus(ArchetypeStatus.INVALID);
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
@@ -486,7 +486,7 @@ public class ArchetypeServiceImplTest {
         doReturn(Collections.singletonList(mock(Repository.class)))
                 .when(repositoryService).getAllRepositories(any(Space.class));
         doReturn(mock(Path.class)).when(service).unpackArchetype(any(Repository.class));
-        doNothing().when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doNothing().when(service).executeMaven(any(BuildProjectCommand.class));
 
         final Archetype archetype = createArchetypeWithStatus(ArchetypeStatus.VALID);
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
@@ -510,7 +510,7 @@ public class ArchetypeServiceImplTest {
         doReturn(Collections.nCopies(10, mock(Repository.class)))
                 .when(repositoryService).getAllRepositories(any(Space.class));
         doReturn(mock(Path.class)).when(service).unpackArchetype(any(Repository.class));
-        doNothing().when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doNothing().when(service).executeMaven(any(BuildProjectCommand.class));
 
         final Archetype archetype = createArchetypeWithStatus(ArchetypeStatus.VALID);
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
@@ -562,7 +562,7 @@ public class ArchetypeServiceImplTest {
                                                                                         eq(COMMON_ARCHETYPE_ALIAS));
         doReturn(mock(Path.class)).when(service).unpackArchetype(any(Repository.class));
 
-        doThrow(MavenEmbedderException.class).when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doThrow(MavenEmbedderException.class).when(service).executeMaven(any(BuildProjectCommand.class));
 
         final Archetype archetype = createArchetypeWithStatus(ArchetypeStatus.INVALID);
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
@@ -585,7 +585,7 @@ public class ArchetypeServiceImplTest {
         doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
                                                                                         eq(COMMON_ARCHETYPE_ALIAS));
         doReturn(mock(Path.class)).when(service).unpackArchetype(any(Repository.class));
-        doNothing().when(service).executeMaven(any(ExecuteGoalsCommand.class));
+        doNothing().when(service).executeMaven(any(BuildProjectCommand.class));
 
         final Archetype archetype = createArchetypeWithStatus(ArchetypeStatus.VALID);
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());

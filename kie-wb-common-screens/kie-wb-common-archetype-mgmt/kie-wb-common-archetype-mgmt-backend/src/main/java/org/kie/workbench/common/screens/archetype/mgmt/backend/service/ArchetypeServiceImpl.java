@@ -63,7 +63,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeC
 import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeConfigStorageImpl;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.AbstractMavenCommand;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.ArchetypeGenerateCommand;
-import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.ExecuteGoalsCommand;
+import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.BuildProjectCommand;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.preference.ArchetypePreferencesManager;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.util.ArchetypeListingPredicates;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.events.ArchetypeListUpdatedEvent;
@@ -492,7 +492,7 @@ public class ArchetypeServiceImpl implements ArchetypeService {
 
             final Path targetDirectoryPath = unpackArchetype(repository);
 
-            executeMaven(new ExecuteGoalsCommand(targetDirectoryPath.toString()));
+            executeMaven(new BuildProjectCommand(targetDirectoryPath.toString()));
 
             updateArchetypeStatus(repository.getAlias(),
                                   ArchetypeStatus.VALID,
@@ -666,7 +666,7 @@ public class ArchetypeServiceImpl implements ArchetypeService {
             throws GitAPIException, MavenEmbedderException {
         createTemporaryGitRepository(repositoryDirectory);
 
-        executeMaven(new ExecuteGoalsCommand(repositoryDirectory.getAbsolutePath()));
+        executeMaven(new BuildProjectCommand(repositoryDirectory.getAbsolutePath()));
 
         return createArchetypeRepository(templateGav,
                                          repositoryDirectory.toURI().toString());
