@@ -314,7 +314,7 @@ public class TemplateDataCellValueFactory
         DataType.DataTypes dataType = getDataType(column);
 
         if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
-            return cv.getValue().toString();
+            return (cv.getValue() == null ? null : cv.getValue().toString());
         }
 
         switch (dataType) {

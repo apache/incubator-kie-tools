@@ -147,4 +147,26 @@ public class TemplateDataCellFactoryTest {
         verify(testedFactory, never()).makeSelectionEnumCell(factType, factField, operator, dataType);
         verify(testedFactory).makeTextCellWrapper();
     }
+
+    @Test
+    /**
+     * https://issues.redhat.com/browse/DROOLS-5011
+     * Even if the operator is for a list the enumerations should override.
+     */
+    public void testEnumHasPriorityOverListOperator() throws Exception {
+        final String factType = "org.kiegroup.Car";
+        final String factField = "color";
+        final String dataType = DataType.DataTypes.STRING.name();
+
+        doReturn(true).when(oracle).hasEnums(factType, factField);
+        doReturn(factType).when(column).getFactType();
+        doReturn(factField).when(column).getFactField();
+        doReturn(dataType).when(column).getDataType();
+        doReturn("in").when(column).getOperator();
+
+        testedFactory.getCell(column);
+
+        verify(testedFactory).makeSelectionEnumCell(factType, factField, "in", dataType);
+        verify(testedFactory, never()).makeTextCellWrapper();
+    }
 }

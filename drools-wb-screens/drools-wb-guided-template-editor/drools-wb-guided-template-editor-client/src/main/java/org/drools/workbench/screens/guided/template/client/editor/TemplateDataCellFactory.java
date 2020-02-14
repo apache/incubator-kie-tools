@@ -69,11 +69,6 @@ public class TemplateDataCellFactory
             return makeTextCellWrapper();
         }
 
-        if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
-            // " " and "," needed to list multiple values
-            return makeTextCellWrapper();
-        }
-
         //Check if the column has an enumeration
         final String dataType = column.getDataType();
         if (oracle.hasEnums(column.getFactType(),
@@ -83,6 +78,9 @@ public class TemplateDataCellFactory
                                          column.getFactField(),
                                          column.getOperator(),
                                          dataType);
+        } else if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+            // " " and "," needed to list multiple values
+            return makeTextCellWrapper();
         } else {
             if (column.getDataType().equals(DataType.TYPE_BOOLEAN)) {
                 return makeBooleanCell();
@@ -118,7 +116,7 @@ public class TemplateDataCellFactory
                                                                                  String fieldName,
                                                                                  String operator,
                                                                                  String dataType) {
-        DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell;
+
         if (dataType.equals(DataType.TYPE_NUMERIC)) {
             final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell(factType,
                                                                                                                                     fieldName,
@@ -126,7 +124,7 @@ public class TemplateDataCellFactory
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<BigDecimal>(pudd,
+            return new DecoratedGridCellValueAdaptor<BigDecimal>(pudd,
                                                                  eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
             final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell(factType,
@@ -135,7 +133,7 @@ public class TemplateDataCellFactory
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<BigDecimal>(pudd,
+            return new DecoratedGridCellValueAdaptor<BigDecimal>(pudd,
                                                                  eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
             final AbstractProxyPopupDropDownEditCell<BigInteger, BigInteger> pudd = new ProxyPopupNumericBigIntegerDropDownEditCell(factType,
@@ -144,7 +142,7 @@ public class TemplateDataCellFactory
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<BigInteger>(pudd,
+            return new DecoratedGridCellValueAdaptor<BigInteger>(pudd,
                                                                  eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BYTE)) {
             final AbstractProxyPopupDropDownEditCell<Byte, Byte> pudd = new ProxyPopupNumericByteDropDownEditCell(factType,
@@ -153,7 +151,7 @@ public class TemplateDataCellFactory
                                                                                                                   oracle,
                                                                                                                   dropDownManager,
                                                                                                                   isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Byte>(pudd,
+            return new DecoratedGridCellValueAdaptor<Byte>(pudd,
                                                            eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
             final AbstractProxyPopupDropDownEditCell<Double, Double> pudd = new ProxyPopupNumericDoubleDropDownEditCell(factType,
@@ -162,7 +160,7 @@ public class TemplateDataCellFactory
                                                                                                                         oracle,
                                                                                                                         dropDownManager,
                                                                                                                         isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Double>(pudd,
+            return new DecoratedGridCellValueAdaptor<Double>(pudd,
                                                              eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
             final AbstractProxyPopupDropDownEditCell<Float, Float> pudd = new ProxyPopupNumericFloatDropDownEditCell(factType,
@@ -171,7 +169,7 @@ public class TemplateDataCellFactory
                                                                                                                      oracle,
                                                                                                                      dropDownManager,
                                                                                                                      isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Float>(pudd,
+            return new DecoratedGridCellValueAdaptor<Float>(pudd,
                                                             eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
             final AbstractProxyPopupDropDownEditCell<Integer, Integer> pudd = new ProxyPopupNumericIntegerDropDownEditCell(factType,
@@ -180,7 +178,7 @@ public class TemplateDataCellFactory
                                                                                                                            oracle,
                                                                                                                            dropDownManager,
                                                                                                                            isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Integer>(pudd,
+            return new DecoratedGridCellValueAdaptor<Integer>(pudd,
                                                               eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_LONG)) {
             final AbstractProxyPopupDropDownEditCell<Long, Long> pudd = new ProxyPopupNumericLongDropDownEditCell(factType,
@@ -189,7 +187,7 @@ public class TemplateDataCellFactory
                                                                                                                   oracle,
                                                                                                                   dropDownManager,
                                                                                                                   isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Long>(pudd,
+            return new DecoratedGridCellValueAdaptor<Long>(pudd,
                                                            eventBus);
         } else if (dataType.equals(DataType.TYPE_NUMERIC_SHORT)) {
             final AbstractProxyPopupDropDownEditCell<Short, Short> pudd = new ProxyPopupNumericShortDropDownEditCell(factType,
@@ -198,10 +196,10 @@ public class TemplateDataCellFactory
                                                                                                                      oracle,
                                                                                                                      dropDownManager,
                                                                                                                      isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<Short>(pudd,
+            return new DecoratedGridCellValueAdaptor<Short>(pudd,
                                                             eventBus);
         } else if (dataType.equals(DataType.TYPE_BOOLEAN)) {
-            cell = makeBooleanCell();
+            return makeBooleanCell();
         } else if (dataType.equals(DataType.TYPE_DATE)) {
             final AbstractProxyPopupDropDownEditCell<Date, Date> pudd = new ProxyPopupDateDropDownEditCell(factType,
                                                                                                            fieldName,
@@ -210,7 +208,7 @@ public class TemplateDataCellFactory
                                                                                                            dropDownManager,
                                                                                                            isReadOnly,
                                                                                                            DATE_FORMAT);
-            cell = new DecoratedGridCellValueAdaptor<Date>(pudd,
+            return new DecoratedGridCellValueAdaptor<Date>(pudd,
                                                            eventBus);
         } else {
             final AbstractProxyPopupDropDownEditCell<String, String> pudd = new ProxyPopupTextDropDownEditCell(factType,
@@ -219,11 +217,9 @@ public class TemplateDataCellFactory
                                                                                                                oracle,
                                                                                                                dropDownManager,
                                                                                                                isReadOnly);
-            cell = new DecoratedGridCellValueAdaptor<String>(pudd,
+            return new DecoratedGridCellValueAdaptor<String>(pudd,
                                                              eventBus);
         }
-
-        return cell;
     }
 
     /**
