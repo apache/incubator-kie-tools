@@ -17,7 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
-import { EditorContent } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -52,8 +52,8 @@ beforeEach(() => {
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       },
-      receive_resourceContentRequest(uri: string): void {
-        receivedMessages.push("resourceContentRequest_" + uri);
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest): void {
+        receivedMessages.push("resourceContentRequest_" + resourceContentRequest.path);
       },
       receive_readResourceContentError(errorMessage: string): void {
         receivedMessages.push("readResourceContentError_" + errorMessage);

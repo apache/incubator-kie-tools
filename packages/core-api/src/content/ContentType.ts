@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export * from "./ResourceContentService";
-export * from "./ResourceContent";
-export * from "./ResourcesList";
-export * from "./ContentType";
-export * from "./ResourceContentOptions";
-export * from "./ResourceContentRequest";
+export enum ContentType {
+    TEXT = "text",
+    BINARY = "binary"
+}

@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { LanguageData, ResourceContent, ResourcesList, EditorContent } from "@kogito-tooling/core-api";
+import {
+  LanguageData,
+  ResourceContent,
+  ResourcesList,
+  EditorContent,
+  ResourceContentRequest,
+  ResourceContentService
+} from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
@@ -26,7 +33,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_contentResponse(content: EditorContent): void;
   receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
-  receive_resourceContentRequest(uri: string): void;
+  receive_resourceContentRequest(resourceContentService: ResourceContentRequest): void;
   receive_resourceListRequest(globPattern: string): void;
   receive_ready(): void;
 }
@@ -123,7 +130,7 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_ready();
         break;
       case EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
-        this.impl.receive_resourceContentRequest(message.data as string);
+        this.impl.receive_resourceContentRequest(message.data as ResourceContentRequest);
         break;
       case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
         this.impl.receive_resourceListRequest(message.data as string);
