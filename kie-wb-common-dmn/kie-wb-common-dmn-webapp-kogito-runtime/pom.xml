@@ -32,6 +32,7 @@
   <properties>
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
+    <skipITs>true</skipITs>
   </properties>
 
   <dependencies>
@@ -754,6 +755,15 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <!-- https://issues.redhat.com/browse/KOGITO-1107 -->
+            <!-- Integration Tests are disabled by default. Enable them with -DskipITs=false -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <skipITs>${skipITs}</skipITs>
+            </configuration>
           </plugin>
         </plugins>
       </build>

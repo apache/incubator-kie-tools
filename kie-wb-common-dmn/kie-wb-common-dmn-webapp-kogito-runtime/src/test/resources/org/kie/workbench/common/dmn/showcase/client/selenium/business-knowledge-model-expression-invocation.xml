@@ -1,0 +1,61 @@
+<?xml version='1.0' ?>
+<dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/'
+                 xmlns='https://kiegroup.org/dmn/_2FCABCDF-A4E7-4607-BE78-A48A25149B79'
+                 xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/'
+                 xmlns:kie='http://www.drools.org/kie/dmn/1.2'
+                 xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/'
+                 xmlns:dc='http://www.omg.org/spec/DMN/20180521/DC/'
+                 id='_7C60081E-1C05-4B2A-A5F4-89C02AA4A519'
+                 name='18559EC7-B147-48A3-BDEC-78513FB8C211'
+                 typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/'
+                 namespace='https://kiegroup.org/dmn/_2FCABCDF-A4E7-4607-BE78-A48A25149B79'>
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id='_1ACB205E-7221-4573-B555-7A7626FDFC8E' name='BusinessKnowledgeModel-1'>
+    <dmn:extensionElements/>
+    <dmn:variable id='_C6A5600F-D28F-4566-A306-F73D853CEFBD' name='BusinessKnowledgeModel-1'/>
+    <dmn:encapsulatedLogic id='_616FC696-1CE6-4210-A479-DEE11293ACA3' kind='FEEL'>
+      <dmn:formalParameter id='_7EA0A877-1777-4A7E-99BE-D05DBC02EB7C' name='p-1' typeRef='number'/>
+      <dmn:invocation id='_67C0CA6C-3C78-46B8-89A9-B97270DB6837'>
+        <dmn:literalExpression id='_3A9F48F3-BFAD-4131-B26D-E90918F7A0DC'>
+          <dmn:text>aFunction</dmn:text>
+        </dmn:literalExpression>
+        <dmn:binding>
+          <dmn:parameter id='_46583D18-F89D-40CB-B177-24841C88062C' name='p-2' typeRef='string'/>
+          <dmn:literalExpression id='_FFF2CB0D-6913-4975-9822-B455986F00C4'>
+            <dmn:text>abc</dmn:text>
+          </dmn:literalExpression>
+        </dmn:binding>
+      </dmn:invocation>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef='_67C0CA6C-3C78-46B8-89A9-B97270DB6837'>
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef='_3A9F48F3-BFAD-4131-B26D-E90918F7A0DC'/>
+          <kie:ComponentWidths dmnElementRef='_FFF2CB0D-6913-4975-9822-B455986F00C4'>
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef='_616FC696-1CE6-4210-A479-DEE11293ACA3'>
+            <kie:width>50</kie:width>
+            <kie:width>470</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id='dmnshape-_1ACB205E-7221-4573-B555-7A7626FDFC8E' dmnElementRef='_1ACB205E-7221-4573-B555-7A7626FDFC8E' isCollapsed='false'>
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red='255' green='255' blue='255'/>
+          <dmndi:StrokeColor red='0' green='0' blue='0'/>
+          <dmndi:FontColor red='0' green='0' blue='0'/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x='349' y='119' width='100' height='50'/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

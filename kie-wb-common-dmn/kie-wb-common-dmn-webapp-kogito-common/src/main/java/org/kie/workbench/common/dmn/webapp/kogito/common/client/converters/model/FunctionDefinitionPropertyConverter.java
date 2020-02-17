@@ -84,7 +84,7 @@ public class FunctionDefinitionPropertyConverter {
                 break;
             case PMML:
                 result.setKind(Kind.PMML);
-                convertPMMLFunctionExpression(result);
+                convertPMMLFunctionExpression(result, hasComponentWidthsConsumer);
                 break;
             default:
                 result.setKind(Kind.FEEL);
@@ -104,25 +104,33 @@ public class FunctionDefinitionPropertyConverter {
         return result;
     }
 
-    private static void convertPMMLFunctionExpression(final FunctionDefinition function) {
+    private static void convertPMMLFunctionExpression(final FunctionDefinition function,
+                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         final Expression expression = function.getExpression();
         if (expression instanceof Context) {
             final Context context = (Context) expression;
-            context.getContextEntry().forEach(FunctionDefinitionPropertyConverter::convertContextEntryExpression);
+            context.getContextEntry().forEach(ce -> convertContextEntryExpression(ce, hasComponentWidthsConsumer));
         }
     }
 
-    private static void convertContextEntryExpression(final ContextEntry contextEntry) {
+    private static void convertContextEntryExpression(final ContextEntry contextEntry,
+                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         final Expression expression = contextEntry.getExpression();
         if (expression instanceof LiteralExpression) {
             final LiteralExpression le = (LiteralExpression) expression;
             final String variableName = contextEntry.getVariable().getName().getValue();
             if (Objects.equals(LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT,
                                variableName)) {
-                contextEntry.setExpression(convertLiteralExpressionToPMMLDocument(le));
+                final LiteralExpressionPMMLDocument e = convertLiteralExpressionToPMMLDocument(le);
+                //Ensure ComponentWidths are updated for the converted LiteralExpression
+                hasComponentWidthsConsumer.accept(e.getId().getValue(), e);
+                contextEntry.setExpression(e);
             } else if (Objects.equals(LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL,
                                       variableName)) {
-                contextEntry.setExpression(convertLiteralExpressionToPMMLDocumentModel(le));
+                final LiteralExpressionPMMLDocumentModel e = convertLiteralExpressionToPMMLDocumentModel(le);
+                //Ensure ComponentWidths are updated for the converted LiteralExpression
+                hasComponentWidthsConsumer.accept(e.getId().getValue(), e);
+                contextEntry.setExpression(e);
             }
         }
     }

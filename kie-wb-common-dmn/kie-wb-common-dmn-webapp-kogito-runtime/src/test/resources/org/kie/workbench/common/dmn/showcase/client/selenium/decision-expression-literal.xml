@@ -1,0 +1,41 @@
+<?xml version='1.0' ?>
+<dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/' 
+                 xmlns='https://kiegroup.org/dmn/_09181FA1-50E6-47A0-AFBD-F02A2F0CBBC8' 
+                 xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/' 
+                 xmlns:kie='http://www.drools.org/kie/dmn/1.2' 
+                 xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/' 
+                 xmlns:dc='http://www.omg.org/spec/DMN/20180521/DC/' 
+                 xmlns:feel='http://www.omg.org/spec/DMN/20180521/FEEL/' 
+                 id='_2CAF1B6B-1E79-4F8D-B25A-8ED1115DE227' 
+                 name='6FFF1B2C-C8E5-4508-9A3E-351D74E588B6' 
+                 typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/' 
+                 namespace='https://kiegroup.org/dmn/_09181FA1-50E6-47A0-AFBD-F02A2F0CBBC8'>
+  <dmn:extensionElements/>
+  <dmn:decision id='_4FEA7589-823B-4880-BCFA-AF2F9B145785' name='Decision-1'>
+    <dmn:extensionElements/>
+    <dmn:variable id='_3878431A-4481-40E4-994A-08AAF7C50024' name='Decision-1' typeRef='number'/>
+    <dmn:literalExpression id='_35DB53A6-97E7-4D48-9E5A-59CE0015CEF8'>
+      <dmn:text>123</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef='_35DB53A6-97E7-4D48-9E5A-59CE0015CEF8'>
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id='dmnshape-_4FEA7589-823B-4880-BCFA-AF2F9B145785' dmnElementRef='_4FEA7589-823B-4880-BCFA-AF2F9B145785' isCollapsed='false'>
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red='255' green='255' blue='255'/>
+          <dmndi:StrokeColor red='0' green='0' blue='0'/>
+          <dmndi:FontColor red='0' green='0' blue='0'/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x='519' y='151' width='100' height='50'/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

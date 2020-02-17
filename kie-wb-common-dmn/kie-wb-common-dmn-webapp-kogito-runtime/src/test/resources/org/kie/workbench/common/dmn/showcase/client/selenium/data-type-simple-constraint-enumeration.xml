@@ -1,0 +1,25 @@
+<?xml version='1.0' ?>
+<dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/'
+                 xmlns='https://kiegroup.org/dmn/_8DFDB532-3C72-48C0-A6B4-20CA6140C081'
+                 xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/'
+                 xmlns:kie='http://www.drools.org/kie/dmn/1.2'
+                 xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/'
+                 id='_2DB83949-9447-41D2-A1B5-1F4A24B35334'
+                 name='77AD8E1F-A429-4E71-B52E-3F1FA399C6EA'
+                 typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/'
+                 namespace='https://kiegroup.org/dmn/_8DFDB532-3C72-48C0-A6B4-20CA6140C081'>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id='_23710223-C425-42A3-94A0-02EFADB69075' name='myType' isCollection='false'>
+    <dmn:typeRef>number</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType='enumeration' id='_1207D208-4944-4AF3-992B-4F55CFFF28B7'>
+      <dmn:text>1, 2</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
