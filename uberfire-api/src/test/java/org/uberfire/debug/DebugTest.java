@@ -39,11 +39,24 @@ public class DebugTest {
     }
 
     @Test
+    public void testMemorableWithNegativeNumber() {
+        assertEquals("d",
+                     Debug.toMemorableString(-1));
+    }
+
+    @Test
+    public void testMemorableWithZero() {
+        assertEquals("b",
+                     Debug.toMemorableString(0));
+    }
+
+    @Test
     public void testObjectId() {
         Map<String, String> m = new HashMap<String, String>();
         assertEquals(Debug.abbreviatedName(m.getClass()) + "@" + Debug.toMemorableString(System.identityHashCode(m)),
                      Debug.objectId(m));
     }
+
 
     @Test
     public void testShortNameWithInnerClass() {

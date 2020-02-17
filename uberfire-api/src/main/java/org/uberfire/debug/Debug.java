@@ -44,18 +44,19 @@ public class Debug {
      */
     public static String toMemorableString(long num) {
         StringBuilder memorable = new StringBuilder();
+        long hashNum = Math.abs(num);
         for (; ; ) {
-            int chunk = (int) (num & 0xf);
+            int chunk = (int) (hashNum & 0xf);
             memorable.append(CONSONANTS[chunk]);
-            num >>= 4;
-            if (num == 0) {
+            hashNum >>= 4;
+            if (hashNum == 0) {
                 break;
             }
 
-            chunk = (int) (num & 7);
+            chunk = (int) (hashNum & 7);
             memorable.append(VOWELS[chunk]);
-            num >>= 3;
-            if (num == 0) {
+            hashNum >>= 3;
+            if (hashNum == 0) {
                 break;
             }
         }
