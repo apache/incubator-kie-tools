@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-export enum InputFileUrlMessages {
-  VALID = "",
-  INITIAL = "http://",
-  INVALID_URL = "Enter a valid URL",
-  NO_FILE_URL = "File URL is not valid",
-  INVALID_EXTENSION = "File type is not supported"
+export enum InputFileUrlState {
+  VALID,
+  INITIAL,
+  INVALID_URL,
+  NO_FILE_URL,
+  INVALID_EXTENSION
 }

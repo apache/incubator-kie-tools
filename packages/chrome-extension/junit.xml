@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="42" failures="0" time="14.003">
+  <testsuite name="extractFileInfoFromUrl" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:30" time="4.121" tests="6">
+    <testcase classname="extractFileInfoFromUrl default" name="extractFileInfoFromUrl default" time="0.014">
+    </testcase>
+    <testcase classname="discoverCurrentGitHubPageType view" name="discoverCurrentGitHubPageType view" time="0.006">
+    </testcase>
+    <testcase classname="discoverCurrentGitHubPageType edit" name="discoverCurrentGitHubPageType edit" time="0">
+    </testcase>
+    <testcase classname="discoverCurrentGitHubPageType pr files" name="discoverCurrentGitHubPageType pr files" time="0.001">
+    </testcase>
+    <testcase classname="discoverCurrentGitHubPageType pr commit" name="discoverCurrentGitHubPageType pr commit" time="0.001">
+    </testcase>
+    <testcase classname="discoverCurrentGitHubPageType any" name="discoverCurrentGitHubPageType any" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="SingleEditorApp" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:30" time="5.548" tests="6">
+    <testcase classname="SingleEditorApp readonly" name="SingleEditorApp readonly" time="0.282">
+    </testcase>
+    <testcase classname="SingleEditorApp not readonly" name="SingleEditorApp not readonly" time="0.06">
+    </testcase>
+    <testcase classname="SingleEditorApp go fullscreen" name="SingleEditorApp go fullscreen" time="0.13">
+    </testcase>
+    <testcase classname="SingleEditorApp go fullscreen and back" name="SingleEditorApp go fullscreen and back" time="0.151">
+    </testcase>
+    <testcase classname="SingleEditorApp open external editor" name="SingleEditorApp open external editor" time="0.179">
+    </testcase>
+    <testcase classname="SingleEditorApp open external editor and wait for come back" name="SingleEditorApp open external editor and wait for come back" time="0.137">
+    </testcase>
+  </testsuite>
+  <testsuite name="runScriptOnPage" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:35" time="0.706" tests="8">
+    <testcase classname="runScriptOnPage test 1" name="runScriptOnPage test 1" time="0.009">
+    </testcase>
+    <testcase classname="runAfterUriChange test 1" name="runAfterUriChange test 1" time="0">
+    </testcase>
+    <testcase classname="removeAllChildren test 1" name="removeAllChildren test 1" time="0.001">
+    </testcase>
+    <testcase classname="mainContainer test 1" name="mainContainer test 1" time="0.001">
+    </testcase>
+    <testcase classname="createAndGetMainContainer test 1" name="createAndGetMainContainer test 1" time="0">
+    </testcase>
+    <testcase classname="iframeFullscreenContainer test 1" name="iframeFullscreenContainer test 1" time="0">
+    </testcase>
+    <testcase classname="kogitoMenuContainer test 1" name="kogitoMenuContainer test 1" time="0.001">
+    </testcase>
+    <testcase classname="extractOpenFileExtension test 1" name="extractOpenFileExtension test 1" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:36" time="0.239" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:36" time="0.332" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="SingleEditorToolbar" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:29" time="8.024" tests="10">
+    <testcase classname="SingleEditorToolbar see as diagram" name="SingleEditorToolbar see as diagram" time="0.249">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly false | textMode true | textModeEnabled true" name="SingleEditorToolbar readonly false | textMode true | textModeEnabled true" time="0.024">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly false | textMode false | textModeEnabled true" name="SingleEditorToolbar readonly false | textMode false | textModeEnabled true" time="0.048">
+    </testcase>
+    <testcase classname="SingleEditorToolbar see as source" name="SingleEditorToolbar see as source" time="0.024">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly true | textMode true | textModeEnabled false" name="SingleEditorToolbar readonly true | textMode true | textModeEnabled false" time="0.012">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly false | textMode true | textModeEnabled false" name="SingleEditorToolbar readonly false | textMode true | textModeEnabled false" time="0.02">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly true | textMode false | textModeEnabled false" name="SingleEditorToolbar readonly true | textMode false | textModeEnabled false" time="0.031">
+    </testcase>
+    <testcase classname="SingleEditorToolbar readonly false | textMode false | textModeEnabled false" name="SingleEditorToolbar readonly false | textMode false | textModeEnabled false" time="0.021">
+    </testcase>
+    <testcase classname="SingleEditorToolbar button actions" name="SingleEditorToolbar button actions" time="0.075">
+    </testcase>
+    <testcase classname="SingleEditorToolbar copied to clipboard message" name="SingleEditorToolbar copied to clipboard message" time="3.051">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:36" time="0.277" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.145" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.193" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.161" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.131" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.138" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:37" time="0.226" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:38" time="0.118" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="test" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:38" time="0.115" tests="1">
+    <testcase classname="test test 1" name="test test 1" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="open github and test dependencies" errors="0" failures="0" skipped="0" timestamp="2020-02-17T18:18:38" time="0.131" tests="1">
+    <testcase classname="open github and test dependencies test 1" name="open github and test dependencies test 1" time="0.002">
+    </testcase>
+  </testsuite>
+</testsuites>

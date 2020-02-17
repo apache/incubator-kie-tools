@@ -88,7 +88,7 @@ export function App(props: Props) {
             <EditorPage onFileNameChanged={onFileNameChanged} />
           </Route>
           <Route exact={true} path={routes.home.url({})}>
-            <HomePage router={onlineEditorRouter} onFileOpened={onFileOpened} />
+            <HomePage onFileOpened={onFileOpened} />
           </Route>
           <Route component={NoMatchPage} />
         </Switch>
