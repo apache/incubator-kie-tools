@@ -18,6 +18,7 @@ package org.appformer.kogito.bridge.client.resource.impl;
 
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 
 /**
  * This {@link ResourceContentService} implementation is used when the envelope API is not available
@@ -32,6 +33,11 @@ public class NoOpResourceContentService implements ResourceContentService {
     @Override
     public Promise<String[]> list(String pattern) {
         return Promise.resolve(new String[0]);
+    }
+
+    @Override
+    public Promise<String> get(String uri, ResourceContentOptions options) {
+        return Promise.resolve("");
     }
 
 }

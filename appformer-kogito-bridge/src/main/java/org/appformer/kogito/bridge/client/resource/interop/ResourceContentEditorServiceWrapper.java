@@ -28,6 +28,8 @@ import jsinterop.annotations.JsType;
 public class ResourceContentEditorServiceWrapper {
 
     public native Promise<String> get(String uri);
+    
+    public native Promise<String> get(String uri, ResourceContentOptions options);
 
     public native Promise<String[]> list(String pattern);
 

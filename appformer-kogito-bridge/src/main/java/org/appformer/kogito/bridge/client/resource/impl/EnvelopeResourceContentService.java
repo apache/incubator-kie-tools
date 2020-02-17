@@ -18,6 +18,7 @@ package org.appformer.kogito.bridge.client.resource.impl;
 
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentEditorServiceWrapper;
 
 /**
@@ -34,6 +35,11 @@ public class EnvelopeResourceContentService implements ResourceContentService {
     @Override
     public Promise<String[]> list(String pattern) {
         return ResourceContentEditorServiceWrapper.get().list(pattern);
+    }
+
+    @Override
+    public Promise<String> get(String uri, ResourceContentOptions options) {
+        return ResourceContentEditorServiceWrapper.get().get(uri, options);
     }
 
 }
