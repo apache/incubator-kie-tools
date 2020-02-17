@@ -163,7 +163,7 @@ export function HomePage(props: Props) {
     window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
   }, [inputFileUrl]);
 
-  const messageForState = useCallback(() => {
+  const messageForState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INITIAL:
         return "http://";
@@ -374,7 +374,7 @@ export function HomePage(props: Props) {
                 label="URL"
                 fieldId="url-text-input"
                 isValid={inputFileUrlState === InputFileUrlState.VALID}
-                helperTextInvalid={messageForState()}
+                helperTextInvalid={messageForState}
               >
                 <TextInput
                   value={inputFileUrl}
