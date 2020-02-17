@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,6 +109,12 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                    }
 
                                                                    @Override
+                                                                   public Promise<String> get(String uri,
+                                                                                              ResourceContentOptions options) {
+                                                                       return get(uri);
+                                                                   }
+
+                                                                   @Override
                                                                    public Promise<String[]> list(String pattern) {
                                                                        return promises.resolve(new String[0]);
                                                                    }
@@ -124,6 +131,12 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                    @Override
                                                                    public Promise<String> get(String uri) {
                                                                        return promises.resolve();
+                                                                   }
+
+                                                                   @Override
+                                                                   public Promise<String> get(String uri,
+                                                                                              ResourceContentOptions options) {
+                                                                       return get(uri);
                                                                    }
 
                                                                    @Override

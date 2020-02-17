@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.uberfire.client.promise.Promises;
 
 public class BPMNStaticResourceContentService implements ResourceContentService {
@@ -124,6 +125,12 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             return promises.resolve(WID_ENTRIES.getOrDefault(uri, ""));
         }
         return promises.resolve(ICON_ENTRIES.getOrDefault(uri, ""));
+    }
+
+    @Override
+    public Promise<String> get(final String uri,
+                               final ResourceContentOptions options) {
+        return get(uri);
     }
 
     @Override
