@@ -19,10 +19,9 @@ import * as React from "react";
 import { FileTreeWithExternalLink } from "./FileTreeWithExternalLink";
 import { Main, Globals } from "../common/Main";
 import { createAndGetMainContainer } from "../../utils";
-import * as dependencies__ from "../../dependencies";
 
 export function addExternalEditorLinks(args: Globals) {
-  if (dependencies__.treeView.filesContainer()) {
+  if (args.dependencies.treeView.filesContainer()) {
     ReactDOM.render(
       <Main
         id={args.id}
@@ -33,10 +32,11 @@ export function addExternalEditorLinks(args: Globals) {
         editorIndexPath={args.editorIndexPath}
         resourceContentServiceFactory={args.resourceContentServiceFactory}
         externalEditorManager={args.externalEditorManager}
+        dependencies={args.dependencies}
       >
         <FileTreeWithExternalLink router={args.router} externalEditorManager={args.externalEditorManager} />
       </Main>,
-      createAndGetMainContainer(args.id, dependencies__.all.body())
+      createAndGetMainContainer(args.id, args.dependencies.all.body())
     );
   }
 }

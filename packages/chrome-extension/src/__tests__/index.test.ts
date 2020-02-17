@@ -61,6 +61,18 @@ describe("discoverCurrentGitHubPageType", () => {
     expect(type).toStrictEqual(GitHubPageType.PR);
   });
 
+  test("tree repo", async () => {
+    setWindowLocationPathname("/user/repo/tree/some_ref");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.TREE);
+  });
+
+  test("tree repo root", async () => {
+    setWindowLocationPathname("/user/repo/");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.TREE);
+  });
+
   test("any", async () => {
     setWindowLocationPathname("/");
     const type = index.discoverCurrentGitHubPageType();

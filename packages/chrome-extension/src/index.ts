@@ -130,7 +130,8 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       editorIndexPath: args.editorIndexPath,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
+      externalEditorManager: args.externalEditorManager,
+      dependencies: args.dependencies
     });
     return;
   } else {
@@ -180,7 +181,7 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.PR;
   }
 
-  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`.*/.*$`)) {
+  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`/.*/.*/$`)) {
     return GitHubPageType.TREE;
   }
 

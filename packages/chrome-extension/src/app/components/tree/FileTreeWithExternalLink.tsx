@@ -15,22 +15,24 @@
  */
 
 import * as React from "react";
-import { treeView } from "../../dependencies";
 import { useEffect, useState } from "react";
 import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { Router } from "@kogito-tooling/core-api";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
+import { useGlobals } from "../common/GlobalContext";
 
 export function FileTreeWithExternalLink(props: {
   router: Router;
   externalEditorManager?: ExternalEditorManager | undefined;
 }) {
+  const globals = useGlobals();
+  const treeView = globals.dependencies.treeView;
   return (
     <>
       {treeView
         .filesLinksContainers()
-        .filter(container => isBlob(container))
+        .filter(container => isBlob(treeView.fileLinkTarget(container)!))
         .filter(container => {
           const fileLink = treeView.fileLinkTarget(container)!;
           const ext = extractOpenFileExtension(fileLink.href);
@@ -42,7 +44,7 @@ export function FileTreeWithExternalLink(props: {
             return (
               <OpenExternalEditorButton
                 id={id}
-                href={createTargetUrl(container, props.externalEditorManager)}
+                href={createTargetUrl(treeView.fileLinkTarget(container)!, props.externalEditorManager)}
                 container={container}
               />
             );
@@ -52,12 +54,10 @@ export function FileTreeWithExternalLink(props: {
   );
 }
 
-function isBlob(container: HTMLElement) {
-  const fileLink = treeView.fileLinkTarget(container);
+function isBlob(fileLink: HTMLAnchorElement) {
   return fileLink && fileLink.pathname.split("/")[3] === "blob";
 }
-function createTargetUrl(container: HTMLElement, externalEditorManager?: ExternalEditorManager): string {
-  const fileLink = treeView.fileLinkTarget(container)!;
+function createTargetUrl(fileLink: HTMLAnchorElement, externalEditorManager?: ExternalEditorManager): string {
   const split = fileLink.pathname.split("/");
   split.splice(0, 1);
   split.splice(2, 1);
