@@ -47,6 +47,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { Router } from "@kogito-tooling/core-api";
+import { InputFileUrlMessages } from "./InputFileUrlState";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -61,8 +62,7 @@ export function HomePage(props: Props) {
   const uploadBoxRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
-  const [isValidFileUrl, setIsValidFileUrl] = useState(false);
-  const [invalidFileText, setInvalidFileText] = useState("");
+  const [inputFileUrlMessage, setInputFileUrlMessage] = useState(InputFileUrlMessages.INITIAL);
 
   const uploadBoxOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     uploadBoxRef.current!.className = "hover";
@@ -136,33 +136,30 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
-  const inputFileChanged = (fileUrl: string) => {
+  const inputFileChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
     try {
       new URL(fileUrl);
-      setIsValidFileUrl(true);
+      setInputFileUrlMessage(InputFileUrlMessages.VALID);
     } catch (e) {
-      setIsValidFileUrl(false);
-      setInvalidFileText("Enter a valid URL");
+      setInputFileUrlMessage(InputFileUrlMessages.INVALID_URL);
     }
-  };
+  }, []);
 
   const openFile = () => {
     const fileUrl = new URL(inputFileUrl);
     const fileType = extractFileExtension(fileUrl.pathname);
 
     if (!fileType) {
-      setInvalidFileText("File URL is not valid");
-      setIsValidFileUrl(false);
+      setInputFileUrlMessage(InputFileUrlMessages.NO_FILE_URL);
       return;
     }
 
     if (!props.router.getLanguageData(fileType)) {
-      setInvalidFileText(`File type ${fileType} is not supported.`);
-      setIsValidFileUrl(false);
+      setInputFileUrlMessage(InputFileUrlMessages.INVALID_EXTENSION);
       return;
     }
-
+    // FIXME: KOGITO-1202
     window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
   };
 
@@ -361,8 +358,8 @@ export function HomePage(props: Props) {
               <FormGroup
                 label="URL"
                 fieldId="url-text-input"
-                isValid={isValidFileUrl}
-                helperTextInvalid={invalidFileText}
+                isValid={inputFileUrlMessage == InputFileUrlMessages.VALID}
+                helperTextInvalid={inputFileUrlMessage}
               >
                 <TextInput
                   value={inputFileUrl}
@@ -375,7 +372,11 @@ export function HomePage(props: Props) {
               </FormGroup>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => openFile()} isDisabled={!isValidFileUrl}>
+              <Button
+                variant="secondary"
+                onClick={() => openFile()}
+                isDisabled={inputFileUrlMessage != InputFileUrlMessages.VALID}
+              >
                 Import source code
               </Button>
             </CardFooter>
