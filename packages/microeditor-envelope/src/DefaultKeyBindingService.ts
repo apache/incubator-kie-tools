@@ -127,13 +127,11 @@ export class DefaultKeyBindingService implements KeyBindingService {
           if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
             console.debug(`Fired keyup [${combination}]!`);
             onKeyUp();
-            return true;
           }
         } else if (e.type === "keydown") {
           if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
             console.debug(`Fired keydown [${combination}]!`);
             onKeyDown();
-            return true;
           }
         }
 
@@ -170,7 +168,6 @@ export class DefaultKeyBindingService implements KeyBindingService {
         if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
           console.debug(`Fired [${combination}]!`);
           action();
-          return true;
         }
 
         return true;
