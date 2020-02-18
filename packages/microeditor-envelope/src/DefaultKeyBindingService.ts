@@ -123,15 +123,15 @@ export class DefaultKeyBindingService implements KeyBindingService {
           return true;
         }
 
-        if (e.type === "keyup") {
-          if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
-            console.debug(`Fired keyup [${combination}]!`);
-            onKeyUp();
-          }
-        } else if (e.type === "keydown") {
+        if (e.type === "keydown") {
           if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
-            console.debug(`Fired keydown [${combination}]!`);
+            console.debug(`Fired (down) [${combination}]!`);
             onKeyDown();
+          }
+        } else if (e.type === "keyup") {
+          if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
+            console.debug(`Fired (up) [${combination}]!`);
+            onKeyUp();
           }
         }
 
@@ -151,7 +151,7 @@ export class DefaultKeyBindingService implements KeyBindingService {
   public registerKeyPress(
     combination: string,
     label: string,
-    action: () => Thenable<void>,
+    onKeyPress: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
     console.info(`Registering shortcut (press) for ${combination} - ${label}`);
@@ -160,14 +160,13 @@ export class DefaultKeyBindingService implements KeyBindingService {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
-        console.info(e.composedPath());
         if (opts?.repeat && !e.repeat) {
           return true;
         }
 
         if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
-          console.debug(`Fired [${combination}]!`);
-          action();
+          console.debug(`Fired (press) [${combination}]!`);
+          onKeyPress();
         }
 
         return true;
