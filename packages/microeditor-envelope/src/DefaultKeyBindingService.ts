@@ -113,13 +113,13 @@ export class DefaultKeyBindingService implements KeyBindingService {
     onKeyUp: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
-    console.info(`Registering shortcut (down/up) for ${combination} - ${label}`);
+    console.info(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
 
     const keyBinding = {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
-        if (opts?.repeat && !e.repeat) {
+        if (e.repeat && !opts?.repeat) {
           return true;
         }
 
@@ -154,13 +154,13 @@ export class DefaultKeyBindingService implements KeyBindingService {
     onKeyPress: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
-    console.info(`Registering shortcut (press) for ${combination} - ${label}`);
+    console.info(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
 
     const keyBinding = {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
-        if (opts?.repeat && !e.repeat) {
+        if (e.repeat && !opts?.repeat) {
           return true;
         }
 
