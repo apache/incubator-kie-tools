@@ -36,8 +36,8 @@ export interface Impl {
   receive_contentRequest(): void;
   receive_resourceContentResponse(content: ResourceContent): void;
   receive_resourceContentList(list: ResourcesList): void;
-  receive_request_editor_undo(): void;
-  receive_request_editor_redo(): void;
+  receive_editorUndo(): void;
+  receive_editorRedo(): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -110,9 +110,8 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: pattern });
   }
 
-  public request_new_edit(edit: KogitoEdit) {
-    console.log("notifying edit: " + edit.id);
-    return this.send({type: EnvelopeBusMessageType.REQUEST_EDITOR_NEW_EDIT, data: edit.id})
+  public notifyNewEdit(edit: KogitoEdit) {
+    return this.send({type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit.id})
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {
@@ -152,13 +151,11 @@ export class EnvelopeBusInnerMessageHandler {
         const resourcesList = message.data as ResourcesList;
         this.impl.receive_resourceContentList(resourcesList);
         break;
-      case EnvelopeBusMessageType.REQUEST_EDITOR_UNDO:
-        console.info(`EnvelopeBusInnerMessageHandler: UNDO`);
-        this.impl.receive_request_editor_undo();
+      case EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
+        this.impl.receive_editorUndo();
         break;
-      case EnvelopeBusMessageType.REQUEST_EDITOR_REDO:
-        console.info(`EnvelopeBusInnerMessageHandler: REDO`);
-        this.impl.receive_request_editor_redo()
+      case EnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
+        this.impl.receive_editorRedo();
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

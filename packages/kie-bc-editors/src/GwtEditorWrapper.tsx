@@ -77,9 +77,6 @@ export class GwtEditorWrapper extends AppFormer.Editor {
       this.messageBus.notify_setContentError(
         `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
       );
-      this.messageBus.notify_setContentError(
-        e.toString()
-      );
     }
 
     return Promise.resolve();

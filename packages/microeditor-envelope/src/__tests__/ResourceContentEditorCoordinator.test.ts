@@ -29,10 +29,10 @@ const handler = new EnvelopeBusInnerMessageHandler(
     receive_resourceContentList: (resourcesList: ResourcesList) => {
       // do nothing
     },
-    receive_request_editor_redo(): void {
+    receive_editorRedo(): void {
       // do nothing
     },
-    receive_request_editor_undo(): void {
+    receive_editorUndo(): void {
       // do nothing
     }
   })

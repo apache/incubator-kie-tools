@@ -17,20 +17,21 @@
 import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { mount } from "enzyme";
-import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData } from "@kogito-tooling/core-api";
+import {
+  EnvelopeBusApi,
+  EnvelopeBusMessage,
+  EnvelopeBusMessageType
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { LanguageData, StateControl } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
-import { KogitoCommand, OnNewCommand, StateControl } from "@kogito-tooling/editor-state-control";
-
-const KogitoCommandRegistryMock = jest.fn(() =>({
-  setOnNewCommand: jest.fn( (callback: OnNewCommand) => {return;})
-}));
+import { EditorFactory } from "../EditorFactory";
+import { Renderer } from "../Renderer";
 
 const StateControlMock = jest.fn(() => ({
   undo: jest.fn(),
   redo: jest.fn(),
-  registry: new KogitoCommandRegistryMock()
+  registry: jest.fn()
 }));
 
 let stateControl:any;
@@ -61,12 +62,27 @@ let sentMessages: Array<EnvelopeBusMessage<any>>;
 let controller: EditorEnvelopeController;
 let mockComponent: ReturnType<typeof mount>;
 
+class TestEditorEnvelopeController extends EditorEnvelopeController {
+
+  constructor(busApi: EnvelopeBusApi,
+              editorFactory: EditorFactory<any>,
+              specialDomElements: SpecialDomElements,
+              renderer: Renderer,
+              resourceContentEditorCoordinator: ResourceContentEditorCoordinator) {
+    super(busApi, editorFactory, specialDomElements, renderer, resourceContentEditorCoordinator);
+  }
+
+  protected getStateControl(): StateControl {
+    return stateControl;
+  }
+}
+
 beforeEach(() => {
   sentMessages = [];
 
   stateControl = new StateControlMock();
 
-  controller = new EditorEnvelopeController(
+  controller = new TestEditorEnvelopeController(
     {
       postMessage: message => {
         sentMessages.push(message);
@@ -84,9 +100,8 @@ beforeEach(() => {
         callback();
       }
     },
-    new ResourceContentEditorCoordinator(),
-    stateControl
-  );
+    new ResourceContentEditorCoordinator()
+  )
 });
 
 afterEach(() => {
@@ -160,10 +175,10 @@ describe("EditorEnvelopeController", () => {
   test("test notify undo/redo", async () => {
     const render = await startController();
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_UNDO, data: "commandID" });
+    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: "commandID" });
     expect(stateControl.undo).toBeCalledTimes(1);
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_REDO, data: "commandID" });
+    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: "commandID" });
     expect(stateControl.redo).toBeCalledTimes(1);
   })
 });

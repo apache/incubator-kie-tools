@@ -15,7 +15,6 @@
   "dependencies": {
     "@kogito-tooling/core-api": "0.2.8",
     "@kogito-tooling/microeditor-envelope-protocol": "0.2.8",
-    "@kogito-tooling/editor-state-control": "0.2.8",
     "@patternfly/patternfly": "2.40.2"
   },
   "scripts": {

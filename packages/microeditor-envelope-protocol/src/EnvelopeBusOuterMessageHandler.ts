@@ -92,11 +92,11 @@ export class EnvelopeBusOuterMessageHandler {
   }
 
   public request_editor_undo() {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_UNDO, data: undefined });
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: undefined });
   }
 
   public request_editor_redo() {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_EDITOR_REDO, data: undefined });
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
   }
 
   public request_initResponse(origin: string) {
@@ -144,7 +144,7 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
         this.impl.receive_resourceListRequest(message.data as string);
         break;
-      case EnvelopeBusMessageType.REQUEST_EDITOR_NEW_EDIT:
+      case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
         console.info("EnvelopeBusOuterMessageHandler: Received new edit: " + message.data);
         break;
       default:

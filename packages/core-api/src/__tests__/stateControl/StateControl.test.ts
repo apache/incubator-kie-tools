@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { StateControl } from "../StateControl";
+import { KogitoCommandRegistryImpl, StateControl } from "../../stateControl";
 
 let stateControl:StateControl;
 
 describe("StateControl", () => {
 
   beforeEach(() => {
-    stateControl = new StateControl();
+    stateControl = new StateControl(new KogitoCommandRegistryImpl<any>(jest.fn()));
   });
 
   test("test undo redo without commands", () => {

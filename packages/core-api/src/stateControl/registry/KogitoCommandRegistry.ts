@@ -23,8 +23,6 @@ export interface KogitoCommandRegistry<T> {
   isEmpty(): boolean;
   getCommands(): T[];
   clear(): void;
-  setOnNewCommand(onNewCommand: OnNewCommand): void;
-  setRegistryChangeListener(registryChangeListener: () => void): void;
 }
 
 export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
@@ -32,8 +30,11 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
   private maxStackSize: number = 200;
   private commands: Array<KogitoCommand<T>> = [];
 
-  private onNewCommand: OnNewCommand;
-  private changeListener: () => void;
+  private onNewCommand: (kogitoCommand: KogitoCommand<T>) => void;
+
+  constructor(onNewCommand: (kogitoCommand: KogitoCommand<T>) => void) {
+    this.onNewCommand = onNewCommand;
+  }
 
   public register(id: string, command: T): void {
     if (id && command) {
@@ -44,14 +45,12 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
       const kogitoCommand = new KogitoCommand(id, command);
 
       this.commands.push(kogitoCommand);
-
-      this.notifyNewCommand(kogitoCommand);
-      this.notifyRegistryChange();
+      this.onNewCommand(kogitoCommand);
     }
   }
 
   public peek(): T | null {
-    if (this.commands && this.commands.length > 0) {
+    if (this.commands?.length > 0) {
       return this.commands[this.commands.length -1].get();
     }
     return null;
@@ -62,7 +61,6 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
       const command = this.commands.pop();
 
       if (command) {
-        this.notifyRegistryChange();
         return command.get();
       }
     }
@@ -79,34 +77,9 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
 
   public clear(): void {
     this.commands = [];
-    this.notifyRegistryChange();
   }
 
   public setMaxSize(size: number): void {
     this.maxStackSize = size;
   }
-
-  public setOnNewCommand(onNewCommand: OnNewCommand): void {
-    this.onNewCommand = onNewCommand;
-  };
-
-  public setRegistryChangeListener(changeListener: () => void): void {
-    this.changeListener = changeListener;
-  }
-
-  private notifyNewCommand(newCommand: KogitoCommand<T>): void {
-    if (this.onNewCommand) {
-      this.onNewCommand.notifyNewCommand(newCommand);
-    }
-  }
-
-  private notifyRegistryChange() {
-    if (this.changeListener != null) {
-      this.changeListener();
-    }
-  }
-}
-
-export interface OnNewCommand {
-  notifyNewCommand(newCommand: KogitoCommand<any>): void;
 }

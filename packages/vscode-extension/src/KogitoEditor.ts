@@ -98,11 +98,11 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        request_editor_undo: () => {
+        request_editorUndo: () => {
           this.requestUndo();
         },
 
-        request_editor_redo: () => {
+        request_editorRedo: () => {
           this.requestRedo();
         }
       })

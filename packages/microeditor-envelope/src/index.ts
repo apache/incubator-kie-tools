@@ -24,8 +24,8 @@ import { EditorFactory } from "./EditorFactory";
 import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
 import { ResourceContentEditorService } from "./ResourceContentEditorService";
 import { EditorContext } from "./EditorContext";
-import { ChannelType } from "@kogito-tooling/core-api";
-import { StateControl, KogitoEdit } from "@kogito-tooling/editor-state-control";
+import { StateControl } from "@kogito-tooling/core-api";
+import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
 export * from "./EditorFactory";
 export * from "./EditorContext";
@@ -59,19 +59,17 @@ export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; edi
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
-  const stateControl = new StateControl();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
     renderer,
-    resourceContentEditorCoordinator,
-    stateControl);
+    resourceContentEditorCoordinator);
 
-  return editorEnvelopeController.start(args.container).then(messageBus => {
+  return editorEnvelopeController.start(args.container).then((result: {messageBus: EnvelopeBusInnerMessageHandler, stateControl:StateControl}) => {
     window.envelope = {
-      resourceContentEditorService: resourceContentEditorCoordinator.exposed(messageBus),
-      stateControl: stateControl,
+      resourceContentEditorService: resourceContentEditorCoordinator.exposed(result.messageBus),
+      stateControl: result.stateControl,
       editorContext: args.editorContext
     }
   });

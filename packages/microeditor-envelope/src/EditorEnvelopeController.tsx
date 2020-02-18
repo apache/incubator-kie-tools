@@ -16,7 +16,14 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import {
+  EditorContent, KogitoCommand,
+  KogitoCommandRegistryImpl, KogitoEdit,
+  LanguageData,
+  ResourceContent,
+  ResourcesList,
+  StateControl
+} from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -24,7 +31,6 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
-import { KogitoCommand, KogitoEdit, StateControl } from "@kogito-tooling/editor-state-control";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
@@ -33,7 +39,8 @@ export class EditorEnvelopeController {
   private readonly specialDomElements: SpecialDomElements;
   private resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-  private readonly stateControl: StateControl;
+
+  private stateControl: StateControl;
 
   private editorEnvelopeView?: EditorEnvelopeView;
   private renderer: Renderer;
@@ -43,14 +50,12 @@ export class EditorEnvelopeController {
     editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
     renderer: Renderer,
-    resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
-    stateControl: StateControl
+    resourceContentEditorCoordinator: ResourceContentEditorCoordinator
   ) {
     this.renderer = renderer;
     this.editorFactory = editorFactory;
     this.specialDomElements = specialDomElements;
     this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
-    this.stateControl = stateControl;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
@@ -81,19 +86,13 @@ export class EditorEnvelopeController {
       receive_resourceContentList: (resourcesList: ResourcesList) => {
         this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       },
-      receive_request_editor_undo: () => {
+      receive_editorUndo: () => {
         this.stateControl.undo();
       },
-      receive_request_editor_redo: () => {
+      receive_editorRedo: () => {
         this.stateControl.redo();
       },
     }));
-    this.stateControl.registry.setOnNewCommand({
-      notifyNewCommand: (newCommand: KogitoCommand<any>) => {
-        console.info(`EditorEnvelopeController: notifying new command= ` + newCommand);
-        this.envelopeBusInnerMessageHandler.request_new_edit(KogitoEdit.fromKogitoCommand(newCommand));
-      }
-    })
   }
 
   private waitForEmptySetContentThenSetLoadingFinished() {
@@ -133,11 +132,23 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(container: HTMLElement): Promise<EnvelopeBusInnerMessageHandler> {
+  public start(container: HTMLElement): Promise<object> {
     return this.render(container).then(() => {
+      this.stateControl = this.getStateControl();
       this.envelopeBusInnerMessageHandler.startListening();
-      return this.envelopeBusInnerMessageHandler;
+      return {messageBus: this.envelopeBusInnerMessageHandler, stateControl: this.stateControl};
     });
+  }
+
+  protected getStateControl(): StateControl {
+    if(!this.stateControl) {
+      const commandRegistry = new KogitoCommandRegistryImpl<any>((newCommand: KogitoCommand<any>) => {
+        console.debug(`EditorEnvelopeController: notifying new command= ` + newCommand);
+        this.envelopeBusInnerMessageHandler.notifyNewEdit(KogitoEdit.fromKogitoCommand(newCommand));
+      });
+      return new StateControl(commandRegistry);
+    }
+    return this.stateControl;
   }
 
   public stop() {
