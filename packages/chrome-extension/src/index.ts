@@ -181,7 +181,7 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.PR;
   }
 
-  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`/.*/.*/$`)) {
+  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`/.*/.*/?$`)) {
     return GitHubPageType.TREE;
   }
 

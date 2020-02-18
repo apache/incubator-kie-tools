@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { ArrowIcon } from "@patternfly/react-icons";
-
-export function OpenExternalEditorButton(props: { id: string; href: string }) {
-  return (
-    <>
-      <div id={props.id} className="float-right">
-        <a href={props.href} target="blank" title="Open in Online Editor">
-          <ArrowIcon />
-        </a>
-      </div>
-    </>
-  );
+export interface ExternalLinkInfo {
+  id: string;
+  url: string;
+  container: HTMLElement;
 }

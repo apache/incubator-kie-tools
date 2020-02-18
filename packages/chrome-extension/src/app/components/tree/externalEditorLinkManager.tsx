@@ -34,7 +34,7 @@ export function addExternalEditorLinks(args: Globals) {
         externalEditorManager={args.externalEditorManager}
         dependencies={args.dependencies}
       >
-        <FileTreeWithExternalLink router={args.router} externalEditorManager={args.externalEditorManager} />
+        <FileTreeWithExternalLink />
       </Main>,
       createAndGetMainContainer(args.id, args.dependencies.all.body())
     );

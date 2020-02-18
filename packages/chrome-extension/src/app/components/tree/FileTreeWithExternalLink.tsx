@@ -15,50 +15,45 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import * as ReactDOM from "react-dom";
+import { useMemo } from "react";
 import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
-import { Router } from "@kogito-tooling/core-api";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
 
-export function FileTreeWithExternalLink(props: {
-  router: Router;
-  externalEditorManager?: ExternalEditorManager | undefined;
-}) {
-  const globals = useGlobals();
-  const treeView = globals.dependencies.treeView;
+export function FileTreeWithExternalLink() {
+  const { externalEditorManager, router, dependencies } = useGlobals();
+
+  const externalLinksInfo = useMemo(
+    () =>
+      dependencies.treeView
+        .linksToFiles()
+        .filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any))
+        .map(fileLink => ({
+          id: idForLink(fileLink),
+          container: fileLink.parentElement!.parentElement!,
+          url: createTargetUrl(fileLink.pathname, externalEditorManager)
+        }))
+        .filter(externalLinkInfo => !document.getElementById(externalLinkInfo.id)),
+    []
+  );
+
   return (
     <>
-      {treeView
-        .filesLinksContainers()
-        .filter(container => isBlob(treeView.fileLinkTarget(container)!))
-        .filter(container => {
-          const fileLink = treeView.fileLinkTarget(container)!;
-          const ext = extractOpenFileExtension(fileLink.href);
-          return props.router.getLanguageData(ext as any);
-        })
-        .map(container => {
-          const id = "external_editor_" + treeView.fileLinkTarget(container)!.id;
-          if (!document.getElementById(id)) {
-            return (
-              <OpenExternalEditorButton
-                id={id}
-                href={createTargetUrl(treeView.fileLinkTarget(container)!, props.externalEditorManager)}
-                container={container}
-              />
-            );
-          }
-        })}
+      {externalLinksInfo.map(linkInfo =>
+        ReactDOM.createPortal(<OpenExternalEditorButton id={linkInfo.id} href={linkInfo.url} />, linkInfo.container)
+      )}
     </>
   );
 }
 
-function isBlob(fileLink: HTMLAnchorElement) {
-  return fileLink && fileLink.pathname.split("/")[3] === "blob";
+function idForLink(fileLink: HTMLAnchorElement): string {
+  return "external_editor_" + fileLink.id;
 }
-function createTargetUrl(fileLink: HTMLAnchorElement, externalEditorManager?: ExternalEditorManager): string {
-  const split = fileLink.pathname.split("/");
+
+function createTargetUrl(pathname: string, externalEditorManager?: ExternalEditorManager): string {
+  const split = pathname.split("/");
   split.splice(0, 1);
   split.splice(2, 1);
   const linkToOpen = split.join("/");

@@ -56,12 +56,10 @@ export class Dependencies {
       return document.querySelector("div.file-wrap") as HTMLElement | null;
     },
 
-    filesLinksContainers: () => {
-      return Array.from(document.querySelectorAll("table.files > tbody > tr > td.content")) as HTMLElement[];
-    },
-
-    fileLinkTarget(container: HTMLElement) {
-      return container.querySelector("span > a") as HTMLAnchorElement | null;
+    linksToFiles: () => {
+      return Array.from(
+        document.querySelectorAll("table.files > tbody > tr > td.content > span > a[href*=blob]")
+      ) as HTMLAnchorElement[];
     }
   };
 
