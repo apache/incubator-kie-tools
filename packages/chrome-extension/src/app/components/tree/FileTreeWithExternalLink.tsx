@@ -16,27 +16,46 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
 
+interface ExternalLinkInfo {
+  id: string;
+  url: string;
+  container: HTMLElement;
+}
+
 export function FileTreeWithExternalLink() {
   const { externalEditorManager, router, dependencies } = useGlobals();
 
-  const externalLinksInfo = useMemo(
+  const filteredLinks = useCallback(
     () =>
       dependencies.treeView
         .linksToFiles()
         .filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any))
-        .map(fileLink => ({
-          id: idForLink(fileLink),
-          container: fileLink.parentElement!.parentElement!,
-          url: createTargetUrl(fileLink.pathname, externalEditorManager)
-        }))
-        .filter(externalLinkInfo => !document.getElementById(externalLinkInfo.id)),
+        .filter(fileLink => !document.getElementById(externalLinkId(fileLink))),
     []
+  );
+  const [linksToFiles, setLinksToFiles] = useState(filteredLinks());
+
+  htmlElementChangeListener(() => {
+    const linksToAdd = filteredLinks();
+    if (linksToAdd.length > 0) {
+      setLinksToFiles(linksToAdd);
+    }
+  }, dependencies.treeView.repositoryContainer()!);
+
+  const externalLinksInfo = useMemo(
+    () =>
+      filteredLinks().map(fileLink => ({
+        id: externalLinkId(fileLink),
+        container: fileLink.parentElement!.parentElement!,
+        url: createTargetUrl(fileLink.pathname, externalEditorManager)
+      })),
+    [linksToFiles]
   );
 
   return (
@@ -48,7 +67,18 @@ export function FileTreeWithExternalLink() {
   );
 }
 
-function idForLink(fileLink: HTMLAnchorElement): string {
+function htmlElementChangeListener(action: () => void, target: HTMLElement) {
+  useEffect(() => {
+    const elementObserver = new MutationObserver(e => action());
+    elementObserver.observe(target, {
+      childList: true,
+      subtree: true
+    });
+    return () => elementObserver.disconnect();
+  });
+}
+
+function externalLinkId(fileLink: HTMLAnchorElement): string {
   return "external_editor_" + fileLink.id;
 }
 

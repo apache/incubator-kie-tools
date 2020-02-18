@@ -52,8 +52,8 @@ export class Dependencies {
   };
 
   public readonly treeView = {
-    filesContainer: () => {
-      return document.querySelector("div.file-wrap") as HTMLElement | null;
+    repositoryContainer: () => {
+      return document.querySelector("div.repository-content") as HTMLElement | null;
     },
 
     linksToFiles: () => {

@@ -21,7 +21,7 @@ import { Main, Globals } from "../common/Main";
 import { createAndGetMainContainer } from "../../utils";
 
 export function addExternalEditorLinks(args: Globals) {
-  if (args.dependencies.treeView.filesContainer()) {
+  if (args.dependencies.treeView.repositoryContainer()) {
     ReactDOM.render(
       <Main
         id={args.id}
