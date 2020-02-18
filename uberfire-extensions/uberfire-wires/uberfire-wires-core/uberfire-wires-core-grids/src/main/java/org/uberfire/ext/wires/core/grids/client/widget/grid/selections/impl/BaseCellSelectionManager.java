@@ -32,6 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
@@ -381,6 +382,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
         return edit(uiRowIndex,
                     ci,
+                    rendererHelper.getRenderingInformation(),
                     Optional.of(rp.add(gridWidgetComputedLocation)));
     }
 
@@ -392,9 +394,11 @@ public class BaseCellSelectionManager implements CellSelectionManager {
             return false;
         }
 
-        BaseGridRendererHelper.ColumnInformation ci = getFloatingColumnInformation(uiColumnIndex);
+        final RenderingInformation renderingInformation = computeRenderingInformation();
+
+        BaseGridRendererHelper.ColumnInformation ci = getFloatingColumnInformation(uiColumnIndex, renderingInformation);
         if (ci == null) {
-            ci = getBodyColumnInformation(uiColumnIndex);
+            ci = getBodyColumnInformation(uiColumnIndex, renderingInformation);
         }
         if (ci == null) {
             return false;
@@ -402,13 +406,14 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
         return edit(uiRowIndex,
                     ci,
+                    renderingInformation,
                     Optional.empty());
     }
 
-    private BaseGridRendererHelper.ColumnInformation getFloatingColumnInformation(final int uiColumnIndex) {
+    private BaseGridRendererHelper.ColumnInformation getFloatingColumnInformation(final int uiColumnIndex,
+                                                                                  final RenderingInformation renderingInformation) {
         final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
         final List<GridColumn<?>> floatingColumns = floatingBlockInformation.getColumns();
 
@@ -422,10 +427,10 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                                                                                                              floatingColumns.indexOf(column)));
     }
 
-    private BaseGridRendererHelper.ColumnInformation getBodyColumnInformation(final int uiColumnIndex) {
+    private BaseGridRendererHelper.ColumnInformation getBodyColumnInformation(final int uiColumnIndex,
+                                                                              final RenderingInformation renderingInformation) {
         final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         final BaseGridRendererHelper.RenderingBlockInformation bodyBlockInformation = renderingInformation.getBodyBlockInformation();
         final List<GridColumn<?>> bodyColumns = bodyBlockInformation.getColumns();
 
@@ -441,6 +446,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
     private boolean edit(final int uiRowIndex,
                          final BaseGridRendererHelper.ColumnInformation ci,
+                         final RenderingInformation renderingInformation,
                          final Optional<Point2D> rp) {
         final GridColumn<?> column = ci.getColumn();
         final int uiColumnIndex = ci.getUiColumnIndex();
@@ -449,7 +455,6 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         //Get rendering information
         final GridRenderer renderer = gridWidget.getRenderer();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {
             return false;
         }
@@ -516,7 +521,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
     private double getCellHeight(final int uiRowIndex,
                                  final int uiColumnIndex,
-                                 final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                 final RenderingInformation renderingInformation) {
         final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
         final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
         if (cell == null) {
@@ -537,7 +542,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
     private double getMergedCellHeight(final int uiRowIndex,
                                        final int uiColumnIndex,
-                                       final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                       final RenderingInformation renderingInformation) {
         double height = 0;
         final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
         final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
@@ -549,7 +554,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
     private double getClippedMergedCellHeight(final int uiRowIndex,
                                               final int uiColumnIndex,
-                                              final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                              final RenderingInformation renderingInformation) {
         final List<Double> allRowHeights = renderingInformation.getAllRowHeights();
         final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
         GridCell<?> _cell = cell;
@@ -584,5 +589,15 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                                (GridCellValue<?>) value);
                         gridWidget.getLayer().batch();
                     });
+    }
+
+    /**
+     * Computing of RenderingInformation is quite complex operation
+     * It is preferable to compute it just once and reuse
+     * See https://issues.redhat.com/browse/DROOLS-4793
+     */
+    private RenderingInformation computeRenderingInformation() {
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        return rendererHelper.getRenderingInformation();
     }
 }
