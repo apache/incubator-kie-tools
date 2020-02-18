@@ -23,13 +23,44 @@ export interface KeyBinding {
 
 export interface KeyBindingServiceOpts {
   hidden?: boolean;
-  element?: HTMLElement;
-  event: "keypress" | "keyup" | "keydown";
+  element?: EventTarget;
+  repeat?: boolean;
+  event?: "keypress" | "keyup" | "keydown";
 }
 
+export enum ModKeys {
+  CTRL = "ctrl",
+  META = "meta",
+  ALT = "alt",
+  SHIFT = "shift"
+}
+
+const MODIFIER_KEY_NAMES = new Map<string, string>([
+  ["AltLeft", "alt"],
+  ["AltRight", "alt"],
+  ["CtrlLeft", "ctrl"],
+  ["CtrlRight", "ctrl"],
+  ["MetaLeft", "meta"],
+  ["MetaRight", "meta"],
+  ["ShiftLeft", "shift"],
+  ["ShiftRight", "shift"]
+]);
+
 export interface KeyBindingService {
-  register(combination: string, label: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
-  registerOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
+  registerKeyPress(
+    combination: string,
+    label: string,
+    action: () => Thenable<void>,
+    opts?: KeyBindingServiceOpts
+  ): number;
+  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
+  registerKeyDownThenUp(
+    combination: string,
+    label: string,
+    onKeyDown: () => Thenable<void>,
+    onKeyUp: () => Thenable<void>,
+    opts?: KeyBindingServiceOpts
+  ): number;
   deregister(id: number): void;
   registered(): KeyBinding[];
 }
@@ -41,14 +72,119 @@ export class DefaultKeyBindingService implements KeyBindingService {
   private readonly keyCodes = new Map<string, string>([
     ["/", "Slash"],
     ["esc", "Escape"],
+    ["delete", "Delete"],
+    ["backspace", "Backspace"],
+    ["right", "ArrowRight"],
+    ["left", "ArrowLeft"],
+    ["up", "ArrowUp"],
+    ["down", "ArrowDown"],
+    ["a", "KeyA"],
+    ["b", "KeyB"],
     ["c", "KeyC"],
-    ["v", "KeyV"],
+    ["d", "KeyD"],
+    ["e", "KeyE"],
+    ["f", "KeyF"],
+    ["g", "KeyG"],
+    ["h", "KeyH"],
+    ["i", "KeyI"],
+    ["j", "KeyJ"],
+    ["k", "KeyK"],
+    ["l", "KeyL"],
+    ["m", "KeyM"],
+    ["n", "KeyN"],
+    ["o", "KeyO"],
+    ["p", "KeyP"],
+    ["q", "KeyQ"],
+    ["r", "KeyR"],
     ["s", "KeyS"],
-    ["x", "KeyX"]
+    ["t", "KeyT"],
+    ["u", "KeyU"],
+    ["v", "KeyV"],
+    ["w", "KeyW"],
+    ["x", "KeyX"],
+    ["y", "KeyY"],
+    ["z", "KeyZ"]
   ]);
 
-  public registerOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
-    const id = this.register(
+  public registerKeyDownThenUp(
+    combination: string,
+    label: string,
+    onKeyDown: () => Thenable<void>,
+    onKeyUp: () => Thenable<void>,
+    opts?: KeyBindingServiceOpts
+  ) {
+    console.info(`Registering shortcut (down/up) for ${combination} - ${label}`);
+
+    const keyBinding = {
+      combination,
+      label,
+      listener: (e: KeyboardEvent) => {
+        if (opts?.repeat && !e.repeat) {
+          return true;
+        }
+
+        if (e.type === "keyup") {
+          if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
+            console.debug(`Fired keyup [${combination}]!`);
+            onKeyUp();
+            return true;
+          }
+        } else if (e.type === "keydown") {
+          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
+            console.debug(`Fired keydown [${combination}]!`);
+            onKeyDown();
+            return true;
+          }
+        }
+
+        return true;
+      },
+      opts
+    };
+
+    this.keyBindings.set(this.eventIdentifiers, keyBinding);
+
+    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+    this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
+
+    return this.eventIdentifiers++;
+  }
+
+  public registerKeyPress(
+    combination: string,
+    label: string,
+    action: () => Thenable<void>,
+    opts?: KeyBindingServiceOpts
+  ) {
+    console.info(`Registering shortcut (press) for ${combination} - ${label}`);
+
+    const keyBinding = {
+      combination,
+      label,
+      listener: (e: KeyboardEvent) => {
+        console.info(e.composedPath());
+        if (opts?.repeat && !e.repeat) {
+          return true;
+        }
+
+        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
+          console.debug(`Fired [${combination}]!`);
+          action();
+          return true;
+        }
+
+        return true;
+      },
+      opts
+    };
+
+    this.keyBindings.set(this.eventIdentifiers, keyBinding);
+    this.keyBindingElement(keyBinding).addEventListener(this.keyBindingEvent(keyBinding), keyBinding.listener);
+    return this.eventIdentifiers++;
+  }
+
+  public registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
+    const id = this.registerKeyPress(
       combination,
       "",
       async () => {
@@ -61,77 +197,83 @@ export class DefaultKeyBindingService implements KeyBindingService {
     return id;
   }
 
-  public register(combination: string, label: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
-    console.info(`registering shortcut for ${combination} - ${label}`);
+  private keyBindingEvent(keyBinding?: KeyBinding) {
+    return keyBinding?.opts?.event ?? "keydown";
+  }
 
-    // if (Array.from(this.keyBindings.values()).filter(k => k.combination === combination).length > 0) {
-    //   console.info("cannot register two combinations twice");
-    //   return -1;
-    // }
-
-    const listener = (e: KeyboardEvent) => {
-      // e.preventDefault();
-      e.stopPropagation();
-
-      if (e.repeat) {
-        return false;
-      }
-
-      console.info(this.combinationKeySet(combination), this.pressedKeySet(e));
-
-      if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
-        console.debug(`Fired [${combination}]!`);
-        action();
-      }
-
-      return false;
-    };
-
-    (opts?.element ?? window).addEventListener(opts?.event ?? "keydown", listener);
-
-    this.keyBindings.set(this.eventIdentifiers, { combination, label, listener, opts });
-    return this.eventIdentifiers++;
+  private keyBindingElement(keyBinding?: KeyBinding) {
+    return keyBinding?.opts?.element ?? document.querySelector(".session-container") ?? window;
   }
 
   public deregister(id: number): void {
     const keyBinding = this.keyBindings.get(id);
-    (keyBinding?.opts?.element ?? window).removeEventListener(
-      keyBinding?.opts?.event ?? "keydown",
-      keyBinding?.listener!
-    );
+    this.keyBindingElement(keyBinding).removeEventListener("keypress", keyBinding?.listener!);
+    this.keyBindingElement(keyBinding).removeEventListener("keydown", keyBinding?.listener!);
+    this.keyBindingElement(keyBinding).removeEventListener("keyup", keyBinding?.listener!);
     this.keyBindings.delete(id);
   }
 
   private combinationKeySet(combination: string) {
-    return new Set(
-      combination
-        .split("+")
-        .map(k => k.toLowerCase())
-        .map(k => this.keyCodes.get(k) ?? k)
-    );
+    const keys = combination
+      .split("+")
+      .map(k => k.toLowerCase())
+      .map(k => this.keyCodes.get(k) ?? k);
+
+    if (this.osName() === "macOS") {
+      return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
+    } else {
+      return new Set(keys);
+    }
+  }
+
+  private osName() {
+    let osName = "unknown";
+
+    if (navigator.appVersion.indexOf("Win") !== -1) {
+      osName = "Windows";
+    } else if (navigator.appVersion.indexOf("Mac") !== -1) {
+      osName = "macOS";
+    } else if (navigator.appVersion.indexOf("X11") !== -1) {
+      osName = "UNIX";
+    } else if (navigator.appVersion.indexOf("Linux") !== -1) {
+      osName = "Linux";
+    }
+
+    return osName;
   }
 
   private pressedKeySet(e: KeyboardEvent) {
     const pressedKeySet = new Set();
     if (e.ctrlKey) {
-      pressedKeySet.add("ctrl");
+      pressedKeySet.add(ModKeys.CTRL);
     }
     if (e.metaKey) {
-      pressedKeySet.add("meta");
+      pressedKeySet.add(ModKeys.META);
     }
     if (e.altKey) {
-      pressedKeySet.add("alt");
+      pressedKeySet.add(ModKeys.ALT);
     }
     if (e.shiftKey) {
-      pressedKeySet.add("shift");
+      pressedKeySet.add(ModKeys.SHIFT);
     }
-    pressedKeySet.add(e.code);
+    if (Array.from(MODIFIER_KEY_NAMES.keys()).indexOf(e.code) === -1) {
+      pressedKeySet.add(e.code);
+    }
     return pressedKeySet;
   }
 
   public registered() {
-    return Array.from(this.keyBindings.values()).filter(k => !k.opts?.hidden);
+    return removeDuplicates(
+      Array.from(this.keyBindings.values()).filter(k => !k.opts?.hidden),
+      "combination"
+    );
   }
+}
+
+function removeDuplicates<T>(myArr: T[], prop: keyof T) {
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+  });
 }
 
 function setsEqual(lhs: Set<unknown>, rhs: Set<unknown>) {
