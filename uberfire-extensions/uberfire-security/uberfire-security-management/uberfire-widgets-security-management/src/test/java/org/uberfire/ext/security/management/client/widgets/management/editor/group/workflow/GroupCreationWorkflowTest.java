@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.Group;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.ext.security.management.api.GroupManagerSettings;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
@@ -40,19 +42,29 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Cre
 import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.PermissionManager;
+import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
 
+    @Mock
+    AuthorizationService authorizationService;
+    Caller<AuthorizationService> authorizationServiceCaller;
     @Mock
     EventSourceMock<OnErrorEvent> errorEvent;
     @Mock
@@ -69,11 +81,18 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
     EntityWorkflowView view;
     @Mock
     Group group;
+    @Mock
+    private GroupEditorWorkflow groupEditorWorkflow;
+
     private GroupCreationWorkflow tested;
+
+    PermissionManager permissionManager;
 
     @Before
     public void setup() {
         super.setup();
+        permissionManager = new DefaultPermissionManager();
+        authorizationServiceCaller = new CallerMock<>(authorizationService);
         when(group.getName()).thenReturn("group1");
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
         when(view.clearNotifications()).thenReturn(view);
@@ -88,6 +107,8 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         when(settings.allowEmpty()).thenReturn(true);
         when(userSystemManager.getGroupManagerSettings()).thenReturn(settings);
         tested = new GroupCreationWorkflow(userSystemManager,
+                                           authorizationServiceCaller,
+                                           permissionManager,
                                            errorEvent,
                                            confirmBox,
                                            loadingBox,
@@ -210,6 +231,8 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
 
     @Test
     public void testCreateGroup() {
+        final CreateGroupEvent onCreateEvent = mock(CreateGroupEvent.class);
+        when(onCreateEvent.getName()).thenReturn("group1");
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -222,6 +245,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
                                  any(Command.class),
                                  any(Command.class));
         tested.createGroup("group1");
+        tested.onCreateGroupEvent(onCreateEvent);
         verify(createEntity,
                times(2)).clear();
         verify(loadingBox,

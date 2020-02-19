@@ -160,6 +160,7 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
         entry.getPermissions().add(permission);
     }
 
+    @Override
     public void addPermission(Group group,
                               Permission permission) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);

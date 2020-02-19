@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.gr
 
 import java.util.Collection;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -27,9 +28,12 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
+import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.InvalidEntityIdentifierException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
@@ -45,18 +49,24 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnE
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.AuthorizationPolicy;
+import org.uberfire.security.authz.Permission;
+import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.INFO;
 
 /**
  * <p>Main entry point for creating a group instance.</p>
+ *
  * @since 0.8.0
  */
 @Dependent
 public class GroupCreationWorkflow implements IsWidget {
 
     ClientUserSystemManager userSystemManager;
+    Caller<AuthorizationService> authorizationService;
+    PermissionManager permissionManager;
     Event<OnErrorEvent> errorEvent;
     ConfirmBox confirmBox;
     LoadingBox loadingBox;
@@ -76,8 +86,13 @@ public class GroupCreationWorkflow implements IsWidget {
     Event<CreateGroupEvent> onCreateGroupEvent;
     Group group;
 
+    static final String PERSPECTIVE = "perspective";
+    static final String ACCESS = "read";
+
     @Inject
     public GroupCreationWorkflow(final ClientUserSystemManager userSystemManager,
+                                 final Caller<AuthorizationService> authorizationService,
+                                 final PermissionManager permissionManager,
                                  final Event<OnErrorEvent> errorEvent,
                                  final ConfirmBox confirmBox,
                                  final LoadingBox loadingBox,
@@ -87,6 +102,8 @@ public class GroupCreationWorkflow implements IsWidget {
                                  final Event<CreateGroupEvent> onCreateGroupEvent,
                                  final EntityWorkflowView view) {
         this.userSystemManager = userSystemManager;
+        this.authorizationService = authorizationService;
+        this.permissionManager = permissionManager;
         this.errorEvent = errorEvent;
         this.confirmBox = confirmBox;
         this.loadingBox = loadingBox;
@@ -204,7 +221,7 @@ public class GroupCreationWorkflow implements IsWidget {
                                                      // Group not found, so name is valid.
                                                      createGroup(identifier);
                                                      error = null;
-                                                 } else  if (throwable instanceof InvalidEntityIdentifierException) {
+                                                 } else if (throwable instanceof InvalidEntityIdentifierException) {
                                                      error = new SecurityManagementException(getGroupIdentifierNotValidMessage((InvalidEntityIdentifierException) throwable),
                                                                                              throwable);
                                                  }
@@ -312,5 +329,15 @@ public class GroupCreationWorkflow implements IsWidget {
     void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
                                          throwable));
+    }
+
+    void onCreateGroupEvent(@Observes final CreateGroupEvent event) {
+        AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
+        Group newGroup = new GroupImpl(event.getName());
+        String permissionName = PERSPECTIVE + "." + ACCESS + "." + authzPolicy.getHomePerspective(newGroup);
+        Permission permission = permissionManager.createPermission(permissionName, true);
+        authzPolicy.addPermission(newGroup, permission);
+        authorizationService.call(r -> {
+        }, errorCallback).savePolicy(authzPolicy);
     }
 }

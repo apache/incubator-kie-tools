@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow;
 
-import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -29,6 +28,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.client.authz.PerspectiveAction;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -38,6 +38,7 @@ import org.uberfire.ext.security.management.client.resources.i18n.UsersManagemen
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
 import org.uberfire.ext.security.management.client.widgets.management.events.ContextualEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.CreateGroupEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.HomePerspectiveChangedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.OnDeleteEvent;
@@ -63,6 +64,7 @@ import static org.uberfire.workbench.events.NotificationEvent.NotificationType.S
 
 /**
  * <p>Main entry point for viewing a group instance.</p>
+ *
  * @since 0.8.0
  */
 @Dependent
@@ -170,7 +172,7 @@ public class GroupEditorWorkflow implements IsWidget {
                                  errorCallback).delete(name);
     }
 
-    protected void doDelete(){
+    protected void doDelete() {
         final String name = group.getName();
         AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
         showLoadingBox();
