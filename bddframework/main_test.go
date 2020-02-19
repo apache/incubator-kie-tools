@@ -36,8 +36,6 @@ const (
 	smokeTag    = "@smoke"
 )
 
-var mainLogger = framework.GetLogger("main")
-
 var opt = godog.Options{
 	Output:    colors.Colored(os.Stdout),
 	Format:    "progress",
@@ -55,7 +53,7 @@ func TestMain(m *testing.M) {
 	opt.Paths = flag.Args()
 
 	if framework.IsSmokeTests() {
-		if opt.Tags != "" {
+		if len(opt.Tags) > 0 {
 			opt.Tags += " && "
 		}
 		// Filter with smoke tag
@@ -63,7 +61,7 @@ func TestMain(m *testing.M) {
 	}
 
 	if !strings.Contains(opt.Tags, disabledTag) {
-		if opt.Tags != "" {
+		if len(opt.Tags) > 0 {
 			opt.Tags += " && "
 		}
 		// Ignore disabled tag
@@ -107,14 +105,25 @@ func FeatureContext(s *godog.Suite) {
 	data := &steps.Data{}
 	data.RegisterAllSteps(s)
 
+	// Scenario handlers
 	s.BeforeScenario(func(s interface{}) {
 		data.BeforeScenario(s)
 	})
-	s.BeforeStep(data.BeforeStep)
 	s.AfterScenario(func(s interface{}, err error) {
-		deleteNamespaceIfExists(data.Namespace)
-
 		data.AfterScenario(s, err)
+
+		// Namespace should be deleted after all other operations have been done
+		deleteNamespaceIfExists(data.Namespace)
+	})
+
+	// Step handlers
+	s.BeforeStep(func(s *gherkin.Step) {
+		framework.GetLogger(data.Namespace).Infof("Step %s", s.Text)
+	})
+	s.AfterStep(func(s *gherkin.Step, err error) {
+		if err != nil {
+			framework.GetLogger(data.Namespace).Errorf("Error in step '%s': %v", s.Text, err)
+		}
 	})
 }
 
@@ -139,6 +148,7 @@ func matchingFeature(tags string, features []*gherkin.Feature) bool {
 }
 
 func showScenarios(features []*gherkin.Feature) {
+	mainLogger := framework.GetMainLogger()
 	mainLogger.Info("------------------ SHOW SCENARIOS ------------------")
 	for _, ft := range features {
 		if len(ft.ScenarioDefinitions) > 0 {

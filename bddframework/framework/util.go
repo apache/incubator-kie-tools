@@ -24,15 +24,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog/gherkin"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
-
-	"go.uber.org/zap"
 )
-
-// GetLogger retrieves the logger for a namespace
-func GetLogger(namespace string) *zap.SugaredLogger {
-	return logger.GetLogger(fmt.Sprintf("%s - tests", namespace))
-}
 
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName() string {
@@ -41,6 +33,8 @@ func GenerateNamespaceName() string {
 	if IsConfigLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
+	} else if len(GetConfigCiName()) > 0 {
+		ns = fmt.Sprintf("%s-%s", GetConfigCiName(), ns)
 	}
 	return ns
 }

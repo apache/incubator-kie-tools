@@ -24,6 +24,7 @@ import (
 // TestConfig contains the information about the tests environment
 type TestConfig struct {
 	localTests bool
+	ciName     string
 	smoke      bool
 
 	operatorImageName string
@@ -66,6 +67,7 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 	prefix := "tests."
 
 	set.BoolVar(&env.localTests, prefix+"local", false, "If tests are launch on local machine")
+	set.StringVar(&env.ciName, prefix+"ci", "", "If tests are launch on ci machine, give the CI name")
 	set.BoolVar(&env.smoke, prefix+"smoke", false, "Launch only smoke tests")
 
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
@@ -142,6 +144,11 @@ func GetConfigBuildRuntimeImageStreamTag() string {
 // IsConfigLocalTests return whether tests are executed in local
 func IsConfigLocalTests() bool {
 	return env.localTests
+}
+
+// GetConfigCiName return the CI name that executes the tests, if any
+func GetConfigCiName() string {
+	return env.ciName
 }
 
 // IsSmokeTests return whether tests are executed in local

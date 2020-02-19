@@ -149,7 +149,7 @@ func WaitAndRetrieveRouteURI(namespace, serviceName string) (string, error) {
 	routeURI, err := GetRouteURI(namespace, serviceName)
 	if err != nil {
 		return "", fmt.Errorf("Error retrieving URI for route %s in namespace %s: %v", serviceName, namespace, err)
-	} else if routeURI == "" {
+	} else if len(routeURI) <= 0 {
 		return "", fmt.Errorf("No URI found for route name %s in namespace %s: %v", serviceName, namespace, err)
 	}
 	GetLogger(namespace).Debugf("Got route %s\n", routeURI)

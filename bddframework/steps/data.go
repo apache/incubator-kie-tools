@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
 
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -53,19 +52,30 @@ func (data *Data) BeforeScenario(s interface{}) {
 	go framework.StartPodLogCollector(data.Namespace)
 }
 
-// BeforeStep configure the data before a scenario is launched
-func (data *Data) BeforeStep(s *gherkin.Step) {
-	framework.GetLogger(data.Namespace).Infof("Step %s", s.Text)
-}
-
 // AfterScenario executes some actions on data after a scenario is finished
 func (data *Data) AfterScenario(s interface{}, err error) {
 	framework.StopPodLogCollector(data.Namespace)
+	framework.FlushLogger(data.Namespace)
+
+	logScenarioDuration(data, s)
+	handleScenarioResult(data, s, err)
+}
+
+func logScenarioDuration(data *Data, s interface{}) {
 	endTime := time.Now()
 	duration := endTime.Sub(data.StartTime)
 	framework.GetLogger(data.Namespace).Infof("Scenario '%s'. Duration = %s", framework.GetScenarioName(s), duration.String())
+}
 
+func handleScenarioResult(data *Data, s interface{}, err error) {
+	newLogFolderName := fmt.Sprintf("%s - %s", framework.GetScenarioName(s), data.Namespace)
 	if err != nil {
 		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", framework.GetScenarioName(s), err)
+
+		newLogFolderName = "error - " + newLogFolderName
+	}
+	err = framework.RenameLogFolder(data.Namespace, newLogFolderName)
+	if err != nil {
+		framework.GetMainLogger().Errorf("Error while moving log foler for namespace %s. New name is %s. Error = %v", data.Namespace, newLogFolderName, err)
 	}
 }

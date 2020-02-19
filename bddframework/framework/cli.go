@@ -78,11 +78,11 @@ func CliDeployExample(namespace, appName, contextDir, runtime string, native, pe
 	if native {
 		cmd = append(cmd, "--native")
 	}
-	if ref := GetConfigExamplesRepositoryRef(); ref != "" {
+	if ref := GetConfigExamplesRepositoryRef(); len(ref) > 0 {
 		cmd = append(cmd, "-b", ref)
 	}
 
-	if mavenMirrorURL := GetConfigMavenMirrorURL(); mavenMirrorURL != "" {
+	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
 	}
 

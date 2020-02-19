@@ -17,10 +17,13 @@ package framework
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
+	"go.uber.org/zap"
 
 	"io/ioutil"
 )
@@ -31,8 +34,79 @@ const (
 )
 
 var (
-	monitoredNamespaces = make(map[string]monitoredNamespace)
+	monitoredNamespaces = make(map[string]*monitoredNamespace)
+
+	loggerOpts = make(map[string]*logger.Opts)
 )
+
+// GetMainLogger returns the main logger
+func GetMainLogger() *zap.SugaredLogger {
+	return logger.GetLogger("main")
+}
+
+// GetLogger retrieves the logger for a namespace
+func GetLogger(namespace string) *zap.SugaredLogger {
+	opts, err := getOrCreateLoggerOpts(namespace)
+	if err != nil {
+		logger.GetLogger(namespace).Errorf("Error getting logger for namespace %s", namespace)
+		return logger.GetLogger(namespace)
+	}
+	return logger.GetLoggerWithOptions(namespace, opts)
+}
+
+// FlushLogger flushes a specific logger
+func FlushLogger(namespace string) error {
+	opts, exists := getLoggerOpts(namespace)
+	if !exists {
+		GetMainLogger().Warnf("Logger %s does not exist... skipping", namespace)
+		return nil
+	}
+	if writer, ok := opts.Output.(io.Closer); ok {
+		err := writer.Close()
+		delete(loggerOpts, namespace)
+		return err
+	}
+	return nil
+}
+
+// FlushAllRemainingLoggers flushes all remaining loggers
+func FlushAllRemainingLoggers() {
+	for logName := range loggerOpts {
+		if err := FlushLogger(logName); err != nil {
+			GetMainLogger().Errorf("Error flushing logger %s: %v", logName, err)
+		}
+	}
+}
+
+func getLoggerOpts(logName string) (*logger.Opts, bool) {
+	opts, exists := loggerOpts[logName]
+	return opts, exists
+}
+
+func getOrCreateLoggerOpts(logName string) (*logger.Opts, error) {
+	opts, exists := getLoggerOpts(logName)
+	if !exists {
+		if err := createLogFolder(logName); err != nil {
+			return nil, fmt.Errorf("Error while creating log folder: %v", err)
+		}
+
+		fileWriter, err := os.Create(getLogFile(logName, "test-run"))
+		if err != nil {
+			return nil, fmt.Errorf("Error while creating filewriter: %v", err)
+		}
+
+		opts = &logger.Opts{
+			Output: io.MultiWriter(os.Stdout, fileWriter),
+		}
+		loggerOpts[logName] = opts
+	}
+	return opts, nil
+}
+
+// RenameLogFolder changes the name of the log folder for a specific namespace
+func RenameLogFolder(namespace, newLogFolderName string) error {
+	return os.Rename(getLogFolder(namespace), getLogFolder(newLogFolderName))
+}
 
 // StartPodLogCollector monitors a namespace and stores logs of all pods running in the namespace
 func StartPodLogCollector(namespace string) error {
@@ -44,8 +118,8 @@ func StartPodLogCollector(namespace string) error {
 		return fmt.Errorf("Error while creating log folder: %v", err)
 	}
 
-	monitoredNamespace := monitoredNamespace{
-		pods:           make(map[string]monitoredPod),
+	monitoredNamespace := &monitoredNamespace{
+		pods:           make(map[string]*monitoredPod),
 		stopMonitoring: make(chan bool),
 	}
 	monitoredNamespaces[namespace] = monitoredNamespace
@@ -79,8 +153,16 @@ func isNamespaceMonitored(namespace string) bool {
 	return exists
 }
 
+func getLogFile(namespace, filename string) string {
+	return getLogFolder(namespace) + "/" + filename + logSuffix
+}
+
+func getLogFolder(namespace string) string {
+	return logFolder + "/" + namespace
+}
+
 func createLogFolder(namespace string) error {
-	return os.MkdirAll(logFolder+"/"+namespace, os.ModePerm)
+	return os.MkdirAll(getLogFolder(namespace), os.ModePerm)
 }
 
 func isPodMonitored(namespace, podName string) bool {
@@ -89,14 +171,14 @@ func isPodMonitored(namespace, podName string) bool {
 }
 
 func initMonitoredPod(namespace, podName string) {
-	monitoredPod := monitoredPod{
-		containers: make(map[string]monitoredContainer),
+	monitoredPod := &monitoredPod{
+		containers: make(map[string]*monitoredContainer),
 	}
 	monitoredNamespaces[namespace].pods[podName] = monitoredPod
 }
 
 func initMonitoredContainer(namespace, podName, containerName string) {
-	monitoredContainer := monitoredContainer{loggingFinished: false}
+	monitoredContainer := &monitoredContainer{loggingFinished: false}
 	monitoredNamespaces[namespace].pods[podName].containers[containerName] = monitoredContainer
 }
 
@@ -104,6 +186,7 @@ func storeContainerLogWithFollow(namespace, podName, containerName string) {
 	log, err := getContainerLogWithFollow(namespace, podName, containerName)
 	if err != nil {
 		GetLogger(namespace).Errorf("Error while retrieving log of pod '%s': %v", podName, err)
+		return
 	}
 
 	if isContainerLoggingFinished(namespace, podName, containerName) {
@@ -132,7 +215,7 @@ func markContainerLoggingAsFinished(namespace, podName, containerName string) {
 }
 
 func writeLogIntoTheFile(namespace, podName, containerName, log string) error {
-	return ioutil.WriteFile(logFolder+"/"+namespace+"/"+podName+"-"+containerName+logSuffix, []byte(log), 0644)
+	return ioutil.WriteFile(getLogFile(namespace, podName+"-"+containerName), []byte(log), 0644)
 }
 
 // StopPodLogCollector waits until all logs are stored on disc
@@ -163,13 +246,19 @@ func storeUnfinishedContainersLog(namespace string) {
 
 // Write container log into filesystem
 func storeContainerLog(namespace string, podName, containerName string) {
-	log, err := getContainerLog(namespace, podName, containerName)
-	if err != nil {
-		GetLogger(namespace).Errorf("Error while retrieving log of container '%s' in pod '%s': %v", containerName, podName, err)
-	}
+	if isContainerLoggingFinished(namespace, podName, containerName) {
+		GetLogger(namespace).Infof("Logging of container '%s' of pod '%s' already finished, retrieved log will be ignored.", containerName, podName)
+	} else {
+		log, err := getContainerLog(namespace, podName, containerName)
+		if err != nil {
+			GetLogger(namespace).Errorf("Error while retrieving log of container '%s' in pod '%s': %v", containerName, podName, err)
+			return
+		}
 
-	if err := writeLogIntoTheFile(namespace, podName, containerName, log); err != nil {
-		GetLogger(namespace).Errorf("Error while writing log into the file: %v", err)
+		markContainerLoggingAsFinished(namespace, podName, containerName)
+		if err := writeLogIntoTheFile(namespace, podName, containerName, log); err != nil {
+			GetLogger(namespace).Errorf("Error while writing log into the file: %v", err)
+		}
 	}
 }
 
@@ -178,12 +267,12 @@ func getContainerLog(namespace, podName, containerName string) (string, error) {
 }
 
 type monitoredNamespace struct {
-	pods           map[string]monitoredPod
+	pods           map[string]*monitoredPod
 	stopMonitoring chan bool
 }
 
 type monitoredPod struct {
-	containers map[string]monitoredContainer
+	containers map[string]*monitoredContainer
 }
 
 type monitoredContainer struct {

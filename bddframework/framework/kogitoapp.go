@@ -113,7 +113,7 @@ func getKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 		},
 	}
 
-	if mavenMirrorURL := GetConfigMavenMirrorURL(); mavenMirrorURL != "" {
+	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		kogitoApp.Spec.Build.MavenMirrorURL = mavenMirrorURL
 	}
 

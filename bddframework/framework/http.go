@@ -34,7 +34,7 @@ func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat s
 // ExecuteHTTPRequest executes an HTTP request
 func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat string, body io.Reader) (*http.Response, error) {
 	request, err := http.NewRequest(httpMethod, uri+"/"+path, body)
-	if body != nil && bodyFormat != "" {
+	if body != nil && len(bodyFormat) > 0 {
 		switch bodyFormat {
 		case "json":
 			request.Header.Add("Content-Type", "application/json")
