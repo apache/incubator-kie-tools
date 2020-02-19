@@ -86,7 +86,7 @@ export interface KeyBindingService {
   registerKeyPress(
     combination: string,
     label: string,
-    action: () => Thenable<void>,
+    onKeyPress: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ): number;
 
@@ -183,12 +183,12 @@ export class DefaultKeyBindingService implements KeyBindingService {
     return this.eventIdentifiers++;
   }
 
-  public registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
+  public registerKeyPressOnce(combination: string, onKeyPress: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
     const id = this.registerKeyPress(
       combination,
       "",
       async () => {
-        action();
+        onKeyPress();
         this.deregister(id);
       },
       opts ? { ...opts!, hidden: true } : opts
