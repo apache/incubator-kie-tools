@@ -138,6 +138,24 @@
     [[ "${output}" != *"--tests.local"* ]]
 }
 
+@test "invoke run-tests with ci" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --ci jenkins --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.ci=jenkins" ]]
+}
+
+@test "invoke run-tests with ci missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --ci --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.ci"* ]]
+}
+
+@test "invoke run-tests with ci empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --ci "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.ci"* ]]
+}
+
 @test "invoke run-tests with smoke true" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke true --dry_run
     [ "$status" -eq 0 ]

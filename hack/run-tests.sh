@@ -46,6 +46,7 @@ function usage(){
   printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall run in minutes. Default is 240."
   printf "\n--debug {BOOLEAN}\n\tRun in debug mode."
   printf "\n--local {BOOLEAN}\n\tSpecify whether you run test in local."
+  printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
   printf "\n--smoke {BOOLEAN}\n\tFilter to run only the tests tagged with '@smoke'."
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
@@ -84,7 +85,7 @@ function apply_crds(){
   do
     crd_file="${deploy_folder}/crds/${file}"
     echo "Apply crds file ${crd_file}"
-    oc apply -f ${crd_file}
+    oc replace -f ${crd_file}
   done
 }
 
@@ -180,6 +181,10 @@ case $1 in
       fi
       shift
     fi
+  ;;
+  --ci)
+    shift
+    if addParamKeyValueIfAccepted "--tests.ci" ${1}; then shift; fi
   ;;
   --smoke)
     shift
