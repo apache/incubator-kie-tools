@@ -5,8 +5,6 @@
 <module>
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
 
-  <inherits name="org.uberfire.UberfireClientAll"/>
-
   <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementAPI"/>
 
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
