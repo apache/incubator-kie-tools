@@ -129,10 +129,7 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(args: {
-    container: HTMLElement;
-    keyBindingService: KeyBindingService;
-  }): Promise<EnvelopeBusInnerMessageHandler> {
+  public start(args: { container: HTMLElement; keyBindingService: KeyBindingService }) {
     return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;
