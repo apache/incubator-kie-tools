@@ -117,10 +117,27 @@ public class CanvasDiagramValidatorTest {
     }
 
     @Test
+    public void validateFailedWithError() {
+        when(domainViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.INFO);
+        when(modelViolation.getViolationType()).thenReturn(Violation.Type.INFO);
+
+        assertValidateFailed();
+    }
+
+    @Test
+    public void validateFailedWithWarning() {
+        when(domainViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.INFO);
+        when(modelViolation.getViolationType()).thenReturn(Violation.Type.INFO);
+
+        assertValidateFailed();
+    }
+
     @SuppressWarnings("unchecked")
-    public void validateFailed() {
-        ArgumentCaptor<Consumer> captor = ArgumentCaptor.forClass(Consumer.class);
-        ArgumentCaptor<CanvasValidationFailEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationFailEvent.class);
+    private void assertValidateFailed() {
+        final ArgumentCaptor<Consumer> captor = ArgumentCaptor.forClass(Consumer.class);
+        final ArgumentCaptor<CanvasValidationFailEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationFailEvent.class);
 
         tested.validate(canvasHandler, callback);
         verify(diagramValidator).validate(eq(diagram), captor.capture());

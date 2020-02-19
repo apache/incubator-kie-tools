@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
@@ -73,14 +75,11 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         final Diagram diagram = canvasHandler.getDiagram();
         final String name = diagram.getName();
         final String title = diagram.getMetadata().getTitle();
-
-        // See {@link Stream#anyMatch(Predicate)}. "...If the stream is empty then {@code false} is returned..."
-        // Therefore we also need to check if there are any violations at all.
-        final boolean valid =
-                getElementViolationsStream(elementViolations).count() == 0 ||
-                        getElementViolationsStream(elementViolations)
-                                .map(v -> applyViolation(canvasHandler, v))
-                                .anyMatch(Boolean.FALSE::equals);
+        final Stream<ElementViolation> violationsStream = getElementViolationsStream(elementViolations);
+        final List<ElementViolation> violationsList = violationsStream.collect(Collectors.toList());
+        final boolean valid = violationsList
+                .stream()
+                .noneMatch(v -> applyViolation(canvasHandler, v));
 
         if (valid) {
             validationSuccessEvent.fire(new CanvasValidationSuccessEvent(uuid, name, title));
