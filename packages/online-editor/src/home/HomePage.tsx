@@ -136,22 +136,20 @@ export function HomePage(props: Props) {
   );
 
   const validateFileInput = useCallback((fileUrl: string) => {
+    let url: URL;
     try {
-      const url = new URL(fileUrl);
-      const fileType = extractFileExtension(url.pathname);
-
-      if (!fileType) {
-        setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-        return false;
-      }
-
-      if (!context.router.getLanguageData(fileType)) {
-        setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
-        return false;
-      }
-      setInputFileUrlState(InputFileUrlState.VALID);
+      url = new URL(fileUrl);
     } catch (e) {
       setInputFileUrlState(InputFileUrlState.INVALID_URL);
+      return;
+    }
+    const fileType = extractFileExtension(url.pathname);
+    if (!fileType) {
+      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+    } else if (!context.router.getLanguageData(fileType)) {
+      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+    } else {
+      setInputFileUrlState(InputFileUrlState.VALID);
     }
   }, []);
 
@@ -160,10 +158,13 @@ export function HomePage(props: Props) {
     validateFileInput(fileUrl);
   }, []);
 
-  const validatedInputUrl = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+  const validatedInputUrl = useMemo(
+    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    [inputFileUrlState]
+  );
 
   const openFile = useCallback(() => {
-    if (validatedInputUrl) {
+    if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
       const fileUrl = new URL(inputFileUrl);
       const fileType = extractFileExtension(fileUrl.pathname);
       // FIXME: KOGITO-1202
@@ -190,7 +191,7 @@ export function HomePage(props: Props) {
     e => {
       e.preventDefault();
       e.stopPropagation();
-      return openFile();
+      openFile();
     },
     [inputFileUrl]
   );
