@@ -21,6 +21,7 @@ import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
+import { Router } from "@kogito-tooling/core-api";
 
 interface ExternalLinkInfo {
   id: string;
@@ -31,22 +32,15 @@ interface ExternalLinkInfo {
 export function FileTreeWithExternalLink() {
   const { externalEditorManager, router, dependencies } = useGlobals();
 
-  const filteredLinks = useCallback(
-    () =>
-      dependencies.treeView
-        .linksToFiles()
-        .filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any))
-        .filter(fileLink => !document.getElementById(externalLinkId(fileLink))),
-    []
-  );
+  const filteredLinks = useCallback(() => filterLinks(dependencies.treeView.linksToFiles(), router), []);
   const [linksToFiles, setLinksToFiles] = useState(filteredLinks());
 
-  htmlElementChangeListener(() => {
+  useHtmlElementChangeListener(dependencies.treeView.repositoryContainer()!, () => {
     const linksToAdd = filteredLinks();
     if (linksToAdd.length > 0) {
       setLinksToFiles(linksToAdd);
     }
-  }, dependencies.treeView.repositoryContainer()!);
+  });
 
   const externalLinksInfo = useMemo(
     () =>
@@ -67,7 +61,13 @@ export function FileTreeWithExternalLink() {
   );
 }
 
-function htmlElementChangeListener(action: () => void, target: HTMLElement) {
+function filterLinks(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
+  return links
+    .filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any))
+    .filter(fileLink => !document.getElementById(externalLinkId(fileLink)));
+}
+
+function useHtmlElementChangeListener(target: HTMLElement, action: () => void) {
   useEffect(() => {
     const elementObserver = new MutationObserver(e => action());
     elementObserver.observe(target, {
@@ -75,14 +75,14 @@ function htmlElementChangeListener(action: () => void, target: HTMLElement) {
       subtree: true
     });
     return () => elementObserver.disconnect();
-  });
+  }, []);
 }
 
 function externalLinkId(fileLink: HTMLAnchorElement): string {
   return "external_editor_" + fileLink.id;
 }
 
-function createTargetUrl(pathname: string, externalEditorManager?: ExternalEditorManager): string {
+export function createTargetUrl(pathname: string, externalEditorManager?: ExternalEditorManager): string {
   const split = pathname.split("/");
   split.splice(0, 1);
   split.splice(2, 1);
