@@ -25,7 +25,6 @@ export interface KeyBindingServiceOpts {
   hidden?: boolean;
   element?: EventTarget;
   repeat?: boolean;
-  event?: "keypress" | "keyup" | "keydown";
 }
 
 export enum ModKeys {
@@ -46,6 +45,43 @@ const MODIFIER_KEY_NAMES = new Map<string, string>([
   ["ShiftRight", "shift"]
 ]);
 
+const KEY_CODES = new Map<string, string>([
+  ["/", "Slash"],
+  ["esc", "Escape"],
+  ["delete", "Delete"],
+  ["backspace", "Backspace"],
+  ["right", "ArrowRight"],
+  ["left", "ArrowLeft"],
+  ["up", "ArrowUp"],
+  ["down", "ArrowDown"],
+  ["a", "KeyA"],
+  ["b", "KeyB"],
+  ["c", "KeyC"],
+  ["d", "KeyD"],
+  ["e", "KeyE"],
+  ["f", "KeyF"],
+  ["g", "KeyG"],
+  ["h", "KeyH"],
+  ["i", "KeyI"],
+  ["j", "KeyJ"],
+  ["k", "KeyK"],
+  ["l", "KeyL"],
+  ["m", "KeyM"],
+  ["n", "KeyN"],
+  ["o", "KeyO"],
+  ["p", "KeyP"],
+  ["q", "KeyQ"],
+  ["r", "KeyR"],
+  ["s", "KeyS"],
+  ["t", "KeyT"],
+  ["u", "KeyU"],
+  ["v", "KeyV"],
+  ["w", "KeyW"],
+  ["x", "KeyX"],
+  ["y", "KeyY"],
+  ["z", "KeyZ"]
+]);
+
 export interface KeyBindingService {
   registerKeyPress(
     combination: string,
@@ -53,7 +89,7 @@ export interface KeyBindingService {
     action: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ): number;
-  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
+
   registerKeyDownThenUp(
     combination: string,
     label: string,
@@ -61,7 +97,11 @@ export interface KeyBindingService {
     onKeyUp: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ): number;
+
+  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
+
   deregister(id: number): void;
+
   registered(): KeyBinding[];
 }
 
@@ -69,42 +109,6 @@ export class DefaultKeyBindingService implements KeyBindingService {
   private eventIdentifiers = 1;
 
   private readonly keyBindings = new Map<number, KeyBinding>();
-  private readonly keyCodes = new Map<string, string>([
-    ["/", "Slash"],
-    ["esc", "Escape"],
-    ["delete", "Delete"],
-    ["backspace", "Backspace"],
-    ["right", "ArrowRight"],
-    ["left", "ArrowLeft"],
-    ["up", "ArrowUp"],
-    ["down", "ArrowDown"],
-    ["a", "KeyA"],
-    ["b", "KeyB"],
-    ["c", "KeyC"],
-    ["d", "KeyD"],
-    ["e", "KeyE"],
-    ["f", "KeyF"],
-    ["g", "KeyG"],
-    ["h", "KeyH"],
-    ["i", "KeyI"],
-    ["j", "KeyJ"],
-    ["k", "KeyK"],
-    ["l", "KeyL"],
-    ["m", "KeyM"],
-    ["n", "KeyN"],
-    ["o", "KeyO"],
-    ["p", "KeyP"],
-    ["q", "KeyQ"],
-    ["r", "KeyR"],
-    ["s", "KeyS"],
-    ["t", "KeyT"],
-    ["u", "KeyU"],
-    ["v", "KeyV"],
-    ["w", "KeyW"],
-    ["x", "KeyX"],
-    ["y", "KeyY"],
-    ["z", "KeyZ"]
-  ]);
 
   public registerKeyDownThenUp(
     combination: string,
@@ -113,7 +117,7 @@ export class DefaultKeyBindingService implements KeyBindingService {
     onKeyUp: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
-    console.info(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
+    console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
 
     const keyBinding = {
       combination,
@@ -154,7 +158,7 @@ export class DefaultKeyBindingService implements KeyBindingService {
     onKeyPress: () => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
-    console.info(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
+    console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
 
     const keyBinding = {
       combination,
@@ -175,7 +179,7 @@ export class DefaultKeyBindingService implements KeyBindingService {
     };
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
-    this.keyBindingElement(keyBinding).addEventListener(this.keyBindingEvent(keyBinding), keyBinding.listener);
+    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
     return this.eventIdentifiers++;
   }
 
@@ -191,10 +195,6 @@ export class DefaultKeyBindingService implements KeyBindingService {
     );
 
     return id;
-  }
-
-  private keyBindingEvent(keyBinding?: KeyBinding) {
-    return keyBinding?.opts?.event ?? "keydown";
   }
 
   private keyBindingElement(keyBinding?: KeyBinding) {
@@ -213,7 +213,7 @@ export class DefaultKeyBindingService implements KeyBindingService {
     const keys = combination
       .split("+")
       .map(k => k.toLowerCase())
-      .map(k => this.keyCodes.get(k) ?? k);
+      .map(k => KEY_CODES.get(k) ?? k);
 
     if (this.osName() === "macOS") {
       return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
