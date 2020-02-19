@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-module.exports = {
-  setupFiles: ["<rootDir>/jest/jest-env-setup.js"],
-  snapshotSerializers: ["<rootDir>/../../node_modules/enzyme-to-json/serializer"],
-  reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest"
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
-  }
-};
+import * as React from "react";
+import { ArrowIcon } from "@patternfly/react-icons";
+
+export function OpenExternalEditorButton(props: { id: string; href: string }) {
+  return (
+    <>
+      <div id={props.id} className="float-right">
+        <a href={props.href} target="blank" title="Open in Online Editor">
+          <ArrowIcon />
+        </a>
+      </div>
+    </>
+  );
+}
