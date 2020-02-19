@@ -34,6 +34,8 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingBlockInformation;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
 import static com.google.gwt.event.dom.client.KeyCodes.KEY_LEFT;
@@ -72,7 +74,10 @@ public class BaseKeyboardOperationTest {
     private BaseGridRendererHelper baseGridRendererHelperMock;
 
     @Mock
-    private BaseGridRendererHelper.RenderingInformation baseGridRendererInformationMock;
+    private RenderingInformation baseGridRendererInformationMock;
+
+    @Mock
+    private RenderingBlockInformation baseGridRendererBlockInformationMock;
 
     @Mock
     private GridRenderer gridRenderer;
@@ -90,6 +95,8 @@ public class BaseKeyboardOperationTest {
         when(gridWidget.getModel()).thenReturn(gridData);
         when(gridWidget.getRendererHelper()).thenReturn(baseGridRendererHelperMock);
         when(baseGridRendererHelperMock.getRenderingInformation()).thenReturn(baseGridRendererInformationMock);
+        when(baseGridRendererInformationMock.getFloatingBlockInformation()).thenReturn(baseGridRendererBlockInformationMock);
+        when(baseGridRendererBlockInformationMock.getColumns()).thenReturn(Collections.emptyList());
         when(gridData.getColumns()).thenReturn(Collections.singletonList(gridColumn));
         when(gridColumn.getIndex()).thenReturn(0);
         when(gridWidget.getRenderer()).thenReturn(gridRenderer);
@@ -118,7 +125,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_NoRenderedInformation() {
-        List<GridData.SelectedCell> selectedCells = Arrays.asList(new GridData.SelectedCell(0,0));
+        List<GridData.SelectedCell> selectedCells = Arrays.asList(new GridData.SelectedCell(0, 0));
         when(gridData.getSelectedHeaderCells()).thenReturn(selectedCells);
         when(baseGridRendererHelperMock.getRenderingInformation()).thenReturn(null);
         assertFalse(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
@@ -126,7 +133,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_HeaderSelected() {
-        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0,0)));
+        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0, 0)));
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, never()).getViewport();
         verify(viewport, never()).getTransform();
@@ -134,7 +141,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_CellSelected() {
-        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         when(gridData.getRow(0)).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(30d);
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
@@ -144,7 +151,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_HeaderSelected_WithDeltaXScroll() {
-        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0,0)));
+        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0, 0)));
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(600, 0, BOUNDS_WIDTH, BOUNDS_HEIGHT));
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
@@ -155,7 +162,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_CellSelected_WithDeltaXScroll() {
-        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         when(gridData.getRow(0)).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(30d);
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(500, 0, BOUNDS_WIDTH, BOUNDS_HEIGHT));
@@ -168,7 +175,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_HeaderSelected_WithDeltaYScroll() {
-        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0,0)));
+        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0, 0)));
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(0, 250, BOUNDS_WIDTH, BOUNDS_HEIGHT));
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
@@ -179,7 +186,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_CellSelected_WithDeltaYScroll() {
-        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         when(gridData.getRow(0)).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(30d);
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(0, 400, BOUNDS_WIDTH, BOUNDS_HEIGHT));
@@ -192,7 +199,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_HeaderSelected_WithDeltaXYScroll() {
-        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0,0)));
+        when(gridData.getSelectedHeaderCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0, 0)));
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(50, 75, BOUNDS_WIDTH, BOUNDS_HEIGHT));
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
@@ -203,7 +210,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void scrollSelectedCellIntoView_CellSelected_WithDeltaXYScroll() {
-        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         when(gridData.getRow(0)).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(30d);
         when(layer.getVisibleBounds()).thenReturn(new BaseBounds(75, 100, BOUNDS_WIDTH, BOUNDS_HEIGHT));
@@ -216,7 +223,7 @@ public class BaseKeyboardOperationTest {
 
     @Test
     public void getSelectedCellOrigin_NotHeaderCell() {
-        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(gridData.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         baseKeyboardOperationSpy.getSelectedCellOrigin(gridData, false);
         verify(gridData, times(1)).getSelectedCellsOrigin();
         verify(gridData, never()).getSelectedHeaderCells();

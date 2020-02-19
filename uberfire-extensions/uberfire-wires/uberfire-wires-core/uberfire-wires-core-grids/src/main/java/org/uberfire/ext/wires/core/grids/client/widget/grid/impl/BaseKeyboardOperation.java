@@ -28,6 +28,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingBlockInformation;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static com.google.gwt.event.dom.client.KeyCodes.KEY_RIGHT;
@@ -72,7 +74,8 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
             isHeaderCellSelected = true;
         }
 
-        if (!(isGridWidgetRendered(gridWidget) || isGridColumnCandidateForScroll(gridWidget, isHeaderCellSelected))) {
+        if (!isGridColumnCandidateForScroll(gridWidget,
+                                            isHeaderCellSelected)) {
             return false;
         }
 
@@ -98,26 +101,23 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         return !gridModel.getSelectedHeaderCells().isEmpty();
     }
 
-    private boolean isGridWidgetRendered(final GridWidget gridWidget) {
+    private boolean isGridColumnCandidateForScroll(final GridWidget gridWidget,
+                                                   final boolean isHeaderCellSelected) {
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        return renderingInformation != null;
-    }
+        final RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
 
-    private boolean isGridColumnCandidateForScroll(final GridWidget gridWidget, final boolean isHeaderCellSelected) {
-        final GridData gridModel = gridWidget.getModel();
-        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        if (renderingInformation == null) {
+        if (Objects.isNull(renderingInformation)) {
             return false;
         }
+
+        final GridData gridModel = gridWidget.getModel();
 
         final List<GridColumn<?>> columns = gridModel.getColumns();
         final GridData.SelectedCell origin = getSelectedCellOrigin(gridModel, isHeaderCellSelected);
         final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(columns,
                                                                          origin.getColumnIndex());
 
-        final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
+        final RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
         final List<GridColumn<?>> floatingColumns = floatingBlockInformation.getColumns();
         final GridColumn<?> column = columns.get(uiColumnIndex);
 
