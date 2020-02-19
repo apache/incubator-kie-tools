@@ -42,7 +42,8 @@ import {
   TextContent,
   Brand,
   TextInput,
-  FormGroup
+  FormGroup,
+  Form
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
@@ -134,33 +135,40 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
-  const inputFileChanged = useCallback((fileUrl: string) => {
-    setInputFileUrl(fileUrl);
+  const validateFileInput = useCallback((fileUrl: string) => {
     try {
       const url = new URL(fileUrl);
-      if (url.pathname !== "") {
-        setInputFileUrlState(InputFileUrlState.VALID);
+      const fileType = extractFileExtension(url.pathname);
+
+      if (!fileType) {
+        setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+        return false;
       }
+
+      if (!context.router.getLanguageData(fileType)) {
+        setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+        return false;
+      }
+      setInputFileUrlState(InputFileUrlState.VALID);
     } catch (e) {
       setInputFileUrlState(InputFileUrlState.INVALID_URL);
     }
   }, []);
 
+  const inputFileChanged = useCallback((fileUrl: string) => {
+    setInputFileUrl(fileUrl);
+    validateFileInput(fileUrl);
+  }, []);
+
+  const validatedInputUrl = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+
   const openFile = useCallback(() => {
-    const fileUrl = new URL(inputFileUrl);
-    const fileType = extractFileExtension(fileUrl.pathname);
-
-    if (!fileType) {
-      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-      return;
+    if (validatedInputUrl) {
+      const fileUrl = new URL(inputFileUrl);
+      const fileType = extractFileExtension(fileUrl.pathname);
+      // FIXME: KOGITO-1202
+      window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
     }
-
-    if (!context.router.getLanguageData(fileType)) {
-      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
-      return;
-    }
-    // FIXME: KOGITO-1202
-    window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
   }, [inputFileUrl]);
 
   const messageForState = useMemo(() => {
@@ -177,6 +185,15 @@ export function HomePage(props: Props) {
         return "";
     }
   }, [inputFileUrlState]);
+
+  const externalFileFormSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      e.stopPropagation();
+      return openFile();
+    },
+    [inputFileUrl]
+  );
 
   const logoProps = {
     href: "/"
@@ -370,28 +387,28 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
             <CardBody isFilled={true}>
-              <FormGroup
-                label="URL"
-                fieldId="url-text-input"
-                isValid={inputFileUrlState === InputFileUrlState.VALID}
-                helperTextInvalid={messageForState}
-              >
-                <TextInput
-                  value={inputFileUrl}
-                  onChange={inputFileChanged}
-                  type="url"
-                  id="url-text-input"
-                  name="urlText"
-                  aria-describedby="url-text-input-helper"
-                />
-              </FormGroup>
+              <Form onSubmit={externalFileFormSubmit} disabled={!validatedInputUrl}>
+                <FormGroup
+                  label="URL"
+                  fieldId="url-text-input"
+                  isValid={validatedInputUrl}
+                  helperTextInvalid={messageForState}
+                >
+                  <TextInput
+                    isRequired
+                    isValid={validatedInputUrl}
+                    value={inputFileUrl}
+                    onChange={inputFileChanged}
+                    type="url"
+                    id="url-text-input"
+                    name="urlText"
+                    aria-describedby="url-text-input-helper"
+                  />
+                </FormGroup>
+              </Form>
             </CardBody>
             <CardFooter>
-              <Button
-                variant="secondary"
-                onClick={() => openFile()}
-                isDisabled={inputFileUrlState !== InputFileUrlState.VALID}
-              >
+              <Button variant="secondary" onClick={() => openFile()} isDisabled={!validatedInputUrl}>
                 Import source code
               </Button>
             </CardFooter>
