@@ -27,6 +27,8 @@ import org.uberfire.client.views.pfly.widgets.PopoverOptions;
 
 public class AbstractPopoverViewImpl implements PopoverView {
 
+    static final String PLACEMENT = "auto top";
+
     @DataField("popover")
     protected Div popoverElement;
 
@@ -53,10 +55,7 @@ public class AbstractPopoverViewImpl implements PopoverView {
 
     @Override
     public void show(final Optional<String> editorTitle) {
-        final PopoverOptions options = new PopoverOptions();
-        options.setContent((element) -> popoverContentElement);
-        options.setAnimation(false);
-        options.setHtml(true);
+        final PopoverOptions options = createOptions();
 
         editorTitle.ifPresent(t -> popoverElement.setAttribute("title", t));
         popover = jQueryPopover.wrap(this.getElement());
@@ -66,6 +65,21 @@ public class AbstractPopoverViewImpl implements PopoverView {
         popover.addHiddenListener(() -> isVisible = false);
         popover.popover(options);
         popover.show();
+    }
+
+    PopoverOptions createOptions() {
+
+        final PopoverOptions options = createPopoverOptionsInstance();
+        options.setContent((element) -> popoverContentElement);
+        options.setAnimation(false);
+        options.setHtml(true);
+        options.setPlacement(PLACEMENT);
+
+        return options;
+    }
+
+    PopoverOptions createPopoverOptionsInstance() {
+        return new PopoverOptions();
     }
 
     @Override
