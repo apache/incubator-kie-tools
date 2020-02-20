@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-import { KogitoCommand } from "../Command";
+import { KogitoCommand } from "./KogitoCommand";
+import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
+/**
+ * PUBLIC ENVELOPE API
+ */
 export interface KogitoCommandRegistry<T> {
   register(id: string, command: T): void;
   peek(): T | null;
@@ -25,20 +30,23 @@ export interface KogitoCommandRegistry<T> {
   clear(): void;
 }
 
-export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
+export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
+  private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
-  private maxStackSize: number = 200;
+  private maxStackSize = 200;
   private commands: Array<KogitoCommand<T>> = [];
 
-  private onNewCommand: (kogitoCommand: KogitoCommand<T>) => void;
+  constructor(messageBus: EnvelopeBusInnerMessageHandler) {
+    this.messageBus = messageBus;
+  }
 
-  constructor(onNewCommand: (kogitoCommand: KogitoCommand<T>) => void) {
-    this.onNewCommand = onNewCommand;
+  private onNewCommand(newCommand: KogitoCommand<T>) {
+    this.messageBus.notify_newEdit(new KogitoEdit(newCommand.getId()));
   }
 
   public register(id: string, command: T): void {
     if (id && command) {
-      if ((this.commands.length + 1) > this.maxStackSize) {
+      if (this.commands.length + 1 > this.maxStackSize) {
         this.commands.shift();
       }
 
@@ -51,7 +59,7 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
 
   public peek(): T | null {
     if (this.commands?.length > 0) {
-      return this.commands[this.commands.length -1].get();
+      return this.commands[this.commands.length - 1].get();
     }
     return null;
   }
@@ -72,7 +80,7 @@ export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T>{
   }
 
   public getCommands(): T[] {
-    return this.commands.map((command) => command.get());
+    return this.commands.map(command => command.get());
   }
 
   public clear(): void {

@@ -1,11 +1,9 @@
-
-import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
+import { ResourceContentApi, ResourceContentEditorCoordinator } from "../api/resourceContent";
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
-import { LanguageData, ResourceContent, ResourcesList, EditorContent } from "@kogito-tooling/core-api";
-import { ResourceContentEditorService } from "../ResourceContentEditorService";
+import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 let coordinator: ResourceContentEditorCoordinator;
-let resourceContentEditorService: ResourceContentEditorService;
+let resourceContentEditorService: ResourceContentApi;
 
 const handler = new EnvelopeBusInnerMessageHandler(
   {
@@ -42,7 +40,7 @@ beforeEach(() => {
   coordinator = new ResourceContentEditorCoordinator();
   handler.targetOrigin = "test";
   handler.startListening();
-  resourceContentEditorService = coordinator.exposed(handler);
+  resourceContentEditorService = coordinator.exposeApi(handler);
 });
 
 afterEach(() => {
@@ -54,8 +52,12 @@ describe("ResourceContentEditorCoordinator", () => {
     const resourceURI = "/foo/bar";
     const resourceContent = "resource value";
 
-    const mockCallback1 = jest.fn(v => { console.log(v) });
-    const mockCallback2 = jest.fn(v => { console.log(v) });
+    const mockCallback1 = jest.fn(v => {
+      console.log(v);
+    });
+    const mockCallback2 = jest.fn(v => {
+      console.log(v);
+    });
     resourceContentEditorService.get(resourceURI).then(mockCallback1);
     resourceContentEditorService.get(resourceURI).then(mockCallback2);
 
@@ -71,9 +73,7 @@ describe("ResourceContentEditorCoordinator", () => {
       expect(mockCallback2).toHaveBeenCalledWith(resourceContent);
 
       done();
-
     }, 500);
-
   });
   test("resource list", done => {
     const pattern = "*";
@@ -97,8 +97,5 @@ describe("ResourceContentEditorCoordinator", () => {
 
       done();
     }, 500);
-
-
   });
-
 });

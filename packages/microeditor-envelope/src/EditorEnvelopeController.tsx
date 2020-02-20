@@ -16,31 +16,24 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import {
-  EditorContent, KogitoCommand,
-  KogitoCommandRegistryImpl, KogitoEdit,
-  LanguageData,
-  ResourceContent,
-  ResourcesList,
-  StateControl
-} from "@kogito-tooling/core-api";
+import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
+import { ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { StateControl } from "./api/stateControl";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
 
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
-  private resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
+  private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-
-  private stateControl: StateControl;
+  private readonly stateControl: StateControl;
 
   private editorEnvelopeView?: EditorEnvelopeView;
   private renderer: Renderer;
@@ -49,6 +42,7 @@ export class EditorEnvelopeController {
     busApi: EnvelopeBusApi,
     editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
+    stateControl: StateControl,
     renderer: Renderer,
     resourceContentEditorCoordinator: ResourceContentEditorCoordinator
   ) {
@@ -56,6 +50,7 @@ export class EditorEnvelopeController {
     this.editorFactory = editorFactory;
     this.specialDomElements = specialDomElements;
     this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
+    this.stateControl = stateControl;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
@@ -91,7 +86,7 @@ export class EditorEnvelopeController {
       },
       receive_editorRedo: () => {
         this.stateControl.redo();
-      },
+      }
     }));
   }
 
@@ -132,23 +127,11 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(container: HTMLElement): Promise<object> {
+  public start(container: HTMLElement): Promise<EnvelopeBusInnerMessageHandler> {
     return this.render(container).then(() => {
-      this.stateControl = this.getStateControl();
       this.envelopeBusInnerMessageHandler.startListening();
-      return {messageBus: this.envelopeBusInnerMessageHandler, stateControl: this.stateControl};
+      return this.envelopeBusInnerMessageHandler;
     });
-  }
-
-  protected getStateControl(): StateControl {
-    if(!this.stateControl) {
-      const commandRegistry = new KogitoCommandRegistryImpl<any>((newCommand: KogitoCommand<any>) => {
-        console.debug(`EditorEnvelopeController: notifying new command= ` + newCommand);
-        this.envelopeBusInnerMessageHandler.notifyNewEdit(KogitoEdit.fromKogitoCommand(newCommand));
-      });
-      return new StateControl(commandRegistry);
-    }
-    return this.stateControl;
   }
 
   public stop() {

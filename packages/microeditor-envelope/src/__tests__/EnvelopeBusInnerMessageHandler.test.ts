@@ -47,10 +47,10 @@ beforeEach(() => {
         receivedMessages.push(["resourceContentList", resourcesList]);
       },
       receive_editorRedo(): void {
-        receivedMessages.push(["request_editor_redo", undefined]);
+        receivedMessages.push(["notify_editorRedo", undefined]);
       },
       receive_editorUndo(): void {
-        receivedMessages.push(["request_editor_undo", undefined]);
+        receivedMessages.push(["notify_editorUndo", undefined]);
       }
     })
   );

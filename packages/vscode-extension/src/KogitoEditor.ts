@@ -98,12 +98,12 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        request_editorUndo: () => {
-          this.requestUndo();
+        notify_editorUndo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorUndo();
         },
 
-        request_editorRedo: () => {
-          this.requestRedo();
+        notify_editorRedo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorRedo();
         }
       })
     );
@@ -121,14 +121,6 @@ export class KogitoEditor {
 
   public requestSave() {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
-  }
-
-  public requestUndo() {
-    this.envelopeBusOuterMessageHandler.request_editor_undo();
-  }
-
-  public requestRedo() {
-    this.envelopeBusOuterMessageHandler.request_editor_redo();
   }
 
   public setupEnvelopeBus() {

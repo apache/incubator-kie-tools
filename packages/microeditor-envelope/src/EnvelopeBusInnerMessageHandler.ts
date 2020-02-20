@@ -20,14 +20,12 @@ import {
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
+  EditorContent,
+  KogitoEdit,
   LanguageData,
   ResourceContent,
-  ResourcesList,
-  EditorContent,
-  ChannelType,
-  ResourceContentRequest,
   ResourceContentOptions,
-  KogitoEdit
+  ResourcesList
 } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -110,8 +108,8 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: pattern });
   }
 
-  public notifyNewEdit(edit: KogitoEdit) {
-    return this.send({type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit.id})
+  public notify_newEdit(edit: KogitoEdit) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit });
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {

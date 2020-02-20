@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoCommandRegistryImpl } from "../../../stateControl";
+import { DefaultKogitoCommandRegistry } from "../../../api/stateControl";
 
 class Command {
   private id: number;
@@ -28,51 +28,43 @@ class Command {
   }
 }
 
-let onNewCommandCallback: any;
+const innerMessageHandler = jest.fn(() => ({
+  notify_newEdit: jest.fn(),
+}));
 
-let registry:KogitoCommandRegistryImpl<Command>;
+let messageBus: any;
+
+let registry:DefaultKogitoCommandRegistry<Command>;
 
 const COMMAND1 = new Command(1);
 const COMMAND2 = new Command(2);
 const COMMAND3 = new Command(3);
 const COMMAND4 = new Command(4);
 
-describe("KogitoCommandRegistryImpl", () => {
+describe("DefaultKogitoCommandRegistry", () => {
 
   beforeEach(() => {
-    onNewCommandCallback = jest.fn();
+    messageBus = new innerMessageHandler();
 
-    registry = new KogitoCommandRegistryImpl<Command>(onNewCommandCallback);
+    registry = new DefaultKogitoCommandRegistry<Command>(messageBus);
   });
 
   test("test basic add/remove elements", () => {
 
     registry.register("1", COMMAND1);
 
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "1",
-      executable: COMMAND1
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
 
     registry.register("2", COMMAND2);
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "2",
-      executable: COMMAND2
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
 
     registry.register("3", COMMAND3);
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "3",
-      executable: COMMAND3
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "3"}));
 
     registry.register("4", COMMAND4);
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "4",
-      executable: COMMAND4
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "4"}));
 
-    expect(onNewCommandCallback).toBeCalledTimes(4);
+    expect(messageBus.notify_newEdit).toBeCalledTimes(4);
 
     expect(registry.getCommands()).toHaveLength(4);
     expect(registry.getCommands()).toContain(COMMAND1);
@@ -113,18 +105,12 @@ describe("KogitoCommandRegistryImpl", () => {
 
     registry.register("1", COMMAND1);
 
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "1",
-      executable: COMMAND1
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
 
     registry.register("2", COMMAND2);
-    expect(onNewCommandCallback).toBeCalledWith(expect.objectContaining({
-      id: "2",
-      executable: COMMAND2
-    }));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
 
-    expect(onNewCommandCallback).toBeCalledTimes(2);
+    expect(messageBus.notify_newEdit).toBeCalledTimes(2);
 
     expect(registry.getCommands()).toHaveLength(2);
     expect(registry.getCommands()).toContain(COMMAND1);

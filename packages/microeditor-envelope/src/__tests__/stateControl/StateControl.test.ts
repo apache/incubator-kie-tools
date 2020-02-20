@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-import { KogitoCommandRegistryImpl, StateControl } from "../../stateControl";
+
+import { StateControl, StateControlApi } from "../../api/stateControl";
+
+const innerMessageHandler = jest.fn();
+
+let messageBus;
 
 let stateControl:StateControl;
+let stateControlApi:StateControlApi;
 
 describe("StateControl", () => {
 
   beforeEach(() => {
-    stateControl = new StateControl(new KogitoCommandRegistryImpl<any>(jest.fn()));
+    stateControl = new StateControl();
+    messageBus = new innerMessageHandler();
+    stateControlApi = stateControl.exposeApi(messageBus);
   });
 
   test("test undo redo without commands", () => {
@@ -34,8 +42,8 @@ describe("StateControl", () => {
     const undoCommand = jest.fn();
     const redoCommand = jest.fn();
 
-    stateControl.setUndoCommand(undoCommand);
-    stateControl.setRedoCommand(redoCommand);
+    stateControlApi.setUndoCommand(undoCommand);
+    stateControlApi.setRedoCommand(redoCommand);
 
     stateControl.undo();
 

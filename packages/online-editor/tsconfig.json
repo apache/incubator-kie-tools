@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": false,
-    "noImplicitAny": false
+    "declaration": false
   },
   "include": ["src"]
 }
