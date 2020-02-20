@@ -68,6 +68,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_resourceListRequest(globPattern: string) {
         console.debug(`Resource List Request`);
         self.respond_resourceList(new ResourcesList(globPattern, []));
+      },
+      receive_preview(previewSVG: string) {
+        console.debug("received preview SVG: " + previewSVG);
       }
     }));
   }, [editorType, context.file.getFileContents, props.onContentResponse]);

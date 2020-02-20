@@ -92,7 +92,18 @@ export class KogitoEditor {
           this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
-          /**/
+            /**/  
+        },
+        notify_editorUndo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorUndo();
+        },
+        notify_editorRedo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorRedo();
+        },
+        receive_previewRequest: preview => {
+          if (preview) {
+            fs.writeFileSync(`${this.path}.svg`, preview);
+          }
         }
       })
     );
@@ -110,6 +121,10 @@ export class KogitoEditor {
 
   public requestSave() {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
+  }
+
+  public requestPreview() {
+    this.envelopeBusOuterMessageHandler.request_previewResponse();
   }
 
   public setupEnvelopeBus() {

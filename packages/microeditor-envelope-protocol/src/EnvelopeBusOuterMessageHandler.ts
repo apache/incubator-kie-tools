@@ -35,6 +35,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_dirtyIndicatorChange(isDirty: boolean): void;
   receive_resourceContentRequest(resourceContentService: ResourceContentRequest): void;
   receive_resourceListRequest(globPattern: string): void;
+  receive_preview(previewSVG: string) : void;
   receive_ready(): void;
 }
 
@@ -110,6 +111,10 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
   }
 
+  public request_preview() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_PREVIEW, data: undefined });
+  }
+
   public receive(message: EnvelopeBusMessage<any>) {
     if (message.busId !== this.busId) {
       return;
@@ -147,6 +152,9 @@ export class EnvelopeBusOuterMessageHandler {
         const kogitoEdit = message.data as KogitoEdit;
         console.info(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
         break;
+      case EnvelopeBusMessageType.RESPOND_PREVIEW:
+          this.impl.receive_preview(message.data as string);
+          break;        
       default:
         console.info(`Unknown message type received: ${message.type}`);
         break;

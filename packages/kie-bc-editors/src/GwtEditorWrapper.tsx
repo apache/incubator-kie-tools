@@ -82,6 +82,10 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     return Promise.resolve();
   }
 
+  public getPreview(): Promise<string> {
+    return this.gwtEditor.getPreview();
+  }
+
   private removeBusinessCentralHeaderPanel() {
     const headerPanel = document.getElementById("workbenchHeaderPanel");
     if (headerPanel) {

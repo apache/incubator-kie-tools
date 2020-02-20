@@ -36,6 +36,7 @@ export interface Impl {
   receive_resourceContentList(list: ResourcesList): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
+  receive_previewRequest(): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -111,6 +112,9 @@ export class EnvelopeBusInnerMessageHandler {
   public notify_newEdit(edit: KogitoEdit) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit });
   }
+  public respond_previewRequest(previewSVG: string) {
+    return this.send({ type: EnvelopeBusMessageType.RESPOND_PREVIEW, data: previewSVG });
+  }
 
   private receive_initRequest(init: { origin: string; busId: string }) {
     this.targetOrigin = init.origin;
@@ -154,6 +158,9 @@ export class EnvelopeBusInnerMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
         this.impl.receive_editorRedo();
+        break;
+      case EnvelopeBusMessageType.REQUEST_PREVIEW:
+        this.impl.receive_previewRequest();
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

@@ -33,4 +33,6 @@ export abstract class Editor extends Component {
   public abstract getContent(): Promise<string>;
 
   public abstract isDirty(): boolean;
+
+  public abstract getPreview() : Promise<string>;
 }

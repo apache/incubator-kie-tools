@@ -20,6 +20,12 @@
   "publisher": "kiegroup",
   "main": "./dist/extension/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "extension.kogito.getPreview",
+        "title": "Get Editor Preview"
+      }
+    ],
     "languages": [
       {
         "id": "bpmn",
