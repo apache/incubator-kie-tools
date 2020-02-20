@@ -16,7 +16,6 @@ package steps
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -38,7 +37,7 @@ func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(servi
 	if err != nil {
 		return err
 	}
-	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "GET", routeURI, path, "", nil, timeoutInMin)
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "GET", routeURI, path, "", "", timeoutInMin)
 }
 
 func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *gherkin.DocString) error {
@@ -47,7 +46,7 @@ func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path stri
 	if err != nil {
 		return err
 	}
-	if success, err := framework.IsHTTPRequestSuccessful(data.Namespace, "POST", routeURI, path, body.ContentType, strings.NewReader(body.Content)); err != nil {
+	if success, err := framework.IsHTTPRequestSuccessful(data.Namespace, "POST", routeURI, path, body.ContentType, body.Content); err != nil {
 		return err
 	} else if !success {
 		return fmt.Errorf("HTTP POST request to path %s was not successful", path)
@@ -61,7 +60,7 @@ func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBo
 	if err != nil {
 		return err
 	}
-	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "POST", routeURI, path, body.ContentType, strings.NewReader(body.Content), timeoutInMin)
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "POST", routeURI, path, body.ContentType, body.Content, timeoutInMin)
 }
 
 func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes(serviceName, path string, size, timeoutInMin int) error {
@@ -70,7 +69,7 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithin
 		return err
 	}
 	return framework.WaitFor(data.Namespace, fmt.Sprintf("GET request on path %s to return array of size %d", path, size), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return framework.IsHTTPResponseArraySize(data.Namespace, "GET", routeURI, path, "", nil, size)
+		return framework.IsHTTPResponseArraySize(data.Namespace, "GET", routeURI, path, "", "", size)
 	})
 }
 
@@ -81,6 +80,6 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 	}
 
 	return framework.WaitFor(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", path, responseContent), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return framework.DoesHTTPResponseContain(data.Namespace, "GET", routeURI, path, "", nil, responseContent)
+		return framework.DoesHTTPResponseContain(data.Namespace, "GET", routeURI, path, "", "", responseContent)
 	})
 }

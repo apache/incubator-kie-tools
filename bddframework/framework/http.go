@@ -18,23 +18,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 	"time"
 )
 
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
-func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat string, body io.Reader, timeoutInMin int) error {
+func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string, timeoutInMin int) error {
 	return WaitFor(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", httpMethod, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, body)
+		return IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	})
 }
 
 // ExecuteHTTPRequest executes an HTTP request
-func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat string, body io.Reader) (*http.Response, error) {
-	request, err := http.NewRequest(httpMethod, uri+"/"+path, body)
-	if body != nil && len(bodyFormat) > 0 {
+func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (*http.Response, error) {
+	GetLogger(namespace).Debugf("ExecuteHTTPRequest %s on uri %s, with path %s, %s bodyContent %s", httpMethod, uri, path, bodyFormat, bodyContent)
+
+	request, err := http.NewRequest(httpMethod, uri+"/"+path, strings.NewReader(bodyContent))
+	if len(bodyContent) > 0 && len(bodyFormat) > 0 {
 		switch bodyFormat {
 		case "json":
 			request.Header.Add("Content-Type", "application/json")
@@ -54,8 +55,8 @@ func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat string, bod
 }
 
 // IsHTTPRequestSuccessful makes and checks whether an http request is successful
-func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat string, body io.Reader) (bool, error) {
-	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, body)
+func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
+	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	if err != nil {
 		return false, err
 	}
@@ -73,8 +74,8 @@ func CheckHTTPResponseSuccessful(namespace string, response *http.Response) bool
 }
 
 // IsHTTPResponseArraySize makes and checks whether an http request returns an array of a specific size
-func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat string, body io.Reader, arraySize int) (bool, error) {
-	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, body)
+func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string, arraySize int) (bool, error) {
+	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	if err != nil {
 		return false, err
 	}
@@ -96,8 +97,8 @@ func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat
 }
 
 // DoesHTTPResponseContain checks whether the response of an http request contains a certain string
-func DoesHTTPResponseContain(namespace, httpMethod, uri, path string, bodyFormat string, body io.Reader, responseContent string) (bool, error) {
-	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, body)
+func DoesHTTPResponseContain(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string, responseContent string) (bool, error) {
+	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	if err != nil {
 		return false, err
 	}
