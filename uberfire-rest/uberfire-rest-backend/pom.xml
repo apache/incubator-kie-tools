@@ -120,7 +120,6 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
-        <version>0.8.1</version>
       </plugin>
     </plugins>
   </build>
