@@ -132,7 +132,11 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
 
     @SuppressWarnings("unused")
     public void onCanvasFocusedSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        expressionEditor.ifPresent(ExpressionEditorView.Presenter::exit);
+        session.ifPresent(s -> {
+            if (Objects.equals(s.getCanvasHandler(), event.getCanvasHandler())) {
+                expressionEditor.ifPresent(ExpressionEditorView.Presenter::exit);
+            }
+        });
     }
 
     public void onCanvasElementUpdated(final @Observes CanvasElementUpdatedEvent event) {

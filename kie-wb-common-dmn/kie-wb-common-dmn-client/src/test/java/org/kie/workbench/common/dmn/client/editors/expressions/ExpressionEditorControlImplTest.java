@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPres
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
@@ -180,12 +181,25 @@ public class ExpressionEditorControlImplTest {
     }
 
     @Test
-    public void testOnCanvasFocusedSelectionEventWhenBound() {
+    public void testOnCanvasFocusedSelectionEventWhenBoundSameSession() {
+        when(event.getCanvasHandler()).thenReturn(canvasHandler);
+
         control.bind(session);
 
         control.onCanvasFocusedSelectionEvent(event);
 
         verify(editor).exit();
+    }
+
+    @Test
+    public void testOnCanvasFocusedSelectionEventWhenBoundDifferentSession() {
+        when(event.getCanvasHandler()).thenReturn(mock(CanvasHandler.class));
+
+        control.bind(session);
+
+        control.onCanvasFocusedSelectionEvent(event);
+
+        verify(editor, never()).exit();
     }
 
     @Test
