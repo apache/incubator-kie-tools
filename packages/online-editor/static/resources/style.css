@@ -130,3 +130,9 @@
   align-items: center;
   padding: 1em;
 }
+
+/* TODO: Fix to only affect the correct header */
+.kogito--editor__toolbar .pf-c-page__header-nav {
+  align-self: center;
+  justify-content: center;
+}

@@ -172,56 +172,30 @@ export function EditorPage(props: Props) {
       // mainAriaLabel={"string"/* optional: Accessible label, can be used to name main section */}
     >
 
-  {!fullscreen && (
-    <PageSection variant="dark" noPadding={true}>
-      {copySuccessAlertVisible && (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            variant="success"
-            title="Content copied to clipboard"
-            action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
-          />
-        </div>
-      )}
-      {/* <EditorToolbar
-        onFullScreen={enterFullscreen}
-        onSave={requestSave}
-        onDownload={requestDownload}
-        onClose={close}
-        onFileNameChanged={props.onFileNameChanged}
-        onCopyContentToClipboard={requestCopyContentToClipboard}
-      /> */}
-    </PageSection>
-  )}
-
-            {/* <Stack>
-          <StackItem style={{ flexBasis: "1%" }}>
-            {!fullscreen && (
-              <EditorToolbar
-                onFullScreen={enterFullscreen}
-                onSave={requestSave}
-                onDownload={requestDownload}
-                onClose={close}
-                onFileNameChanged={props.onFileNameChanged}
-                onCopyContentToClipboard={requestCopyContentToClipboard}
-              />
-            )}
-            {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-          </StackItem>
-          <StackItem isFilled={true} style={{ flexBasis: "100%" }}>
-            <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
-          </StackItem>
-        </Stack> */}
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
-        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Editor
-          ref={editorRef} 
-          fullscreen={fullscreen} 
-          onContentResponse={onContentResponse} 
-        />
+    {!fullscreen && (
+      <PageSection variant="dark" noPadding={true}>
+        {copySuccessAlertVisible && (
+          <div className={"kogito--alert-container"}>
+            <Alert
+              variant="success"
+              title="Content copied to clipboard"
+              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+            />
+          </div>
+        )}
       </PageSection>
-      <a ref={downloadRef} />
-      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
-    </Page>
-  );
+    )}
+
+    <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+      {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+      <Editor
+        ref={editorRef} 
+        fullscreen={fullscreen} 
+        onContentResponse={onContentResponse} 
+      />
+    </PageSection>
+    <a ref={downloadRef} />
+    <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+  </Page>
+);
 }
