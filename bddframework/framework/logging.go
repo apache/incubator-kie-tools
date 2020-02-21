@@ -24,6 +24,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"go.uber.org/zap"
+	"k8s.io/api/events/v1beta1"
 
 	"io/ioutil"
 )
@@ -277,4 +278,85 @@ type monitoredPod struct {
 
 type monitoredContainer struct {
 	loggingFinished bool
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Events logging
+/////////////////////////////////////////////////////////////////////////
+
+const (
+	eventLastSeenKey   = "LAST_SEEN"
+	eventFirstSeenKey  = "FIRST_SEEN"
+	eventCountKey      = "COUNT"
+	eventNameKey       = "NAME"
+	eventKindKey       = "KIND"
+	eventSubObjectKey  = "SUBOBJECT"
+	eventTypeKey       = "TYPE"
+	eventReasonKey     = "REASON"
+	eventActionKey     = "ACTION"
+	eventControllerKey = "CONTROLLER"
+	eventInstanceKey   = "INSTANCE"
+	eventMessageKey    = "MESSAGE"
+)
+
+var eventKeys = []string{
+	eventLastSeenKey,
+	eventFirstSeenKey,
+	eventCountKey,
+	eventNameKey,
+	eventKindKey,
+	eventSubObjectKey,
+	eventTypeKey,
+	eventReasonKey,
+	eventActionKey,
+	eventControllerKey,
+	eventInstanceKey,
+	eventMessageKey,
+}
+
+// BumpEvents will bump all events into events.log file
+func BumpEvents(namespace string) {
+	eventList, err := kubernetes.EventC(kubeClient).GetEvents(namespace)
+	if err != nil {
+		GetMainLogger().Errorf("Error retrieving events from namespace %s: %v", namespace, err)
+	}
+	fileWriter, err := os.Create(getLogFile(namespace, "events"))
+	if err != nil {
+		GetMainLogger().Errorf("Error while creating filewriter: %v", err)
+	}
+
+	PrintDataMap(eventKeys, mapEvents(eventList), fileWriter)
+
+	if err := fileWriter.Close(); err != nil {
+		GetMainLogger().Errorf("Error while closing filewriter: %v", err)
+	}
+}
+
+func mapEvents(eventList *v1beta1.EventList) []map[string]string {
+	eventMaps := []map[string]string{}
+
+	for _, event := range eventList.Items {
+		eventMap := make(map[string]string)
+		eventMap[eventLastSeenKey] = getDefaultIfNull(event.DeprecatedLastTimestamp.Format("2006-01-02 15:04:05"))
+		eventMap[eventFirstSeenKey] = getDefaultIfNull(event.DeprecatedFirstTimestamp.Format("2006-01-02 15:04:05"))
+		eventMap[eventNameKey] = getDefaultIfNull(event.GetName())
+		eventMap[eventKindKey] = getDefaultIfNull(event.TypeMeta.Kind)
+		eventMap[eventSubObjectKey] = getDefaultIfNull(event.Regarding.FieldPath)
+		eventMap[eventTypeKey] = getDefaultIfNull(event.Type)
+		eventMap[eventReasonKey] = getDefaultIfNull(event.Reason)
+		eventMap[eventActionKey] = getDefaultIfNull(event.Action)
+		eventMap[eventControllerKey] = getDefaultIfNull(event.ReportingController)
+		eventMap[eventInstanceKey] = getDefaultIfNull(event.ReportingInstance)
+		eventMap[eventMessageKey] = getDefaultIfNull(event.Note)
+
+		eventMaps = append(eventMaps, eventMap)
+	}
+	return eventMaps
+}
+
+func getDefaultIfNull(value string) string {
+	if len(value) <= 0 {
+		return "-"
+	}
+	return value
 }

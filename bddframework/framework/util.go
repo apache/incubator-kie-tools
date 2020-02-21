@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -101,4 +102,45 @@ func GetScenarioName(s interface{}) string {
 		return scenario.Name
 	}
 	return s.(*gherkin.ScenarioOutline).Name
+}
+
+// PrintDataMap prints a formatted dataMap using the given writer
+func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringWriter) {
+	// Get size of strings to be written, to be able to format correctly
+	maxStringSizeMap := make(map[string]int)
+	for _, key := range keys {
+		maxSize := len(key)
+		for _, dataMap := range dataMaps {
+			if len(dataMap[key]) > maxSize {
+				maxSize = len(dataMap[key])
+			}
+		}
+		maxStringSizeMap[key] = maxSize
+	}
+
+	// Write headers
+	for _, header := range keys {
+		writer.WriteString(header)
+		writer.WriteString(getWhitespaceStr(maxStringSizeMap[header] - len(header) + 1))
+		writer.WriteString(" | ")
+	}
+	writer.WriteString("\n")
+
+	// Write events
+	for _, dataMap := range dataMaps {
+		for _, key := range eventKeys {
+			writer.WriteString(dataMap[key])
+			writer.WriteString(getWhitespaceStr(maxStringSizeMap[key] - len(dataMap[key]) + 1))
+			writer.WriteString(" | ")
+		}
+		writer.WriteString("\n")
+	}
+}
+
+func getWhitespaceStr(size int) string {
+	whiteSpaceStr := ""
+	for i := 0; i < size; i++ {
+		whiteSpaceStr += " "
+	}
+	return whiteSpaceStr
 }

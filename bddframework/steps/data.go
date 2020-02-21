@@ -56,6 +56,7 @@ func (data *Data) BeforeScenario(s interface{}) {
 func (data *Data) AfterScenario(s interface{}, err error) {
 	framework.StopPodLogCollector(data.Namespace)
 	framework.FlushLogger(data.Namespace)
+	framework.BumpEvents(data.Namespace)
 
 	logScenarioDuration(data, s)
 	handleScenarioResult(data, s, err)
