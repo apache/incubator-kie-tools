@@ -163,6 +163,12 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
+  const onInputFileUrlBlur = useCallback(() => {
+    if (inputFileUrl.trim() === "") {
+      setInputFileUrlState(InputFileUrlState.INITIAL);
+    }
+  }, [inputFileUrl]);
+
   const openFile = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
       const fileUrl = new URL(inputFileUrl);
@@ -396,7 +402,8 @@ export function HomePage(props: Props) {
                   helperTextInvalid={messageForState}
                 >
                   <TextInput
-                    isRequired
+                    isRequired={true}
+                    onBlur={onInputFileUrlBlur}
                     isValid={validatedInputUrl}
                     value={inputFileUrl}
                     onChange={inputFileChanged}
