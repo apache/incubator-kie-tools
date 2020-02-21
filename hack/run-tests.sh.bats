@@ -365,3 +365,9 @@
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "--tests.show-scenarios" ]]
 }
+
+@test "invoke run-tests with keep_namespace" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --keep_namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.keep-namespace" ]]
+}

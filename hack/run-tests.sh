@@ -61,9 +61,11 @@ function usage(){
   printf "\n--examples_uri ${URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
   printf "\n--examples_ref ${REF}\n\tSet the branch for the kogito-examples repository. Default is none."
 
+  # Dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
   printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
   printf "\n--dry_run ${REF}\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
+  printf "\n--keep_namespace\n\tDo not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)."
   printf "\n"
 }
 
@@ -254,6 +256,10 @@ case $1 in
     addParam "--tests.show-scenarios"
     addParam "--tests.dry-run"
     shift
+  ;;
+  --keep_namespace)
+    shift
+    addParam "--tests.keep-namespace"
   ;;
   -h|--help)
     usage
