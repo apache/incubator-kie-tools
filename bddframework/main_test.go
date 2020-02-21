@@ -113,7 +113,9 @@ func FeatureContext(s *godog.Suite) {
 		data.AfterScenario(s, err)
 
 		// Namespace should be deleted after all other operations have been done
-		deleteNamespaceIfExists(data.Namespace)
+		if !framework.IsConfigKeepNamespace() {
+			deleteNamespaceIfExists(data.Namespace)
+		}
 	})
 
 	// Step handlers

@@ -45,6 +45,7 @@ type TestConfig struct {
 
 	showScenarios bool
 	dryRun        bool
+	keepNamespace bool
 }
 
 const (
@@ -69,6 +70,7 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.localTests, prefix+"local", false, "If tests are launch on local machine")
 	set.StringVar(&env.ciName, prefix+"ci", "", "If tests are launch on ci machine, give the CI name")
 	set.BoolVar(&env.smoke, prefix+"smoke", false, "Launch only smoke tests")
+	set.BoolVar(&env.keepNamespace, prefix+"keep-namespace", false, "Do not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)")
 
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
 	set.StringVar(&env.operatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
@@ -156,12 +158,17 @@ func IsSmokeTests() bool {
 	return env.smoke
 }
 
-// IsConfigShowScenarios return we should display scenarios
+// IsConfigShowScenarios return whether we should display scenarios
 func IsConfigShowScenarios() bool {
 	return env.showScenarios
 }
 
-// IsConfigDryRun return we should do a dry run
+// IsConfigDryRun return whether we should do a dry run
 func IsConfigDryRun() bool {
 	return env.dryRun
+}
+
+// IsConfigKeepNamespace return whether we should keep namespace after scenario run
+func IsConfigKeepNamespace() bool {
+	return env.keepNamespace
 }

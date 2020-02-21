@@ -31,20 +31,20 @@ const (
 )
 
 // DeployQuarkusExample deploy a Quarkus example
-func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool) error {
+func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool, labels map[string]string) error {
 	GetLogger(namespace).Infof("Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
-	return DeployExample(namespace, appName, contextDir, "quarkus", native, persistence, events)
+	return DeployExample(namespace, appName, contextDir, "quarkus", native, persistence, events, labels)
 }
 
 // DeploySpringBootExample deploys a Spring boot example
-func DeploySpringBootExample(namespace, appName, contextDir string, persistence, events bool) error {
+func DeploySpringBootExample(namespace, appName, contextDir string, persistence, events bool, labels map[string]string) error {
 	GetLogger(namespace).Infof("Deploy spring boot example %s with name %s and persistence %v", contextDir, appName, persistence)
-	return DeployExample(namespace, appName, contextDir, "springboot", false, persistence, events)
+	return DeployExample(namespace, appName, contextDir, "springboot", false, persistence, events, labels)
 }
 
 // DeployExample deploys an example
-func DeployExample(namespace, appName, contextDir, runtime string, native, persistence, events bool) error {
-	kogitoApp := getKogitoAppStub(namespace, appName)
+func DeployExample(namespace, appName, contextDir, runtime string, native, persistence, events bool, labels map[string]string) error {
+	kogitoApp := getKogitoAppStub(namespace, appName, labels)
 	if runtime == "quarkus" {
 		kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
 	} else if runtime == "springboot" {
@@ -56,6 +56,10 @@ func DeployExample(namespace, appName, contextDir, runtime string, native, persi
 	kogitoApp.Spec.Build.GitSource.URI = &gitProjectURI
 	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
 	kogitoApp.Spec.Build.GitSource.Reference = GetConfigExamplesRepositoryRef()
+
+	// Add namespace for service discovery
+	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
+	appendNewEnvToKogitoApp(kogitoApp, "NAMESPACE", namespace)
 
 	profiles := ""
 	if persistence {
@@ -95,7 +99,7 @@ func SetKogitoAppReplicas(namespace, name string, nbPods int) error {
 	return kubernetes.ResourceC(kubeClient).Update(kogitoApp)
 }
 
-func getKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
+func getKogitoAppStub(namespace, appName string, labels map[string]string) *v1alpha1.KogitoApp {
 	kogitoApp := &v1alpha1.KogitoApp{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      appName,
@@ -111,6 +115,13 @@ func getKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 				GitSource: &v1alpha1.GitSource{},
 			},
 		},
+	}
+
+	// Add labels
+	if labels != nil {
+		kogitoApp.Spec.Service = v1alpha1.KogitoAppServiceObject{
+			Labels: labels,
+		}
 	}
 
 	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {

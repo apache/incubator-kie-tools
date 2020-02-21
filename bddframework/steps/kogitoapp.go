@@ -18,13 +18,18 @@ import (
 	"path/filepath"
 
 	"github.com/cucumber/godog"
+	"github.com/cucumber/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/rdumont/assistdog"
 )
+
+var assist = assistdog.NewDefault()
 
 // RegisterCliSteps register all CLI steps existing
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native "([^"]*)"$`, data.deployQuarkusExampleServiceWithNative)
+	s.Step(`^Deploy quarkus example service "([^"]*)" with native "([^"]*)" and labels$`, data.deployQuarkusExampleServiceWithNativeAndLabels)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)"$`, data.deployQuarkusExampleServiceWithPersistenceAndNative)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with persistence enabled and native "([^"]*)" and events "([^"]*)"$`, data.deployQuarkusExampleServiceWithPersistenceAndNativeAndEvents)
 	s.Step(`^Deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
@@ -42,23 +47,31 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 
 // Deploy service steps
 func (data *Data) deployQuarkusExampleServiceWithNative(contextDir, native string) error {
-	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false, false)
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false, false, nil)
+}
+
+func (data *Data) deployQuarkusExampleServiceWithNativeAndLabels(contextDir, native string, dt *gherkin.DataTable) error {
+	labels, err := assist.ParseMap(dt)
+	if err != nil {
+		return err
+	}
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", false, false, labels)
 }
 
 func (data *Data) deployQuarkusExampleServiceWithPersistenceAndNative(contextDir, native string) error {
-	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, false)
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, false, nil)
 }
 
 func (data *Data) deployQuarkusExampleServiceWithPersistenceAndNativeAndEvents(contextDir, native, events string) error {
-	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, events == "enabled")
+	return framework.DeployQuarkusExample(data.Namespace, filepath.Base(contextDir), contextDir, native == "enabled", true, events == "enabled", nil)
 }
 
 func (data *Data) deploySpringBootExampleService(contextDir string) error {
-	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, false, false)
+	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, false, false, nil)
 }
 
 func (data *Data) deploySpringBootExampleServiceWithPersistence(contextDir string) error {
-	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, true, false)
+	return framework.DeploySpringBootExample(data.Namespace, filepath.Base(contextDir), contextDir, true, false, nil)
 }
 
 // Build steps
