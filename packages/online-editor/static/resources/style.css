@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
- .kogito--editor-landing {
+ .pf-c-page__header {
   /* this adjusts the max specifically for our logo */
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
  }
@@ -120,11 +120,6 @@
   display: flex;
   justify-content: center;
   width: 100%;
-}
-
-.kogito--right {
-  margin-left: auto;
-  margin-right: 0;
 }
 
 .kogito--alert-container {

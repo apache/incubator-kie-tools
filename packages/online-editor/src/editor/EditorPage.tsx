@@ -154,18 +154,47 @@ export function EditorPage(props: Props) {
   });
 
   return (
-    <Page>
-      <PageSection variant="light" noPadding={true} style={{ flexBasis: "100%" }}>
-        {copySuccessAlertVisible && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant="success"
-              title="Content copied to clipboard"
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
-            />
-          </div>
-        )}
-        <Stack>
+    <Page
+      header={
+        <EditorToolbar 
+          onFullScreen={enterFullscreen}
+          onSave={requestSave}
+          onDownload={requestDownload}
+          onClose={close}
+          onFileNameChanged={props.onFileNameChanged}
+          onCopyContentToClipboard={requestCopyContentToClipboard}
+          isPageFullscreen={fullscreen}
+        />
+      }
+      // skipToContent={null/* optional: Skip to content component for the page */}
+      // mainContainerId={"null"/* optional: an id to use for the [role="main"] element */}
+      // onPageResize={(): void => null/* optional: Can add callback to be notified when resize occurs, for example to set the sidebar isNav prop to false for a width < 768px | Returns object { mobileView: boolean, windowSize: number } */}
+      // mainAriaLabel={"string"/* optional: Accessible label, can be used to name main section */}
+    >
+
+  {!fullscreen && (
+    <PageSection variant="dark" noPadding={true}>
+      {copySuccessAlertVisible && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant="success"
+            title="Content copied to clipboard"
+            action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+          />
+        </div>
+      )}
+      {/* <EditorToolbar
+        onFullScreen={enterFullscreen}
+        onSave={requestSave}
+        onDownload={requestDownload}
+        onClose={close}
+        onFileNameChanged={props.onFileNameChanged}
+        onCopyContentToClipboard={requestCopyContentToClipboard}
+      /> */}
+    </PageSection>
+  )}
+
+            {/* <Stack>
           <StackItem style={{ flexBasis: "1%" }}>
             {!fullscreen && (
               <EditorToolbar
@@ -182,7 +211,14 @@ export function EditorPage(props: Props) {
           <StackItem isFilled={true} style={{ flexBasis: "100%" }}>
             <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
           </StackItem>
-        </Stack>
+        </Stack> */}
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+        <Editor
+          ref={editorRef} 
+          fullscreen={fullscreen} 
+          onContentResponse={onContentResponse} 
+        />
       </PageSection>
       <a ref={downloadRef} />
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
