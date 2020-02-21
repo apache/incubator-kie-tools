@@ -9,6 +9,7 @@ target/
 /nbproject
 /*.ipr
 /*.iws
+*.iml
 */*.iml
 .idea/
 
