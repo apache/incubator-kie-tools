@@ -82,7 +82,7 @@ const KEY_CODES = new Map<string, string>([
   ["z", "KeyZ"]
 ]);
 
-export interface KeyBindingService {
+export interface KeyboardShortcutsApi {
   registerKeyPress(
     combination: string,
     label: string,
@@ -105,7 +105,7 @@ export interface KeyBindingService {
   registered(): KeyBinding[];
 }
 
-export class DefaultKeyBindingService implements KeyBindingService {
+export class DefaultKeyboardShorcutsService implements KeyboardShortcutsApi {
   private eventIdentifiers = 1;
 
   private readonly keyBindings = new Map<number, KeyBinding>();

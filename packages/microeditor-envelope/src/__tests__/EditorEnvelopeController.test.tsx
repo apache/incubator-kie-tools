@@ -89,7 +89,7 @@ afterEach(() => {
 });
 
 async function startController() {
-  await controller.start({container: envelopeContainer, keyBindingService: undefined as any});
+  await controller.start({container: envelopeContainer, keyboardShortcuts: undefined as any});
   return mockComponent!;
 }
 

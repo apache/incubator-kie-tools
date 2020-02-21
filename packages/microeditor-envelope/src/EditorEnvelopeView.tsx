@@ -18,13 +18,13 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { KeyBindingService } from "./DefaultKeyBindingService";
+import { KeyboardShortcutsApi } from "./DefaultKeyboardShorcutsService";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
-  keyBindingService: KeyBindingService;
+  keyboardShortcuts: KeyboardShortcutsApi;
 }
 
 interface State {
@@ -62,7 +62,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        {!this.state.loading && <KeyBindingsHelpOverlay keyBindingService={this.props.keyBindingService} />}
+        {!this.state.loading && <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} />}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>

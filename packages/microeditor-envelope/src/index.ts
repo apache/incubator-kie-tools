@@ -24,7 +24,7 @@ import { EditorFactory } from "./EditorFactory";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { EditorContext } from "./api/context";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { DefaultKeyBindingService, KeyBindingService } from "./DefaultKeyBindingService";
+import { DefaultKeyboardShorcutsService, KeyboardShortcutsApi } from "./DefaultKeyboardShorcutsService";
 
 export * from "./EditorFactory";
 export * from "./api/context/EditorContext";
@@ -36,7 +36,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       editorContext: EditorContext;
       stateControl: StateControlApi;
-      keyBindingService: KeyBindingService;
+      keyboardShortcuts: KeyboardShortcutsApi;
     };
   }
 }
@@ -62,7 +62,7 @@ export function init(args: {
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
-  const keyBindingService = new DefaultKeyBindingService();
+  const keyboardShortcutsService = new DefaultKeyboardShorcutsService();
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
@@ -77,13 +77,13 @@ export function init(args: {
   );
 
   return editorEnvelopeController
-    .start({ container: args.container, keyBindingService: keyBindingService })
+    .start({ container: args.container, keyboardShortcuts: keyboardShortcutsService })
     .then(messageBus => {
       window.envelope = {
         resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
         editorContext: args.editorContext,
         stateControl: stateControl.exposeApi(messageBus),
-        keyBindingService: keyBindingService
+        keyboardShortcuts: keyboardShortcutsService
       };
     });
 }

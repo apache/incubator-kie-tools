@@ -24,8 +24,8 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { KeyboardShortcutsApi } from "./DefaultKeyboardShorcutsService";
 import { StateControl } from "./api/stateControl";
-import { KeyBindingService } from "./DefaultKeyBindingService";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
@@ -115,13 +115,13 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; keyBindingService: KeyBindingService }) {
+  private render(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi }) {
     return new Promise<void>(res =>
       this.renderer.render(
         <EditorEnvelopeView
           exposing={self => (this.editorEnvelopeView = self)}
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
-          keyBindingService={args.keyBindingService}
+          keyboardShortcuts={args.keyboardShortcuts}
         />,
         args.container,
         res
@@ -129,7 +129,7 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(args: { container: HTMLElement; keyBindingService: KeyBindingService }) {
+  public start(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi }) {
     return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;

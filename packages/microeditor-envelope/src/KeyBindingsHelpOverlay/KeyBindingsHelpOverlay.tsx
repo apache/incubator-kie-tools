@@ -16,29 +16,29 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { KeyBinding, KeyBindingService } from "../DefaultKeyBindingService";
+import { KeyBinding, KeyboardShortcutsApi } from "../DefaultKeyboardShorcutsService";
 
-export function KeyBindingsHelpOverlay(props: { keyBindingService: KeyBindingService }) {
+export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi }) {
   const [showing, setShowing] = useState(false);
 
   useEffect(() => {
-    const id = props.keyBindingService.registerKeyPress(
+    const id = props.keyboardShortcuts.registerKeyPress(
       "shift+/",
       "Show keyboard shortcuts",
       async () => setShowing(true),
       { element: window }
     );
-    return () => props.keyBindingService.deregister(id);
+    return () => props.keyboardShortcuts.deregister(id);
   }, []);
 
   useEffect(() => {
     let id: number;
     if (showing) {
-      id = props.keyBindingService.registerKeyPressOnce("esc", async () => setShowing(false), { element: window });
+      id = props.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), { element: window });
     }
     return () => {
       if (showing) {
-        props.keyBindingService.deregister(id);
+        props.keyboardShortcuts.deregister(id);
       }
     };
   }, [showing]);
@@ -88,7 +88,7 @@ export function KeyBindingsHelpOverlay(props: { keyBindingService: KeyBindingSer
           }}
         >
           <h1>Keyboard shortcuts</h1>
-          {props.keyBindingService.registered().map(keyBinding => (
+          {props.keyboardShortcuts.registered().map(keyBinding => (
             <h5 key={keyBinding.combination}>
               {formatKeyBindingCombination(keyBinding)} - {keyBinding.label}
             </h5>
