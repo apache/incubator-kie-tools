@@ -399,6 +399,7 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   isValid={validatedInputUrl}
+                  helperText="http://"
                   helperTextInvalid={messageForState}
                 >
                   <TextInput
