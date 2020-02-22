@@ -108,7 +108,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
         receive_preview(previewSVG: string) {
-          console.log("received preview: " + previewSVG ) ;
+          console.debug("received preview: " + previewSVG ) ;
         }
       })
     );

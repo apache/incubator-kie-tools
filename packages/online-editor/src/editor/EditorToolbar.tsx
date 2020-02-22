@@ -25,6 +25,7 @@ import {
   Toolbar,
   ToolbarGroup,
   ToolbarItem,
+<<<<<<< HEAD
   PageHeader,
   Brand,
   DropdownToggle,
@@ -32,6 +33,11 @@ import {
   LevelItem
 } from "@patternfly/react-core";
 import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
+=======
+  ButtonVariant
+} from "@patternfly/react-core";
+import { EditIcon } from "@patternfly/react-icons";
+>>>>>>> Support in Online Editor
 import { useLocation } from "react-router";
 import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
@@ -40,6 +46,7 @@ interface Props {
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
+  onPreview: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -109,7 +116,10 @@ export function EditorToolbar(props: Props) {
       </>,
       <DropdownItem key={"copy"} component={"button"} onClick={props.onCopyContentToClipboard}>
         Copy source
-      </DropdownItem>
+        </DropdownItem>,
+        <DropdownItem key="downloadSVG" component="button" onClick={props.onPreview}>
+        Download SVG
+        </DropdownItem>
       /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
         Get shareable URL
       </DropdownItem>*/
