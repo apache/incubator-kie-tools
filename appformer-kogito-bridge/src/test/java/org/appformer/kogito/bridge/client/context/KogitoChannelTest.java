@@ -25,6 +25,9 @@ public class KogitoChannelTest {
     @Test
     public void withNameTest() {
         assertEquals(KogitoChannel.GITHUB, KogitoChannel.withName("GitHub"));
+        assertEquals(KogitoChannel.DEFAULT, KogitoChannel.withName("dEfAuLt"));
+        assertEquals(KogitoChannel.ONLINE, KogitoChannel.withName("ONLine"));
+        assertEquals(KogitoChannel.VSCODE, KogitoChannel.withName("VSCode"));
     }
 
     @Test(expected = IllegalArgumentException.class)
