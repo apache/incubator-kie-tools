@@ -46,6 +46,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
         return CustomAttribute.packageName.of(element).get();
     }
 
+    public String getProcessType() {
+        return process.getProcessType().getName();
+    }
+
     public String getVersion() {
         return CustomAttribute.version.of(element).get();
     }

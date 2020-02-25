@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
@@ -232,6 +233,8 @@ public class ClientBPMNDocumentationServiceTest {
 
     private Package packageProperty;
 
+    private ProcessType type;
+
     private Version version;
 
     private AdHoc adHoc;
@@ -297,6 +300,7 @@ public class ClientBPMNDocumentationServiceTest {
         processName = new Name(PROCESS_NAME);
         processDocumentation = new Documentation(PROCESS_DOCUMENTATION);
         packageProperty = new Package(PROCESS_PACKAGE);
+        type = new ProcessType();
         version = new Version(PROCESS_VERSION);
         adHoc = new AdHoc(PROCESS_IS_ADHOC);
         processInstanceDescription = new ProcessInstanceDescription(PROCESS_DECRIPTION);
@@ -319,6 +323,7 @@ public class ClientBPMNDocumentationServiceTest {
                                     processDocumentation,
                                     processId,
                                     packageProperty,
+                                    type,
                                     version,
                                     adHoc,
                                     processInstanceDescription,

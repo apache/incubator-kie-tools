@@ -58,6 +58,7 @@ public class DiagramSetTest {
         tested.setId(new Id(ID_VALID));
         tested.setPackageProperty(new Package(PACKAGE_VALID));
         tested.setVersion(new Version(VERSION_VALID));
+        tested.setProcessType(new ProcessType());
     }
 
     @Test
@@ -92,6 +93,14 @@ public class DiagramSetTest {
         tested.setVersion(new Version(VERSION_INVALID));
         Set<ConstraintViolation<DiagramSet>> violations = this.validator.validate(tested);
         assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testProcessType() {
+        ProcessType test = new ProcessType();
+        test.setValue("Private");
+        tested.setProcessType(test);
+        assertEquals("Private", tested.getProcessType().getValue());
     }
 
     @Test

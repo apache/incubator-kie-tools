@@ -22,10 +22,12 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.ProcessType;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 
@@ -75,5 +77,34 @@ public class ProcessPropertyReaderTest {
 
         assertEquals(QTY, result.size());
         assertEquals(defaultImports, result);
+    }
+
+    @Test
+    public void getProcessType() {
+        ProcessPropertyWriter writer = new ProcessPropertyWriter(
+                bpmn2.createProcess(), null);
+        writer.setType(ProcessType.PRIVATE.getName());
+
+        tested = new ProcessPropertyReader(writer.getProcess(),
+                                           definitionResolver.getDiagram(),
+                                           definitionResolver.getShape(process.getId()),
+                                           definitionResolver.getResolutionFactor());
+        assertEquals(tested.getProcessType(), ProcessType.PRIVATE.getName());
+
+
+        writer.setType(ProcessType.PUBLIC.getName());
+        tested = new ProcessPropertyReader(writer.getProcess(),
+                                           definitionResolver.getDiagram(),
+                                           definitionResolver.getShape(process.getId()),
+                                           definitionResolver.getResolutionFactor());
+        assertEquals(tested.getProcessType(), ProcessType.PUBLIC.getName());
+
+        writer.setType(ProcessType.NONE.getName());
+        tested = new ProcessPropertyReader(writer.getProcess(),
+                                           definitionResolver.getDiagram(),
+                                           definitionResolver.getShape(process.getId()),
+                                           definitionResolver.getResolutionFactor());
+        assertEquals(tested.getProcessType(), ProcessType.NONE.getName());
+
     }
 }

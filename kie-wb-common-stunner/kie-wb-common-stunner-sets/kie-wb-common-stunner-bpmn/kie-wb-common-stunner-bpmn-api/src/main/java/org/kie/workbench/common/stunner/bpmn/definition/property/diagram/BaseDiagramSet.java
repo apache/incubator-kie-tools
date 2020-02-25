@@ -32,6 +32,8 @@ public interface BaseDiagramSet extends BPMNPropertySet,
 
     BaseVersion getVersion();
 
+    ProcessType getProcessType();
+
     BaseProcessInstanceDescription getProcessInstanceDescription();
 
     GlobalVariables getGlobalVariables();

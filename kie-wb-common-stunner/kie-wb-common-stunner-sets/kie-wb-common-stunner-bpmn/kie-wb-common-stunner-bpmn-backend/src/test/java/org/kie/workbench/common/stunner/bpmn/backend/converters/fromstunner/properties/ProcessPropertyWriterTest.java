@@ -135,6 +135,12 @@ public class ProcessPropertyWriterTest {
     }
 
     @Test
+    public void processType() {
+        p.setType("Private");
+        assertEquals("Private", p.getProcess().getProcessType().getName());
+    }
+
+    @Test
     public void globalVariables() {
         GlobalVariables globalVariables = new GlobalVariables("GV1:Boolean,GV2:Boolean,GV3:Integer");
         p.setGlobalVariables(globalVariables);
@@ -149,7 +155,7 @@ public class ProcessPropertyWriterTest {
 
         final ProcessPropertyReader pp = new ProcessPropertyReader(
                 p.getProcess(), p.getBpmnDiagram(), p.getShape(), 1.0);
-        String processVariablesString =  pp.getProcessVariables();
+        String processVariablesString = pp.getProcessVariables();
         assertThat(processVariablesString).isEqualTo("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
     }
 

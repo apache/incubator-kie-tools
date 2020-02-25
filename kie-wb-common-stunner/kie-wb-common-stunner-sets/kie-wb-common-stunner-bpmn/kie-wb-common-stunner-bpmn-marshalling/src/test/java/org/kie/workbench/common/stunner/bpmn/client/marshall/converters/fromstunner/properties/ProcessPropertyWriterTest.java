@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.ProcessType;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.junit.Before;
@@ -148,6 +149,14 @@ public class ProcessPropertyWriterTest {
                 p.getProcess(), p.getBpmnDiagram(), p.getShape(), 1.0);
         String processVariablesString = pp.getProcessVariables();
         assertThat(processVariablesString).isEqualTo("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
+    }
+
+    @Test
+    public void processType() {
+        p.setType("Private");
+        assertEquals("Private", p.getProcess().getProcessType().getName());
+        p.setType("Public");
+        assertEquals(ProcessType.PUBLIC, p.getProcess().getProcessType());
     }
 
     @Test

@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -160,6 +161,8 @@ public class BPMNClientDiagramServiceTest {
 
     private DiagramSet diagramSet;
 
+    private ProcessType processType;
+
     private BPMNDiagramImpl bpmnDiagram;
 
     private List<Node> nodes;
@@ -186,11 +189,13 @@ public class BPMNClientDiagramServiceTest {
         executable = new Executable(false);
         globalVariables = new GlobalVariables("GL1:java.lang.String:false,GL2:java.lang.Boolean:false");
         slaDueDate = new SLADueDate("");
+        processType = new ProcessType();
 
         diagramSet = new DiagramSet(processName,
                                     processDocumentation,
                                     processId,
                                     packageProperty,
+                                    processType,
                                     version,
                                     adHoc,
                                     processInstanceDescription,

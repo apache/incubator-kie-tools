@@ -66,9 +66,9 @@ public class RootProcessConverter {
 
         p.setName(diagramSet.getName().getValue());
         p.setDocumentation(diagramSet.getDocumentation().getValue());
-
         p.setId(diagramSet.getId().getValue());
         p.setPackage(diagramSet.getPackageProperty().getValue());
+        p.setType(diagramSet.getProcessType().getValue());
         p.setVersion(diagramSet.getVersion().getValue());
         p.setAdHoc(diagramSet.getAdHoc().getValue());
         p.setDescription(diagramSet.getProcessInstanceDescription().getValue());

@@ -31,6 +31,7 @@ import bpsim.ScenarioParameters;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.ProcessType;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -166,6 +167,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setPackage(String value) {
         CustomAttribute.packageName.of(process).set(value);
+    }
+
+    public void setType(String value) {
+        process.setProcessType(ProcessType.get(value));
     }
 
     public void setVersion(String value) {

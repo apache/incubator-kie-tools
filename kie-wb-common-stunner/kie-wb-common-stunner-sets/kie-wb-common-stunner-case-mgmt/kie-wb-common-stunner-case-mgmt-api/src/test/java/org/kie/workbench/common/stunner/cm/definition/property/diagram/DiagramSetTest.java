@@ -26,6 +26,7 @@ import javax.validation.ValidatorFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
@@ -59,6 +60,7 @@ public class DiagramSetTest {
         tested.setId(new Id(ID_VALID));
         tested.setPackageProperty(new Package(PACKAGE_VALID));
         tested.setVersion(new Version(VERSION_VALID));
+        tested.setProcessType(new ProcessType());
     }
 
     @Test
@@ -156,5 +158,13 @@ public class DiagramSetTest {
         org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet d = new org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet();
 
         assertNotEquals(c, d);
+    }
+
+    @Test
+    public void testProcessType() {
+        ProcessType test = new ProcessType();
+        test.setValue("Private");
+        tested.setProcessType(test);
+        assertEquals("Private", tested.getProcessType().getValue());
     }
 }

@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
@@ -62,6 +63,7 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
                               new Documentation(p.getDocumentation()),
                               new Id(process.getId()),
                               new Package(p.getPackage()),
+                              new ProcessType(p.getProcessType()),
                               new Version(p.getVersion()),
                               new AdHoc(p.isAdHoc()),
                               new ProcessInstanceDescription(p.getDescription()),

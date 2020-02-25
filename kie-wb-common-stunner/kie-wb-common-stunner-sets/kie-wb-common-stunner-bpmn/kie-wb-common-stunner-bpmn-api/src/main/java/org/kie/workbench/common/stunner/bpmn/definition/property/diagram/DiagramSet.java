@@ -23,9 +23,12 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -77,7 +80,20 @@ public class DiagramSet implements BaseDiagramSet {
 
     @Property
     @FormField(
+            type = ListBoxFieldType.class,
+            settings = {@FieldParam(name = "addEmptyOption", value = "false")},
             afterElement = "packageProperty"
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ProcessTypeProvider"
+    )
+    @Valid
+    private ProcessType processType;
+
+    @Property
+    @FormField(
+            afterElement = "processType"
     )
     @Valid
     private Version version;
@@ -126,6 +142,7 @@ public class DiagramSet implements BaseDiagramSet {
              new Documentation(),
              new Id(),
              new Package(),
+             new ProcessType(),
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
@@ -139,6 +156,7 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo("documentation") Documentation documentation,
                       final @MapsTo("id") Id id,
                       final @MapsTo("packageProperty") Package packageProperty,
+                      final @MapsTo("processType") ProcessType processType,
                       final @MapsTo("version") Version version,
                       final @MapsTo(ADHOC) AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
@@ -150,6 +168,7 @@ public class DiagramSet implements BaseDiagramSet {
         this.documentation = documentation;
         this.id = id;
         this.packageProperty = packageProperty;
+        this.processType = processType;
         this.version = version;
         this.adHoc = adHoc;
         this.processInstanceDescription = processInstanceDescription;
@@ -164,6 +183,7 @@ public class DiagramSet implements BaseDiagramSet {
              new Documentation(),
              new Id(),
              new Package(),
+             new ProcessType(),
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
@@ -178,9 +198,17 @@ public class DiagramSet implements BaseDiagramSet {
         return name;
     }
 
+    public void setName(final Name name) {
+        this.name = name;
+    }
+
     @Override
     public Documentation getDocumentation() {
         return documentation;
+    }
+
+    public void setDocumentation(final Documentation documentation) {
+        this.documentation = documentation;
     }
 
     @Override
@@ -188,9 +216,26 @@ public class DiagramSet implements BaseDiagramSet {
         return id;
     }
 
+    public void setId(Id id) {
+        this.id = id;
+    }
+
     @Override
     public Package getPackageProperty() {
         return packageProperty;
+    }
+
+    public void setPackageProperty(final Package packageProperty) {
+        this.packageProperty = packageProperty;
+    }
+
+    @Override
+    public ProcessType getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(ProcessType processType) {
+        this.processType = processType;
     }
 
     @Override
@@ -198,9 +243,17 @@ public class DiagramSet implements BaseDiagramSet {
         return version;
     }
 
+    public void setVersion(final Version version) {
+        this.version = version;
+    }
+
     @Override
     public AdHoc getAdHoc() {
         return adHoc;
+    }
+
+    public void setAdHoc(final AdHoc adHoc) {
+        this.adHoc = adHoc;
     }
 
     @Override
@@ -208,9 +261,17 @@ public class DiagramSet implements BaseDiagramSet {
         return processInstanceDescription;
     }
 
+    public void setProcessInstanceDescription(final ProcessInstanceDescription processInstanceDescription) {
+        this.processInstanceDescription = processInstanceDescription;
+    }
+
     @Override
     public GlobalVariables getGlobalVariables() {
         return globalVariables;
+    }
+
+    public void setGlobalVariables(GlobalVariables globalVariables) {
+        this.globalVariables = globalVariables;
     }
 
     @Override
@@ -218,54 +279,22 @@ public class DiagramSet implements BaseDiagramSet {
         return imports;
     }
 
+    public void setImports(Imports imports) {
+        this.imports = imports;
+    }
+
     @Override
     public Executable getExecutable() {
         return executable;
     }
 
+    public void setExecutable(final Executable executable) {
+        this.executable = executable;
+    }
+
     @Override
     public SLADueDate getSlaDueDate() {
         return slaDueDate;
-    }
-
-    public void setName(final Name name) {
-        this.name = name;
-    }
-
-    public void setDocumentation(final Documentation documentation) {
-        this.documentation = documentation;
-    }
-
-    public void setId(Id id) {
-        this.id = id;
-    }
-
-    public void setPackageProperty(final Package packageProperty) {
-        this.packageProperty = packageProperty;
-    }
-
-    public void setVersion(final Version version) {
-        this.version = version;
-    }
-
-    public void setAdHoc(final AdHoc adHoc) {
-        this.adHoc = adHoc;
-    }
-
-    public void setProcessInstanceDescription(final ProcessInstanceDescription processInstanceDescription) {
-        this.processInstanceDescription = processInstanceDescription;
-    }
-
-    public void setGlobalVariables(GlobalVariables globalVariables) {
-        this.globalVariables = globalVariables;
-    }
-
-    public void setImports(Imports imports) {
-        this.imports = imports;
-    }
-
-    public void setExecutable(final Executable executable) {
-        this.executable = executable;
     }
 
     public void setSlaDueDate(final SLADueDate slaDueDate) {
@@ -278,6 +307,7 @@ public class DiagramSet implements BaseDiagramSet {
                                          Objects.hashCode(documentation),
                                          Objects.hashCode(id),
                                          Objects.hashCode(packageProperty),
+                                         Objects.hashCode(processType),
                                          Objects.hashCode(version),
                                          Objects.hashCode(adHoc),
                                          Objects.hashCode(processInstanceDescription),
@@ -295,6 +325,7 @@ public class DiagramSet implements BaseDiagramSet {
                     Objects.equals(documentation, other.documentation) &&
                     Objects.equals(id, other.id) &&
                     Objects.equals(packageProperty, other.packageProperty) &&
+                    Objects.equals(processType, other.processType) &&
                     Objects.equals(version, other.version) &&
                     Objects.equals(adHoc, other.adHoc) &&
                     Objects.equals(processInstanceDescription, other.processInstanceDescription) &&

@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -52,6 +53,7 @@ public class DefinitionsConverterTest {
                 new Documentation("doc"),
                 new Id("x"),
                 new Package("org.jbpm"),
+                new ProcessType(),
                 new Version("1.0"),
                 new AdHoc(false),
                 new ProcessInstanceDescription("descr"),

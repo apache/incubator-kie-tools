@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -67,6 +68,7 @@ public class CaseManagementRootProcessConverter extends BaseRootProcessConverter
                               new Documentation(p.getDocumentation()),
                               new Id(process.getId()),
                               new Package(p.getPackage()),
+                              new ProcessType(p.getProcessType()),
                               new Version(p.getVersion()),
                               new AdHoc(p.isAdHoc()),
                               new ProcessInstanceDescription(p.getDescription()),
