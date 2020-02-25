@@ -24,6 +24,22 @@
         function loadDiagram(diagram) {
             var path = "somePath";
             window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(path, diagram);
+            document.getElementById("download_btn").disabled = false;
+        }
+
+        function download() {
+                window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().getContent().then(
+                    function(process) {
+                        var d = document.createElement('a');
+                        d.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(process));
+                        d.setAttribute('download', "process.bpmn");
+                        d.style.display = 'none';
+
+                        document.body.appendChild(d);
+                        d.click();
+                        document.body.removeChild(d);
+                    }
+                );
         }
 
         var openFile = function (event) {
@@ -46,6 +62,8 @@
     <input type="button" onclick="loadDiagram('')" value="Create new Diagram"/>
     or
     <input type="file" onchange="openFile(event)" value="Choose BPMN2 file" accept="bpmn,bpmn2,txt"/>
+    When you are ready you can
+    <input type="button" id="download_btn" value="Download the process" onclick="download()" disabled/>
 </div>
 
 <iframe id="editorFrame" src="index.html" width="100%" height="1000px" frameBorder="0" scrolling="no"></iframe>
