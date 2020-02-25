@@ -45,6 +45,7 @@
     <module>drools-wb-scenario-simulation-editor-backend</module>
     <module>drools-wb-scenario-simulation-editor-businesscentral-client</module>
     <module>drools-wb-scenario-simulation-editor-kogito-marshaller</module>
+    <module>drools-wb-scenario-simulation-editor-kogito-client</module>
   </modules>
 
 </project>
