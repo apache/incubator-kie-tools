@@ -20,6 +20,7 @@ import { KogitoEdit } from "@kogito-tooling/core-api";
 
 /**
  * PUBLIC ENVELOPE API
+ * Represents a command registry API to be used on command-based editors.
  */
 export interface KogitoCommandRegistry<T> {
   register(id: string, command: T): void;

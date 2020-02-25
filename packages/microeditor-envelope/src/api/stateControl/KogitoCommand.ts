@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * Represents a Command that has been registered into the {@link KogitoCommandRegistry}. It has a id (string) to identify
+ * the command on the registry and a executable ({@template T}) that represents the real executable command pushed to
+ * the registry.
+ */
 export class KogitoCommand<T> {
 
   private readonly id: string;

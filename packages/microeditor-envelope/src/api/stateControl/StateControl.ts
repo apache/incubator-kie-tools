@@ -19,6 +19,9 @@ import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCom
 
 /**
  * PUBLIC ENVELOPE API
+ *
+ * State Control API for command-based editors. It gives access to the {@link KogitoCommandRegistry} and allows setting
+ * the editor undo & redo commands for a correct integration with the envelope.
  */
 export interface StateControlApi {
   registry: KogitoCommandRegistry<any>;
