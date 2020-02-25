@@ -1528,7 +1528,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>appformer-kogito-api</artifactId>
+      <artifactId>appformer-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -1752,7 +1752,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:appformer-kogito-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-management-api</compileSourcesArtifact>
