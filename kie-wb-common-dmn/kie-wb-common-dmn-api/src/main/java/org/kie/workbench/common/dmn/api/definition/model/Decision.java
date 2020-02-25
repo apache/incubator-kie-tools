@@ -38,6 +38,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -70,12 +71,12 @@ public class Decision extends DRGElement implements DomainObject,
             .build();
 
     @Property
-    @FormField(afterElement = "name")
+    @FormField(afterElement = "name", type = TextAreaFieldType.class)
     @Valid
     protected Question question;
 
     @Property
-    @FormField(afterElement = "question")
+    @FormField(afterElement = "question", type = TextAreaFieldType.class)
     @Valid
     protected AllowedAnswers allowedAnswers;
 
