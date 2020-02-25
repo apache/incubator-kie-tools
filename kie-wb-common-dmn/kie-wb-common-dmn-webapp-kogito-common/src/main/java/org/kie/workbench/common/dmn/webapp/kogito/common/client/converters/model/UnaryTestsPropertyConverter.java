@@ -19,9 +19,11 @@ package org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.mode
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
+import com.google.gwt.core.client.GWT;
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
@@ -37,6 +39,9 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
 import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.NONE;
 
 public class UnaryTestsPropertyConverter {
+
+    //Function to perform casts to override for Unit Tests.
+    static Function<Object, Map<QName, String>> ATTRIBUTES_CAST = Js::uncheckedCast;
 
     public static UnaryTests wbFromDMN(final JSITUnaryTests dmn) {
         if (Objects.isNull(dmn)) {
@@ -68,11 +73,11 @@ public class UnaryTestsPropertyConverter {
         if (Objects.isNull(wb)) {
             return null;
         }
-        final JSITUnaryTests result = new JSITUnaryTests();
+        final JSITUnaryTests result = GWT.create(JSITUnaryTests.class);
         final Map<QName, String> otherAttributes = new HashMap<>();
         result.setId(wb.getId().getValue());
         result.setText(wb.getText().getValue());
-        result.setOtherAttributes(Js.uncheckedCast(JsUtils.fromAttributesMap(otherAttributes)));
+        result.setOtherAttributes(ATTRIBUTES_CAST.apply(JsUtils.fromAttributesMap(otherAttributes)));
 
         final ConstraintType constraint = wb.getConstraintType();
 
@@ -81,7 +86,7 @@ public class UnaryTestsPropertyConverter {
                                         ConstraintType.CONSTRAINT_KEY,
                                         DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
             otherAttributes.put(key, constraint.value());
-            result.setOtherAttributes(Js.uncheckedCast(JsUtils.fromAttributesMap(otherAttributes)));
+            result.setOtherAttributes(ATTRIBUTES_CAST.apply(JsUtils.fromAttributesMap(otherAttributes)));
         }
 
         return result;

@@ -1924,6 +1924,80 @@ public class DMNDesignerKogitoSeleniumIT {
                 .areSimilar();
     }
 
+    @Test
+    public void testDecisionTableDefaultOutputValueMissing_KOGITO1181() throws Exception {
+        final String expected = loadResource("KOGITO-1181 (Default Output Value - missing).xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                  "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .doesNotHaveXPath("/dmn:definitions" +
+                                          "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                          "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                          "/dmn:outputValues");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .doesNotHaveXPath("/dmn:definitions" +
+                                          "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                          "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                          "/dmn:defaultOutputEntry");
+    }
+
+    @Test
+    public void testDecisionTableDefaultOutputValuePresent_KOGITO1181() throws Exception {
+        final String expected = loadResource("KOGITO-1181 (Default Output Value - present).xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                  "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                  "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                  "/dmn:outputValues" +
+                                  "/dmn:text[text()='output']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
+                                  "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                  "/dmn:defaultOutputEntry" +
+                                  "/dmn:text[text()='default output']");
+    }
+
     private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
         expandDecisionNavigatorDock();
         final By nodeLocator = By.xpath(String.format(".//ul/li[@title='%s']", nodeName));

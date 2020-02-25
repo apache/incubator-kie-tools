@@ -25,12 +25,19 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITLiteralExpression;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class OutputClauseLiteralExpressionPropertyConverter {
 
+    /**
+     * Returns a non-null instance of OutputClauseLiteralExpression. The Properties Panel needs
+     * non-null objects to bind therefore a concrete object must always be returned.
+     * @param dmn
+     * @return
+     */
     public static OutputClauseLiteralExpression wbFromDMN(final JSITLiteralExpression dmn) {
         if (Objects.isNull(dmn)) {
-            return null;
+            return new OutputClauseLiteralExpression();
         }
         final Id id = IdPropertyConverter.wbFromDMN(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
@@ -46,5 +53,22 @@ public class OutputClauseLiteralExpressionPropertyConverter {
             importedValues.setParent(result);
         }
         return result;
+    }
+
+    /**
+     * Returns a JSITLiteralExpression of null if the text of the OutputClauseLiteralExpression is empty.
+     * @param wb
+     * @return
+     */
+    public static JSITLiteralExpression dmnFromWB(final OutputClauseLiteralExpression wb) {
+        if (Objects.isNull(wb)) {
+            return null;
+        } else if (Objects.isNull(wb.getText())) {
+            return null;
+        } else if (StringUtils.isEmpty(wb.getText().getValue())) {
+            return null;
+        }
+
+        return LiteralExpressionPropertyConverter.dmnFromWB(wb);
     }
 }

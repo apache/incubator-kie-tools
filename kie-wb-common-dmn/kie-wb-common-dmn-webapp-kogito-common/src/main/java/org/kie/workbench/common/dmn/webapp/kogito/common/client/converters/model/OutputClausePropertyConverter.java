@@ -64,12 +64,12 @@ public class OutputClausePropertyConverter {
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);
 
-        final JSITUnaryTests outputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getOutputValues());
+        final JSITUnaryTests outputValues = OutputClauseUnaryTestsPropertyConverter.dmnFromWB(wb.getOutputValues());
         if (Objects.nonNull(outputValues) && StringUtils.nonEmpty(outputValues.getText())) {
             result.setOutputValues(outputValues);
         }
 
-        final JSITLiteralExpression defaultOutputEntry = LiteralExpressionPropertyConverter.dmnFromWB(wb.getDefaultOutputEntry());
+        final JSITLiteralExpression defaultOutputEntry = OutputClauseLiteralExpressionPropertyConverter.dmnFromWB(wb.getDefaultOutputEntry());
         if (Objects.nonNull(defaultOutputEntry) && StringUtils.nonEmpty(defaultOutputEntry.getText())) {
             result.setDefaultOutputEntry(defaultOutputEntry);
         }
