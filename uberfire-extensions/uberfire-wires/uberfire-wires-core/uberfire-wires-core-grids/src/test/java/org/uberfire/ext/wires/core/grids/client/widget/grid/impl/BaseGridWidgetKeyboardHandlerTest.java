@@ -43,6 +43,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.BaseCellSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -75,6 +76,9 @@ public class BaseGridWidgetKeyboardHandlerTest {
 
     @Mock
     private BaseGridRendererHelper gridWidget1RendererHelper;
+
+    @Mock
+    private GridLienzoPanel gridPanel;
 
     private GridData gridWidget1Data;
 
@@ -580,10 +584,10 @@ public class BaseGridWidgetKeyboardHandlerTest {
     private void setupKeyboardOperations() {
         this.keyboardOperationClearCell = spy(new KeyboardOperationClearCell(layer));
         this.keyboardOperationEditCell = spy(new KeyboardOperationEditCell(layer));
-        this.keyboardOperationMoveLeft = spy(new KeyboardOperationMoveLeft(layer));
-        this.keyboardOperationMoveRight = spy(new KeyboardOperationMoveRight(layer));
-        this.keyboardOperationMoveUp = spy(new KeyboardOperationMoveUp(layer));
-        this.keyboardOperationMoveDown = spy(new KeyboardOperationMoveDown(layer));
+        this.keyboardOperationMoveLeft = spy(new KeyboardOperationMoveLeft(layer, gridPanel));
+        this.keyboardOperationMoveRight = spy(new KeyboardOperationMoveRight(layer, gridPanel));
+        this.keyboardOperationMoveUp = spy(new KeyboardOperationMoveUp(layer, gridPanel));
+        this.keyboardOperationMoveDown = spy(new KeyboardOperationMoveDown(layer, gridPanel));
         this.keyboardOperationSelectTopLeftCell = spy(new KeyboardOperationSelectTopLeftCell(layer));
         this.keyboardOperationSelectBottomRightCell = spy(new KeyboardOperationSelectBottomRightCell(layer));
 

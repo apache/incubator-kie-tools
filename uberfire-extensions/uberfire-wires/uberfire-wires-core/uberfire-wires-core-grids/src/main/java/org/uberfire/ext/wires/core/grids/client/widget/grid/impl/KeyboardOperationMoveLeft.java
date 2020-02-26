@@ -17,29 +17,28 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import com.google.gwt.event.dom.client.KeyCodes;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollable;
 
-public class KeyboardOperationMoveLeft extends BaseKeyboardOperation {
+public class KeyboardOperationMoveLeft extends KeyboardOperationMove {
 
     public KeyboardOperationMoveLeft(final GridLayer gridLayer) {
-        super(gridLayer);
+        this(gridLayer, null);
+    }
+
+    public KeyboardOperationMoveLeft(final GridLayer gridLayer,
+                                     final GridLienzoScrollable panel) {
+        super(gridLayer, panel);
+    }
+
+    @Override
+    SelectionExtension getSelectionExtension() {
+        return SelectionExtension.LEFT;
     }
 
     @Override
     public int getKeyCode() {
         return KeyCodes.KEY_LEFT;
-    }
-
-    @Override
-    @SuppressWarnings("unused")
-    public boolean perform(final GridWidget gridWidget,
-                           final boolean isShiftKeyDown,
-                           final boolean isControlKeyDown) {
-        final boolean redraw = gridWidget.adjustSelection(SelectionExtension.LEFT,
-                                                          isShiftKeyDown);
-        scrollSelectedCellIntoView(gridWidget);
-        return redraw;
     }
 }
