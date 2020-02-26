@@ -155,10 +155,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(gridLayer);
         addKeyboardOperation(handler, new KeyboardOperationEditCell(gridLayer));
         addKeyboardOperation(handler, new KeyboardOperationEscapeGridCell(gridLayer));
-        addKeyboardOperation(handler, new KeyboardOperationMoveLeft(gridLayer));
-        addKeyboardOperation(handler, new KeyboardOperationMoveRight(gridLayer));
-        addKeyboardOperation(handler, new KeyboardOperationMoveUp(gridLayer));
-        addKeyboardOperation(handler, new KeyboardOperationMoveDown(gridLayer));
+        addKeyboardOperation(handler, new KeyboardOperationMoveLeft(gridLayer, gridPanel));
+        addKeyboardOperation(handler, new KeyboardOperationMoveRight(gridLayer, gridPanel));
+        addKeyboardOperation(handler, new KeyboardOperationMoveUp(gridLayer, gridPanel));
+        addKeyboardOperation(handler, new KeyboardOperationMoveDown(gridLayer, gridPanel));
         addKeyboardOperation(handler, new KeyboardOperationInvokeContextMenuForSelectedCell(gridLayer));
         gridPanel.addKeyDownHandler(handler);
 
