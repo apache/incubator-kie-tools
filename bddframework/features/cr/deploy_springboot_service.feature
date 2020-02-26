@@ -39,3 +39,22 @@ Feature: CR: Deploy spring boot service with persistence
     And Scale Kogito application "jbpm-springboot-example" to 1 pods within 2 minutes
     
     Then HTTP GET request on service "jbpm-springboot-example" with path "orders" should return an array of size 1 within 2 minutes
+
+#####
+
+  # Disabled as long as https://issues.redhat.com/browse/KOGITO-1163 and https://issues.redhat.com/browse/KOGITO-1166 is not solved
+  @disabled
+  Scenario: CR deploy timer-springboot-example service with Jobs service
+    Given Kogito Operator is deployed
+    And Deploy Kogito Jobs Service with 1 replicas
+    And Deploy spring boot example service "timer-springboot-example"
+    And Kogito application "timer-springboot-example" has 1 pods running within 10 minutes
+
+    When HTTP POST request on service "timer-springboot-example" is successful within 2 minutes with path "timer" and body:
+      """json
+      { }
+      """
+
+    # Implement retrieving of job information from Jobs service once https://issues.redhat.com/browse/KOGITO-1163 is fixed
+    Then Kogito application "timer-springboot-example" log contains text "Before timer" within 1 minutes
+    And Kogito application "timer-springboot-example" log contains text "After timer" within 1 minutes

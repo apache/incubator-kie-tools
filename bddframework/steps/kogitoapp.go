@@ -43,6 +43,9 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 
 	// Kogito applications steps
 	s.Step(`^Scale Kogito application "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoApplicationToPodsWithinMinutes)
+
+	// Logging steps
+	s.Step(`^Kogito application "([^"]*)" log contains text "([^"]*)" within (\d+) minutes$`, data.kogitoApplicationLogContainsTextWithinMinutes)
 }
 
 // Deploy service steps
@@ -91,4 +94,9 @@ func (data *Data) scaleKogitoApplicationToPodsWithinMinutes(name string, nbPods,
 		return err
 	}
 	return framework.WaitForDeploymentConfigRunning(data.Namespace, name, nbPods, timeoutInMin)
+}
+
+// Logging steps
+func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText string, timeoutInMin int) error {
+	return framework.WaitForAllPodsToContainTextInLog(data.Namespace, dcName, logText, timeoutInMin)
 }

@@ -57,3 +57,33 @@ Feature: CR: Deploy quarkus service
     Examples:
       | native | minutes |
       | "enabled" | 20 |
+
+#####
+
+  # Disabled as long as https://issues.redhat.com/browse/KOGITO-1163 and https://issues.redhat.com/browse/KOGITO-1166 is not solved
+  @disabled
+  Scenario Outline: CR deploy timer-quarkus-example service with Jobs service
+    Given Kogito Operator is deployed
+    And Deploy Kogito Jobs Service with 1 replicas
+    And Deploy quarkus example service "timer-quarkus-example" with native <native>
+    And Kogito application "timer-quarkus-example" has 1 pods running within <minutes> minutes
+
+    When HTTP POST request on service "timer-quarkus-example" is successful within 2 minutes with path "timer" and body:
+      """json
+      { }
+      """
+
+    # Implement retrieving of job information from Jobs service once https://issues.redhat.com/browse/KOGITO-1163 is fixed
+    Then Kogito application "timer-quarkus-example" log contains text "Before timer" within 1 minutes
+    And Kogito application "timer-quarkus-example" log contains text "After timer" within 1 minutes
+
+    Examples: Non Native
+      | native | minutes |
+      | "disabled" | 10 |
+
+    # Disabled as long as https://issues.redhat.com/browse/KOGITO-1179 is not solved
+    @disabled
+    @native
+    Examples:
+      | native | minutes |
+      | "enabled" | 20 |

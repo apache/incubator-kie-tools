@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -132,4 +133,32 @@ func loadResource(namespace, uri string, resourceRef meta.ResourceObject, before
 		return fmt.Errorf("Error while creating resources from file '%s': %v ", uri, err)
 	}
 	return nil
+}
+
+// WaitForAllPodsToContainTextInLog waits for pods of specified deployment config to contain specified text in log
+func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeoutInMin int) error {
+	return WaitFor(namespace, fmt.Sprintf("Pods for deployment config '%s' contain text '%s'", dcName, logText), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
+		pods, err := GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
+		if err != nil {
+			return false, err
+		}
+
+		// Container name is equal to deployment config name
+		return checkAllPodsContainingTextInLog(namespace, pods, dcName, logText)
+	})
+}
+
+func checkAllPodsContainingTextInLog(namespace string, pods *corev1.PodList, containerName, text string) (bool, error) {
+	for _, pod := range pods.Items {
+		containsText, err := isPodContainingTextInLog(namespace, &pod, containerName, text)
+		if err != nil || !containsText {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+func isPodContainingTextInLog(namespace string, pod *corev1.Pod, containerName, text string) (bool, error) {
+	log, err := kubernetes.PodC(kubeClient).GetLogs(namespace, pod.GetName(), containerName)
+	return strings.Contains(log, text), err
 }
