@@ -40,10 +40,14 @@ import {
   Text,
   TextVariants,
   TextContent,
-  Brand
+  Brand,
+  TextInput,
+  FormGroup,
+  Form
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { InputFileUrlState } from "./InputFileUrlState";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -55,6 +59,9 @@ export function HomePage(props: Props) {
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const uploadBoxRef = useRef<HTMLDivElement>(null);
+
+  const [inputFileUrl, setInputFileUrl] = useState("");
+  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
 
   const uploadBoxOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     uploadBoxRef.current!.className = "hover";
@@ -128,8 +135,75 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
+  const validateFileInput = useCallback((fileUrl: string) => {
+    let url: URL;
+    try {
+      url = new URL(fileUrl);
+    } catch (e) {
+      setInputFileUrlState(InputFileUrlState.INVALID_URL);
+      return;
+    }
+    const fileType = extractFileExtension(url.pathname);
+    if (!fileType) {
+      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+    } else if (!context.router.getLanguageData(fileType)) {
+      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+    } else {
+      setInputFileUrlState(InputFileUrlState.VALID);
+    }
+  }, []);
+
+  const inputFileChanged = useCallback((fileUrl: string) => {
+    setInputFileUrl(fileUrl);
+    validateFileInput(fileUrl);
+  }, []);
+
+  const validatedInputUrl = useMemo(
+    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    [inputFileUrlState]
+  );
+
+  const onInputFileUrlBlur = useCallback(() => {
+    if (inputFileUrl.trim() === "") {
+      setInputFileUrlState(InputFileUrlState.INITIAL);
+    }
+  }, [inputFileUrl]);
+
+  const openFile = useCallback(() => {
+    if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
+      const fileUrl = new URL(inputFileUrl);
+      const fileType = extractFileExtension(fileUrl.pathname);
+      // FIXME: KOGITO-1202
+      window.location.href = `?file=${inputFileUrl}#/editor/${fileType}`;
+    }
+  }, [inputFileUrl]);
+
+  const messageForState = useMemo(() => {
+    switch (inputFileUrlState) {
+      case InputFileUrlState.INITIAL:
+        return "http://";
+      case InputFileUrlState.INVALID_EXTENSION:
+        return "File type is not supported";
+      case InputFileUrlState.INVALID_URL:
+        return "Enter a valid URL";
+      case InputFileUrlState.NO_FILE_URL:
+        return "File URL is not valid";
+      default:
+        return "";
+    }
+  }, [inputFileUrlState]);
+
+  const externalFileFormSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      e.stopPropagation();
+      openFile();
+    },
+    [inputFileUrl]
+  );
+
   const logoProps = {
-    href: "/",
+    href: "/"
   };
 
   const linkDropdownItems = [
@@ -150,7 +224,9 @@ export function HomePage(props: Props) {
       <Link to ={'/'}>Documentation</Link>
     </DropdownItem>,*/
     <DropdownItem key="">
-      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" /></a>
+      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
+        Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" />
+      </a>
     </DropdownItem>
   ];
 
@@ -310,34 +386,42 @@ export function HomePage(props: Props) {
               </Button>
             </CardFooter>
           </Card>
-          {/* TODO New feature upload from source code needs to be implemented */}
-          {/*<Card>
-              <CardHeader>
-              <Title headingLevel="h2" size="2xl">Import source code</Title>
-              </CardHeader>
-              <CardBody isFilled={false}>
-                Paste a URL to a source code link (GitHub, Dropbox, etc.)
-              </CardBody>
-              <CardBody isFilled={true}>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Import source code
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
+            <CardBody isFilled={true}>
+              <Form onSubmit={externalFileFormSubmit} disabled={!validatedInputUrl}>
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
+                  isValid={validatedInputUrl}
                   helperText="http://"
+                  helperTextInvalid={messageForState}
                 >
                   <TextInput
+                    isRequired={true}
+                    onBlur={onInputFileUrlBlur}
+                    isValid={validatedInputUrl}
+                    value={inputFileUrl}
+                    onChange={inputFileChanged}
                     type="url"
                     id="url-text-input"
                     name="urlText"
                     aria-describedby="url-text-input-helper"
                   />
                 </FormGroup>
-              </CardBody>
-              <CardFooter>
-                <Button variant="secondary">
-                  Import source code
-                </Button>
-              </CardFooter>
-            </Card>*/}
+              </Form>
+            </CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={() => openFile()} isDisabled={!validatedInputUrl}>
+                Import source code
+              </Button>
+            </CardFooter>
+          </Card>
         </Gallery>
       </PageSection>
     </Page>
