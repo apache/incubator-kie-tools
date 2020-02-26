@@ -43,6 +43,11 @@ Webapp targeting _kogito_ integration with VSCode etc. No decorations.
 To run this module launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
 To package this module for use in the VSCode/GitHub plugin build the `war`; i.e. `mvn clean install`.
 
+This module contains also selenium integration tests. They use `headless` browser mode by default thus are not 
+visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
+ `mvn` command. Temporary is needed to include `-DskipITs=false` property due to https://issues.redhat
+ .com/browse/KOGITO-1107.
+
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 
 Webapp used for development of _kogito_ decorated with a diagram _navigator_ to emulate integration with VSCode etc. 

@@ -36,12 +36,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
-import org.openqa.selenium.By;
+import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
@@ -59,7 +61,9 @@ import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrume
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMNDI;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 /**
@@ -79,7 +83,11 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private static final String DECISON_NAVIGATOR_EXPAND = "qe-docks-item-W-org.kie.dmn.decision.navigator";
     private static final String DECISON_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
-    private static final String GRAPH_NODES = "decision-graphs-content";
+    private static final String DECISION_NODE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']";
+    private static final String DECISION_TABLE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='Decision Table']/div";
+    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
+
+    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
 
     private static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
             .put(DMN.getPrefix(), DMN.getUri())
@@ -92,6 +100,8 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private WebElement decisionNavigatorExpandButton;
 
+    private WebElement propertiesPanel;
+
     @BeforeClass
     public static void setupClass() {
         WebDriverManager.firefoxdriver().setup();
@@ -101,16 +111,22 @@ public class DMNDesignerKogitoSeleniumIT {
     public void openDMNDesigner() {
 
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(true);
+        firefoxOptions.setHeadless(HEADLESS);
         driver = new FirefoxDriver(firefoxOptions);
         driver.manage().window().maximize();
 
         driver.get(INDEX_HTML_PATH);
 
         decisionNavigatorExpandButton = waitOperation()
-                .until(visibilityOfElementLocated(By.className(DECISON_NAVIGATOR_EXPAND)));
+                .until(visibilityOfElementLocated(className(DECISON_NAVIGATOR_EXPAND)));
         assertThat(decisionNavigatorExpandButton)
                 .as("Presence of decision navigator expand button is prerequisite for all tests")
+                .isNotNull();
+
+        propertiesPanel = waitOperation()
+                .until(visibilityOfElementLocated(className(PROPERTIES_PANEL)));
+        assertThat(propertiesPanel)
+                .as("Presence of properties panel expand button is prerequisite for all tests")
                 .isNotNull();
     }
 
@@ -302,14 +318,16 @@ public class DMNDesignerKogitoSeleniumIT {
         final String expected = loadResource("decision-expression-decision-table.xml");
         setContent(expected);
 
+        final String defaultDecisionTableOutput = "hello world, kogito!";
+        final DecisionTableSeleniumModel decisionTable = new DecisionTableSeleniumModel();
+        decisionTable.setInputsCount(1);
+        decisionTable.setName("Decision-1");
+        decisionTable.setDefaultOutput(defaultDecisionTableOutput);
+
+        setDecisionTableDefaultOutput(decisionTable);
+
         final String actual = getContent();
         assertThat(actual).isNotBlank();
-
-        XmlAssert.assertThat(actual)
-                .and(expected)
-                .ignoreComments()
-                .ignoreWhitespace()
-                .areIdentical();
 
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
@@ -334,6 +352,14 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
                                   "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
                                   "/dmn:rule[@id='_2D2D5ABD-3C71-40E9-B493-73CDA49B3F53']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
+                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
+                                  "/dmn:output" +
+                                  "/dmn:defaultOutputEntry" +
+                                  "/dmn:text[text()='" + defaultDecisionTableOutput + "']");
     }
 
     @Test
@@ -2000,19 +2026,43 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
         expandDecisionNavigatorDock();
-        final By nodeLocator = By.xpath(String.format(".//ul/li[@title='%s']", nodeName));
-        final WebElement node = waitOperation()
-                .until(visibilityOf(graphNodesList().findElement(nodeLocator)));
+        final WebElement node = waitOperation().until(element(DECISION_NODE, nodeName));
         assertThat(node)
                 .as("Node '" + nodeName + "'was not present in the list of nodes")
                 .isNotNull();
         collapseDecisionNavigatorDock();
     }
 
+    /**
+     * This method serves as a reproducer for KOGITO-1181
+     */
+    private void setDecisionTableDefaultOutput(final DecisionTableSeleniumModel decisionTable) {
+        expandDecisionNavigatorDock();
+        final WebElement node = waitOperation().until(element(DECISION_TABLE, decisionTable.getName()));
+        assertThat(node)
+                .as("Decision table of '" + decisionTable.getName() + "'was not present in the list of nodes")
+                .isNotNull();
+        node.click();
+
+        expandPropertiesPanelDock();
+
+        final WebElement editor = getEditor();
+        for (int i = 0; i < decisionTable.getInputsCount(); i++) {
+            editor.sendKeys(Keys.ARROW_RIGHT);
+        }
+
+        editor.sendKeys(Keys.ARROW_UP);
+
+        expandPropertiesPanelGroup("Default output");
+        fillInProperty("Default output value", decisionTable.getDefaultOutput());
+
+        collapseDecisionNavigatorDock();
+    }
+
     private void setContent(final String xml) {
         ((JavascriptExecutor) driver).executeScript(String.format(SET_CONTENT_TEMPLATE, xml));
         final WebElement designer = waitOperation()
-                .until(visibilityOfElementLocated(By.className("uf-multi-page-editor")));
+                .until(visibilityOfElementLocated(className("uf-multi-page-editor")));
         assertThat(designer)
                 .as("Designer was not loaded")
                 .isNotNull();
@@ -2036,30 +2086,49 @@ public class DMNDesignerKogitoSeleniumIT {
                 .collect(Collectors.joining(""));
     }
 
-    private WebElement graphNodesList() {
-        final WebElement graphNodes = waitOperation()
-                .until(visibilityOfElementLocated(By.id(GRAPH_NODES)));
-        assertThat(graphNodes)
-                .as("List of graph nodes is not present")
-                .isNotNull();
-        return graphNodes;
-    }
-
     private void expandDecisionNavigatorDock() {
         decisionNavigatorExpandButton.click();
     }
 
+    private void expandPropertiesPanelDock() {
+        propertiesPanel.findElement(xpath(".//button")).click();
+    }
+
+    private void expandPropertiesPanelGroup(final String groupName) {
+        waitOperation()
+                .until(element(".//div[@class='panel-title']/a/span[text()='%s']", groupName))
+                .click();
+    }
+
+    private void fillInProperty(final String propertyName, final String value) {
+        waitOperation()
+                .until(element(".//label/span[text()='%s']/../../div[@data-field='fieldContainer']/input",
+                               propertyName))
+                .sendKeys(value);
+    }
+
     private void collapseDecisionNavigatorDock() {
         final WebElement expandedDecisionNavigator = waitOperation()
-                .until(visibilityOfElementLocated(By.className(DECISON_NAVIGATOR_EXPANDED)));
+                .until(visibilityOfElementLocated(className(DECISON_NAVIGATOR_EXPANDED)));
         assertThat(expandedDecisionNavigator)
                 .as("Unable to locate expanded decision navigator dock")
                 .isNotNull();
 
-        expandedDecisionNavigator.findElement(By.className("fa-chevron-left")).click();
+        expandedDecisionNavigator.findElement(className("fa-chevron-left")).click();
     }
 
     private WebDriverWait waitOperation() {
         return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
+    }
+
+    private WebElement getEditor() {
+        final WebElement editor = waitOperation()
+                .until(presenceOfElementLocated(xpath("//div[@class='kie-dmn-expression-editor']/div/div/input")));
+
+        return editor;
+    }
+
+    private ExpectedCondition<WebElement> element(final String xpathLocator, final String... parameters) {
+        return visibilityOfElementLocated(xpath(String.format(xpathLocator, parameters)));
     }
 }
