@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 
 public abstract class DMNElement extends DMNModelInstrumentedBase {
@@ -34,7 +35,7 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
     protected Id id;
 
     @Property
-    @FormField(afterElement = "id")
+    @FormField(afterElement = "id", type = TextAreaFieldType.class)
     @Valid
     protected Description description;
 
