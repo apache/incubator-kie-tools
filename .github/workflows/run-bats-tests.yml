@@ -6,9 +6,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Install xmllint
-        run: sudo apt-get install libxml2-utils
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxml2-utils --fix-missing
       - name: install bats
         run: |
           git clone https://github.com/bats-core/bats-core.git
