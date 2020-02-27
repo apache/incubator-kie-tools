@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.NameHolder;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
@@ -30,9 +31,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -42,11 +46,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TextAnnotationTextPropertyProviderImplTest {
+public class DRGElementTextPropertyProviderImplTest {
 
     private static final String NAME_FIELD = "name";
 
     private static final String NAME_VALUE = "text";
+
+    private static final String NAME_VALUE_WITH_WHITESPACE = "   " + NAME_VALUE + "   ";
 
     @Mock
     private DefinitionUtils definitionUtils;
@@ -61,10 +67,13 @@ public class TextAnnotationTextPropertyProviderImplTest {
     private Definition content;
 
     @Mock
-    private TextAnnotation definition;
+    private Decision definition;
 
     @Mock
-    private Text text;
+    private Name name;
+
+    @Mock
+    private NameHolder nameHolder;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -75,15 +84,19 @@ public class TextAnnotationTextPropertyProviderImplTest {
     @Mock
     private CanvasCommand<AbstractCanvasHandler> command;
 
+    @Captor
+    private ArgumentCaptor<Name> nameArgumentCaptor;
+
     private TextPropertyProvider provider;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
-        this.provider = new TextAnnotationTextPropertyProviderImpl(canvasCommandFactory, definitionUtils);
+        this.provider = new DRGElementTextPropertyProviderImpl(canvasCommandFactory, definitionUtils);
         when(element.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
-        when(definition.getText()).thenReturn(text);
+        when(definition.getName()).thenReturn(name);
+        when(definition.getNameHolder()).thenReturn(nameHolder);
+        when(nameHolder.getValue()).thenReturn(name);
         when(definitionUtils.getNameIdentifier(eq(definition))).thenReturn(NAME_FIELD);
         when(canvasCommandFactory.updatePropertyValue(eq(element),
                                                       anyString(),
@@ -97,12 +110,12 @@ public class TextAnnotationTextPropertyProviderImplTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void checkSupportsTextAnnotationElements() {
+    public void checkSupportsDRGElement() {
         assertTrue(provider.supports(element));
 
         final Element other = mock(Element.class);
         final Definition otherContent = mock(Definition.class);
-        final InputData otherDefinition = mock(InputData.class);
+        final TextAnnotation otherDefinition = mock(TextAnnotation.class);
         when(other.getContent()).thenReturn(otherContent);
         when(otherContent.getDefinition()).thenReturn(otherDefinition);
 
@@ -110,17 +123,28 @@ public class TextAnnotationTextPropertyProviderImplTest {
     }
 
     @Test
-    public void checkReadGetsTextFromTextProperty() {
+    public void checkReadGetsTextFromNameProperty() {
         provider.getText(element);
 
-        verify(text).getValue();
+        verify(definition).getNameHolder();
+        verify(nameHolder).getValue();
     }
 
     @Test
     public void checkWriteUsesCommandToUpdateTextProperty() {
         provider.setText(canvasHandler, commandManager, element, NAME_VALUE);
 
-        verify(canvasCommandFactory).updatePropertyValue(element, NAME_FIELD, NAME_VALUE);
+        verify(canvasCommandFactory).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        assertEquals(NAME_VALUE, nameArgumentCaptor.getValue().getValue());
+        verify(commandManager).execute(eq(canvasHandler), eq(command));
+    }
+
+    @Test
+    public void checkWriteUsesCommandToUpdateTextPropertyWithWhitespace() {
+        provider.setText(canvasHandler, commandManager, element, NAME_VALUE_WITH_WHITESPACE);
+
+        verify(canvasCommandFactory).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        assertEquals(NAME_VALUE, nameArgumentCaptor.getValue().getValue());
         verify(commandManager).execute(eq(canvasHandler), eq(command));
     }
 }

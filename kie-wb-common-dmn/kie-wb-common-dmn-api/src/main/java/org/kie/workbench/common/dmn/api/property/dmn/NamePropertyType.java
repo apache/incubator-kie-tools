@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.dmn.api.property.dmn;
 
 import java.util.Objects;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
-public class QNamePropertyType implements PropertyType {
+public class NamePropertyType implements PropertyType {
 
-    public static final String NAME = "org.kie.workbench.common.dmn.api.property.dmn.QName";
+    public static final String NAME = "org.kie.workbench.common.dmn.api.property.dmn.Name";
 
     @Override
     public String getName() {
@@ -34,10 +33,10 @@ public class QNamePropertyType implements PropertyType {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof QNamePropertyType)) {
+        if (!(o instanceof NamePropertyType)) {
             return false;
         }
-        QNamePropertyType that = (QNamePropertyType) o;
+        NamePropertyType that = (NamePropertyType) o;
         return Objects.equals(getName(), that.getName());
     }
 
@@ -48,7 +47,7 @@ public class QNamePropertyType implements PropertyType {
 
     @Override
     public String toString() {
-        return "QNamePropertyType{" +
+        return "NamePropertyType{" +
                 "name='" + getName() + '\'' +
                 '}';
     }

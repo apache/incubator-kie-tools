@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public class DocumentationLinksPropertyType implements PropertyType {
+@Portable
+public class NameFieldType implements FieldType {
 
-    public static final String NAME = "org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks";
+    public static final String NAME = "NamedElement.Name";
 
     @Override
-    public String getName() {
+    public String getTypeName() {
         return NAME;
     }
 }

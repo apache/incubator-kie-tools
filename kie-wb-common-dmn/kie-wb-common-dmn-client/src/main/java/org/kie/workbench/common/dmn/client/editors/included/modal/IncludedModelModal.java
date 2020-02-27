@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
@@ -149,7 +150,7 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
     BaseIncludedModelActiveRecord createIncludedModel(final KieAssetsDropdownItem value) {
         final Map<String, String> metaData = value.getMetaData();
         final BaseIncludedModelActiveRecord includedModel = createIncludedModel(metaData);
-        includedModel.setName(getView().getModelNameInput());
+        includedModel.setName(NameUtils.normaliseName(getView().getModelNameInput()));
         includedModel.setNamespace(value.getValue());
         includedModel.setImportType(metaData.get(IMPORT_TYPE_METADATA));
         includedModel.setPath(metaData.get(PATH_METADATA));

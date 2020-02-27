@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,31 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class QNamePropertyTypeTest {
+public class NamePropertyTypeTest {
 
     private static final String NON_PROPERTY_OBJECT = "object";
 
-    private QNamePropertyType p1;
+    private NamePropertyType p1;
 
-    private QNamePropertyType p2;
+    private NamePropertyType p2;
 
     @Before
     public void setup() {
-        this.p1 = new QNamePropertyType();
-        this.p2 = new QNamePropertyType();
+        this.p1 = new NamePropertyType();
+        this.p2 = new NamePropertyType();
     }
 
     @Test
     public void testName() {
-        assertEquals(QNamePropertyType.NAME, new QNamePropertyType().getName());
+        assertEquals(NamePropertyType.NAME, new NamePropertyType().getName());
     }
 
     @Test
     public void testEqualsIdentify() {
         assertEquals(p1, p1);
         assertEquals(p1, p2);
+
+        assertEquals(p1.hashCode(), p2.hashCode());
     }
 
     @Test

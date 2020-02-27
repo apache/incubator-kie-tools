@@ -223,7 +223,8 @@ public class FormPropertiesWidget implements IsElement,
                                               callback.execute();
                                           }
                                       }
-                                  }, renderMode);
+                                  },
+                                  renderMode);
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
             lastElement = element;
@@ -266,8 +267,10 @@ public class FormPropertiesWidget implements IsElement,
                                           callback.execute();
                                       }
                                   }
-                              }, renderMode);
+                              },
+                              renderMode);
         propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), domainObjectUUID, domainObjectName));
+        resetLastElementRenderedCache();
     }
 
     protected void log(final Level level, final String message) {

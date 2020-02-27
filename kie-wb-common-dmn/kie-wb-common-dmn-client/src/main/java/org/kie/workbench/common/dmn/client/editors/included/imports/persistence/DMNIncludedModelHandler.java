@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -156,7 +157,7 @@ public class DMNIncludedModelHandler implements DRGElementHandler {
             final String nameId = definitionUtils.getNameIdentifier(definition.getDefinition());
 
             if (nameId != null) {
-                commandBuilder.addCommand(canvasCommandFactory.updatePropertyValue(node, nameId, newName));
+                commandBuilder.addCommand(canvasCommandFactory.updatePropertyValue(node, nameId, new Name(newName)));
             }
         }
 

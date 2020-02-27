@@ -225,6 +225,7 @@ public class ExpressionEditorTest {
         testedEditor.handleCanvasElementUpdated(event);
 
         verify(view).setExpressionNameText(optionalHasNameCaptor.capture());
+        verify(view).refresh();
 
         final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
         assertTrue(optionalHasName.isPresent());
@@ -264,6 +265,7 @@ public class ExpressionEditorTest {
         testedEditor.handleCanvasElementUpdated(event);
 
         verify(view).setExpressionNameText(optionalHasNameCaptor.capture());
+        verify(view).refresh();
 
         final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
         assertTrue(optionalHasName.isPresent());

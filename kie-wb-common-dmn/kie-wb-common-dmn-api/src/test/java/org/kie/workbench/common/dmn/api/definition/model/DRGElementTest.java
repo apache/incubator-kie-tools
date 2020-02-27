@@ -35,7 +35,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 public class DRGElementTest {
 
     private static final String[] READONLY_FIELDS = {
-            "Name",
+            "NameHolder",
             "AllowedAnswers",
             "Description",
             "Question",

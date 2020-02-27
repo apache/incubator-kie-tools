@@ -21,15 +21,19 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.NameFieldType;
+import org.kie.workbench.common.dmn.api.property.dmn.NameHolder;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 
 public abstract class NamedElement extends DMNElement implements HasName {
 
-    @Property
-    @FormField(afterElement = "description")
-    @Valid
     protected Name name;
+
+    @Property
+    @FormField(afterElement = "description", type = NameFieldType.class)
+    @Valid
+    protected NameHolder nameHolder;
 
     public NamedElement() {
         this(new Id(),
@@ -43,6 +47,7 @@ public abstract class NamedElement extends DMNElement implements HasName {
         super(id,
               description);
         this.name = name;
+        this.nameHolder = new NameHolder(name);
     }
 
     // -----------------------
@@ -51,11 +56,24 @@ public abstract class NamedElement extends DMNElement implements HasName {
 
     @Override
     public Name getName() {
-        return name;
+        return nameHolder.getValue();
     }
 
     @Override
     public void setName(final Name name) {
         this.name = name;
+        this.nameHolder.setValue(name);
+    }
+
+    // ------------------
+    // Errai Data Binding
+    // ------------------
+    public NameHolder getNameHolder() {
+        return nameHolder;
+    }
+
+    public void setNameHolder(final NameHolder nameHolder) {
+        this.name.setValue(nameHolder.getValue().getValue());
+        this.nameHolder = nameHolder;
     }
 }

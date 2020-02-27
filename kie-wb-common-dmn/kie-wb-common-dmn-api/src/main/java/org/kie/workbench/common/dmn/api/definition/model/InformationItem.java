@@ -63,7 +63,7 @@ public class InformationItem extends NamedElement implements DMNPropertySet,
     protected QName typeRef;
 
     @Property
-    @FormField(afterElement = "name", type = QNameFieldType.class)
+    @FormField(afterElement = "nameHolder", type = QNameFieldType.class)
     @Valid
     protected QNameHolder typeRefHolder;
 

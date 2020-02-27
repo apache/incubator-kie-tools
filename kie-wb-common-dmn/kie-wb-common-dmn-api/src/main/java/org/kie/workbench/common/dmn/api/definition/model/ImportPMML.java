@@ -32,8 +32,8 @@ public class ImportPMML extends Import {
 
     public ImportPMML() {
         super();
-        this.wrapped = name;
-        this.setName(name);
+        this.wrapped = nameHolder.getValue();
+        this.setName(nameHolder.getValue());
     }
 
     public ImportPMML(final String namespace,
@@ -42,9 +42,9 @@ public class ImportPMML extends Import {
         super(namespace,
               locationURI,
               importType);
-        this.wrapped = name;
+        this.wrapped = nameHolder.getValue();
         this.getName().setValue(namespace);
-        this.setName(name);
+        this.setName(nameHolder.getValue());
     }
 
     public int getModelCount() {
@@ -57,13 +57,13 @@ public class ImportPMML extends Import {
 
     @Override
     public String getNamespace() {
-        return name.getValue();
+        return nameHolder.getValue().getValue();
     }
 
     @Override
     public void setNamespace(final String namespace) {
         super.setNamespace(namespace);
-        name.setValue(namespace);
+        nameHolder.getValue().setValue(namespace);
     }
 
     @Override

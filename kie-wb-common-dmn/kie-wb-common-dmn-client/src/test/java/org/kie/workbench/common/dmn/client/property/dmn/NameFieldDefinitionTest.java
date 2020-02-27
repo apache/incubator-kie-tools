@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,42 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.workbench.common.dmn.api.property.dmn;
+package org.kie.workbench.common.dmn.client.property.dmn;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
-public class QNamePropertyTypeTest {
+public class NameFieldDefinitionTest {
 
-    private static final String NON_PROPERTY_OBJECT = "object";
-
-    private QNamePropertyType p1;
-
-    private QNamePropertyType p2;
+    private NameFieldDefinition definition;
 
     @Before
     public void setup() {
-        this.p1 = new QNamePropertyType();
-        this.p2 = new QNamePropertyType();
+        this.definition = new NameFieldDefinition();
     }
 
     @Test
-    public void testName() {
-        assertEquals(QNamePropertyType.NAME, new QNamePropertyType().getName());
+    public void testFieldType() {
+        assertEquals(NameFieldDefinition.FIELD_TYPE, definition.getFieldType());
     }
 
     @Test
-    public void testEqualsIdentify() {
-        assertEquals(p1, p1);
-        assertEquals(p1, p2);
-    }
-
-    @Test
-    public void testEqualsDifferentType() {
-        assertNotEquals(p1, NON_PROPERTY_OBJECT);
+    public void testStandaloneClassName() {
+        assertEquals(Name.class.getName(), definition.getStandaloneClassName());
     }
 }

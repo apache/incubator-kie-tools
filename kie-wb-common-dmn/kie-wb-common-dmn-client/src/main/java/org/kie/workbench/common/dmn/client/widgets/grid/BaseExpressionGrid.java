@@ -171,7 +171,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return (hn) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
             if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
+                getUpdateStunnerTitleCommand(new Name()).ifPresent(commandBuilder::addCommand);
             }
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
@@ -183,7 +183,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return (hn, name) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
             if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
+                getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
             }
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
@@ -222,7 +222,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return commandBuilder;
     }
 
-    protected Optional<AbstractCanvasGraphCommand> getUpdateStunnerTitleCommand(final String value) {
+    protected Optional<AbstractCanvasGraphCommand> getUpdateStunnerTitleCommand(final Name value) {
         AbstractCanvasGraphCommand command = null;
         if (getNodeUUID().isPresent()) {
             final String uuid = getNodeUUID().get();

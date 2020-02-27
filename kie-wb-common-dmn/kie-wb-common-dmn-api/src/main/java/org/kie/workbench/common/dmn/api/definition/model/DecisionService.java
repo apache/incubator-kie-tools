@@ -54,7 +54,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, nameField = "name")
+@Definition(graphFactory = NodeFactory.class, nameField = "nameHolder")
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
@@ -74,7 +74,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
             .build();
 
     @PropertySet
-    @FormField(afterElement = "name")
+    @FormField(afterElement = "nameHolder")
     @Valid
     protected InformationItemPrimary variable;
 

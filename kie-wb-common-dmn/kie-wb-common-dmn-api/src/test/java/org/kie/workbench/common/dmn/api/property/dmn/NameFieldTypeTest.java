@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.junit.Test;
 
-public class DocumentationLinksPropertyType implements PropertyType {
+import static org.junit.Assert.assertEquals;
 
-    public static final String NAME = "org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks";
+public class NameFieldTypeTest {
 
-    @Override
-    public String getName() {
-        return NAME;
+    @Test
+    public void testTypeName() {
+        assertEquals(NameFieldType.NAME, new NameFieldType().getTypeName());
     }
 }

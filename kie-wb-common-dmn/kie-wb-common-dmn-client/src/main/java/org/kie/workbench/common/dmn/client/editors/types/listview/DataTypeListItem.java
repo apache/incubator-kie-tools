@@ -32,6 +32,7 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
@@ -430,7 +431,7 @@ public class DataTypeListItem {
     DataType updateProperties(final DataType dataType) {
         return dataTypeManager
                 .from(dataType)
-                .withName(getName())
+                .withName(NameUtils.normaliseName(getName()))
                 .withType(getType())
                 .withConstraint(getConstraint())
                 .withConstraintType(getConstraintType())

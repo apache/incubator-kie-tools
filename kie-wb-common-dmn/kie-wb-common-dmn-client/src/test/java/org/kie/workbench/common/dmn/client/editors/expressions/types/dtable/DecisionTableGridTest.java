@@ -36,10 +36,13 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
@@ -1771,6 +1774,40 @@ public class DecisionTableGridTest {
         grid.selectHeaderCell(0, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
 
         assertDomainObjectSelection(hasExpression);
+
+        reset(domainObjectSelectionEvent);
+
+        grid.selectHeaderCell(1, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getOutput().get(0));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectHeaderMultipleOutputClauseColumnNestedContextEntry() {
+        //Mock nesting of DecisionTable in a ContextEntry
+        final Context context = new Context();
+        final ContextEntry contextEntry = new ContextEntry();
+        final InformationItem variable = new InformationItem();
+        contextEntry.setVariable(variable);
+        context.getContextEntry().add(contextEntry);
+        contextEntry.setExpression(expression.get());
+
+        this.hasExpression.setExpression(context);
+        this.grid = spy((DecisionTableGrid) definition.getEditor(parent,
+                                                                 Optional.empty(),
+                                                                 contextEntry,
+                                                                 makeHasNameForDecision(),
+                                                                 false,
+                                                                 1).get());
+
+        addOutputClause(2);
+
+        reset(domainObjectSelectionEvent);
+
+        grid.selectHeaderCell(0, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(variable);
 
         reset(domainObjectSelectionEvent);
 

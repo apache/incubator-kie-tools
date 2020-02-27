@@ -62,6 +62,7 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -311,5 +312,30 @@ public class FormPropertiesWidgetTest {
         formRenderer.render(GRAPH_UUID, node2, command);
         assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), false);
         assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node2), true);
+    }
+
+    @Test
+    public void testShowSwitchingBetweenElementAndDomainObject() {
+        tested.init();
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+
+        final Command command = mock(Command.class);
+        when(formsCanvasSessionHandler.getDiagram()).thenReturn(diagram);
+        when(domainObject.getDomainObjectUUID()).thenReturn(DOMAIN_OBJECT_UUID);
+        when(domainObject.getDomainObjectNameTranslationKey()).thenReturn(DOMAIN_OBJECT_TRANSLATION_KEY);
+
+        formRenderer.render(GRAPH_UUID, node, command);
+        verify(formsContainer, times(1)).render(eq(GRAPH_UUID), eq(ROOT_UUID), eq(nodeDefObject), any(), any(), any());
+
+        formRenderer.render(GRAPH_UUID, domainObject, command);
+        verify(formsContainer, times(1)).render(eq(GRAPH_UUID), eq(DOMAIN_OBJECT_UUID), eq(domainObject), any(), any(), any());
+
+        formRenderer.render(GRAPH_UUID, node, command);
+        verify(formsContainer, times(2)).render(eq(GRAPH_UUID), eq(ROOT_UUID), eq(nodeDefObject), any(), any(), any());
+
+        formRenderer.render(GRAPH_UUID, domainObject, command);
+        verify(formsContainer, times(2)).render(eq(GRAPH_UUID), eq(DOMAIN_OBJECT_UUID), eq(domainObject), any(), any(), any());
     }
 }

@@ -594,6 +594,18 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
+    public void testOnNameChangeWithWhitespace() {
+        when(nameEditor.getValue()).thenReturn("  " + NAME + "  ");
+
+        view.onNameChange(blurEvent);
+
+        verify(nameEditor).setValue(NAME);
+
+        verify(presenter, never()).setName(eq(NAME));
+        assertEquals(NAME, view.getCurrentName());
+    }
+
+    @Test
     public void testOnClosedByKeyboard() {
         final Consumer consumer = mock(Consumer.class);
         final Optional opt = Optional.of(consumer);

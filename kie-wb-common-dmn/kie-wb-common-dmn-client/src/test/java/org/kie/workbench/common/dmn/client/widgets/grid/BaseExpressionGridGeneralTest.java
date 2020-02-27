@@ -726,9 +726,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         reset(domainObjectSelectionEvent);
 
         final String uuid = UUID.uuid();
+        final Name name = new Name();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
         when(index.get(uuid)).thenReturn(element);
-        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, "")).thenReturn(updateElementPropertyCommand);
+        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, name)).thenReturn(updateElementPropertyCommand);
 
         doTestClearDisplayNameConsumer(true,
                                        DeleteHasNameCommand.class,
@@ -800,7 +801,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final String uuid = UUID.uuid();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
         when(index.get(uuid)).thenReturn(element);
-        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, NAME.getValue())).thenReturn(updateElementPropertyCommand);
+        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, NAME)).thenReturn(updateElementPropertyCommand);
 
         doTestSetDisplayNameConsumer(true,
                                      SetHasNameCommand.class,

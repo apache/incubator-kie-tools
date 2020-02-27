@@ -687,6 +687,34 @@ public class DataTypeListItemTest {
     }
 
     @Test
+    public void testUpdatePropertiesWithNameWithWhitespace() {
+
+        final DataType dataType = spy(makeDataType());
+        final String uuid = "uuid";
+        final String expectedName = "name";
+        final String expectedNameWithWhitespace = "  " + expectedName + "  ";
+        final String expectedType = "type";
+        final String expectedConstraint = "constraint";
+        final boolean expectedList = true;
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
+        when(view.getName()).thenReturn(expectedNameWithWhitespace);
+        when(dataTypeSelectComponent.getValue()).thenReturn(expectedType);
+        when(dataTypeConstraintComponent.getValue()).thenReturn(expectedConstraint);
+        when(dataTypeListComponent.getValue()).thenReturn(expectedList);
+        when(dataTypeManager.get()).thenReturn(dataType);
+
+        final DataType updatedDataType = listItem.updateProperties(dataType);
+
+        assertEquals(expectedName, updatedDataType.getName());
+        assertEquals(expectedType, updatedDataType.getType());
+        assertEquals(expectedConstraint, updatedDataType.getConstraint());
+        assertEquals(expectedList, updatedDataType.isList());
+    }
+
+    @Test
     public void testRefresh() {
 
         final DataType dataType = spy(makeDataType());

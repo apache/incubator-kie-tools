@@ -304,10 +304,18 @@ public class IncludedModelModalTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testCreateIncludedModel() {
+        doTestCreateIncludedModel("file", "file");
+    }
 
-        final String name = "file.dmn";
+    @Test
+    public void testCreateIncludedModelWithWhitespace() {
+        doTestCreateIncludedModel("   file   ", "file");
+    }
+
+    @SuppressWarnings("unchecked")
+    private void doTestCreateIncludedModel(final String name,
+                                           final String expectedName) {
         final String value = "://namespace";
         final String path = "/src/path/file";
         final String anPackage = "path.file.com";
@@ -327,7 +335,7 @@ public class IncludedModelModalTest {
 
         final DMNIncludedModelActiveRecord dmnIncludedModel = (DMNIncludedModelActiveRecord) includedModel;
 
-        assertEquals(name, dmnIncludedModel.getName());
+        assertEquals(expectedName, dmnIncludedModel.getName());
         assertEquals(value, dmnIncludedModel.getNamespace());
         assertEquals(path, dmnIncludedModel.getPath());
         assertEquals(expectedDrgElementsCount, dmnIncludedModel.getDrgElementsCount());

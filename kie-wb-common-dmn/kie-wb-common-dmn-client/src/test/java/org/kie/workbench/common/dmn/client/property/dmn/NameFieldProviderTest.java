@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.property.dmn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.NameFieldType;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -31,21 +31,21 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class QNameFieldProviderTest {
+public class NameFieldProviderTest {
 
     @Mock
     private TypeInfo typeInfo;
 
-    private QNameFieldProvider provider;
+    private NameFieldProvider provider;
 
     @Before
     public void setup() {
-        this.provider = new QNameFieldProvider();
+        this.provider = new NameFieldProvider();
     }
 
     @Test
     public void testGetPriority() {
-        assertEquals(QNameFieldProvider.PRIORITY,
+        assertEquals(NameFieldProvider.PRIORITY,
                      provider.getPriority());
     }
 
@@ -53,31 +53,31 @@ public class QNameFieldProviderTest {
     public void testDoRegisterFields() {
         provider.doRegisterFields();
 
-        assertTrue(provider.supports(QName.class));
+        assertTrue(provider.supports(Name.class));
         assertFalse(provider.supports(String.class));
     }
 
     @Test
     public void testCreateFieldByType() {
-        final QNameFieldDefinition definition1 = provider.createFieldByType(typeInfo);
-        final QNameFieldDefinition definition2 = provider.createFieldByType(typeInfo);
+        final NameFieldDefinition definition1 = provider.createFieldByType(typeInfo);
+        final NameFieldDefinition definition2 = provider.createFieldByType(typeInfo);
         assertNotEquals(definition1, definition2);
     }
 
     @Test
     public void testGetFieldType() {
-        assertEquals(QNameFieldType.class, provider.getFieldType());
+        assertEquals(NameFieldType.class, provider.getFieldType());
     }
 
     @Test
     public void testGetFieldTypeName() {
-        assertEquals(QNameFieldDefinition.FIELD_TYPE.getTypeName(), provider.getFieldTypeName());
+        assertEquals(NameFieldDefinition.FIELD_TYPE.getTypeName(), provider.getFieldTypeName());
     }
 
     @Test
     public void testGetDefaultField() {
-        final QNameFieldDefinition definition1 = provider.getDefaultField();
-        final QNameFieldDefinition definition2 = provider.getDefaultField();
+        final NameFieldDefinition definition1 = provider.getDefaultField();
+        final NameFieldDefinition definition2 = provider.getDefaultField();
         assertNotEquals(definition1, definition2);
     }
 }

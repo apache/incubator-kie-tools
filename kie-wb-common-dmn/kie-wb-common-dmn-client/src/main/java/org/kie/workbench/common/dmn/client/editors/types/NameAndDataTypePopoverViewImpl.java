@@ -43,6 +43,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
@@ -372,7 +373,12 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
     @EventHandler("nameEditor")
     @SuppressWarnings("unused")
     void onNameChange(final BlurEvent event) {
-        currentName = nameEditor.getValue();
+        final String name = nameEditor.getValue();
+        final String normalisedName = NameUtils.normaliseName(name);
+        if (!Objects.equals(normalisedName, name)) {
+            nameEditor.setValue(normalisedName);
+        }
+        currentName = normalisedName;
     }
 
     void applyChanges() {

@@ -144,9 +144,18 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testOnTitleChangedWhenIncludedModelIsValid() {
+        doTestOnTitleChangedWhenIncludedModelIsValid("newName", "newName");
+    }
+
+    @Test
+    public void testOnTitleChangedWhenIncludedModelIsValidWithWhitespace() {
+        doTestOnTitleChangedWhenIncludedModelIsValid("   newName   ", "newName");
+    }
+
+    private void doTestOnTitleChangedWhenIncludedModelIsValid(final String newName,
+                                                              final String expectedNewName) {
         final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
         final DMNIncludedModelActiveRecord includedModel = spy(new DMNIncludedModelActiveRecord(null));
-        final String newName = "newName";
 
         doReturn(true).when(includedModel).isValid();
         doReturn(emptyList()).when(includedModel).update();
@@ -155,7 +164,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
         final boolean titleChanged = card.onTitleChanged().apply(newName);
 
-        assertEquals(newName, includedModel.getName());
+        assertEquals(expectedNewName, includedModel.getName());
         assertTrue(titleChanged);
         verify(includedModel).update();
         verify(grid).refresh();

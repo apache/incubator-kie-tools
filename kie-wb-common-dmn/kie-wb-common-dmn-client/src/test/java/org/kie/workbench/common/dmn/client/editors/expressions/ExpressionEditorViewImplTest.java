@@ -434,6 +434,13 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
+    public void testRefresh() {
+        view.refresh();
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
     public void testSetFocus() {
         view.setFocus();
 

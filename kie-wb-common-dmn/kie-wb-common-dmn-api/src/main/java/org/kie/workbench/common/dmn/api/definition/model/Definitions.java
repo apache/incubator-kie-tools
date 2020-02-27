@@ -53,7 +53,7 @@ public class Definitions extends NamedElement implements HasName,
     private List<BusinessContextElement> businessContextElement;
 
     @Property
-    @FormField(afterElement = "name")
+    @FormField(afterElement = "nameHolder")
     protected ExpressionLanguage expressionLanguage;
 
     private String typeLanguage;

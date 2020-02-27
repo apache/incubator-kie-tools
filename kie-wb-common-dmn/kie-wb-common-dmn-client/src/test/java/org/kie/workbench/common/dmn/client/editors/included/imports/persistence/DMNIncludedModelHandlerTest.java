@@ -53,6 +53,7 @@ import static org.kie.workbench.common.dmn.api.property.dmn.QName.DEFAULT_NS_PRE
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -176,7 +177,7 @@ public class DMNIncludedModelHandlerTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(definitionObject);
         when(definitionUtils.getNameIdentifier(definitionObject)).thenReturn(nameId);
-        when(canvasCommandFactory.updatePropertyValue(node, nameId, newName)).thenReturn(canvasCommand);
+        when(canvasCommandFactory.updatePropertyValue(eq(node), eq(nameId), any(Name.class))).thenReturn(canvasCommand);
         doReturn(node).when(handler).getNode(drgElement);
 
         final Command<AbstractCanvasHandler, CanvasViolation> command = handler.buildUpdateCommand(drgElement, newName).getCommands().get(0);

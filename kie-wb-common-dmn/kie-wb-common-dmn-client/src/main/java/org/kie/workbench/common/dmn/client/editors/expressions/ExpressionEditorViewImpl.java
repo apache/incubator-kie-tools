@@ -255,6 +255,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void refresh() {
+        gridLayer.batch();
+    }
+
+    @Override
     public void setFocus() {
         gridPanel.setFocus(true);
     }
