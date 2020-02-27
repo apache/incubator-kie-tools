@@ -24,7 +24,8 @@ import { EditorFactory } from "./EditorFactory";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { EditorContext } from "./api/context";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { DefaultKeyboardShorcutsService, KeyboardShortcutsApi } from "./DefaultKeyboardShorcutsService";
+import { DefaultKeyboardShorcutsService } from "./DefaultKeyboardShorcutsService";
+import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
 
 export * from "./EditorFactory";
 export * from "./api/context/EditorContext";

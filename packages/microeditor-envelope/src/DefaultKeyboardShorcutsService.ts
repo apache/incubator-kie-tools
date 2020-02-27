@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+
 export interface KeyBinding {
   combination: string;
   label: string;
@@ -81,29 +83,6 @@ const KEY_CODES = new Map<string, string>([
   ["y", "KeyY"],
   ["z", "KeyZ"]
 ]);
-
-export interface KeyboardShortcutsApi {
-  registerKeyPress(
-    combination: string,
-    label: string,
-    onKeyPress: () => Thenable<void>,
-    opts?: KeyBindingServiceOpts
-  ): number;
-
-  registerKeyDownThenUp(
-    combination: string,
-    label: string,
-    onKeyDown: () => Thenable<void>,
-    onKeyUp: () => Thenable<void>,
-    opts?: KeyBindingServiceOpts
-  ): number;
-
-  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
-
-  deregister(id: number): void;
-
-  registered(): KeyBinding[];
-}
 
 export class DefaultKeyboardShorcutsService implements KeyboardShortcutsApi {
   private eventIdentifiers = 1;

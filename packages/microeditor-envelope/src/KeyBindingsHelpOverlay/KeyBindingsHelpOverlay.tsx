@@ -16,7 +16,8 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { KeyBinding, KeyboardShortcutsApi } from "../DefaultKeyboardShorcutsService";
+import { KeyBinding } from "../DefaultKeyboardShorcutsService";
+import { KeyboardShortcutsApi } from "../KeyboardShorcutsApi";
 
 export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi }) {
   const [showing, setShowing] = useState(false);

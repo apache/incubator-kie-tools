@@ -18,8 +18,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { KeyboardShortcutsApi } from "./DefaultKeyboardShorcutsService";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
+import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
