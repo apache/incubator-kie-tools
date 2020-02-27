@@ -20,7 +20,7 @@ import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { Router } from "@kogito-tooling/core-api";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
+import { KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
 
 /**
  * Starts a Kogito extension.
@@ -45,8 +45,8 @@ export function startExtension(args: {
     editorStore,
     resourceContentService
   );
-  const editingDelegate = new KogitoEditingDelegate(editorStore);
-  const webviewProvider = new KogitoWebviewProvider(editorFactory, editingDelegate);
+  const editingCapabilityFactory = new KogitoEditingCapabilityFactory(editorStore);
+  const webviewProvider = new KogitoWebviewProvider(editorFactory, editingCapabilityFactory);
 
   args.context.subscriptions.push(webviewProvider.register());
 }

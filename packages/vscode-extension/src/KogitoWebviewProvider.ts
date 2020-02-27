@@ -15,26 +15,33 @@
  */
 
 import * as vscode from "vscode";
+import { CustomDocument, WebviewPanel } from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditType } from "./KogitoEditType";
-import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
+import { KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
 
-export class KogitoWebviewProvider implements vscode.WebviewCustomEditorProvider {
+export class KogitoWebviewProvider implements vscode.CustomEditorProvider {
+  public static readonly viewType = "kieKogitoWebviewEditors";
+
   private readonly editorFactory: KogitoEditorFactory;
-  public readonly editingDelegate?: vscode.WebviewCustomEditorEditingDelegate<KogitoEditType>;
+  public readonly editingCapabilityFactory: KogitoEditingCapabilityFactory;
 
-  public constructor(editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
+  public constructor(editorFactory: KogitoEditorFactory, editingCapabilityFactory: KogitoEditingCapabilityFactory) {
     this.editorFactory = editorFactory;
-    this.editingDelegate = editingDelegate;
-  }
-
-  public async resolveWebviewEditor(resource: vscode.Uri, webview: vscode.WebviewPanel) {
-    this.editorFactory.configureNew(resource, webview);
+    this.editingCapabilityFactory = editingCapabilityFactory;
   }
 
   public register() {
-    return vscode.window.registerWebviewCustomEditorProvider("kieKogitoWebviewEditors", this, {
+    return vscode.window.registerCustomEditorProvider(KogitoWebviewProvider.viewType, this, {
       retainContextWhenHidden: true
     });
+  }
+
+  public async resolveCustomDocument(document: CustomDocument<unknown>) {
+    vscode.window.setStatusBarMessage("Tiago", 3000);
+    return { editing: this.editingCapabilityFactory.createNew(document) };
+  }
+
+  public async resolveCustomEditor(document: CustomDocument<unknown>, webview: WebviewPanel) {
+    this.editorFactory.configureNew(document.uri, webview);
   }
 }

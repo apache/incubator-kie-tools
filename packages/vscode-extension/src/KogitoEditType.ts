@@ -15,5 +15,5 @@
  */
 
 export interface KogitoEditType {
-  foo: string;
+  foo?: string;
 }

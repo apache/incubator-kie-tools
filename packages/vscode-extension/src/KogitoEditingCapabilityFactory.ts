@@ -15,38 +15,55 @@
  */
 
 import * as vscode from "vscode";
-import { WebviewCustomEditorEditingDelegate } from "vscode";
+import { CancellationToken, CustomDocument, CustomEditorEditingCapability } from "vscode";
 import { KogitoEditType } from "./KogitoEditType";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 
-export class KogitoEditingDelegate implements WebviewCustomEditorEditingDelegate<KogitoEditType> {
-  private readonly _onEdit = new vscode.EventEmitter<{
-    readonly resource: vscode.Uri;
-    readonly edit: KogitoEditType;
-  }>();
-
+export class KogitoEditingCapabilityFactory {
   private readonly editorStore: KogitoEditorStore;
-  public readonly onEdit: vscode.Event<{ readonly resource: vscode.Uri; readonly edit: KogitoEditType }>;
 
   public constructor(editorStore: KogitoEditorStore) {
     this.editorStore = editorStore;
-    this.onEdit = this._onEdit.event;
   }
 
-  public async save(resource: vscode.Uri) {
+  public createNew(document: CustomDocument) {
+    return new KogitoEditingCapability(this.editorStore, document);
+  }
+}
+
+export class KogitoEditingCapability implements CustomEditorEditingCapability<KogitoEditType> {
+  private readonly _onDidEdit = new vscode.EventEmitter<KogitoEditType>();
+
+  private readonly editorStore: KogitoEditorStore;
+  private readonly document: CustomDocument;
+
+  public readonly onDidEdit: vscode.Event<KogitoEditType>;
+
+  public constructor(editorStore: KogitoEditorStore, document: CustomDocument) {
+    this.editorStore = editorStore;
+    this.document = document;
+    this.onDidEdit = this._onDidEdit.event;
+  }
+
+  public async save() {
     this.editorStore.withActive(activeEditor => activeEditor.requestSave());
     console.info("save");
   }
 
-  public async saveAs(resource: vscode.Uri, targetResource: vscode.Uri) {
+  public async saveAs(targetResource: vscode.Uri) {
     console.info("saveAs");
   }
 
-  public async undoEdits(resource: vscode.Uri, edits: KogitoEditType[]) {
+  public async undoEdits(edits: KogitoEditType[]) {
     console.info("undo");
   }
 
-  public async applyEdits(resource: vscode.Uri, edits: KogitoEditType[]) {
+  public async applyEdits(edits: KogitoEditType[]) {
     console.info("redo");
+  }
+
+  public async backup(cancellation: CancellationToken) {
+    console.info("backup");
+    return true;
   }
 }
