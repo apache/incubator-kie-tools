@@ -13,17 +13,16 @@ export class VsCodeResourceContentService implements ResourceContentService {
     const type = opts?.type;
     if (contentPath) {
       return new Promise(resolve => {
-        if (type === ContentType.BINARY) {
-          vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(content => {
-            const base64Content = new Buffer(content).toString("base64");
-            resolve(new ResourceContent(path, base64Content, ContentType.BINARY));
-          }, this.errorRetrievingFile(contentPath, resolve));
-        } else {
-          vscode.workspace.openTextDocument(contentPath).then(textDoc => {
-            const textContent = textDoc.getText();
-            resolve(new ResourceContent(path, textContent, ContentType.TEXT));
-          }, this.errorRetrievingFile(contentPath, resolve));
-        }
+        vscode.workspace.fs.stat(vscode.Uri.parse(contentPath)).then(
+          fileStat => {
+            if (type === ContentType.BINARY) {
+              this.retrieveBinaryContent(contentPath, resolve, path);
+            } else {
+              this.retrieveTextContent(contentPath, resolve, path);
+            }
+          },
+          e => this.errorRetrievingFile(e, path, resolve)
+        );
       });
     }
     return Promise.resolve(new ResourceContent(path, undefined));
@@ -50,13 +49,28 @@ export class VsCodeResourceContentService implements ResourceContentService {
     return null;
   }
 
-  private errorRetrievingFile(
-    uri: string,
-    resolve: (value?: any) => void
-  ): ((reason: any) => void | Thenable<void>) | undefined {
-    return errorMsg => {
-      console.error(`Error retrieving file ${uri}: ${errorMsg}`);
-      resolve(new ResourceContent(uri, undefined));
-    };
+  private errorRetrievingFile(errorMsg: string, uri: string, resolve: (value: any) => void): void {
+    console.error(`Error retrieving file ${uri}: ${errorMsg}`);
+    resolve(new ResourceContent(uri, undefined));
+  }
+
+  private retrieveTextContent(contentPath: string, resolve: (value: ResourceContent) => void, path: string) {
+    vscode.workspace.openTextDocument(contentPath).then(
+      textDoc => {
+        const textContent = textDoc.getText();
+        resolve(new ResourceContent(path, textContent, ContentType.TEXT));
+      },
+      e => this.errorRetrievingFile(e, contentPath, resolve)
+    );
+  }
+
+  private retrieveBinaryContent(contentPath: string, resolve: (value: ResourceContent) => void, path: string) {
+    vscode.workspace.fs.readFile(vscode.Uri.parse(contentPath)).then(
+      content => {
+        const base64Content = new Buffer(content).toString("base64");
+        resolve(new ResourceContent(path, base64Content, ContentType.BINARY));
+      },
+      e => this.errorRetrievingFile(e, contentPath, resolve)
+    );
   }
 }
