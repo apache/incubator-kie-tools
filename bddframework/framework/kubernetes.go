@@ -23,8 +23,10 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 var (
@@ -119,6 +121,17 @@ func CheckPodsAreRunning(pods *corev1.PodList) bool {
 // IsPodRunning returns true if pod is running
 func IsPodRunning(pod *corev1.Pod) bool {
 	return pod.Status.Phase == corev1.PodRunning
+}
+
+// GetDeployment retrieves deployment with specified name in namespace
+func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
+	deployment := &apps.Deployment{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: deploymentName, Namespace: namespace}, deployment); err != nil {
+		return nil, err
+	} else if !exists {
+		return nil, nil
+	}
+	return deployment, nil
 }
 
 func loadResource(namespace, uri string, resourceRef meta.ResourceObject, beforeCreate func(object interface{})) error {

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	"k8s.io/apimachinery/pkg/types"
+	apps "k8s.io/api/apps/v1"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -50,27 +50,21 @@ func DeployKogitoDataIndexService(namespace string, replicas int) error {
 	return nil
 }
 
-// GetKogitoDataIndex retrieves the running data index
-func GetKogitoDataIndex(namespace string) (*v1alpha1.KogitoDataIndex, error) {
-	dataIndex := &v1alpha1.KogitoDataIndex{}
-	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: infrastructure.DefaultDataIndexName, Namespace: namespace}, dataIndex); err != nil {
-		return nil, fmt.Errorf("Error while trying to look for Kogito Data Index: %v ", err)
-	} else if !exists {
-		return nil, nil
-	}
-	return dataIndex, nil
+// GetKogitoDataIndexDeployment retrieves the running data index deployment
+func GetKogitoDataIndexDeployment(namespace string) (*apps.Deployment, error) {
+	return GetDeployment(namespace, infrastructure.DefaultDataIndexName)
 }
 
 // WaitForKogitoDataIndex waits that the jobs service has a certain number of replicas
 func WaitForKogitoDataIndex(namespace string, replicas, timeoutInMin int) error {
 	return WaitFor(namespace, "Kogito data index running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		dataIndex, err := GetKogitoDataIndex(namespace)
+		dataIndex, err := GetKogitoDataIndexDeployment(namespace)
 		if err != nil {
 			return false, err
 		}
 		if dataIndex == nil {
 			return false, nil
 		}
-		return dataIndex.Status.DeploymentStatus.AvailableReplicas == int32(replicas), nil
+		return dataIndex.Status.Replicas == int32(replicas) && dataIndex.Status.AvailableReplicas == int32(replicas), nil
 	})
 }
