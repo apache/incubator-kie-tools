@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -143,4 +144,9 @@ func getWhitespaceStr(size int) string {
 		whiteSpaceStr += " "
 	}
 	return whiteSpaceStr
+}
+
+// CreateFolder  creates a folder and all its parents if not exist
+func CreateFolder(folder string) error {
+	return os.MkdirAll(folder, os.ModePerm)
 }

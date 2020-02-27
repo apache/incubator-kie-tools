@@ -17,6 +17,7 @@ package test
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"testing"
@@ -38,7 +39,7 @@ const (
 
 var opt = godog.Options{
 	Output:    colors.Colored(os.Stdout),
-	Format:    "progress",
+	Format:    "junit",
 	Randomize: time.Now().UTC().UnixNano(),
 	Tags:      disabledTag,
 }
@@ -52,21 +53,8 @@ func TestMain(m *testing.M) {
 	flag.Parse()
 	opt.Paths = flag.Args()
 
-	if framework.IsSmokeTests() {
-		if len(opt.Tags) > 0 {
-			opt.Tags += " && "
-		}
-		// Filter with smoke tag
-		opt.Tags += smokeTag
-	}
-
-	if !strings.Contains(opt.Tags, disabledTag) {
-		if len(opt.Tags) > 0 {
-			opt.Tags += " && "
-		}
-		// Ignore disabled tag
-		opt.Tags += "~" + disabledTag
-	}
+	configureTags()
+	configureTestOutput()
 
 	features, err := parseFeatures(opt.Tags, opt.Paths)
 	if err != nil {
@@ -96,6 +84,44 @@ func TestMain(m *testing.M) {
 		os.Exit(status)
 	}
 	os.Exit(0)
+}
+
+func configureTags() {
+	if framework.IsSmokeTests() {
+		if len(opt.Tags) > 0 {
+			opt.Tags += " && "
+		}
+		// Filter with smoke tag
+		opt.Tags += smokeTag
+	}
+
+	if !strings.Contains(opt.Tags, disabledTag) {
+		if len(opt.Tags) > 0 {
+			opt.Tags += " && "
+		}
+		// Ignore disabled tag
+		opt.Tags += "~" + disabledTag
+	}
+}
+
+func configureTestOutput() {
+	if framework.IsSmokeTests() {
+		framework.SetLogSubFolder("smoke")
+	} else {
+		framework.SetLogSubFolder("full")
+	}
+	logFolder := framework.GetLogFolder()
+	if err := framework.CreateFolder(logFolder); err != nil {
+		panic(fmt.Errorf("Error while creating log folder %s: %v", logFolder, err))
+	}
+
+	mainLogFile, err := os.Create(fmt.Sprintf("%s/%s", logFolder, "junit.xml"))
+	if err != nil {
+		panic(fmt.Errorf("Error creating junit file: %v", err))
+	}
+
+	opt.Format = "junit"
+	opt.Output = io.MultiWriter(opt.Output, mainLogFile)
 }
 
 func FeatureContext(s *godog.Suite) {
