@@ -252,17 +252,11 @@ public interface CommonConstants
 
     String Language();
 
-    String German();
-
     String French();
 
     String Japanese();
 
-    String ChineseSimplified();
-
     String Spanish();
-
-    String Portuguese();
 
     String English();
 

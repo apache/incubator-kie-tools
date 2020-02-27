@@ -100,19 +100,12 @@ public class WorkbenchConfigurationPopup extends BaseModal {
 
         languageMap.put( "default",
                          constants.English() );
-        languageMap.put( "zh_CN",
-                         constants.ChineseSimplified() );
-        languageMap.put( "de",
-                         constants.German() );
         languageMap.put( "es",
                          constants.Spanish() );
         languageMap.put( "fr",
                          constants.French() );
         languageMap.put( "ja",
                          constants.Japanese() );
-        languageMap.put( "pt_BR",
-                         constants.Portuguese() );
-
     }
 
     @PostConstruct
