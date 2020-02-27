@@ -118,11 +118,4 @@
   <!-- To enable logging -->
   <set-property name="gwt.logging.enabled" value="TRUE"/>
 
-  <!-- Use the following properties to create GWT permutation(s) for specific language(s). -->
-  <!--<extend-property name="locale" values="es_ES"/>-->
-  <!--<extend-property name="locale" values="fr_FR"/>-->
-  <!--<extend-property name="locale" values="ja_JP"/>-->
-  <!--<extend-property name="locale" values="pt_BR"/>-->
-  <!--<extend-property name="locale" values="zh_CN"/>-->
-
 </module>
