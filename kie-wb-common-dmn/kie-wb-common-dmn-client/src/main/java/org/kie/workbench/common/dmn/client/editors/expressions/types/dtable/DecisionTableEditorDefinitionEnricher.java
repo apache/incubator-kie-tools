@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTableOrientation;
@@ -154,6 +155,17 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             return;
         }
 
+        //Get all Decision nodes feeding into this DecisionTable
+        final List<Decision> decisionSet = node.getInEdges().stream()
+                .map(Edge::getSourceNode)
+                .map(Node::getContent)
+                .filter(content -> content instanceof Definition)
+                .map(content -> (Definition) content)
+                .map(Definition::getDefinition)
+                .filter(definition -> definition instanceof Decision)
+                .map(definition -> (Decision) definition)
+                .collect(Collectors.toList());
+
         //Get all InputData nodes feeding into this DecisionTable
         final List<InputData> inputDataSet = node.getInEdges().stream()
                 .map(Edge::getSourceNode)
@@ -164,13 +176,17 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 .filter(definition -> definition instanceof InputData)
                 .map(definition -> (InputData) definition)
                 .collect(Collectors.toList());
-        if (inputDataSet.isEmpty()) {
+        if (decisionSet.isEmpty() && inputDataSet.isEmpty()) {
             return;
         }
 
         //Extract individual components of InputData TypeRefs
         final Definitions definitions = dmnGraphUtils.getDefinitions();
         final List<InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        decisionSet.forEach(decision -> addInputClauseRequirement(decision.getVariable().getTypeRef(),
+                                                                  definitions,
+                                                                  inputClauseRequirements,
+                                                                  decision.getName().getValue()));
         inputDataSet.forEach(inputData -> addInputClauseRequirement(inputData.getVariable().getTypeRef(),
                                                                     definitions,
                                                                     inputClauseRequirements,

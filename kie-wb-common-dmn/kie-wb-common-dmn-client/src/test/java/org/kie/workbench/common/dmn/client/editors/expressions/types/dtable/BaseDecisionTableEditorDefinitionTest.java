@@ -188,19 +188,19 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
         assertThat(output.get(0).getName()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1");
     }
 
-    protected void assertStandardDecisionRuleEnrichment(final DecisionTable model,
-                                                        final int inputClauseCount,
-                                                        final int outputClauseCount) {
+    protected void assertStandardDecisionRuleEnrichment(final DecisionTable model) {
         final List<DecisionRule> rules = model.getRule();
         assertThat(rules.size()).isEqualTo(1);
 
         final DecisionRule rule = rules.get(0);
+        final int inputClauseCount = model.getInput().size();
         assertThat(rule.getInputEntry().size()).isEqualTo(inputClauseCount);
         rule.getInputEntry().forEach(inputEntry -> {
             assertThat(inputEntry).isInstanceOf(UnaryTests.class);
             assertThat(inputEntry.getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
         });
 
+        final int outputClauseCount = model.getOutput().size();
         assertThat(rule.getOutputEntry().size()).isEqualTo(outputClauseCount);
         rule.getOutputEntry().forEach(outputEntry -> {
             assertThat(outputEntry).isInstanceOf(LiteralExpression.class);
@@ -211,12 +211,11 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
         assertThat(rule.getDescription().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
     }
 
-    protected void assertParentHierarchyEnrichment(final DecisionTable model,
-                                                   final int inputClauseCount,
-                                                   final int outputClauseCount) {
+    protected void assertParentHierarchyEnrichment(final DecisionTable model) {
         final List<DecisionRule> rules = model.getRule();
         final DecisionRule rule = rules.get(0);
 
+        final int inputClauseCount = model.getInput().size();
         final List<InputClause> inputClauses = model.getInput();
         assertThat(inputClauses.size()).isEqualTo(inputClauseCount);
         inputClauses.forEach(inputClause -> {
@@ -224,6 +223,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
             assertThat(inputClause.getInputExpression().getParent()).isEqualTo(inputClause);
         });
 
+        final int outputClauseCount = model.getOutput().size();
         final List<OutputClause> outputClauses = model.getOutput();
         assertThat(outputClauses.size()).isEqualTo(outputClauseCount);
         outputClauses.forEach(outputClause -> assertThat(outputClause.getParent()).isEqualTo(model));

@@ -60,8 +60,8 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
         assertBasicEnrichment(model);
         assertStandardInputClauseEnrichment(model);
         assertStandardOutputClauseEnrichment(model);
-        assertStandardDecisionRuleEnrichment(model, 1, 1);
-        assertParentHierarchyEnrichment(model, 1, 1);
+        assertStandardDecisionRuleEnrichment(model);
+        assertParentHierarchyEnrichment(model);
     }
 
     @Test
