@@ -33,6 +33,3 @@ target/
 # files used for external db testing
 jdbc_driver.jar
 db-settings.xml
-
-# integration test properties file
-test.properties
