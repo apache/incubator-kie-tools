@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.interop;
+package org.appformer.kogito.bridge.client.stateControl.interop;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
-import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
+import jsinterop.annotations.JsFunction;
 
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
-public class WindowRef {
+/**
+ * Represents a command that can be executed by the TypeScript StateControl engine
+ */
+@JsFunction
+@FunctionalInterface
+public interface StateControlCommand {
 
-    @JsProperty(name = "envelope")
-    public static native WindowRef getEnvelope();
-
-    @JsOverlay
-    public static boolean isEnvelopeAvailable() {
-        return getEnvelope() != null;
-    }
-
+    /**
+     * Executes the command
+     */
+    void execute();
 }

@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.interop;
+package org.appformer.client.stateControl.registry;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
-import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
+/**
+ * This functional interface represents the code that will be executed every time there's a change on a {@link Registry}
+ */
+@FunctionalInterface
+public interface RegistryChangeListener {
 
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
-public class WindowRef {
-
-    @JsProperty(name = "envelope")
-    public static native WindowRef getEnvelope();
-
-    @JsOverlay
-    public static boolean isEnvelopeAvailable() {
-        return getEnvelope() != null;
-    }
-
+    /**
+     * Method that will be executed when a change on the registry happens
+     */
+    void notifyRegistryChange();
 }

@@ -26,13 +26,16 @@
   </parent>
 
   <artifactId>appformer-kogito-bridge</artifactId>
+  <name>AppFormer Kogito Bridge</name>
+  <description>AppFormer Kogito Bridge</description>
+
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
-      <scope>provided</scope>      
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.elemental2</groupId>
@@ -48,6 +51,14 @@
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
     </dependency>
   </dependencies>
 </project>

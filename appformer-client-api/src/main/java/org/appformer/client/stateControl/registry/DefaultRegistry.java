@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.interop;
+package org.appformer.client.stateControl.registry;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
-import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
-
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
-public class WindowRef {
-
-    @JsProperty(name = "envelope")
-    public static native WindowRef getEnvelope();
-
-    @JsOverlay
-    public static boolean isEnvelopeAvailable() {
-        return getEnvelope() != null;
-    }
+public interface DefaultRegistry<C> extends Registry<C> {
 
 }

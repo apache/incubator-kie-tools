@@ -900,6 +900,7 @@
     <module>dashbuilder</module>
     <module>appformer-js-bridge</module>
     <module>appformer-js</module>
+    <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
   </modules>
 
