@@ -34,7 +34,6 @@ pipeline {
                     maven.runMavenWithSubmarineSettings('clean install', false)
                 }
             }
-
         }
         stage('Build kogito-cloud-s2i') {
             steps {
@@ -61,8 +60,6 @@ pipeline {
             }
         }
         always {
-            // Currently there are no tests in submarine-cloud
-            junit '**/target/surefire-reports/**/*.xml'
             cleanWs()
         }
     }
