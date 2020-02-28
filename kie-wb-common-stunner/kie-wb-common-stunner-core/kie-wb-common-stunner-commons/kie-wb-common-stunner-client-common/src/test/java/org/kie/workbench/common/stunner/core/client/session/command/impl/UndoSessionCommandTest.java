@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.ClientSessio
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -57,7 +57,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     private ClientSessionCommand.Callback callback;
 
     @Mock
-    private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+    private Registry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Mock
     private CommandResult commandResult;
@@ -76,7 +76,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
         super.setup();
         when(session.getCommandRegistry()).thenReturn(commandRegistry);
         commandHistory = new ArrayList<>();
-        when(commandRegistry.getCommandHistory()).thenReturn(commandHistory);
+        when(commandRegistry.getHistory()).thenReturn(commandHistory);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCommandRegistry()).thenReturn(commandRegistry);
         when(sessionManager.getCurrentSession()).thenReturn(session);

@@ -22,6 +22,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 
+import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isError;
 
@@ -55,7 +55,7 @@ public class RegistryAwareCommandManager
     public RegistryAwareCommandManager() {
         this.commands =
                 new RequestCommands.Builder()
-                        .onComplete(command -> getRegistry().ifPresent(r -> r.register(command)))
+                        .onComplete(command -> getCommandRegistry().ifPresent(r -> r.register(command)))
                         .onRollback(command -> undo(getCanvasHandler(), command))
                         .build();
     }
@@ -77,8 +77,8 @@ public class RegistryAwareCommandManager
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         final Command<AbstractCanvasHandler, CanvasViolation> lastEntry =
-                getRegistry()
-                        .map(CommandRegistry::pop)
+                getCommandRegistry()
+                        .map(Registry::pop)
                         .orElse(null);
         if (null != lastEntry) {
             return undo(context, lastEntry);
@@ -105,7 +105,7 @@ public class RegistryAwareCommandManager
         } else if (commands.isStarted()) {
             commands.push(command);
         } else {
-            getRegistry().ifPresent(r -> r.register(command));
+            getCommandRegistry().ifPresent(r -> r.register(command));
         }
         return result;
     }
@@ -147,7 +147,7 @@ public class RegistryAwareCommandManager
         return Optional.empty();
     }
 
-    private Optional<CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>>> getRegistry() {
+    private Optional<Registry<Command<AbstractCanvasHandler, CanvasViolation>>> getCommandRegistry() {
         return ifEditorSession().map(EditorSession::getCommandRegistry);
     }
 

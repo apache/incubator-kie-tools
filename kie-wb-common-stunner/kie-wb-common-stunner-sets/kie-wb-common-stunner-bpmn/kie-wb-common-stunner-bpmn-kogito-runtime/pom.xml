@@ -620,14 +620,24 @@
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <!--  Appformer Kogito Bridge -->
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-runtime-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--  Appformer Kogito -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>appformer-kogito-bridge</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
@@ -789,11 +799,11 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
-            
-            <!-- Appformer JS Bridge -->
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-runtime-common</compileSourcesArtifact>
+
+            <!-- Appformer -->
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
-            
-            <!-- Appformer Kogito Bridge -->
+            <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
 
           </compileSourcesArtifacts>

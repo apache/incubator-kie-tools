@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.registry;
 
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.factory.Factory;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -46,11 +44,6 @@ public interface RegistryFactory {
      * Creates a new registry instance for definitions.
      */
     <T> DefinitionRegistry<T> newDefinitionRegistry();
-
-    /**
-     * Creates a new registry instance for commands.
-     */
-    <C extends Command> CommandRegistry<C> newCommandRegistry();
 
     /**
      * Creates a new registry instance for model domain factories.

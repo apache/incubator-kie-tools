@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import org.appformer.client.stateControl.registry.Registry;
+import org.appformer.client.stateControl.registry.impl.DefaultRegistryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +26,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.CommandRegistryImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -53,13 +53,13 @@ public class RegistryAwareCommandManagerTest {
     private AbstractCanvasHandler canvasHandler;
 
     private RegistryAwareCommandManager tested;
-    private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+    private Registry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
 
     @Before
     public void setUp() {
         commandManager = spy(new CanvasCommandManagerStub());
-        commandRegistry = spy(new CommandRegistryImpl<>());
+        commandRegistry = spy(new DefaultRegistryImpl<>());
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCommandManager()).thenReturn(commandManager);
         when(session.getCommandRegistry()).thenReturn(commandRegistry);
@@ -86,8 +86,8 @@ public class RegistryAwareCommandManagerTest {
         verify(commandManager, never()).allow(any(), any());
         verify(commandManager, never()).undo(any(), any());
         verify(commandRegistry, times(1)).register(any());
-        assertEquals(1, commandRegistry.getCommandHistory().size());
-        assertEquals(COMMAND_SUCCESS1, commandRegistry.getCommandHistory().get(0));
+        assertEquals(1, commandRegistry.getHistory().size());
+        assertEquals(COMMAND_SUCCESS1, commandRegistry.getHistory().get(0));
         verify(commandRegistry, never()).pop();
         verify(commandRegistry, never()).peek();
         verify(commandRegistry, never()).clear();
@@ -116,9 +116,9 @@ public class RegistryAwareCommandManagerTest {
         verify(commandManager, times(1)).execute(eq(canvasHandler), eq(COMMAND_SUCCESS1));
         verify(commandManager, times(1)).execute(eq(canvasHandler), eq(COMMAND_SUCCESS2));
         verify(commandRegistry, times(1)).register(any());
-        assertEquals(1, commandRegistry.getCommandHistory().size());
+        assertEquals(1, commandRegistry.getHistory().size());
         CompositeCommand<AbstractCanvasHandler, CanvasViolation> command =
-                (CompositeCommand<AbstractCanvasHandler, CanvasViolation>) commandRegistry.getCommandHistory().get(0);
+                (CompositeCommand<AbstractCanvasHandler, CanvasViolation>) commandRegistry.getHistory().get(0);
         assertEquals(2, command.getCommands().size());
         assertEquals(COMMAND_SUCCESS1, command.getCommands().get(0));
         assertEquals(COMMAND_SUCCESS2, command.getCommands().get(1));

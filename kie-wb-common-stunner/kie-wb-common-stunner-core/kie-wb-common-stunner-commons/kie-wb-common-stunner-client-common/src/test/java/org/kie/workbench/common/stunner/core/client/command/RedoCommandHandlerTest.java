@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.core.command.util;
+package org.kie.workbench.common.stunner.core.client.command;
 
+import javax.enterprise.event.Event;
+
+import org.appformer.client.stateControl.registry.DefaultRegistry;
+import org.appformer.client.stateControl.registry.impl.DefaultRegistryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.CommandRegistryImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,6 +40,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,14 +53,18 @@ public class RedoCommandHandlerTest {
     @Mock
     private Command command2;
 
+    @Mock
+    private Event<RegisterChangedEvent> registerChangedEvent;
+
+    private DefaultRegistry commandRegistry;
+
     private RedoCommandHandler tested;
-    private CommandRegistry commandRegistry;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.commandRegistry = spy(new CommandRegistryImpl());
-        this.tested = new RedoCommandHandler(commandRegistry);
+        commandRegistry = spy(new DefaultRegistryImpl<>());
+        this.tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
     }
 
     @Test
@@ -92,7 +101,7 @@ public class RedoCommandHandlerTest {
         CommandManager manager = mock(CommandManager.class);
         when(commandRegistry.isEmpty()).thenReturn(true);
 
-        RedoCommandHandler tested = new RedoCommandHandler(commandRegistry);
+        RedoCommandHandler tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      tested.execute(obj, manager));
@@ -115,5 +124,12 @@ public class RedoCommandHandlerTest {
         assertTrue(tested.onUndoCommandExecuted(command2));
         assertFalse(tested.onCommandExecuted(command3));
         assertFalse(tested.isEnabled());
+    }
+
+    @Test
+    public void testSetSession() {
+        ClientSession session = mock(ClientSession.class);
+        tested.setSession(session);
+        verify(commandRegistry, times(1)).setRegistryChangeListener(any());
     }
 }

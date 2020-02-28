@@ -19,12 +19,10 @@ package org.kie.workbench.common.stunner.core.registry.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -56,11 +54,6 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     @Override
     public <T> DefinitionRegistry<T> newDefinitionRegistry() {
         return DefinitionMapRegistry.build(adapterManager);
-    }
-
-    @Override
-    public <C extends Command> CommandRegistry<C> newCommandRegistry() {
-        return new CommandRegistryImpl<C>();
     }
 
     @Override

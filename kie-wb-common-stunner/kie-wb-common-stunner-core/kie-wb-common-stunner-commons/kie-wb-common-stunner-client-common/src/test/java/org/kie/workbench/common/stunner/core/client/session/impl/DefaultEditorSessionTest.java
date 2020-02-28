@@ -18,6 +18,9 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.event.Event;
+
+import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +43,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -69,7 +72,10 @@ public class DefaultEditorSessionTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry;
+    private Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+
+    @Mock
+    private Event<RegisterChangedEvent> registerChangedEvent;
 
     private DefaultEditorSession tested;
 
@@ -89,7 +95,8 @@ public class DefaultEditorSessionTest {
         tested = new DefaultEditorSession(managedSession,
                                           canvasCommandManager,
                                           sessionCommandManager,
-                                          clientCommandRegistry);
+                                          commandRegistry,
+                                          registerChangedEvent);
     }
 
     @Test
@@ -100,6 +107,7 @@ public class DefaultEditorSessionTest {
         verify(managedSession, times(1)).onCanvasControlDestroyed(any(Consumer.class));
         verify(managedSession, times(1)).onCanvasHandlerControlRegistered(any(Consumer.class));
         verify(managedSession, times(1)).onCanvasHandlerControlDestroyed(any(Consumer.class));
+        verify(commandRegistry).setRegistryChangeListener(any());
     }
 
     @Test
@@ -139,7 +147,7 @@ public class DefaultEditorSessionTest {
     @Test
     public void testDestroy() {
         tested.destroy();
-        verify(clientCommandRegistry, times(1)).clear();
+        verify(commandRegistry, times(1)).clear();
         verify(managedSession, times(1)).destroy();
     }
 }

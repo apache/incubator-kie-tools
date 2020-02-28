@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
@@ -28,8 +29,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Key
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 public abstract class EditorSession
         extends AbstractSession<AbstractCanvas, AbstractCanvasHandler> {
@@ -40,7 +41,7 @@ public abstract class EditorSession
 
     public abstract CanvasCommandManager<AbstractCanvasHandler> getCommandManager();
 
-    public abstract CommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry();
+    public abstract Registry<Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry();
 
     public abstract MediatorsControl<AbstractCanvas> getMediatorsControl();
 

@@ -25,6 +25,7 @@
   <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
   <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.appformer.AppformerClientAPI"/>
 
   <source path="client"/>
   <source path="" includes="StunnerCoreEntryPoint.java"/>

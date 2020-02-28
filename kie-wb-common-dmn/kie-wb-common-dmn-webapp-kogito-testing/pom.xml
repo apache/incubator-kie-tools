@@ -696,6 +696,7 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
                 <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
 
               </compileSourcesArtifacts>
             </configuration>

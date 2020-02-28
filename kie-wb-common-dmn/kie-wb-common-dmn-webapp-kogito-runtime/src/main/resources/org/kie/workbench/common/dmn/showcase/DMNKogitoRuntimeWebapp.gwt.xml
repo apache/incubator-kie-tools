@@ -19,6 +19,7 @@
 <module>
 
   <inherits name="org.kie.workbench.common.dmn.webapp.kogito.common.DMNWebappKogitoCommon"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.runtime.StunnerKogitoRuntimeCommon"/>
 
   <!-- We only need Chrome -->
   <set-property name="user.agent" value="safari"/>

@@ -515,6 +515,17 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-js-bridge</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Needed for the ACE XML Editor -->
@@ -815,6 +826,7 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
         </configuration>

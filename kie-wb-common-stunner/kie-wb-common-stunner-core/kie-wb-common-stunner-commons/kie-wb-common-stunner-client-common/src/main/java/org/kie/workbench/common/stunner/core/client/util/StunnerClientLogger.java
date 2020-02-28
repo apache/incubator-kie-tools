@@ -191,7 +191,7 @@ public class StunnerClientLogger {
     public static void logCommandHistory(final EditorSession session) {
         if (null != session) {
             final List<Command<AbstractCanvasHandler, CanvasViolation>> history =
-                    session.getCommandRegistry().getCommandHistory();
+                    session.getCommandRegistry().getHistory();
             logCommandHistory(history);
         }
     }

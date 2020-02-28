@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
@@ -41,32 +42,26 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
 
     @Mock
-    private RegistryFactory registryFactory;
-
-    @Mock
-    private CommandRegistry commandRegistry;
-
-    @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private ClientCommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry;
+    private Registry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+
+    private EventSourceMock<RegisterChangedEvent> registerChangedEvent = new EventSourceMock<>();
 
     @Mock
     private ResizeControl resizeControl;
@@ -114,7 +109,6 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     @Override
     @SuppressWarnings("unchecked")
     public void setup() {
-        when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry);
         super.setup();
     }
 
@@ -123,7 +117,8 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         final DMNEditorSession session = new DMNEditorSession(managedSession,
                                                               canvasCommandManager,
                                                               sessionCommandManager,
-                                                              clientCommandRegistry);
+                                                              commandRegistry,
+                                                              registerChangedEvent);
         session.constructInstance();
         return session;
     }

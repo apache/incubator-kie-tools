@@ -21,6 +21,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -52,7 +52,12 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
-        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+
+        bindCommand();
+    }
+
+    protected void bindCommand() {
+        getSession().getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
         checkNotNull("callback",
                      callback);
-        final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> registry = getSession().getCommandRegistry();
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> registry = getSession().getCommandRegistry();
         if (!registry.isEmpty()) {
             final CommandResult<CanvasViolation> result = sessionCommandManager.undo(getSession().getCanvasHandler());
             checkState();
@@ -105,7 +110,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     private void checkState() {
         if (getSession() != null) {
-            setEnabled(!getSession().getCommandRegistry().getCommandHistory().isEmpty());
+            setEnabled(!getSession().getCommandRegistry().getHistory().isEmpty());
             fire();
         }
     }

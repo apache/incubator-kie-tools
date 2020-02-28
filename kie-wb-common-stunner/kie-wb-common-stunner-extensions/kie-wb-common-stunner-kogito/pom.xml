@@ -31,6 +31,7 @@
   <modules>
     <module>kie-wb-common-stunner-kogito-api</module>
     <module>kie-wb-common-stunner-kogito-client</module>
+    <module>kie-wb-common-stunner-kogito-runtime-common</module>
   </modules>
 
 </project>

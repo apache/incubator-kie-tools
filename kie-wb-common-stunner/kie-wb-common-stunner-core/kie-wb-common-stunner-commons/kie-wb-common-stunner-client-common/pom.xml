@@ -147,6 +147,12 @@
       <artifactId>elemental2-dom</artifactId>
     </dependency>
 
+    <!-- Appformer -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
     <dependency>
       <groupId>org.assertj</groupId>
