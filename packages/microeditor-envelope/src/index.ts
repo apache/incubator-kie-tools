@@ -21,21 +21,22 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
-import { ResourceContentEditorCoordinator } from "./ResourceContentEditorCoordinator";
-import { ResourceContentEditorService } from "./ResourceContentEditorService";
-import { EditorContext } from "./EditorContext";
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ResourceContentEditorCoordinator, ResourceContentApi } from "./api/resourceContent";
+import { EditorContext } from "./api/context";
+import { StateControl, StateControlApi } from "./api/stateControl";
+import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
 export * from "./EditorFactory";
-export * from "./EditorContext";
+export * from "./api/context/EditorContext";
 export * from "./EnvelopeBusInnerMessageHandler";
 
 declare global {
   interface Window {
     envelope: {
-      resourceContentEditorService?: ResourceContentEditorService;
-      editorContext: EditorContext
-    }
+      resourceContentEditorService?: ResourceContentApi;
+      editorContext: EditorContext;
+      stateControl: StateControlApi;
+    };
   }
 }
 
@@ -52,23 +53,32 @@ class ReactDomRenderer implements Renderer {
  * @param args.container The DOM element where the envelope should be rendered.
  * @param args.busApi The implementation of EnvelopeBusApi to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors using a LanguageData implementation.
+ * @param args.editorContext The context for Editors with information about the running channel.
  */
-export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; editorFactory: EditorFactory<any>, editorContext: EditorContext }) {
+export function init(args: {
+  container: HTMLElement;
+  busApi: EnvelopeBusApi;
+  editorFactory: EditorFactory<any>;
+  editorContext: EditorContext;
+}) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
+  const stateControl = new StateControl();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
+    stateControl,
     renderer,
-    resourceContentEditorCoordinator);
+    resourceContentEditorCoordinator
+  );
 
   return editorEnvelopeController.start(args.container).then(messageBus => {
     window.envelope = {
-      resourceContentEditorService: resourceContentEditorCoordinator.exposed(messageBus),
+      resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
+      stateControl: stateControl.exposeApi(messageBus),
       editorContext: args.editorContext
-    }
+    };
   });
-
 }

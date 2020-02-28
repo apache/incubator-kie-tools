@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
 import { ResourcesList, ResourceContent, ResourceContentOptions } from "@kogito-tooling/core-api";
-import { ResourceContentEditorService } from "./ResourceContentEditorService";
+import { ResourceContentApi } from "./ResourceContentApi";
 
 export class ResourceContentEditorCoordinator {
   private pendingResourceRequests = new Map<string, (c: string) => void>();
@@ -42,7 +42,7 @@ export class ResourceContentEditorCoordinator {
     }
   }
 
-  public exposed(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentEditorService {
+  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentApi {
     const pendingResourceRequests = this.pendingResourceRequests;
     const pendingResourceListRequests = this.pendingResourceListRequests;
     return {

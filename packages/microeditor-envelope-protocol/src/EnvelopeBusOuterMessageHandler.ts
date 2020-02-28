@@ -15,12 +15,12 @@
  */
 
 import {
+  EditorContent,
+  KogitoEdit,
   LanguageData,
   ResourceContent,
-  ResourcesList,
-  EditorContent,
   ResourceContentRequest,
-  ResourceContentService
+  ResourcesList
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
@@ -90,6 +90,14 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
   }
 
+  public notify_editorUndo() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: undefined });
+  }
+
+  public notify_editorRedo() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
+  }
+
   public request_initResponse(origin: string) {
     this.busApi.postMessage({ busId: this.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
   }
@@ -134,6 +142,10 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
         this.impl.receive_resourceListRequest(message.data as string);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
+        const kogitoEdit = message.data as KogitoEdit;
+        console.info(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

@@ -20,7 +20,15 @@ import { mount } from "enzyme";
 import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { LanguageData } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
-import { ResourceContentEditorCoordinator } from "../ResourceContentEditorCoordinator";
+import { ResourceContentEditorCoordinator } from "../api/resourceContent";
+
+const StateControlMock = jest.fn(() => ({
+  undo: jest.fn(),
+  redo: jest.fn(),
+  registry: jest.fn()
+}));
+
+let stateControl: any;
 
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
@@ -51,6 +59,8 @@ let mockComponent: ReturnType<typeof mount>;
 beforeEach(() => {
   sentMessages = [];
 
+  stateControl = new StateControlMock();
+
   controller = new EditorEnvelopeController(
     {
       postMessage: message => {
@@ -63,6 +73,7 @@ beforeEach(() => {
       }
     },
     new SpecialDomElements(),
+    stateControl,
     {
       render: (element, container, callback) => {
         mockComponent = mount(element);
@@ -121,7 +132,7 @@ describe("EditorEnvelopeController", () => {
 
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
     sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content"} });
+    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
 
     expect(sentMessages).toEqual([]);
     expect(render.update()).toMatchSnapshot();
@@ -139,5 +150,15 @@ describe("EditorEnvelopeController", () => {
 
     expect(sentMessages).toEqual([]);
     expect(render.update()).toMatchSnapshot();
+  });
+
+  test("test notify undo/redo", async () => {
+    const render = await startController();
+
+    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: "commandID" });
+    expect(stateControl.undo).toBeCalledTimes(1);
+
+    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: "commandID" });
+    expect(stateControl.redo).toBeCalledTimes(1);
   });
 });

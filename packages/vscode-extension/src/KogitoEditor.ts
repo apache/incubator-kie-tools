@@ -97,6 +97,13 @@ export class KogitoEditor {
         },
         receive_ready(): void {
           /**/
+        },
+        notify_editorUndo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorUndo();
+        },
+
+        notify_editorRedo: () => {
+          this.envelopeBusOuterMessageHandler.notify_editorRedo();
         }
       })
     );

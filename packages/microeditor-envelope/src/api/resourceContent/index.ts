@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,5 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions } from "@kogito-tooling/core-api";
-
-export interface ResourceContentEditorService {
-  get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
-
-  list(pattern: string): Promise<string[]>;
-}
+export * from "./ResourceContentApi";
+export * from "./ResourceContentEditorCoordinator";
