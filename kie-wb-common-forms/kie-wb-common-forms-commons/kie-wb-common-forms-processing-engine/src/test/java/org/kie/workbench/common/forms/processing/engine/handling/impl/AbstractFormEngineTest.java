@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,6 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 import junit.framework.TestCase;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
+import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
+import org.kie.workbench.common.forms.processing.engine.handling.NeedsFlush;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.Model;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.User;
 import org.mockito.Mock;
@@ -106,28 +110,12 @@ public abstract class AbstractFormEngineTest extends TestCase {
         model.setUser(user);
         model.setValue(25);
 
-
-        valueField = generateFormField(VALUE_FIELD_NAME,
-                                                         "value",
-                                                         true);
-        nameField = generateFormField(USER_NAME_FIELD_NAME,
-                                                         "user.name",
-                                                         true);
-
-        lastNameField = generateFormField(USER_LAST_NAME_FIELD_NAME,
-                                                         "user.lastName",
-                                                         true);
-
-        birthdayField = generateFormField(USER_BIRTHDAY_FIELD_NAME,
-                                                         "user.birthday",
-                                                         true);
-        marriedField = generateFormField(USER_MARRIED_FIELD_NAME,
-                                                         "user.married",
-                                                         true);
-
-        addressField = generateFormField(USER_ADDRESS_FIELD_NAME,
-                                                         "user.address",
-                                                         true);
+        valueField = generateFormField(VALUE_FIELD_NAME, "value", true, false);
+        nameField = generateFormField(USER_NAME_FIELD_NAME, "user.name", true, false);
+        lastNameField = generateFormField(USER_LAST_NAME_FIELD_NAME, "user.lastName", true, false);
+        birthdayField = generateFormField(USER_BIRTHDAY_FIELD_NAME, "user.birthday", true, false);
+        marriedField = generateFormField(USER_MARRIED_FIELD_NAME, "user.married", true, false);
+        addressField = generateFormField(USER_ADDRESS_FIELD_NAME, "user.address", true, true);
 
         executionCounts = 0;
 
@@ -154,12 +142,22 @@ public abstract class AbstractFormEngineTest extends TestCase {
 
     public FormField generateFormField(String fieldName,
                                        String binding,
-                                       boolean validateOnChange) {
+                                       boolean validateOnChange,
+                                       boolean nestedModel) {
 
         Widget widget = mock(Widget.class);
 
+        List<Class> extraInterfaces = new ArrayList<>();
+
+        extraInterfaces.add(HasValue.class);
+
+        if (nestedModel) {
+            extraInterfaces.add(IsNestedModel.class);
+            extraInterfaces.add(NeedsFlush.class);
+        }
+
         IsWidget isWidget = mock(IsWidget.class,
-                                 withSettings().extraInterfaces(HasValue.class));
+                                 withSettings().extraInterfaces(extraInterfaces.toArray(new Class[extraInterfaces.size()])));
 
         when(isWidget.asWidget()).thenReturn(widget);
 

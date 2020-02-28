@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,12 @@
 package org.kie.workbench.common.forms.processing.engine.handling;
 
 /**
- * Represents a form control that is bound to a nested model
+ * Represent a form control that requires flushing the changes on UI.
  */
-public interface IsNestedModel {
+public interface NeedsFlush {
 
     /**
-     * Clears the nested form if exists.
+     * Flushes the changes on the UI into the bound model.
      */
-    void clear();
-
-    /**
-     * Adds a {@link FieldChangeHandler} to notify the parent form that fields on the nested model have changed
-     * @param notifyParentField the change handler.
-     */
-    void addFieldChangeHandler(FieldChangeHandler notifyParentField);
+    void flush();
 }

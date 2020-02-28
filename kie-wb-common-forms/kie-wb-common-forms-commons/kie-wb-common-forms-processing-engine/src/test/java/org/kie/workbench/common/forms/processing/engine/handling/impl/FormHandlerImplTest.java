@@ -23,15 +23,20 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
+import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
+import org.kie.workbench.common.forms.processing.engine.handling.NeedsFlush;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.ModelProxy;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.test.TestFormHandler;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
@@ -54,13 +59,15 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
     @Mock
     protected TranslationService translationService;
 
-    protected FormHandlerImpl formHandler;
+    private FieldChangeHandlerManagerImpl fieldChangeHandlerManager;
+
+    protected TestFormHandler formHandler;
 
     protected ModelProxy proxy;
 
     protected boolean checkBindings = false;
 
-    protected int fieldhandlers = 6;
+    protected int fieldhandlers = 5;
 
     @Before
     public void init() {
@@ -79,29 +86,12 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator),
                                                                 new FieldStateValidatorImpl(translationService));
 
-        FieldChangeHandlerManagerImpl fieldChangeHandlerManager = new FieldChangeHandlerManagerImpl();
+        fieldChangeHandlerManager = spy(new FieldChangeHandlerManagerImpl());
         fieldChangeHandlerManager.setValidator(formValidator);
 
         formHandler = new TestFormHandler(formValidator,
                                           fieldChangeHandlerManager,
                                           binder);
-    }
-
-    @Test
-    public void testHandlerDataBinderSetupWithBindings() {
-        formHandler.setUp(binder,
-                          true);
-
-        checkBindings = true;
-        runSetupTest();
-    }
-
-    @Test
-    public void testHandlerDataBinderSetupWithoutBindings() {
-        formHandler.setUp(binder);
-
-        checkBindings = false;
-        runSetupTest();
     }
 
     @Test
@@ -117,8 +107,7 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         when(integerConverter.toWidgetValue(25)).thenReturn(25l);
         when(integerConverter.toModelValue(25l)).thenReturn(25);
 
-        formHandler.registerInput(valueField,
-                                  integerConverter);
+        formHandler.registerInput(valueField, integerConverter);
         formHandler.registerInput(nameField);
         formHandler.registerInput(lastNameField);
         formHandler.registerInput(birthdayField);
@@ -126,18 +115,12 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         formHandler.registerInput(addressField);
 
         formHandler.addFieldChangeHandler(anonymous);
-        formHandler.addFieldChangeHandler(VALUE_FIELD_NAME,
-                                          value);
-        formHandler.addFieldChangeHandler(USER_NAME_FIELD_NAME,
-                                          userName);
-        formHandler.addFieldChangeHandler(USER_LAST_NAME_FIELD_NAME,
-                                          userLastName);
-        formHandler.addFieldChangeHandler(USER_BIRTHDAY_FIELD_NAME,
-                                          userBirthday);
-        formHandler.addFieldChangeHandler(USER_MARRIED_FIELD_NAME,
-                                          userMarried);
-        formHandler.addFieldChangeHandler(USER_ADDRESS_FIELD_NAME,
-                                          userAddress);
+        formHandler.addFieldChangeHandler(VALUE_FIELD_NAME, value);
+        formHandler.addFieldChangeHandler(USER_NAME_FIELD_NAME, userName);
+        formHandler.addFieldChangeHandler(USER_LAST_NAME_FIELD_NAME, userLastName);
+        formHandler.addFieldChangeHandler(USER_BIRTHDAY_FIELD_NAME, userBirthday);
+        formHandler.addFieldChangeHandler(USER_MARRIED_FIELD_NAME, userMarried);
+        formHandler.addFieldChangeHandler(USER_ADDRESS_FIELD_NAME, userAddress);
 
         if (checkBindings) {
             verify(binder,
@@ -150,21 +133,8 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
                    never()).bind(anyObject(),
                                  anyString());
         }
-        verify(binder,
-               times(6)).addPropertyChangeHandler(anyString(),
-                                                  any());
-    }
-
-    @Test
-    public void testHandlerDataBinderCorrectValidationBindings() {
-        testHandlerDataBinderSetupWithBindings();
-        runCorrectValidationTest(false);
-    }
-
-    @Test
-    public void testHandlerDataBinderCorrectValidationWithoutBindings() {
-        testHandlerDataBinderSetupWithoutBindings();
-        runCorrectValidationTest(false);
+        verify(binder, times(5)).addPropertyChangeHandler(anyString(), any());
+        verify((IsNestedModel) addressField.getWidget()).addFieldChangeHandler(any());
     }
 
     @Test
@@ -200,22 +170,87 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
     }
 
     @Test
-    public void testHandlerDataBinderWrongValidationWithBindings() {
-        testHandlerDataBinderSetupWithBindings();
-        runWrongValidationTest(false);
-    }
-
-    @Test
-    public void testHandlerDataBinderWrongValidationWithoutBindings() {
-        testHandlerDataBinderSetupWithBindings();
-        runWrongValidationTest(false);
-    }
-
-    @Test
     public void testHandlerModelWrongValidationWithoutBindings() {
         testHandlerModelSetup();
         runWrongValidationTest(true);
     }
+
+    @Test
+    public void testHandlerFlushWithValidValue() {
+        testHandlerModelSetup();
+
+        formHandler.maybeFlush();
+
+        verify(binder, times(8)).getModel();
+
+        verify(proxy, times(3)).deepUnwrap();
+
+        verify((NeedsFlush) addressField.getWidget()).flush();
+
+        verify(binder).setModel(any(), same(StateSync.FROM_UI), eq(true));
+    }
+
+    @Test
+    public void testHandlerFlushWithInValidValue() {
+        testHandlerModelSetup();
+
+        model.setValue(-123);
+
+        formHandler.maybeFlush();
+
+        verify(binder, times(9)).getModel();
+
+        verify(proxy, times(4)).deepUnwrap();
+
+        verify((NeedsFlush) addressField.getWidget()).flush();
+
+        verify(binder).setModel(any(), same(StateSync.FROM_UI), eq(true));
+
+        // If validation failed test rebinding the model
+        verify(binder).setModel(any(), same(StateSync.FROM_MODEL), eq(true));
+    }
+
+    @Test
+    public void testNotifyChange() {
+        testHandlerModelSetup();
+
+        final String name = "Bart";
+
+        formHandler.notifyFieldChange(USER_NAME_FIELD_NAME, name);
+
+        verify(fieldChangeHandlerManager).notifyFieldChange(eq(USER_NAME_FIELD_NAME), eq(name));
+        verify(userName).onFieldChange(eq(USER_NAME_FIELD_NAME), eq(name));
+    }
+
+    @Test
+    public void testProcessFieldChange() {
+        testHandlerModelSetup();
+
+        final String address = "Springsfield";
+
+        formHandler.processFieldChange(addressField, address);
+
+        verify(fieldChangeHandlerManager).processFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address), any());
+        verify(fieldChangeHandlerManager, never()).notifyFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address));
+
+        verify(userAddress).onFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address));
+    }
+
+    @Test
+    public void testProcessFieldSkippingValidation() {
+        testHandlerModelSetup();
+
+        formHandler.setEnabledOnChangeValidations(false);
+
+        final String address = "Springsfield";
+
+        formHandler.processFieldChange(addressField, address);
+
+        verify(fieldChangeHandlerManager, never()).processFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address), any());
+        verify(fieldChangeHandlerManager).notifyFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address));
+        verify(userAddress).onFieldChange(eq(USER_ADDRESS_FIELD_NAME), eq(address));
+    }
+
 
     protected void runWrongValidationTest(boolean skipGetModel) {
         model.setValue(-123);

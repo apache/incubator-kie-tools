@@ -206,7 +206,7 @@ public class DynamicFormRenderer implements IsWidget,
     }
 
     public Object getModel() {
-        if (formHandler != null) {
+        if (isInitialized()) {
             return formHandler.getModel();
         }
         return null;
@@ -245,6 +245,12 @@ public class DynamicFormRenderer implements IsWidget,
         }
 
         return null;
+    }
+
+    public void flush() {
+        if (isInitialized()) {
+            formHandler.maybeFlush();
+        }
     }
 
     public boolean isInitialized() {

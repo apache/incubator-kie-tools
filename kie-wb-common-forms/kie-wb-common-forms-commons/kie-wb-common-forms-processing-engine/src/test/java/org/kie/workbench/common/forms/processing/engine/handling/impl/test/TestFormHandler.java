@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl.test;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.FormHandlerImpl;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.User;
@@ -42,8 +43,18 @@ public class TestFormHandler extends FormHandlerImpl {
     }
 
     @Override
-    public Object getModel() {
-        return binder.getModel();
+    public void notifyFieldChange(String fieldName, Object newValue) {
+        super.notifyFieldChange(fieldName, newValue);
+    }
+
+    @Override
+    public void processFieldChange(FormField formField, Object newValue) {
+        super.processFieldChange(formField, newValue);
+    }
+
+    @Override
+    public void setEnabledOnChangeValidations(boolean enabledOnChangeValidations) {
+        super.setEnabledOnChangeValidations(enabledOnChangeValidations);
     }
 
     @Override

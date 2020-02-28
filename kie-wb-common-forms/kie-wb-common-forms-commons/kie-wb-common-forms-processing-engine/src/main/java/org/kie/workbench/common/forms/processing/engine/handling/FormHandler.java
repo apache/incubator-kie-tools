@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.processing.engine.handling;
 
 import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.databinding.client.api.DataBinder;
 
 /**
  * Provides API to handle the input changes allowing to add callbacks and run
@@ -26,41 +25,17 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 public interface FormHandler<T> {
 
     /**
-     * Sets Up the FormHandler for the given DataBinder. It configures all the field
-     * callbacks required to process the field changes but doesn't bind the field
-     * Widgets to the DataBinder. Binder mustn't be null.
-     * 
-     * @param binder
-     *            The binder, must not be null.
-     */
-    void setUp(DataBinder<T> binder);
-
-    /**
-     * Sets up the FormHancler for the given DataBinder. It configures all the field
-     * callbacks required to process the field changes and binds the field Widgets
-     * to the DataBinder depending on the bindingInputs param.
-     * 
-     * @param binder
-     *            The binder, must not be null.
-     * @param bindInputs
-     *            Determines if the form widgets must be binded to the DataBinder
-     *            when registered or not,
-     */
-    void setUp(DataBinder<T> binder, boolean bindInputs);
-
-    /**
      * Sets up the FormHandler for the given model, Creates a DataBinder instance
      * for the given model, configures all the field callbacks required to process
      * the field changes and binds the field Widgets to the DataBinder
-     * 
-     * @param model
-     *            The form model, it must not be null.
+     *
+     * @param model The form model, it must not be null.
      */
     void setUp(T model);
 
     /**
      * Retrives the model used on the Form
-     * 
+     *
      * @return
      */
     T getModel();
@@ -71,9 +46,8 @@ public interface FormHandler<T> {
      * depending on how the FormHandler has been setUp.
      * <p>
      * Any of the setUp method's must be executed before register any FormField
-     * 
-     * @param formField
-     *            The FormField, it must not be null.
+     *
+     * @param formField The FormField, it must not be null.
      */
     void registerInput(FormField formField);
 
@@ -83,24 +57,22 @@ public interface FormHandler<T> {
      * depending on how the FormHandler has been setUp.
      * <p>
      * Any of the setUp method's must be executed before register any FormField
-     * 
-     * @param formField
-     *            The FormField, it must not be null.
-     * @param converter
-     *            The value converter used in data binding, if necessary
+     *
+     * @param formField The FormField, it must not be null.
+     * @param converter The value converter used in data binding, if necessary
      */
     void registerInput(FormField formField, Converter converter);
 
     /**
      * Validates all the form fields.
-     * 
+     *
      * @return
      */
     boolean validate();
 
     /**
      * Validates a specific Field of the form.
-     * 
+     *
      * @param propertyName
      * @return
      */
@@ -114,21 +86,18 @@ public interface FormHandler<T> {
     /**
      * Adds FieldChangeHandler that will be notified when any of the form fields
      * value changes. Multiple handlers can be added.
-     * 
-     * @param handler
-     *            The handler, it must not be null.
+     *
+     * @param handler The handler, it must not be null.
      */
     void addFieldChangeHandler(FieldChangeHandler handler);
 
     /**
      * Adds FieldChangeHandler that will be notified when the specified field value
      * changes. Multiple handlers can be added.
-     * 
-     * @param fieldName
-     *            The name of the field, if it is null the handler will be notified
-     *            on any field change.
-     * @param handler
-     *            The handler, it must not be null.
+     *
+     * @param fieldName The name of the field, if it is null the handler will be notified
+     *                  on any field change.
+     * @param handler   The handler, it must not be null.
      */
     void addFieldChangeHandler(String fieldName, FieldChangeHandler handler);
 
@@ -137,5 +106,16 @@ public interface FormHandler<T> {
      */
     void setReadOnly(boolean readOnly);
 
+    /**
+     * Retrieves the rendered {@link Form}
+     *
+     * @return the rendered {@link Form}
+     */
     Form getForm();
+
+    /**
+     * Tries to flush the changes on the form UI into the bound model. If there's a validation error it will rollback
+     * the changes and leave the form on the previous state.
+     */
+    void maybeFlush();
 }
