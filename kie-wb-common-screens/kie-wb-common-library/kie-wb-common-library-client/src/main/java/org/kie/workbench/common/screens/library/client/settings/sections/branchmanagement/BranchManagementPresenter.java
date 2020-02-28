@@ -17,14 +17,15 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.branchmanagement;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.Element;
-import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
@@ -39,7 +40,6 @@ import org.kie.workbench.common.screens.library.client.settings.util.sections.Se
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
-import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 import org.uberfire.client.promise.Promises;
@@ -54,9 +54,11 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
 
         void hideError();
 
-        HTMLElement getBranchesSelectContainer();
-
         Element getRoleAccessTable();
+
+        void setupBranchSelect(final List<KieSelectOption> options,
+                               final String initialValue,
+                               final Consumer<String> onChange);
 
         void showEmptyState();
     }
@@ -64,7 +66,6 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
     private final View view;
     private final Caller<LibraryService> libraryService;
     private final LibraryPlaces libraryPlaces;
-    private final KieSelectElement branchesSelect;
     private final RoleAccessListPresenter roleAccessListPresenter;
     private final ProjectController projectController;
 
@@ -78,14 +79,12 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
                                      final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent,
                                      final Caller<LibraryService> libraryService,
                                      final LibraryPlaces libraryPlaces,
-                                     final KieSelectElement branchesSelect,
                                      final RoleAccessListPresenter roleAccessListPresenter,
                                      final ProjectController projectController) {
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
-        this.branchesSelect = branchesSelect;
         this.roleAccessListPresenter = roleAccessListPresenter;
         this.projectController = projectController;
     }
@@ -102,7 +101,7 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
 
             selectedBranch = libraryPlaces.getActiveWorkspace().getBranch().getName();
 
-            branchesSelect.setup(branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
+            view.setupBranchSelect(branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
                                  selectedBranch,
                                  this::setBranch);
 

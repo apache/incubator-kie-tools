@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.library.client.settings.sections.branchmanagement;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,6 +32,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 
 @Templated
 public class BranchManagementView implements BranchManagementPresenter.View {
@@ -64,8 +69,8 @@ public class BranchManagementView implements BranchManagementPresenter.View {
     private HTMLHeadingElement title;
 
     @Inject
-    @DataField("branches-select-container")
-    private HTMLDivElement branchesSelectContainer;
+    @DataField("branches-select")
+    private KieSelectElement branchesSelect;
 
     @Inject
     @Named("tbody")
@@ -119,11 +124,6 @@ public class BranchManagementView implements BranchManagementPresenter.View {
     }
 
     @Override
-    public HTMLElement getBranchesSelectContainer() {
-        return branchesSelectContainer;
-    }
-
-    @Override
     public String getTitle() {
         return title.textContent;
     }
@@ -131,6 +131,11 @@ public class BranchManagementView implements BranchManagementPresenter.View {
     @Override
     public Element getRoleAccessTable() {
         return roleAccessTable;
+    }
+
+    @Override
+    public void setupBranchSelect(List<KieSelectOption> options, String initialValue, Consumer<String> onChange) {
+        branchesSelect.setup(options, initialValue, onChange);
     }
 
     @Override
