@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumen
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput.EMPTY;
 
 @DMNEditor
@@ -62,6 +63,8 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     private final HTMLDownloadHelper downloadHelper;
 
+    private final DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier;
+
     @Inject
     public DMNDocumentationView(final HTMLDivElement documentationPanel,
                                 final HTMLDivElement documentationContent,
@@ -69,7 +72,8 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
                                 final HTMLButtonElement downloadHtmlFile,
                                 final PrintHelper printHelper,
                                 final DMNDocumentationService documentationService,
-                                final HTMLDownloadHelper downloadHelper) {
+                                final HTMLDownloadHelper downloadHelper,
+                                final DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier) {
         this.documentationPanel = documentationPanel;
         this.documentationContent = documentationContent;
         this.printButton = printButton;
@@ -77,12 +81,17 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
         this.printHelper = printHelper;
         this.documentationService = documentationService;
         this.downloadHelper = downloadHelper;
+        this.buttonsVisibilitySupplier = buttonsVisibilitySupplier;
     }
 
     @Override
     public DocumentationView<Diagram> refresh() {
         refreshDocumentationHTML();
         refreshDocumentationHTMLAfter200ms();
+        if (!buttonsVisibilitySupplier.isButtonsVisible()) {
+            hide(printButton);
+            hide(downloadHtmlFile);
+        }
         return this;
     }
 

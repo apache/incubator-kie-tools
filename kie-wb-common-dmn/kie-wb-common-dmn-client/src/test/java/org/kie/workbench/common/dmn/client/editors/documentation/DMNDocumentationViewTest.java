@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationService;
 import org.kie.workbench.common.dmn.client.editors.documentation.common.HTMLDownloadHelper;
+import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
@@ -44,6 +46,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,6 +75,18 @@ public class DMNDocumentationViewTest {
     @Mock
     private HTMLDownloadHelper downloadHelper;
 
+    @Mock
+    private DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier;
+
+    @Mock
+    private DOMTokenList printButtonClassList;
+
+    @Mock
+    private DOMTokenList downloadButtonClassList;
+
+    @Mock
+    private HTMLButtonElement downloadHtmlFileButton;
+
     @Captor
     private ArgumentCaptor<DomGlobal.SetTimeoutCallbackFn> callback;
 
@@ -79,16 +94,39 @@ public class DMNDocumentationViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DMNDocumentationView(documentationPanel, documentationContent, printButton, null, printHelper, documentationService, downloadHelper));
+
+        printButton.classList = printButtonClassList;
+        downloadHtmlFileButton.classList = downloadButtonClassList;
+        view = spy(new DMNDocumentationView(documentationPanel, documentationContent, printButton, downloadHtmlFileButton, printHelper, documentationService, downloadHelper, buttonsVisibilitySupplier));
     }
 
     @Test
     public void testRefresh() {
 
         doNothing().when(view).setTimeout(any(), anyInt());
+        when(buttonsVisibilitySupplier.isButtonsVisible()).thenReturn(true);
 
         view.refresh();
 
+        verify(downloadButtonClassList, never()).add(HiddenHelper.HIDDEN_CSS_CLASS);
+        verify(printButtonClassList, never()).add(HiddenHelper.HIDDEN_CSS_CLASS);
+
+        verify(buttonsVisibilitySupplier).isButtonsVisible();
+        verify(view).refreshDocumentationHTML();
+        verify(view).refreshDocumentationHTMLAfter200ms();
+    }
+
+    @Test
+    public void testRefreshWhenButtonsAreNotVisible() {
+
+        doNothing().when(view).setTimeout(any(), anyInt());
+        when(buttonsVisibilitySupplier.isButtonsVisible()).thenReturn(false);
+
+        view.refresh();
+
+        verify(downloadButtonClassList).add(HiddenHelper.HIDDEN_CSS_CLASS);
+        verify(printButtonClassList).add(HiddenHelper.HIDDEN_CSS_CLASS);
+        verify(buttonsVisibilitySupplier).isButtonsVisible();
         verify(view).refreshDocumentationHTML();
         verify(view).refreshDocumentationHTMLAfter200ms();
     }
