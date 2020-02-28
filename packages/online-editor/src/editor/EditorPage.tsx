@@ -21,7 +21,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem, Title } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
@@ -166,12 +166,14 @@ export function EditorPage(props: Props) {
           isPageFullscreen={fullscreen}
         />
       }
-      // skipToContent={null/* optional: Skip to content component for the page */}
-      // mainContainerId={"null"/* optional: an id to use for the [role="main"] element */}
-      // onPageResize={(): void => null/* optional: Can add callback to be notified when resize occurs, for example to set the sidebar isNav prop to false for a width < 768px | Returns object { mobileView: boolean, windowSize: number } */}
-      // mainAriaLabel={"string"/* optional: Accessible label, can be used to name main section */}
     >
-
+<Title
+  size={"xs"}
+  className={"sr-only"}
+  headingLevel={'h1'}
+>
+  Kogito editor
+</Title>
     {!fullscreen && (
       <PageSection variant="dark" noPadding={true}>
         {copySuccessAlertVisible && (
@@ -195,7 +197,7 @@ export function EditorPage(props: Props) {
       />
     </PageSection>
     <a ref={downloadRef} />
-    <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+    <textarea ref={copyContentTextArea} aria-hidden={"true"} disabled={true} style={{ height: 0, position: "absolute", zIndex: -1 }} />
   </Page>
 );
 }

@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { Button, PageSection, TextInput, Title, Toolbar, ToolbarGroup, ToolbarItem, PageHeader, Brand, DropdownToggle, Level, LevelItem } from "@patternfly/react-core";
-import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon } from "@patternfly/react-icons";
+import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
 import { useLocation } from "react-router";
 import {
   Dropdown,
@@ -42,6 +42,7 @@ export function EditorToolbar(props: Props) {
   const location = useLocation();
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState(context.file.fileName);
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
 
   const {isPageFullscreen} = props;
@@ -83,6 +84,14 @@ export function EditorToolbar(props: Props) {
 
   const kebabItems = useMemo(
     () => [
+      <>{context.external && !context.readonly && (
+        <Button key="github" onClick={props.onSave}>
+          Send changes to GitHub
+        </Button>
+      )}</>,
+      <DropdownItem key="download" component="button" onClick={props.onDownload} className="pf-u-display-none-on-lg">
+        Download
+      </DropdownItem>,
       <DropdownItem key="copy" component="button" onClick={props.onCopyContentToClipboard}>
         Copy source
       </DropdownItem>,
@@ -121,35 +130,35 @@ export function EditorToolbar(props: Props) {
   );
 
   const headerToolbar = (
-      // TODO: The toolbar should be switched out for DataToolbar
+      // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
       <Toolbar>
         <ToolbarGroup>
           {context.external && !context.readonly && (
-            <ToolbarItem>
+            <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
               <Button variant="primary" onClick={props.onSave}>
                 Send changes to GitHub
               </Button>
             </ToolbarItem>
           )}
           <ToolbarItem>
-            <Button variant={"secondary"} onClick={props.onDownload}>
+            <Button variant={"secondary"} onClick={props.onDownload} className="pf-u-display-none pf-u-display-flex-on-lg">
               Download
             </Button>
           </ToolbarItem>
           </ToolbarGroup>
           <ToolbarGroup>
-          <ToolbarItem>
+          <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
             <Dropdown
-              onSelect={() => setKebabOpen(false)}
+              onSelect={() => setMenuOpen(false)}
               toggle={
                 <DropdownToggle 
-                id="toggle-id" 
-                onToggle={isOpen => setKebabOpen(isOpen)} 
+                id="toggle-id-lg" 
+                onToggle={isOpen => setMenuOpen(isOpen)} 
                 iconComponent={CaretDownIcon}>
                   File actions
                 </DropdownToggle>
               }
-              isOpen={isKebabOpen}
+              isOpen={isMenuOpen}
               isPlain={true}
               dropdownItems={kebabItems}
               position={DropdownPosition.right}
@@ -157,14 +166,30 @@ export function EditorToolbar(props: Props) {
           </ToolbarItem>
           </ToolbarGroup>
           <ToolbarGroup>
-            <ToolbarItem>
-              <Button variant="plain" onClick={props.onFullScreen}>
+            <ToolbarItem className="pf-u-display-none-on-lg">
+              <Dropdown
+                onSelect={() => setKebabOpen(false)}
+                toggle={
+                  <DropdownToggle 
+                  id="toggle-id-sm" 
+                  onToggle={isOpen => setKebabOpen(isOpen)} 
+                  iconComponent={EllipsisVIcon} />
+                }
+                isOpen={isKebabOpen}
+                isPlain={true}
+                dropdownItems={kebabItems}
+                position={DropdownPosition.right}
+              />
+            </ToolbarItem>
+
+            <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
+              <Button variant="plain" onClick={props.onFullScreen} aria-label="Full screen">
                 <ExpandIcon />
               </Button>
             </ToolbarItem>
             {!context.external && (
               <ToolbarItem>
-                <Button variant="plain" onClick={props.onClose}>
+                <Button variant="plain" onClick={props.onClose} aria-label="Close">
                   <CloseIcon />
                 </Button>
               </ToolbarItem>
