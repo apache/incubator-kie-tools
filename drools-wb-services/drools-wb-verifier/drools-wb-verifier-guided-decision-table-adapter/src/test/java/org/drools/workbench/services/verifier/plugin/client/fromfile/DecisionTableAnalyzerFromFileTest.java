@@ -17,11 +17,12 @@
 package org.drools.workbench.services.verifier.plugin.client.fromfile;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.api.reporting.CheckType;
+import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.verifier.core.main.Analyzer;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
@@ -32,6 +33,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Sets;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.plugin.client.testutil.TestUtil.assertContains;
@@ -128,6 +130,30 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
     }
 
     @Test
+    public void emptyValueListOnColumnShouldNotCountAsAnEnum() throws
+            Exception {
+
+        analyzerProvider.getFactTypes()
+                .add(new FactTypes.FactType("Data",
+                                            new Sets.Builder<FactTypes.Field>()
+                                                    .add(new FactTypes.Field("totalAmount",
+                                                                             org.drools.verifier.core.index.model.DataType.TYPE_NUMERIC_FLOAT))
+                                                    .build()));
+
+        final String xml = loadResource("DROOLS-5059.gdst");
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(GuidedDTXMLPersistence.getInstance()
+                                                                        .unmarshal(xml));
+
+        analyzer.resetChecks();
+        analyzer.analyze();
+
+        Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
+        assertOnlyContains(analysisReport,
+                           CheckType.MISSING_RANGE);
+    }
+
+    @Test
     @Ignore
     public void testFile3() throws
             Exception {
@@ -182,12 +208,10 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
             Exception {
         analyzerProvider.getFactTypes()
                 .add(new FactTypes.FactType("Player",
-                                            new HashSet<FactTypes.Field>() {
-                                                {
-                                                    add(new FactTypes.Field("score",
-                                                                            DataType.TYPE_NUMERIC_INTEGER));
-                                                }
-                                            }));
+                                            new Sets.Builder<FactTypes.Field>()
+                                                    .add(new FactTypes.Field("score",
+                                                                             DataType.TYPE_NUMERIC_INTEGER))
+                                                    .build()));
 
         final String xml = loadResource("Score Achievements.gdst");
 

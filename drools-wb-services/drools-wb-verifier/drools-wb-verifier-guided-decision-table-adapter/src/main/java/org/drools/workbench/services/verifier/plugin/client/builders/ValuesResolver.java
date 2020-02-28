@@ -377,6 +377,6 @@ public class ValuesResolver {
     private boolean isTypeGuvnorEnum() {
         return conditionColumn != null &&
                 conditionColumn.getValueList() != null &&
-                conditionColumn.getValueList().split(",").length != 0;
+                !conditionColumn.getValueList().trim().isEmpty();
     }
 }
