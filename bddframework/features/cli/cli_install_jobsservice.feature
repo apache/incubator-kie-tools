@@ -27,7 +27,7 @@ Feature: CLI: Install Kogito Jobs Service
 
   @persistence
   Scenario: CLI install Kogito Jobs Service with persistence
-    Given Kogito Operator is deployed with dependencies
+    Given Kogito Operator is deployed with Infinispan operator
     
     When CLI install Kogito Jobs Service with persistence and 1 replicas
     And Kogito Jobs Service has 1 pods running within 5 minutes

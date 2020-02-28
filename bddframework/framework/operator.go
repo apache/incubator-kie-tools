@@ -37,23 +37,28 @@ const (
 )
 
 type dependentOperator struct {
-	timeoutInMin int
-	channel      string
+	operatorPackageName string
+	timeoutInMin        int
+	channel             string
 }
 
 var (
-	kogitoOperatorCommunityDependencies = map[string]dependentOperator{
-		"infinispan": {
-			timeoutInMin: 20,
-			channel:      "stable",
+	// KogitoOperatorCommunityDependencies contains list of community operators to be used together with Kogito operator
+	KogitoOperatorCommunityDependencies = map[string]dependentOperator{
+		"Infinispan": {
+			operatorPackageName: "infinispan",
+			timeoutInMin:        20,
+			channel:             "stable",
 		},
-		"strimzi-kafka-operator": {
-			timeoutInMin: 20,
-			channel:      "stable",
+		"Kafka": {
+			operatorPackageName: "strimzi-kafka-operator",
+			timeoutInMin:        20,
+			channel:             "stable",
 		},
-		"keycloak-operator": {
-			timeoutInMin: 20,
-			channel:      "alpha",
+		"Keycloak": {
+			operatorPackageName: "keycloak-operator",
+			timeoutInMin:        20,
+			channel:             "alpha",
 		},
 	}
 )
@@ -99,27 +104,35 @@ func WaitForKogitoOperatorRunningWithDependencies(namespace string) error {
 	if err := WaitForKogitoOperatorRunning(namespace); err != nil {
 		return err
 	}
-	return WaitForKogitoOperatorDependenciesRunning(namespace)
-}
 
-// InstallCommunityKogitoOperatorDependencies installs all dependent operators
-func InstallCommunityKogitoOperatorDependencies(namespace string) error {
-	for subscriptionName := range kogitoOperatorCommunityDependencies {
-		operatorInfo := kogitoOperatorCommunityDependencies[subscriptionName]
-		if err := InstallCommunityOperator(namespace, subscriptionName, operatorInfo.channel); err != nil {
+	for dependentOperator := range KogitoOperatorCommunityDependencies {
+		if err := WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// WaitForKogitoOperatorDependenciesRunning waits for all dependent operators to be running
-func WaitForKogitoOperatorDependenciesRunning(namespace string) error {
-	for subscriptionName := range kogitoOperatorCommunityDependencies {
-		operatorInfo := kogitoOperatorCommunityDependencies[subscriptionName]
-		if err := WaitForOperatorRunning(namespace, subscriptionName, communityCatalog, operatorInfo.timeoutInMin); err != nil {
+// InstallCommunityKogitoOperatorDependency installs dependent operator from parameter
+func InstallCommunityKogitoOperatorDependency(namespace, dependentOperator string) error {
+	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
+		if err := InstallCommunityOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel); err != nil {
 			return err
 		}
+	} else {
+		return fmt.Errorf("Operator %s not found", dependentOperator)
+	}
+	return nil
+}
+
+// WaitForKogitoOperatorDependencyRunning waits for dependent operator to be running
+func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string) error {
+	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
+		if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, communityCatalog, operatorInfo.timeoutInMin); err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("Operator %s not found", dependentOperator)
 	}
 	return nil
 }

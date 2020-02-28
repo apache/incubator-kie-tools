@@ -3,7 +3,7 @@ Feature: CLI: Install Kogito Infra Component
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with dependencies
+    And Kogito Operator is deployed with Infinispan, Kafka and Keycloak operators
 
   Scenario Outline: CLI install Kogito Infra Component
     When CLI install Kogito Infra <component>

@@ -3,7 +3,7 @@ Feature: CR: Kogito Infra
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with dependencies
+    And Kogito Operator is deployed with Infinispan, Kafka and Keycloak operators
 
   Scenario Outline: CR install Kogito Infra component
     When Install Kogito Infra <component>

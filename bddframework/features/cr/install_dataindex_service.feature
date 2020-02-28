@@ -4,7 +4,7 @@ Feature: CR: Install Kogito Data Index
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with dependencies
+    And Kogito Operator is deployed with Infinispan and Kafka operators
 
   Scenario: CR: Install Kogito Data Index
     When Install Kogito Data Index with 1 replicas

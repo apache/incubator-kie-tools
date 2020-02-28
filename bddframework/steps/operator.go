@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -25,7 +26,7 @@ import (
 func registerOperatorSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
 	s.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
-	s.Step(`^Kogito Operator is deployed with dependencies$`, data.kogitoOperatorIsDeployedWithDependencies)
+	s.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
 }
 
 func (data *Data) kogitoOperatorShouldBeInstalledWithDependencies() error {
@@ -49,7 +50,7 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 	return nil
 }
 
-func (data *Data) kogitoOperatorIsDeployedWithDependencies() error {
+func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) error {
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
@@ -59,9 +60,21 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies() error {
 	}
 
 	// Install operator dependencies
-	if err := framework.InstallCommunityKogitoOperatorDependencies(data.Namespace); err != nil {
-		return err
+	var installedOperators []string
+	for dependentOperator := range framework.KogitoOperatorCommunityDependencies {
+		if strings.Contains(dependencies, dependentOperator) {
+			if err := framework.InstallCommunityKogitoOperatorDependency(data.Namespace, dependentOperator); err != nil {
+				return err
+			}
+			installedOperators = append(installedOperators, dependentOperator)
+		}
 	}
 
-	return framework.WaitForKogitoOperatorRunningWithDependencies(data.Namespace)
+	for _, installedOperator := range installedOperators {
+		if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, installedOperator); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

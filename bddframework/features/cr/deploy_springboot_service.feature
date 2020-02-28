@@ -19,7 +19,7 @@ Feature: CR: Deploy spring boot service with persistence
   @disabled
   @persistence
   Scenario: CR deploy jbpm-springboot-example service with persistence
-    Given Kogito Operator is deployed with dependencies
+    Given Kogito Operator is deployed with Infinispan operator
     And Deploy spring boot example service "jbpm-springboot-example" with persistence enabled
     And Kogito application "jbpm-springboot-example" has 1 pods running within 10 minutes
     And HTTP GET request on service "jbpm-springboot-example" with path "orders" is successful within 3 minutes

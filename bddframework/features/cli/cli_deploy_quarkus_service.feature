@@ -27,7 +27,7 @@ Feature: CLI: Deploy quarkus service
 
   @persistence
   Scenario Outline: CLI deploy jbpm-quarkus-example service with persistence
-    Given Kogito Operator is deployed with dependencies
+    Given Kogito Operator is deployed with Infinispan operator
     And CLI deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native>
     And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes

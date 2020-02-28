@@ -5,7 +5,7 @@ Feature: CLI: Install Kogito Data Index
   @smoke
   Scenario: CLI install Kogito Data Index
     Given Namespace is created
-    And Kogito Operator is deployed with dependencies
+    And Kogito Operator is deployed with Infinispan and Kafka operators
 
     When CLI install Kogito Data Index with 1 replicas
 
