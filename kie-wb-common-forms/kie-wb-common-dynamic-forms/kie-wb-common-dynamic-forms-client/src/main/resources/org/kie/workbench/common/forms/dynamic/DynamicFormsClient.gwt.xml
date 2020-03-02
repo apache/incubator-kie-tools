@@ -8,10 +8,6 @@
   <inherits name="org.hibernate.validator.HibernateValidator"/>
   <inherits name="org.jboss.errai.validation.Validation"/>
 
-  <inherits name="org.uberfire.commons.UberfireCommons"/>
-
-  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
-
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
 
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsAPI"/>
