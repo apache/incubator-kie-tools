@@ -77,7 +77,7 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 	GetLogger(namespace).Infof("Wait %s for %s", timeout.String(), display)
 
 	timeoutChan := time.After(timeout)
-	tick := time.NewTicker(timeout / 60)
+	tick := time.NewTicker(1 * time.Second)
 	defer tick.Stop()
 
 	for {
