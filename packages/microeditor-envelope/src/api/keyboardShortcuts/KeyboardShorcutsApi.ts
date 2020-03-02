@@ -16,6 +16,9 @@
 
 import { KeyBinding, KeyBindingServiceOpts } from "./DefaultKeyboardShorcutsService";
 
+/**
+ * PUBLIC ENVELOPE API
+ */
 export interface KeyboardShortcutsApi {
   registerKeyPress(
     combination: string,
