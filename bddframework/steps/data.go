@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -31,7 +32,6 @@ type Data struct {
 
 // RegisterAllSteps register all steps available to the test suite
 func (data *Data) RegisterAllSteps(s *godog.Suite) {
-	registerCliSteps(s, data)
 	registerGraphQLSteps(s, data)
 	registerHTTPSteps(s, data)
 	registerKogitoAppSteps(s, data)
@@ -54,9 +54,18 @@ func (data *Data) BeforeScenario(s interface{}) {
 
 // AfterScenario executes some actions on data after a scenario is finished
 func (data *Data) AfterScenario(s interface{}, err error) {
-	framework.StopPodLogCollector(data.Namespace)
-	framework.FlushLogger(data.Namespace)
-	framework.BumpEvents(data.Namespace)
+	framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
+		if err := framework.StopPodLogCollector(namespace); err != nil {
+			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
+		}
+		if err := framework.FlushLogger(namespace); err != nil {
+			framework.GetMainLogger().Errorf("Error flushing running logs for namespace %s: %v", namespace, err)
+		}
+		if err := framework.BumpEvents(data.Namespace); err != nil {
+			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
+		}
+		return nil
+	})
 
 	logScenarioDuration(data, s)
 	handleScenarioResult(data, s, err)
@@ -69,7 +78,8 @@ func logScenarioDuration(data *Data, s interface{}) {
 }
 
 func handleScenarioResult(data *Data, s interface{}, err error) {
-	newLogFolderName := fmt.Sprintf("%s - %s", framework.GetScenarioName(s), data.Namespace)
+	scenarioName := strings.ReplaceAll(framework.GetScenarioName(s), "/", "_")
+	newLogFolderName := fmt.Sprintf("%s - %s", scenarioName, data.Namespace)
 	if err != nil {
 		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", framework.GetScenarioName(s), err)
 

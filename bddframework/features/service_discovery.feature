@@ -8,17 +8,17 @@ Feature: Discovery with onboarding
   Scenario Outline: Deploy onboarding example
     Given Kogito Operator is deployed
     
-    When Deploy quarkus example service "onboarding-example/hr" with native <native> and labels 
+    When "CR" deploy quarkus example service "onboarding-example/hr" with native "<native>" and labels 
       | department         | process |
       | id                 | process |
       | employeeValidation | process |
 
-    And Deploy quarkus example service "onboarding-example/payroll" with native <native> and labels
+    And "CR" deploy quarkus example service "onboarding-example/payroll" with native "<native>" and labels
       | taxes/rate         | process |
       | vacations/days     | process |
       | payments/date      | process |
 
-    And Deploy quarkus example service "onboarding-example/onboarding" with native <native> and labels
+    And "CR" deploy quarkus example service "onboarding-example/onboarding" with native "<native>" and labels
       | onboarding         | process |
 
     And Kogito application "hr" has 1 pods running within <minutes> minutes
@@ -45,9 +45,9 @@ Feature: Discovery with onboarding
     
     Examples: Non Native
       | native      | minutes |
-      | "disabled"  | 10      |
+      | false       | 10      |
 
     @native
     Examples: Native
       | native    | minutes |
-      | "enabled" | 20      |
+      | true      | 20      |

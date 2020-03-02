@@ -20,12 +20,12 @@ import (
 )
 
 func registerKogitoDataIndexServiceSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Install Kogito Data Index with (\d+) replicas$`, data.deployKogitoDataIndexServiceWithReplicas)
+	s.Step(`^"([^"]*)" install Kogito Data Index with (\d+) replicas$`, data.installKogitoDataIndexServiceWithReplicas)
 	s.Step(`^Kogito Data Index has (\d+) pods running within (\d+) minutes$`, data.kogitoDataIndexHasPodsRunningWithinMinutes)
 }
 
-func (data *Data) deployKogitoDataIndexServiceWithReplicas(replicas int) error {
-	return framework.DeployKogitoDataIndexService(data.Namespace, replicas)
+func (data *Data) installKogitoDataIndexServiceWithReplicas(installerType string, replicas int) error {
+	return framework.InstallKogitoDataIndexService(data.Namespace, framework.MustParseInstallerType(installerType), replicas)
 }
 
 func (data *Data) kogitoDataIndexHasPodsRunningWithinMinutes(podNb, timeoutInMin int) error {

@@ -22,20 +22,48 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	apps "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-// DeployKogitoJobsService deploy the Kogito Jobs service
-func DeployKogitoJobsService(namespace string, replicas int, persistence bool) error {
-	GetLogger(namespace).Infof("Deploy Kogito jobs service")
+// InstallKogitoJobsService deploy the Kogito Jobs service
+func InstallKogitoJobsService(namespace string, installerType InstallerType, replicas int, persistence bool) error {
+	GetLogger(namespace).Infof("%s install Kogito Jobs Service with %d replicas and persistence %v", installerType, replicas, persistence)
+	switch installerType {
+	case CLIInstallerType:
+		return cliInstallKogitoJobsService(namespace, replicas, persistence)
+	case CRInstallerType:
+		return crInstallKogitoJobsService(namespace, replicas, persistence)
+	default:
+		panic(fmt.Errorf("Unknown installer type %s", installerType))
+	}
+}
+
+func crInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
 	service := getJobsServiceStub(namespace, replicas, persistence)
 
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(service); err != nil {
 		return fmt.Errorf("Error creating Kogito jobs service: %v", err)
 	}
 	return nil
+}
+
+func cliInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
+	cmd := []string{"install", "jobs-service"}
+
+	if persistence {
+		cmd = append(cmd, "--enable-persistence")
+	}
+
+	// Get correct image tag
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
+	image.Tag = GetConfigServicesImageVersion()
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
+	return err
 }
 
 // GetKogitoJobsService retrieves the running jobs service
@@ -49,17 +77,22 @@ func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoJobsService, error)
 	return service, nil
 }
 
+// GetKogitoJobsServiceDeployment retrieves the running jobs service deployment
+func GetKogitoJobsServiceDeployment(namespace string) (*apps.Deployment, error) {
+	return GetDeployment(namespace, infrastructure.DefaultJobsServiceName)
+}
+
 // WaitForKogitoJobsService waits that the jobs service has a certain number of replicas
 func WaitForKogitoJobsService(namespace string, replicas, timeoutInMin int) error {
 	return WaitFor(namespace, "Kogito jobs service running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		service, err := GetKogitoJobsService(namespace)
+		service, err := GetKogitoJobsServiceDeployment(namespace)
 		if err != nil {
 			return false, err
 		}
 		if service == nil {
 			return false, nil
 		}
-		return service.Status.DeploymentStatus.AvailableReplicas == int32(replicas), nil
+		return service.Status.Replicas == int32(replicas) && service.Status.AvailableReplicas == int32(replicas), nil
 	})
 }
 

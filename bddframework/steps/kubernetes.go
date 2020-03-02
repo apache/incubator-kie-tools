@@ -25,6 +25,9 @@ import (
 func registerKubernetesSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Namespace is created$`, data.namespaceIsCreated)
 	s.Step(`^Namespace is deleted$`, data.namespaceIsDeleted)
+
+	s.Step(`^CLI create namespace$`, data.cliCreateNamespace)
+	s.Step(`^CLI use namespace$`, data.cliUseNamespace)
 }
 
 func (data *Data) namespaceIsCreated() error {
@@ -46,4 +49,14 @@ func (data *Data) namespaceIsDeleted() error {
 		})
 	}
 	return nil
+}
+
+func (data *Data) cliCreateNamespace() error {
+	_, err := framework.ExecuteCliCommand(data.Namespace, "new-project", data.Namespace)
+	return err
+}
+
+func (data *Data) cliUseNamespace() error {
+	_, err := framework.ExecuteCliCommand(data.Namespace, "use-project", data.Namespace)
+	return err
 }

@@ -78,6 +78,16 @@ func IsNamespace(namespace string) (bool, error) {
 	return ns != nil, nil
 }
 
+// OperateOnNamespaceIfExists do some operations on the namespace if that one exists
+func OperateOnNamespaceIfExists(namespace string, operate func(namespace string) error) error {
+	if ok, er := IsNamespace(namespace); er != nil {
+		return fmt.Errorf("Error while checking namespace: %v", er)
+	} else if ok {
+		return operate(namespace)
+	}
+	return nil
+}
+
 // WaitForPods waits for pods with specific label to be available and running
 func WaitForPods(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
 	return WaitFor(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {

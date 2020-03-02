@@ -27,8 +27,20 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// DeployKogitoDataIndexService deploy the Kogito Data Index service
-func DeployKogitoDataIndexService(namespace string, replicas int) error {
+// InstallKogitoDataIndexService deploy the Kogito Data Index service
+func InstallKogitoDataIndexService(namespace string, installerType InstallerType, replicas int) error {
+	GetLogger(namespace).Infof("%s install Kogito Data Index with %d replicas", installerType, replicas)
+	switch installerType {
+	case CLIInstallerType:
+		return cliInstallKogitoDataIndex(namespace, replicas)
+	case CRInstallerType:
+		return crInstallKogitoDataIndex(namespace, replicas)
+	default:
+		panic(fmt.Errorf("Unknown installer type %s", installerType))
+	}
+}
+
+func crInstallKogitoDataIndex(namespace string, replicas int) error {
 	// Get correct image tag
 	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
 	image.Tag = GetConfigServicesImageVersion()
@@ -48,6 +60,18 @@ func DeployKogitoDataIndexService(namespace string, replicas int) error {
 		return fmt.Errorf("Error creating Kogito Data Index service: %v", err)
 	}
 	return nil
+}
+
+func cliInstallKogitoDataIndex(namespace string, replicas int) error {
+	cmd := []string{"install", "data-index"}
+
+	// Get correct image tag
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
+	image.Tag = GetConfigServicesImageVersion()
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
+	return err
 }
 
 // GetKogitoDataIndexDeployment retrieves the running data index deployment

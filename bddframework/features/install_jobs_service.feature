@@ -1,14 +1,13 @@
-@cr
 @jobsservice
-Feature: CR: Install Kogito Jobs Service
+Feature: Install Kogito Jobs Service
 
   Background:
     Given Namespace is created
 
-  Scenario: CR install Kogito Jobs Service
+  Scenario Outline: Install Kogito Jobs Service without persistence
     Given Kogito Operator is deployed
 
-    When Deploy Kogito Jobs Service with 1 replicas
+    When "<installer>" install Kogito Jobs Service with 1 replicas
     And Kogito Jobs Service has 1 pods running within 5 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
@@ -22,13 +21,24 @@ Feature: CR: Install Kogito Jobs Service
 
     Then HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes
 
+    @cr
+    Examples: CR
+      | installer |
+      | CR        |
+
+    @smoke
+    @cli
+    Examples: CLI
+      | installer |
+      | CLI       |
+
 #####
 
   @persistence
-  Scenario: CR install Kogito Jobs Service with persistence
+  Scenario Outline: Install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with Infinispan operator
     
-    When Deploy Kogito Jobs Service with persistence and 1 replicas
+    When "<installer>" install Kogito Jobs Service with 1 replicas and persistence
     And Kogito Jobs Service has 1 pods running within 5 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
@@ -44,3 +54,13 @@ Feature: CR: Install Kogito Jobs Service
     And Scale Kogito Jobs Service to 1 pods within 2 minutes
 
     Then HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes
+
+    @cr
+    Examples: CR
+      | installer |
+      | CR        |
+
+    @cli
+    Examples: CLI
+      | installer |
+      | CLI       |

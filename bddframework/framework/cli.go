@@ -15,12 +15,8 @@
 package framework
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
-
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
 
 // CheckCliBinaryExist checks if the CLI binary does exist
@@ -55,74 +51,4 @@ func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 func ExecuteCliCommandInNamespace(namespace string, args ...string) (string, error) {
 	args = append(args, "-p", namespace)
 	return ExecuteCliCommand(namespace, args...)
-}
-
-// CliDeployQuarkusExample deploy a Quarkus example with the CLI
-func CliDeployQuarkusExample(namespace, appName, contextDir string, native, persistence bool) error {
-	GetLogger(namespace).Infof("CLI Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
-	return CliDeployExample(namespace, appName, contextDir, "quarkus", native, persistence)
-}
-
-// CliDeploySpringBootExample deploys a Spring boot example with the CLI
-func CliDeploySpringBootExample(namespace, appName, contextDir string, persistence bool) error {
-	GetLogger(namespace).Infof("CLI Deploy spring boot example %s with name %s and persistence %v", contextDir, appName, persistence)
-	return CliDeployExample(namespace, appName, contextDir, "springboot", false, persistence)
-}
-
-// CliDeployExample deploys an example with the CLI
-func CliDeployExample(namespace, appName, contextDir, runtime string, native, persistence bool) error {
-	cmd := []string{"deploy-service", appName, GetConfigExamplesRepositoryURI()}
-
-	cmd = append(cmd, "-c", contextDir)
-	cmd = append(cmd, "-r", runtime)
-	if native {
-		cmd = append(cmd, "--native")
-	}
-	if ref := GetConfigExamplesRepositoryRef(); len(ref) > 0 {
-		cmd = append(cmd, "-b", ref)
-	}
-
-	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
-		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
-	}
-
-	if persistence {
-		cmd = append(cmd, "--install-infinispan", "Always")
-		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=-Ppersistence", mavenArgsAppendEnvVar))
-	}
-
-	cmd = append(cmd, "--image-version", GetConfigBuildImageVersion())
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
-}
-
-// CliInstallDataIndex installs the Kogito Data Index
-func CliInstallDataIndex(namespace string, replicas int) error {
-	cmd := []string{"install", "data-index"}
-
-	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
-	image.Tag = GetConfigServicesImageVersion()
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
-}
-
-// CliInstallKogitoJobsService installs the Kogito Jobs Service
-func CliInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
-	cmd := []string{"install", "jobs-service"}
-
-	if persistence {
-		cmd = append(cmd, "--enable-persistence")
-	}
-
-	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
 }

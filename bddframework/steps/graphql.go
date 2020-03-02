@@ -26,11 +26,11 @@ import (
 
 // registerHTTPSteps register all HTTP steps existing
 func registerGraphQLSteps(s *godog.Suite, data *Data) {
-	s.Step(`^GraphQL request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes)
-	s.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes)
+	s.Step(`^GraphQL request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery)
+	s.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes)
 }
 
-func (data *Data) graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes(serviceName string, timeoutInMin int, path string, query *gherkin.DocString) error {
+func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *gherkin.DocString) error {
 	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
@@ -39,7 +39,7 @@ func (data *Data) graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinute
 	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.Content, timeoutInMin)
 }
 
-func (data *Data) graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes(processName string, timeoutInMin int) error {
+func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {
 	query := getProcessInstancesNameQuery
 	path := "graphql"
 	serviceName := infrastructure.DefaultDataIndexName

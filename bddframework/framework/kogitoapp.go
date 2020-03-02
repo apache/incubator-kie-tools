@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -30,59 +31,109 @@ const (
 	mavenMirrorURLEnvVar  = "MAVEN_MIRROR_URL"
 )
 
-// DeployQuarkusExample deploy a Quarkus example
-func DeployQuarkusExample(namespace, appName, contextDir string, native, persistence, events bool, labels map[string]string) error {
-	GetLogger(namespace).Infof("Deploy quarkus example %s with name %s, native %v and persistence %v", contextDir, appName, native, persistence)
-	return DeployExample(namespace, appName, contextDir, "quarkus", native, persistence, events, labels)
+// KogitoAppDeployment defines the elements for the deployment of a kogito application
+type KogitoAppDeployment struct {
+	AppName     string
+	ContextDir  string
+	Runtime     v1alpha1.RuntimeType
+	Native      bool
+	Persistence bool
+	Events      bool
+	Labels      map[string]string
 }
 
-// DeploySpringBootExample deploys a Spring boot example
-func DeploySpringBootExample(namespace, appName, contextDir string, persistence, events bool, labels map[string]string) error {
-	GetLogger(namespace).Infof("Deploy spring boot example %s with name %s and persistence %v", contextDir, appName, persistence)
-	return DeployExample(namespace, appName, contextDir, "springboot", false, persistence, events, labels)
+// DeployExample deploy a Kogito example
+func DeployExample(namespace string, installerType InstallerType, kogitoAppDeployment KogitoAppDeployment) error {
+	GetLogger(namespace).Infof("%s deploy %s example %s with name %s, native %v, persistence %v, events %v and labels %v", installerType, kogitoAppDeployment.Runtime, kogitoAppDeployment.ContextDir, kogitoAppDeployment.AppName, kogitoAppDeployment.Native, kogitoAppDeployment.Persistence, kogitoAppDeployment.Events, kogitoAppDeployment.Labels)
+	switch installerType {
+	case CLIInstallerType:
+		return cliDeployExample(namespace, kogitoAppDeployment)
+	case CRInstallerType:
+		return crDeployExample(namespace, kogitoAppDeployment)
+	default:
+		panic(fmt.Errorf("Unknown installer type %s", installerType))
+	}
 }
 
 // DeployExample deploys an example
-func DeployExample(namespace, appName, contextDir, runtime string, native, persistence, events bool, labels map[string]string) error {
-	kogitoApp := getKogitoAppStub(namespace, appName, labels)
-	if runtime == "quarkus" {
-		kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
-	} else if runtime == "springboot" {
-		kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
-	}
+func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
+	kogitoApp := getKogitoAppStub(namespace, kogitoAppDeployment.AppName, kogitoAppDeployment.Labels)
+	kogitoApp.Spec.Runtime = kogitoAppDeployment.Runtime
 
 	gitProjectURI := GetConfigExamplesRepositoryURI()
-	kogitoApp.Spec.Build.Native = native
+	kogitoApp.Spec.Build.Native = kogitoAppDeployment.Native
 	kogitoApp.Spec.Build.GitSource.URI = &gitProjectURI
-	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
+	kogitoApp.Spec.Build.GitSource.ContextDir = kogitoAppDeployment.ContextDir
 	kogitoApp.Spec.Build.GitSource.Reference = GetConfigExamplesRepositoryRef()
 
 	// Add namespace for service discovery
 	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
 	appendNewEnvToKogitoApp(kogitoApp, "NAMESPACE", namespace)
 
-	profiles := ""
-	if persistence {
-		profiles = profiles + "persistence,"
+	var profiles []string
+	if kogitoAppDeployment.Persistence {
+		profiles = append(profiles, "persistence")
 		kogitoApp.Spec.Infra.InstallInfinispan = v1alpha1.KogitoAppInfraInstallInfinispanAlways
 	}
-	if events {
-		profiles = profiles + "events,"
+	if kogitoAppDeployment.Events {
+		profiles = append(profiles, "events")
 		kogitoApp.Spec.Infra.InstallKafka = v1alpha1.KogitoAppInfraInstallKafkaAlways
 		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
 		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
 	}
 
 	if len(profiles) > 0 {
-		appendNewEnvToKogitoAppBuild(kogitoApp, mavenArgsAppendEnvVar, "-P"+profiles)
+		appendNewEnvToKogitoAppBuild(kogitoApp, mavenArgsAppendEnvVar, "-P"+strings.Join(profiles, ","))
 	}
 
 	setupBuildImageStreams(kogitoApp)
 
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoApp); err != nil {
-		return fmt.Errorf("Error creating example service %s: %v", appName, err)
+		return fmt.Errorf("Error creating example service %s: %v", kogitoAppDeployment.AppName, err)
 	}
 	return nil
+}
+
+func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
+	cmd := []string{"deploy-service", kogitoAppDeployment.AppName, GetConfigExamplesRepositoryURI()}
+
+	cmd = append(cmd, "-c", kogitoAppDeployment.ContextDir)
+	cmd = append(cmd, "-r", fmt.Sprintf("%s", kogitoAppDeployment.Runtime))
+	if kogitoAppDeployment.Native {
+		cmd = append(cmd, "--native")
+	}
+	if ref := GetConfigExamplesRepositoryRef(); len(ref) > 0 {
+		cmd = append(cmd, "-b", ref)
+	}
+
+	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
+		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
+	}
+
+	var profiles []string
+	if kogitoAppDeployment.Persistence {
+		profiles = append(profiles, "persistence")
+		cmd = append(cmd, "--install-infinispan", "Always")
+	}
+	if kogitoAppDeployment.Events {
+		profiles = append(profiles, "events")
+		cmd = append(cmd, "--install-kafka", "Always")
+		cmd = append(cmd, "--env", "MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS=")
+		cmd = append(cmd, "--env", "MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS=")
+	}
+
+	if len(profiles) > 0 {
+		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=-P%s", mavenArgsAppendEnvVar, strings.Join(profiles, ",")))
+	}
+
+	for labelKey, labelValue := range kogitoAppDeployment.Labels {
+		cmd = append(cmd, "--svc-labels", fmt.Sprintf("%s=%s", labelKey, labelValue))
+	}
+
+	cmd = append(cmd, "--image-version", GetConfigBuildImageVersion())
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
+	return err
 }
 
 // SetKogitoAppReplicas sets the number of replicas for a Kogito application

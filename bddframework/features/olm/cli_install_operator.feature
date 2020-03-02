@@ -15,7 +15,7 @@ Feature: CLI: Install Kogito Operator
 #####
 
   Scenario: CLI install operator with Kogito Data Index
-    When CLI install Kogito operator with Kogito Data Index enabled
+    When CLI install Kogito operator with Kogito Data Index
 
     Then Kogito Data Index has 1 pods running within 5 minutes
     And GraphQL request on service "kogito-data-index" is successful within 2 minutes with path "graphql" and query:
@@ -32,7 +32,7 @@ Feature: CLI: Install Kogito Operator
   # Disabled until https://issues.redhat.com/browse/KOGITO-910 has been implemented
   @disabled
   Scenario: CLI install operator with Kogito Jobs Service
-    When CLI install Kogito operator with Kogito Jobs Service enabled
+    When CLI install Kogito operator with Kogito Jobs Service
 
     Then Kogito Jobs Service has 1 pods running within 5 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:

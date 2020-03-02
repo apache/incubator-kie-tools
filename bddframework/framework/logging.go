@@ -61,8 +61,7 @@ func GetLogger(namespace string) *zap.SugaredLogger {
 func FlushLogger(namespace string) error {
 	opts, exists := getLoggerOpts(namespace)
 	if !exists {
-		GetMainLogger().Warnf("Logger %s does not exist... skipping", namespace)
-		return nil
+		return fmt.Errorf("Logger %s does not exist... skipping", namespace)
 	}
 	if writer, ok := opts.Output.(io.Closer); ok {
 		err := writer.Close()
@@ -331,21 +330,22 @@ var eventKeys = []string{
 }
 
 // BumpEvents will bump all events into events.log file
-func BumpEvents(namespace string) {
+func BumpEvents(namespace string) error {
 	eventList, err := kubernetes.EventC(kubeClient).GetEvents(namespace)
 	if err != nil {
-		GetMainLogger().Errorf("Error retrieving events from namespace %s: %v", namespace, err)
+		return fmt.Errorf("Error retrieving events from namespace %s: %v", namespace, err)
 	}
 	fileWriter, err := os.Create(getLogFile(namespace, "events"))
 	if err != nil {
-		GetMainLogger().Errorf("Error while creating filewriter: %v", err)
+		return fmt.Errorf("Error while creating filewriter: %v", err)
 	}
 
 	PrintDataMap(eventKeys, mapEvents(eventList), fileWriter)
 
 	if err := fileWriter.Close(); err != nil {
-		GetMainLogger().Errorf("Error while closing filewriter: %v", err)
+		return fmt.Errorf("Error while closing filewriter: %v", err)
 	}
+	return nil
 }
 
 func mapEvents(eventList *v1beta1.EventList) []map[string]string {

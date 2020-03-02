@@ -12,7 +12,7 @@ Feature: CLI: Project
 #####
 
   Scenario: CLI create project with Kogito Data Index   
-    When CLI create namespace with Kogito Data Index enabled
+    When CLI create namespace with Kogito Data Index
 
     Then Kogito Data Index has 1 pods running within 5 minutes
     And GraphQL request on service "kogito-data-index" is successful within 2 minutes with path "graphql" and query:
@@ -29,7 +29,7 @@ Feature: CLI: Project
   # Disabled until https://issues.redhat.com/browse/KOGITO-910 has been implemented
   @disabled
   Scenario: CLI create new project with Kogito Jobs Service   
-    When CLI create namespace with Kogito Jobs Service enabled
+    When CLI create namespace with Kogito Jobs Service
 
     Then Kogito Jobs Service has 1 pods running within 5 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:

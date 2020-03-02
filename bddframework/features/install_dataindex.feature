@@ -1,15 +1,14 @@
-@cr
 @dataindex
-Feature: CR: Install Kogito Data Index
+Feature: Kogito Data Index
 
   Background:
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
 
-  Scenario: CR: Install Kogito Data Index
-    When Install Kogito Data Index with 1 replicas
+  Scenario Outline: Install Kogito Data Index
+    When "<installer>" install Kogito Data Index with 1 replicas
 
-    Then Kogito Data Index has 1 pods running within 5 minutes
+    Then Kogito Data Index has 1 pods running within 10 minutes
     And GraphQL request on service "kogito-data-index" is successful within 2 minutes with path "graphql" and query:
     """
     {
@@ -19,13 +18,25 @@ Feature: CR: Install Kogito Data Index
     }
     """
 
+    @cr
+    Examples: CR
+      | installer |
+      | CR        |
+
+    @smoke
+    @cli
+    Examples: CLI
+      | installer |
+      | CLI       |
+
 #####
 
+  @cr
   @events
   @persistence
-  Scenario Outline: CR: Process instance events are stored in Data Index
-    Given Install Kogito Data Index with 1 replicas
-    And Deploy quarkus example service "jbpm-quarkus-example" with persistence enabled and native <native> and events "enabled"
+  Scenario Outline: Process instance events are stored in Data Index
+    Given "CR" install Kogito Data Index with 1 replicas
+    And "CR" deploy quarkus example service "jbpm-quarkus-example" with native "<native>" and persistence and events
     And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes
 
@@ -42,13 +53,13 @@ Feature: CR: Install Kogito Data Index
 
     Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
 
-    Examples:
+    Examples: Non native
       | native | minutes |
-      | "disabled" | 10 |
+      | false  | 10      |
 
     # Disabled as long as https://issues.redhat.com/browse/KOGITO-842 is not solved
     @disabled
     @native
-    Examples:
+    Examples: Native
       | native | minutes |
-      | "enabled" | 20 |
+      | true   | 20      |

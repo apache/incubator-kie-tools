@@ -156,14 +156,13 @@ func FeatureContext(s *godog.Suite) {
 }
 
 func deleteNamespaceIfExists(namespace string) {
-	if ok, er := framework.IsNamespace(namespace); er != nil {
-		framework.GetLogger(namespace).Errorf("Error while checking namespace: %v", er)
-	} else if ok {
+	framework.OperateOnNamespaceIfExists(namespace, func(namespace string) error {
 		framework.GetLogger(namespace).Infof("Delete created namespace %s", namespace)
 		if e := framework.DeleteNamespace(namespace); e != nil {
-			framework.GetLogger(namespace).Errorf("Error while deleting the namespace: %v", e)
+			return fmt.Errorf("Error while deleting the namespace: %v", e)
 		}
-	}
+		return nil
+	})
 }
 
 func matchingFeature(tags string, features []*gherkin.Feature) bool {

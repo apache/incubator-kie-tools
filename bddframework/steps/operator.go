@@ -27,6 +27,8 @@ func registerOperatorSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
 	s.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
 	s.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
+
+	s.Step(`^CLI install Kogito operator$`, data.cliInstallKogitoOperator)
 }
 
 func (data *Data) kogitoOperatorShouldBeInstalledWithDependencies() error {
@@ -77,4 +79,9 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 	}
 
 	return nil
+}
+
+func (data *Data) cliInstallKogitoOperator() error {
+	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "operator")
+	return err
 }

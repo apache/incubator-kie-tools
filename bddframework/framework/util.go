@@ -129,7 +129,7 @@ func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringW
 
 	// Write events
 	for _, dataMap := range dataMaps {
-		for _, key := range eventKeys {
+		for _, key := range keys {
 			writer.WriteString(dataMap[key])
 			writer.WriteString(getWhitespaceStr(maxStringSizeMap[key] - len(dataMap[key]) + 1))
 			writer.WriteString(" | ")

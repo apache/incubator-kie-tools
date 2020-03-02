@@ -21,67 +21,24 @@ import (
 
 // registerKogitoInfraSteps register all Kogito Infra steps existing
 func registerKogitoInfraSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Install Kogito Infra Infinispan$`, data.installKogitoInfraInfinispan)
-	s.Step(`^Install Kogito Infra Kafka$`, data.installKogitoInfraKafka)
-	s.Step(`^Install Kogito Infra Keycloak$`, data.installKogitoInfraKeycloak)
-
-	s.Step(`^Remove Kogito Infra Infinispan$`, data.removeKogitoInfraInfinispan)
-	s.Step(`^Remove Kogito Infra Kafka$`, data.removeKogitoInfraKafka)
-	s.Step(`^Remove Kogito Infra Keycloak$`, data.removeKogitoInfraKeycloak)
-
-	s.Step(`^Kogito Infra Infinispan should be running within (\d+) minutes$`, data.kogitoInfraInfinispanShouldBeRunningWithinMinutes)
-	s.Step(`^Kogito Infra Kafka should be running within (\d+) minutes$`, data.kogitoInfraKafkaShouldBeRunningWithinMinutes)
-	s.Step(`^Kogito Infra Keycloak should be running within (\d+) minutes$`, data.kogitoInfraKeycloakShouldBeRunningWithinMinutes)
-
-	s.Step(`^Kogito Infra Infinispan should NOT be running within (\d+) minutes$`, data.kogitoInfraInfinispanShouldNOTBeRunningWithinMinutes)
-	s.Step(`^Kogito Infra Kafka should NOT be running within (\d+) minutes$`, data.kogitoInfraKafkaShouldNOTBeRunningWithinMinutes)
-	s.Step(`^Kogito Infra Keycloak should NOT be running within (\d+) minutes$`, data.kogitoInfraKeycloakShouldNOTBeRunningWithinMinutes)
+	s.Step(`^"([^"]*)" install Kogito Infra "([^"]*)"$`, data.installKogitoInfra)
+	s.Step(`^"([^"]*)" remove Kogito Infra "([^"]*)"$`, data.removeKogitoInfra)
+	s.Step(`^Kogito Infra "([^"]*)" should be running within (\d+) minutes$`, data.kogitoInfraShouldBeRunningWithinMinutes)
+	s.Step(`^Kogito Infra "([^"]*)" should NOT be running within (\d+) minutes$`, data.kogitoInfraShouldNOTBeRunningWithinMinutes)
 }
 
-func (data *Data) installKogitoInfraInfinispan() error {
-	return framework.InstallKogitoInfraInfinispan(data.Namespace)
+func (data *Data) installKogitoInfra(installerType, component string) error {
+	return framework.InstallKogitoInfraComponent(data.Namespace, framework.MustParseInstallerType(installerType), framework.ParseKogitoInfraComponent(component))
 }
 
-func (data *Data) installKogitoInfraKafka() error {
-	return framework.InstallKogitoInfraKafka(data.Namespace)
+func (data *Data) removeKogitoInfra(installerType, component string) error {
+	return framework.RemoveKogitoInfraComponent(data.Namespace, framework.MustParseInstallerType(installerType), framework.ParseKogitoInfraComponent(component))
 }
 
-func (data *Data) installKogitoInfraKeycloak() error {
-	return framework.InstallKogitoInfraKeycloak(data.Namespace)
+func (data *Data) kogitoInfraShouldBeRunningWithinMinutes(component string, timeoutInMin int) error {
+	return framework.WaitForKogitoInfraComponent(data.Namespace, framework.ParseKogitoInfraComponent(component), true, timeoutInMin)
 }
 
-func (data *Data) removeKogitoInfraInfinispan() error {
-	return framework.RemoveKogitoInfraInfinispan(data.Namespace)
-}
-
-func (data *Data) removeKogitoInfraKafka() error {
-	return framework.RemoveKogitoInfraKafka(data.Namespace)
-}
-
-func (data *Data) removeKogitoInfraKeycloak() error {
-	return framework.RemoveKogitoInfraKeycloak(data.Namespace)
-}
-
-func (data *Data) kogitoInfraInfinispanShouldBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraInfinispan(data.Namespace, true, timeoutInMin)
-}
-
-func (data *Data) kogitoInfraKafkaShouldBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraKafka(data.Namespace, true, timeoutInMin)
-}
-
-func (data *Data) kogitoInfraKeycloakShouldBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraKeycloak(data.Namespace, true, timeoutInMin)
-}
-
-func (data *Data) kogitoInfraInfinispanShouldNOTBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraInfinispan(data.Namespace, false, timeoutInMin)
-}
-
-func (data *Data) kogitoInfraKafkaShouldNOTBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraKafka(data.Namespace, false, timeoutInMin)
-}
-
-func (data *Data) kogitoInfraKeycloakShouldNOTBeRunningWithinMinutes(timeoutInMin int) error {
-	return framework.WaitForKogitoInfraKeycloak(data.Namespace, false, timeoutInMin)
+func (data *Data) kogitoInfraShouldNOTBeRunningWithinMinutes(component string, timeoutInMin int) error {
+	return framework.WaitForKogitoInfraComponent(data.Namespace, framework.ParseKogitoInfraComponent(component), false, timeoutInMin)
 }
