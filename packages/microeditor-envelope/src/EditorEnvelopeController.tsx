@@ -25,7 +25,7 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
-import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;

@@ -21,11 +21,10 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
-import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { EditorContext } from "./api/context";
+import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { DefaultKeyboardShorcutsService } from "./DefaultKeyboardShorcutsService";
-import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+import { DefaultKeyboardShorcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 
 export * from "./EditorFactory";
 export * from "./api/context/EditorContext";
@@ -34,8 +33,8 @@ export * from "./EnvelopeBusInnerMessageHandler";
 declare global {
   interface Window {
     envelope: {
-      resourceContentEditorService?: ResourceContentApi;
       editorContext: EditorContext;
+      resourceContentEditorService?: ResourceContentApi;
       stateControl: StateControlApi;
       keyboardShortcuts: KeyboardShortcutsApi;
     };
