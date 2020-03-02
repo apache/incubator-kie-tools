@@ -23,7 +23,7 @@ import { EditorContent, ResourceContent, ResourcesList, ResourceContentRequest }
 interface Props {
   fullscreen: boolean;
   onContentResponse: (content: EditorContent) => void;
-  onPreviewResponse: (preview: string) => void;
+  onPreviewResponse: (previewSvg: string) => void;
 }
 
 export type EditorRef = {
@@ -71,9 +71,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         console.debug(`Resource List Request`);
         self.respond_resourceList(new ResourcesList(globPattern, []));
       },
-      receive_preview(preview: string) {
+      receive_previewRequest(previewSvg: string) {
         console.debug("received preview");
-        props.onPreviewResponse(preview);
+        props.onPreviewResponse(previewSvg);
       }
     }));
   }, [editorType, context.file.getFileContents, props.onContentResponse]);
@@ -93,7 +93,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
     forwardedRef,
     () => ({
       requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
-      requestPreview: () => envelopeBusOuterMessageHandler.request_preview()
+      requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse()
     }),
     [envelopeBusOuterMessageHandler]
   );

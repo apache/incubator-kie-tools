@@ -18,5 +18,5 @@ export interface GwtEditor {
   getContent(): Promise<string>;
   setContent(path: string, content: string): void;
   isDirty(): boolean;
-  getPreview(): Promise<string>;
+  getPreview(): Promise<string | undefined>;
 }

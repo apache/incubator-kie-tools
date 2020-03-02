@@ -49,7 +49,7 @@ export function EditorPage(props: Props) {
   const history = useHistory();
   const editorRef = useRef<EditorRef>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
-  const previewRef = useRef<HTMLAnchorElement>(null);
+  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
@@ -130,10 +130,10 @@ export function EditorPage(props: Props) {
   );
 
   const onPreviewResponse = useCallback(preview => {
-    if (action === ActionType.PREVIEW && previewRef.current) {
+    if (action === ActionType.PREVIEW && downloadPreviewRef.current) {
       const fileBlob = new Blob([preview], { type: "image/svg+xml" });
-      previewRef.current.href = URL.createObjectURL(fileBlob);
-      previewRef.current.click();
+      downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+      downloadPreviewRef.current.click();
     }
   }, [fileNameWithExtension]);
 
@@ -152,8 +152,8 @@ export function EditorPage(props: Props) {
     if (downloadRef.current) {
       downloadRef.current.download = fileNameWithExtension;
     }
-    if (previewRef.current) {
-      previewRef.current.download = `${fileNameWithExtension}.svg`;
+    if (downloadPreviewRef.current) {
+      downloadPreviewRef.current.download = `${fileNameWithExtension}.svg`;
     }
   }, [fileNameWithExtension]);
 
@@ -206,12 +206,13 @@ export function EditorPage(props: Props) {
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} onPreviewResponse={onPreviewResponse} />
       </PageSection>
-      <a ref={downloadRef} />
       <textarea
         ref={copyContentTextArea}
         aria-hidden={"true"}
         style={{ height: 0, position: "absolute", zIndex: -1 }}
       />
+      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadPreviewRef} />
     </Page>
   );
 }

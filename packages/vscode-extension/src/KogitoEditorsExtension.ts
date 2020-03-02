@@ -64,7 +64,7 @@ export class KogitoEditorsExtension {
 
   public registerGetPreviewCommand() {
     this.context.subscriptions.push(
-      vscode.commands.registerCommand("extension.kogito.getPreview", () => {
+      vscode.commands.registerCommand("extension.kogito.getPreviewSvg", () => {
         this.editorStore.withActive(e => e.requestPreview());
       })
     );

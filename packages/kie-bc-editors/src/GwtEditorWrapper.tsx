@@ -82,7 +82,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     return Promise.resolve();
   }
 
-  public getPreview(): Promise<string> {
+  public getPreview(): Promise<string | undefined> {
     return this.gwtEditor.getPreview();
   }
 
