@@ -61,6 +61,8 @@ import org.uberfire.commons.uuid.UUID;
 @ApplicationScoped
 public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
 
+    private static final char UNIX_SEPARATOR = '/';
+    private static final char WINDOWS_SEPARATOR = '\\';
     private static final String DIAGRAMS_PATH = "diagrams";
 
     //This path is needed by DiagramsNavigatorImpl's use of AbstractClientDiagramService.lookup(..) to retrieve a list of diagrams
@@ -95,17 +97,55 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
     //Kogito requirements
 
     @Override
-    public void transform(final String xml,
+    public void transform(final String fileName,
+                          final String xml,
                           final ServiceCallback<Diagram> callback) {
         if (Objects.isNull(xml) || xml.isEmpty()) {
-            doNewDiagram(callback);
+            doNewDiagram(getDiagramTitle(fileName), callback);
         } else {
             doTransformation(xml, callback);
         }
     }
 
-    private void doNewDiagram(final ServiceCallback<Diagram> callback) {
-        final String title = UUID.uuid();
+    String getDiagramTitle(final String filePath) {
+        final String diagramTitle;
+        if (StringUtils.isEmpty(filePath)) {
+            diagramTitle = generateDiagramTitle();
+        } else {
+            final String fileName = getName(filePath);
+            if (fileName.contains(".")) {
+                diagramTitle = fileName.substring(0, fileName.lastIndexOf('.'));
+            } else {
+                diagramTitle = fileName;
+            }
+        }
+        return diagramTitle;
+    }
+
+    private String getName(final String filePath) {
+        final int index = indexOfLastSeparator(filePath);
+        return filePath.substring(index + 1);
+    }
+
+    public int indexOfLastSeparator(final String filename) {
+        final int lastUnixPos = filename.lastIndexOf(UNIX_SEPARATOR);
+        final int lastWindowsPos = filename.lastIndexOf(WINDOWS_SEPARATOR);
+        return Math.max(lastUnixPos,
+                        lastWindowsPos);
+    }
+
+    String generateDiagramTitle() {
+        return UUID.uuid();
+    }
+
+    @Override
+    public void transform(final String xml,
+                          final ServiceCallback<Diagram> callback) {
+        transform(UUID.uuid(), xml, callback);
+    }
+
+    void doNewDiagram(final String title,
+                      final ServiceCallback<Diagram> callback) {
         final Metadata metadata = buildMetadataInstance();
 
         try {
@@ -140,8 +180,8 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
     }
 
     @SuppressWarnings("unchecked")
-    private void doTransformation(final String xml,
-                                  final ServiceCallback<Diagram> callback) {
+    void doTransformation(final String xml,
+                          final ServiceCallback<Diagram> callback) {
         final Metadata metadata = buildMetadataInstance();
 
         try {

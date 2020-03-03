@@ -428,9 +428,10 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Test
     public void testSetContentSuccess() {
-        editor.setContent("", CONTENT);
+        final String path = "path";
+        editor.setContent(path, CONTENT);
 
-        verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
+        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
 
         final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
         assertThat(serviceCallback).isNotNull();
@@ -441,9 +442,10 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Test
     public void testSetContentFailure() {
-        editor.setContent("", CONTENT);
+        final String path = "path";
+        editor.setContent(path, CONTENT);
 
-        verify(clientDiagramService).transform(eq(CONTENT), serviceCallbackArgumentCaptor.capture());
+        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
 
         final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
         assertThat(serviceCallback).isNotNull();
