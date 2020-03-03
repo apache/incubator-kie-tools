@@ -46,6 +46,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -186,6 +187,25 @@ public class ConditionEditorFieldEditorPresenterTest {
     }
 
     @Test
+    public void testSetValueWithScriptInJavaParseableInClient() {
+        when(conditionEditorGeneratorService.isAvailable()).thenReturn(true);
+
+        ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
+        ParseConditionResult result = mock(ParseConditionResult.class);
+        Condition condition = mock(Condition.class);
+        when(result.hasError()).thenReturn(false);
+        when(result.getCondition()).thenReturn(condition);
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
+        presenter.setValue(value);
+
+        verifySetValueCommonActions(value);
+        verify(simpleConditionEditor, never()).setValue(any());
+        verifyShowScriptEditor();
+    }
+
+    @Test
     public void testSetValueWithScriptInJavaNotParseable() {
         ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
         ParseConditionResult result = mock(ParseConditionResult.class);
@@ -256,6 +276,27 @@ public class ConditionEditorFieldEditorPresenterTest {
     }
 
     @Test
+    public void testOnSimpleConditionSelectedAndNoServiceAvailable() {
+        when(conditionEditorGeneratorService.isAvailable()).thenReturn(true);
+
+        ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
+        //at some point the script has changed
+        presenter.onScriptChange(mock(ScriptTypeValue.class), value);
+        //and the user wants to go to the condition editor.
+        when(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
+        ParseConditionResult result = mock(ParseConditionResult.class);
+        when(result.hasError()).thenReturn(true);
+
+        doReturn(PromiseMock.success(result))
+                .when(conditionEditorParsingService)
+                .call(eq(SCRIPT_VALUE));
+
+        presenter.onSimpleConditionSelected();
+
+        verifyShowSimpleConditionEditor();
+    }
+
+    @Test
     public void testOnScriptEditorSelected() {
         presenter.onScriptEditorSelected();
         verify(scriptEditor).setValue(any());
@@ -310,6 +351,36 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter.onSimpleConditionChange(mock(Condition.class), mock(Condition.class));
         verify(errorPopup).showMessage(TRANSLATED_MESSAGE);
         verify(changeHandler, never()).onValueChange(any(), any());
+    }
+
+    @Test
+    public void testOnSingleSelection() {
+        when(conditionEditorGeneratorService.isAvailable()).thenReturn(true);
+        presenter = spy(new ConditionEditorFieldEditorPresenter(view,
+                                                                simpleConditionEditor,
+                                                                scriptEditor,
+                                                                errorPopup,
+                                                                conditionEditorParsingService,
+                                                                conditionEditorGeneratorService,
+                                                                translationService));
+        presenter.init();
+        verify(view,
+               times(1)).setSingleOptionSelection();
+    }
+
+    @Test
+    public void testNotOnSingleSelection() {
+        when(conditionEditorGeneratorService.isAvailable()).thenReturn(false);
+        presenter = spy(new ConditionEditorFieldEditorPresenter(view,
+                                                                simpleConditionEditor,
+                                                                scriptEditor,
+                                                                errorPopup,
+                                                                conditionEditorParsingService,
+                                                                conditionEditorGeneratorService,
+                                                                translationService));
+        presenter.init();
+        verify(view,
+               never()).setSingleOptionSelection();
     }
 
     @Test

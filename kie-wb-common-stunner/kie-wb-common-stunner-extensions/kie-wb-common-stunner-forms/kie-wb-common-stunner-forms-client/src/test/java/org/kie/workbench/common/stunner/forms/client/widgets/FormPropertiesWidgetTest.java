@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -106,6 +107,8 @@ public class FormPropertiesWidgetTest {
     private NodeImpl node;
     @Mock
     private NodeImpl node2;
+
+    private EdgeImpl edge;
     @Mock
     private Definition nodeContent;
     @Mock
@@ -338,4 +341,23 @@ public class FormPropertiesWidgetTest {
         formRenderer.render(GRAPH_UUID, domainObject, command);
         verify(formsContainer, times(2)).render(eq(GRAPH_UUID), eq(DOMAIN_OBJECT_UUID), eq(domainObject), any(), any(), any());
     }
+
+    @Test
+    public void testAreElementsPositionSameNotNodes() {
+        tested.init();
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+
+        final Command command = mock(Command.class);
+        when(formsCanvasSessionHandler.getDiagram()).thenReturn(diagram);
+        edge = new EdgeImpl("edge1");
+        formRenderer.render(GRAPH_UUID, edge, command);
+
+        assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(edge), false);
+
+        formRenderer.render(GRAPH_UUID, edge, command);
+        assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), false);
+    }
+
 }

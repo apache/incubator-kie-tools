@@ -47,4 +47,9 @@ public class ConditionEditorGeneratorProjectService implements ConditionEditorGe
                                       s.generateCondition(condition);
                                   });
     }
+
+    @Override
+    public boolean isAvailable() {
+        return false;
+    }
 }

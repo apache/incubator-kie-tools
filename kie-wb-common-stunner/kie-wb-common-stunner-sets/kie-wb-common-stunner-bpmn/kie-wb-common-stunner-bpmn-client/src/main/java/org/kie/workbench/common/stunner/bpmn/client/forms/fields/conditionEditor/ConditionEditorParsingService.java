@@ -23,5 +23,5 @@ import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientServic
 @Kogito
 public interface ConditionEditorParsingService
         extends KogitoClientService<String, ParseConditionResult> {
-
+    
 }

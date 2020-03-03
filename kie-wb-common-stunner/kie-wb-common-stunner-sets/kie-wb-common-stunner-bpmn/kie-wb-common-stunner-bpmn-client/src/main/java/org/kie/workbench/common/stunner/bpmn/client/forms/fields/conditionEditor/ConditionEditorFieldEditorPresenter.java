@@ -59,6 +59,8 @@ public class ConditionEditorFieldEditorPresenter
         void showError(String error);
 
         void clearError();
+
+        void setSingleOptionSelection();
     }
 
     private final View view;
@@ -90,6 +92,15 @@ public class ConditionEditorFieldEditorPresenter
         this.conditionEditorParsingService = conditionEditorParsingService;
         this.conditionEditorGeneratorService = conditionEditorGeneratorService;
         this.translationService = translationService;
+
+        if (isServiceAvailable()) {
+            enableSimpleConditionEditor(false);
+            view.setSingleOptionSelection();
+        }
+    }
+
+    public boolean isServiceAvailable() {
+        return conditionEditorGeneratorService.isAvailable();
     }
 
     @Override
@@ -103,7 +114,13 @@ public class ConditionEditorFieldEditorPresenter
         scriptEditor.setMode(ScriptTypeMode.FLOW_CONDITION);
         scriptEditor.addChangeHandler(this::onScriptChange);
         simpleConditionEditor.addChangeHandler(this::onSimpleConditionChange);
-        showSimpleConditionEditor();
+
+        if (!isServiceAvailable()) {
+            showSimpleConditionEditor();
+        } else {
+            showScriptEditor();
+        }
+
     }
 
     public void init(ClientSession session) {
@@ -123,7 +140,7 @@ public class ConditionEditorFieldEditorPresenter
         simpleConditionEditor.clear();
         clearError();
         if (value != null) {
-            if (isInDefaultLanguage(value)) {
+            if (isInDefaultLanguage(value) && !isServiceAvailable()) {
                 if (!isEmpty(value.getScript())) {
                     conditionEditorParsingService
                             .call(value.getScript())
@@ -149,7 +166,7 @@ public class ConditionEditorFieldEditorPresenter
 
     void onSimpleConditionSelected() {
         clearError();
-        if (value != null && !isEmpty(value.getScript())) {
+        if (value != null && !isEmpty(value.getScript()) && !isServiceAvailable()) {
             conditionEditorParsingService
                     .call(value.getScript())
                     .then(result -> {

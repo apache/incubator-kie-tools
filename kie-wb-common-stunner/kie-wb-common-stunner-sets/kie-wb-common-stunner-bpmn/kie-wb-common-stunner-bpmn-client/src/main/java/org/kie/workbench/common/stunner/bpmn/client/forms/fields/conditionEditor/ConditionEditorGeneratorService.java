@@ -25,4 +25,7 @@ import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientServic
 public interface ConditionEditorGeneratorService
         extends KogitoClientService<Condition, GenerateConditionResult> {
 
+    default boolean isAvailable() {
+        return true;
+    }
 }

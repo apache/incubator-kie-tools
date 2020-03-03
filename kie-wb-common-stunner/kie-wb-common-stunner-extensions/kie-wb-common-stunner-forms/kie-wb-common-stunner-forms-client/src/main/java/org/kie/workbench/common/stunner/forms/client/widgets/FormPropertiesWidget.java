@@ -175,8 +175,19 @@ public class FormPropertiesWidget implements IsElement,
     }
 
     public boolean areLastPositionsForSameElementSame(final Element element) {
-        final Point2D computedPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+        final Point2D computedPosition;
+
+        if (isNode(element)) {
+            computedPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+        } else {
+          return false;
+        }
+
         return (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && computedPosition.equals(lastPosition));
+    }
+
+    private static boolean isNode(final Element<? extends Definition<?>> element) {
+        return element instanceof Node;
     }
 
     private void show(final String graphUuid,
@@ -184,7 +195,7 @@ public class FormPropertiesWidget implements IsElement,
                       final Command callback) {
         if (element != null) {
 
-            if (lastElement != null && lastElement.getUUID().equals(element.getUUID())) {
+            if (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && isNode(element)) {
                 lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
                 return;
             }
@@ -228,7 +239,9 @@ public class FormPropertiesWidget implements IsElement,
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
             lastElement = element;
-            lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+            if (isNode(element)) {
+                lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
+            }
         }
     }
 

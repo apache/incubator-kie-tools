@@ -40,8 +40,20 @@ public class ConditionEditorFieldEditorView
     private RadioInput simpleCondition;
 
     @Inject
+    @DataField("script-condition-label-span")
+    private Span scriptConditionLabelSpan;
+
+    @Inject
     @DataField("script-condition-radio")
     private RadioInput scriptCondition;
+
+    @Inject
+    @DataField("script-condition-label")
+    private Span scriptLabel;
+
+    @Inject
+    @DataField("simple-condition-label")
+    private Span conditionLabel;
 
     @Inject
     @DataField("editor-container")
@@ -93,6 +105,16 @@ public class ConditionEditorFieldEditorView
     public void clearError() {
         DOMUtil.removeCSSClass(editorErrorForm, "has-error");
         editorError.setTextContent(null);
+    }
+
+    @Override
+    public void setSingleOptionSelection() {
+        simpleCondition.setHidden(true);
+        scriptCondition.setHidden(true);
+        scriptLabel.setHidden(true);
+        conditionLabel.setTextContent(scriptLabel.getTextContent());
+        scriptLabel.setTextContent("");
+        scriptConditionLabelSpan.setAttribute("style", "margin-left: 0px;");
     }
 
     @EventHandler("simple-condition-radio")
