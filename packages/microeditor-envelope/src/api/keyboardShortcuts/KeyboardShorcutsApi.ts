@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KeyBinding, KeyBindingServiceOpts } from "./DefaultKeyboardShorcutsService";
+import { KeyBinding, KeyBindingServiceOpts } from "./DefaultKeyboardShortcutsService";
 
 /**
  * PUBLIC ENVELOPE API

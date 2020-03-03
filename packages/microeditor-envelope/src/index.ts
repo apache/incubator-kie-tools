@@ -24,7 +24,7 @@ import { EditorFactory } from "./EditorFactory";
 import { EditorContext } from "./api/context";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { DefaultKeyboardShorcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 
 export * from "./EditorFactory";
 export * from "./api/context/EditorContext";
@@ -62,7 +62,7 @@ export function init(args: {
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
-  const keyboardShortcutsService = new DefaultKeyboardShorcutsService();
+  const keyboardShortcutsService = new DefaultKeyboardShortcutsService(args.editorContext);
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();

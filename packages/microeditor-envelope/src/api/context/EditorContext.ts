@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 
 
 /**
@@ -22,4 +22,5 @@ import { ChannelType } from "@kogito-tooling/core-api";
  */
 export interface EditorContext {
     channel: ChannelType;
+    operatingSystem?: OperatingSystem;
 }

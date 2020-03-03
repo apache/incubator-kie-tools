@@ -15,6 +15,8 @@
  */
 
 import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+import { EditorContext } from "../context";
+import { OperatingSystem } from "@kogito-tooling/core-api";
 
 export interface KeyBinding {
   combination: string;
@@ -84,10 +86,15 @@ const KEY_CODES = new Map<string, string>([
   ["z", "KeyZ"]
 ]);
 
-export class DefaultKeyboardShorcutsService implements KeyboardShortcutsApi {
-  private eventIdentifiers = 1;
+export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
+  private readonly editorContext: EditorContext;
 
+  private eventIdentifiers = 1;
   private readonly keyBindings = new Map<number, KeyBinding>();
+
+  constructor(editorContext: EditorContext) {
+    this.editorContext = editorContext;
+  }
 
   public registerKeyDownThenUp(
     combination: string,
@@ -194,27 +201,11 @@ export class DefaultKeyboardShorcutsService implements KeyboardShortcutsApi {
       .map(k => k.toLowerCase())
       .map(k => KEY_CODES.get(k) ?? k);
 
-    if (this.osName() === "macOS") {
+    if (this.editorContext.operatingSystem === OperatingSystem.MACOS) {
       return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
     } else {
       return new Set(keys);
     }
-  }
-
-  private osName() {
-    let osName = "unknown";
-
-    if (navigator.appVersion.indexOf("Win") !== -1) {
-      osName = "Windows";
-    } else if (navigator.appVersion.indexOf("Mac") !== -1) {
-      osName = "macOS";
-    } else if (navigator.appVersion.indexOf("X11") !== -1) {
-      osName = "UNIX";
-    } else if (navigator.appVersion.indexOf("Linux") !== -1) {
-      osName = "Linux";
-    }
-
-    return osName;
   }
 
   private pressedKeySet(e: KeyboardEvent) {

@@ -16,3 +16,4 @@
 
 export { Element } from "./Component";
 export { ChannelType } from "./ChannelType";
+export { OperatingSystem, getOperatingSystem } from "./OperatingSystem";
