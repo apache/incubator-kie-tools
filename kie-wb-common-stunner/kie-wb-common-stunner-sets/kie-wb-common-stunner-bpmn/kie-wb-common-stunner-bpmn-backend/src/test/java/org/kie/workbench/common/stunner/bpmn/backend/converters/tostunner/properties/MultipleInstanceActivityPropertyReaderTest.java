@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
@@ -117,6 +118,25 @@ public class MultipleInstanceActivityPropertyReaderTest {
         DataOutput item = mockDataOutput(ITEM_ID, PROPERTY_ID);
         when(miloop.getOutputDataItem()).thenReturn(item);
         assertEquals(PROPERTY_ID + DELIMITER + DATA_TYPE, reader.getDataOutput());
+    }
+
+    @Test
+    public void testGetDataOutputForNullType() {
+        DataOutput item = mockDataOutput(ITEM_ID, PROPERTY_ID);
+        when(item.getItemSubjectRef()).thenReturn(null);
+        when(miloop.getOutputDataItem()).thenReturn(item);
+        assertEquals(PROPERTY_ID + DELIMITER + "Object", reader.getDataOutput());
+    }
+
+    @Test
+    public void testGetDataOutputForEmptyType() {
+        ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        when(itemDefinition.getStructureRef()).thenReturn("");
+
+        DataOutput item = mockDataOutput(ITEM_ID, PROPERTY_ID);
+        when(item.getItemSubjectRef()).thenReturn(itemDefinition);
+        when(miloop.getOutputDataItem()).thenReturn(item);
+        assertEquals(PROPERTY_ID + DELIMITER + "Object", reader.getDataOutput());
     }
 
     @Test

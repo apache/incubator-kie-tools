@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class MultipleInstanceActivityPropertyReader extends ActivityPropertyReader {
 
@@ -72,7 +73,7 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
 
     private static String createInputVariable(DataInput input) {
         String name = (input.getName() != null) ? input.getName() : input.getId();
-        return name + ":" + input.getItemSubjectRef().getStructureRef();
+        return name + ":" + getVariableType(input);
     }
 
     public String getDataOutput() {
@@ -84,7 +85,15 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
 
     private static String createOutputVariable(DataOutput output) {
         String name = (output.getName() != null) ? output.getName() : output.getId();
-        return name + ":" + output.getItemSubjectRef().getStructureRef();
+        return name + ":" + getVariableType(output);
+    }
+
+    private static String getVariableType(ItemAwareElement variable) {
+        String type = "";
+        if (variable.getItemSubjectRef() != null) {
+            type = variable.getItemSubjectRef().getStructureRef();
+        }
+        return StringUtils.isEmpty(type) ? "Object" : type;
     }
 
     public String getCompletionCondition() {
