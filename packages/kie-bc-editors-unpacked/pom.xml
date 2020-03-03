@@ -71,6 +71,7 @@
                         </goals>
                         <configuration>
                             <excludes>WEB-INF/</excludes>
+                            <excludes>**/*.html</excludes>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.kie.workbench</groupId>
@@ -93,6 +94,7 @@
                         </goals>
                         <configuration>
                             <excludes>WEB-INF/</excludes>
+                            <excludes>**/*.html</excludes>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.kie.workbench.stunner</groupId>
