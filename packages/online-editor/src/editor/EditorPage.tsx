@@ -156,7 +156,7 @@ export function EditorPage(props: Props) {
   return (
     <Page
       header={
-        <EditorToolbar 
+        <EditorToolbar
           onFullScreen={enterFullscreen}
           onSave={requestSave}
           onDownload={requestDownload}
@@ -167,37 +167,33 @@ export function EditorPage(props: Props) {
         />
       }
     >
-<Title
-  size={"xs"}
-  className={"sr-only"}
-  headingLevel={'h1'}
->
-  Kogito editor
-</Title>
-    {!fullscreen && (
-      <PageSection variant="dark" noPadding={true}>
-        {copySuccessAlertVisible && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant="success"
-              title="Content copied to clipboard"
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
-            />
-          </div>
-        )}
-      </PageSection>
-    )}
+      <Title size={"xs"} className={"sr-only"} headingLevel={"h1"}>
+        Kogito editor
+      </Title>
+      {!fullscreen && (
+        <PageSection variant="dark" noPadding={true}>
+          {copySuccessAlertVisible && (
+            <div className={"kogito--alert-container"}>
+              <Alert
+                variant="success"
+                title="Content copied to clipboard"
+                action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+              />
+            </div>
+          )}
+        </PageSection>
+      )}
 
-    <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
-      {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-      <Editor
-        ref={editorRef} 
-        fullscreen={fullscreen} 
-        onContentResponse={onContentResponse} 
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+        <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
+      </PageSection>
+      <a ref={downloadRef} />
+      <textarea
+        ref={copyContentTextArea}
+        aria-hidden={"true"}
+        style={{ height: 0, position: "absolute", zIndex: -1 }}
       />
-    </PageSection>
-    <a ref={downloadRef} />
-    <textarea ref={copyContentTextArea} aria-hidden={"true"} disabled={true} style={{ height: 0, position: "absolute", zIndex: -1 }} />
-  </Page>
-);
+    </Page>
+  );
 }
