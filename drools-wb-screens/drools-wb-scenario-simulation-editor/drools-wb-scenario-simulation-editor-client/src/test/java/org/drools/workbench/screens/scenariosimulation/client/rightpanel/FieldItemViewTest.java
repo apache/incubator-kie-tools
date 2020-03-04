@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.junit.Before;
@@ -33,6 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -89,13 +91,14 @@ public class FieldItemViewTest extends AbstractTestToolsTest {
     public void onFieldElementSelected() {
         fieldItemViewSpy.onFieldElementSelected();
         verify(lIElementMock, times(1)).addClassName(eq(ConstantHolder.SELECTED));
+        verify(fieldItemViewSpy, times(1)).showCheck(eq(true));
         verify(fieldItemPresenter, times(1)).onFieldElementClick(eq(fieldItemViewSpy));
     }
 
     @Test
     public void onFieldElementClicked() {
         InOrder inOrder = inOrder(fieldItemViewSpy, lIElementMock, fieldItemPresenter);
-        fieldItemViewSpy.onFieldElementClick();
+        fieldItemViewSpy.onFieldElementClick(mock(ClickEvent.class));
         inOrder.verify(lIElementMock, times(1)).addClassName(eq(ConstantHolder.SELECTED));
         inOrder.verify(fieldItemViewSpy, times(1)).showCheck(eq(true));
         inOrder.verify(fieldItemPresenter, times(1)).onFieldElementClick(eq(fieldItemViewSpy));

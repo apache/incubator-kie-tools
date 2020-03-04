@@ -34,6 +34,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemViewImpl.LIST_VIEW_PF_EXPAND_ACTIVE;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.FA_ANGLE_DOWN;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.SELECTED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
@@ -127,10 +128,12 @@ public class ListGroupItemViewImplTest extends AbstractTestToolsTest {
     public void showCheck() {
         listGroupItemViewSpy.showCheck(true);
         verify(checkElementStyleMock, times(1)).setDisplay(eq(Style.Display.BLOCK));
+        verify(listGroupItemMock, times(1)).addClassName(eq(SELECTED));
         //
         reset();
         listGroupItemViewSpy.showCheck(false);
         verify(checkElementStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(listGroupItemMock, times(1)).removeClassName(eq(SELECTED));
     }
 
     @Test

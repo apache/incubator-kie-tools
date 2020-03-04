@@ -96,8 +96,7 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     @EventHandler("listGroupElement")
     public void onFullClassNameClick(ClickEvent event) {
         if (!listGroupElement.getClassName().contains(ConstantHolder.DISABLED)) {
-            checkElement.getStyle().setDisplay(Style.Display.BLOCK);
-            listGroupItem.addClassName(ConstantHolder.SELECTED);
+            showCheck(true);
             presenter.onSelectedElement(this);
         }
     }
@@ -124,7 +123,6 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
 
     @Override
     public void unselect() {
-        listGroupItem.removeClassName(ConstantHolder.SELECTED);
         showCheck(false);
     }
 
@@ -132,8 +130,10 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     public void showCheck(boolean show) {
         if (show) {
             checkElement.getStyle().setDisplay(Style.Display.BLOCK);
+            listGroupItem.addClassName(ConstantHolder.SELECTED);
         } else {
             checkElement.getStyle().setDisplay(Style.Display.NONE);
+            listGroupItem.removeClassName(ConstantHolder.SELECTED);
         }
     }
 

@@ -71,9 +71,9 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     @Override
     public void selectProperty(String factName, List<String> propertyParts) {
-        final ListGroupItemView listGroupItemView = listGroupItemViewMap.get(factName);
-        if (!listGroupItemView.isShown()) {
-            onToggleRowExpansion(listGroupItemView, false);
+        final ListGroupItemView instanceListGroupItemView = listGroupItemViewMap.get(factName);
+        if (!instanceListGroupItemView.isShown()) {
+            onToggleRowExpansion(instanceListGroupItemView, false);
         }
         String key;
         for (int i = 1; i < propertyParts.size(); i++) {
@@ -87,6 +87,8 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         key = factName + "." + String.join(".", propertyParts);
         if (fieldItemPresenter.fieldItemMap.containsKey(key)) {
             fieldItemPresenter.fieldItemMap.get(key).onFieldElementSelected();
+        } else {
+            instanceListGroupItemView.showCheck(true);
         }
     }
 
