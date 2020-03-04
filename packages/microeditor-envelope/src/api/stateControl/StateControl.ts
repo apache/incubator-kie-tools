@@ -16,6 +16,7 @@
 
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
 import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
 /**
  * PUBLIC ENVELOPE API
@@ -33,14 +34,14 @@ export class StateControl {
   private undoCommand: () => void;
   private redoCommand: () => void;
 
-  public undo(): void {
+  public undo(edits?: KogitoEdit[]): void {
     if (this.undoCommand) {
       this.undoCommand();
     }
   }
 
-  public redo(): void {
-    if (this.redoCommand) {
+  public redo(edits?: KogitoEdit[]): void {
+    if(this.redoCommand) {
       this.redoCommand();
     }
   }

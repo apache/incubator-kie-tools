@@ -16,8 +16,8 @@
 
 import * as vscode from "vscode";
 import { CancellationToken, CustomDocument, CustomEditorEditingCapability } from "vscode";
-import { KogitoEditType } from "./KogitoEditType";
 import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoEditingCapabilityFactory {
   private readonly editorStore: KogitoEditorStore;
@@ -31,13 +31,13 @@ export class KogitoEditingCapabilityFactory {
   }
 }
 
-export class KogitoEditingCapability implements CustomEditorEditingCapability<KogitoEditType> {
-  private readonly _onDidEdit = new vscode.EventEmitter<KogitoEditType>();
+export class KogitoEditingCapability implements CustomEditorEditingCapability<KogitoEdit> {
+  private readonly _onDidEdit = new vscode.EventEmitter<KogitoEdit>();
 
   private readonly editorStore: KogitoEditorStore;
   private readonly document: CustomDocument;
 
-  public readonly onDidEdit: vscode.Event<KogitoEditType>;
+  public readonly onDidEdit: vscode.Event<KogitoEdit>;
 
   public constructor(editorStore: KogitoEditorStore, document: CustomDocument) {
     this.editorStore = editorStore;
@@ -54,16 +54,22 @@ export class KogitoEditingCapability implements CustomEditorEditingCapability<Ko
     console.info("saveAs");
   }
 
-  public async undoEdits(edits: KogitoEditType[]) {
+  public async undoEdits(edits: KogitoEdit[]) {
     console.info("undo");
+    this.editorStore.withActive(activeEditor => activeEditor.notify_editorUndo(edits));
   }
 
-  public async applyEdits(edits: KogitoEditType[]) {
+  public async applyEdits(edits: KogitoEdit[]) {
     console.info("redo");
+    this.editorStore.withActive(activeEditor => activeEditor.notify_editorRedo(edits));
   }
 
   public async backup(cancellation: CancellationToken) {
     console.info("backup");
     return true;
+  }
+
+  public notifyEdit(edit: KogitoEdit) {
+    this._onDidEdit.fire(edit);
   }
 }

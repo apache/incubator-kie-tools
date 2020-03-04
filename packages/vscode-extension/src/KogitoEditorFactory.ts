@@ -17,7 +17,7 @@
 import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { ResourceContentService, Router } from "@kogito-tooling/core-api";
+import { ResourceContentService, Router, KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
@@ -40,7 +40,7 @@ export class KogitoEditorFactory {
     this.resourceContentService = resourceContentService;
   }
 
-  public configureNew(uri: vscode.Uri, panel: vscode.WebviewPanel) {
+  public configureNew(uri: vscode.Uri, panel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {
     const path = uri.fsPath;
     if (path.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
@@ -61,7 +61,8 @@ export class KogitoEditorFactory {
       this.router,
       this.webviewLocation,
       this.editorStore,
-      this.resourceContentService
+      this.resourceContentService,
+      signalEdit
     );
     this.editorStore.addAsActive(editor);
     editor.setupEnvelopeBus();

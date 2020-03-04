@@ -34,8 +34,8 @@ export interface Impl {
   receive_contentRequest(): void;
   receive_resourceContentResponse(content: ResourceContent): void;
   receive_resourceContentList(list: ResourcesList): void;
-  receive_editorUndo(): void;
-  receive_editorRedo(): void;
+  receive_editorUndo(edits: KogitoEdit[]): void;
+  receive_editorRedo(edits: KogitoEdit[]): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -150,10 +150,12 @@ export class EnvelopeBusInnerMessageHandler {
         this.impl.receive_resourceContentList(resourcesList);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
-        this.impl.receive_editorUndo();
+        const undoEdits = message.data as KogitoEdit[];
+        this.impl.receive_editorUndo(undoEdits);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
-        this.impl.receive_editorRedo();
+        const redoEdits = message.data as KogitoEdit[];
+        this.impl.receive_editorRedo(redoEdits);
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

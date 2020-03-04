@@ -17,10 +17,13 @@
 import * as vscode from "vscode";
 import { CustomDocument, WebviewPanel } from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
+import { KogitoEditingCapability, KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoWebviewProvider implements vscode.CustomEditorProvider {
   public static readonly viewType = "kieKogitoWebviewEditors";
+
+  private readonly capabilites: Map<CustomDocument, KogitoEditingCapability> = new Map<CustomDocument, KogitoEditingCapability>();
 
   private readonly editorFactory: KogitoEditorFactory;
   public readonly editingCapabilityFactory: KogitoEditingCapabilityFactory;
@@ -37,11 +40,25 @@ export class KogitoWebviewProvider implements vscode.CustomEditorProvider {
   }
 
   public async resolveCustomDocument(document: CustomDocument<unknown>) {
-    vscode.window.setStatusBarMessage("Tiago", 3000);
-    return { editing: this.editingCapabilityFactory.createNew(document) };
+    const capability = this.editingCapabilityFactory.createNew(document);
+    this.capabilites.set(document, capability);
+
+    document.onDidDispose(e => {
+      this.capabilites.delete(document);
+    });
+
+    return { editing: capability };
   }
 
   public async resolveCustomEditor(document: CustomDocument<unknown>, webview: WebviewPanel) {
-    this.editorFactory.configureNew(document.uri, webview);
+    this.editorFactory.configureNew(document.uri, webview, edit => this.signalEdit(document, edit));
+  }
+
+  private signalEdit(document: CustomDocument, edit: KogitoEdit) {
+    const capability = this.capabilites.get(document);
+
+    if(capability) {
+      capability.notifyEdit(edit);
+    }
   }
 }
