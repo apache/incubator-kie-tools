@@ -17,15 +17,23 @@
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import { Button, PageSection, TextInput, Title, Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
-import { EditIcon } from "@patternfly/react-icons";
-import { useLocation } from "react-router";
 import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  KebabToggle
+  Button,
+  PageSection,
+  TextInput,
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem,
+  PageHeader,
+  Brand,
+  DropdownToggle,
+  Level,
+  LevelItem
 } from "@patternfly/react-core";
+import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
+import { useLocation } from "react-router";
+import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -34,6 +42,7 @@ interface Props {
   onDownload: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
+  isPageFullscreen: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -41,7 +50,14 @@ export function EditorToolbar(props: Props) {
   const location = useLocation();
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState(context.file.fileName);
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
+
+  const { isPageFullscreen } = props;
+
+  const logoProps = useMemo(() => {
+    return { href: "/" };
+  }, []);
 
   const editorType = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
@@ -76,89 +92,133 @@ export function EditorToolbar(props: Props) {
 
   const kebabItems = useMemo(
     () => [
-      <DropdownItem key="copy" component="button" onClick={props.onCopyContentToClipboard}>
-        Copy content to clipboard
+      <DropdownItem
+        key={"download"}
+        component={"button"}
+        onClick={props.onDownload}
+        className={"pf-u-display-none-on-lg"}
+      >
+        Download
       </DropdownItem>,
-      <DropdownItem key="fullscreen" component="button" onClick={props.onFullScreen}>
-        Full Screen
+      <>
+        {context.external && !context.readonly && (
+          <DropdownItem key={"sendchangestogithub"} component={"button"} onClick={props.onSave}>
+            Send changes to GitHub
+          </DropdownItem>
+        )}
+      </>,
+      <DropdownItem key={"copy"} component={"button"} onClick={props.onCopyContentToClipboard}>
+        Copy source
       </DropdownItem>
+      /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
+        Get shareable URL
+      </DropdownItem>*/
     ],
-    []
+    [context.external, context.readonly, props.onSave, props.onDownload, props.onCopyContentToClipboard]
   );
 
-  return (
-    <PageSection type="nav" className="kogito--editor__toolbar-section">
-      <Toolbar>
-        {!editingName && (
-          <ToolbarGroup>
-            <ToolbarItem>
-              <Title headingLevel="h3" size="xl" onClick={editName} title="Rename">
-                {context.file.fileName + "." + editorType}
-              </Title>
-            </ToolbarItem>
+  const filenameInput = (
+    <>
+      {!editingName && (
+        <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"}>
+          {context.file.fileName + "." + editorType}
+        </Title>
+      )}
+      {editingName && (
+        <div className={"kogito--editor__toolbar-name-container"}>
+          <Title headingLevel={"h3"} size={"xl"}>
+            {name + "." + editorType}
+          </Title>
+          <TextInput
+            autoFocus={true}
+            value={name}
+            type={"text"}
+            aria-label={"fileName"}
+            className={"pf-c-title pf-m-xl"}
+            onChange={setName}
+            onKeyUp={onNameInputKeyUp}
+            onBlur={saveNewName}
+          />
+        </div>
+      )}
+    </>
+  );
 
-            {!context.readonly && (
-              <ToolbarItem>
-                <Button variant="plain" aria-label="Edit the file name" onClick={editName}>
-                  <EditIcon />
-                </Button>
-              </ToolbarItem>
-            )}
-          </ToolbarGroup>
-        )}
-        {editingName && (
-          <ToolbarGroup>
-            <ToolbarItem>
-              <div className="kogito--editor__toolbar-name-container">
-                <Title headingLevel="h3" size="xl">
-                  {name + "." + editorType}
-                </Title>
-                <TextInput
-                  autoFocus={true}
-                  value={name}
-                  type="text"
-                  aria-label="fileName"
-                  className="pf-c-title pf-m-xl"
-                  onChange={setName}
-                  onKeyUp={onNameInputKeyUp}
-                  onBlur={saveNewName}
-                />
-              </div>
-            </ToolbarItem>
-          </ToolbarGroup>
-        )}
-        <ToolbarGroup className="kogito--right">
-          {context.external && !context.readonly && (
-            <ToolbarItem className="pf-u-mr-sm">
-              <Button variant="primary" onClick={props.onSave}>
-                Send changes to GitHub
-              </Button>
-            </ToolbarItem>
-          )}
-          <ToolbarItem className="pf-u-mr-sm">
-            <Button variant={context.external ? "secondary" : "primary"} onClick={props.onDownload}>
-              Download
+  const headerToolbar = (
+    // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
+    <Toolbar>
+      <ToolbarGroup>
+        <ToolbarItem>
+          <Button
+            variant={"secondary"}
+            onClick={props.onDownload}
+            className={"pf-u-display-none pf-u-display-flex-on-lg"}
+          >
+            Download
+          </Button>
+        </ToolbarItem>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
+          <Dropdown
+            onSelect={() => setMenuOpen(false)}
+            toggle={
+              <DropdownToggle
+                id={"toggle-id-lg"}
+                onToggle={isOpen => setMenuOpen(isOpen)}
+                iconComponent={CaretDownIcon}
+              >
+                File actions
+              </DropdownToggle>
+            }
+            isOpen={isMenuOpen}
+            isPlain={true}
+            dropdownItems={kebabItems}
+            position={DropdownPosition.right}
+          />
+        </ToolbarItem>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <ToolbarItem className={"pf-u-display-none-on-lg"}>
+          <Dropdown
+            onSelect={() => setKebabOpen(false)}
+            toggle={
+              <DropdownToggle
+                id={"toggle-id-sm"}
+                onToggle={isOpen => setKebabOpen(isOpen)}
+                iconComponent={EllipsisVIcon}
+              />
+            }
+            isOpen={isKebabOpen}
+            isPlain={true}
+            dropdownItems={kebabItems}
+            position={DropdownPosition.right}
+          />
+        </ToolbarItem>
+
+        <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
+          <Button variant={"plain"} onClick={props.onFullScreen} aria-label={"Full screen"}>
+            <ExpandIcon />
+          </Button>
+        </ToolbarItem>
+        {!context.external && (
+          <ToolbarItem>
+            <Button variant={"plain"} onClick={props.onClose} aria-label={"Close"}>
+              <CloseIcon />
             </Button>
           </ToolbarItem>
-          {!context.external && (
-            <ToolbarItem>
-              <Button variant="secondary" onClick={props.onClose}>
-                Close
-              </Button>
-            </ToolbarItem>
-          )}
-          <ToolbarItem className="pf-u-mr-sm">
-            <Dropdown
-              onSelect={() => setKebabOpen(false)}
-              toggle={<KebabToggle onToggle={isOpen => setKebabOpen(isOpen)} />}
-              isOpen={isKebabOpen}
-              isPlain={true}
-              dropdownItems={kebabItems}
-              position={DropdownPosition.right}
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    </PageSection>
+        )}
+      </ToolbarGroup>
+    </Toolbar>
   );
+
+  return !isPageFullscreen ? (
+    <PageHeader
+      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
+      logoProps={logoProps}
+      toolbar={headerToolbar}
+      topNav={filenameInput}
+      className={"kogito--editor__toolbar"}
+    />
+  ) : null;
 }
