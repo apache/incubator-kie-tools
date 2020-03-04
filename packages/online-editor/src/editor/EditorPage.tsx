@@ -129,13 +129,16 @@ export function EditorPage(props: Props) {
     [fileNameWithExtension]
   );
 
-  const onPreviewResponse = useCallback(preview => {
-    if (action === ActionType.PREVIEW && downloadPreviewRef.current) {
-      const fileBlob = new Blob([preview], { type: "image/svg+xml" });
-      downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
-      downloadPreviewRef.current.click();
-    }
-  }, [fileNameWithExtension]);
+  const onPreviewResponse = useCallback(
+    preview => {
+      if (action === ActionType.PREVIEW && downloadPreviewRef.current) {
+        const fileBlob = new Blob([preview], { type: "image/svg+xml" });
+        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+        downloadPreviewRef.current.click();
+      }
+    },
+    [fileNameWithExtension]
+  );
 
   useEffect(() => {
     if (closeCopySuccessAlert) {
@@ -182,6 +185,7 @@ export function EditorPage(props: Props) {
           onFileNameChanged={props.onFileNameChanged}
           onCopyContentToClipboard={requestCopyContentToClipboard}
           isPageFullscreen={fullscreen}
+          onPreview={requestPreview}
         />
       }
     >
@@ -204,7 +208,12 @@ export function EditorPage(props: Props) {
 
       <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} onPreviewResponse={onPreviewResponse} />
+        <Editor
+          ref={editorRef}
+          fullscreen={fullscreen}
+          onContentResponse={onContentResponse}
+          onPreviewResponse={onPreviewResponse}
+        />
       </PageSection>
       <textarea
         ref={copyContentTextArea}
