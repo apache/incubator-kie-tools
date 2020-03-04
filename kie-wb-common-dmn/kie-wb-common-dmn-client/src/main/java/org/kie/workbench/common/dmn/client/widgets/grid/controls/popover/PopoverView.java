@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public interface PopoverView extends org.jboss.errai.ui.client.local.api.IsElement {
 
-    void show(final Optional<String> editorTitle);
+    void show(final Optional<String> popoverTitle);
 
     void hide();
 }

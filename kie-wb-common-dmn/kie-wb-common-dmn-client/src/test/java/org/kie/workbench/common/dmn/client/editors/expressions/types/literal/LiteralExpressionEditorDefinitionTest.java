@@ -29,7 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -105,7 +105,7 @@ public class LiteralExpressionEditorDefinitionTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     private Optional<HasName> hasName = Optional.of(HasName.NOP);
 

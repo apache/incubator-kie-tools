@@ -22,12 +22,14 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -43,24 +45,24 @@ public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData 
     private final BiFunction<Integer, Integer, List<ListSelectorItem>> listSelectorItemsSupplier;
     private final Consumer<ListSelectorItem> listSelectorItemConsumer;
 
-    public RelationColumnHeaderMetaData(final InformationItem variable,
-                                        final Consumer<HasName> clearDisplayNameConsumer,
-                                        final BiConsumer<HasName, Name> setDisplayNameConsumer,
+    public RelationColumnHeaderMetaData(final InformationItem hasValue,
+                                        final Consumer<HasName> clearValueConsumer,
+                                        final BiConsumer<HasName, Name> setValueConsumer,
                                         final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                        final TranslationService translationService,
                                         final CellEditorControlsView.Presenter cellEditorControls,
-                                        final NameAndDataTypePopoverView.Presenter editor,
-                                        final Optional<String> editorTitle,
+                                        final ValueAndDataTypePopoverView.Presenter editor,
                                         final ListSelectorView.Presenter listSelector,
                                         final BiFunction<Integer, Integer, List<ListSelectorItem>> listSelectorItemsSupplier,
                                         final Consumer<ListSelectorItem> listSelectorItemConsumer) {
-        super(Optional.ofNullable(variable),
-              () -> variable,
-              clearDisplayNameConsumer,
-              setDisplayNameConsumer,
+        super(Optional.ofNullable(hasValue),
+              () -> hasValue,
+              clearValueConsumer,
+              setValueConsumer,
               setTypeRefConsumer,
+              translationService,
               cellEditorControls,
-              editor,
-              editorTitle);
+              editor);
         this.listSelector = listSelector;
         this.listSelectorItemsSupplier = listSelectorItemsSupplier;
         this.listSelectorItemConsumer = listSelectorItemConsumer;
@@ -69,6 +71,11 @@ public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData 
     @Override
     public String getColumnGroup() {
         return NAME_DATA_TYPE_COLUMN_GROUP;
+    }
+
+    @Override
+    public String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation);
     }
 
     @Override

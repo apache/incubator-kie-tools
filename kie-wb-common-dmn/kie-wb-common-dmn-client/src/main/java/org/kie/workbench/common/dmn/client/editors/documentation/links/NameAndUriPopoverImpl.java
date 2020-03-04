@@ -51,8 +51,8 @@ public class NameAndUriPopoverImpl implements NameAndUrlPopoverView.Presenter {
     }
 
     @Override
-    public void show(final Optional editorTitle) {
-        view.show(editorTitle);
+    public void show() {
+        view.show(Optional.ofNullable(getPopoverTitle()));
     }
 
     @Override

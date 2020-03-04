@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -117,10 +117,10 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
-    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     protected ItemDefinitionUtils itemDefinitionUtils;

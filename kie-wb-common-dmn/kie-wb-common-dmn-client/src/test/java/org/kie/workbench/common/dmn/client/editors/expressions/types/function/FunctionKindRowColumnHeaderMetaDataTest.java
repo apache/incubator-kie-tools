@@ -43,9 +43,6 @@ public class FunctionKindRowColumnHeaderMetaDataTest {
     private KindPopoverView.Presenter editor;
 
     @Mock
-    private Optional<String> editorTitle;
-
-    @Mock
     private FunctionGrid gridWidget;
 
     @Before
@@ -56,7 +53,6 @@ public class FunctionKindRowColumnHeaderMetaDataTest {
         this.functionKindRow = new FunctionKindRowColumnHeaderMetaData(functionSupplier,
                                                                        cellEditorControls,
                                                                        editor,
-                                                                       editorTitle,
                                                                        gridWidget);
     }
 

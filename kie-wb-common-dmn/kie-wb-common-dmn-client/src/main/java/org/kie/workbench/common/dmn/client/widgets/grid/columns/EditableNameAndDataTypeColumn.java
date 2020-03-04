@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.types.Point2D;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
@@ -32,8 +33,10 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
+import org.kie.workbench.common.dmn.client.editors.types.HasValueAndTypeRef;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -49,60 +52,63 @@ import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRe
 
 public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> extends DMNSimpleGridColumn<G, InformationItemCell.HasNameCell> {
 
-    private final Predicate<Integer> isEditable;
-    private final Consumer<HasName> clearDisplayNameConsumer;
-    private final BiConsumer<HasName, Name> setDisplayNameConsumer;
-    private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
-    private final CellEditorControlsView.Presenter cellEditorControls;
-    private final NameAndDataTypePopoverView.Presenter editor;
-    private final Optional<String> editorTitle;
+    protected final Predicate<Integer> isEditable;
+    protected final Consumer<HasName> clearValueConsumer;
+    protected final BiConsumer<HasName, Name> setValueConsumer;
+    protected final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
+    protected final TranslationService translationService;
+    protected final CellEditorControlsView.Presenter cellEditorControls;
+    protected final ValueAndDataTypePopoverView.Presenter editor;
 
     public EditableNameAndDataTypeColumn(final HeaderMetaData headerMetaData,
                                          final double width,
                                          final G gridWidget,
                                          final Predicate<Integer> isEditable,
-                                         final Consumer<HasName> clearDisplayNameConsumer,
-                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                         final Consumer<HasName> clearValueConsumer,
+                                         final BiConsumer<HasName, Name> setValueConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                         final TranslationService translationService,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypePopoverView.Presenter editor,
-                                         final Optional<String> editorTitle) {
+                                         final ValueAndDataTypePopoverView.Presenter editor) {
         this(Collections.singletonList(headerMetaData),
              width,
              gridWidget,
              isEditable,
-             clearDisplayNameConsumer,
-             setDisplayNameConsumer,
+             clearValueConsumer,
+             setValueConsumer,
              setTypeRefConsumer,
+             translationService,
              cellEditorControls,
-             editor,
-             editorTitle);
+             editor);
     }
 
     public EditableNameAndDataTypeColumn(final List<HeaderMetaData> headerMetaData,
                                          final double width,
                                          final G gridWidget,
                                          final Predicate<Integer> isEditable,
-                                         final Consumer<HasName> clearDisplayNameConsumer,
-                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                         final Consumer<HasName> clearValueConsumer,
+                                         final BiConsumer<HasName, Name> setValueConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                         final TranslationService translationService,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypePopoverView.Presenter editor,
-                                         final Optional<String> editorTitle) {
+                                         final ValueAndDataTypePopoverView.Presenter editor) {
         super(headerMetaData,
               new NameAndDataTypeColumnRenderer(),
               width,
               gridWidget);
         this.isEditable = isEditable;
-        this.clearDisplayNameConsumer = clearDisplayNameConsumer;
-        this.setDisplayNameConsumer = setDisplayNameConsumer;
+        this.clearValueConsumer = clearValueConsumer;
+        this.setValueConsumer = setValueConsumer;
         this.setTypeRefConsumer = setTypeRefConsumer;
+        this.translationService = translationService;
         this.cellEditorControls = cellEditorControls;
         this.editor = editor;
-        this.editorTitle = editorTitle;
+
         setMovable(false);
         setResizable(true);
     }
+
+    protected abstract String getPopoverTitle();
 
     @Override
     public void edit(final GridCell<InformationItemCell.HasNameCell> cell,
@@ -122,7 +128,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
 
         final InformationItemCell.HasNameAndDataTypeCell binding = (InformationItemCell.HasNameAndDataTypeCell) cell.getValue().getValue();
 
-        editor.bind(new HasNameAndTypeRef() {
+        editor.bind(new HasValueAndTypeRef<Name>() {
                         @Override
                         public QName getTypeRef() {
                             return binding.getTypeRef();
@@ -138,21 +144,46 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                         }
 
                         @Override
-                        public Name getName() {
+                        public Name getValue() {
                             return binding.getName();
                         }
 
                         @Override
-                        public void setName(final Name name) {
-                            if (Objects.equals(name, getName())) {
+                        public void setValue(final Name name) {
+                            if (Objects.equals(name, getValue())) {
                                 return;
                             }
 
                             if (name == null || name.getValue() == null || name.getValue().trim().isEmpty()) {
-                                clearDisplayNameConsumer.accept(binding);
+                                clearValueConsumer.accept(binding);
                             } else {
-                                setDisplayNameConsumer.accept(binding, name);
+                                setValueConsumer.accept(binding, name);
                             }
+                        }
+
+                        @Override
+                        public String getPopoverTitle() {
+                            return EditableNameAndDataTypeColumn.this.getPopoverTitle();
+                        }
+
+                        @Override
+                        public Name toModelValue(final String componentValue) {
+                            return new Name(componentValue);
+                        }
+
+                        @Override
+                        public String toWidgetValue(final Name modelValue) {
+                            return modelValue.getValue();
+                        }
+
+                        @Override
+                        public String getValueLabel() {
+                            return translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_NameLabel);
+                        }
+
+                        @Override
+                        public String normaliseValue(final String componentValue) {
+                            return NameUtils.normaliseName(componentValue);
                         }
 
                         @Override
@@ -174,7 +205,6 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
             dxy[1] = r.getY();
         });
         cellEditorControls.show(editor,
-                                editorTitle,
                                 (int) (dxy[0]),
                                 (int) (dxy[1]));
     }

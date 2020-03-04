@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -248,8 +248,8 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
     /**
      * Proxy {@link HasName} to be able intercept interactions with the original to update the
      * navigation label in {@link ExpressionEditorView#setExpressionNameText(Optional)} when the {@link Name}
-     * changes. The {@link Name} changes by a {@link SetHasNameCommand#execute(AbstractCanvasHandler)} or
-     * {@link SetHasNameCommand#undo(AbstractCanvasHandler)} that ensures the {@link HasName#setName(Name)}
+     * changes. The {@link Name} changes by a {@link SetHasValueCommand#execute(AbstractCanvasHandler)} or
+     * {@link SetHasValueCommand#undo(AbstractCanvasHandler)} that ensures the {@link HasName#setName(Name)}
      * method is called.
      * @param hasName A {@link HasName} to be proxied.
      * @return A proxy that intercepts interactions with the wrapped {@link HasName}

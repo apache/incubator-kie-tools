@@ -33,16 +33,16 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasValue;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -167,11 +167,12 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public abstract void initialiseUiCells();
 
     @SuppressWarnings("unchecked")
-    public Consumer<HasName> clearDisplayNameConsumer(final boolean updateStunnerTitle) {
-        return (hn) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+    public <V, HV extends HasValue<V>> Consumer<HV> clearValueConsumer(final boolean updateStunnerTitle,
+                                                                       final V emptyValue) {
+        return (hv) -> {
+            final CompositeCommand.Builder commandBuilder = newHasValueHasNoValueCommand(hv, emptyValue);
             if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand(new Name()).ifPresent(commandBuilder::addCommand);
+                getUpdateStunnerTitleCommand(emptyValue).ifPresent(commandBuilder::addCommand);
             }
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
@@ -179,11 +180,11 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @SuppressWarnings("unchecked")
-    public BiConsumer<HasName, Name> setDisplayNameConsumer(final boolean updateStunnerTitle) {
-        return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
+    public <V, HV extends HasValue<V>> BiConsumer<HV, V> setValueConsumer(final boolean updateStunnerTitle) {
+        return (hv, value) -> {
+            final CompositeCommand.Builder commandBuilder = newHasValueHasValueCommand(hv, value);
             if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
+                getUpdateStunnerTitleCommand(value).ifPresent(commandBuilder::addCommand);
             }
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
@@ -200,9 +201,23 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                                                      }));
     }
 
-    protected CompositeCommand.Builder newHasNameHasNoValueCommand(final HasName hasName) {
+    protected <V, HV extends HasValue<V>> CompositeCommand.Builder newHasValueHasNoValueCommand(final HV hasValue,
+                                                                                                final V emptyValue) {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
-        commandBuilder.addCommand(new DeleteHasNameCommand(hasName,
+        commandBuilder.addCommand(new DeleteHasValueCommand<>(hasValue,
+                                                              emptyValue,
+                                                              () -> {
+                                                                  gridLayer.batch();
+                                                                  selectedDomainObject.ifPresent(this::fireDomainObjectSelectionEvent);
+                                                              }));
+        return commandBuilder;
+    }
+
+    protected <V, HV extends HasValue<V>> CompositeCommand.Builder newHasValueHasValueCommand(final HV hasValue,
+                                                                                              final V name) {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
+        commandBuilder.addCommand(new SetHasValueCommand<>(hasValue,
+                                                           name,
                                                            () -> {
                                                                gridLayer.batch();
                                                                selectedDomainObject.ifPresent(this::fireDomainObjectSelectionEvent);
@@ -210,19 +225,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return commandBuilder;
     }
 
-    protected CompositeCommand.Builder newHasNameHasValueCommand(final HasName hasName,
-                                                                 final Name name) {
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
-        commandBuilder.addCommand(new SetHasNameCommand(hasName,
-                                                        name,
-                                                        () -> {
-                                                            gridLayer.batch();
-                                                            selectedDomainObject.ifPresent(this::fireDomainObjectSelectionEvent);
-                                                        }));
-        return commandBuilder;
-    }
-
-    protected Optional<AbstractCanvasGraphCommand> getUpdateStunnerTitleCommand(final Name value) {
+    protected <V> Optional<AbstractCanvasGraphCommand> getUpdateStunnerTitleCommand(final V value) {
         AbstractCanvasGraphCommand command = null;
         if (getNodeUUID().isPresent()) {
             final String uuid = getNodeUUID().get();

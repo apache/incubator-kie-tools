@@ -24,19 +24,22 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
-    public void setup(final Optional<HasName> hasName) {
+    @Override
+    public void setup(final Optional<HasName> hasValue) {
         this.metaData = new NameAndDataTypeHeaderMetaData(hasExpression,
-                                                          hasName,
-                                                          clearDisplayNameConsumer,
-                                                          setDisplayNameConsumer,
+                                                          hasValue,
+                                                          clearValueConsumer,
+                                                          setValueConsumer,
                                                           setTypeRefConsumer,
+                                                          translationService,
                                                           cellEditorControls,
-                                                          headerEditor,
-                                                          EDITOR_TITLE) {
+                                                          headerEditor) {
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;
@@ -46,7 +49,13 @@ public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndD
             public Optional<String> getPlaceHolder() {
                 return Optional.of(PLACEHOLDER);
             }
+
+            @Override
+            public String getPopoverTitle() {
+                return POPOVER_TITLE;
+            }
         };
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Override

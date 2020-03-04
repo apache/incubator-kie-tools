@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.k
 
 import java.util.Optional;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +41,9 @@ public class KindPopoverImplTest {
     private KindPopoverView view;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
     private HasKindSelectControl hasKindSelectorControl;
 
     private FunctionDefinition.Kind kind;
@@ -47,13 +51,11 @@ public class KindPopoverImplTest {
     @Captor
     private ArgumentCaptor<FunctionDefinition.Kind[]> kindsArgumentCaptor;
 
-    private Optional<String> title = Optional.of("title");
-
     private KindPopoverImpl popover;
 
     @Before
     public void setup() {
-        this.popover = new KindPopoverImpl(this.view);
+        this.popover = new KindPopoverImpl(view, translationService);
         this.kind = FunctionDefinition.Kind.JAVA;
     }
 
@@ -70,9 +72,18 @@ public class KindPopoverImplTest {
     }
 
     @Test
+    public void testShowWhenBound() {
+        popover.bind(hasKindSelectorControl, 0, 0);
+
+        popover.show();
+
+        verify(view).show(Optional.ofNullable(popover.getPopoverTitle()));
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testShowWhenNotBound() {
-        popover.show(title);
+        popover.show();
 
         verify(view, never()).show(any(Optional.class));
     }

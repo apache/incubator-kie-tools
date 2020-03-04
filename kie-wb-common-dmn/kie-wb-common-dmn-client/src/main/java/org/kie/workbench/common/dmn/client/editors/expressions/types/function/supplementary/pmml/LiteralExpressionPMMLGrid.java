@@ -33,7 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.Fu
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionUIModelMapper;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -81,7 +81,7 @@ public abstract class LiteralExpressionPMMLGrid extends LiteralExpressionGrid {
                                      final TranslationService translationService,
                                      final boolean isOnlyVisualChangeAllowed,
                                      final int nesting,
-                                     final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                     final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,

@@ -54,10 +54,10 @@ public class AbstractPopoverViewImpl implements PopoverView {
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
+    public void show(final Optional<String> popoverTitle) {
         final PopoverOptions options = createOptions();
 
-        editorTitle.ifPresent(t -> popoverElement.setAttribute("title", t));
+        popoverTitle.ifPresent(t -> popoverElement.setAttribute("title", t));
         popover = jQueryPopover.wrap(this.getElement());
         popover.addShowListener(() -> isVisible = true);
         popover.addShownListener(() -> isVisible = true);
@@ -68,7 +68,6 @@ public class AbstractPopoverViewImpl implements PopoverView {
     }
 
     PopoverOptions createOptions() {
-
         final PopoverOptions options = createPopoverOptionsInstance();
         options.setContent((element) -> popoverContentElement);
         options.setAnimation(false);

@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
@@ -38,8 +37,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class Definitions extends NamedElement implements HasName,
-                                                         DMNPropertySet {
+public class Definitions extends NamedElement implements DMNPropertySet {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = Namespace.FEEL.getUri();
 

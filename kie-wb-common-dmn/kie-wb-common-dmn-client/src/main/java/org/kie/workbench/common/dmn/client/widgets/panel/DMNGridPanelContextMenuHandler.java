@@ -42,8 +42,6 @@ import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.
 
 public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
-    static final Optional<String> EDITOR_TITLE = Optional.empty();
-
     private DMNGridLayer gridLayer;
     private CellEditorControlsView.Presenter cellEditorControls;
     private DMNGridPanelCellSelectionHandler cellSelectionHandler;
@@ -158,7 +156,6 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
                    uiRowIndex,
                    uiColumnIndex);
             cellEditorControls.show(e,
-                                    EDITOR_TITLE,
                                     (int) (ap.getX()),
                                     (int) (ap.getY()));
         });

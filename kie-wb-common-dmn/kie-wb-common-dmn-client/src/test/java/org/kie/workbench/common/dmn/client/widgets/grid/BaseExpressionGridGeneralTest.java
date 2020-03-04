@@ -37,10 +37,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.SetComponentWidthCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
@@ -687,21 +687,21 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testClearDisplayNameConsumer() {
-        doTestClearDisplayNameConsumer(false,
-                                       DeleteHasNameCommand.class);
+    public void testClearValueConsumer() {
+        doTestClearValueConsumer(false,
+                                 DeleteHasValueCommand.class);
 
         verify(gridLayer).batch();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testClearDisplayNameConsumerWhenNotNested() {
+    public void testClearValueConsumerWhenNotNested() {
         grid.fireDomainObjectSelectionEvent(decision);
         reset(domainObjectSelectionEvent);
 
-        doTestClearDisplayNameConsumer(false,
-                                       DeleteHasNameCommand.class);
+        doTestClearValueConsumer(false,
+                                 DeleteHasValueCommand.class);
 
         verify(gridLayer).batch();
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
@@ -712,16 +712,16 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testClearDisplayNameConsumerAndUpdateStunnerTitle() {
-        doTestClearDisplayNameConsumer(true,
-                                       DeleteHasNameCommand.class);
+    public void testClearValueConsumerAndUpdateStunnerTitle() {
+        doTestClearValueConsumer(true,
+                                 DeleteHasValueCommand.class);
 
         verify(gridLayer).batch();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testClearDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+    public void testClearValueConsumerWhenNotNestedAndUpdateStunnerTitle() {
         grid.fireDomainObjectSelectionEvent(decision);
         reset(domainObjectSelectionEvent);
 
@@ -731,9 +731,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         when(index.get(uuid)).thenReturn(element);
         when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, name)).thenReturn(updateElementPropertyCommand);
 
-        doTestClearDisplayNameConsumer(true,
-                                       DeleteHasNameCommand.class,
-                                       UpdateElementPropertyCommand.class);
+        doTestClearValueConsumer(true,
+                                 DeleteHasValueCommand.class,
+                                 UpdateElementPropertyCommand.class);
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
@@ -745,9 +745,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void doTestClearDisplayNameConsumer(final boolean updateStunnerTitle,
-                                                final Class... expectedCommandClasses) {
-        grid.clearDisplayNameConsumer(updateStunnerTitle).accept(decision);
+    private void doTestClearValueConsumer(final boolean updateStunnerTitle,
+                                          final Class... expectedCommandClasses) {
+        grid.clearValueConsumer(updateStunnerTitle, new Name()).accept(decision);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               commandCaptor.capture());
@@ -760,21 +760,21 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testSetDisplayNameConsumer() {
-        doTestSetDisplayNameConsumer(false,
-                                     SetHasNameCommand.class);
+    public void testSetValueConsumer() {
+        doTestSetValueConsumer(false,
+                               SetHasValueCommand.class);
 
         verify(gridLayer).batch();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSetDisplayNameConsumerWhenNotNested() {
+    public void testSetValueConsumerWhenNotNested() {
         grid.fireDomainObjectSelectionEvent(decision);
         reset(domainObjectSelectionEvent);
 
-        doTestSetDisplayNameConsumer(false,
-                                     SetHasNameCommand.class);
+        doTestSetValueConsumer(false,
+                               SetHasValueCommand.class);
 
         verify(gridLayer).batch();
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
@@ -785,16 +785,16 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testSetDisplayNameConsumerAndUpdateStunnerTitle() {
-        doTestSetDisplayNameConsumer(true,
-                                     SetHasNameCommand.class);
+    public void testSetValueConsumerAndUpdateStunnerTitle() {
+        doTestSetValueConsumer(true,
+                               SetHasValueCommand.class);
 
         verify(gridLayer).batch();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSetDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+    public void testSetValueConsumerWhenNotNestedAndUpdateStunnerTitle() {
         grid.fireDomainObjectSelectionEvent(decision);
         reset(domainObjectSelectionEvent);
 
@@ -803,9 +803,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         when(index.get(uuid)).thenReturn(element);
         when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, NAME)).thenReturn(updateElementPropertyCommand);
 
-        doTestSetDisplayNameConsumer(true,
-                                     SetHasNameCommand.class,
-                                     UpdateElementPropertyCommand.class);
+        doTestSetValueConsumer(true,
+                               SetHasValueCommand.class,
+                               UpdateElementPropertyCommand.class);
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
@@ -817,9 +817,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void doTestSetDisplayNameConsumer(final boolean updateStunnerTitle,
-                                              final Class... expectedCommandClasses) {
-        grid.setDisplayNameConsumer(updateStunnerTitle).accept(decision, NAME);
+    private void doTestSetValueConsumer(final boolean updateStunnerTitle,
+                                        final Class... expectedCommandClasses) {
+        grid.setValueConsumer(updateStunnerTitle).accept(decision, NAME);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               commandCaptor.capture());
@@ -871,7 +871,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                             eq(0),
                                             eq(0));
         verify(cellEditorControls).show(eq(cellControlsEditorMock),
-                                        eq(Optional.empty()),
                                         eq((int) COLUMN_WIDTH / 2),
                                         eq((int) HEADER_HEIGHT / 2));
     }
@@ -889,7 +888,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertThat(grid.showContextMenuForHeader(0, 0)).isFalse();
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }
@@ -915,7 +913,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                             eq(0),
                                             eq(0));
         verify(cellEditorControls).show(eq(cellControlsEditorMock),
-                                        eq(Optional.empty()),
                                         eq((int) COLUMN_WIDTH / 2),
                                         eq((int) (gridRow.getHeight() / 2 + HEADER_HEIGHT)));
     }
@@ -937,7 +934,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertThat(grid.showContextMenuForCell(0, 0)).isFalse();
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }

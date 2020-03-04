@@ -26,7 +26,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.api.IsElement {
 
     void show(final PopupEditorControls editor,
-              final Optional<String> editorTitle,
               final int x,
               final int y);
 
@@ -37,7 +36,6 @@ public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.
         void setGridPanelSupplier(final Optional<Supplier<DMNGridPanel>> gridPanelSupplier);
 
         void show(final HasCellEditorControls.Editor<?> editor,
-                  final Optional<String> editorTitle,
                   final int x,
                   final int y);
 

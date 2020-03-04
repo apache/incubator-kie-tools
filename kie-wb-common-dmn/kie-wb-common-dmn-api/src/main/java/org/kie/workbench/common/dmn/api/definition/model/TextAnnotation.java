@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -55,6 +56,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.TextAnnotation"),
         startElement = "id")
 public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
+                                                        HasText,
                                                         DynamicReadOnly {
 
     private static final String[] READONLY_FIELDS = {"Description", "Text", "TextFormat"};
@@ -158,10 +160,12 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
     // DMN properties
     // -----------------------
 
+    @Override
     public Text getText() {
         return text;
     }
 
+    @Override
     public void setText(final Text text) {
         this.text = text;
     }

@@ -23,13 +23,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @ApplicationScoped
 public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
 
     private HitPolicyPopoverView view;
+    private TranslationService translationService;
     private Optional<HasHitPolicyControl> binding = Optional.empty();
 
     public HitPolicyPopoverImpl() {
@@ -38,8 +41,10 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
 
     @Inject
     public HitPolicyPopoverImpl(final HitPolicyPopoverView view,
+                                final TranslationService translationService,
                                 final BuiltinAggregatorUtils builtinAggregatorUtils) {
         this.view = view;
+        this.translationService = translationService;
 
         view.init(this);
         view.initHitPolicies(Arrays.asList(HitPolicy.values()));
@@ -49,6 +54,11 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    @Override
+    public String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditHitPolicy);
     }
 
     @Override
@@ -85,8 +95,8 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
-        binding.ifPresent(b -> view.show(editorTitle));
+    public void show() {
+        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
     }
 
     @Override

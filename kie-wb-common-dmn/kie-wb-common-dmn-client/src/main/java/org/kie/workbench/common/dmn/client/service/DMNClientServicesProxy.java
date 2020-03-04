@@ -115,7 +115,6 @@ public interface DMNClientServicesProxy {
 
     /**
      * This method loads all Data Objects from .java classes from the current project.
-     *
      * @param callback Invoked with all {@link DataObject}s from the current project.
      */
     void loadDataObjects(final ServiceCallback<List<DataObject>> callback);

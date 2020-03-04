@@ -162,8 +162,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
         final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(UndefinedExpressionColumn.DEFAULT_WIDTH,
                                                                                       this,
                                                                                       cellEditorControls,
-                                                                                      undefinedExpressionSelector,
-                                                                                      translationService);
+                                                                                      undefinedExpressionSelector);
         undefinedExpressionColumn.setMovable(false);
         undefinedExpressionColumn.setResizable(false);
 

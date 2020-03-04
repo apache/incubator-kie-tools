@@ -29,13 +29,11 @@ public class FunctionKindRowColumn extends EmptyColumn {
     public FunctionKindRowColumn(final Supplier<Optional<FunctionDefinition>> functionSupplier,
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final KindPopoverView.Presenter editor,
-                                 final Optional<String> editorTitle,
                                  final double width,
                                  final FunctionGrid gridWidget) {
         super(Collections.singletonList(new FunctionKindRowColumnHeaderMetaData(functionSupplier,
                                                                                 cellEditorControls,
                                                                                 editor,
-                                                                                editorTitle,
                                                                                 gridWidget)),
               width);
         setMovable(false);

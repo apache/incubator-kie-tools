@@ -141,7 +141,6 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
     @Override
     public void show(final PopupEditorControls editor,
-                     final Optional<String> editorTitle,
                      final int x,
                      final int y) {
         DOMUtil.removeAllChildren(cellEditorControlsContainer);
@@ -155,7 +154,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
         setOnClosedByKeyboardCallback(editor);
 
-        editor.show(editorTitle);
+        editor.show();
     }
 
     void setOnClosedByKeyboardCallback(final PopupEditorControls editor) {

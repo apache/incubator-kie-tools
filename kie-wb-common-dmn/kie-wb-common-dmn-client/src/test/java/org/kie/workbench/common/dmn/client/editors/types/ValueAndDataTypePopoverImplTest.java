@@ -28,6 +28,11 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverImpl.BINDING_EXCEPTION;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -35,15 +40,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NameAndDataTypePopoverImplTest {
+public class ValueAndDataTypePopoverImplTest {
 
     private static final String NAME = "name";
 
-    @Mock
-    private NameAndDataTypePopoverView view;
+    private static final String NAME_LABEL = "label";
 
     @Mock
-    private HasNameAndTypeRef bound;
+    private ValueAndDataTypePopoverView view;
+
+    @Mock
+    private HasValueAndTypeRef<Name> bound;
 
     @Mock
     private Decision decision;
@@ -51,14 +58,18 @@ public class NameAndDataTypePopoverImplTest {
     @Mock
     private QName typeRef;
 
-    private NameAndDataTypePopoverImpl editor;
+    private ValueAndDataTypePopoverImpl editor;
 
     @Before
     public void setup() {
-        this.editor = new NameAndDataTypePopoverImpl(view);
+        this.editor = new ValueAndDataTypePopoverImpl(view);
 
         when(bound.asDMNModelInstrumentedBase()).thenReturn(decision);
-        when(bound.getName()).thenReturn(new Name(NAME));
+        when(bound.toWidgetValue(any(Name.class))).thenAnswer(i -> ((Name) i.getArguments()[0]).getValue());
+        when(bound.toModelValue(anyString())).thenAnswer(i -> new Name((String) i.getArguments()[0]));
+        when(bound.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(bound.getValueLabel()).thenReturn(NAME_LABEL);
+        when(bound.getValue()).thenReturn(new Name(NAME));
         when(bound.getTypeRef()).thenReturn(typeRef);
     }
 
@@ -71,7 +82,7 @@ public class NameAndDataTypePopoverImplTest {
     public void testShow() {
         editor.bind(bound, 0, 0);
 
-        editor.show(Optional.empty());
+        editor.show();
 
         verify(view).show(Optional.empty());
     }
@@ -90,10 +101,10 @@ public class NameAndDataTypePopoverImplTest {
         editor.bind(bound, 0, 0);
 
         verify(view).setDMNModel(eq(decision));
-        verify(view).initName(eq(NAME));
+        verify(view).initValue(eq(NAME));
         verify(view).initSelectedTypeRef(eq(typeRef));
 
-        editor.show(Optional.empty());
+        editor.show();
 
         verify(view).show(Optional.empty());
     }
@@ -102,9 +113,9 @@ public class NameAndDataTypePopoverImplTest {
     public void testSetDisplayName() {
         editor.bind(bound, 0, 0);
 
-        editor.setName(NAME);
+        editor.setValue(NAME);
 
-        verify(bound).setName(eq(new Name(NAME)));
+        verify(bound).setValue(eq(new Name(NAME)));
     }
 
     @Test
@@ -139,5 +150,35 @@ public class NameAndDataTypePopoverImplTest {
         editor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
         verify(view, never()).hide();
+    }
+
+    @Test
+    public void testGetValueLabel_WhenBound() {
+        editor.bind(bound, 0, 0);
+
+        assertThat(editor.getValueLabel()).isEqualTo(NAME_LABEL);
+    }
+
+    @Test
+    public void testGetValueLabel_WhenNotBound() {
+        final Throwable thrown = catchThrowable(() -> editor.getValueLabel());
+
+        assertThat(thrown).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(BINDING_EXCEPTION);
+    }
+
+    @Test
+    public void testNormaliseValue_WhenBound() {
+        editor.bind(bound, 0, 0);
+
+        assertThat(editor.normaliseValue(NAME)).isEqualTo(NAME);
+    }
+
+    @Test
+    public void testNormaliseValue_WhenNotBound() {
+        final Throwable thrown = catchThrowable(() -> editor.normaliseValue(NAME));
+
+        assertThat(thrown).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(BINDING_EXCEPTION);
     }
 }

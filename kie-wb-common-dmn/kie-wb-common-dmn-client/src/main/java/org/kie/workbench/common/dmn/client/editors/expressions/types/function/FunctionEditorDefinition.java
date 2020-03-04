@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -58,7 +58,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
     private ParametersPopoverView.Presenter parametersEditor;
     private KindPopoverView.Presenter kindEditor;
 
@@ -78,7 +78,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final TranslationService translationService,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                                    final NameAndDataTypePopoverView.Presenter headerEditor,
+                                    final ValueAndDataTypePopoverView.Presenter headerEditor,
                                     final ParametersPopoverView.Presenter parametersEditor,
                                     final KindPopoverView.Presenter kindEditor) {
         super(definitionUtils,

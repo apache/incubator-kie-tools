@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -73,9 +69,6 @@ public class UndefinedExpressionColumnTest {
 
     @Mock
     private UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
-
-    @Mock
-    private TranslationService translationService;
 
     @Mock
     private GridWidget parentGridWidget;
@@ -114,16 +107,13 @@ public class UndefinedExpressionColumnTest {
         this.column = spy(new UndefinedExpressionColumn(UndefinedExpressionColumn.DEFAULT_WIDTH,
                                                         gridWidget,
                                                         cellEditorControls,
-                                                        undefinedExpressionSelector,
-                                                        translationService));
+                                                        undefinedExpressionSelector));
 
         when(context.getRowIndex()).thenReturn(ROW_INDEX);
         when(context.getColumnIndex()).thenReturn(COLUMN_INDEX);
         when(context.getRelativeLocation()).thenReturn(Optional.of(relativeLocation));
         when(context.getAbsoluteCellX()).thenReturn(ABSOLUTE_CELL_X);
         when(context.getAbsoluteCellY()).thenReturn(ABSOLUTE_CELL_Y);
-
-        doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
     }
 
     @Test
@@ -153,7 +143,6 @@ public class UndefinedExpressionColumnTest {
                                                  eq(COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(undefinedExpressionSelector),
-                                        any(Optional.class),
                                         eq(0),
                                         eq(0));
     }
@@ -174,7 +163,6 @@ public class UndefinedExpressionColumnTest {
                                                  eq(COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(undefinedExpressionSelector),
-                                        any(Optional.class),
                                         eq((int) (RX)),
                                         eq((int) (RY)));
     }
@@ -194,7 +182,6 @@ public class UndefinedExpressionColumnTest {
                                                  eq(COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(undefinedExpressionSelector),
-                                        any(Optional.class),
                                         eq((int) (ABSOLUTE_CELL_X + GRID_WIDTH / 2)),
                                         eq((int) (ABSOLUTE_CELL_Y + GRID_HEIGHT / 2)));
     }

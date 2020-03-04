@@ -59,7 +59,7 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
 
     protected static final QName TYPE_REF = new QName();
 
-    protected static final int BLOCK_WIDTH = 100;
+    protected static final double BLOCK_WIDTH = 100;
 
     protected static final double ROW_HEIGHT = 32.0;
 
@@ -153,7 +153,7 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
 
     @Test
     public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaData() {
-        final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
+        final ValueAndDataTypeHeaderMetaData metaData = mock(ValueAndDataTypeHeaderMetaData.class);
         when(metaData.render(any(GridHeaderColumnRenderContext.class), anyDouble(), anyDouble())).thenCallRealMethod();
         this.headerMetaData = Collections.singletonList(metaData);
 
@@ -182,7 +182,7 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
 
     @Test
     public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaDataWithPlaceHolder() {
-        final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
+        final ValueAndDataTypeHeaderMetaData metaData = mock(ValueAndDataTypeHeaderMetaData.class);
         when(metaData.renderPlaceHolder(any(GridHeaderColumnRenderContext.class), anyDouble(), anyDouble())).thenCallRealMethod();
         when(metaData.getPlaceHolder()).thenReturn(Optional.of(PLACE_HOLDER));
         this.headerMetaData = Collections.singletonList(metaData);

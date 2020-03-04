@@ -24,21 +24,22 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Dependent
-public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Presenter {
+public class ValueAndDataTypePopoverImpl implements ValueAndDataTypePopoverView.Presenter {
 
-    private NameAndDataTypePopoverView view;
-    private Optional<HasNameAndTypeRef> binding = Optional.empty();
+    static final String BINDING_EXCEPTION = "Popover has not been bound.";
 
-    public NameAndDataTypePopoverImpl() {
+    private ValueAndDataTypePopoverView view;
+    private Optional<HasValueAndTypeRef> binding = Optional.empty();
+
+    public ValueAndDataTypePopoverImpl() {
         //CDI proxy
     }
 
     @Inject
-    public NameAndDataTypePopoverImpl(final NameAndDataTypePopoverView view) {
+    public ValueAndDataTypePopoverImpl(final ValueAndDataTypePopoverView view) {
         this.view = view;
 
         view.init(this);
@@ -50,24 +51,31 @@ public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Pr
     }
 
     @Override
-    public void bind(final HasNameAndTypeRef bound,
+    public String getPopoverTitle() {
+        return binding.orElseThrow(() -> new IllegalStateException(BINDING_EXCEPTION)).getPopoverTitle();
+    }
+
+    @Override
+    public void bind(final HasValueAndTypeRef bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);
         refresh();
     }
 
+    @SuppressWarnings("unchecked")
     private void refresh() {
         binding.ifPresent(b -> {
             view.setDMNModel(b.asDMNModelInstrumentedBase());
-            view.initName(b.getName().getValue());
+            view.initValue(b.toWidgetValue(b.getValue()));
             view.initSelectedTypeRef(b.getTypeRef());
         });
     }
 
     @Override
-    public void setName(final String name) {
-        binding.ifPresent(b -> b.setName(new Name(name)));
+    @SuppressWarnings("unchecked")
+    public void setValue(final String value) {
+        binding.ifPresent(b -> b.setValue(b.toModelValue(value)));
     }
 
     @Override
@@ -76,8 +84,18 @@ public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Pr
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
-        binding.ifPresent(b -> view.show(editorTitle));
+    public String getValueLabel() {
+        return binding.orElseThrow(() -> new IllegalStateException(BINDING_EXCEPTION)).getValueLabel();
+    }
+
+    @Override
+    public String normaliseValue(final String value) {
+        return binding.orElseThrow(() -> new IllegalStateException(BINDING_EXCEPTION)).normaliseValue(value);
+    }
+
+    @Override
+    public void show() {
+        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
     }
 
     @Override

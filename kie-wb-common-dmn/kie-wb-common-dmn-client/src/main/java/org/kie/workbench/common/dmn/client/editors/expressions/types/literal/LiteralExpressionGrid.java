@@ -29,9 +29,9 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
-import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseDelegatingExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -64,7 +64,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
 
     static final double LITERAL_EXPRESSION_DEFAULT_WIDTH = 300.0;
 
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ValueAndDataTypePopoverView.Presenter headerEditor;
 
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final Optional<String> nodeUUID,
@@ -85,7 +85,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
                                  final TranslationService translationService,
                                  final boolean isOnlyVisualChangeAllowed,
                                  final int nesting,
-                                 final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                 final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -150,12 +150,12 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
         if (nesting == 0) {
             headerMetaData.add(new LiteralExpressionColumnHeaderMetaData(hasExpression,
                                                                          hasName,
-                                                                         clearDisplayNameConsumer(true),
-                                                                         setDisplayNameConsumer(true),
+                                                                         clearValueConsumer(true, new Name()),
+                                                                         setValueConsumer(true),
                                                                          setTypeRefConsumer(),
+                                                                         translationService,
                                                                          cellEditorControls,
-                                                                         headerEditor,
-                                                                         Optional.of(translationService.getTranslation(DMNEditorConstants.LiteralExpression_EditExpression))));
+                                                                         headerEditor));
         }
 
         final GridColumn literalExpressionColumn = new LiteralExpressionColumn(headerMetaData,

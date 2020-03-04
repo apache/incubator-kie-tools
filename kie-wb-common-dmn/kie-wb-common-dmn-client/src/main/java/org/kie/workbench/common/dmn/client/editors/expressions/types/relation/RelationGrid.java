@@ -37,7 +37,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.D
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
@@ -72,7 +72,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
 
-    private final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
@@ -93,7 +93,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final TranslationService translationService,
                         final boolean isOnlyVisualChangeAllowed,
                         final int nesting,
-                        final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
+                        final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -156,12 +156,12 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     private RelationColumn makeRelationColumn(final int index,
                                               final InformationItem informationItem) {
         final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(informationItem,
-                                                                                                  clearDisplayNameConsumer(false),
-                                                                                                  setDisplayNameConsumer(false),
+                                                                                                  clearValueConsumer(false, new Name()),
+                                                                                                  setValueConsumer(false),
                                                                                                   setTypeRefConsumer(),
+                                                                                                  translationService,
                                                                                                   cellEditorControls,
                                                                                                   headerEditors.get(),
-                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation)),
                                                                                                   listSelector,
                                                                                                   this::getHeaderItems,
                                                                                                   this::onItemSelected),

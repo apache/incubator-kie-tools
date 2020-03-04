@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Inf
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.ValueAndDataTypeHeaderMetaData;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
@@ -187,15 +187,15 @@ public class RendererUtilsTest {
 
     @Test
     public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaData() {
-        final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
+        final ValueAndDataTypeHeaderMetaData metaData = mock(ValueAndDataTypeHeaderMetaData.class);
 
         when(metaData.getTitle()).thenReturn(TITLE);
         when(metaData.getTypeRef()).thenReturn(TYPE_REF);
 
-        RendererUtils.getNameAndDataTypeHeaderText(metaData,
-                                                   headerContext,
-                                                   BLOCK_WIDTH,
-                                                   ROW_HEIGHT);
+        RendererUtils.getValueAndDataTypeHeaderText(metaData,
+                                                    headerContext,
+                                                    BLOCK_WIDTH,
+                                                    ROW_HEIGHT);
 
         assertHasNameAndDataTypeRendering();
     }

@@ -20,6 +20,7 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -48,6 +49,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
 public class LiteralExpression extends Expression implements IsLiteralExpression,
+                                                             HasText,
                                                              DomainObject {
 
     private static final int STATIC_COLUMNS = 1;
@@ -110,6 +112,7 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
         return text;
     }
 
+    @Override
     public void setText(final Text text) {
         this.text = text;
     }

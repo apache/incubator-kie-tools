@@ -44,7 +44,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -73,7 +73,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGridData, InvocationUIModelMapper> implements HasListSelectorControl {
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ValueAndDataTypePopoverView.Presenter headerEditor;
 
     public InvocationGrid(final GridCellTuple parent,
                           final Optional<String> nodeUUID,
@@ -95,7 +95,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                           final boolean isOnlyVisualChangeAllowed,
                           final int nesting,
                           final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                          final NameAndDataTypePopoverView.Presenter headerEditor) {
+                          final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -150,12 +150,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         if (nesting == 0) {
             headerMetaData.add(new InvocationColumnHeaderMetaData(hasExpression,
                                                                   hasName,
-                                                                  clearDisplayNameConsumer(true),
-                                                                  setDisplayNameConsumer(true),
+                                                                  clearValueConsumer(true, new Name()),
+                                                                  setValueConsumer(true),
                                                                   setTypeRefConsumer(),
+                                                                  translationService,
                                                                   cellEditorControls,
                                                                   headerEditor,
-                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression)),
                                                                   listSelector,
                                                                   this::getHeaderItems,
                                                                   this::onItemSelected));
@@ -172,12 +172,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                    getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
                                                                                    this,
                                                                                    rowIndex -> true,
-                                                                                   clearDisplayNameConsumer(false),
-                                                                                   setDisplayNameConsumer(false),
+                                                                                   clearValueConsumer(false, new Name()),
+                                                                                   setValueConsumer(false),
                                                                                    setTypeRefConsumer(),
+                                                                                   translationService,
                                                                                    cellEditorControls,
-                                                                                   headerEditor,
-                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditParameter)));
+                                                                                   headerEditor);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    headerMetaData,
                                                                                    getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),

@@ -57,7 +57,7 @@ public class FlashMessage implements UberFireEvent {
     public FlashMessage(final Type type,
                         final String strongMessage,
                         final String regularMessage) {
-        this(type, strongMessage, regularMessage,"", () -> { /* Nothing. */ }, () -> { /* Nothing. */ });
+        this(type, strongMessage, regularMessage, "", () -> { /* Nothing. */ }, () -> { /* Nothing. */ });
     }
 
     public String getStrongMessage() {

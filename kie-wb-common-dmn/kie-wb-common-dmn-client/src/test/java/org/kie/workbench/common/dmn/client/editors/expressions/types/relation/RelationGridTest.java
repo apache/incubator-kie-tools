@@ -48,13 +48,13 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.D
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.HasValueAndTypeRef;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -216,10 +216,10 @@ public class RelationGridTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
-    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     private GridBodyCellEditContext gridBodyCellEditContext;
@@ -728,7 +728,6 @@ public class RelationGridTest {
                                   eq(0),
                                   eq(1));
         verify(cellEditorControls).show(eq(headerEditor),
-                                        eq(Optional.of(DMNEditorConstants.RelationEditor_EditRelation)),
                                         anyInt(),
                                         anyInt());
 
@@ -853,7 +852,7 @@ public class RelationGridTest {
     public void testGetDisplayName() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().getName().getValue()).isEqualTo(NAME);
+        assertThat(extractHeaderMetaData().getValue().getValue()).isEqualTo(NAME);
     }
 
     private RelationColumnHeaderMetaData extractHeaderMetaData() {
@@ -866,7 +865,7 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME));
+        extractHeaderMetaData().setValue(new Name(NAME));
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(org.kie.workbench.common.stunner.core.command.Command.class));
@@ -877,13 +876,13 @@ public class RelationGridTest {
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name());
+        extractHeaderMetaData().setValue(new Name());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class);
+                                               DeleteHasValueCommand.class);
     }
 
     @Test
@@ -891,13 +890,13 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNullValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(null);
+        extractHeaderMetaData().setValue(null);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class);
+                                               DeleteHasValueCommand.class);
     }
 
     @Test
@@ -905,13 +904,13 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME_NEW));
+        extractHeaderMetaData().setValue(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               SetHasNameCommand.class);
+                                               SetHasValueCommand.class);
     }
 
     @Test
@@ -1049,7 +1048,7 @@ public class RelationGridTest {
 
     @Test
     public void testMultipleColumnHeaderEditorInstances() {
-        final NameAndDataTypePopoverView.Presenter headerEditor2 = mock(NameAndDataTypePopoverView.Presenter.class);
+        final ValueAndDataTypePopoverView.Presenter headerEditor2 = mock(ValueAndDataTypePopoverView.Presenter.class);
 
         when(headerEditors.get()).thenReturn(headerEditor, headerEditor2);
 
@@ -1068,7 +1067,7 @@ public class RelationGridTest {
     }
 
     private void assertColumnHeaderEditor(final GridColumn uiColumn,
-                                          final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                          final ValueAndDataTypePopoverView.Presenter headerEditor) {
         assertThat(uiColumn).isInstanceOf(RelationColumn.class);
         final RelationColumn relationColumn = (RelationColumn) uiColumn;
         final GridColumn.HeaderMetaData relationColumnHeaderMetaData = relationColumn.getHeaderMetaData().get(0);
@@ -1077,6 +1076,6 @@ public class RelationGridTest {
         assertThat(relationColumnHeaderMetaData1.getEditor()).isPresent();
         //The only way to assert that editor was bound to the column is to try editing the header
         relationColumnHeaderMetaData1.edit(gridBodyCellEditContext);
-        verify(headerEditor).bind(any(HasNameAndTypeRef.class), anyInt(), anyInt());
+        verify(headerEditor).bind(any(HasValueAndTypeRef.class), anyInt(), anyInt());
     }
 }

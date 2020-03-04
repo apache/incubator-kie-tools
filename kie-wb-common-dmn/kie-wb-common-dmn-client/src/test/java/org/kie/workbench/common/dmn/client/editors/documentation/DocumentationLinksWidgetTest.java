@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.editors.documentation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -119,7 +118,7 @@ public class DocumentationLinksWidgetTest {
 
         widget.onClickTypeButton(clickEvent);
 
-        verify(cellEditor).show(nameAndUrlPopover, Optional.of(""), x, y);
+        verify(cellEditor).show(nameAndUrlPopover, x, y);
     }
 
     @Test

@@ -20,6 +20,7 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -48,6 +49,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
 public class UnaryTests extends DMNElement implements IsUnaryTests,
+                                                      HasText,
                                                       DomainObject {
 
     @Category
@@ -100,10 +102,12 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     // DMN properties
     // -----------------------
 
+    @Override
     public Text getText() {
         return text;
     }
 
+    @Override
     public void setText(final Text value) {
         this.text = value;
     }

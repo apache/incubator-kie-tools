@@ -293,7 +293,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     private Optional<String> getOutputClauseName(final HasVariable hasVariable) {
         final IsInformationItem variable = hasVariable.getVariable();
         if (variable instanceof InformationItem) {
-            return Optional.ofNullable(((InformationItem) variable).getName().getValue());
+            return Optional.ofNullable((variable).getName().getValue());
         }
 
         final DMNModelInstrumentedBase base = hasVariable.asDMNModelInstrumentedBase().getParent();

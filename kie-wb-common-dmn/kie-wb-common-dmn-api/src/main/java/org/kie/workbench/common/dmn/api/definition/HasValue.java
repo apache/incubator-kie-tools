@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-[data-i18n-prefix="NameAndDataTypePopoverViewImpl."] {
 
-  #popover-container {
-    display: inline;
-  }
+package org.kie.workbench.common.dmn.api.definition;
 
-  #popover-container .popover {
-    min-width: 300px;
-  }
+/**
+ * Implementations have a _value_ property with getter and setter.
+ */
+public interface HasValue<V> {
 
-  .kie-dmn-name-and-data-type-container #kieName {
-    width: 100%;
-  }
+    /**
+     * Returns the value.
+     * @return
+     */
+    V getValue();
 
-  .kie-dmn-name-and-data-type-container #kieDataType {
-    width: 100%;
-  }
+    /**
+     * Sets the value.
+     * @param value
+     */
+    void setValue(final V value);
 }

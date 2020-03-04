@@ -45,11 +45,9 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
                                                   final TranslationService translationService,
                                                   final CellEditorControlsView.Presenter cellEditorControls,
                                                   final ParametersPopoverView.Presenter editor,
-                                                  final Optional<String> editorTitle,
                                                   final FunctionGrid gridWidget) {
         super(cellEditorControls,
-              editor,
-              editorTitle);
+              editor);
         this.functionSupplier = functionSupplier;
         this.translationService = translationService;
         this.gridWidget = gridWidget;

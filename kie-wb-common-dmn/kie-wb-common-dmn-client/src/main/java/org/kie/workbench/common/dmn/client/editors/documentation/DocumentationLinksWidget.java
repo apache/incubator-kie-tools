@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.documentation;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -141,7 +140,6 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
     @SuppressWarnings("unused")
     public void onClickTypeButton(final ClickEvent clickEvent) {
         cellEditor.show(nameAndUrlPopover,
-                        Optional.of(""),
                         clickEvent.getClientX(),
                         clickEvent.getClientY());
     }

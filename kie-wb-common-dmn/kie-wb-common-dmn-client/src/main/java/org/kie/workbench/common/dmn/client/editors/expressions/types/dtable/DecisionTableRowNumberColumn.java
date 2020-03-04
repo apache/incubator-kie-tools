@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
@@ -35,14 +34,12 @@ public class DecisionTableRowNumberColumn extends DMNGridColumn<DecisionTableGri
                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final HitPolicyPopoverView.Presenter editor,
-                                        final Optional<String> editorTitle,
                                         final double width,
                                         final DecisionTableGrid gridWidget) {
         super(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
                                                 builtinAggregatorSupplier,
                                                 cellEditorControls,
                                                 editor,
-                                                editorTitle,
                                                 gridWidget),
               new IntegerColumnRenderer(),
               width,

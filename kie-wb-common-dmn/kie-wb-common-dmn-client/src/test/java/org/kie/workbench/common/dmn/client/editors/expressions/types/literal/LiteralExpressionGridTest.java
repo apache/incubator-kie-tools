@@ -27,9 +27,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
@@ -128,7 +128,7 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
     public void testGetDisplayName() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().getName().getValue()).isEqualTo(NAME);
+        assertThat(extractHeaderMetaData().getValue().getValue()).isEqualTo(NAME);
     }
 
     private LiteralExpressionColumnHeaderMetaData extractHeaderMetaData() {
@@ -141,7 +141,7 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
     public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME));
+        extractHeaderMetaData().setValue(new Name(NAME));
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(org.kie.workbench.common.stunner.core.command.Command.class));
@@ -152,13 +152,13 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name());
+        extractHeaderMetaData().setValue(new Name());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class,
+                                               DeleteHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 
@@ -167,13 +167,13 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
     public void testSetDisplayNameWithNullValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(null);
+        extractHeaderMetaData().setValue(null);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class,
+                                               DeleteHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 
@@ -182,13 +182,13 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME_NEW));
+        extractHeaderMetaData().setValue(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               SetHasNameCommand.class,
+                                               SetHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 

@@ -39,7 +39,7 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -640,9 +640,9 @@ public class ExpressionContainerGridTest {
         final Name oldName = spy.get().getName();
         final org.uberfire.mvp.Command canvasOperation = mock(org.uberfire.mvp.Command.class);
 
-        final SetHasNameCommand command = new SetHasNameCommand(spy.get(),
-                                                                newName,
-                                                                canvasOperation);
+        final SetHasValueCommand command = new SetHasValueCommand<>(spy.get(),
+                                                                    newName,
+                                                                    canvasOperation);
 
         command.execute(canvasHandler);
         spy.ifPresent(name -> assertThat(name.getName().getValue()).isEqualTo(newName.getValue()));

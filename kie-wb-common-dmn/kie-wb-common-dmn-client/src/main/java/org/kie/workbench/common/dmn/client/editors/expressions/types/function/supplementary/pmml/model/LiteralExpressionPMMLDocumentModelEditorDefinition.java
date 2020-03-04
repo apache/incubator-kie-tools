@@ -46,7 +46,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorD
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.LiteralExpressionPMMLGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -70,7 +70,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 @ApplicationScoped
 public class LiteralExpressionPMMLDocumentModelEditorDefinition extends BaseEditorDefinition<LiteralExpressionPMMLDocumentModel, DMNGridData> {
 
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
@@ -88,7 +88,7 @@ public class LiteralExpressionPMMLDocumentModelEditorDefinition extends BaseEdit
                                                               final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                                               final ListSelectorView.Presenter listSelector,
                                                               final TranslationService translationService,
-                                                              final NameAndDataTypePopoverView.Presenter headerEditor,
+                                                              final ValueAndDataTypePopoverView.Presenter headerEditor,
                                                               final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
         super(definitionUtils,
               sessionManager,

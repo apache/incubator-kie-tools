@@ -32,7 +32,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -51,7 +51,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 @ApplicationScoped
 public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression, DMNGridData> {
 
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -67,7 +67,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                              final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                              final ListSelectorView.Presenter listSelector,
                                              final TranslationService translationService,
-                                             final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                             final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

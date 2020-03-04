@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +36,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell.HasNameAndDataTypeCell;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.HasValueAndTypeRef;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -55,6 +57,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -77,9 +80,11 @@ public class EditableNameAndDataTypeColumnTest {
 
     private static final double RELATIVE_Y = 210.0;
 
+    private static final String NAME = "name";
+
     private static final String NEW_NAME = "new name";
 
-    private static final Optional<String> EDITOR_TITLE = Optional.of("editor");
+    private static final String POPOVER_TITLE = "title";
 
     @Mock
     private GridColumn.HeaderMetaData headerMetaData;
@@ -91,19 +96,22 @@ public class EditableNameAndDataTypeColumnTest {
     private Predicate<Integer> isEditable;
 
     @Mock
-    private Consumer<HasName> clearDisplayNameConsumer;
+    private Consumer<HasName> clearValueConsumer;
 
     @Mock
-    private BiConsumer<HasName, Name> setDisplayNameConsumer;
+    private BiConsumer<HasName, Name> setValueConsumer;
 
     @Mock
     private BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter editor;
+    private ValueAndDataTypePopoverView.Presenter editor;
 
     @Mock
     private GridBodyCellEditContext context;
@@ -115,7 +123,7 @@ public class EditableNameAndDataTypeColumnTest {
     private InformationItem informationItem = new InformationItem();
 
     @Captor
-    private ArgumentCaptor<HasNameAndTypeRef> hasNameAndDataTypeControlCaptor;
+    private ArgumentCaptor<HasValueAndTypeRef<Name>> hasNameAndDataTypeControlCaptor;
 
     @Captor
     private ArgumentCaptor<Name> nameCaptor;
@@ -133,13 +141,16 @@ public class EditableNameAndDataTypeColumnTest {
                                                                          DMNGridColumn.DEFAULT_WIDTH,
                                                                          gridWidget,
                                                                          isEditable,
-                                                                         clearDisplayNameConsumer,
-                                                                         setDisplayNameConsumer,
+                                                                         clearValueConsumer,
+                                                                         setValueConsumer,
                                                                          setTypeRefConsumer,
+                                                                         translationService,
                                                                          cellEditorControls,
-                                                                         editor,
-                                                                         EDITOR_TITLE) {
-            //Nothing to implement
+                                                                         editor) {
+            @Override
+            protected String getPopoverTitle() {
+                return POPOVER_TITLE;
+            }
         });
 
         when(context.getRelativeLocation()).thenReturn(Optional.of(new Point2D(RELATIVE_X, RELATIVE_Y)));
@@ -148,6 +159,8 @@ public class EditableNameAndDataTypeColumnTest {
         when(context.getAbsoluteCellX()).thenReturn(ABSOLUTE_CELL_X);
         when(context.getAbsoluteCellY()).thenReturn(ABSOLUTE_CELL_Y);
         when(gridWidget.getParentInformation()).thenReturn(new GridCellTuple(0, 0, gridWidget));
+
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test
@@ -181,12 +194,11 @@ public class EditableNameAndDataTypeColumnTest {
                     context,
                     callback);
 
-        verify(editor).bind(any(HasNameAndTypeRef.class),
+        verify(editor).bind(any(HasValueAndTypeRef.class),
                             eq(UI_ROW_INDEX),
                             eq(UI_COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(editor),
-                                        eq(EDITOR_TITLE),
                                         eq((int) RELATIVE_X),
                                         eq((int) RELATIVE_Y));
     }
@@ -195,39 +207,39 @@ public class EditableNameAndDataTypeColumnTest {
     public void testEditGetters() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
-        hasNameAndTypeRef.getName();
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        hasValueAndTypeRef.getValue();
         verify(informationItem).getName();
 
-        hasNameAndTypeRef.getTypeRef();
+        hasValueAndTypeRef.getTypeRef();
         verify(informationItem).getTypeRef();
 
-        hasNameAndTypeRef.getHasTypeRefs();
+        hasValueAndTypeRef.getHasTypeRefs();
         verify(informationItem).getHasTypeRefs();
 
-        assertThat(hasNameAndTypeRef.asDMNModelInstrumentedBase()).isEqualTo(informationItem);
+        assertThat(hasValueAndTypeRef.asDMNModelInstrumentedBase()).isEqualTo(informationItem);
     }
 
     @Test
     public void testEditSetNameNoChange() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
-        hasNameAndTypeRef.setName(informationItem.getName());
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        hasValueAndTypeRef.setValue(informationItem.getName());
 
-        verify(clearDisplayNameConsumer, never()).accept(any(HasName.class));
-        verify(setDisplayNameConsumer, never()).accept(anyObject(), any(Name.class));
+        verify(clearValueConsumer, never()).accept(any(HasName.class));
+        verify(setValueConsumer, never()).accept(anyObject(), any(Name.class));
     }
 
     @Test
     public void testEditSetNameChanged() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
-        hasNameAndTypeRef.setName(new Name(NEW_NAME));
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        hasValueAndTypeRef.setValue(new Name(NEW_NAME));
 
-        verify(clearDisplayNameConsumer, never()).accept(any(HasName.class));
-        verify(setDisplayNameConsumer).accept(eq(cell.getValue().getValue()), nameCaptor.capture());
+        verify(clearValueConsumer, never()).accept(any(HasName.class));
+        verify(setValueConsumer).accept(eq(cell.getValue().getValue()), nameCaptor.capture());
 
         assertThat(nameCaptor.getValue().getValue()).isEqualTo(NEW_NAME);
     }
@@ -236,19 +248,19 @@ public class EditableNameAndDataTypeColumnTest {
     public void testEditSetNameChangedToEmpty() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
-        hasNameAndTypeRef.setName(null);
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        hasValueAndTypeRef.setValue(null);
 
-        verify(clearDisplayNameConsumer).accept(eq(cell.getValue().getValue()));
-        verify(setDisplayNameConsumer, never()).accept(anyObject(), any(Name.class));
+        verify(clearValueConsumer).accept(eq(cell.getValue().getValue()));
+        verify(setValueConsumer, never()).accept(anyObject(), any(Name.class));
     }
 
     @Test
     public void testEditSetTypeRefNoChange() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
-        hasNameAndTypeRef.setTypeRef(new QName());
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        hasValueAndTypeRef.setTypeRef(new QName());
 
         verify(setTypeRefConsumer, never()).accept(anyObject(), any(QName.class));
     }
@@ -257,11 +269,11 @@ public class EditableNameAndDataTypeColumnTest {
     public void testEditSetTypeRefChanged() {
         mockEditAction();
 
-        final HasNameAndTypeRef hasNameAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
         final QName feel = new QName(DMNModelInstrumentedBase.Namespace.DMN.getUri(),
                                      "",
                                      DMNModelInstrumentedBase.Namespace.DMN.getPrefix());
-        hasNameAndTypeRef.setTypeRef(feel);
+        hasValueAndTypeRef.setTypeRef(feel);
 
         verify(setTypeRefConsumer).accept(eq((HasNameAndDataTypeCell) cell.getValue().getValue()), eq(feel));
     }
@@ -276,6 +288,48 @@ public class EditableNameAndDataTypeColumnTest {
         column.setWidth(200.0);
 
         verify(column).updateWidthOfPeers();
+    }
+
+    @Test
+    public void testGetPopoverTitle() {
+        mockEditAction();
+
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        assertThat(hasValueAndTypeRef.getPopoverTitle()).isEqualTo(POPOVER_TITLE);
+    }
+
+    @Test
+    public void testToModelValue() {
+        mockEditAction();
+
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        assertThat(hasValueAndTypeRef.toModelValue(NAME).getValue()).isEqualTo(NAME);
+    }
+
+    @Test
+    public void testToWidgetValue() {
+        mockEditAction();
+
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        assertThat(hasValueAndTypeRef.toWidgetValue(new Name(NAME))).isEqualTo(NAME);
+    }
+
+    @Test
+    public void testGetValueLabel() {
+        mockEditAction();
+
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        assertThat(hasValueAndTypeRef.getValueLabel()).isEqualTo(DMNEditorConstants.NameAndDataTypePopover_NameLabel);
+    }
+
+    @Test
+    public void testNormaliseValue() {
+        final String value = "   " + NAME + "   ";
+
+        mockEditAction();
+
+        final HasValueAndTypeRef<Name> hasValueAndTypeRef = hasNameAndDataTypeControlCaptor.getValue();
+        assertThat(hasValueAndTypeRef.normaliseValue(value)).isEqualTo(NAME);
     }
 
     @SuppressWarnings("unchecked")

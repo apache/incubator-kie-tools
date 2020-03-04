@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,9 @@ public class ParametersPopoverImplTest {
 
     @Mock
     private ParametersPopoverView view;
+
+    @Mock
+    private TranslationService translationService;
 
     @Mock
     private InformationItem parameter;
@@ -112,7 +116,9 @@ public class ParametersPopoverImplTest {
 
     @Before
     public void setup() {
-        this.presenter = new ParametersPopoverImpl(view);
+        this.presenter = new ParametersPopoverImpl(view, translationService);
+
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test
@@ -144,7 +150,7 @@ public class ParametersPopoverImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testShowNullControl() {
-        presenter.show(Optional.empty());
+        presenter.show();
 
         verify(view, never()).show(any(Optional.class));
         verify(view, never()).focusParameter(anyInt());
@@ -155,9 +161,9 @@ public class ParametersPopoverImplTest {
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
-        presenter.show(Optional.empty());
+        presenter.show();
 
-        verify(view).show(eq(Optional.empty()));
+        verify(view).show(eq(Optional.ofNullable(presenter.getPopoverTitle())));
         verify(view, never()).focusParameter(anyInt());
     }
 
@@ -168,9 +174,9 @@ public class ParametersPopoverImplTest {
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
-        presenter.show(Optional.empty());
+        presenter.show();
 
-        verify(view).show(eq(Optional.empty()));
+        verify(view).show(eq(Optional.ofNullable(presenter.getPopoverTitle())));
         verify(view).focusParameter(0);
     }
 

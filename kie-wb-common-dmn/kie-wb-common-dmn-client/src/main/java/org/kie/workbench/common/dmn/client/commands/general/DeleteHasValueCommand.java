@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.dmn.client.commands.general;
 
-import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.definition.HasValue;
 
-public class DeleteHasNameCommand extends SetHasNameCommand {
+public class DeleteHasValueCommand<V, HV extends HasValue<V>> extends SetHasValueCommand {
 
     static final String DEFAULT_TITLE = "";
 
-    public DeleteHasNameCommand(final HasName hasName,
-                                final org.uberfire.mvp.Command canvasOperation) {
-        super(hasName,
-              new Name(DEFAULT_TITLE),
+    public DeleteHasValueCommand(final HV hasValue,
+                                 final V emptyValue,
+                                 final org.uberfire.mvp.Command canvasOperation) {
+        super(hasValue,
+              emptyValue,
               canvasOperation);
     }
 }

@@ -59,7 +59,7 @@ public class DMNGraphProcessor implements GraphProcessor {
         return nodes;
     }
 
-    protected List<Node> getChildNodes(final Node node){
+    protected List<Node> getChildNodes(final Node node) {
         return GraphUtils.getChildNodes(node);
     }
 

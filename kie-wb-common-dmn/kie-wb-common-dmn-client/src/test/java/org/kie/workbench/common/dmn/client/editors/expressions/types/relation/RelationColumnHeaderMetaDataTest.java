@@ -15,16 +15,16 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
-import java.util.Optional;
-
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RelationColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<RelationColumnHeaderMetaData> {
+public class RelationColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<RelationColumnHeaderMetaData, Name, HasName> {
 
     @Mock
     private InformationItem informationItem;
@@ -32,12 +32,12 @@ public class RelationColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataCo
     @Override
     protected RelationColumnHeaderMetaData getHeaderMetaData() {
         return new RelationColumnHeaderMetaData(informationItem,
-                                                clearDisplayNameConsumer,
-                                                setDisplayNameConsumer,
+                                                clearValueConsumer,
+                                                setValueConsumer,
                                                 setTypeRefConsumer,
+                                                translationService,
                                                 cellEditorControls,
                                                 editor,
-                                                Optional.of(EDITOR_TITLE),
                                                 listSelector,
                                                 listSelectorItemsSupplier,
                                                 listSelectorItemConsumer);

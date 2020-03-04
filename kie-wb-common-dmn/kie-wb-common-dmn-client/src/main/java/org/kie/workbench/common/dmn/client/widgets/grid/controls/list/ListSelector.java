@@ -73,7 +73,7 @@ public class ListSelector implements ListSelectorView.Presenter {
 
     @Override
     @SuppressWarnings("unused")
-    public void show(final Optional<String> editorTitle) {
+    public void show() {
         binding.ifPresent(b -> view.show());
     }
 

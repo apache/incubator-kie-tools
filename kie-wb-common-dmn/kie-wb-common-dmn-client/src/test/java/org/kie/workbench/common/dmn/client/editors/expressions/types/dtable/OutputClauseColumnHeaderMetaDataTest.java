@@ -15,30 +15,33 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Optional;
-
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OutputClauseColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<OutputClauseColumnHeaderMetaData> {
+public class OutputClauseColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<OutputClauseColumnHeaderMetaData, Name, HasName> {
+
+    @Mock
+    private HasName hasValue;
 
     @Mock
     private OutputClause outputClause;
 
     @Override
     protected OutputClauseColumnHeaderMetaData getHeaderMetaData() {
-        return new OutputClauseColumnHeaderMetaData(hasName,
+        return new OutputClauseColumnHeaderMetaData(hasValue,
                                                     outputClause,
-                                                    clearDisplayNameConsumer,
-                                                    setDisplayNameConsumer,
+                                                    clearValueConsumer,
+                                                    setValueConsumer,
                                                     setTypeRefConsumer,
+                                                    translationService,
                                                     cellEditorControls,
                                                     editor,
-                                                    Optional.of(EDITOR_TITLE),
                                                     listSelector,
                                                     listSelectorItemsSupplier,
                                                     listSelectorItemConsumer);

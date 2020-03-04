@@ -267,7 +267,6 @@ public class DataTypeSearchBarViewTest {
         verify(view, never()).getIndexOfParentOrLastElementInGroup(groupedElements, parent);
     }
 
-
     @Test
     public void testGroupElementWithItsParentWhenParentIsOnList() {
 

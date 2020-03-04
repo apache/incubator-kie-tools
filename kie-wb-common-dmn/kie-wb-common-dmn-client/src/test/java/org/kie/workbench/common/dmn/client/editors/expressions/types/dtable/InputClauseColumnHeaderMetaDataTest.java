@@ -15,27 +15,82 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Optional;
-
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasText;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
-public class InputClauseColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InputClauseColumnHeaderMetaData> {
+public class InputClauseColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InputClauseColumnHeaderMetaData, Text, HasText> {
+
+    private static final String VALUE = "value";
+
+    @Mock
+    private HasText hasValue;
 
     @Override
     protected InputClauseColumnHeaderMetaData getHeaderMetaData() {
-        return new InputClauseColumnHeaderMetaData(hasName,
+        return new InputClauseColumnHeaderMetaData(hasValue,
                                                    () -> hasTypeRef,
-                                                   clearDisplayNameConsumer,
-                                                   setDisplayNameConsumer,
+                                                   clearValueConsumer,
+                                                   setValueConsumer,
                                                    setTypeRefConsumer,
+                                                   translationService,
                                                    cellEditorControls,
                                                    editor,
-                                                   Optional.of(EDITOR_TITLE),
                                                    listSelector,
                                                    listSelectorItemsSupplier,
                                                    listSelectorItemConsumer);
+    }
+
+    @Test
+    public void testIsEmptyValue_WhenNull() {
+        assertThat(headerMetaData.isEmptyValue(null)).isTrue();
+    }
+
+    @Test
+    public void testIsEmptyValue_WhenEmptyString() {
+        assertThat(headerMetaData.isEmptyValue(new Text())).isTrue();
+    }
+
+    @Test
+    public void testToModelValue() {
+        assertThat(headerMetaData.toModelValue(VALUE).getValue()).isEqualTo(VALUE);
+    }
+
+    @Test
+    public void testToWidgetValue() {
+        assertThat(headerMetaData.toWidgetValue(new Text(VALUE))).isEqualTo(VALUE);
+    }
+
+    @Test
+    public void testGetValueLabel() {
+        assertThat(headerMetaData.getValueLabel()).isEqualTo(DMNEditorConstants.DecisionTableEditor_InputClauseColumnHeaderMetaData_ValueLabel);
+    }
+
+    @Test
+    public void testNormaliseValue() {
+        final String value = "   " + VALUE + "   ";
+        assertThat(headerMetaData.normaliseValue(value)).isEqualTo(value);
+    }
+
+    @Test
+    public void testGetValue() {
+        when(hasValue.getValue()).thenReturn(new Text(VALUE));
+
+        assertThat(headerMetaData.getValue()).isNotNull();
+        assertThat(headerMetaData.getValue().getValue()).isEqualTo(VALUE);
+    }
+
+    @Test
+    public void testGetPopoverTitle() {
+        assertThat(headerMetaData.getPopoverTitle()).isEqualTo(DMNEditorConstants.DecisionTableEditor_EditInputClause);
     }
 }

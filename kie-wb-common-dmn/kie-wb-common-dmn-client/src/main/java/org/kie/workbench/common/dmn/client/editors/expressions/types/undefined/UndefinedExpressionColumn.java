@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
-import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -36,34 +34,29 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
 
     private final CellEditorControlsView.Presenter cellEditorControls;
     private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
-    private final TranslationService translationService;
 
     public UndefinedExpressionColumn(final double width,
                                      final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
-                                     final TranslationService translationService) {
+                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector) {
         this(Collections.emptyList(),
              width,
              gridWidget,
              cellEditorControls,
-             undefinedExpressionSelector,
-             translationService);
+             undefinedExpressionSelector);
     }
 
     public UndefinedExpressionColumn(final List<HeaderMetaData> headerMetaData,
                                      final double width,
                                      final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
-                                     final TranslationService translationService) {
+                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector) {
         super(headerMetaData,
               new UndefinedExpressionColumnRenderer(),
               width,
               gridWidget);
         this.cellEditorControls = cellEditorControls;
         this.undefinedExpressionSelector = undefinedExpressionSelector;
-        this.translationService = translationService;
     }
 
     @Override
@@ -90,7 +83,6 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
         }
 
         cellEditorControls.show(undefinedExpressionSelector,
-                                Optional.of(translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectorTitle)),
                                 (int) (dxy[0]),
                                 (int) (dxy[1]));
     }

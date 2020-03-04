@@ -19,8 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.general;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.definition.HasValue;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -35,23 +34,23 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class SetHasNameCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                             VetoUndoCommand {
+public class SetHasValueCommand<V, HV extends HasValue<V>> extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                                         VetoUndoCommand {
 
-    private final HasName hasName;
-    private final Name name;
+    private final HV hasValue;
+    private final V value;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final Optional<Name> oldName;
+    private final Optional<V> oldValue;
 
-    public SetHasNameCommand(final HasName hasName,
-                             final Name name,
-                             final org.uberfire.mvp.Command canvasOperation) {
-        this.hasName = Objects.requireNonNull(hasName);
-        this.name = Objects.requireNonNull(name);
+    public SetHasValueCommand(final HV hasValue,
+                              final V value,
+                              final org.uberfire.mvp.Command canvasOperation) {
+        this.hasValue = Objects.requireNonNull(hasValue);
+        this.value = Objects.requireNonNull(value);
         this.canvasOperation = Objects.requireNonNull(canvasOperation);
 
-        this.oldName = Optional.ofNullable(hasName.getName());
+        this.oldValue = Optional.ofNullable(hasValue.getValue());
     }
 
     @Override
@@ -64,14 +63,14 @@ public class SetHasNameCommand extends AbstractCanvasGraphCommand implements Vet
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                hasName.setName(name);
+                hasValue.setValue(value);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                hasName.setName(oldName.orElse(null));
+                hasValue.setValue(oldValue.orElse(null));
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

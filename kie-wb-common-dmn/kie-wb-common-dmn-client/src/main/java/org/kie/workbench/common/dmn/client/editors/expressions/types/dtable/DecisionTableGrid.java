@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddOutputClauseCommand;
@@ -54,13 +55,13 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Del
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -100,7 +101,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
     private final HitPolicyPopoverView.Presenter hitPolicyEditor;
-    private final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
 
     private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
 
@@ -139,7 +140,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final boolean isOnlyVisualChangeAllowed,
                              final int nesting,
                              final HitPolicyPopoverView.Presenter hitPolicyEditor,
-                             final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
+                             final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -191,7 +192,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                 e::getAggregation,
                                                                 cellEditorControls,
                                                                 hitPolicyEditor,
-                                                                Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditHitPolicy)),
                                                                 getAndSetInitialWidth(uiColumnIndex++, DecisionTableRowNumberColumn.DEFAULT_WIDTH),
                                                                 this));
             for (int index = 0; index < e.getInput().size(); index++) {
@@ -212,14 +212,14 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     private InputClauseColumn makeInputClauseColumn(final int index,
                                                     final InputClause ic) {
-        final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(wrapInputClauseIntoHasName(ic),
+        final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(ic.getInputExpression(),
                                                                                                    ic::getInputExpression,
-                                                                                                   clearDisplayNameConsumer(false),
-                                                                                                   setDisplayNameConsumer(false),
+                                                                                                   clearValueConsumer(false, new Text()),
+                                                                                                   setValueConsumer(false),
                                                                                                    setTypeRefConsumer(),
+                                                                                                   translationService,
                                                                                                    cellEditorControls,
                                                                                                    headerEditors.get(),
-                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditInputClause)),
                                                                                                    listSelector,
                                                                                                    this::getHeaderItems,
                                                                                                    this::onItemSelected),
@@ -227,21 +227,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
                                                                this);
         return column;
-    }
-
-    private HasName wrapInputClauseIntoHasName(final InputClause inputClause) {
-        return new HasName() {
-
-            @Override
-            public Name getName() {
-                return new Name(inputClause.getInputExpression().getText().getValue());
-            }
-
-            @Override
-            public void setName(final Name name) {
-                inputClause.getInputExpression().getText().setValue(name.getValue());
-            }
-        };
     }
 
     private OutputClauseColumn makeOutputClauseColumn(final int index,
@@ -254,31 +239,31 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     private Supplier<List<GridColumn.HeaderMetaData>> outputClauseHeaderMetaData(final OutputClause oc) {
-        final NameAndDataTypePopoverView.Presenter headerEditor = headerEditors.get();
+        final ValueAndDataTypePopoverView.Presenter headerEditor = headerEditors.get();
         return () -> {
             final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
             getExpression().get().ifPresent(dtable -> {
                 if (hasName.isPresent()) {
                     metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(hasExpression,
                                                                                     hasName,
-                                                                                    clearDisplayNameConsumer(true, oc, dtable),
-                                                                                    setDisplayNameConsumer(true, oc, dtable),
+                                                                                    clearValueConsumer(oc, dtable),
+                                                                                    setValueConsumer(oc, dtable),
                                                                                     setTypeRefConsumer(oc, dtable),
+                                                                                    translationService,
                                                                                     cellEditorControls,
                                                                                     headerEditor,
-                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
                                                                                     listSelector,
                                                                                     this::getHeaderItems,
                                                                                     this::onItemSelected));
                 } else {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
                                                                       oc,
-                                                                      clearDisplayNameConsumer(false),
-                                                                      setDisplayNameConsumer(false),
+                                                                      clearValueConsumer(false, new Name()),
+                                                                      setValueConsumer(false),
                                                                       setTypeRefConsumer(),
+                                                                      translationService,
                                                                       cellEditorControls,
                                                                       headerEditor,
-                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
                                                                       listSelector,
                                                                       this::getHeaderItems,
                                                                       this::onItemSelected));
@@ -286,12 +271,12 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                 if (dtable.getOutput().size() > 1) {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
                                                                       oc,
-                                                                      clearDisplayNameConsumer(false),
-                                                                      setDisplayNameConsumer(false),
+                                                                      clearValueConsumer(false, new Name()),
+                                                                      setValueConsumer(false),
                                                                       setTypeRefConsumer(),
+                                                                      translationService,
                                                                       cellEditorControls,
                                                                       headerEditor,
-                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
                                                                       listSelector,
                                                                       this::getHeaderItems,
                                                                       this::onItemSelected));
@@ -301,50 +286,43 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
         };
     }
 
-    private Consumer<HasName> clearDisplayNameConsumer(final boolean updateStunnerTitle,
-                                                       final OutputClause oc,
-                                                       final DecisionTable dtable) {
+    private Consumer<HasName> clearValueConsumer(final OutputClause oc,
+                                                 final DecisionTable dtable) {
         if (dtable.getOutput().size() == 1) {
-            return clearDisplayNameOnHasExpressionAndOutputClauseConsumer(updateStunnerTitle, oc);
+            return clearDisplayNameOnHasExpressionAndOutputClauseConsumer(oc);
         }
-        return clearDisplayNameConsumer(updateStunnerTitle);
+        return clearValueConsumer(true, new Name());
     }
 
     @SuppressWarnings("unchecked")
-    private Consumer<HasName> clearDisplayNameOnHasExpressionAndOutputClauseConsumer(final boolean updateStunnerTitle,
-                                                                                     final OutputClause oc) {
-        return (hn) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
-            commandBuilder.addCommand(new DeleteHasNameCommand(wrapOutputClauseIntoHasName(oc),
-                                                               () -> {/*Nothing*/}));
-            if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand(new Name()).ifPresent(commandBuilder::addCommand);
-            }
+    private Consumer<HasName> clearDisplayNameOnHasExpressionAndOutputClauseConsumer(final OutputClause oc) {
+        return (hv) -> {
+            final CompositeCommand.Builder commandBuilder = newHasValueHasNoValueCommand(hv, new Name());
+            commandBuilder.addCommand(new DeleteHasValueCommand<>(wrapOutputClauseIntoHasName(oc),
+                                                                  new Name(),
+                                                                  () -> {/*Nothing*/}));
+            getUpdateStunnerTitleCommand(new Name()).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         };
     }
 
-    private BiConsumer<HasName, Name> setDisplayNameConsumer(final boolean updateStunnerTitle,
-                                                             final OutputClause oc,
-                                                             final DecisionTable dtable) {
+    private BiConsumer<HasName, Name> setValueConsumer(final OutputClause oc,
+                                                       final DecisionTable dtable) {
         if (dtable.getOutput().size() == 1) {
-            return setDisplayNameOnHasExpressionAndOutputClauseConsumer(updateStunnerTitle, oc);
+            return setDisplayNameOnHasExpressionAndOutputClauseConsumer(oc);
         }
-        return setDisplayNameConsumer(updateStunnerTitle);
+        return setValueConsumer(true);
     }
 
     @SuppressWarnings("unchecked")
-    private BiConsumer<HasName, Name> setDisplayNameOnHasExpressionAndOutputClauseConsumer(final boolean updateStunnerTitle,
-                                                                                           final OutputClause oc) {
-        return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            commandBuilder.addCommand(new SetHasNameCommand(wrapOutputClauseIntoHasName(oc),
-                                                            name,
-                                                            () -> {/*Nothing*/}));
-            if (updateStunnerTitle) {
-                getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
-            }
+    private BiConsumer<HasName, Name> setDisplayNameOnHasExpressionAndOutputClauseConsumer(final OutputClause oc) {
+        return (hv, value) -> {
+            final CompositeCommand.Builder commandBuilder = newHasValueHasValueCommand(hv, value);
+            commandBuilder.addCommand(new SetHasValueCommand<>(wrapOutputClauseIntoHasName(oc),
+                                                               value,
+                                                               () -> {/*Nothing*/}));
+            getUpdateStunnerTitleCommand(value).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         };

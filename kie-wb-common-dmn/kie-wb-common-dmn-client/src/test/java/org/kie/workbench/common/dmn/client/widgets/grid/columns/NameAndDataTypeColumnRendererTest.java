@@ -20,8 +20,6 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
@@ -31,9 +29,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class NameAndDataTypeColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<NameAndDataTypeColumnRenderer, InformationItemCell.HasNameCell> {
-
-    @Mock
-    private TextAreaSingletonDOMElementFactory factory;
 
     @Override
     protected NameAndDataTypeColumnRenderer getColumnRenderer() {

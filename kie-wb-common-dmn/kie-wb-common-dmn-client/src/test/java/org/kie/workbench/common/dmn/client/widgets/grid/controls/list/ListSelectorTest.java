@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +73,7 @@ public class ListSelectorTest {
     public void testShow() {
         listSelector.bind(bound, 0, 0);
 
-        listSelector.show(Optional.empty());
+        listSelector.show();
 
         verify(view).show();
     }
@@ -96,7 +95,7 @@ public class ListSelectorTest {
 
         assertThat(itemsCaptor.getValue()).containsOnly(listSelectorItem1, listSelectorItem2);
 
-        listSelector.show(Optional.empty());
+        listSelector.show();
 
         verify(view).show();
     }
@@ -110,7 +109,7 @@ public class ListSelectorTest {
 
         verify(view, never()).setItems(anyList());
 
-        listSelector.show(Optional.empty());
+        listSelector.show();
 
         verify(view, never()).show();
     }

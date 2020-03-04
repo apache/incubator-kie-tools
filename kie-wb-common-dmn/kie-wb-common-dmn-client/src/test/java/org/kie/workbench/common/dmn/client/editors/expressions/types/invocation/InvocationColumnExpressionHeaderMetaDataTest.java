@@ -26,6 +26,8 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
@@ -40,7 +42,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InvocationColumnExpressionHeaderMetaData> {
+public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InvocationColumnExpressionHeaderMetaData, Name, HasName> {
 
     private static final double BLOCK_WIDTH = 10.0;
 
@@ -63,6 +65,7 @@ public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHead
 
     @Mock
     private GridRendererTheme gridRendererThemeMock;
+
     @Mock
     private Text textMock;
 

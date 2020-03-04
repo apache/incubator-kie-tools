@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -30,10 +29,8 @@ import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
-import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -52,12 +49,6 @@ public class FunctionColumnParametersHeaderMetaDataTest {
     private FunctionGrid gridWidget;
 
     @Mock
-    private Transform transform;
-
-    @Mock
-    private GridRenderer renderer;
-
-    @Mock
     private TranslationService translationService;
 
     private FunctionDefinition function;
@@ -74,7 +65,6 @@ public class FunctionColumnParametersHeaderMetaDataTest {
                                                                  translationService,
                                                                  cellEditorControls,
                                                                  parametersEditor,
-                                                                 Optional.of(DMNEditorConstants.FunctionEditor_EditParametersTitle),
                                                                  gridWidget);
 
         when(translationService.getTranslation(anyString())).thenAnswer((i) -> i.getArguments()[0]);

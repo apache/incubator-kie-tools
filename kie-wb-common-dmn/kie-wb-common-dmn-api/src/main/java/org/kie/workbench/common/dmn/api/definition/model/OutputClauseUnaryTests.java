@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -47,6 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests"),
         startElement = "text")
 public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements IsUnaryTests,
+                                                                                HasText,
                                                                                 DMNPropertySet {
 
     protected Id id;
@@ -85,6 +87,7 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
         return text;
     }
 
+    @Override
     public void setText(final Text value) {
         this.text = value;
     }

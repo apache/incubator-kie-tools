@@ -17,16 +17,17 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableNameAndDataTypeColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
@@ -36,21 +37,26 @@ public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<Inv
                                      final double width,
                                      final InvocationGrid gridWidget,
                                      final Predicate<Integer> isEditable,
-                                     final Consumer<HasName> clearDisplayNameConsumer,
-                                     final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                     final Consumer<HasName> clearValueConsumer,
+                                     final BiConsumer<HasName, Name> setValueConsumer,
                                      final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                     final TranslationService translationService,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final NameAndDataTypePopoverView.Presenter editor,
-                                     final Optional<String> editorTitle) {
+                                     final ValueAndDataTypePopoverView.Presenter editor) {
         super(headerMetaData,
               width,
               gridWidget,
               isEditable,
-              clearDisplayNameConsumer,
-              setDisplayNameConsumer,
+              clearValueConsumer,
+              setValueConsumer,
               setTypeRefConsumer,
+              translationService,
               cellEditorControls,
-              editor,
-              editorTitle);
+              editor);
+    }
+
+    @Override
+    protected String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditParameter);
     }
 }

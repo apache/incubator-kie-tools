@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -36,9 +37,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DeleteHasNameCommandTest {
+public class SetHasValueCommandTest {
 
-    private static final String NAME = "name";
+    private static final Name NAME_OLD = new Name("name-old");
+
+    private static final Name NAME_NEW = new Name("name-new");
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -51,42 +54,40 @@ public class DeleteHasNameCommandTest {
 
     private HasName hasName = new Decision();
 
-    private DeleteHasNameCommand command;
+    private SetHasValueCommand command;
 
     @Before
     public void setup() {
-        hasName.getName().setValue(NAME);
+        hasName.setName(NAME_OLD);
 
-        this.command = new DeleteHasNameCommand(hasName,
+        this.command = new SetHasValueCommand<>(hasName,
+                                                NAME_NEW,
                                                 canvasOperation);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void checkGraphCommand() {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).allow(graphCommandExecutionContext));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void executeGraphCommand() {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
-        assertEquals(DeleteHasNameCommand.DEFAULT_TITLE,
-                     hasName.getName().getValue());
+        assertEquals(NAME_NEW,
+                     hasName.getName());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void undoGraphCommand() {
         //Execute and then undo...
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
-        assertEquals(NAME,
-                     hasName.getName().getValue());
+        assertEquals(NAME_OLD,
+                     hasName.getName());
     }
 
     @Test

@@ -308,7 +308,6 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
                     uiRowIndex,
                     uiColumnIndex);
         cellEditorControls.show(editor,
-                                Optional.empty(),
                                 (int) (context.getAbsoluteCellX() + cellWidth / 2),
                                 (int) (context.getAbsoluteCellY() + cellHeight / 2));
 

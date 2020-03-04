@@ -19,12 +19,17 @@ import java.util.Optional;
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OutputClauseColumnExpressionNameHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<OutputClauseColumnExpressionNameHeaderMetaData> {
+public class OutputClauseColumnExpressionNameHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<OutputClauseColumnExpressionNameHeaderMetaData, Name, HasName> {
+
+    @Mock
+    private HasName hasValue;
 
     @Mock
     private HasExpression hasExpression;
@@ -32,13 +37,13 @@ public class OutputClauseColumnExpressionNameHeaderMetaDataTest extends BaseColu
     @Override
     protected OutputClauseColumnExpressionNameHeaderMetaData getHeaderMetaData() {
         return new OutputClauseColumnExpressionNameHeaderMetaData(hasExpression,
-                                                                  Optional.of(hasName),
-                                                                  clearDisplayNameConsumer,
-                                                                  setDisplayNameConsumer,
+                                                                  Optional.of(hasValue),
+                                                                  clearValueConsumer,
+                                                                  setValueConsumer,
                                                                   setTypeRefConsumer,
+                                                                  translationService,
                                                                   cellEditorControls,
                                                                   editor,
-                                                                  Optional.of(EDITOR_TITLE),
                                                                   listSelector,
                                                                   listSelectorItemsSupplier,
                                                                   listSelectorItemConsumer);

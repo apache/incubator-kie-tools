@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.ValueAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
@@ -97,10 +97,10 @@ public class RendererUtils {
                                  headerMetaData.getTitle());
     }
 
-    public static Group getNameAndDataTypeHeaderText(final NameAndDataTypeHeaderMetaData headerMetaData,
-                                                     final GridHeaderColumnRenderContext context,
-                                                     final double blockWidth,
-                                                     final double blockHeight) {
+    public static Group getValueAndDataTypeHeaderText(final ValueAndDataTypeHeaderMetaData headerMetaData,
+                                                      final GridHeaderColumnRenderContext context,
+                                                      final double blockWidth,
+                                                      final double blockHeight) {
         return getNameAndDataTypeText(context.getRenderer().getTheme(),
                                       headerMetaData.getTitle(),
                                       headerMetaData.getTypeRef(),

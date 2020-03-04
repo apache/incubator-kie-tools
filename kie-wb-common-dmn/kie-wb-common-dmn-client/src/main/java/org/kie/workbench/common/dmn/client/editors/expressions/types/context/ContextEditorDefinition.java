@@ -35,7 +35,7 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -55,7 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class ContextEditorDefinition extends BaseEditorDefinition<Context, ContextGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     public ContextEditorDefinition() {
         //CDI proxy
@@ -72,7 +72,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                    final ListSelectorView.Presenter listSelector,
                                    final TranslationService translationService,
                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                   final NameAndDataTypePopoverView.Presenter headerEditor) {
+                                   final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

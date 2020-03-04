@@ -16,13 +16,25 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls;
 
-import java.util.Optional;
-
 import org.jboss.errai.common.client.api.IsElement;
 
 public interface PopupEditorControls extends IsElement {
 
-    void show(final Optional<String> editorTitle);
+    /**
+     * Returns the {@link String} for the {@link PopupEditorControls} title used to to edit properties.
+     * @return null if no title is to be shown.
+     */
+    default String getPopoverTitle() {
+        return null;
+    }
 
+    /**
+     * Shows the {@link PopupEditorControls}.
+     */
+    void show();
+
+    /**
+     * Hides the {@link PopupEditorControls}.
+     */
     void hide();
 }

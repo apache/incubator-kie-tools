@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+[data-i18n-prefix="ValueAndDataTypePopoverViewImpl."] {
 
-package org.kie.workbench.common.dmn.client.editors.types;
+  #popover-container {
+    display: inline;
+  }
 
-import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+  #popover-container .popover {
+    min-width: 300px;
+  }
 
-public interface HasNameAndTypeRef extends HasName,
-                                           HasTypeRef {
+  .kie-dmn-value-and-data-type-container #kieValue {
+    width: 100%;
+  }
 
+  .kie-dmn-value-and-data-type-container #kieDataType {
+    width: 100%;
+  }
 }

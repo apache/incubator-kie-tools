@@ -48,7 +48,6 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
 
     @Override
     public void show(final HasCellEditorControls.Editor<?> editor,
-                     final Optional<String> editorTitle,
                      final int x,
                      final int y) {
         if (!gridPanelSupplier.isPresent()) {
@@ -59,7 +58,6 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
         final int ty = getTransformedY(y);
 
         view.show(editor,
-                  editorTitle,
                   tx,
                   ty);
     }

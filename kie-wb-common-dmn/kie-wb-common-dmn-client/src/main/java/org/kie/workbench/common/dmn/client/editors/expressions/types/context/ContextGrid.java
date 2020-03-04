@@ -40,7 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
@@ -76,7 +76,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                                                                                HasListSelectorControl {
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ValueAndDataTypePopoverView.Presenter headerEditor;
 
     public ContextGrid(final GridCellTuple parent,
                        final Optional<String> nodeUUID,
@@ -98,7 +98,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                        final boolean isOnlyVisualChangeAllowed,
                        final int nesting,
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                       final NameAndDataTypePopoverView.Presenter headerEditor) {
+                       final ValueAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -153,12 +153,12 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
             rowNumberColumn.getHeaderMetaData().add(new BaseHeaderMetaData("#"));
             headerMetaData.add(new NameColumnHeaderMetaData(hasExpression,
                                                             hasName,
-                                                            clearDisplayNameConsumer(true),
-                                                            setDisplayNameConsumer(true),
+                                                            clearValueConsumer(true, new Name()),
+                                                            setValueConsumer(true),
                                                             setTypeRefConsumer(),
+                                                            translationService,
                                                             cellEditorControls,
                                                             headerEditor,
-                                                            Optional.of(translationService.getTranslation(DMNEditorConstants.ContextEditor_EditExpression)),
                                                             listSelector,
                                                             this::getHeaderItems,
                                                             this::onItemSelected));
@@ -168,12 +168,12 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                      getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
                                                      this,
                                                      (rowIndex) -> rowIndex != getModel().getRowCount() - 1,
-                                                     clearDisplayNameConsumer(false),
-                                                     setDisplayNameConsumer(false),
+                                                     clearValueConsumer(false, new Name()),
+                                                     setValueConsumer(false),
                                                      setTypeRefConsumer(),
+                                                     translationService,
                                                      cellEditorControls,
-                                                     headerEditor,
-                                                     Optional.of(translationService.getTranslation(DMNEditorConstants.ContextEditor_EditContextEntry)));
+                                                     headerEditor);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    headerMetaData,
                                                                                    getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),

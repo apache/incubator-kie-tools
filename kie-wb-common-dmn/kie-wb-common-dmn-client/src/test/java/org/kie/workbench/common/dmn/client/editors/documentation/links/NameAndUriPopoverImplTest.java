@@ -65,17 +65,13 @@ public class NameAndUriPopoverImplTest {
 
     @Test
     public void testShow() {
+        popover.show();
 
-        final Optional<String> editorTitle = Optional.of("title");
-
-        popover.show(editorTitle);
-
-        verify(view).show(editorTitle);
+        verify(view).show(Optional.ofNullable(popover.getPopoverTitle()));
     }
 
     @Test
     public void testHide() {
-
         popover.hide();
 
         verify(view).hide();

@@ -21,14 +21,14 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.definition.HasValue;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -37,34 +37,34 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class BaseColumnHeaderMetaDataContextMenuTest<M extends HasCellEditorControls & HasListSelectorControl> {
-
-    protected static final String EDITOR_TITLE = "title";
-
-    @Mock
-    protected HasName hasName;
+public abstract class BaseColumnHeaderMetaDataContextMenuTest<M extends HasCellEditorControls & HasListSelectorControl, V, HV extends HasValue<V>> {
 
     @Mock
     protected HasTypeRef hasTypeRef;
 
     @Mock
-    protected Consumer<HasName> clearDisplayNameConsumer;
+    protected Consumer<HV> clearValueConsumer;
 
     @Mock
-    protected BiConsumer<HasName, Name> setDisplayNameConsumer;
+    protected BiConsumer<HV, V> setValueConsumer;
 
     @Mock
     protected BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
 
     @Mock
+    protected TranslationService translationService;
+
+    @Mock
     protected CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    protected NameAndDataTypePopoverView.Presenter editor;
+    protected ValueAndDataTypePopoverView.Presenter editor;
 
     @Mock
     protected ListSelectorView.Presenter listSelector;
@@ -83,6 +83,8 @@ public abstract class BaseColumnHeaderMetaDataContextMenuTest<M extends HasCellE
     @Before
     public void setup() {
         this.headerMetaData = getHeaderMetaData();
+
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     protected abstract M getHeaderMetaData();

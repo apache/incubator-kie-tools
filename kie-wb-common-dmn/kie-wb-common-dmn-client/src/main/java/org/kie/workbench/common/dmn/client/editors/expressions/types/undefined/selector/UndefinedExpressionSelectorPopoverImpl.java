@@ -24,15 +24,18 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @ApplicationScoped
 public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressionSelectorPopoverView.Presenter {
 
     private UndefinedExpressionSelectorPopoverView view;
+    private TranslationService translationService;
 
     private Optional<UndefinedExpressionGrid> binding = Optional.empty();
 
@@ -42,8 +45,10 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
 
     @Inject
     public UndefinedExpressionSelectorPopoverImpl(final UndefinedExpressionSelectorPopoverView view,
+                                                  final TranslationService translationService,
                                                   final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this.view = view;
+        this.translationService = translationService;
 
         view.init(this);
         view.setExpressionEditorDefinitions(expressionEditorDefinitionsSupplier
@@ -68,6 +73,11 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
     }
 
     @Override
+    public String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectorTitle);
+    }
+
+    @Override
     public void bind(final UndefinedExpressionGrid bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
@@ -75,8 +85,8 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
-        binding.ifPresent(b -> view.show(editorTitle));
+    public void show() {
+        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
     }
 
     @Override

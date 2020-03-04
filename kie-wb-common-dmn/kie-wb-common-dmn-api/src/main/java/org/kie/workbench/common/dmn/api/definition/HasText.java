@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,56 +16,56 @@
 
 package org.kie.workbench.common.dmn.api.definition;
 
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 
 /**
- * Implementations have a {@link Name} property.
+ * Implementations have a {@link Text} property.
  */
-public interface HasName extends HasValue<Name> {
+public interface HasText extends HasValue<Text> {
 
     /**
-     * Returns the {@link Name}
+     * Returns the {@link Text}
      * Convenience method replicating {@link HasValue#getValue()} to honour DMN model semantics.
      * @return
      */
-    Name getName();
+    Text getText();
 
     /**
-     * Sets the {@link Name}
+     * Sets the {@link Text}
      * Convenience method replicating {@link HasValue#setValue(Object)} to honour DMN model semantics.
-     * @param name
+     * @param text
      */
-    void setName(final Name name);
+    void setText(final Text text);
 
     /**
-     * Returns the {@link Name}
+     * Returns the {@link Text}
      * @return
      */
     @Override
-    default Name getValue() {
-        return getName();
+    default Text getValue() {
+        return getText();
     }
 
     /**
-     * Sets the {@link Name}
-     * @param name
+     * Sets the {@link Text}
+     * @param text
      */
     @Override
-    default void setValue(final Name name) {
-        setName(name);
+    default void setValue(final Text text) {
+        setText(text);
     }
 
-    HasName NOP = new HasName() {
+    HasText NOP = new HasText() {
 
-        private final Name NAME = new Name();
+        private final Text TEXT = new Text();
 
         @Override
-        public Name getName() {
-            return NAME;
+        public Text getText() {
+            return TEXT;
         }
 
         @Override
-        public void setName(final Name name) {
+        public void setText(final Text text) {
             //Do nothing
         }
     };

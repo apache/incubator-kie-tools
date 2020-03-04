@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -62,10 +64,11 @@ public class UndefinedExpressionSelectorPopoverImplTest {
     @Mock
     private UndefinedExpressionGrid undefinedExpressionGrid;
 
+    @Mock
+    private TranslationService translationService;
+
     @Captor
     private ArgumentCaptor<List<ExpressionEditorDefinition>> expressionDefinitionsCaptor;
-
-    private Optional<String> title = Optional.of("title");
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -95,7 +98,9 @@ public class UndefinedExpressionSelectorPopoverImplTest {
 
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
 
-        this.popover = new UndefinedExpressionSelectorPopoverImpl(view, expressionEditorDefinitionsSupplier);
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+
+        this.popover = new UndefinedExpressionSelectorPopoverImpl(view, translationService, expressionEditorDefinitionsSupplier);
     }
 
     @Test
@@ -112,15 +117,15 @@ public class UndefinedExpressionSelectorPopoverImplTest {
     public void testShowWhenBound() {
         popover.bind(undefinedExpressionGrid, 0, 0);
 
-        popover.show(title);
+        popover.show();
 
-        verify(view).show(eq(title));
+        verify(view).show(eq(Optional.ofNullable(popover.getPopoverTitle())));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testShowWhenNotBound() {
-        popover.show(title);
+        popover.show();
 
         verify(view, never()).show(any(Optional.class));
     }

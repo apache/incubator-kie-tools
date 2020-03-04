@@ -35,11 +35,9 @@ class FunctionKindRowColumnHeaderMetaData extends EditablePopupHeaderMetaData<Ha
     FunctionKindRowColumnHeaderMetaData(final Supplier<Optional<FunctionDefinition>> functionSupplier,
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final KindPopoverView.Presenter editor,
-                                        final Optional<String> editorTitle,
                                         final FunctionGrid gridWidget) {
         super(cellEditorControls,
-              editor,
-              editorTitle);
+              editor);
 
         this.functionSupplier = functionSupplier;
         this.gridWidget = gridWidget;

@@ -24,13 +24,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @ApplicationScoped
 public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
 
     private ParametersPopoverView view;
+    private TranslationService translationService;
     private Optional<HasParametersControl> binding = Optional.empty();
 
     public ParametersPopoverImpl() {
@@ -38,14 +41,22 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
     }
 
     @Inject
-    public ParametersPopoverImpl(final ParametersPopoverView view) {
+    public ParametersPopoverImpl(final ParametersPopoverView view,
+                                 final TranslationService translationService) {
         this.view = view;
+        this.translationService = translationService;
+
         view.init(this);
     }
 
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    @Override
+    public String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParametersTitle);
     }
 
     @Override
@@ -66,9 +77,9 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
+    public void show() {
         binding.ifPresent(b -> {
-            view.show(editorTitle);
+            view.show(Optional.ofNullable(getPopoverTitle()));
             focusLastParameter(b);
         });
     }

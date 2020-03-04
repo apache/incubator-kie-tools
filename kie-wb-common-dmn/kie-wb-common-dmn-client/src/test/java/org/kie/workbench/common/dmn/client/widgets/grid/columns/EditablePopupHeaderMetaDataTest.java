@@ -33,7 +33,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -61,8 +60,6 @@ public class EditablePopupHeaderMetaDataTest {
     private static final double RELATIVE_X = 38.0;
 
     private static final double RELATIVE_Y = 16.0;
-
-    private static final Optional<String> EDITOR_TITLE = Optional.of("editor");
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -119,7 +116,6 @@ public class EditablePopupHeaderMetaDataTest {
                             eq(ROW_INDEX),
                             eq(COLUMN_INDEX));
         verify(cellEditorControls).show(eq(editor),
-                                        any(Optional.class),
                                         eq((int) RELATIVE_X),
                                         eq((int) RELATIVE_Y));
     }
@@ -145,7 +141,6 @@ public class EditablePopupHeaderMetaDataTest {
                             eq(ROW_INDEX),
                             eq(COLUMN_INDEX));
         verify(cellEditorControls).show(eq(editor),
-                                        eq(EDITOR_TITLE),
                                         eq((int) (ABSOLUTE_CELL_X + CELL_WIDTH / 2)),
                                         eq((int) (ABSOLUTE_CELL_Y + CELL_HEIGHT / 2)));
     }
@@ -170,8 +165,7 @@ public class EditablePopupHeaderMetaDataTest {
                                           final MockEditor editor,
                                           final GridWidget gridWidget) {
             super(cellEditorControls,
-                  editor,
-                  EDITOR_TITLE);
+                  editor);
             this.gridWidget = gridWidget;
         }
 

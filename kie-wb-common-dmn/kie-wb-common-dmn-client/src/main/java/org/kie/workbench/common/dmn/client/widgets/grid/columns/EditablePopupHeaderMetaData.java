@@ -27,14 +27,11 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
 
     protected CellEditorControlsView.Presenter cellEditorControls;
     protected E editor;
-    protected Optional<String> editorTitle;
 
     public EditablePopupHeaderMetaData(final CellEditorControlsView.Presenter cellEditorControls,
-                                       final E editor,
-                                       final Optional<String> editorTitle) {
+                                       final E editor) {
         this.cellEditorControls = cellEditorControls;
         this.editor = editor;
-        this.editorTitle = editorTitle;
     }
 
     protected abstract G getPresenter();
@@ -68,7 +65,6 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
             dxy[1] = r.getY();
         });
         cellEditorControls.show(editor,
-                                editorTitle,
                                 (int) (dxy[0]),
                                 (int) (dxy[1]));
     }

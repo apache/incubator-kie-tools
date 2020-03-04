@@ -37,11 +37,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SetHasNameCommandTest {
+public class DeleteHasValueCommandTest {
 
-    private static final Name NAME_OLD = new Name("name-old");
-
-    private static final Name NAME_NEW = new Name("name-new");
+    private static final String NAME = "name";
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -54,43 +52,40 @@ public class SetHasNameCommandTest {
 
     private HasName hasName = new Decision();
 
-    private SetHasNameCommand command;
+    private DeleteHasValueCommand command;
 
     @Before
     public void setup() {
-        hasName.setName(NAME_OLD);
+        hasName.getName().setValue(NAME);
 
-        this.command = new SetHasNameCommand(hasName,
-                                             NAME_NEW,
-                                             canvasOperation);
+        this.command = new DeleteHasValueCommand<>(hasName,
+                                                   new Name(),
+                                                   canvasOperation);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void checkGraphCommand() {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).allow(graphCommandExecutionContext));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void executeGraphCommand() {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
-        assertEquals(NAME_NEW,
-                     hasName.getName());
+        assertEquals(DeleteHasValueCommand.DEFAULT_TITLE,
+                     hasName.getName().getValue());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void undoGraphCommand() {
         //Execute and then undo...
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
-        assertEquals(NAME_OLD,
-                     hasName.getName());
+        assertEquals(NAME,
+                     hasName.getName().getValue());
     }
 
     @Test

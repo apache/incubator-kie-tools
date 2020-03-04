@@ -117,9 +117,7 @@ public class CellEditorControlsViewImplTest {
 
     @Test
     public void testShow() {
-
         final PopupEditorControls editor = mock(PopupEditorControls.class);
-        final Optional<String> title = Optional.of("title");
         final int x = 10;
         final int y = 20;
 
@@ -128,12 +126,12 @@ public class CellEditorControlsViewImplTest {
         final CSSStyleDeclaration style = mock(CSSStyleDeclaration.class);
         when(element.getStyle()).thenReturn(style);
 
-        view.show(editor, title, x, y);
+        view.show(editor, x, y);
 
         verify(style).setProperty(LEFT, x + PX);
         verify(style).setProperty(TOP, y + PX);
         verify(view).setOnClosedByKeyboardCallback(editor);
-        verify(editor).show(title);
+        verify(editor).show();
     }
 
     @Test

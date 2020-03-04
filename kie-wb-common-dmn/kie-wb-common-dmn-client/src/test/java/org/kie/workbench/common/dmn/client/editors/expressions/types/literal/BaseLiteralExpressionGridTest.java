@@ -33,7 +33,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseDelegatingExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -175,7 +175,7 @@ public abstract class BaseLiteralExpressionGridTest<G extends BaseDelegatingExpr
     protected EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
-    protected NameAndDataTypePopoverView.Presenter headerEditor;
+    protected ValueAndDataTypePopoverView.Presenter headerEditor;
 
     @Captor
     protected ArgumentCaptor<CompositeCommand> compositeCommandCaptor;

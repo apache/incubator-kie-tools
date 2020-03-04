@@ -35,7 +35,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -54,7 +54,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
 
-    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
 
     public RelationEditorDefinition() {
         //CDI proxy
@@ -70,7 +70,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService,
-                                    final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors) {
+                                    final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

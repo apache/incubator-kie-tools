@@ -151,7 +151,7 @@ public class FlashMessagesView implements FlashMessages.View {
 
     @Override
     public void showSuccessMessage(final String strongMessage,
-                                   final String regularMessage){
+                                   final String regularMessage) {
         show(successContainer);
         strongSuccessMessage.textContent = strongMessage;
         regularSuccessMessage.textContent = regularMessage;

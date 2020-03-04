@@ -49,12 +49,12 @@ import org.uberfire.client.views.pfly.widgets.Popover;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.ENTER_KEY;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.ESCAPE_KEY;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.ESC_KEY;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.MANAGE_BUTTON_SELECTOR;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.TAB_KEY;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.TYPE_SELECTOR_BUTTON_SELECTOR;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.ENTER_KEY;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.ESCAPE_KEY;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.ESC_KEY;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.MANAGE_BUTTON_SELECTOR;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TAB_KEY;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TYPE_SELECTOR_BUTTON_SELECTOR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -69,12 +69,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class NameAndDataTypePopoverViewImplTest {
+public class ValueAndDataTypePopoverViewImplTest {
 
-    private static final String NAME = "name";
+    private static final String VALUE = "value";
+
+    private static final String VALUE_LABEL = "label";
 
     @Mock
-    private Input nameEditor;
+    private Input valueEditor;
 
     @Mock
     private DataTypePickerWidget dataTypeEditor;
@@ -86,7 +88,7 @@ public class NameAndDataTypePopoverViewImplTest {
     private Div popoverContentElement;
 
     @Mock
-    private Span nameLabel;
+    private Span valueLabel;
 
     @Mock
     private Span dataTypeLabel;
@@ -95,7 +97,7 @@ public class NameAndDataTypePopoverViewImplTest {
     private JQueryProducer.JQuery<Popover> jQueryProducer;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter presenter;
+    private ValueAndDataTypePopoverView.Presenter presenter;
 
     @Mock
     private HTMLElement element;
@@ -127,18 +129,18 @@ public class NameAndDataTypePopoverViewImplTest {
     @Captor
     private ArgumentCaptor<ValueChangeHandler<QName>> valueChangeHandlerCaptor;
 
-    private NameAndDataTypePopoverViewImpl view;
+    private ValueAndDataTypePopoverViewImpl view;
 
     @Before
     public void setUp() {
-        view = spy(new NameAndDataTypePopoverViewImpl(nameEditor,
-                                                      dataTypeEditor,
-                                                      popoverElement,
-                                                      popoverContentElement,
-                                                      nameLabel,
-                                                      dataTypeLabel,
-                                                      jQueryProducer,
-                                                      translationService) {
+        view = spy(new ValueAndDataTypePopoverViewImpl(valueEditor,
+                                                       dataTypeEditor,
+                                                       popoverElement,
+                                                       popoverContentElement,
+                                                       valueLabel,
+                                                       dataTypeLabel,
+                                                       jQueryProducer,
+                                                       translationService) {
             @Override
             public HTMLElement getElement() {
                 return element;
@@ -147,6 +149,7 @@ public class NameAndDataTypePopoverViewImplTest {
 
         when(element.querySelector(MANAGE_BUTTON_SELECTOR)).thenReturn(manageButton);
         when(element.querySelector(TYPE_SELECTOR_BUTTON_SELECTOR)).thenReturn(typeSelectorButton);
+        when(presenter.getValueLabel()).thenReturn(VALUE_LABEL);
 
         view.init(presenter);
 
@@ -213,7 +216,7 @@ public class NameAndDataTypePopoverViewImplTest {
         final KeyboardEvent keyboardEvent = mock(KeyboardEvent.class);
         doReturn(false).when(view).isEnterKeyPressed(keyboardEvent);
         doReturn(true).when(view).isEscapeKeyPressed(keyboardEvent);
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
@@ -240,7 +243,7 @@ public class NameAndDataTypePopoverViewImplTest {
         verify(view, never()).onClosedByKeyboard();
         verify(view, never()).reset();
         verify(manageButton, never()).focus();
-        verify(nameEditor, never()).focus();
+        verify(valueEditor, never()).focus();
     }
 
     @Test
@@ -255,7 +258,7 @@ public class NameAndDataTypePopoverViewImplTest {
         verify(view, never()).onClosedByKeyboard();
         verify(view, never()).reset();
         verify(manageButton, never()).focus();
-        verify(nameEditor, never()).focus();
+        verify(valueEditor, never()).focus();
     }
 
     @Test
@@ -268,7 +271,7 @@ public class NameAndDataTypePopoverViewImplTest {
 
         view.typeSelectorKeyDownEventListener(keyboardEvent);
 
-        verify(nameEditor).focus();
+        verify(valueEditor).focus();
         verify(keyboardEvent).preventDefault();
     }
 
@@ -294,7 +297,7 @@ public class NameAndDataTypePopoverViewImplTest {
         final KeyboardEvent keyboardEvent = mock(KeyboardEvent.class);
         doReturn(false).when(view).isEnterKeyPressed(keyboardEvent);
         doReturn(true).when(view).isEscapeKeyPressed(keyboardEvent);
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
@@ -393,31 +396,31 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
-    public void testOnNameEditorKeyDownEnter() {
+    public void testOnValueEditorKeyDownEnter() {
 
         final KeyDownEvent keyDownEvent = mock(KeyDownEvent.class);
         doNothing().when(view).hide(true);
 
         doReturn(true).when(view).isEnter(keyDownEvent);
 
-        view.onNameEditorKeyDown(keyDownEvent);
+        view.onValueEditorKeyDown(keyDownEvent);
 
         verify(view).hide(true);
         verify(view).onClosedByKeyboard();
     }
 
     @Test
-    public void testOnNameEditorKeyDownEsc() {
+    public void testOnValueEditorKeyDownEsc() {
 
         final KeyDownEvent keyDownEvent = mock(KeyDownEvent.class);
         doReturn(false).when(view).isEnter(keyDownEvent);
         doReturn(true).when(view).isEsc(keyDownEvent);
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
 
-        view.onNameEditorKeyDown(keyDownEvent);
+        view.onValueEditorKeyDown(keyDownEvent);
 
         verify(view).reset();
         verify(view).hide(false);
@@ -425,7 +428,7 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
-    public void testOnNameEditorKeyDownShiftTab() {
+    public void testOnValueEditorKeyDownShiftTab() {
 
         final KeyDownEvent keyDownEvent = mock(KeyDownEvent.class);
         doReturn(false).when(view).isEnter(keyDownEvent);
@@ -434,7 +437,7 @@ public class NameAndDataTypePopoverViewImplTest {
 
         when(keyDownEvent.isShiftKeyDown()).thenReturn(true);
 
-        view.onNameEditorKeyDown(keyDownEvent);
+        view.onValueEditorKeyDown(keyDownEvent);
 
         verify(typeSelectorButton).focus();
         verify(keyDownEvent).preventDefault();
@@ -515,11 +518,11 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
-    public void testInitName() {
-        view.initName(NAME);
+    public void testInitValue() {
+        view.initValue(VALUE);
 
-        verify(nameEditor).setValue(eq(NAME));
-        assertEquals(NAME, view.getCurrentName());
+        verify(valueEditor).setValue(eq(VALUE));
+        assertEquals(VALUE, view.getCurrentValue());
     }
 
     @Test
@@ -534,12 +537,13 @@ public class NameAndDataTypePopoverViewImplTest {
     public void testShow() {
         view.show(Optional.empty());
 
+        verify(valueLabel).setTextContent(VALUE_LABEL);
         verify(popover).show();
     }
 
     @Test
     public void testHideBeforeShown() {
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
@@ -552,8 +556,7 @@ public class NameAndDataTypePopoverViewImplTest {
 
     @Test
     public void testHideAfterShown() {
-
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
@@ -562,7 +565,7 @@ public class NameAndDataTypePopoverViewImplTest {
         view.show(Optional.empty());
         view.hide();
 
-        verify(nameEditor).blur();
+        verify(valueEditor).blur();
         verify(monitor).hide();
         verify(view).isVisible();
     }
@@ -570,7 +573,7 @@ public class NameAndDataTypePopoverViewImplTest {
     @Test
     public void testHideWhenPopupAlreadyIsHidden() {
 
-        final NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
+        final ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor monitor = mock(ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.class);
         doReturn(monitor).when(view).getMonitor();
         final elemental2.dom.Element menuElement = mock(elemental2.dom.Element.class);
         doReturn(menuElement).when(monitor).getMenuElement();
@@ -578,31 +581,33 @@ public class NameAndDataTypePopoverViewImplTest {
 
         view.hide();
 
-        verify(nameEditor, never()).blur();
+        verify(valueEditor, never()).blur();
         verify(monitor, never()).hide();
         verify(view).isVisible();
     }
 
     @Test
-    public void testOnNameChange() {
-        when(nameEditor.getValue()).thenReturn(NAME);
+    public void testOnValueChange() {
+        when(presenter.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(valueEditor.getValue()).thenReturn(VALUE);
 
-        view.onNameChange(blurEvent);
+        view.onValueChange(blurEvent);
 
-        verify(presenter, never()).setName(eq(NAME));
-        assertEquals(NAME, view.getCurrentName());
+        verify(presenter, never()).setValue(eq(VALUE));
+        assertEquals(VALUE, view.getCurrentValue());
     }
 
     @Test
-    public void testOnNameChangeWithWhitespace() {
-        when(nameEditor.getValue()).thenReturn("  " + NAME + "  ");
+    public void testOnValueChangeWithNormalisedValue() {
+        final String normalisedValue = "normalised";
+        when(presenter.normaliseValue(anyString())).thenAnswer(i -> normalisedValue);
+        when(valueEditor.getValue()).thenReturn(VALUE);
 
-        view.onNameChange(blurEvent);
+        view.onValueChange(blurEvent);
 
-        verify(nameEditor).setValue(NAME);
-
-        verify(presenter, never()).setName(eq(NAME));
-        assertEquals(NAME, view.getCurrentName());
+        verify(presenter, never()).setValue(eq(VALUE));
+        verify(valueEditor).setValue(normalisedValue);
+        assertEquals(normalisedValue, view.getCurrentValue());
     }
 
     @Test
@@ -702,17 +707,19 @@ public class NameAndDataTypePopoverViewImplTest {
     }
 
     @Test
-    public void testResetName() {
-        view.initName(NAME);
+    public void testResetValue() {
+        view.initValue(VALUE);
 
-        final String newName = "new_name";
-        when(nameEditor.getValue()).thenReturn(newName);
-        view.onNameChange(blurEvent);
-        assertEquals(newName, view.getCurrentName());
+        final String newValue = "new_value";
+        when(presenter.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(valueEditor.getValue()).thenReturn(newValue);
+
+        view.onValueChange(blurEvent);
+        assertEquals(newValue, view.getCurrentValue());
 
         view.reset();
 
-        assertEquals(NAME, view.getCurrentName());
+        assertEquals(VALUE, view.getCurrentValue());
     }
 
     @Test

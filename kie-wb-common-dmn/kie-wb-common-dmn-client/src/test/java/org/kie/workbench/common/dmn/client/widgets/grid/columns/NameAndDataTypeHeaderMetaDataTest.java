@@ -26,19 +26,22 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
-    public void setup(final Optional<HasName> hasName) {
-        this.metaData = new NameAndDataTypeHeaderMetaData(hasName,
+    @Override
+    public void setup(final Optional<HasName> hasValue) {
+        this.metaData = new NameAndDataTypeHeaderMetaData(hasValue,
                                                           () -> hasTypeRef,
-                                                          clearDisplayNameConsumer,
-                                                          setDisplayNameConsumer,
+                                                          clearValueConsumer,
+                                                          setValueConsumer,
                                                           setTypeRefConsumer,
+                                                          translationService,
                                                           cellEditorControls,
-                                                          headerEditor,
-                                                          EDITOR_TITLE) {
+                                                          headerEditor) {
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;
@@ -48,18 +51,23 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
             public Optional<String> getPlaceHolder() {
                 return Optional.of(PLACEHOLDER);
             }
+
+            @Override
+            public String getPopoverTitle() {
+                return POPOVER_TITLE;
+            }
         };
+        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test
     public void testGetHasTypeRefs() {
-
         metaData = new NameAndDataTypeHeaderMetaData(HasExpression.NOP,
                                                      Optional.empty(),
                                                      null,
                                                      null,
                                                      null,
-                                                     null,
+                                                     translationService,
                                                      null,
                                                      null) {
 

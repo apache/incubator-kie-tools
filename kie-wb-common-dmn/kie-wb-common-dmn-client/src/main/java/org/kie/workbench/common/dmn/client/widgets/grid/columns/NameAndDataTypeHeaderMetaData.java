@@ -16,136 +16,90 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.shape.Group;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
-import static java.util.Collections.singletonList;
-
-public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypePopoverView.Presenter> implements HasNameAndTypeRef {
-
-    private final Optional<HasName> hasName;
-    private final Supplier<HasTypeRef> hasTypeRef;
-    private final Consumer<HasName> clearDisplayNameConsumer;
-    private final BiConsumer<HasName, Name> setDisplayNameConsumer;
-    private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
+public abstract class NameAndDataTypeHeaderMetaData extends ValueAndDataTypeHeaderMetaData<Name, HasName> {
 
     public NameAndDataTypeHeaderMetaData(final HasExpression hasExpression,
-                                         final Optional<HasName> hasName,
-                                         final Consumer<HasName> clearDisplayNameConsumer,
-                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                         final Optional<HasName> hasValue,
+                                         final Consumer<HasName> clearValueConsumer,
+                                         final BiConsumer<HasName, Name> setValueConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                         final TranslationService translationService,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypePopoverView.Presenter editor,
-                                         final Optional<String> editorTitle) {
-        this(hasName,
-             () -> TypeRefUtils.getTypeRefOfExpression(hasExpression.getExpression(), hasExpression),
-             clearDisplayNameConsumer,
-             setDisplayNameConsumer,
-             setTypeRefConsumer,
-             cellEditorControls,
-             editor,
-             editorTitle);
+                                         final ValueAndDataTypePopoverView.Presenter editor) {
+        super(hasValue,
+              () -> TypeRefUtils.getTypeRefOfExpression(hasExpression.getExpression(), hasExpression),
+              clearValueConsumer,
+              setValueConsumer,
+              setTypeRefConsumer,
+              translationService,
+              cellEditorControls,
+              editor);
     }
 
-    public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasName,
+    public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasValue,
                                          final Supplier<HasTypeRef> hasTypeRef,
-                                         final Consumer<HasName> clearDisplayNameConsumer,
-                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                         final Consumer<HasName> clearValueConsumer,
+                                         final BiConsumer<HasName, Name> setValueConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                         final TranslationService translationService,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypePopoverView.Presenter editor,
-                                         final Optional<String> editorTitle) {
-        super(cellEditorControls,
-              editor,
-              editorTitle);
-        this.hasName = hasName;
-        this.hasTypeRef = hasTypeRef;
-        this.clearDisplayNameConsumer = clearDisplayNameConsumer;
-        this.setDisplayNameConsumer = setDisplayNameConsumer;
-        this.setTypeRefConsumer = setTypeRefConsumer;
+                                         final ValueAndDataTypePopoverView.Presenter editor) {
+        super(hasValue,
+              hasTypeRef,
+              clearValueConsumer,
+              setValueConsumer,
+              setTypeRefConsumer,
+              translationService,
+              cellEditorControls,
+              editor);
     }
 
     @Override
-    protected HasNameAndTypeRef getPresenter() {
-        return this;
+    protected boolean isEmptyValue(final Name value) {
+        return Objects.isNull(value) || StringUtils.isEmpty(value.getValue());
     }
 
     @Override
-    public String getTitle() {
-        return getName().getValue();
+    public Name toModelValue(final String componentValue) {
+        return new Name(componentValue);
     }
 
     @Override
-    public Name getName() {
-        return hasName.orElse(HasName.NOP).getName();
+    public String toWidgetValue(final Name modelValue) {
+        return modelValue.getValue();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void setName(final Name name) {
-        hasName.ifPresent(hn -> {
-            if (Objects.equals(name, getName())) {
-                return;
-            }
-
-            if (name == null || name.getValue() == null || name.getValue().trim().isEmpty()) {
-                clearDisplayNameConsumer.accept(hn);
-            } else {
-                setDisplayNameConsumer.accept(hn, name);
-            }
-        });
+    public String getValueLabel() {
+        return translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_NameLabel);
     }
 
     @Override
-    public QName getTypeRef() {
-        return hasTypeRef.get().getTypeRef();
+    public String normaliseValue(final String componentValue) {
+        return NameUtils.normaliseName(componentValue);
     }
 
     @Override
-    public void setTypeRef(final QName typeRef) {
-        if (Objects.equals(typeRef, getTypeRef())) {
-            return;
-        }
-
-        setTypeRefConsumer.accept(hasTypeRef.get(), typeRef);
-    }
-
-    @Override
-    public Group render(final GridHeaderColumnRenderContext context,
-                        final double blockWidth,
-                        final double blockHeight) {
-        return RendererUtils.getNameAndDataTypeHeaderText(this,
-                                                          context,
-                                                          blockWidth,
-                                                          blockHeight);
-    }
-
-    @Override
-    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-        return hasTypeRef.get().asDMNModelInstrumentedBase();
-    }
-
-    @Override
-    public List<HasTypeRef> getHasTypeRefs() {
-        return new ArrayList<>(singletonList(this));
+    public Name getValue() {
+        return hasValue.orElse(HasName.NOP).getValue();
     }
 }

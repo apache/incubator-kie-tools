@@ -24,7 +24,7 @@ import elemental2.dom.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -36,7 +36,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.OPEN_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.OPEN_CLASS;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;

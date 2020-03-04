@@ -46,9 +46,9 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.context.Cl
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -56,8 +56,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactory
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.HasValueAndTypeRef;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -218,7 +218,7 @@ public class ContextGridTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ValueAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     private GridWidget parentGridWidget;
@@ -793,11 +793,10 @@ public class ContextGridTest {
 
         verify(gridLayer).draw();
 
-        verify(headerEditor).bind(any(HasNameAndTypeRef.class),
+        verify(headerEditor).bind(any(HasValueAndTypeRef.class),
                                   eq(0),
                                   eq(1));
         verify(cellEditorControls).show(eq(headerEditor),
-                                        eq(Optional.of(DMNEditorConstants.ContextEditor_EditContextEntry)),
                                         anyInt(),
                                         anyInt());
     }
@@ -909,7 +908,7 @@ public class ContextGridTest {
     public void testGetDisplayName() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().getName().getValue()).isEqualTo(NAME);
+        assertThat(extractHeaderMetaData().getValue().getValue()).isEqualTo(NAME);
     }
 
     private NameColumnHeaderMetaData extractHeaderMetaData() {
@@ -922,7 +921,7 @@ public class ContextGridTest {
     public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME));
+        extractHeaderMetaData().setValue(new Name(NAME));
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(org.kie.workbench.common.stunner.core.command.Command.class));
@@ -933,13 +932,13 @@ public class ContextGridTest {
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name());
+        extractHeaderMetaData().setValue(new Name());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class,
+                                               DeleteHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 
@@ -948,13 +947,13 @@ public class ContextGridTest {
     public void testSetDisplayNameWithNullValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(null);
+        extractHeaderMetaData().setValue(null);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasNameCommand.class,
+                                               DeleteHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 
@@ -963,13 +962,13 @@ public class ContextGridTest {
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setName(new Name(NAME_NEW));
+        extractHeaderMetaData().setValue(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
 
         GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               SetHasNameCommand.class,
+                                               SetHasValueCommand.class,
                                                UpdateElementPropertyCommand.class);
     }
 

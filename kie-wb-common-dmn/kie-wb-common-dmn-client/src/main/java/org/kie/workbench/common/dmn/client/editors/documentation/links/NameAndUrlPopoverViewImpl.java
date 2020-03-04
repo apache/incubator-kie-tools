@@ -116,8 +116,8 @@ public class NameAndUrlPopoverViewImpl extends AbstractPopoverViewImpl implement
         attachmentName.textContent = translationService.getTranslation(DMNDocumentationI18n_Name);
         urlInput.placeholder = translationService.getTranslation(DMNDocumentationI18n_URLPlaceholder);
         attachmentNameInput.placeholder = translationService.getTranslation(DMNDocumentationI18n_NamePlaceholder);
-        okButton.textContent =  translationService.getTranslation(DMNDocumentationI18n_Ok);
-        cancelButton.textContent =  translationService.getTranslation(DMNDocumentationI18n_Cancel);
+        okButton.textContent = translationService.getTranslation(DMNDocumentationI18n_Ok);
+        cancelButton.textContent = translationService.getTranslation(DMNDocumentationI18n_Cancel);
         attachmentTip.textContent = translationService.getTranslation(DMNDocumentationI18n_AttachmentTip);
         setOnChangedHandlers();
     }
@@ -172,13 +172,13 @@ public class NameAndUrlPopoverViewImpl extends AbstractPopoverViewImpl implement
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
+    public void show(final Optional<String> popoverTitle) {
         clear();
-        superShow(editorTitle);
+        superShow(popoverTitle);
     }
 
-    void superShow(final Optional<String> editorTitle) {
-        super.show(editorTitle);
+    void superShow(final Optional<String> popoverTitle) {
+        super.show(popoverTitle);
     }
 
     void clear() {

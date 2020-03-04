@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -54,7 +54,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
     private HitPolicyPopoverView.Presenter hitPolicyEditor;
-    private ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors;
+    private ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
     private DecisionTableEditorDefinitionEnricher enricher;
 
     public DecisionTableEditorDefinition() {
@@ -72,7 +72,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
                                          final HitPolicyPopoverView.Presenter hitPolicyEditor,
-                                         final ManagedInstance<NameAndDataTypePopoverView.Presenter> headerEditors,
+                                         final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
                                          final DecisionTableEditorDefinitionEnricher enricher) {
         super(definitionUtils,
               sessionManager,

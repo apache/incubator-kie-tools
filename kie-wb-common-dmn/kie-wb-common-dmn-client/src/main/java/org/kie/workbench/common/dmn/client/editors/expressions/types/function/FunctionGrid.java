@@ -50,7 +50,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.pa
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -82,7 +82,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
-    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ValueAndDataTypePopoverView.Presenter headerEditor;
     private final ParametersPopoverView.Presenter parametersEditor;
     private final KindPopoverView.Presenter kindEditor;
 
@@ -107,7 +107,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final int nesting,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                        final NameAndDataTypePopoverView.Presenter headerEditor,
+                        final ValueAndDataTypePopoverView.Presenter headerEditor,
                         final ParametersPopoverView.Presenter parametersEditor,
                         final KindPopoverView.Presenter kindEditor) {
         super(parent,
@@ -165,24 +165,22 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
         if (nesting == 0) {
             headerMetaData.add(new FunctionColumnNameHeaderMetaData(hasExpression,
                                                                     hasName,
-                                                                    clearDisplayNameConsumer(true),
-                                                                    setDisplayNameConsumer(true),
+                                                                    clearValueConsumer(true, new Name()),
+                                                                    setValueConsumer(true),
                                                                     setTypeRefConsumer(),
+                                                                    translationService,
                                                                     cellEditorControls,
-                                                                    headerEditor,
-                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditExpression))));
+                                                                    headerEditor));
         }
         headerMetaData.add(new FunctionColumnParametersHeaderMetaData(getExpression(),
                                                                       translationService,
                                                                       cellEditorControls,
                                                                       parametersEditor,
-                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParametersTitle)),
                                                                       this));
 
         final FunctionKindRowColumn kindColumn = new FunctionKindRowColumn(getExpression(),
                                                                            cellEditorControls,
                                                                            kindEditor,
-                                                                           Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_SelectFunctionKind)),
                                                                            getAndSetInitialWidth(0, EmptyColumn.DEFAULT_WIDTH),
                                                                            this);
 

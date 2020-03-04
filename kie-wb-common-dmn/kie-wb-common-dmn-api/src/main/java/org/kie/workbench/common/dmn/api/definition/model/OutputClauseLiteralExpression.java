@@ -22,6 +22,7 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -61,6 +62,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.OutputClauseLiteralExpression"),
         startElement = "id")
 public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase implements IsLiteralExpression,
+                                                                                       HasText,
                                                                                        HasTypeRef,
                                                                                        DMNPropertySet,
                                                                                        DomainObject {
@@ -153,6 +155,7 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
         return text;
     }
 
+    @Override
     public void setText(final Text text) {
         this.text = text;
     }

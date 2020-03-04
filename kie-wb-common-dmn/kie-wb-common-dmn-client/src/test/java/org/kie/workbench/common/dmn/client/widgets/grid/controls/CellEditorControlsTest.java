@@ -36,8 +36,6 @@ import static org.mockito.Mockito.verify;
 @RunWith(LienzoMockitoTestRunner.class)
 public class CellEditorControlsTest {
 
-    private static final Optional<String> EDITOR_TITLE = Optional.of("editor");
-
     @Mock
     private DMNGridPanel gridPanel;
 
@@ -75,10 +73,9 @@ public class CellEditorControlsTest {
         doReturn(-200.0).when(transform).getTranslateY();
         doReturn(-75).when(gridPanel).getAbsoluteTop();
 
-        controls.show(editor, EDITOR_TITLE, 10, 20);
+        controls.show(editor, 10, 20);
 
         verify(view).show(eq(editor),
-                          eq(EDITOR_TITLE),
                           eq(-145),
                           eq(-270));
     }

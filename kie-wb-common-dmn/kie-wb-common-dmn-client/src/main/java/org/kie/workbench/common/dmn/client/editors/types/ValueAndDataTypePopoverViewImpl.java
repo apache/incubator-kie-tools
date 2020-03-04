@@ -43,7 +43,6 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
@@ -56,7 +55,7 @@ import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
 @Templated
 @Dependent
-public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl implements NameAndDataTypePopoverView {
+public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl implements ValueAndDataTypePopoverView {
 
     static final String TYPE_SELECTOR_BUTTON_SELECTOR = "button.dropdown-toggle.btn-default";
     static final String MANAGE_BUTTON_SELECTOR = "#typeButton";
@@ -66,27 +65,27 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
     static final String ENTER_KEY = "Enter";
     static final String DROPDOWN_ELEMENT_SELECTOR = ".bs-container.btn-group.bootstrap-select.show-tick.input-group-btn";
 
-    @DataField("nameEditor")
-    private Input nameEditor;
+    @DataField("valueEditor")
+    private Input valueEditor;
 
     @DataField("typeRefSelector")
     private DataTypePickerWidget typeRefEditor;
 
-    @DataField("nameLabel")
-    private Span nameLabel;
+    @DataField("valueLabel")
+    private Span valueLabel;
 
     @DataField("dataTypeLabel")
     private Span dataTypeLabel;
 
     private Presenter presenter;
 
-    private String previousName;
+    private String currentValue;
 
-    private String currentName;
-
-    private QName previousTypeRef;
+    private String previousValue;
 
     private QName currentTypeRef;
+
+    private QName previousTypeRef;
 
     private BootstrapSelectDropDownMonitor monitor;
 
@@ -136,8 +135,8 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
             this.commandHide = commandHide;
         }
 
-        void show(final Optional<String> editorTitle) {
-            commandShow.execute(editorTitle);
+        void show(final Optional<String> popoverTitle) {
+            commandShow.execute(popoverTitle);
         }
 
         void hide() {
@@ -176,37 +175,36 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
         }
     }
 
-    public NameAndDataTypePopoverViewImpl() {
+    public ValueAndDataTypePopoverViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public NameAndDataTypePopoverViewImpl(final Input nameEditor,
-                                          final DataTypePickerWidget typeRefEditor,
-                                          final Div popoverElement,
-                                          final Div popoverContentElement,
-                                          final Span nameLabel,
-                                          final Span dataTypeLabel,
-                                          final JQueryProducer.JQuery<Popover> jQueryPopover,
-                                          final TranslationService translationService) {
+    public ValueAndDataTypePopoverViewImpl(final Input valueEditor,
+                                           final DataTypePickerWidget typeRefEditor,
+                                           final Div popoverElement,
+                                           final Div popoverContentElement,
+                                           final Span valueLabel,
+                                           final Span dataTypeLabel,
+                                           final JQueryProducer.JQuery<Popover> jQueryPopover,
+                                           final TranslationService translationService) {
         super(popoverElement,
               popoverContentElement,
               jQueryPopover);
 
-        this.nameEditor = nameEditor;
+        this.valueEditor = valueEditor;
         this.typeRefEditor = typeRefEditor;
         this.popoverElement = popoverElement;
         this.popoverContentElement = popoverContentElement;
-        this.nameLabel = nameLabel;
+        this.valueLabel = valueLabel;
         this.dataTypeLabel = dataTypeLabel;
         this.jQueryPopover = jQueryPopover;
 
-        this.nameLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_NameLabel));
         this.dataTypeLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_DataTypeLabel));
 
         //GWT runs into an infinite loop if these are defined as method references :-(
-        this.monitor = new BootstrapSelectDropDownMonitor((editorTitle) -> NameAndDataTypePopoverViewImpl.super.show(editorTitle),
-                                                          () -> NameAndDataTypePopoverViewImpl.super.hide());
+        this.monitor = new BootstrapSelectDropDownMonitor(popoverTitle -> ValueAndDataTypePopoverViewImpl.super.show(popoverTitle),
+                                                          () -> ValueAndDataTypePopoverViewImpl.super.hide());
 
         this.closedByKeyboardCallback = Optional.empty();
     }
@@ -220,12 +218,12 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
         setKeyDownListeners();
     }
 
-    public QName getCurrentTypeRef() {
-        return currentTypeRef;
+    public String getCurrentValue() {
+        return currentValue;
     }
 
-    public String getCurrentName() {
-        return currentName;
+    public QName getCurrentTypeRef() {
+        return currentTypeRef;
     }
 
     void setKeyDownListeners() {
@@ -280,7 +278,7 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
                     final Button manageButton = getManageButton();
                     manageButton.focus();
                 } else {
-                    nameEditor.focus();
+                    valueEditor.focus();
                 }
                 keyEvent.preventDefault();
             }
@@ -332,23 +330,24 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
     }
 
     @Override
-    public void initName(final String name) {
-        nameEditor.setValue(name);
-        previousName = name;
-        currentName = name;
+    public void initValue(final String value) {
+        valueEditor.setValue(value);
+        currentValue = value;
+        previousValue = value;
     }
 
     @Override
     public void initSelectedTypeRef(final QName typeRef) {
         typeRefEditor.setValue(typeRef, false);
-        previousTypeRef = typeRef;
         currentTypeRef = typeRef;
+        previousTypeRef = typeRef;
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
-        getMonitor().show(editorTitle);
-        nameEditor.focus();
+    public void show(final Optional<String> popoverTitle) {
+        valueLabel.setTextContent(presenter.getValueLabel());
+        getMonitor().show(popoverTitle);
+        valueEditor.focus();
     }
 
     @Override
@@ -356,9 +355,9 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
         hide(true);
     }
 
-    public void hide(boolean applyChanges) {
+    public void hide(final boolean applyChanges) {
         if (isVisible()) {
-            nameEditor.blur();
+            valueEditor.blur();
             getMonitor().hide();
             if (applyChanges) {
                 applyChanges();
@@ -370,35 +369,36 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
         return monitor;
     }
 
-    @EventHandler("nameEditor")
     @SuppressWarnings("unused")
-    void onNameChange(final BlurEvent event) {
-        final String name = nameEditor.getValue();
-        final String normalisedName = NameUtils.normaliseName(name);
-        if (!Objects.equals(normalisedName, name)) {
-            nameEditor.setValue(normalisedName);
+    @EventHandler("valueEditor")
+    void onValueChange(final BlurEvent event) {
+        final String value = valueEditor.getValue();
+        final String normalisedValue = presenter.normaliseValue(value);
+        if (!Objects.equals(normalisedValue, value)) {
+            valueEditor.setValue(normalisedValue);
         }
-        currentName = normalisedName;
+        currentValue = normalisedValue;
     }
 
     void applyChanges() {
-        presenter.setName(currentName);
+        presenter.setValue(currentValue);
         if (!Objects.isNull(currentTypeRef)) {
             presenter.setTypeRef(currentTypeRef);
         }
     }
 
     void reset() {
-        nameEditor.setValue(previousName);
+        valueEditor.setValue(previousValue);
         if (!Objects.isNull(previousTypeRef)) {
             typeRefEditor.setValue(previousTypeRef);
         }
-        currentName = previousName;
+        currentValue = previousValue;
         currentTypeRef = previousTypeRef;
     }
 
-    @EventHandler("nameEditor")
-    public void onNameEditorKeyDown(final KeyDownEvent event) {
+    @SuppressWarnings("unused")
+    @EventHandler("valueEditor")
+    public void onValueEditorKeyDown(final KeyDownEvent event) {
         if (isEnter(event)) {
             hide(true);
             onClosedByKeyboard();

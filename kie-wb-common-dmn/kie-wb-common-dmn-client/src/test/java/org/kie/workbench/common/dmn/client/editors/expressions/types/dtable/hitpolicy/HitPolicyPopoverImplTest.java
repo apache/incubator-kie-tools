@@ -75,6 +75,7 @@ public class HitPolicyPopoverImplTest {
     public void setup() {
         this.builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
         this.editor = new HitPolicyPopoverImpl(view,
+                                               translationService,
                                                builtinAggregatorUtils);
 
         when(control.getHitPolicy()).thenReturn(null);
@@ -229,7 +230,7 @@ public class HitPolicyPopoverImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testShowNullControl() {
-        editor.show(Optional.empty());
+        editor.show();
 
         verify(view, never()).show(any(Optional.class));
     }
@@ -242,7 +243,7 @@ public class HitPolicyPopoverImplTest {
 
         reset(view);
 
-        editor.show(Optional.empty());
+        editor.show();
 
         verify(view).show(eq(Optional.empty()));
     }

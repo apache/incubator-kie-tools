@@ -22,12 +22,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @ApplicationScoped
 public class KindPopoverImpl implements KindPopoverView.Presenter {
 
     private KindPopoverView view;
+    private TranslationService translationService;
     private Optional<HasKindSelectControl> binding = Optional.empty();
 
     public KindPopoverImpl() {
@@ -35,20 +38,28 @@ public class KindPopoverImpl implements KindPopoverView.Presenter {
     }
 
     @Inject
-    public KindPopoverImpl(final KindPopoverView view) {
+    public KindPopoverImpl(final KindPopoverView view,
+                           final TranslationService translationService) {
         this.view = view;
+        this.translationService = translationService;
+
         view.init(this);
         view.setFunctionKinds(FunctionDefinition.Kind.values());
     }
 
     @Override
-    public void show(final Optional<String> editorTitle) {
-        binding.ifPresent(b -> view.show(editorTitle));
+    public void show() {
+        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
     }
 
     @Override
     public void hide() {
         binding.ifPresent(b -> view.hide());
+    }
+
+    @Override
+    public String getPopoverTitle() {
+        return translationService.getTranslation(DMNEditorConstants.FunctionEditor_SelectFunctionKind);
     }
 
     @Override

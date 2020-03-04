@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
@@ -38,11 +37,9 @@ class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPo
                                          final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
                                          final CellEditorControlsView.Presenter cellEditorControls,
                                          final HitPolicyPopoverView.Presenter editor,
-                                         final Optional<String> editorTitle,
                                          final DecisionTableGrid gridWidget) {
         super(cellEditorControls,
-              editor,
-              editorTitle);
+              editor);
         this.hitPolicySupplier = hitPolicySupplier;
         this.builtinAggregatorSupplier = builtinAggregatorSupplier;
         this.gridWidget = gridWidget;
