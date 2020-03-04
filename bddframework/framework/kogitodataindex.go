@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	apps "k8s.io/api/apps/v1"
@@ -42,7 +43,7 @@ func InstallKogitoDataIndexService(namespace string, installerType InstallerType
 
 func crInstallKogitoDataIndex(namespace string, replicas int) error {
 	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
 	image.Tag = GetConfigServicesImageVersion()
 
 	kogitoDataIndex := &v1alpha1.KogitoDataIndex{
@@ -51,8 +52,17 @@ func crInstallKogitoDataIndex(namespace string, replicas int) error {
 			Namespace: namespace,
 		},
 		Spec: v1alpha1.KogitoDataIndexSpec{
-			Replicas: int32(replicas),
-			Image:    framework.ConvertImageToImageTag(image),
+			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
+				Replicas: int32(replicas),
+				Image:    image,
+			},
+		},
+		Status: v1alpha1.KogitoDataIndexStatus{
+			KogitoServiceStatus: v1alpha1.KogitoServiceStatus{
+				ConditionsMeta: v1alpha1.ConditionsMeta{
+					Conditions: []v1alpha1.Condition{},
+				},
+			},
 		},
 	}
 
@@ -66,9 +76,11 @@ func cliInstallKogitoDataIndex(namespace string, replicas int) error {
 	cmd := []string{"install", "data-index"}
 
 	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImage)
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
 	image.Tag = GetConfigServicesImageVersion()
 	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
+
+	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err

@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
@@ -62,6 +63,8 @@ func cliInstallKogitoJobsService(namespace string, replicas int, persistence boo
 	image.Tag = GetConfigServicesImageVersion()
 	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
 
+	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
+
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 }
@@ -85,14 +88,14 @@ func GetKogitoJobsServiceDeployment(namespace string) (*apps.Deployment, error) 
 // WaitForKogitoJobsService waits that the jobs service has a certain number of replicas
 func WaitForKogitoJobsService(namespace string, replicas, timeoutInMin int) error {
 	return WaitFor(namespace, "Kogito jobs service running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		service, err := GetKogitoJobsServiceDeployment(namespace)
+		deployment, err := GetKogitoJobsServiceDeployment(namespace)
 		if err != nil {
 			return false, err
 		}
-		if service == nil {
+		if deployment == nil {
 			return false, nil
 		}
-		return service.Status.Replicas == int32(replicas) && service.Status.AvailableReplicas == int32(replicas), nil
+		return deployment.Status.Replicas == int32(replicas) && deployment.Status.AvailableReplicas == int32(replicas), nil
 	})
 }
 
@@ -119,12 +122,18 @@ func getJobsServiceStub(namespace string, replicas int, persistence bool) *v1alp
 			Name:      infrastructure.DefaultJobsServiceName,
 			Namespace: namespace,
 		},
-		Status: v1alpha1.KogitoJobsServiceStatus{
-			ConditionsMeta: v1alpha1.ConditionsMeta{Conditions: []v1alpha1.Condition{}},
-		},
 		Spec: v1alpha1.KogitoJobsServiceSpec{
-			Replicas: int32(replicas),
-			Image:    image,
+			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
+				Replicas: int32(replicas),
+				Image:    image,
+			},
+		},
+		Status: v1alpha1.KogitoJobsServiceStatus{
+			KogitoServiceStatus: v1alpha1.KogitoServiceStatus{
+				ConditionsMeta: v1alpha1.ConditionsMeta{
+					Conditions: []v1alpha1.Condition{},
+				},
+			},
 		},
 	}
 

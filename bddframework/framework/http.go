@@ -60,11 +60,11 @@ func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyC
 	if err != nil {
 		return false, err
 	}
-	return CheckHTTPResponseSuccessful(namespace, response), nil
+	return checkHTTPResponseSuccessful(namespace, response), nil
 }
 
-// CheckHTTPResponseSuccessful checks the HTTP response is successful
-func CheckHTTPResponseSuccessful(namespace string, response *http.Response) bool {
+// checkHTTPResponseSuccessful checks the HTTP response is successful
+func checkHTTPResponseSuccessful(namespace string, response *http.Response) bool {
 	GetLogger(namespace).Debugf("Got response status code %d", response.StatusCode)
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		GetLogger(namespace).Warnf("Request not successful. Got status code %d", response.StatusCode)
@@ -79,7 +79,7 @@ func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat
 	if err != nil {
 		return false, err
 	}
-	if !CheckHTTPResponseSuccessful(namespace, response) {
+	if !checkHTTPResponseSuccessful(namespace, response) {
 		return false, nil
 	}
 	// Check response
@@ -102,7 +102,7 @@ func DoesHTTPResponseContain(namespace, httpMethod, uri, path string, bodyFormat
 	if err != nil {
 		return false, err
 	}
-	if !CheckHTTPResponseSuccessful(namespace, response) {
+	if !checkHTTPResponseSuccessful(namespace, response) {
 		return false, nil
 	}
 	// Check response
