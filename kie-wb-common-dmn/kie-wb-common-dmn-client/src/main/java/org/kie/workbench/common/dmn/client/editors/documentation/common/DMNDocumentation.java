@@ -43,8 +43,6 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     private String diagramImage;
 
-    private String fileName;
-
     private String currentDate;
 
     private String currentUser;
@@ -67,7 +65,6 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     @JsOverlay
     public static DMNDocumentation create(final String namespace,
-                                          final String fileName,
                                           final String diagramName,
                                           final String diagramDescription,
                                           final boolean hasGraphNodes,
@@ -85,7 +82,6 @@ public class DMNDocumentation implements DiagramDocumentation {
         dmn.namespace = namespace;
         dmn.diagramName = diagramName;
         dmn.diagramDescription = diagramDescription;
-        dmn.fileName = fileName;
         dmn.currentUser = currentUser;
         dmn.currentDate = currentDate;
         dmn.diagramImage = diagramImage;
@@ -117,11 +113,6 @@ public class DMNDocumentation implements DiagramDocumentation {
     @JsOverlay
     public final String getDiagramImage() {
         return diagramImage;
-    }
-
-    @JsOverlay
-    public final String getFileName() {
-        return fileName;
     }
 
     @JsOverlay

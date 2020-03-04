@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
+package org.kie.workbench.common.dmn.webapp.kogito.common.client.editors.documentation;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.kogito.bridge.client.context.EditorContextProvider;

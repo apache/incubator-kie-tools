@@ -282,13 +282,15 @@
                 <b>{{i18n.generatedOn}}</b>
                 {{currentDate}}
             </li>
+            {{#currentUser}}
             <li>
                 <b>{{i18n.generatedBy}}</b>
                 {{currentUser}}
             </li>
+            {{/currentUser}}
             <li>
                 <b>{{i18n.generatedFrom}}</b>
-                {{fileName}}
+                {{diagramName}}
             </li>
         </ul>
     </div>

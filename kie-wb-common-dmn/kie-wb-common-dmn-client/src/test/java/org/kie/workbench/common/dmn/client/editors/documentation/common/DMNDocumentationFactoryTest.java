@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -54,7 +53,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationFactory.EMPTY;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Constraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_ListYes;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_NoFileName;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Structure;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -110,13 +108,10 @@ public class DMNDocumentationFactoryTest {
         when(translationService.format(DMNDocumentationFactory_Constraints)).thenReturn("Constraints:");
         when(translationService.format(DMNDocumentationFactory_ListYes)).thenReturn("List: Yes");
         when(translationService.format(DMNDocumentationFactory_Structure)).thenReturn("Structure");
-        when(translationService.format(DMNDocumentationFactory_NoFileName)).thenReturn("No file name");
     }
 
     @Test
     public void testCreate() {
-
-        final String fileName = "filename.dmn";
         final String diagramName = "Diagram name";
         final String diagramDescription = "Diagram description";
         final String image = "<image>";
@@ -137,7 +132,6 @@ public class DMNDocumentationFactoryTest {
         id.setAllowedValues(unaryTests);
         id.setIsCollection(true);
 
-        doReturn(fileName).when(documentationFactory).getFileName(diagram);
         doReturn(image).when(documentationFactory).getDiagramImage();
         doReturn(i18n).when(documentationFactory).getDocumentationI18n();
         doReturn(moment).when(documentationFactory).moment();
@@ -155,7 +149,6 @@ public class DMNDocumentationFactoryTest {
         final DMNDocumentation documentation = documentationFactory.create(diagram);
 
         assertEquals(namespace, documentation.getNamespace());
-        assertEquals(fileName, documentation.getFileName());
         assertEquals(diagramName, documentation.getDiagramName());
         assertEquals(diagramDescription, documentation.getDiagramDescription());
         assertEquals(image, documentation.getDiagramImage());
@@ -203,8 +196,6 @@ public class DMNDocumentationFactoryTest {
 
     @Test
     public void testGetDiagramImageWhenCanvasHandlerIsPresent() {
-
-        final ClientSession clientSession = mock(ClientSession.class);
         final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
         final String image = "<image>";
 
@@ -230,33 +221,6 @@ public class DMNDocumentationFactoryTest {
     public void testGetHasGraphNodesWhenIsReturnsTrue() {
         when(graphUtils.getDRGElements(diagram)).thenReturn(singletonList(mock(DRGElement.class)));
         assertTrue(documentationFactory.hasGraphNodes(diagram));
-    }
-
-    @Test
-    public void testGetFileNameWhenPathIsPresent() {
-
-        final String expectedFileName = "filename.dmn";
-
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getPath()).thenReturn(path);
-        when(path.getFileName()).thenReturn(expectedFileName);
-
-        final String actualFileName = documentationFactory.getFileName(diagram);
-
-        assertEquals(expectedFileName, actualFileName);
-    }
-
-    @Test
-    public void testGetFileNameWhenPathIsNotPresent() {
-
-        final String expectedFileName = "No file name";
-
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getPath()).thenReturn(null);
-
-        final String actualFileName = documentationFactory.getFileName(diagram);
-
-        assertEquals(expectedFileName, actualFileName);
     }
 
     private ItemDefinition makeItemDefinition(final String name,

@@ -29,14 +29,11 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.views.pfly.widgets.Moment;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Constraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_ListYes;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_NoFileName;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Structure;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -69,7 +66,6 @@ public class DMNDocumentationFactory {
 
     public DMNDocumentation create(final Diagram diagram) {
         return DMNDocumentation.create(getNamespace(diagram),
-                                       getFileName(diagram),
                                        getDiagramName(diagram),
                                        getDiagramDescription(diagram),
                                        hasGraphNodes(diagram),
@@ -81,31 +77,25 @@ public class DMNDocumentationFactory {
                                        getDocumentationI18n());
     }
 
-    private List<DMNDocumentationDRD> getDrds(final Diagram diagram) {
+    protected List<DMNDocumentationDRD> getDrds(final Diagram diagram) {
         return drdsFactory.create(diagram);
     }
 
-    private String getNamespace(final Diagram diagram) {
+    protected String getNamespace(final Diagram diagram) {
         return graphUtils.getDefinitions(diagram).getNamespace().getValue();
     }
 
-    String getFileName(final Diagram diagram) {
-        final Metadata metadata = diagram.getMetadata();
-        final Optional<Path> path = Optional.ofNullable(metadata.getPath());
-        return path.map(Path::getFileName).orElse(translationService.format(DMNDocumentationFactory_NoFileName));
-    }
-
-    boolean hasGraphNodes(final Diagram diagram) {
+    protected boolean hasGraphNodes(final Diagram diagram) {
         return !graphUtils.getDRGElements(diagram).isEmpty();
     }
 
-    String getDiagramImage() {
+    protected String getDiagramImage() {
         return getCanvasHandler()
                 .map(canvasFileExport::exportToPng)
                 .orElse(EMPTY);
     }
 
-    private List<DMNDocumentationDataType> getDataTypes(final Diagram diagram) {
+    protected List<DMNDocumentationDataType> getDataTypes(final Diagram diagram) {
 
         final List<ItemDefinition> itemDefinitions = graphUtils.getDefinitions(diagram).getItemDefinition();
         final List<DMNDocumentationDataType> dataTypes = new ArrayList<>();
@@ -161,25 +151,25 @@ public class DMNDocumentationFactory {
         return translationService.format(DMNDocumentationFactory_Structure);
     }
 
-    private String getCurrentDate() {
+    protected String getCurrentDate() {
         return moment().format("D MMMM YYYY");
     }
 
-    private String getDiagramName(final Diagram diagram) {
+    protected String getDiagramName(final Diagram diagram) {
         return graphUtils
                 .getDefinitions(diagram)
                 .getName()
                 .getValue();
     }
 
-    private String getDiagramDescription(final Diagram diagram) {
+    protected String getDiagramDescription(final Diagram diagram) {
         return graphUtils
                 .getDefinitions(diagram)
                 .getDescription()
                 .getValue();
     }
 
-    private String getCurrentUserName() {
+    protected String getCurrentUserName() {
         return sessionInfo.getIdentity().getIdentifier();
     }
 
@@ -190,7 +180,7 @@ public class DMNDocumentationFactory {
                 .map(c -> (AbstractCanvasHandler) c);
     }
 
-    DMNDocumentationI18n getDocumentationI18n() {
+    protected DMNDocumentationI18n getDocumentationI18n() {
         return DMNDocumentationI18n.create(translationService);
     }
 

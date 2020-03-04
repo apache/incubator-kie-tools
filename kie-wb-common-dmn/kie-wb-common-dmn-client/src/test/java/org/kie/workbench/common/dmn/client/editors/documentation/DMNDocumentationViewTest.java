@@ -191,13 +191,13 @@ public class DMNDocumentationViewTest {
     @Test
     public void testOnDownloadHtmlFile() {
         final String html = "<html><body>Hi</body></html>";
-        final String fileName = "file name";
-        doReturn(fileName).when(view).getCurrentDocumentationFilename();
+        final String modelName = "model name";
+        doReturn(modelName).when(view).getCurrentDocumentationModelName();
         doReturn(html).when(view).getCurrentDocumentationHTML();
 
         view.onDownloadHtmlFile(mock(ClickEvent.class));
 
         verify(view).getCurrentDocumentationHTML();
-        verify(downloadHelper).download(fileName, html);
+        verify(downloadHelper).download(modelName, html);
     }
 }

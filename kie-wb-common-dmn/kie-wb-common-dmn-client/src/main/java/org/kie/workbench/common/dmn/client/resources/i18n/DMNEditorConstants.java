@@ -455,9 +455,6 @@ public class DMNEditorConstants {
     public static final String DMNDocumentationI18n_URLPlaceholder = "DMNDocumentationI18n.URLPlaceholder";
 
     @TranslationKey(defaultValue = "")
-    public static final String DMNDocumentationFactory_NoFileName = "DMNDocumentationFactory.NoFileName";
-
-    @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationFactory_Constraints = "DMNDocumentationFactory.Constraints";
 
     @TranslationKey(defaultValue = "")
