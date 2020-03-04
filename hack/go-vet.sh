@@ -27,6 +27,6 @@ if [[ -z ${CI} ]]; then
     ./bin/openapi-gen --logtostderr=true -o "" -i ./pkg/apis/app/v1alpha1 -O zz_generated.openapi -p ./pkg/apis/app/v1alpha1 -h ./hack/boilerplate.go.txt -r "-"
     ./bin/openapi-gen --logtostderr=true -o "" -i ./pkg/apis/kafka/v1beta1 -O zz_generated.openapi -p ./pkg/apis/kafka/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
 
-    operator-sdk generate csv --csv-version 0.8.0-rc1 --update-crds --operator-name kogito-operator
+    operator-sdk generate csv --csv-version 0.8.0 --update-crds --operator-name kogito-operator
 fi
 go vet ./...
