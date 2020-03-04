@@ -120,9 +120,9 @@ function copy_kogito_app() {
         # handle quarkus java build
         if ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
             echo "---> Installing jar file"
-            cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin/
+            cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
             echo "---> Copying application libraries"
-            cp -r $artifactDir/lib/ $KOGITO_HOME/bin/
+            cp -r $artifactDir/lib/ $KOGITO_HOME/bin
         fi
 
     elif ls $artifactDir/*-runner 1> /dev/null 2>&1; then
@@ -132,7 +132,7 @@ function copy_kogito_app() {
         chmod +x $KOGITO_HOME/bin/*-runner
 
     else
-        # handle non default java builds
+        # handle normal java builds
         echo "---> Installing application binaries"
         cp -v $artifactDir/*.jar $KOGITO_HOME/bin
     fi

@@ -31,7 +31,7 @@ modules:
   - name: org.kie.kogito.system.user
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.graalvm.installer
-    version: "19.2.1"
+    version: "19.3.1"
   - name: org.kie.kogito.graalvm.scripts
   - name: org.kie.kogito.openjdk
     version: "1.8.0"

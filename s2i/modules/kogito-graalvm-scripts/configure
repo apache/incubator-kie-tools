@@ -6,4 +6,4 @@ SCRIPT_DIR=$(dirname $0)
 
 cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/
 
-/usr/share/graalvm/bin/gu -L install ${SOURCES_DIR}/native-image-installable-svm-linux-amd64-${GRAALVM_VERSION}.jar
+/usr/share/graalvm/bin/gu -L install ${SOURCES_DIR}/native-image-installable-svm-java8-linux-amd64-${GRAALVM_VERSION}.jar

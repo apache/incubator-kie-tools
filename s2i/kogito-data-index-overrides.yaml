@@ -27,7 +27,7 @@ modules:
   - name: org.kie.kogito.dataindex
 
 run:
-  workdir: "/home/kogito/"
+  workdir: "/home/kogito"
   user: 1001
   cmd:
     - "/home/kogito/kogito-app-launch.sh"

@@ -1,22 +1,23 @@
 @quay.io/kiegroup/kogito-quarkus-ubi8-s2i
 Feature: kogito-quarkus-ubi8-s2i image tests
+
   Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+    Given s2i build /tmp/kogito-examples from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable       | value                     |
-      | LIMIT_MEMORY   | 2147483648                |
+      | LIMIT_MEMORY   | 3221225472                |
     Then check that page is served
       | property        | value                    |
       | port            | 8080                     |
       | path            | /hello                   |
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.7.0-runner should exist
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner should exist
     And file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
-    And s2i build log should contain -J-Xmx1717986918
+    And s2i build log should contain -J-Xmx2576980377
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable            | value                     |
       | NATIVE              | false                     |
       | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
@@ -26,12 +27,12 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | path            | /hello                   |
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.7.0-runner.jar should exist
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
     And container log should contain DEBUG [io.qua.
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Dquarkus.log.level=DEBUG
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples from drools-quarkus-example using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build /tmp/kogito-examples from drools-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
       | NATIVE   | false |
     Then check that page is served
@@ -40,23 +41,23 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | path            | /hello                   |
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.7.0-runner.jar should exist
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-quarkus-example using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value |
       | NATIVE            | false   |
       | MAVEN_ARGS_APPEND | -Ppersistence |
-    Then file /home/kogito/bin/jbpm-quarkus-example-0.7.0-runner.jar should exist
+    Then file /home/kogito/bin/jbpm-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
     And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
     And s2i build log should contain ---> [persistence] generating md5 for persistence files
-    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for cd35391d447a67062c3914965254ebd2
-    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 318830fd04bce5b0f2a4727e001dbc21
+    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for b19f6d73a0a1fea0bfbd8e2e30701d78
+    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 02b40df868ebda3acb3b318b6ebcc055
 
 
     Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build and if it is listening on the expected port
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value                           |
       | NATIVE            | false                           |
       | ARTIFACT_DIR      | drools-quarkus-example/target   |
@@ -67,7 +68,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | path            | /hello                   |
       | wait            | 80                       |
       | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-0.7.0-runner.jar should exist
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
 
   Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from drools-quarkus-example with env and incremental using 0.7.0
@@ -104,10 +105,10 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.6.0
     And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-1.8.0
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
-    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.2.1
+    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.3.1
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using 0.7.0 and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable          | value                           |
       | NATIVE            | false                           |
       | KOGITO_VERSION    | 8.0.0-SNAPSHOT                  |

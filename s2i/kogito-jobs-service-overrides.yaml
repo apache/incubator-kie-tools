@@ -41,7 +41,7 @@ modules:
   - name: org.kie.kogito.jobs.service
 
 run:
-  workdir: "/home/kogito/"
+  workdir: "/home/kogito"
   user: 1001
   cmd:
     - "/home/kogito/kogito-app-launch.sh"
