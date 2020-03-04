@@ -21,7 +21,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem, Title } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
@@ -154,38 +154,46 @@ export function EditorPage(props: Props) {
   });
 
   return (
-    <Page>
-      <PageSection variant="light" noPadding={true} style={{ flexBasis: "100%" }}>
-        {copySuccessAlertVisible && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant="success"
-              title="Content copied to clipboard"
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
-            />
-          </div>
-        )}
-        <Stack>
-          <StackItem style={{ flexBasis: "1%" }}>
-            {!fullscreen && (
-              <EditorToolbar
-                onFullScreen={enterFullscreen}
-                onSave={requestSave}
-                onDownload={requestDownload}
-                onClose={close}
-                onFileNameChanged={props.onFileNameChanged}
-                onCopyContentToClipboard={requestCopyContentToClipboard}
+    <Page
+      header={
+        <EditorToolbar
+          onFullScreen={enterFullscreen}
+          onSave={requestSave}
+          onDownload={requestDownload}
+          onClose={close}
+          onFileNameChanged={props.onFileNameChanged}
+          onCopyContentToClipboard={requestCopyContentToClipboard}
+          isPageFullscreen={fullscreen}
+        />
+      }
+    >
+      <Title size={"xs"} className={"sr-only"} headingLevel={"h1"}>
+        Kogito editor
+      </Title>
+      {!fullscreen && (
+        <PageSection variant="dark" noPadding={true}>
+          {copySuccessAlertVisible && (
+            <div className={"kogito--alert-container"}>
+              <Alert
+                variant="success"
+                title="Content copied to clipboard"
+                action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
               />
-            )}
-            {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-          </StackItem>
-          <StackItem isFilled={true} style={{ flexBasis: "100%" }}>
-            <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
-          </StackItem>
-        </Stack>
+            </div>
+          )}
+        </PageSection>
+      )}
+
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+        <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
       </PageSection>
       <a ref={downloadRef} />
-      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <textarea
+        ref={copyContentTextArea}
+        aria-hidden={"true"}
+        style={{ height: 0, position: "absolute", zIndex: -1 }}
+      />
     </Page>
   );
 }
