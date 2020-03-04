@@ -88,14 +88,6 @@
     <netty-transport-native-epoll-classifier>linux-x86_64</netty-transport-native-epoll-classifier>
     <netty-transport-native-kqueue-classifier>osx-x86_64</netty-transport-native-kqueue-classifier>
 
-    <!-- Lienzo core upgrade required by Stunner. Can be removed once IP BOM is upgraded.-->
-    <version.com.ahome-it.lienzo-core>2.0.292-RELEASE</version.com.ahome-it.lienzo-core>
-    <version.com.ahome-it.lienzo-tests>2.0.292-RELEASE</version.com.ahome-it.lienzo-tests>
-
-    <!-- Need this for dashbuilder-webapp to compile. lienzo-charts is not compatible with newer version -->
-    <version.com.ahome-it.lienzo-core.charts>2.0.241-RC1</version.com.ahome-it.lienzo-core.charts>
-    <version.com.ahome-it.lienzo-tests.charts>2.0.241-RC1</version.com.ahome-it.lienzo-tests.charts>
-
     <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
@@ -112,8 +104,6 @@
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
     <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
-
-    <version.com.ahome-it.lienzo-charts>1.0.241-RC1</version.com.ahome-it.lienzo-charts>
 
     <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
     <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
@@ -1239,13 +1229,6 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${version.ch.qos.logback}</version>
-      </dependency>
-
-      <!-- Lienzo Charts -->
-      <dependency>
-        <groupId>com.ahome-it</groupId>
-        <artifactId>lienzo-charts</artifactId>
-        <version>${version.com.ahome-it.lienzo-charts}</version>
       </dependency>
 
       <!-- KIE Lienzo modules -->

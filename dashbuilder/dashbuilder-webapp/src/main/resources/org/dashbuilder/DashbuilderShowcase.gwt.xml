@@ -16,7 +16,6 @@
 
   <inherits name="org.dashbuilder.DashbuilderClientAll"/>
   <inherits name="org.dashbuilder.DisplayerEditor"/>
-  <inherits name="org.dashbuilder.renderer.LienzoChartsRenderer"/>
   <inherits name="org.dashbuilder.renderer.ChartJsRenderer"/>
   <inherits name="org.dashbuilder.renderer.C3Renderer"/>
 

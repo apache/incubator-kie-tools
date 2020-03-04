@@ -23,17 +23,6 @@
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- Demo does not compile without older lienzo-core -->
-      <dependency>
-        <groupId>com.ahome-it</groupId>
-        <artifactId>lienzo-core</artifactId>
-        <version>${version.com.ahome-it.lienzo-core.charts}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <!-- NOTE: GWT client deps are needed for GWT compilation purposes (scope=provided) -->
   <dependencies>
 
@@ -144,12 +133,6 @@
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-renderer-default</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-renderer-lienzo</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -727,7 +710,6 @@
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-editor</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-default</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-chartjs</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-lienzo</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-c3</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-client</compileSourcesArtifact>
