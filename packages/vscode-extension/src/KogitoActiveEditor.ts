@@ -19,28 +19,22 @@ import { Disposable } from "vscode";
 import * as vscode from "vscode";
 
 export class KogitoActiveEditor {
-  private static readonly UNDO_COMMAND_ID = "undo";
-  private static readonly REDO_COMMAND_ID = "redo";
 
   public readonly editor: KogitoEditor;
 
   private readonly undoCommand: KogitoActiveEditorCommand;
-  private readonly reCommand: KogitoActiveEditorCommand;
+  private readonly redoCommand: KogitoActiveEditorCommand;
 
   constructor(editor: KogitoEditor) {
     this.editor = editor;
 
-    this.undoCommand = new KogitoActiveEditorCommand(KogitoActiveEditor.UNDO_COMMAND_ID, () => {
-      editor.notifyUndo();
-    });
-    this.reCommand = new KogitoActiveEditorCommand(KogitoActiveEditor.REDO_COMMAND_ID, () => {
-      editor.notifyRedo();
-    });
+    this.undoCommand = new KogitoActiveEditorCommand("undo", () => editor.notifyUndo());
+    this.redoCommand = new KogitoActiveEditorCommand("redo", () => editor.notifyRedo());
   }
 
   public dispose() {
     this.undoCommand.dispose();
-    this.reCommand.dispose();
+    this.redoCommand.dispose();
   }
 }
 

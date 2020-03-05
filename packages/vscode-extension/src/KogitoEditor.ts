@@ -188,11 +188,9 @@ export class KogitoEditor {
 
   private executeUndRedo(runnable: () => void) {
     if(this.enabledUndoRedo) {
-      runnable();
       this.enabledUndoRedo = false;
-      setTimeout(()=> {
-        this.enabledUndoRedo = true;
-      }, 100);
+      runnable();
+      setTimeout(() => this.enabledUndoRedo = true, 100);
     }
   }
 
