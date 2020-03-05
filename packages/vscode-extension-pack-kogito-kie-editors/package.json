@@ -43,6 +43,18 @@
           "Decision Model and Notation"
         ]
       }
+    ],
+    "keybindings": [
+      {
+        "command": "undo",
+        "key": "ctrl+z",
+        "mac": "cmd+z"
+      },
+      {
+        "command": "redo",
+        "key": "ctrl+y",
+        "mac": "cmd+shift+z"
+      }
     ]
   },
   "scripts": {
