@@ -93,13 +93,6 @@ export class KogitoEditor {
         },
         receive_ready(): void {
           /**/
-        },
-        notify_editorUndo: () => {
-          this.notifyUndo();
-        },
-
-        notify_editorRedo: () => {
-          this.notifyRedo();
         }
       })
     );
@@ -179,14 +172,14 @@ export class KogitoEditor {
   }
 
   public notifyUndo() {
-    this.executeUndRedo(() => this.envelopeBusOuterMessageHandler.notify_editorUndo());
+    this.executeUndoRedo(() => this.envelopeBusOuterMessageHandler.notify_editorUndo());
   }
 
   public notifyRedo() {
-    this.executeUndRedo(() => this.envelopeBusOuterMessageHandler.notify_editorRedo());
+    this.executeUndoRedo(() => this.envelopeBusOuterMessageHandler.notify_editorRedo());
   }
 
-  private executeUndRedo(runnable: () => void) {
+  private executeUndoRedo(runnable: () => void) {
     if(this.enabledUndoRedo) {
       this.enabledUndoRedo = false;
       runnable();
