@@ -203,7 +203,7 @@ export function HomePage(props: Props) {
   );
 
   const logoProps = {
-    href: context.routes.home.url({})
+    href: window.location.href.split("?")[0].split("#")[0]
   };
 
   const linkDropdownItems = [
@@ -399,7 +399,7 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   isValid={validatedInputUrl}
-                  helperText="http://"
+                  helperText=""
                   helperTextInvalid={messageForState}
                 >
                   <TextInput
