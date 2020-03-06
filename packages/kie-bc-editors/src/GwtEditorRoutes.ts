@@ -103,11 +103,11 @@ export class GwtEditorRoutes implements Routes {
         {
           type: "js",
           paths: [
+            router.getRelativePathTo(`${this.scesimPath}/model/Jsonix-all.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/DC.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/DI.js`),
-            router.getRelativePathTo(`${this.scesimPath}/model/DMN12.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/DMNDI12.js`),
-            router.getRelativePathTo(`${this.scesimPath}/model/JsonixAll.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DMN12.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/KIE.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/MainJs.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/SCESIM.js`),
