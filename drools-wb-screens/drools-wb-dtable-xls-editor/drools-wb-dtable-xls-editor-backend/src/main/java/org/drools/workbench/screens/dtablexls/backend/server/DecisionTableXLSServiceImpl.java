@@ -30,7 +30,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.drools.decisiontable.InputType;
@@ -243,9 +242,6 @@ public class DecisionTableXLSServiceImpl
         Workbook workbook = null;
         try {
             workbook = WorkbookFactory.create( tempFile );
-        } catch ( InvalidFormatException e ) {
-            throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                                                   e );
         } catch ( IOException e ) {
             throw new DecisionTableParseException( "DecisionTableParseException: Failed to open Excel stream, " + "please check that the content is xls97 format.",
                                                    e );
