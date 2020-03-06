@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KeyBinding, KeyBindingServiceOpts } from "./DefaultKeyboardShortcutsService";
+import { KeyBinding } from "./DefaultKeyboardShortcutsService";
 
 /**
  * PUBLIC ENVELOPE API
@@ -35,9 +35,20 @@ export interface KeyboardShortcutsApi {
     opts?: KeyBindingServiceOpts
   ): number;
 
-  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
-
   deregister(id: number): void;
 
+  //not exposed
+
+  registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
+
   registered(): KeyBinding[];
+}
+
+/**
+ * PUBLIC ENVELOPE API
+ */
+export interface KeyBindingServiceOpts {
+  hidden?: boolean;
+  element?: EventTarget;
+  repeat?: boolean;
 }

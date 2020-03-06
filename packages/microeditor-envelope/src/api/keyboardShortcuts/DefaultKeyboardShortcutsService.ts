@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+import {KeyBindingServiceOpts, KeyboardShortcutsApi} from "./KeyboardShorcutsApi";
 import { EditorContext } from "../context";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 
@@ -23,12 +23,6 @@ export interface KeyBinding {
   label: string;
   opts?: KeyBindingServiceOpts;
   listener: (e: KeyboardEvent) => boolean;
-}
-
-export interface KeyBindingServiceOpts {
-  hidden?: boolean;
-  element?: EventTarget;
-  repeat?: boolean;
 }
 
 export enum ModKeys {
@@ -104,6 +98,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     opts?: KeyBindingServiceOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
+    console.debug(opts);
 
     const keyBinding = {
       combination,
