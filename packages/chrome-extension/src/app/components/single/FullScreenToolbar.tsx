@@ -19,7 +19,7 @@ import * as React from "react";
 export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
   return (
     <div className={"kogito-iframe-fullscreen-toolbar"}>
-      <a href={"#"} onClick={props.onExitFullScreen}>
+      <a data-testid={"exit-fullscreen-button"} href={"#"} onClick={props.onExitFullScreen}>
         Exit full screen
       </a>
     </div>

@@ -16,12 +16,12 @@
 
 import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
-import { GlobalContext } from "./GlobalContext";
+import { GlobalContext, useGlobals } from "./GlobalContext";
 import { Logger } from "../../../Logger";
-import { GitHubContextProvider } from "./GitHubContext";
+import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";
 import * as ReactDOM from "react-dom";
 import { KogitoMenu } from "./KogitoMenu";
-import * as dependencies__ from "../../dependencies";
+import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
@@ -30,11 +30,27 @@ export interface Globals {
   id: string;
   router: Router;
   logger: Logger;
+  dependencies: Dependencies;
   githubAuthTokenCookieName: string;
   extensionIconUrl: string;
   editorIndexPath: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
+}
+
+function KogitoMenuPortal(props: { id: string }) {
+  const githubApi = useGitHubApi();
+  const globals = useGlobals();
+
+  return (
+    <>
+      {githubApi.userIsLoggedIn() &&
+        ReactDOM.createPortal(
+          <KogitoMenu />,
+          kogitoMenuContainer(props.id, globals.dependencies.all.notificationIndicator()!.parentElement!)
+        )}
+    </>
+  );
 }
 
 export const Main: React.FunctionComponent<Globals> = props => {
@@ -43,6 +59,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
       value={{
         id: props.id,
         logger: props.logger,
+        dependencies: props.dependencies,
         router: props.router,
         githubAuthTokenCookieName: props.githubAuthTokenCookieName,
         extensionIconUrl: props.extensionIconUrl,
@@ -52,11 +69,8 @@ export const Main: React.FunctionComponent<Globals> = props => {
       }}
     >
       <GitHubContextProvider>
-        {ReactDOM.createPortal(
-          <KogitoMenu />,
-          kogitoMenuContainer(props.id, dependencies__.all.notificationIndicator()!.parentElement!)
-        )}
-        <>{props.children}</>
+        <KogitoMenuPortal id={props.id} />
+        {props.children}
       </GitHubContextProvider>
     </GlobalContext.Provider>
   );

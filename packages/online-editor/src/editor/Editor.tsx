@@ -18,11 +18,11 @@ import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, ResourceContent, ResourcesList, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 interface Props {
   fullscreen: boolean;
-  onContentResponse: (content: string) => void;
+  onContentResponse: (content: EditorContent) => void;
 }
 
 export type EditorRef = {
@@ -44,11 +44,11 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_languageRequest() {
         self.respond_languageRequest(context.router.getLanguageData(editorType)!);
       },
-      receive_contentResponse(content: string) {
+      receive_contentResponse(content: EditorContent) {
         props.onContentResponse(content);
       },
       receive_contentRequest() {
-        context.file.getFileContents().then(c => self.respond_contentRequest(c || ""));
+        context.file.getFileContents().then(c => self.respond_contentRequest({ content: c || "" }));
       },
       receive_setContentError() {
         console.info("Set content error");
@@ -59,9 +59,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_ready() {
         console.info(`Editor is ready`);
       },
-      receive_resourceContentRequest(uri: string) {
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
         console.debug(`Resource Content Request`);
-        self.respond_resourceContent(new ResourceContent(uri, undefined));
+        self.respond_resourceContent(new ResourceContent(resourceContentRequest.path, undefined));
       },
       receive_resourceListRequest(globPattern: string) {
         console.debug(`Resource List Request`);
@@ -89,10 +89,12 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
 
   return (
     <iframe
+      style={{ display: "flex" }}
       ref={iframeRef}
       id={"kogito-iframe"}
       className="kogito--editor"
       src={context.iframeTemplateRelativePath}
+      title="Kogito editor"
     />
   );
 };

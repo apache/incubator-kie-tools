@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-pack-kogito-kie-editors",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -8,10 +8,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/chrome-extension": "0.2.7",
-    "@kogito-tooling/kie-bc-editors": "0.2.7",
-    "@kogito-tooling/microeditor-envelope": "0.2.7",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.7"
+    "@kogito-tooling/chrome-extension": "0.2.8",
+    "@kogito-tooling/kie-bc-editors": "0.2.8",
+    "@kogito-tooling/microeditor-envelope": "0.2.8",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.8"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

@@ -17,13 +17,15 @@
 import * as Octokit from "@octokit/rest";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
-import {useGlobals} from "./GlobalContext";
+import { useGlobals } from "./GlobalContext";
 
-export const GitHubContext = React.createContext<{
+export interface GitHubContextType {
   octokit: () => Octokit;
   setToken: (token: string) => void;
   token?: string;
-}>({} as any);
+  userIsLoggedIn: () => boolean;
+}
+export const GitHubContext = React.createContext<GitHubContextType>({} as any);
 
 export function useGitHubApi() {
   return useContext(GitHubContext);
@@ -58,6 +60,14 @@ export const GitHubContextProvider: React.FC<{}> = props => {
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
 
+  const userIsLoggedIn = useCallback(() => {
+    return !!globals.dependencies.all.notificationIndicator();
+  }, []);
+
+  const octokit = useCallback(() => {
+    return octokitInstance;
+  }, []);
+
   useEffect(() => {
     if (token) {
       octokitInstance = new Octokit({ auth: token });
@@ -79,11 +89,9 @@ export const GitHubContextProvider: React.FC<{}> = props => {
     }
   }, [token]);
 
-  const octokit = useCallback(() => {
-    return octokitInstance;
-  }, []);
-
   return (
-    <GitHubContext.Provider value={{ token, setToken, octokit }}>{ready && props.children}</GitHubContext.Provider>
+    <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>
+      {ready && props.children}
+    </GitHubContext.Provider>
   );
 };

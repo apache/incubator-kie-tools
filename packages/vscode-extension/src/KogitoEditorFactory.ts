@@ -45,9 +45,10 @@ export class KogitoEditorFactory {
     if (path.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
     }
-
+    
+    const workspacePath = vscode.workspace.asRelativePath(path);
     const panel = this.openNewPanel(path);
-    const editor = new KogitoEditor(path, panel, this.context, this.router, this.webviewLocation, this.editorStore, this.resourceContentService);
+    const editor = new KogitoEditor(workspacePath, path, panel, this.context, this.router, this.webviewLocation, this.editorStore, this.resourceContentService);
     this.editorStore.addAsActive(editor);
     editor.setupEnvelopeBus();
     editor.setupPanelActiveStatusChange();

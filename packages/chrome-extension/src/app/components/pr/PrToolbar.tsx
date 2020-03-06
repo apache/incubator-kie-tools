@@ -55,28 +55,26 @@ export function PrToolbar(props: {
         </button>
       )}
 
-      {!props.textMode &&
-        props.fileStatusOnPr === FileStatusOnPr.CHANGED &&
-        props.showOriginalChangesToggle && (
-          <div className="BtnGroup mr-1">
-            <button
-              disabled={props.originalDiagram}
-              className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
-              type={"button"}
-              onClick={toggleOriginal}
-            >
-              Original
-            </button>
-            <button
-              disabled={!props.originalDiagram}
-              className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
-              type={"button"}
-              onClick={toggleOriginal}
-            >
-              Changes
-            </button>
-          </div>
-        )}
+      {!props.textMode && props.fileStatusOnPr === FileStatusOnPr.CHANGED && props.showOriginalChangesToggle && (
+        <div className="BtnGroup mr-1">
+          <button
+            disabled={props.originalDiagram}
+            className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
+            type={"button"}
+            onClick={toggleOriginal}
+          >
+            Original
+          </button>
+          <button
+            disabled={!props.originalDiagram}
+            className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
+            type={"button"}
+            onClick={toggleOriginal}
+          >
+            Changes
+          </button>
+        </div>
+      )}
     </>
   );
 }

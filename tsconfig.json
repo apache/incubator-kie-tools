@@ -11,7 +11,6 @@
     "target": "es5",
     "declaration": true,
     "sourceMap": true,
-    "noImplicitAny": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "jsx": "react"

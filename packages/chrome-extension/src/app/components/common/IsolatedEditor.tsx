@@ -21,6 +21,7 @@ import { useGitHubApi } from "./GitHubContext";
 
 interface Props {
   getFileContents: () => Promise<string | undefined>;
+  contentPath: string;
   openFileExtension: string;
   readonly: boolean;
   textMode: boolean;
@@ -37,6 +38,7 @@ const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRe
         <KogitoEditorIframe
           key={githubApi.token}
           ref={forwardedRef}
+          contentPath={props.contentPath}
           openFileExtension={props.openFileExtension}
           getFileContents={props.getFileContents}
           readonly={props.readonly}

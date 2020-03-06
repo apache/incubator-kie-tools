@@ -79,7 +79,7 @@ Build from source
 Develop
 --------------------
 
-> **NOTE:** We currently pack two GWT-based editors -- BPMN and DMN. They are exploded WARs, so we don't commit them in this repo. We are currently working on automatically fetching them during the build, but we didn't do it **yet**. For builds to work properly, you must have the exploded WARs copied on `packages/kie-bc-editors-unpacked/` `dmn` and `bpmn` folders. You can go to [the latest commit](https://github.com/kiegroup/kogito-tooling/commits/master), click on the "check" icon and download the exploded WARs from the Artifacts tab. Be aware that each editor must go on its own folder.
+> **NOTE:** We recommend using *LTS* version of Node.js when developing this project.
     
 ##### VSCode Extension
 1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-pack-kogito-kie-editors` folder on VSCode. Use a new VSCode window so that the `packages/vscode-extension-pack-kogito-kie-editors` folder shows up as root in the VSCode explorer.
@@ -91,6 +91,13 @@ Develop
 2. Open a terminal and run `yarn run serve-envelope` on `packages/chrome-extension-pack-kogito-kie-editors`. This will start a `webpack-dev-server` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
 3. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" on the top right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
 4. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
+
+##### Online Editor
+1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
+2. Open a terminal and run `yarn run serve-envelope` on `packages/chrome-extension-pack-kogito-kie-editors`. This will start a `webpack-dev-server` instance with the editors and their envelope. We use that because we don't pack the Online Editor bundle with the editors inside. Instead, we fetch them from GitHub pages.
+3. Open a terminal and run `yarn start` on `packages/online-editor`. This will start a `webpack-dev-server` instance with the Online Editor resources.
+4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag.
+5. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
 
 
 Contributing to Kogito

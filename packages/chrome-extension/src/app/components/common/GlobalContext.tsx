@@ -19,17 +19,21 @@ import { Router } from "@kogito-tooling/core-api";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
+import { Dependencies } from "../../Dependencies";
 
-export const GlobalContext = React.createContext<{
-  id: string,
-  githubAuthTokenCookieName: string,
+export interface GlobalContextType {
+  id: string;
+  githubAuthTokenCookieName: string;
   router: Router;
   logger: Logger;
+  dependencies: Dependencies;
   extensionIconUrl: string;
   editorIndexPath: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
-}>({} as any);
+}
+
+export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function useGlobals() {
   return React.useContext(GlobalContext);

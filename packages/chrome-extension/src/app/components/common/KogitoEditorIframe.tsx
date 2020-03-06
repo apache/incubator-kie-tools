@@ -22,12 +22,14 @@ import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useGitHubApi } from "../common/GitHubContext";
+import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
 interface Props {
   openFileExtension: string;
+  contentPath: string;
   getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
 }
@@ -50,7 +52,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       {
         postMessage: msg => {
           if (ref.current && ref.current.contentWindow) {
-            ref.current.contentWindow.postMessage(msg, router.getTargetOrigin());
+            ref.current.contentWindow.postMessage(msg, "*");
           }
         }
       },
@@ -61,20 +63,25 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         receive_languageRequest() {
           self.respond_languageRequest(router.getLanguageData(props.openFileExtension));
         },
-        receive_contentResponse(content: string) {
+        receive_contentResponse(editorContent: EditorContent) {
           if (props.readonly) {
             return;
           }
 
           //keep line breaks
-          content = content.split("\n").join("\\n");
+          const content = editorContent.content.split("\n").join("\\n");
 
           runScriptOnPage(
             `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
           );
         },
         receive_contentRequest() {
-          props.getFileContents().then(c => self.respond_contentRequest(c || ""));
+          props.getFileContents().then(c => {
+            self.respond_contentRequest({
+              content: c || "",
+              path: props.contentPath || ""
+            });
+          });
         },
         receive_setContentError() {
           //TODO: Display a nice message with explanation why "setContent" failed
@@ -86,11 +93,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         },
         receive_ready() {
           logger.log(`Editor is ready`);
-          onEditorReady ?.();
+          onEditorReady?.();
         },
-        receive_resourceContentRequest(uri: string) {
-          console.debug(`Trying to read content from ${uri}`);
-          resourceContentService.get(uri).then(r => {
+        receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
+          console.debug(`Trying to read content from ${resourceContentRequest.path}`);
+          resourceContentService.get(resourceContentRequest.path, resourceContentRequest.opts).then(r => {
             self.respond_resourceContent(r!);
           });
         },
@@ -117,7 +124,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => envelopeBusOuterMessageHandler.respond_contentRequest(c || ""))
+      .then(c => envelopeBusOuterMessageHandler.respond_contentRequest({ content: c || "" }))
       .then(() => {
         task = window.setInterval(
           () => envelopeBusOuterMessageHandler.request_contentResponse(),
@@ -148,7 +155,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
       return {
         setContent: (content: string) => {
-          envelopeBusOuterMessageHandler.respond_contentRequest(content);
+          envelopeBusOuterMessageHandler.respond_contentRequest({ content: content });
           return Promise.resolve();
         }
       };

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
-import { ResourcesList, ResourceContent } from "@kogito-tooling/core-api";
-import { ResourceContentEditorService } from "./ResourceContentEditorService";
+import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { ResourcesList, ResourceContent, ResourceContentOptions } from "@kogito-tooling/core-api";
+import { ResourceContentApi } from "./ResourceContentApi";
 
 export class ResourceContentEditorCoordinator {
-
   private pendingResourceRequests = new Map<string, (c: string) => void>();
   private pendingResourceListRequests = new Map<string, (c: string[]) => void>();
 
@@ -29,7 +28,7 @@ export class ResourceContentEditorCoordinator {
       resourceListCallback(resourcesList.paths);
       this.pendingResourceRequests.delete(resourcesList.pattern);
     } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for pattern "${resourcesList.pattern}" not found.`)
+      console.error(`[ResourceContentEditorCoordinator]: Callback for pattern "${resourcesList.pattern}" not found.`);
     }
   }
 
@@ -39,19 +38,19 @@ export class ResourceContentEditorCoordinator {
       resourceContentCallback(resourceContent.content!);
       this.pendingResourceRequests.delete(resourceContent.path);
     } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for resource "${resourceContent.path}" not found.`)
+      console.error(`[ResourceContentEditorCoordinator]: Callback for resource "${resourceContent.path}" not found.`);
     }
   }
 
-  public exposed(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentEditorService {
+  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentApi {
     const pendingResourceRequests = this.pendingResourceRequests;
     const pendingResourceListRequests = this.pendingResourceListRequests;
     return {
-      get(uri: string) {
-        messageBus.request_resourceContent(uri);
+      get(path: string, opts?: ResourceContentOptions) {
+        messageBus.request_resourceContent(path, opts);
         return new Promise(resolve => {
-          const previousCallback = pendingResourceRequests.get(uri);
-          pendingResourceRequests.set(uri, (value: string) => {
+          const previousCallback = pendingResourceRequests.get(path);
+          pendingResourceRequests.set(path, (value: string) => {
             if (previousCallback) {
               previousCallback(value);
             }
@@ -74,5 +73,4 @@ export class ResourceContentEditorCoordinator {
       }
     };
   }
-
 }

@@ -15,3 +15,4 @@
  */
 
 export { Element } from "./Component";
+export { ChannelType } from "./ChannelType";

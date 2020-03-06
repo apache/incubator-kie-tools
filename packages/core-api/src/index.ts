@@ -18,3 +18,4 @@ export * from "./core";
 export * from "./appformer";
 export * from "./router";
 export * from "./content";
+export * from "./stateControl";

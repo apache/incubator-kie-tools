@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-bc-editors-unpacked",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -9,8 +9,8 @@
   },
   "scripts": {
     "test": "echo 'No tests to run'",
-    "build:fast": "echo 'Maven unpack' #mvn clean package",
+    "build:fast": "rm -rf bpmn/* dmn/* && mvn clean package -B -nsu #",
     "build": "yarn run build:fast",
-    "build:prod": "yarn run build:fast"
+    "build:prod": "rm -rf bpmn/* dmn/* && mvn clean package -B #--no-transfer-progress"
   }
 }

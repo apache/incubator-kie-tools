@@ -17,6 +17,7 @@
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/core-api";
 
 const gwtAppFormerApi = new GwtAppFormerApi();
 gwtAppFormerApi.setClientSideOnly(true);
@@ -28,5 +29,6 @@ MicroEditorEnvelope.init({
       window.parent.postMessage(message, "*", _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter())
+  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
+  editorContext : { channel: ChannelType.ONLINE }
 });

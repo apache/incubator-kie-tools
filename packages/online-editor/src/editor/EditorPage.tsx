@@ -21,9 +21,10 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem, Title } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
+import { EditorContent } from "@kogito-tooling/core-api";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -32,8 +33,11 @@ interface Props {
 enum ActionType {
   NONE,
   SAVE,
-  DOWNLOAD
+  DOWNLOAD,
+  COPY
 }
+
+const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 // FIXME: This action should be moved inside the React hooks lifecycle.
 let action = ActionType.NONE;
@@ -44,18 +48,27 @@ export function EditorPage(props: Props) {
   const history = useHistory();
   const editorRef = useRef<EditorRef>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
+  const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
 
-  const close = useCallback(() => history.replace(context.routes.home.url({}), {}), []);
+  const close = useCallback(() => {
+    window.location.href = window.location.href.split("?")[0].split("#")[0];
+  }, []);
 
   const requestSave = useCallback(() => {
     action = ActionType.SAVE;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
   }, []);
 
   const requestDownload = useCallback(() => {
     action = ActionType.DOWNLOAD;
-    editorRef.current!.requestContent();
+    editorRef.current?.requestContent();
+  }, []);
+
+  const requestCopyContentToClipboard = useCallback(() => {
+    action = ActionType.COPY;
+    editorRef.current?.requestContent();
   }, []);
 
   const enterFullscreen = useCallback(() => {
@@ -80,26 +93,45 @@ export function EditorPage(props: Props) {
     return context.file.fileName + "." + editorType;
   }, [context.file.fileName, editorType]);
 
+  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
+
   const onContentResponse = useCallback(
-    (content: string) => {
+    (content: EditorContent) => {
       if (action === ActionType.SAVE) {
         window.dispatchEvent(
           new CustomEvent("saveOnlineEditor", {
             detail: {
               fileName: fileNameWithExtension,
-              fileContent: content,
+              fileContent: content.content,
               senderTabId: context.senderTabId!
             }
           })
         );
       } else if (action === ActionType.DOWNLOAD && downloadRef.current) {
-        const fileBlob = new Blob([content], { type: "text/plain" });
+        const fileBlob = new Blob([content.content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
+      } else if (action === ActionType.COPY && copyContentTextArea.current) {
+        copyContentTextArea.current.value = content.content;
+        copyContentTextArea.current.select();
+        if (document.execCommand("copy")) {
+          setCopySuccessAlertVisible(true);
+        }
       }
     },
     [fileNameWithExtension]
   );
+
+  useEffect(() => {
+    if (closeCopySuccessAlert) {
+      const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseCopySuccessAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [copySuccessAlertVisible]);
 
   useEffect(() => {
     if (downloadRef.current) {
@@ -122,29 +154,46 @@ export function EditorPage(props: Props) {
   });
 
   return (
-    <Page>
-      <PageSection variant="light" noPadding={true}>
-        <Stack>
-          <StackItem>
-            {!fullscreen && (
-              <EditorToolbar
-                onFullScreen={enterFullscreen}
-                onSave={requestSave}
-                onDownload={requestDownload}
-                onClose={close}
-                onFileNameChanged={props.onFileNameChanged}
+    <Page
+      header={
+        <EditorToolbar
+          onFullScreen={enterFullscreen}
+          onSave={requestSave}
+          onDownload={requestDownload}
+          onClose={close}
+          onFileNameChanged={props.onFileNameChanged}
+          onCopyContentToClipboard={requestCopyContentToClipboard}
+          isPageFullscreen={fullscreen}
+        />
+      }
+    >
+      <Title size={"xs"} className={"sr-only"} headingLevel={"h1"}>
+        Kogito editor
+      </Title>
+      {!fullscreen && (
+        <PageSection variant="dark" noPadding={true}>
+          {copySuccessAlertVisible && (
+            <div className={"kogito--alert-container"}>
+              <Alert
+                variant="success"
+                title="Content copied to clipboard"
+                action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
               />
-            )}
+            </div>
+          )}
+        </PageSection>
+      )}
 
-            {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-          </StackItem>
-
-          <StackItem className="pf-m-fill" style={fullscreen ? { height: "calc(100vh - 5px)" } : { height: "calc(100vh - 60px)" }}>
-            <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
-          </StackItem>
-        </Stack>
-        <a ref={downloadRef} />
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+        <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
       </PageSection>
+      <a ref={downloadRef} />
+      <textarea
+        ref={copyContentTextArea}
+        aria-hidden={"true"}
+        style={{ height: 0, position: "absolute", zIndex: -1 }}
+      />
     </Page>
   );
 }

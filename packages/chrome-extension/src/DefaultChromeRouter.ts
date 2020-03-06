@@ -17,19 +17,19 @@
 import { Router, Routes } from "@kogito-tooling/core-api";
 
 export class DefaultChromeRouter extends Router {
-    constructor(...routesArray: Routes[]) {
-        super(...routesArray);
-    }
+  constructor(...routesArray: Routes[]) {
+    super(...routesArray);
+  }
 
-    public getRelativePathTo(uri: string): string {
-        return chrome.extension.getURL(uri);
-    }
+  public getRelativePathTo(uri: string): string {
+    return chrome.extension.getURL(uri);
+  }
 
-    public getLanguageData(fileExtension: string) {
-        return this.getLanguageDataByFileExtension().get(fileExtension);
-    }
+  public getLanguageData(fileExtension: string) {
+    return this.getLanguageDataByFileExtension().get(fileExtension);
+  }
 
-    public getTargetOrigin(): string {
-        return chrome.extension.getURL("");
-    }
+  public getTargetOrigin(): string {
+    return chrome.extension.getURL("");
+  }
 }

@@ -1,10 +1,10 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.6 (alpha)
+## Release notes - 0.2.7 (alpha)
 
 ### Features and fixes included on this release 
-- [KOGITO-541](https://issues.jboss.org/browse/KOGITO-541): Format the output XML
+- [KOGITO-724](https://issues.redhat.com/browse/KOGITO-724): [DMN Designer] Data Types are not editable in online editors
     
 ![gif](https://i.imgur.com/DeUs5qh.gif)
 

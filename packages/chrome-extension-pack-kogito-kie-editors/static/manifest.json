@@ -1,6 +1,6 @@
 {
   "name": "BPMN and DMN Editors :: GitHub Extension",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "manifest_version": 2,
   "description": "KIE Group :: GitHub Extension",
   "content_scripts": [
@@ -21,7 +21,6 @@
   "web_accessible_resources": ["resources/*"],
   "permissions": [
     "cookies",
-    "*://*.github.com",
     "webRequestBlocking",
     "webRequest",
     "https://*/*",

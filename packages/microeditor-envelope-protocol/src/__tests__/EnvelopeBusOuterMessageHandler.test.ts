@@ -17,6 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
+import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -42,8 +43,8 @@ beforeEach(() => {
       receive_contentRequest() {
         receivedMessages.push("contentRequest");
       },
-      receive_contentResponse(content: string) {
-        receivedMessages.push("contentResponse_" + content);
+      receive_contentResponse(content: EditorContent) {
+        receivedMessages.push("contentResponse_" + content.content);
       },
       receive_setContentError: (errorMessage: string) => {
         receivedMessages.push("setContentError_" + errorMessage);
@@ -51,8 +52,8 @@ beforeEach(() => {
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       },
-      receive_resourceContentRequest(uri: string): void {
-        receivedMessages.push("resourceContentRequest_" + uri);
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest): void {
+        receivedMessages.push("resourceContentRequest_" + resourceContentRequest.path);
       },
       receive_readResourceContentError(errorMessage: string): void {
         receivedMessages.push("readResourceContentError_" + errorMessage);
@@ -130,7 +131,7 @@ describe("receive", () => {
   });
 
   test("content response", () => {
-    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "foo" } });
     expect(receivedMessages).toEqual(["contentResponse_foo"]);
   });
 
@@ -158,7 +159,9 @@ describe("send", () => {
 
   test("request init", () => {
     handler.request_initResponse("test-origin");
-    expect(sentMessages).toEqual([{ busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }]);
+    expect(sentMessages).toEqual([
+      { busId: handler.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-origin" }
+    ]);
   });
 
   test("respond languageRequest", () => {
@@ -168,7 +171,7 @@ describe("send", () => {
   });
 
   test("respond contentRequest", () => {
-    handler.respond_contentRequest("bar");
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "bar" }]);
+    handler.respond_contentRequest({ content: "bar" });
+    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "bar" } }]);
   });
 });

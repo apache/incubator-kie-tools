@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-export interface ResourceContentEditorService {
-
-  get(path: string): Promise<string | undefined>;
-
-  list(pattern: string): Promise<string[]>;
-
-}
+module.exports = {
+  setupFiles: ["<rootDir>/jest/jest-env-setup.js"],
+  snapshotSerializers: ["<rootDir>/../../node_modules/enzyme-to-json/serializer"],
+  reporters: ["default"],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+  }
+};

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { ResourceContent, ResourceContentService, ResourcesList } from "@kogito-tooling/core-api";
+import {
+  ResourceContent,
+  ResourceContentService,
+  ResourcesList,
+  ResourceContentOptions
+} from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";
@@ -47,12 +52,12 @@ class ChromeResourceContentService implements ResourceContentService {
     this.repoInfo = repoInfo;
   }
 
-  public get(uri: string): Promise<ResourceContent | undefined> {
-    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, uri)
-      .then(assetContent => new ResourceContent(uri, assetContent))
+  public get(path: string, opts: ResourceContentOptions): Promise<ResourceContent | undefined> {
+    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts.type)
+      .then(resourceContent => new ResourceContent(path, resourceContent, opts.type))
       .catch(e => {
         console.debug(e);
-        console.debug(`Error retrieving content from URI ${uri}`);
+        console.debug(`Error retrieving content from URI ${path}`);
         return undefined;
       });
   }
@@ -78,7 +83,6 @@ class ChromeResourceContentService implements ResourceContentService {
       });
   }
 }
-
 
 export class ResourceContentServiceFactory {
   public createNew(octokit: Octokit, repoInfo: RepoInfo) {
