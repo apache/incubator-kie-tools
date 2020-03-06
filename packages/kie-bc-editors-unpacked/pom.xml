@@ -37,8 +37,8 @@
     </repositories>
 
     <properties>
-        <version.dmn.webapp>7.34.0-SNAPSHOT</version.dmn.webapp>
-        <version.bpmn.webapp>7.34.0-SNAPSHOT</version.bpmn.webapp>
+        <version.dmn.webapp>7.35.0-SNAPSHOT</version.dmn.webapp>
+        <version.bpmn.webapp>7.35.0-SNAPSHOT</version.bpmn.webapp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
