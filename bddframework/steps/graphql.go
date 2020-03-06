@@ -15,9 +15,6 @@
 package steps
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
@@ -36,25 +33,24 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQue
 	if err != nil {
 		return err
 	}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.Content, timeoutInMin)
+	var response interface{}
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.Content, timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {
+	serviceName := infrastructure.DefaultDataIndexName
 	query := getProcessInstancesNameQuery
 	path := "graphql"
-	serviceName := infrastructure.DefaultDataIndexName
+
 	framework.GetLogger(data.Namespace).Debugf("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
-
-	return framework.WaitFor(data.Namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful and contain process name '%s'", query, path, processName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		response := GraphqlDataIndexProcessInstanceQueryResponse{}
-		if err := framework.ExecuteGraphQLRequest(data.Namespace, routeURI, path, query, &response); err != nil {
-			return false, err
-		}
-		for _, processInstance := range response.ProcessInstances {
+	response := GraphqlDataIndexProcessInstanceQueryResponse{}
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query, timeoutInMin, &response, func(response interface{}) (bool, error) {
+		resp := response.(*GraphqlDataIndexProcessInstanceQueryResponse)
+		for _, processInstance := range resp.ProcessInstances {
 			if processInstance.ProcessName == processName {
 				return true, nil
 			}

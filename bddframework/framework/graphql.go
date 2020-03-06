@@ -23,14 +23,18 @@ import (
 )
 
 // WaitForSuccessfulGraphQLRequest waits for an GraphQL request to be successful
-func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeoutInMin int) error {
+func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeoutInMin int, response interface{}, analyzeResponse func(response interface{}) (bool, error)) error {
 	return WaitFor(namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful", query, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		var response interface{}
 		success, err := IsGraphQLRequestSuccessful(namespace, uri, path, query, response)
 		if err != nil {
 			GetLogger(namespace).Infof("Error making Graphql query '%s' on path %s => %v", query, path, err)
 			return false, nil
 		}
+
+		if analyzeResponse != nil {
+			return analyzeResponse(response)
+		}
+
 		return success, nil
 	})
 }
