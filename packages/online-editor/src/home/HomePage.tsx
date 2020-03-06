@@ -203,7 +203,7 @@ export function HomePage(props: Props) {
   );
 
   const logoProps = {
-    href: "/"
+    href: context.routes.home.url({})
   };
 
   const linkDropdownItems = [
