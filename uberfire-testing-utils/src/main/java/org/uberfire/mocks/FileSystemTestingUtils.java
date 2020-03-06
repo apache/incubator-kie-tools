@@ -82,7 +82,7 @@ public class FileSystemTestingUtils {
             fileSystem = ioService.newFileSystem(newRepo,
                                                  new HashMap<String, Object>());
         } catch (FileSystemAlreadyExistsException e) {
-
+            fileSystem = ioService.getFileSystem(newRepo);
         }
         if (initRepo) {
 
