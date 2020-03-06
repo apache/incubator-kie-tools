@@ -86,8 +86,12 @@ function apply_crds(){
   for file in ${CRD_FILES_TO_IMPORT[*]}
   do
     crd_file="${deploy_folder}/crds/${file}"
-    echo "Apply crds file ${crd_file}"
+    echo "Replace crds file ${crd_file}"
     oc replace -f ${crd_file}
+    if [ "$?" != 0 ]; then
+      echo "crd from file '${file}' may not exist yet in cluster, try to simply apply it"
+      oc apply -f ${crd_file}
+    fi
   done
 }
 
