@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -13,9 +13,25 @@
   <name>Kogito Cloud</name>
   <description>Kogito Cloud</description>
 
+  <url>http://kogito.kie.org</url>
+  <inceptionYear>2019</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <version.source.plugin>3.0.1</version.source.plugin>
+    <version.jar.plugin>3.1.0</version.jar.plugin>
   </properties>
 
   <!-- distributionManagement section -->
@@ -57,6 +73,13 @@
     <url>https://github.com/kiegroup/kogito-cloud</url>
   </scm>
 
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>http://kogito.kie.org/community/team.html</url>
+    </developer>
+  </developers>
+
   <modules>
     <module>kogito-cloud-services</module>
   </modules>
@@ -72,4 +95,114 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Packaging -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries combine.children="append">
+                    <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+            <execution>
+              <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+              <configuration>
+                <skipIfEmpty>true</skipIfEmpty>
+                <excludes>
+                  <exclude>**/logback-test.xml</exclude>
+                  <exclude>**/jndi.properties</exclude>
+                </excludes>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.source.plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>attach-test-sources</id>
+              <goals>
+                <goal>test-jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${java.module.name}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!-- Entry needed to create, install and deploy sources jars -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
