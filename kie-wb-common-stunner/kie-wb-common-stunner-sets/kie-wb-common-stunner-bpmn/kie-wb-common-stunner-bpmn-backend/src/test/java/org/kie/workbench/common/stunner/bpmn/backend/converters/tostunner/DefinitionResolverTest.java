@@ -18,17 +18,26 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import bpsim.BPSimDataType;
+import bpsim.BpsimPackage;
+import bpsim.ElementParameters;
+import bpsim.Scenario;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +56,11 @@ public class DefinitionResolverTest {
     @Mock
     private Definitions definitions;
 
-    private List<BPMNDiagram> diagrams = new ArrayList<>();
+    @Mock
+    private ExtensionAttributeValue extensionAttributeValue;
+
+    @Mock
+    private FeatureMap featureMap;
 
     @Mock
     private BPMNDiagram diagram;
@@ -55,12 +68,23 @@ public class DefinitionResolverTest {
     @Mock
     private BPMNPlane plane;
 
-    private List<DiagramElement> planeElement = new ArrayList<>();
-
     @Mock
     private Process process;
 
+    @Mock
+    private Relationship relationship;
+
+    private List<DiagramElement> planeElement = new ArrayList<>();
+
+    private List<BPMNDiagram> diagrams = new ArrayList<>();
+
     private List<RootElement> rootElements = new ArrayList<>();
+
+    private List<Relationship> relationships = new ArrayList<>();
+
+    private List<ExtensionAttributeValue> extensionAttributeValues = new ArrayList<>();
+
+    private List<BPSimDataType> simData = new ArrayList<>();
 
     private DefinitionResolver definitionResolver;
 
@@ -68,10 +92,20 @@ public class DefinitionResolverTest {
     public void setUp() {
         rootElements.add(process);
         when(definitions.getRootElements()).thenReturn(rootElements);
+
         diagrams.add(diagram);
         when(definitions.getDiagrams()).thenReturn(diagrams);
+
+        when(featureMap.get(BpsimPackage.Literals.DOCUMENT_ROOT__BP_SIM_DATA, true)).thenReturn(simData);
+        when(extensionAttributeValue.getValue()).thenReturn(featureMap);
+        extensionAttributeValues.add(extensionAttributeValue);
+        when(relationship.getExtensionValues()).thenReturn(extensionAttributeValues);
+        relationships.add(relationship);
+        when(definitions.getRelationships()).thenReturn(relationships);
+
         when(diagram.getPlane()).thenReturn(plane);
         when(plane.getPlaneElement()).thenReturn(planeElement);
+
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
     }
 
@@ -114,5 +148,32 @@ public class DefinitionResolverTest {
         when(bpmnElement.getId()).thenReturn(ID);
         planeElement.add(edge);
         assertEquals(edge, definitionResolver.getEdge(ID));
+    }
+
+    @Test
+    public void testSimulation() {
+        String elementRef = "some_element_ref";
+
+        EList<Scenario> scenarios = mock(EList.class);
+        Scenario scenario = mock(Scenario.class);
+        when(scenarios.get(0)).thenReturn(scenario);
+
+        EList<ElementParameters> parameters = mock(EList.class);
+        ElementParameters parameter = mock(ElementParameters.class);
+        when(parameter.getElementRef()).thenReturn(elementRef);
+        Iterator<ElementParameters> iterator = mock(Iterator.class);
+        when(parameters.iterator()).thenReturn(iterator);
+        when(iterator.hasNext()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+        when(iterator.next()).thenReturn(parameter);
+
+        when(scenario.getElementParameters()).thenReturn(parameters);
+
+        BPSimDataType simDataType = mock(BPSimDataType.class);
+        simData.add(simDataType);
+        when(simDataType.getScenario()).thenReturn(scenarios);
+
+        setUp();
+
+        assertEquals(parameter, definitionResolver.resolveSimulationParameters(elementRef).get());
     }
 }

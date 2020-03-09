@@ -16,11 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import bpsim.BPSimDataType;
+import bpsim.BpsimPackage;
+import bpsim.ElementParameters;
+import bpsim.Scenario;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -28,6 +36,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,10 +62,22 @@ public class DefinitionResolverTest {
     private BPMNPlane plane;
 
     @Mock
+    private FeatureMap featureMap;
+
+    @Mock
     private Process process;
+
+    @Mock
+    private ExtensionAttributeValue extensionAttributeValue;
+
+    @Mock
+    private Relationship relationship;
 
     private DefinitionResolver definitionResolver;
     private EList<DiagramElement> planeElements;
+    private List<BPSimDataType> simData = new ArrayList<>();
+    private EList<ExtensionAttributeValue> extensionAttributeValues = ECollections.newBasicEList();
+    private EList<Relationship> relationships = ECollections.newBasicEList();
 
     @Before
     public void setUp() {
@@ -64,6 +85,12 @@ public class DefinitionResolverTest {
         when(definitions.getRootElements()).thenReturn(ECollections.singletonEList(process));
         when(definitions.getDiagrams()).thenReturn(ECollections.singletonEList(diagram));
         when(definitions.getRelationships()).thenReturn(ECollections.emptyEList());
+        when(featureMap.get(BpsimPackage.Literals.DOCUMENT_ROOT__BP_SIM_DATA, true)).thenReturn(simData);
+        when(extensionAttributeValue.getValue()).thenReturn(featureMap);
+        extensionAttributeValues.add(extensionAttributeValue);
+        when(relationship.getExtensionValues()).thenReturn(extensionAttributeValues);
+        relationships.add(relationship);
+        when(definitions.getRelationships()).thenReturn(relationships);
         when(diagram.getPlane()).thenReturn(plane);
         when(plane.getPlaneElement()).thenReturn(planeElements);
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
@@ -98,5 +125,29 @@ public class DefinitionResolverTest {
         when(bpmnElement.getId()).thenReturn(ID);
         planeElements.add(edge);
         assertEquals(edge, definitionResolver.getEdge(ID));
+    }
+
+    @Test
+    public void testSimulation() {
+        String elementRef = "some_element_ref";
+
+        EList<Scenario> scenarios = ECollections.newBasicEList();
+        Scenario scenario = mock(Scenario.class);
+        scenarios.add(scenario);
+
+        EList<ElementParameters> parameters = ECollections.newBasicEList();
+        ElementParameters parameter = mock(ElementParameters.class);
+        when(parameter.getElementRef()).thenReturn(elementRef);
+        parameters.add(parameter);
+
+        when(scenario.getElementParameters()).thenReturn(parameters);
+
+        BPSimDataType simDataType = mock(BPSimDataType.class);
+        simData.add(simDataType);
+        when(simDataType.getScenario()).thenReturn(scenarios);
+
+        setUp();
+
+        assertEquals(parameter, definitionResolver.resolveSimulationParameters(elementRef).get());
     }
 }

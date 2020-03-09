@@ -186,6 +186,10 @@ public class DefinitionResolver {
                 value.get(BpsimPackage.Literals.DOCUMENT_ROOT__BP_SIM_DATA, true);
         List<BPSimDataType> bpsimExtensions = (List<BPSimDataType>) simData;
 
+        if (bpsimExtensions.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         Scenario scenario = bpsimExtensions.get(0).getScenario().get(0);
 
         for (ElementParameters parameters : scenario.getElementParameters()) {
