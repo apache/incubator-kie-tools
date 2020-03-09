@@ -53,20 +53,16 @@
   <!-- BPMN -->
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnMarshalling"/>
-  
-  <extend-property name="locale" values="es"/>
-  <extend-property name="locale" values="fr"/>
-  <extend-property name="locale" values="ja"/>
-  <extend-property name="locale" values="pt_BR"/>
-  <extend-property name="locale" values="zh_CN"/>
-  <extend-property name="locale" values="de"/>
+
+  <!-- Only default locale support for kogito. -->
+  <set-property name="locale" value="default"/>
 
   <!-- Configure Errai to return default values for missing i18n keys -->
   <set-property name="errai.i18n.default_per_key" value="true"/>
 
   <!-- We don't need to support IE10 or older -->
   <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
-  <set-property name="user.agent" value="gecko1_8,safari"/>
+  <set-property name="user.agent" value="safari"/>
 
   <!-- To change the default logLevel -->
   <set-property name="gwt.logging.logLevel" value="SEVERE"/>

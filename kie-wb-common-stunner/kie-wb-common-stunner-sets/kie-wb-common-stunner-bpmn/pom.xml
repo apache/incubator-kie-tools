@@ -39,7 +39,20 @@
     <module>kie-wb-common-stunner-bpmn-project-api</module>
     <module>kie-wb-common-stunner-bpmn-project-client</module>
     <module>kie-wb-common-stunner-bpmn-project-backend</module>
-    <module>kie-wb-common-stunner-bpmn-kogito-runtime</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>kogito</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-wb-common-stunner-bpmn-kogito-runtime</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

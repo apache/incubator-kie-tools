@@ -30,10 +30,6 @@
   <name>Kie Workbench - Common - Stunner - BPMN Definition Set - Kogito Runtime</name>
   <description>Kie Workbench - Common - Stunner - BPMN Definition Set - Kogito Runtime</description>
 
-  <properties>
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
-    <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-  </properties>
   <dependencies>
     <!--Logs-->
     <dependency>
@@ -48,7 +44,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- This is a war file, so logback is not in scope test, but in scope compile -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -61,16 +56,16 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- MANSTIS - EVERYTHING BELOW THIS HAS BEEN _SANITISED_! -->
-
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-server</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -658,13 +653,13 @@
 
   </dependencies>
 
-
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
     <plugins>
-      <!-- override the enforcer rules here to exclude some classes from client-side marshallers-->
+
+      <!-- Override the enforcer rules here to exclude some classes from BPMN client-side marshallers (Eclipse EMF)-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -698,20 +693,19 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <strict>true</strict>
+          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
           <localWorkers>8</localWorkers>
-          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <draftCompile>true</draftCompile>
-          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
-          <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditorWithSourceMap</module>
-          <logLevel>INFO</logLevel>
           <noServer>false</noServer>
+          <logLevel>ERROR</logLevel>
           <disableCastChecking>true</disableCastChecking>
-          <runTarget>index.html</runTarget>
-          <hostedWebapp>src/main/webapp</hostedWebapp>
           <optimizationLevel>9</optimizationLevel>
+          <draftCompile>false</draftCompile>
+          <strict>true</strict>
           <style>OBFUSCATED</style>
-
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <hostedWebapp>src/main/webapp</hostedWebapp>
+          <runTarget>test.html</runTarget>
           <compileSourcesArtifacts>
 
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
@@ -829,9 +823,9 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap</packagingExcludes>
+          <packagingExcludes>**/javax/**/*.*,**/*.class,**/*.symbolMap,WEB-INF/classes/**</packagingExcludes>
           <archive>
-            <addMavenDescriptor>false</addMavenDescriptor>
+            <addMavenDescriptor>true</addMavenDescriptor>
           </archive>
         </configuration>
       </plugin>
@@ -852,48 +846,12 @@
                 <include>**/gwt-unitCache/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/</include>
-                <include>.security/</include>
-                <include>.niogit/**</include>
                 <include>.index/**</include>
                 <include>**/*.JUnit/**</include>
-                <include>repositories/</include>
-              </includes>
-            </fileset>
-            <fileset>
-              <directory>/tmp/project/dir/</directory>
-              <followSymlinks>false</followSymlinks>
-              <includes>
-                <include>.niogit/**</include>
               </includes>
             </fileset>
           </filesets>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.jboss.errai</groupId>
-                  <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.jboss.errai.wildfly}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>
@@ -902,9 +860,40 @@
 
   <profiles>
 
-    <!-- Fast compiled build including Source maps for easier debugging. -->
+    <!-- Development profile - Not optimized. -->
+    <profile>
+      <id>dev</id>
+      <activation>
+        <property>
+          <name>dev</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
+              <saveSource>false</saveSource>
+              <logLevel>INFO</logLevel>
+              <optimizationLevel>0</optimizationLevel>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- As Dev Profile but also including Source Maps in the assembled webapp. -->
     <profile>
       <id>sources</id>
+      <activation>
+        <property>
+          <name>sources</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
