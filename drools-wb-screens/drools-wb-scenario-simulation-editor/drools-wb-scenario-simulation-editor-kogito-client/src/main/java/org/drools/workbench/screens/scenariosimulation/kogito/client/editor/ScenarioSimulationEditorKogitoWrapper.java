@@ -62,6 +62,7 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPre
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.PlaceManager;
@@ -182,7 +183,9 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     @Override
     public void selectSimulationTab() {
-        final TabListItem item = (TabListItem) ((MultiPageEditorViewImpl) getWidget().getMultiPage().getView()).getTabBar().getWidget(SIMULATION_TAB_INDEX);
+        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
+        final int pageIndex = editorMultiPageView.getPageIndex(CommonConstants.INSTANCE.EditTabTitle());
+        final TabListItem item = (TabListItem) editorMultiPageView.getTabBar().getWidget(pageIndex);
         if (item != null) {
             item.showTab(false);
         }
@@ -190,7 +193,9 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     @Override
     public void selectBackgroundTab() {
-        final TabListItem item = (TabListItem) ((MultiPageEditorViewImpl) getWidget().getMultiPage().getView()).getTabBar().getWidget(BACKGROUND_TAB_INDEX);
+        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
+        final int pageIndex = editorMultiPageView.getPageIndex(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle());
+        final TabListItem item = (TabListItem) editorMultiPageView.getTabBar().getWidget(pageIndex);
         if (item != null) {
             item.showTab(false);
         }

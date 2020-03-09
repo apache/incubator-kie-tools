@@ -32,6 +32,7 @@ import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
@@ -52,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
@@ -78,8 +80,6 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.DMN;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
-import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorWrapper.BACKGROUND_TAB_INDEX;
-import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorWrapper.SIMULATION_TAB_INDEX;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -97,6 +97,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationEditorBusinessCentralWrapperTest extends AbstractScenarioSimulationEditorTest {
+
+    private static final int BACKGROUND_TAB_INDEX = 1;
+    private static final int SIMULATION_TAB_INDEX = 0;
 
     @Mock
     private PathPlaceRequest placeRequestMock;
@@ -200,6 +203,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         when(kieViewMock.getMultiPage()).thenReturn(multiPageEditorMock);
         when(multiPageEditorMock.getView()).thenReturn(multiPageEditorViewMock);
         when(multiPageEditorViewMock.getTabBar()).thenReturn(navTabsMock);
+        when(multiPageEditorViewMock.getPageIndex(CommonConstants.INSTANCE.EditTabTitle())).thenReturn(SIMULATION_TAB_INDEX);
+        when(multiPageEditorViewMock.getPageIndex(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle())).thenReturn(BACKGROUND_TAB_INDEX);
         when(navTabsMock.getWidget(SIMULATION_TAB_INDEX)).thenReturn(simulationTabListItemMock);
         when(navTabsMock.getWidget(BACKGROUND_TAB_INDEX)).thenReturn(backgroundTabListItemMock);
     }
