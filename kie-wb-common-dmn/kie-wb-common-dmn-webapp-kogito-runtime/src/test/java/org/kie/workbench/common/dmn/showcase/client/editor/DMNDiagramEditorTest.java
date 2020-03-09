@@ -26,6 +26,8 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractD
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
 import org.uberfire.workbench.model.menu.impl.DefaultMenus;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -79,5 +81,23 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                 getOnDataTypeEditModeToggleCallback(event).onInvoke(event);
             }
         };
+    }
+
+    @Override
+    public void testOnClose() {
+        openDiagram();
+
+        editor.onClose();
+
+        verify(dmnEditorMenuSessionItems, times(1)).destroy();
+        verify(editorPresenter).destroy();
+
+        verify(decisionNavigatorDock).destroy();
+        verify(decisionNavigatorDock).resetContent();
+
+        verify(diagramPropertiesDock).destroy();
+        verify(diagramPreviewDock).destroy();
+
+        verify(dataTypesPage).disableShortcuts();
     }
 }

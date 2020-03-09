@@ -46,6 +46,8 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BPMNDiagramEditorTest {
@@ -146,5 +148,16 @@ public class BPMNDiagramEditorTest {
         editor.menuBarInitialized = true;
         editor.makeMenuBar();
         assertEquals(editor.menuBarInitialized, true);
+    }
+
+    @Test
+    public void testSuperOnCloseOnSetContent() {
+        //First setContent call context
+        editor.setContent("", "");
+        verify(menuSessionItems, times(1)).destroy();
+
+        //Second setContent call context
+        editor.setContent("", "");
+        verify(menuSessionItems, times(2)).destroy();
     }
 }

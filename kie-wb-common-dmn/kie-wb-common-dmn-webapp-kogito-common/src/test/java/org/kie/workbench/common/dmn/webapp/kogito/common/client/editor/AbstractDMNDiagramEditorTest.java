@@ -91,6 +91,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -374,7 +375,7 @@ public abstract class AbstractDMNDiagramEditorTest {
 
         editor.onClose();
 
-        verify(dmnEditorMenuSessionItems).destroy();
+        verify(dmnEditorMenuSessionItems, times(2)).destroy();
         verify(editorPresenter).destroy();
 
         verify(decisionNavigatorDock).destroy();
@@ -483,5 +484,16 @@ public abstract class AbstractDMNDiagramEditorTest {
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
         verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
         verify(dataTypesPage).reload();
+    }
+
+    @Test
+    public void testSuperOnCloseDMNOnSetContent() {
+        //First setContent call context
+        editor.setContent("", "");
+        verify(dmnEditorMenuSessionItems, times(1)).destroy();
+
+        //Second setContent call context
+        editor.setContent("", "");
+        verify(dmnEditorMenuSessionItems, times(2)).destroy();
     }
 }
