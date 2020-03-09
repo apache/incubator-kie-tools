@@ -44,5 +44,7 @@ packages:
   install:
   - bc
   - gcc
+  - gcc-c++
   - glibc-devel
   - zlib-devel
+

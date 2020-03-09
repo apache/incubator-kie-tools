@@ -11,3 +11,4 @@ mv /usr/share/graalvm-ce-java8-${GRAALVM_VERSION} /usr/share/graalvm
 mkdir -p $KOGITO_HOME/ssl-libs
 cp -v $GRAALVM_HOME/jre/lib/amd64/libsunec.so $KOGITO_HOME/ssl-libs
 cp -v $GRAALVM_HOME/jre/lib/security/cacerts $KOGITO_HOME/
+
