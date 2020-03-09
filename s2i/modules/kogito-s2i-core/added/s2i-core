@@ -78,6 +78,10 @@ function build_kogito_app() {
         nativeBuild=""
     fi
 
+    if [ "${SCRIPT_DEBUG}" != "true" ]; then
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --batch-mode"
+    fi
+
     if [ -f "pom.xml" ]; then
 
         echo "---> Building application from source..."
