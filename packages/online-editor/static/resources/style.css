@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- .pf-c-page__header {
+
+.pf-c-page__header {
   /* this adjusts the max specifically for our logo */
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
- }
+}
 
- .kogito--editor-landing__gallery {
-    --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(23em, 1fr));
- }
+.kogito--editor-landing__gallery {
+  --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(23em, 1fr));
+}
 
- .kogito--editor-landing__title-section.pf-m-dark-200 {
+.kogito--editor-landing__title-section.pf-m-dark-200 {
   --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--dark-200);
   color: var(--pf-global--Color--light-200);
- }
+}
 
- .kogito--editor-landing__title-section .pf-c-title {
+.kogito--editor-landing__title-section .pf-c-title {
   color: var(--pf-global--Color--light-200);
- }
+}
+
+.kogito--editor-landing .pf-c-page__header-brand-link .pf-c-brand {
+  width: 2.5em;
+}
 
 .kogito--editor-landing__upload-box > div {
   box-sizing: border-box;

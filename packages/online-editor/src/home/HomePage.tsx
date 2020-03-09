@@ -288,7 +288,7 @@ export function HomePage(props: Props) {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={"images/IntelliApp_Logo.svg"} alt="Kogito Logo" />}
+      logo={<Brand src={"images/intelliapp_icon.svg"} alt="Logo" />}
       logoProps={logoProps}
       toolbar={headerToolbar}
     />
