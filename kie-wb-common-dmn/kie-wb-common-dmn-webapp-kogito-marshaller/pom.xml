@@ -30,36 +30,16 @@
   <packaging>jar</packaging>
 
   <properties>
-    <version.jsonix-scripts>3.0.0</version.jsonix-scripts>
-    <version.gwt-jsonix-schema-compiler>1.0d</version.gwt-jsonix-schema-compiler>
-    <version.jaxb2-basics>0.12.0</version.jaxb2-basics>
     <version.jaxb2-namespace-prefix>1.3</version.jaxb2-namespace-prefix>
-    <version.com.google.jsinterop.base>1.0.0-beta-1</version.com.google.jsinterop.base>
-    <version.maven-jaxb2-plugin>0.14.0</version.maven-jaxb2-plugin>
     <js.destination>${project.basedir}/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</js.destination>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.kogito</groupId>
-        <artifactId>gwt-jsonix-schema-compiler</artifactId>
-        <version>${version.gwt-jsonix-schema-compiler}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jvnet.jaxb2_commons</groupId>
-        <artifactId>jaxb2-basics</artifactId>
-        <version>${version.jaxb2-basics}</version>
-      </dependency>
-      <dependency>
         <groupId>org.jvnet.jaxb2_commons</groupId>
         <artifactId>jaxb2-namespace-prefix</artifactId>
         <version>${version.jaxb2-namespace-prefix}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.jsinterop</groupId>
-        <artifactId>base</artifactId>
-        <version>${version.com.google.jsinterop.base}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -148,10 +128,6 @@
                 </plugin>
                 <plugin>
                   <groupId>org.jvnet.jaxb2_commons</groupId>
-                  <artifactId>jaxb2-basics</artifactId>
-                </plugin>
-                <plugin>
-                  <groupId>org.jvnet.jaxb2_commons</groupId>
                   <artifactId>jaxb2-namespace-prefix</artifactId>
                 </plugin>
               </plugins>
@@ -174,7 +150,7 @@
                 <artifactItem>
                   <groupId>org.hisrc.jsonix</groupId>
                   <artifactId>jsonix-scripts</artifactId>
-                  <version>${version.jsonix-scripts}</version>
+                  <version>${version.org.hisrc.jsonix.jsonix-scripts}</version>
                   <type>js</type>
                   <classifier>all</classifier>
                   <outputDirectory>${js.destination}</outputDirectory>
@@ -226,7 +202,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
-          <version>${version.maven-jaxb2-plugin}</version>
+          <version>${version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
