@@ -171,7 +171,7 @@ export function EditorPage(props: Props) {
         Kogito editor
       </Title>
       {!fullscreen && (
-        <PageSection variant="dark" noPadding={true}>
+        <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
           {copySuccessAlertVisible && (
             <div className={"kogito--alert-container"}>
               <Alert
@@ -184,7 +184,7 @@ export function EditorPage(props: Props) {
         </PageSection>
       )}
 
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true}>
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
       </PageSection>

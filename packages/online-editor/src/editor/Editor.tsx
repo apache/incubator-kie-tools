@@ -48,7 +48,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         props.onContentResponse(content);
       },
       receive_contentRequest() {
-        context.file.getFileContents().then(c => self.respond_contentRequest({ content: c || "" }));
+        context.file
+          .getFileContents()
+          .then(c => self.respond_contentRequest({ content: c || "", path: context.file.fileName }));
       },
       receive_setContentError() {
         console.info("Set content error");
