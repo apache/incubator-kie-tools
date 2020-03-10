@@ -43,7 +43,13 @@ func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 		return "", err
 	}
 	out, err := exec.Command(path, args...).Output()
-	GetLogger(namespace).Debugf("output command: %s", string(out[:]))
+
+	if err != nil {
+		GetLogger(namespace).Errorf("error output command: %s", string(out[:]))
+	} else {
+		GetLogger(namespace).Debugf("output command: %s", string(out[:]))
+	}
+
 	return string(out[:]), err
 }
 

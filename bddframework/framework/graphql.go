@@ -27,8 +27,7 @@ func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeout
 	return WaitFor(namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful", query, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
 		success, err := IsGraphQLRequestSuccessful(namespace, uri, path, query, response)
 		if err != nil {
-			GetLogger(namespace).Infof("Error making Graphql query '%s' on path %s => %v", query, path, err)
-			return false, nil
+			return false, err
 		}
 
 		if analyzeResponse != nil {

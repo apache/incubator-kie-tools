@@ -87,7 +87,7 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 		case <-tick.C:
 			running, err := condition()
 			if err != nil {
-				return err
+				GetLogger(namespace).Warnf("Problem in condition execution, waiting for %s => %v", display, err)
 			}
 			if running {
 				GetLogger(namespace).Infof("'%s' is successful", display)
