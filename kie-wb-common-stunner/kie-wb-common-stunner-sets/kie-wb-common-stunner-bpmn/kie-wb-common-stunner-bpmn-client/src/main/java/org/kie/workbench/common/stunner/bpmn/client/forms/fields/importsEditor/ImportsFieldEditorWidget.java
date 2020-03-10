@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 @Templated
 public class ImportsFieldEditorWidget extends Composite implements HasValue<ImportsValue> {
 
-    private ImportsValue importsValue;
+    protected ImportsValue importsValue;
 
     @Inject
     protected ImportsEditor importsEditor;
@@ -71,8 +71,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
     }
 
     @Override
-    public void setValue(final ImportsValue value,
-                         final boolean fireEvents) {
+    public void setValue(final ImportsValue value, final boolean fireEvents) {
         ImportsValue oldValue = copyImportsValue(importsValue);
         importsValue = value;
         setImportsCount(value);
@@ -85,11 +84,10 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
 
     @Override
     public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<ImportsValue> handler) {
-        return addHandler(handler,
-                          ValueChangeEvent.getType());
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
-    private void setImportsCount(ImportsValue importsValue) {
+    protected void setImportsCount(ImportsValue importsValue) {
         int defaultImportsCount = 0;
         int wsdlImportsCount = 0;
 
@@ -102,7 +100,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         importsTextBox.setText(importsString);
     }
 
-    private String buildImportsCountString(final int defaultImportsCount, final int wsdlImportsCount) {
+    protected String buildImportsCountString(final int defaultImportsCount, final int wsdlImportsCount) {
         if (defaultImportsCount == 0 && wsdlImportsCount == 0) {
             return StunnerFormsClientFieldsConstants.INSTANCE.No_Imports();
         } else {
@@ -112,7 +110,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         }
     }
 
-    private String buildDefaultImportsCountString(final int defaultImportsCount) {
+    protected String buildDefaultImportsCountString(final int defaultImportsCount) {
         if (defaultImportsCount == 0) {
             return StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Type_Import();
         } else if (defaultImportsCount == 1) {
@@ -122,7 +120,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         }
     }
 
-    private String buildWSDLImportsCountString(final int wsdlImportsCount) {
+    protected String buildWSDLImportsCountString(final int wsdlImportsCount) {
         if (wsdlImportsCount == 0) {
             return StunnerFormsClientFieldsConstants.INSTANCE.No_WSDL_Import();
         } else if (wsdlImportsCount == 1) {
@@ -132,18 +130,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         }
     }
 
-    private void showImportsEditor() {
-        importsEditor.setImportsValue(copyImportsValue(importsValue));
-
-        ImportsEditor.GetDataCallback callback = value -> {
-            setValue(value, true);
-        };
-        importsEditor.setCallback(callback);
-
-        importsEditor.show();
-    }
-
-    public ImportsValue copyImportsValue(ImportsValue importsValue) {
+    protected ImportsValue copyImportsValue(ImportsValue importsValue) {
         ImportsValue copy = new ImportsValue();
 
         if (importsValue != null) {
@@ -161,6 +148,17 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
         }
 
         return copy;
+    }
+
+    protected void showImportsEditor() {
+        importsEditor.setImportsValue(copyImportsValue(importsValue));
+
+        ImportsEditor.GetDataCallback callback = value -> {
+            setValue(value, true);
+        };
+        importsEditor.setCallback(callback);
+
+        importsEditor.show();
     }
 
     @EventHandler("importsButton")
