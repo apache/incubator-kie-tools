@@ -57,8 +57,6 @@ Feature: Kogito Data Index
       | native | minutes |
       | false  | 10      |
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-842 is not solved
-    @disabled
     @native
     Examples: Native
       | native | minutes |

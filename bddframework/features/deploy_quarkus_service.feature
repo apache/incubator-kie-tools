@@ -65,8 +65,6 @@ Feature: Deploy quarkus service
       | installer | native | minutes |
       | CR        | false  | 10      |
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-842 is not solved
-    @disabled
     @cr
     @native
     Examples: CR Native
@@ -78,8 +76,6 @@ Feature: Deploy quarkus service
       | installer | native | minutes |
       | CLI       | false  | 10      |
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-842 is not solved
-    @disabled
     @cli
     @native
     Examples: CLI Native
