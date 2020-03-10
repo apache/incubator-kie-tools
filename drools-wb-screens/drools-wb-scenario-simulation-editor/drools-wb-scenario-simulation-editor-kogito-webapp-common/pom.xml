@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools-wb-scenario-simulation-editor</artifactId>
+    <groupId>org.drools</groupId>
+    <version>7.35.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-wb-scenario-simulation-editor-kogito-webapp-common</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Drools Workbench - Scenario Simulation Editor - Kogito - Common Webapp</name>
+  <description>Drools Workbench - Scenario Simulation Editor - Kogito - Common Webapp</description>
+
+  <dependencies>
+
+    <!-- Errai -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Uberfire -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+    </dependency>
+
+    <!-- Uberfire Experimentals -->
+    <!-- Required by uberfire-workbench-client -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-api</artifactId>
+    </dependency>
+
+    <!-- Generic ui components -->
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-common-ui</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-security-management-client</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
+    <!-- Kogito -->
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+    </dependency>
+
+    <!-- Scenario Simulation -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
+    </dependency>
+
+    <!-- Add for enforcer -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-scenario-simulation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

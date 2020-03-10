@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN"
+    "http://www.gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<module>
+
+  <source path="client"/>
+  <source path="workarounds"/>
+
+  <!-- Uberfire dependencies -->
+  <inherits name="org.uberfire.UberfireClient"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
+
+  <!-- Errai, Drools etc -->
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
+  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
+  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
+
+  <inherits name="org.kie.workbench.common.kogito.webapp.base.KogitoWebappBase" />
+  <inherits name='org.drools.workbench.screens.scenariosimulation.kogito.DroolsWorkbenchScenarioSimulationKogitoEditor'/>
+
+  <inherits name="org.dashbuilder.DatasetAPI" />
+  <inherits name="org.dashbuilder.DatasetClient" />
+  <inherits name="org.dashbuilder.DatasetShared" />
+  <inherits name="org.dashbuilder.DisplayerAPI" />
+  <inherits name="org.dashbuilder.DisplayerClient" />
+  <inherits name="org.dashbuilder.CommonClient" />
+  <inherits name="org.dashbuilder.JSON" />
+  <inherits name="org.dashbuilder.ServicesAPI" />
+
+</module>
