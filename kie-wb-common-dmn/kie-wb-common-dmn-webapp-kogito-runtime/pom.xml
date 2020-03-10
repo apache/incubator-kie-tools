@@ -32,7 +32,7 @@
   <properties>
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-    <skipITs>true</skipITs>
+    <skipITs>false</skipITs>
     <org.kie.dmn.kogito.browser.headless>true</org.kie.dmn.kogito.browser.headless>
   </properties>
 

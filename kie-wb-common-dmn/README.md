@@ -45,8 +45,7 @@ To package this module for use in the VSCode/GitHub plugin build the `war`; i.e.
 
 This module contains also selenium integration tests. They use `headless` browser mode by default thus are not 
 visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
- `mvn` command. Temporary is needed to include `-DskipITs=false` property due to https://issues.redhat
- .com/browse/KOGITO-1107.
+ `mvn` command.
 
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 
