@@ -139,11 +139,6 @@
         <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.jsinterop</groupId>
-        <artifactId>base</artifactId>
-        <version>1.0.0-RC1</version>
-      </dependency>
       <!-- END MARSHALLING -->
 
     </dependencies>

@@ -17,13 +17,7 @@
   <description>Drools Workbench - Scenario Simulation Editor - Kogito - Marshaller</description>
 
   <properties>
-    <jsinterop-annotations.version>1.0.2</jsinterop-annotations.version>
-    <jsinterop-base-version>1.0.0-beta-1</jsinterop-base-version>
-    <jsonix-scripts.version>3.0.0</jsonix-scripts.version>
     <js.destination>${project.basedir}/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js</js.destination>
-    <gwt-jsonix-schema-compiler.version>1.1.0</gwt-jsonix-schema-compiler.version>
-    <gwt-interop-utils.version>0.3.0</gwt-interop-utils.version>
-    <maven-jaxb2-plugin.version>0.14.0</maven-jaxb2-plugin.version>
   </properties>
 
   <dependencies>
@@ -45,26 +39,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kogito</groupId>
-        <artifactId>gwt-jsonix-schema-compiler</artifactId>
-        <version>${gwt-jsonix-schema-compiler.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.jsinterop</groupId>
-        <artifactId>jsinterop-annotations</artifactId>
-        <version>${jsinterop-annotations.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.jsinterop</groupId>
-        <artifactId>base</artifactId>
-        <version>${jsinterop-base-version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>
@@ -144,7 +118,7 @@
                 <artifactItem>
                   <groupId>org.hisrc.jsonix</groupId>
                   <artifactId>jsonix-scripts</artifactId>
-                  <version>${jsonix-scripts.version}</version>
+                  <version>${version.org.hisrc.jsonix.jsonix-scripts}</version>
                   <type>js</type>
                   <classifier>all</classifier>
                   <outputDirectory>${js.destination}</outputDirectory>
@@ -212,7 +186,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
-          <version>${maven-jaxb2-plugin.version}</version>
+          <version>${version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
