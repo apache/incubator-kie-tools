@@ -32,10 +32,6 @@
   color: var(--pf-global--Color--light-200);
 }
 
-.kogito--editor-landing .pf-c-page__header-brand-link .pf-c-brand {
-  width: 2.5em;
-}
-
 .kogito--editor-landing__upload-box > div {
   box-sizing: border-box;
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--100);
