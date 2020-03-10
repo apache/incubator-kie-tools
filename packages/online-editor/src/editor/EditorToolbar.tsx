@@ -56,7 +56,7 @@ export function EditorToolbar(props: Props) {
   const { isPageFullscreen } = props;
 
   const logoProps = useMemo(() => {
-    return { href: "/" };
+    return { href: window.location.href.split("?")[0].split("#")[0] };
   }, []);
 
   const editorType = useMemo(() => {
