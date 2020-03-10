@@ -188,7 +188,7 @@ public class AceEditor extends Composite implements RequiresResize,
     public native void setModeByName(String shortModeName) /*-{
         var editor = this.@org.uberfire.ext.widgets.common.client.ace.AceEditor::editor;
         var modeName = "ace/mode/" + shortModeName;
-        var TheMode = $wnd.require(modeName).Mode;
+        var TheMode = $wnd.ace.require(modeName).Mode;
         editor.getSession().setMode(new TheMode());
     }-*/;
 
