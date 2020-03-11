@@ -18,6 +18,8 @@ package org.uberfire.java.nio.fs.k8s;
 
 import java.net.URI;
 
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.api.FileSystemUtils;
@@ -26,7 +28,12 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileSystemProvidersTest {
-    
+
+    @BeforeClass
+    public static void setup() {
+        //Checking the operating system before test execution
+        Assume.assumeFalse("k8s does not support in Windows platform", System.getProperty("os.name").toLowerCase().contains("windows"));
+    }
 
     @Test
     public void generalTests() {
@@ -37,7 +44,7 @@ public class FileSystemProvidersTest {
         assertThat(FileSystemProviders.resolveProvider(URI.create("file:///"))).isInstanceOf(SimpleFileSystemProvider.class);
         assertThat(FileSystemProviders.resolveProvider(URI.create("k8s:///"))).isInstanceOf(K8SFileSystemProvider.class);
     }
-    
+
     @Test
     public void k8sFileSystemProivdeAsDefaultTests() {
         FileSystemUtils.getConfigProps().setProperty(FileSystemUtils.CFG_KIE_CONTROLLER_OCP_ENABLED, "true");

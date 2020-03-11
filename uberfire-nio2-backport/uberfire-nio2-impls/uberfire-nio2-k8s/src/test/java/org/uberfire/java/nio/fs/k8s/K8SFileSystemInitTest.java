@@ -29,6 +29,7 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -70,6 +71,8 @@ public class K8SFileSystemInitTest {
 
     @BeforeClass
     public static void setup() {
+        //Checking the operating system before test execution
+        Assume.assumeFalse("k8s does not support in Windows platform", System.getProperty("os.name").toLowerCase().contains("windows"));
         fstore = fsProvider.getFileSystem(URI.create("default:///")).getFileStores().iterator().next();
     }
 
