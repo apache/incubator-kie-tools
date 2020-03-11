@@ -48,7 +48,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
-    if (this.editorId !== editors.dmn.id) {
+    if (this.editorId == editors.bpmn.id) {
       this.removeHeaderIfOnlyOneItemOnTable();
     } else {
       this.injectStyleToFixResponsivenessIssue_DROOLS_3995();
