@@ -30,8 +30,6 @@
   <packaging>war</packaging>
 
   <properties>
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
-    <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
     <skipITs>false</skipITs>
     <org.kie.dmn.kogito.browser.headless>true</org.kie.dmn.kogito.browser.headless>
   </properties>
@@ -42,22 +40,26 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- This is a war file, so logback is not in scope test, but in scope compile -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- MANSTIS - EVERYTHING BELOW THIS HAS BEEN _SANITISED_! -->
@@ -66,10 +68,12 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -79,6 +83,7 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-server</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -88,6 +93,7 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-shared</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -103,16 +109,19 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
@@ -121,7 +130,8 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-backend</artifactId>
+      <artifactId>kie-wb-common-stunner-backend-common</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
@@ -159,17 +169,36 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- Required to provide default implementation of client-side CDI injection points -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
 
     <!-- DMN Editor -->
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
@@ -190,15 +219,18 @@
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
@@ -216,6 +248,7 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
@@ -225,10 +258,12 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-adf-engine-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-adf-engine-backend</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
@@ -238,10 +273,7 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-dynamic-forms-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-forms-backend-services</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Needed by forms for JSR303 validation -->
@@ -249,20 +281,19 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Core UberFire dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-cdi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -289,6 +320,7 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Needed for the ACE XML Editor -->
@@ -298,47 +330,11 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- UberFire IO -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-    </dependency>
-
-    <!-- Uberfire SSH -->
-    <!-- Required by uberfire-backend-server to secure FileSystem -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-ssh-backend</artifactId>
-    </dependency>
-
-    <!-- Uberfire Experimentals -->
-    <!-- Required by uberfire-workbench-client -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.uberfire</groupId>
@@ -351,16 +347,7 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-structure-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-backend</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-servlet-security</artifactId>
-        </exclusion>
-      </exclusions>
+      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and extensions -->
@@ -411,6 +398,7 @@
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->
@@ -498,11 +486,8 @@
                 <include>**/gwt-unitCache/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/</include>
-                <include>.security/</include>
-                <include>.niogit/**</include>
                 <include>.index/**</include>
                 <include>**/*.JUnit/**</include>
-                <include>repositories/</include>
               </includes>
             </fileset>
             <fileset>
@@ -566,17 +551,16 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <strict>true</strict>
-              <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
+              <localWorkers>4</localWorkers>
               <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
               <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
-              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
               <optimizationLevel>9</optimizationLevel>
               <style>OBFUSCATED</style>
 
               <noServer>false</noServer>
-              <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
               <disableCastChecking>true</disableCastChecking>
-              <runTarget>index.html</runTarget>
+              <runTarget>test.html</runTarget>
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
               <logLevel>INFO</logLevel>
@@ -587,7 +571,6 @@
 
                 <!-- UberFire -->
                 <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
@@ -605,6 +588,8 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-workingset-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
+
 
                 <!-- Errai, Drools etc -->
                 <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
@@ -701,7 +686,7 @@
           <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
-              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap</packagingExcludes>
+              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap,WEB-INF/classes/**</packagingExcludes>
               <archive>
                 <addMavenDescriptor>false</addMavenDescriptor>
               </archive>
@@ -712,25 +697,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.jboss.errai</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <version>${version.org.jboss.errai.wildfly}</version>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
               <execution>
                 <id>Unpack DMNMarshaller JS from dependency</id>
                 <phase>process-sources</phase>

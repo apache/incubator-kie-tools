@@ -40,12 +40,12 @@ Client-side marshaller for _kogito_.
 9) `kie-wb-common-dmn-webapp-kogito-runtime`
 
 Webapp targeting _kogito_ integration with VSCode etc. No decorations.
-To run this module launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
-To package this module for use in the VSCode/GitHub plugin build the `war`; i.e. `mvn clean install`.
+
+Please refer to the [Kogito's DMN Editor README](./kie-wb-common-dmn-webapp-kogito-runtime/README.md) for building and usage.
 
 This module contains also selenium integration tests. They use `headless` browser mode by default thus are not 
 visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
- `mvn` command.
+ `mvn` command. Temporary is needed to include `-DskipITs=false` property due to [KOGITO-1107](https://issues.redhat.com/browse/KOGITO-1107).
 
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 
