@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITCo
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
@@ -70,7 +71,7 @@ public class TextAnnotationConverter implements NodeConverter<JSITTextAnnotation
     @Override
     public JSITTextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node,
                                           final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final TextAnnotation source = node.getContent().getDefinition();
+        final TextAnnotation source = (TextAnnotation) DefinitionUtils.getElementDefinition(node);
         final JSITTextAnnotation result = new JSITTextAnnotation();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

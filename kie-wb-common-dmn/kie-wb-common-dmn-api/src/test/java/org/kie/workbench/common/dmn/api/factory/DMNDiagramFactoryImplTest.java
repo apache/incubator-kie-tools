@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -80,7 +81,7 @@ public class DMNDiagramFactoryImplTest {
 
         //We can safely get the first object on the iterator as we know the graph only contains one node
         final Node<View, Edge> root = (Node<View, Edge>) diagram.getGraph().nodes().iterator().next();
-        final DMNDiagram dmnDiagram = (DMNDiagram) root.getContent().getDefinition();
+        final DMNDiagram dmnDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(root);
 
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
         final Map<String, String> dmnDefaultNameSpaces = dmnDefinitions.getNsContext();
@@ -121,7 +122,7 @@ public class DMNDiagramFactoryImplTest {
 
         //We can safely get the first object on the iterator as we know the graph only contains one node
         final Node<View, Edge> root = (Node<View, Edge>) diagram.getGraph().nodes().iterator().next();
-        final DMNDiagram dmnDiagram = (DMNDiagram) root.getContent().getDefinition();
+        final DMNDiagram dmnDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(root);
 
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
 
@@ -132,13 +133,13 @@ public class DMNDiagramFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void testModelNameWithNonEmptyExistingName() {
         final Node<View, Edge> existingRoot = (Node<View, Edge>) graph.nodes().iterator().next();
-        final DMNDiagram existingDMNDiagram = (DMNDiagram) existingRoot.getContent().getDefinition();
+        final DMNDiagram existingDMNDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(existingRoot);
         final Definitions existingDMNDefinitions = existingDMNDiagram.getDefinitions();
         existingDMNDefinitions.getName().setValue(EXISTING_NAME);
 
         final Diagram newDiagram = factory.build(NAME, metadata, graph);
         final Node<View, Edge> newRoot = (Node<View, Edge>) newDiagram.getGraph().nodes().iterator().next();
-        final DMNDiagram newDMNDiagram = (DMNDiagram) newRoot.getContent().getDefinition();
+        final DMNDiagram newDMNDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(newRoot);
         final Definitions newDMNDefinitions = newDMNDiagram.getDefinitions();
 
         assertEquals(EXISTING_NAME, newDMNDefinitions.getName().getValue());

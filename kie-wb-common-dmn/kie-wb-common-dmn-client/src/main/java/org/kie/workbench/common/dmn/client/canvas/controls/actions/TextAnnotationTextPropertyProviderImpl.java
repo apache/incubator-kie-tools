@@ -54,7 +54,7 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
 
     @Override
     public boolean supports(final Element<? extends Definition> element) {
-        return element.getContent().getDefinition() instanceof TextAnnotation;
+        return DefinitionUtils.getElementDefinition(element) instanceof TextAnnotation;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
                         final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                         final Element<? extends Definition> element,
                         final String text) {
-        final Object definition = element.getContent().getDefinition();
+        final Object definition = DefinitionUtils.getElementDefinition(element);
         final CanvasCommand<AbstractCanvasHandler> command =
                 canvasCommandFactory.updatePropertyValue(element,
                                                          definitionUtils.getNameIdentifier(definition),
@@ -73,7 +73,7 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
 
     @Override
     public String getText(final Element<? extends Definition> element) {
-        final TextAnnotation ta = (TextAnnotation) element.getContent().getDefinition();
+        final TextAnnotation ta = (TextAnnotation) DefinitionUtils.getElementDefinition(element);
         final String text = ta.getText().getValue();
         return text;
     }

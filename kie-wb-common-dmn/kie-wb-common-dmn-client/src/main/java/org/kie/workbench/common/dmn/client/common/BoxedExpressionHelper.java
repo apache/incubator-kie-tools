@@ -25,12 +25,13 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class BoxedExpressionHelper {
 
     public Optional<HasExpression> getOptionalHasExpression(final Node<View, Edge> node) {
 
-        final Object definition = getDefinition(node);
+        final Object definition = DefinitionUtils.getElementDefinition(node);
         final HasExpression expression;
 
         if (definition instanceof BusinessKnowledgeModel) {
@@ -54,9 +55,5 @@ public class BoxedExpressionHelper {
 
     public HasExpression getHasExpression(final Node<View, Edge> node) {
         return getOptionalHasExpression(node).orElseThrow(UnsupportedOperationException::new);
-    }
-
-    public Object getDefinition(final Node<View, Edge> node) {
-        return node.getContent().getDefinition();
     }
 }

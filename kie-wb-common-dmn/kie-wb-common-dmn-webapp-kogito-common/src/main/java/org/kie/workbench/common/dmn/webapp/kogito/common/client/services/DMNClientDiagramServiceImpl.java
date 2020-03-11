@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
@@ -190,7 +191,7 @@ public class DMNClientDiagramServiceImpl implements KogitoClientDiagramService {
                 final JSITDefinitions definitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
                 final Graph graph = dmnMarshallerKogitoUnmarshaller.unmarshall(metadata, definitions);
                 final Node<Definition<DMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, DMNDiagram.class);
-                final String title = diagramNode.getContent().getDefinition().getDefinitions().getName().getValue();
+                final String title = ((DMNDiagram) DefinitionUtils.getElementDefinition(diagramNode)).getDefinitions().getName().getValue();
                 final Diagram diagram = dmnDiagramFactory.build(title, metadata, graph);
                 updateClientShapeSetId(diagram);
 

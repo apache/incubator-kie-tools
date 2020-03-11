@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -116,7 +117,7 @@ public class BusinessKnowledgeModelConverterTest {
         dmn.setEncapsulatedLogic(functionDefinition);
 
         final Node<View<BusinessKnowledgeModel>, ?> node = converter.nodeFromDMN(dmn, hasComponentWidthsConsumer);
-        final BusinessKnowledgeModel wb = node.getContent().getDefinition();
+        final BusinessKnowledgeModel wb = (BusinessKnowledgeModel) DefinitionUtils.getElementDefinition(node);
 
         assertThat(wb).isNotNull();
         assertThat(wb.getId()).isNotNull();

@@ -79,6 +79,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils.upperLeftBound;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils.xOfBound;
@@ -144,7 +145,7 @@ public class DMNMarshallerKogitoMarshaller {
         final Map<String, JSITDRGElement> nodes = new HashMap<>();
         final Map<String, JSITTextAnnotation> textAnnotations = new HashMap<>();
         final Node<View<DMNDiagram>, ?> dmnDiagramRoot = (Node<View<DMNDiagram>, ?>) DMNMarshallerUtils.findDMNDiagramRoot(graph);
-        final Definitions definitionsStunnerPojo = dmnDiagramRoot.getContent().getDefinition().getDefinitions();
+        final Definitions definitionsStunnerPojo = ((DMNDiagram) DefinitionUtils.getElementDefinition(dmnDiagramRoot)).getDefinitions();
         final List<JSIDMNEdge> dmnEdges = new ArrayList<>();
 
         cleanImportedItemDefinitions(definitionsStunnerPojo);

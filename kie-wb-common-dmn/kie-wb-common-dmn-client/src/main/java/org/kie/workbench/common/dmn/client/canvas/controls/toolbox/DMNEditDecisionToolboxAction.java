@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
@@ -80,7 +81,7 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
                 = (Node<View<? extends Decision>, Edge>) CanvasLayoutUtils.getElement(canvasHandler,
                                                                                       uuid)
                 .asNode();
-        final Decision decision = decisionNode.getContent().getDefinition();
+        final Decision decision = (Decision) DefinitionUtils.getElementDefinition(decisionNode);
         final boolean isOnlyVisualChangeAllowed = decision.isAllowOnlyVisualChange();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,

@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -71,7 +72,7 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
     }
 
     private void updateDefaultNameSpaces(final Node<Definition<DMNDiagram>, ?> diagramNode) {
-        final DMNDiagram dmnDiagram = diagramNode.getContent().getDefinition();
+        final DMNDiagram dmnDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(diagramNode);
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
 
         Stream.of(DMNModelInstrumentedBase.Namespace.values())
@@ -93,7 +94,7 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
 
     private void updateName(final Node<Definition<DMNDiagram>, ?> diagramNode,
                             final String name) {
-        final DMNDiagram dmnDiagram = diagramNode.getContent().getDefinition();
+        final DMNDiagram dmnDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(diagramNode);
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
         final Name dmnName = dmnDefinitions.getName();
         if (StringUtils.isEmpty(dmnName.getValue())) {

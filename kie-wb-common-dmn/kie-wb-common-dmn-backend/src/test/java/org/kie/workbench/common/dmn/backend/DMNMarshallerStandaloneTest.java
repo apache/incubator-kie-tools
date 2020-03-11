@@ -146,6 +146,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
@@ -2347,7 +2348,7 @@ public class DMNMarshallerStandaloneTest {
     private static void checkDecisionExpression(final Graph<?, Node<View, ?>> unmarshalledGraph,
                                                 final Expression expression) {
         final Node<View, ?> decisionNode = nodeOfDefinition(unmarshalledGraph.nodes().iterator(), Decision.class);
-        final Expression decisionNodeExpression = ((Decision) decisionNode.getContent().getDefinition()).getExpression();
+        final Expression decisionNodeExpression = ((Decision) DefinitionUtils.getElementDefinition(decisionNode)).getExpression();
 
         // The process of marshalling an Expression that has been programmatically instantiated (vs created in the UI)
         // leads to the _source_ Expression ComponentWidths being initialised. Therefore to ensure a like-for-like equality
@@ -2359,7 +2360,7 @@ public class DMNMarshallerStandaloneTest {
 
     private static Node<View, ?> nodeOfDefinition(final Iterator<Node<View, ?>> nodesIterator, final Class aClass) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(nodesIterator, Spliterator.NONNULL), false)
-                .filter(node -> aClass.isInstance(node.getContent().getDefinition()))
+                .filter(node -> aClass.isInstance(DefinitionUtils.getElementDefinition(node)))
                 .findFirst().get();
     }
 

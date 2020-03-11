@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.CONTEXT;
@@ -135,7 +136,7 @@ public class DecisionNavigatorNestedItemFactory {
     EditExpressionEvent makeEditExpressionEvent(final Node<View, Edge> node) {
 
         final ClientSession currentSession = sessionManager.getCurrentSession();
-        final Object definition = helper.getDefinition(node);
+        final Object definition = DefinitionUtils.getElementDefinition(node);
         final HasExpression hasExpression = helper.getHasExpression(node);
         final Optional<HasName> hasName = Optional.of((HasName) definition);
         final boolean isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed(definition);

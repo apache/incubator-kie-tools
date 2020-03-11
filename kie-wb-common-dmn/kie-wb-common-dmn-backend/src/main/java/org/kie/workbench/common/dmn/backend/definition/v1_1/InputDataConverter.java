@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
@@ -75,7 +76,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     @Override
     public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node,
                                                        final Consumer<ComponentWidths> componentWidthsConsumer) {
-        final InputData source = node.getContent().getDefinition();
+        final InputData source = (InputData) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_2.TInputData();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

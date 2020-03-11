@@ -148,7 +148,7 @@ public class DecisionNavigatorBaseItemFactory {
         final AdapterManager adapters = definitionUtils.getDefinitionManager().adapters();
         final DefinitionAdapter<Object> objectDefinitionAdapter = adapters.forDefinition();
 
-        return objectDefinitionAdapter.getTitle(element.getContent().getDefinition());
+        return objectDefinitionAdapter.getTitle(DefinitionUtils.getElementDefinition(element));
     }
 
     List<DecisionNavigatorItem> makeNestedItems(final Node<View, Edge> node) {

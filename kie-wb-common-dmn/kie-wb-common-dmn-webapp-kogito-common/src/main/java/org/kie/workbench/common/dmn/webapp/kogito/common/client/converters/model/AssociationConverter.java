@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.HrefBuilder.getHref;
 
@@ -37,7 +38,7 @@ public class AssociationConverter {
 
     @SuppressWarnings("unchecked")
     public static List<JSITAssociation> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
-        final TextAnnotation ta = node.getContent().getDefinition();
+        final TextAnnotation ta = (TextAnnotation) DefinitionUtils.getElementDefinition(node);
         final JSITDMNElementReference ta_elementReference = new JSITDMNElementReference();
         ta_elementReference.setHref(new StringBuilder("#").append(ta.getId().getValue()).toString());
 

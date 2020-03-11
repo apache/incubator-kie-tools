@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -107,7 +108,7 @@ public class DecisionConverterTest {
         dmn.setExpression(literalExpression);
 
         final Node<View<Decision>, ?> node = converter.nodeFromDMN(dmn, hasComponentWidthsConsumer);
-        final Decision wb = node.getContent().getDefinition();
+        final Decision wb = (Decision) DefinitionUtils.getElementDefinition(node);
 
         assertThat(wb).isNotNull();
         assertThat(wb.getId()).isNotNull();

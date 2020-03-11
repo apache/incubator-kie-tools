@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class DMNSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
 
@@ -32,6 +33,6 @@ public class DMNSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
 
     @Override
     public boolean shouldKeepChildren(final Node<Definition<?>, Edge> candidate) {
-        return candidate.getContent().getDefinition() instanceof DecisionService;
+        return DefinitionUtils.getElementDefinition(candidate) instanceof DecisionService;
     }
 }

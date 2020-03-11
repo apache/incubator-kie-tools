@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
@@ -80,7 +81,7 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
                 = (Node<View<? extends BusinessKnowledgeModel>, Edge>) CanvasLayoutUtils.getElement(canvasHandler,
                                                                                                     uuid)
                 .asNode();
-        final BusinessKnowledgeModel bkm = bkmNode.getContent().getDefinition();
+        final BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) DefinitionUtils.getElementDefinition(bkmNode);
         final boolean isOnlyVisualChangeAllowed = bkm.isAllowOnlyVisualChange();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,

@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -92,7 +93,7 @@ public class InputDataConverterTest {
         dmn.setVariable(informationItem);
 
         final Node<View<InputData>, ?> node = converter.nodeFromDMN(dmn, hasComponentWidthsConsumer);
-        final InputData wb = node.getContent().getDefinition();
+        final InputData wb = (InputData) DefinitionUtils.getElementDefinition(node);
 
         assertThat(wb).isNotNull();
         assertThat(wb.getId()).isNotNull();

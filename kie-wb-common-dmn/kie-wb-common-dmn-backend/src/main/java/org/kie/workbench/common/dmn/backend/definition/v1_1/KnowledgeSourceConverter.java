@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
@@ -80,7 +81,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
     @Override
     public org.kie.dmn.model.api.KnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node,
                                                              final Consumer<ComponentWidths> componentWidthsConsumer) {
-        final KnowledgeSource source = node.getContent().getDefinition();
+        final KnowledgeSource source = (KnowledgeSource) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.KnowledgeSource result = new org.kie.dmn.model.v1_2.TKnowledgeSource();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

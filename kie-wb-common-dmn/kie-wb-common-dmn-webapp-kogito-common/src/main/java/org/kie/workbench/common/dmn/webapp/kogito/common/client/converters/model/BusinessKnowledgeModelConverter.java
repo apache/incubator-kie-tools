@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
@@ -105,7 +106,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<JSITBusine
     @SuppressWarnings("unchecked")
     public JSITBusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node,
                                                   final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final BusinessKnowledgeModel source = node.getContent().getDefinition();
+        final BusinessKnowledgeModel source = (BusinessKnowledgeModel) DefinitionUtils.getElementDefinition(node);
         final JSITBusinessKnowledgeModel result = new JSITBusinessKnowledgeModel();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

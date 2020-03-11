@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
@@ -68,7 +69,7 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     @Override
     public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node,
                                                             final Consumer<ComponentWidths> componentWidthsConsumer) {
-        final TextAnnotation source = node.getContent().getDefinition();
+        final TextAnnotation source = (TextAnnotation) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_2.TTextAnnotation();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

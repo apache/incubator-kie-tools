@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class DMNDocumentationDRDsFactory {
 
@@ -101,7 +102,7 @@ public class DMNDocumentationDRDsFactory {
                                     final String uuid) {
 
         final Node<View, Edge> node = getNode(diagram, uuid);
-        final Object definition = expressionHelper.getDefinition(node);
+        final Object definition = DefinitionUtils.getElementDefinition(node);
         final HasExpression hasExpression = expressionHelper.getHasExpression(node);
         final Optional<HasName> hasName = Optional.of((HasName) definition);
         final ExpressionContainerGrid grid = getExpressionContainerGrid();
@@ -115,7 +116,7 @@ public class DMNDocumentationDRDsFactory {
         final List<DMNDocumentationDRD> dmnDocumentationDRDS = new ArrayList<>();
 
         getNodeStream(diagram).forEach(node -> {
-            final Object definition = expressionHelper.getDefinition(node);
+            final Object definition = DefinitionUtils.getElementDefinition(node);
             if (definition instanceof DRGElement) {
                 final DRGElement drgElement = (DRGElement) definition;
                 dmnDocumentationDRDS.add(createDMNDocumentationDRD(diagram, node, drgElement));

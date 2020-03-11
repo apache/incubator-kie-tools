@@ -129,6 +129,8 @@ public class DMNDocumentationDRDsFactoryTest {
         final String nodeUUID2 = "2222-2222-2222-2222";
         final Node<View, Edge> node1 = new NodeImpl<>(nodeUUID1);
         final Node<View, Edge> node2 = new NodeImpl<>(nodeUUID2);
+        final View view1 = mock(View.class);
+        final View view2 = mock(View.class);
         final HasExpression hasExpression1 = mock(HasExpression.class);
         final List<Node<View, Edge>> nodes = asList(node1, node2);
         final Decision drgElement1 = new Decision();
@@ -144,8 +146,10 @@ public class DMNDocumentationDRDsFactoryTest {
         linksHolder.getValue().addLink(externalLink);
         drgElement2.setLinksHolder(linksHolder);
 
-        when(expressionHelper.getDefinition(node1)).thenReturn(drgElement1);
-        when(expressionHelper.getDefinition(node2)).thenReturn(drgElement2);
+        node1.setContent(view1);
+        node2.setContent(view2);
+        when(view1.getDefinition()).thenReturn(drgElement1);
+        when(view2.getDefinition()).thenReturn(drgElement2);
         when(expressionHelper.getOptionalHasExpression(node1)).thenReturn(Optional.ofNullable(hasExpression1));
         when(expressionHelper.getOptionalHasExpression(node2)).thenReturn(Optional.empty());
         when(expressionContainerGrid.getNodeUUID()).thenReturn(Optional.of(nodeUUID2));
@@ -213,10 +217,12 @@ public class DMNDocumentationDRDsFactoryTest {
         final Node<View, Edge> node = new NodeImpl<>(uuid);
         final Decision drgElement = new Decision();
         final HasExpression hasExpression = mock(HasExpression.class);
+        final View view = mock(View.class);
 
+        node.setContent(view);
         drgElement.setName(new Name(name));
         when(graph.nodes()).thenReturn(singletonList(node));
-        when(expressionHelper.getDefinition(node)).thenReturn(drgElement);
+        when(view.getDefinition()).thenReturn(drgElement);
         when(expressionHelper.getHasExpression(node)).thenReturn(hasExpression);
 
         factory.setExpressionContainerGrid(diagram, uuid);

@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
@@ -86,7 +87,7 @@ public class KnowledgeSourceConverter implements NodeConverter<JSITKnowledgeSour
     @SuppressWarnings("unchecked")
     public JSITKnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node,
                                            final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final KnowledgeSource source = node.getContent().getDefinition();
+        final KnowledgeSource source = (KnowledgeSource) DefinitionUtils.getElementDefinition(node);
         final JSITKnowledgeSource result = new JSITKnowledgeSource();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

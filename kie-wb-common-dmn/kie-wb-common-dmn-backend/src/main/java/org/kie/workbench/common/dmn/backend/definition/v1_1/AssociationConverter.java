@@ -25,13 +25,14 @@ import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
 
 public class AssociationConverter {
 
     public static List<org.kie.dmn.model.api.Association> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
-        final TextAnnotation ta = node.getContent().getDefinition();
+        final TextAnnotation ta = (TextAnnotation) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.DMNElementReference ta_elementReference = new org.kie.dmn.model.v1_2.TDMNElementReference();
         ta_elementReference.setHref(new StringBuilder("#").append(ta.getId().getValue()).toString());
 

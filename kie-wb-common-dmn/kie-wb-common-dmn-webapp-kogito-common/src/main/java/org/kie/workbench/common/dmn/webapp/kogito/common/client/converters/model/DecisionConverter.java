@@ -56,6 +56,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.HrefBuilder.getHref;
@@ -119,7 +120,7 @@ public class DecisionConverter implements NodeConverter<JSITDecision, org.kie.wo
     @SuppressWarnings("unchecked")
     public JSITDecision dmnFromNode(final Node<View<Decision>, ?> node,
                                     final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final Decision source = node.getContent().getDefinition();
+        final Decision source = (Decision) DefinitionUtils.getElementDefinition(node);
         final JSITDecision d = new JSITDecision();
         d.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

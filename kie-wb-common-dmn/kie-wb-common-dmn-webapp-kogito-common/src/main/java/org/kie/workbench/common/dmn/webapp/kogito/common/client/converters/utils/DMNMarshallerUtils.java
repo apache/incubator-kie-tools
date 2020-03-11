@@ -21,6 +21,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class DMNMarshallerUtils {
 
@@ -30,7 +31,7 @@ public class DMNMarshallerUtils {
 
     public static Node<?, ?> findDMNDiagramRoot(final Graph<?, Node<View, ?>> graph) {
         return StreamSupport.stream(graph.nodes().spliterator(), false)
-                .filter(n -> n.getContent().getDefinition() instanceof DMNDiagram)
+                .filter(n -> DefinitionUtils.getElementDefinition(n) instanceof DMNDiagram)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("DMNDiagram root not found."));
     }

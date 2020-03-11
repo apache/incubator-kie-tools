@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.violations.RuleViolationImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class AcyclicDirectedGraphRule extends RuleExtensionHandler<AcyclicDirectedGraphRule, GraphConnectionContext> {
@@ -53,7 +54,7 @@ public class AcyclicDirectedGraphRule extends RuleExtensionHandler<AcyclicDirect
     @Override
     public boolean accepts(final RuleExtension rule,
                            final GraphConnectionContext context) {
-        final Object o = context.getConnector().getContent().getDefinition();
+        final Object o = DefinitionUtils.getElementDefinition(context.getConnector());
         final Class<?> type = rule.getTypeArguments()[0];
         return o.getClass().equals(type);
     }

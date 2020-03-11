@@ -551,7 +551,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     public static Node<?, ?> findDMNDiagramRoot(final Graph<?, Node<View, ?>> graph) {
         return StreamSupport.stream(graph.nodes().spliterator(),
-                                    false).filter(n -> n.getContent().getDefinition() instanceof DMNDiagram).findFirst().orElseThrow(() -> new UnsupportedOperationException("TODO"));
+                                    false).filter(n -> DefinitionUtils.getElementDefinition(n) instanceof DMNDiagram).findFirst().orElseThrow(() -> new UnsupportedOperationException("TODO"));
     }
 
     private String getId(final org.kie.dmn.model.api.DMNElementReference er) {
@@ -773,7 +773,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
         final Map<String, org.kie.dmn.model.api.TextAnnotation> textAnnotations = new HashMap<>();
 
         final Node<View<DMNDiagram>, ?> dmnDiagramRoot = (Node<View<DMNDiagram>, ?>) findDMNDiagramRoot(g);
-        final Definitions definitionsStunnerPojo = dmnDiagramRoot.getContent().getDefinition().getDefinitions();
+        final Definitions definitionsStunnerPojo = ((DMNDiagram) DefinitionUtils.getElementDefinition(dmnDiagramRoot)).getDefinitions();
         cleanImportedItemDefinitions(definitionsStunnerPojo);
         final org.kie.dmn.model.api.Definitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo);
         if (definitions.getExtensionElements() == null) {

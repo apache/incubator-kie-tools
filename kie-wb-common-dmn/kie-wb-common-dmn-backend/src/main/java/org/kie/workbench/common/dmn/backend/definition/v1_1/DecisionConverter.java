@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
@@ -97,7 +98,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
     @Override
     public org.kie.dmn.model.api.Decision dmnFromNode(final Node<View<Decision>, ?> node,
                                                       final Consumer<ComponentWidths> componentWidthsConsumer) {
-        final Decision source = node.getContent().getDefinition();
+        final Decision source = (Decision) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.Decision d = new org.kie.dmn.model.v1_2.TDecision();
         d.setId(source.getId().getValue());
         d.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));

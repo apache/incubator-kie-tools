@@ -171,18 +171,4 @@ public class BoxedExpressionHelperTest {
 
         helper.getHasExpression(node);
     }
-
-    @Test
-    public void testGetDefinition() {
-
-        final View content = mock(View.class);
-        final Decision expected = mock(Decision.class);
-
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(expected);
-
-        final Object actual = helper.getDefinition(node);
-
-        assertEquals(expected, actual);
-    }
 }

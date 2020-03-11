@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -33,17 +33,17 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class DRGElementTextPropertyProviderImpl implements TextPropertyProvider {
+public class DMNDiagramTextPropertyProviderImpl implements TextPropertyProvider {
 
     private DefaultCanvasCommandFactory canvasCommandFactory;
     private DefinitionUtils definitionUtils;
 
-    public DRGElementTextPropertyProviderImpl() {
+    public DMNDiagramTextPropertyProviderImpl() {
         //CDI proxy
     }
 
     @Inject
-    public DRGElementTextPropertyProviderImpl(final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
+    public DMNDiagramTextPropertyProviderImpl(final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                               final DefinitionUtils definitionUtils) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.definitionUtils = definitionUtils;
@@ -56,13 +56,13 @@ public class DRGElementTextPropertyProviderImpl implements TextPropertyProvider 
 
     @Override
     public boolean supports(final Element<? extends Definition> element) {
-        return DefinitionUtils.getElementDefinition(element) instanceof DRGElement;
+        return DefinitionUtils.getElementDefinition(element) instanceof DMNDiagram;
     }
 
     @Override
     public String getText(final Element<? extends Definition> element) {
-        final DRGElement drgElement = (DRGElement) DefinitionUtils.getElementDefinition(element);
-        return drgElement.getNameHolder().getValue().getValue();
+        final DMNDiagram dmnDiagram = (DMNDiagram) DefinitionUtils.getElementDefinition(element);
+        return dmnDiagram.getDefinitions().getNameHolder().getValue().getValue();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DRGElementTextPropertyProviderImpl implements TextPropertyProvider 
                         final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                         final Element<? extends Definition> element,
                         final String text) {
-        final Object definition = DefinitionUtils.getElementDefinition(element);
+        final Object definition = ((DMNDiagram) DefinitionUtils.getElementDefinition(element)).getDefinitions();
         final CanvasCommand<AbstractCanvasHandler> command =
                 canvasCommandFactory.updatePropertyValue(element,
                                                          definitionUtils.getNameIdentifier(definition),

@@ -164,11 +164,13 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final ClientSession currentSession = mock(ClientSession.class);
         final HasName hasName = mock(HasName.class);
         final HasExpression hasExpression = mock(HasExpression.class);
+        final View view = mock(View.class);
         final String uuid = "uuid";
 
         when(node.getUUID()).thenReturn(uuid);
         when(sessionManager.getCurrentSession()).thenReturn(currentSession);
-        when(boxedExpressionHelper.getDefinition(node)).thenReturn(hasName);
+        when(node.getContent()).thenReturn(view);
+        when(view.getDefinition()).thenReturn(hasName);
         when(boxedExpressionHelper.getHasExpression(node)).thenReturn(hasExpression);
 
         final EditExpressionEvent expressionEvent = factory.makeEditExpressionEvent(node);

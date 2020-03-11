@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
@@ -97,7 +98,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
     @SuppressWarnings("unchecked")
     public org.kie.dmn.model.api.DecisionService dmnFromNode(final Node<View<DecisionService>, ?> node,
                                                              final Consumer<ComponentWidths> componentWidthsConsumer) {
-        final DecisionService source = node.getContent().getDefinition();
+        final DecisionService source = (DecisionService) DefinitionUtils.getElementDefinition(node);
         final org.kie.dmn.model.api.DecisionService ds = new org.kie.dmn.model.v1_2.TDecisionService();
         ds.setId(source.getId().getValue());
         ds.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
