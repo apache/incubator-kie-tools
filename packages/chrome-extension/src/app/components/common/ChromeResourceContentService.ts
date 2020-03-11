@@ -18,7 +18,8 @@ import {
   ResourceContent,
   ResourceContentService,
   ResourcesList,
-  ResourceContentOptions
+  ResourceContentOptions,
+  ContentType
 } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
@@ -52,9 +53,11 @@ class ChromeResourceContentService implements ResourceContentService {
     this.repoInfo = repoInfo;
   }
 
-  public get(path: string, opts: ResourceContentOptions): Promise<ResourceContent | undefined> {
-    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts.type)
-      .then(resourceContent => new ResourceContent(path, resourceContent, opts.type))
+
+  public get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
+    opts = opts ?? { type: ContentType.TEXT };
+    return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts!.type)
+      .then(resourceContent => new ResourceContent(path, resourceContent, opts!.type))
       .catch(e => {
         console.debug(e);
         console.debug(`Error retrieving content from URI ${path}`);
