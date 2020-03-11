@@ -53,7 +53,6 @@ class ChromeResourceContentService implements ResourceContentService {
     this.repoInfo = repoInfo;
   }
 
-
   public get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
     opts = opts ?? { type: ContentType.TEXT };
     return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts!.type)
