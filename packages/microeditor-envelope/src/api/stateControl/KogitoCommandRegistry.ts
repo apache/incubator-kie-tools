@@ -29,6 +29,7 @@ export interface KogitoCommandRegistry<T> {
   isEmpty(): boolean;
   getCommands(): T[];
   clear(): void;
+  setMaxSize(size: number): void;
 }
 
 export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
@@ -36,13 +37,22 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
 
   private maxStackSize = 200;
   private commands: Array<KogitoCommand<T>> = [];
+  private _removedCommands: string[] = [];
 
   constructor(messageBus: EnvelopeBusInnerMessageHandler) {
     this.messageBus = messageBus;
   }
 
   private onNewCommand(newCommand: KogitoCommand<T>) {
-    this.messageBus.notify_newEdit(new KogitoEdit(newCommand.getId()));
+    if (!this._removedCommands.includes(newCommand.getId())) {
+      // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
+      // commands won't be redone
+      this.messageBus.notify_newEdit(new KogitoEdit(newCommand.getId()));
+      this._removedCommands = [];
+    } else {
+      // Removing the command from the removedCommands registry since it's been registered again (redo).
+      this._removedCommands.splice(this._removedCommands.indexOf(newCommand.getId()), 1);
+    }
   }
 
   public register(id: string, command: T): void {
@@ -70,6 +80,9 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
       const command = this.commands.pop();
 
       if (command) {
+        // If a command is removed (by an undo) we are keeping it's id on a registry to avoid notifying if the command
+        // is registered again (redo)
+        this._removedCommands.push(command.getId());
         return command.get();
       }
     }
@@ -86,9 +99,14 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
 
   public clear(): void {
     this.commands = [];
+    this._removedCommands = [];
   }
 
   public setMaxSize(size: number): void {
     this.maxStackSize = size;
+  }
+
+  get removedCommands(): string[] {
+    return this._removedCommands;
   }
 }

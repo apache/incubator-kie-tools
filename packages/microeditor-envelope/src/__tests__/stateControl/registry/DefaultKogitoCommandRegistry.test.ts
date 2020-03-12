@@ -17,13 +17,13 @@
 import { DefaultKogitoCommandRegistry } from "../../../api/stateControl";
 
 class Command {
-  private id: number;
+  private id: string;
 
-  constructor(id: any) {
+  constructor(id: string) {
     this.id = id;
   }
 
-  get getId(): number {
+  get getId(): string {
     return this.id;
   }
 }
@@ -36,10 +36,10 @@ let messageBus: any;
 
 let registry:DefaultKogitoCommandRegistry<Command>;
 
-const COMMAND1 = new Command(1);
-const COMMAND2 = new Command(2);
-const COMMAND3 = new Command(3);
-const COMMAND4 = new Command(4);
+const COMMAND1 = new Command("1");
+const COMMAND2 = new Command("2");
+const COMMAND3 = new Command("3");
+const COMMAND4 = new Command("4");
 
 describe("DefaultKogitoCommandRegistry", () => {
 
@@ -51,17 +51,16 @@ describe("DefaultKogitoCommandRegistry", () => {
 
   test("test basic add/remove elements", () => {
 
-    registry.register("1", COMMAND1);
-
+    registry.register(COMMAND1.getId, COMMAND1);
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
 
-    registry.register("2", COMMAND2);
+    registry.register(COMMAND2.getId, COMMAND2);
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
 
-    registry.register("3", COMMAND3);
+    registry.register(COMMAND3.getId, COMMAND3);
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "3"}));
 
-    registry.register("4", COMMAND4);
+    registry.register(COMMAND4.getId, COMMAND4);
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "4"}));
 
     expect(messageBus.notify_newEdit).toBeCalledTimes(4);
@@ -71,7 +70,6 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.getCommands()).toContain(COMMAND2);
     expect(registry.getCommands()).toContain(COMMAND3);
     expect(registry.getCommands()).toContain(COMMAND4);
-
     expect(registry.isEmpty()).toBeFalsy();
 
     expect(registry.peek()).toBe(COMMAND4);
@@ -83,7 +81,6 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.getCommands()).toContain(COMMAND1);
     expect(registry.getCommands()).toContain(COMMAND2);
     expect(registry.getCommands()).toContain(COMMAND3);
-
     expect(registry.isEmpty()).toBeFalsy();
 
     expect(registry.pop()).toBe(COMMAND3);
@@ -91,7 +88,6 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.getCommands()).toHaveLength(2);
     expect(registry.getCommands()).toContain(COMMAND1);
     expect(registry.getCommands()).toContain(COMMAND2);
-
     expect(registry.isEmpty()).toBeFalsy();
 
     registry.clear();
@@ -103,11 +99,11 @@ describe("DefaultKogitoCommandRegistry", () => {
 
     registry.setMaxSize(2);
 
-    registry.register("1", COMMAND1);
+    registry.register(COMMAND1.getId, COMMAND1);
 
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
 
-    registry.register("2", COMMAND2);
+    registry.register(COMMAND2.getId, COMMAND2);
     expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
 
     expect(messageBus.notify_newEdit).toBeCalledTimes(2);
@@ -117,19 +113,69 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.getCommands()).toContain(COMMAND2);
     expect(registry.isEmpty()).toBeFalsy();
 
-    registry.register("3", COMMAND3);
+    registry.register(COMMAND3.getId, COMMAND3);
 
     expect(registry.getCommands()).toHaveLength(2);
     expect(registry.getCommands()).toContain(COMMAND3);
     expect(registry.getCommands()).toContain(COMMAND2);
     expect(registry.isEmpty()).toBeFalsy();
 
-    registry.register("4", COMMAND4);
+    registry.register(COMMAND4.getId, COMMAND4);
 
     expect(registry.getCommands()).toHaveLength(2);
     expect(registry.getCommands()).toContain(COMMAND3);
     expect(registry.getCommands()).toContain(COMMAND4);
     expect(registry.isEmpty()).toBeFalsy();
-  })
+  });
+
+  test("test basic adding elements after remove", () => {
+
+    registry.register(COMMAND1.getId, COMMAND1);
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
+
+    registry.register(COMMAND2.getId, COMMAND2);
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
+
+    expect(messageBus.notify_newEdit).toBeCalledTimes(2);
+
+    expect(registry.getCommands()).toHaveLength(2);
+    expect(registry.getCommands()).toContain(COMMAND1);
+    expect(registry.getCommands()).toContain(COMMAND2);
+    expect(registry.isEmpty()).toBeFalsy();
+
+    expect(registry.pop()).toBe(COMMAND2);
+    expect(registry.pop()).toBe(COMMAND1);
+
+    expect(registry.removedCommands).toHaveLength(2);
+    expect(registry.removedCommands).toContain(COMMAND1.getId);
+    expect(registry.removedCommands).toContain(COMMAND2.getId);
+    expect(registry.isEmpty()).toBeTruthy();
+
+    registry.register(COMMAND2.getId, COMMAND2);
+
+    expect(messageBus.notify_newEdit).toBeCalledTimes(2);
+    expect(registry.getCommands()).toHaveLength(1);
+    expect(registry.getCommands()).toContain(COMMAND2);
+    expect(registry.removedCommands).toHaveLength(1);
+    expect(registry.removedCommands).toContain(COMMAND1.getId);
+    expect(registry.isEmpty()).toBeFalsy();
+
+    registry.register(COMMAND1.getId, COMMAND1);
+
+    expect(messageBus.notify_newEdit).toBeCalledTimes(2);
+    expect(registry.getCommands()).toHaveLength(2);
+    expect(registry.getCommands()).toContain(COMMAND1);
+    expect(registry.getCommands()).toContain(COMMAND2);
+    expect(registry.removedCommands).toHaveLength(0);
+    expect(registry.isEmpty()).toBeFalsy();
+
+    registry.register(COMMAND3.getId, COMMAND3);
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "3"}));
+    expect(messageBus.notify_newEdit).toBeCalledTimes(3);
+    expect(registry.getCommands()).toHaveLength(3);
+    expect(registry.getCommands()).toContain(COMMAND1);
+    expect(registry.getCommands()).toContain(COMMAND2);
+    expect(registry.getCommands()).toContain(COMMAND3);
+  });
 });
 
