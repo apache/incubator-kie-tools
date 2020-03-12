@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {KeyBindingServiceOpts, KeyboardShortcutsApi} from "./KeyboardShorcutsApi";
+import { KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
 import { EditorContext } from "../context";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 
@@ -224,17 +224,8 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   }
 
   public registered() {
-    return removeDuplicates(
-      Array.from(this.keyBindings.values()).filter(k => !k.opts?.hidden),
-      "combination"
-    );
+    return Array.from(this.keyBindings.values());
   }
-}
-
-function removeDuplicates<T>(myArr: T[], prop: keyof T) {
-  return myArr.filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
-  });
 }
 
 function setsEqual(lhs: Set<unknown>, rhs: Set<unknown>) {

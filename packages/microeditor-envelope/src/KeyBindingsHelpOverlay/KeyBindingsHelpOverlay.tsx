@@ -16,15 +16,34 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { KeyBinding, KeyboardShortcutsApi } from "../api/keyboardShortcuts";
+import { KeyboardShortcutsApi } from "../api/keyboardShortcuts";
 
 export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi }) {
   const [showing, setShowing] = useState(false);
 
+  const keyBindings = removeDuplicatesByAttr(props.keyboardShortcuts.registered(), "combination")
+    .filter(k => !k.opts?.hidden)
+    .map(k => {
+      console.info("Mapping: " + k.label);
+      return {
+        combination: k.combination,
+        category: k.label.split("|")[0]?.trim(),
+        label: k.label.split("|")[1]?.trim()
+      };
+    })
+    .reduce((lhs, rhs) => {
+      if (!lhs.has(rhs.category)) {
+        lhs.set(rhs.category, new Set([{ label: rhs.label, combination: rhs.combination }]));
+      } else {
+        lhs.get(rhs.category)!.add({ label: rhs.label, combination: rhs.combination });
+      }
+      return lhs;
+    }, new Map<string, Set<{ label: string; combination: string }>>());
+
   useEffect(() => {
     const id = props.keyboardShortcuts.registerKeyPress(
       "shift+/",
-      "Show keyboard shortcuts",
+      "Help | Show keyboard shortcuts",
       async () => setShowing(true),
       { element: window }
     );
@@ -42,13 +61,6 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
       }
     };
   }, [showing]);
-
-  function formatKeyBindingCombination(keyBinding: KeyBinding) {
-    return keyBinding.combination
-      .split("+")
-      .map(w => w.replace(/^\w/, c => c.toUpperCase()))
-      .join(" + ");
-  }
 
   return (
     <>
@@ -88,13 +100,44 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
           }}
         >
           <h1>Keyboard shortcuts</h1>
-          {props.keyboardShortcuts.registered().map(keyBinding => (
-            <h5 key={keyBinding.combination}>
-              {formatKeyBindingCombination(keyBinding)} - {keyBinding.label}
-            </h5>
+          {Array.from(keyBindings.keys()).map(category => (
+            <p key={category}>
+              <h3>{category}</h3>
+              {Array.from(keyBindings.get(category)!).map(keyBinding => (
+                <div key={keyBinding.combination}>
+                  <span
+                    style={{
+                      color: "black",
+                      backgroundColor: "white",
+                      borderRadius: "4px",
+                      fontFamily: "monospace",
+                      fontSize: "0.8em",
+                      padding: "1px 5px 1px 5px",
+                      marginRight: "4px"
+                    }}
+                  >
+                    {formatKeyBindingCombination(keyBinding.combination)}
+                  </span>
+                  <span>{keyBinding.label}</span>
+                </div>
+              ))}
+            </p>
           ))}
         </div>
       )}
     </>
   );
+}
+
+function removeDuplicatesByAttr<T>(myArr: T[], prop: keyof T) {
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+  });
+}
+
+function formatKeyBindingCombination(combination: string) {
+  return combination
+    .split("+")
+    .map(w => w.replace(/^\w/, c => c.toUpperCase()))
+    .join(" + ");
 }
