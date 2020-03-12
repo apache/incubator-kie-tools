@@ -47,6 +47,8 @@ Feature: Discovery with onboarding
       | native      | minutes |
       | false       | 10      |
 
+    # disabled because of https://issues.redhat.com/browse/KOGITO-1357
+    @disabled
     @native
     Examples: Native
       | native    | minutes |
