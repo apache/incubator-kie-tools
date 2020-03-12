@@ -389,7 +389,7 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Open from source code
+                Open from source
               </Title>
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
@@ -418,7 +418,7 @@ export function HomePage(props: Props) {
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={() => openFile()} isDisabled={!validatedInputUrl}>
-                Open from source code
+                Open from source
               </Button>
             </CardFooter>
           </Card>
