@@ -15,30 +15,48 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { KeyboardShortcutsApi } from "../api/keyboardShortcuts";
+import {
+  Modal,
+  Text,
+  TextContent,
+  TextList,
+  TextListItem,
+  TextListItemVariants,
+  TextListVariants,
+  TextVariants
+} from "@patternfly/react-core";
+import { KeyboardIcon } from "@patternfly/react-icons";
+import { EditorContext } from "../api/context";
+import { OperatingSystem } from "@kogito-tooling/core-api";
 
-export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi }) {
+export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
   const [showing, setShowing] = useState(false);
 
-  const keyBindings = removeDuplicatesByAttr(props.keyboardShortcuts.registered(), "combination")
-    .filter(k => !k.opts?.hidden)
-    .map(k => {
-      console.info("Mapping: " + k.label);
-      return {
-        combination: k.combination,
-        category: k.label.split("|")[0]?.trim(),
-        label: k.label.split("|")[1]?.trim()
-      };
-    })
-    .reduce((lhs, rhs) => {
-      if (!lhs.has(rhs.category)) {
-        lhs.set(rhs.category, new Set([{ label: rhs.label, combination: rhs.combination }]));
-      } else {
-        lhs.get(rhs.category)!.add({ label: rhs.label, combination: rhs.combination });
-      }
-      return lhs;
-    }, new Map<string, Set<{ label: string; combination: string }>>());
+  const toggle = useCallback(() => {
+    setShowing(!showing);
+  }, [showing]);
+
+  const keyBindings = useMemo(() => {
+    return removeDuplicatesByAttr(props.keyboardShortcuts.registered(), "combination")
+      .filter(k => !k.opts?.hidden)
+      .map(k => {
+        return {
+          combination: handleMacOsCombination(k.combination, props.context),
+          category: k.label.split("|")[0]?.trim(),
+          label: k.label.split("|")[1]?.trim()
+        };
+      })
+      .reduce((lhs, rhs) => {
+        if (!lhs.has(rhs.category)) {
+          lhs.set(rhs.category, new Set([{ label: rhs.label, combination: rhs.combination }]));
+        } else {
+          lhs.get(rhs.category)!.add({ label: rhs.label, combination: rhs.combination });
+        }
+        return lhs;
+      }, new Map<string, Set<{ label: string; combination: string }>>());
+  }, [props.keyboardShortcuts.registered()]);
 
   useEffect(() => {
     const id = props.keyboardShortcuts.registerKeyPress(
@@ -51,15 +69,12 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
   }, []);
 
   useEffect(() => {
-    let id: number;
     if (showing) {
-      id = props.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), { element: window });
+      const id = props.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), {
+        element: window
+      });
+      return () => props.keyboardShortcuts.deregister(id);
     }
-    return () => {
-      if (showing) {
-        props.keyboardShortcuts.deregister(id);
-      }
-    };
   }, [showing]);
 
   return (
@@ -69,7 +84,7 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
         style={{
           userSelect: "none",
           zIndex: 999,
-          right: 0,
+          left: 0,
           bottom: 0,
           position: "fixed",
           padding: "7px",
@@ -82,51 +97,38 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
           cursor: "pointer"
         }}
       >
-        <b>{showing ? "x" : "?"}</b>
+        <KeyboardIcon />
       </div>
-      {showing && (
-        <div
-          style={{
-            userSelect: "none",
-            zIndex: 998,
-            top: 0,
-            left: 0,
-            position: "fixed",
-            width: "100vw",
-            height: "100vh",
-            padding: "40px",
-            backdropFilter: "blur(5px)",
-            background: "#cacacaa6"
-          }}
-        >
-          <h1>Keyboard shortcuts</h1>
-          {Array.from(keyBindings.keys()).map(category => (
-            <p key={category}>
-              <h3>{category}</h3>
-              {Array.from(keyBindings.get(category)!).map(keyBinding => (
-                <div key={keyBinding.combination}>
-                  <span
-                    style={{
-                      color: "black",
-                      backgroundColor: "white",
-                      borderRadius: "4px",
-                      fontFamily: "monospace",
-                      fontSize: "0.8em",
-                      padding: "1px 5px 1px 5px",
-                      marginRight: "4px"
-                    }}
-                  >
-                    {formatKeyBindingCombination(keyBinding.combination)}
-                  </span>
-                  <span>{keyBinding.label}</span>
-                </div>
-              ))}
-            </p>
-          ))}
-        </div>
-      )}
+
+      <Modal title={"Keyboard shortcuts"} isOpen={showing} isLarge={true} onClose={toggle}>
+        <TextContent>
+          <TextList component={TextListVariants.dl}>
+            {Array.from(keyBindings.keys()).map(category => (
+              <React.Fragment key={category}>
+                <Text component={TextVariants.h2}>{category}</Text>
+                {Array.from(keyBindings.get(category)!).map(keyBinding => (
+                  <React.Fragment key={keyBinding.combination}>
+                    <TextListItem component={TextListItemVariants.dt}>
+                      {formatKeyBindingCombination(keyBinding.combination)}
+                    </TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{keyBinding.label}</TextListItem>
+                  </React.Fragment>
+                ))}
+              </React.Fragment>
+            ))}
+          </TextList>
+        </TextContent>
+      </Modal>
     </>
   );
+}
+
+function handleMacOsCombination(combination: string, context: EditorContext) {
+    if (context.operatingSystem === OperatingSystem.MACOS) {
+        return combination.replace("Ctrl", "Cmd");
+    }
+
+    return combination;
 }
 
 function removeDuplicatesByAttr<T>(myArr: T[], prop: keyof T) {

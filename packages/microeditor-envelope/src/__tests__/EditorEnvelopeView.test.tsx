@@ -28,6 +28,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
   const render = shallow(
     <EditorEnvelopeView
       keyboardShortcuts={undefined as any}
+      context={undefined as any}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
     />

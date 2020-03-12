@@ -77,7 +77,7 @@ export function init(args: {
   );
 
   return editorEnvelopeController
-    .start({ container: args.container, keyboardShortcuts: keyboardShortcutsService })
+    .start({ container: args.container, keyboardShortcuts: keyboardShortcutsService, context: args.editorContext })
     .then(messageBus => {
       window.envelope = {
         resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),

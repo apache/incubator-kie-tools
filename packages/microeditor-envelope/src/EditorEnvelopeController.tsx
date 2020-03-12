@@ -26,6 +26,7 @@ import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
 import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { EditorContext } from "./api/context";
 
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
@@ -115,13 +116,14 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi }) {
+  private render(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
     return new Promise<void>(res =>
       this.renderer.render(
         <EditorEnvelopeView
           exposing={self => (this.editorEnvelopeView = self)}
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
           keyboardShortcuts={args.keyboardShortcuts}
+          context={args.context}
         />,
         args.container,
         res
@@ -129,7 +131,7 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi }) {
+  public start(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
     return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;
