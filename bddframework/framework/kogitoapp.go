@@ -60,9 +60,8 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 	kogitoApp := getKogitoAppStub(namespace, kogitoAppDeployment.AppName, kogitoAppDeployment.Labels)
 	kogitoApp.Spec.Runtime = kogitoAppDeployment.Runtime
 
-	gitProjectURI := GetConfigExamplesRepositoryURI()
 	kogitoApp.Spec.Build.Native = kogitoAppDeployment.Native
-	kogitoApp.Spec.Build.GitSource.URI = &gitProjectURI
+	kogitoApp.Spec.Build.GitSource.URI = GetConfigExamplesRepositoryURI()
 	kogitoApp.Spec.Build.GitSource.ContextDir = kogitoAppDeployment.ContextDir
 	kogitoApp.Spec.Build.GitSource.Reference = GetConfigExamplesRepositoryRef()
 
@@ -163,7 +162,7 @@ func getKogitoAppStub(namespace, appName string, labels map[string]string) *v1al
 		Spec: v1alpha1.KogitoAppSpec{
 			Build: &v1alpha1.KogitoAppBuildObject{
 				Env:       []v1alpha1.Env{},
-				GitSource: &v1alpha1.GitSource{},
+				GitSource: v1alpha1.GitSource{},
 			},
 		},
 	}
