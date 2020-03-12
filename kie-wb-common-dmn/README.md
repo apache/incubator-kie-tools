@@ -43,8 +43,8 @@ Webapp targeting _kogito_ integration with VSCode etc. No decorations.
 
 Please refer to the [Kogito's DMN Editor README](./kie-wb-common-dmn-webapp-kogito-runtime/README.md) for building and usage.
 
-This module contains also selenium integration tests. They use `headless` browser mode by default thus are not 
-visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
+This module contains also selenium integration tests activated by `-Dintegration-tests` property. They use `headless` 
+browser mode by default thus are not visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
  `mvn` command. Temporary is needed to include `-DskipITs=false` property due to [KOGITO-1107](https://issues.redhat.com/browse/KOGITO-1107).
 
 10) `kie-wb-common-dmn-webapp-kogito-testing`
