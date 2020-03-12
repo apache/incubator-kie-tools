@@ -46,8 +46,31 @@
   padding: var(--pf-global--spacer--xl);
 }
 
+.kogito--editor-landing__upload-box > div * {
+  pointer-events: none;
+}
+
 .kogito--editor-landing__upload-box > div.hover {
   border: var(--pf-global--BorderWidth--lg) dashed var(--pf-global--BorderColor--200);
+}
+
+.kogito--editor-landing__upload-box > div.invalid {
+  border-color: red;
+  background-color: #fbd7d3;
+  animation-name: color_change;
+  animation-duration: 0.3s;
+  animation-delay: 2s;
+}
+
+@keyframes color_change {
+  from {
+    border-color: red;
+    background-color: #fbd7d3;
+  }
+  to {
+    border-color: var(--pf-global--BorderColor--100);
+    background-color: #fff;
+  }
 }
 
 .kogito--editor-landing__upload-btn {
