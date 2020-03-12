@@ -203,7 +203,7 @@ export function HomePage(props: Props) {
   );
 
   const logoProps = {
-    href: "/"
+    href: window.location.href.split("?")[0].split("#")[0]
   };
 
   const linkDropdownItems = [
@@ -288,7 +288,7 @@ export function HomePage(props: Props) {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={"images/IntelliApp_Logo.svg"} alt="Kogito Logo" />}
+      logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
       logoProps={logoProps}
       toolbar={headerToolbar}
     />
@@ -302,9 +302,9 @@ export function HomePage(props: Props) {
             Asset Editor for Kogito and Process Automation
           </Title>
           <Text>
-            Welcome to the Asset Editor! This simple BPMN and DMN editor is here to allow you to collaborate in an easy
-            way and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in
-            touch in the forum or review the documentation for more information.
+            Welcome to Business Modeler! These simple BPMN and DMN editors are here to allow you to collaborate quickly
+            and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch
+            in the forum or review the documentation for more information.
           </Text>
           <Text component={TextVariants.small} className="pf-u-text-align-right">
             Powered by{" "}
@@ -389,7 +389,7 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Import source code
+                Open from source code
               </Title>
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
@@ -399,7 +399,7 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   isValid={validatedInputUrl}
-                  helperText="http://"
+                  helperText=""
                   helperTextInvalid={messageForState}
                 >
                   <TextInput
@@ -418,7 +418,7 @@ export function HomePage(props: Props) {
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={() => openFile()} isDisabled={!validatedInputUrl}>
-                Import source code
+                Open from source code
               </Button>
             </CardFooter>
           </Card>
