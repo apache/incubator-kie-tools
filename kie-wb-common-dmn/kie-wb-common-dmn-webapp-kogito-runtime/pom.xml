@@ -33,7 +33,7 @@
     <skipITs>false</skipITs>
     <org.kie.dmn.kogito.browser.headless>true</org.kie.dmn.kogito.browser.headless>
     <!-- We do not want to run selenium tests in default profile -->
-    <selenium.tests.excludes>**/*IT.java</selenium.tests.excludes>
+    <kogito.it.tests.excludes>**/*IT.java</kogito.it.tests.excludes>
   </properties>
 
   <dependencies>
@@ -521,8 +521,11 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>${selenium.tests.excludes}</exclude>
+            <exclude>${kogito.it.tests.excludes}</exclude>
           </excludes>
+          <systemPropertyVariables>
+            <org.kie.dmn.kogito.browser.headless>${org.kie.dmn.kogito.browser.headless}</org.kie.dmn.kogito.browser.headless>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
@@ -555,11 +558,6 @@
           <name>!productized</name>
         </property>
       </activation>
-
-      <properties>
-        <!-- We want to run selenium tests in kogito profile -->
-        <selenium.tests.excludes></selenium.tests.excludes>
-      </properties>
 
       <build>
         <plugins>
@@ -762,6 +760,19 @@
       </build>
     </profile>
 
+    <profile>
+      <id>kogito-it-tests</id>
+      <activation>
+        <property>
+          <name>integration-tests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <!-- We want to run selenium tests in kogito-tests profile -->
+        <kogito.it.tests.excludes></kogito.it.tests.excludes>
+      </properties>
+    </profile>
   </profiles>
 
 </project>
