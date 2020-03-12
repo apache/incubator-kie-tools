@@ -106,6 +106,4 @@ suite("vscode extension :: integration tests", () => {
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
   });
-
-
 });
