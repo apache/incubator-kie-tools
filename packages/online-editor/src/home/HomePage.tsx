@@ -48,7 +48,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { InputFileUrlState } from "./InputFileUrlState";
-import { UploadFileStateDnd, UploadFileStateInput } from "./UploadFileState";
+import { UploadFileDndState, UploadFileInputState } from "./UploadFileState";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -63,12 +63,12 @@ export function HomePage(props: Props) {
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
-  const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileStateDnd.INITIAL);
-  const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileStateInput.INITIAL);
+  const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
+  const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
   const uploadDndOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     uploadDndRef.current!.className = "hover";
-    setUploadFileDndState(UploadFileStateDnd.INITIAL);
+    setUploadFileDndState(UploadFileDndState.INITIAL);
     e.stopPropagation();
     e.preventDefault();
     return false;
@@ -100,7 +100,7 @@ export function HomePage(props: Props) {
   const onFileUploadFromDnd = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
     if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
-      setUploadFileDndState(UploadFileStateDnd.INVALID_EXTENSION);
+      setUploadFileDndState(UploadFileDndState.INVALID_EXTENSION);
     } else {
       openFile(file);
     }
@@ -122,7 +122,7 @@ export function HomePage(props: Props) {
 
   const messageForUploadFileFromDndState = useMemo(() => {
     switch (uploadFileDndState) {
-      case UploadFileStateDnd.INVALID_EXTENSION:
+      case UploadFileDndState.INVALID_EXTENSION:
         return "File extension is not supported";
       default:
         return "Drop a BPMN or DMN file here";
@@ -131,7 +131,7 @@ export function HomePage(props: Props) {
 
   const uploadDndClassName = useMemo(() => {
     switch (uploadFileDndState) {
-      case UploadFileStateDnd.INVALID_EXTENSION:
+      case UploadFileDndState.INVALID_EXTENSION:
         return "invalid";
       default:
         return "";
@@ -141,23 +141,31 @@ export function HomePage(props: Props) {
   const onFileUploadFromInput = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
     if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
-      setUploadFileInputState(UploadFileStateInput.INVALID_EXTENSION);
+      setUploadFileInputState(UploadFileInputState.INVALID_EXTENSION);
     } else {
       openFile(file);
     }
   }, []);
 
   const uploadFileFromInput = useCallback(() => {
-    setUploadFileInputState(UploadFileStateInput.INITIAL);
+    setUploadFileInputState(UploadFileInputState.INITIAL);
     if (uploadInputRef.current!.files) {
       const file = uploadInputRef.current!.files![0];
       onFileUploadFromInput(file);
     }
   }, [onFileUploadFromInput]);
 
+  const onDndInvalidFileExtensionAnimationEnd = useCallback(() => {
+    setUploadFileDndState(UploadFileDndState.INITIAL);
+  }, [uploadFileDndState]);
+
+  const onInputInvalidFileExtensionAnimationEnd = useCallback(() => {
+    setUploadFileInputState(UploadFileInputState.INITIAL);
+  }, [uploadFileInputState]);
+
   const messageForUploadFileFromInputState = useMemo(() => {
     switch (uploadFileInputState) {
-      case UploadFileStateInput.INVALID_EXTENSION:
+      case UploadFileInputState.INVALID_EXTENSION:
         return "File extension is not supported";
       default:
         return "";
@@ -166,7 +174,7 @@ export function HomePage(props: Props) {
 
   const uploadInputClassName = useMemo(() => {
     switch (uploadFileInputState) {
-      case UploadFileStateInput.INVALID_EXTENSION:
+      case UploadFileInputState.INVALID_EXTENSION:
         return "invalid";
       default:
         return "";
@@ -181,6 +189,14 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
+  const createEmptyBpmnFile = useCallback(() => {
+    createEmptyFile("bpmn");
+  }, [createEmptyFile]);
+
+  const createEmptyDmnFile = useCallback(() => {
+    createEmptyFile("dmn");
+  }, [createEmptyFile]);
+
   const trySample = useCallback(
     (fileExtension: string) => {
       const fileName = "sample";
@@ -193,6 +209,14 @@ export function HomePage(props: Props) {
     },
     [context, history]
   );
+
+  const tryBpmnSample = useCallback(() => {
+    trySample("bpmn");
+  }, [trySample]);
+  
+  const tryDmnSample = useCallback(() => {
+    trySample("dmn");
+  }, [trySample]);
 
   const validateUrl = useCallback((fileUrl: string) => {
     let url: URL;
@@ -253,7 +277,7 @@ export function HomePage(props: Props) {
   }, [inputFileUrlState]);
 
   const externalFileFormSubmit = useCallback(
-    e => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       e.stopPropagation();
       openFileFromUrl();
@@ -385,12 +409,12 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>BPMN files are used to generate business processes.</CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={() => trySample("bpmn")}>
+              <Button variant="link" isInline={true} onClick={tryBpmnSample}>
                 Try Sample
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => createEmptyFile("bpmn")}>
+              <Button variant="secondary" onClick={createEmptyBpmnFile}>
                 Create new workflow
               </Button>
             </CardFooter>
@@ -403,12 +427,12 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>DMN files are used to generate decision models</CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={() => trySample("dmn")}>
+              <Button variant="link" isInline={true} onClick={tryDmnSample}>
                 Try Sample
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => createEmptyFile("dmn")}>
+              <Button variant="secondary" onClick={createEmptyDmnFile}>
                 Create new decision model
               </Button>
             </CardFooter>
@@ -427,7 +451,7 @@ export function HomePage(props: Props) {
                 onDragLeave={uploadDndOnDragLeave}
                 onDrop={uploadDndOnDrop}
                 className={uploadDndClassName}
-                onAnimationEnd={() => setUploadFileDndState(UploadFileStateDnd.INITIAL)}
+                onAnimationEnd={onDndInvalidFileExtensionAnimationEnd}
               >
                 <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
               </div>
@@ -446,10 +470,7 @@ export function HomePage(props: Props) {
                   onChange={uploadFileFromInput}
                 />
               </Button>
-              <div
-                className={uploadInputClassName}
-                onAnimationEnd={() => setUploadFileInputState(UploadFileStateInput.INITIAL)}
-              >
+              <div className={uploadInputClassName} onAnimationEnd={onInputInvalidFileExtensionAnimationEnd}>
                 {messageForUploadFileFromInputState}
               </div>
             </CardFooter>
@@ -485,7 +506,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => openFileFromUrl()} isDisabled={!validatedInputUrl}>
+              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validatedInputUrl}>
                 Open from source
               </Button>
             </CardFooter>
