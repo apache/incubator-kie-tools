@@ -16,7 +16,6 @@ package steps
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
@@ -68,9 +67,10 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithin
 	if err != nil {
 		return err
 	}
-	return framework.WaitFor(data.Namespace, fmt.Sprintf("GET request on path %s to return array of size %d", path, size), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return framework.IsHTTPResponseArraySize(data.Namespace, "GET", routeURI, path, "", "", size)
-	})
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to return array of size %d", path, size), timeoutInMin,
+		func() (bool, error) {
+			return framework.IsHTTPResponseArraySize(data.Namespace, "GET", routeURI, path, "", "", size)
+		})
 }
 
 func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes(serviceName, path, responseContent string, timeoutInMin int) error {
@@ -79,7 +79,8 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 		return err
 	}
 
-	return framework.WaitFor(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", path, responseContent), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return framework.DoesHTTPResponseContain(data.Namespace, "GET", routeURI, path, "", "", responseContent)
-	})
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", path, responseContent), timeoutInMin,
+		func() (bool, error) {
+			return framework.DoesHTTPResponseContain(data.Namespace, "GET", routeURI, path, "", "", responseContent)
+		})
 }

@@ -17,7 +17,6 @@ package framework
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
@@ -122,12 +121,13 @@ func cliRemoveKogitoInfraComponent(namespace string, component KogitoInfraCompon
 
 // WaitForKogitoInfraComponent waits for the given component to be installed or removed
 func WaitForKogitoInfraComponent(namespace string, component KogitoInfraComponent, shouldRun bool, timeoutInMin int) error {
-	return WaitFor(namespace, getWaitRunningMessage(component.name, shouldRun), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		if shouldRun {
-			return IsKogitoInfraComponentRunning(namespace, component)
-		}
-		return IsKogitoInfraComponentTerminated(namespace, component)
-	})
+	return WaitForOnOpenshift(namespace, getWaitRunningMessage(component.name, shouldRun), timeoutInMin,
+		func() (bool, error) {
+			if shouldRun {
+				return IsKogitoInfraComponentRunning(namespace, component)
+			}
+			return IsKogitoInfraComponentTerminated(namespace, component)
+		})
 }
 
 // IsKogitoInfraComponentRunning checks whether the given component is running from KogitoInfra

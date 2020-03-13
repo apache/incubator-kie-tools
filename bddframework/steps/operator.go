@@ -53,6 +53,7 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 }
 
 func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) error {
+	// Install kogito operator
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
@@ -72,6 +73,11 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 		}
 	}
 
+	// Wait for kogito operator to be running
+	if err := framework.WaitForKogitoOperatorRunning(data.Namespace); err != nil {
+		return fmt.Errorf("Error while checking operator running: %v", err)
+	}
+	// Wait for dependent operators to be running
 	for _, installedOperator := range installedOperators {
 		if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, installedOperator); err != nil {
 			return err

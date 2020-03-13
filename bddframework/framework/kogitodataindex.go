@@ -17,7 +17,6 @@ package framework
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	apps "k8s.io/api/apps/v1"
 
@@ -93,14 +92,15 @@ func GetKogitoDataIndexDeployment(namespace string) (*apps.Deployment, error) {
 
 // WaitForKogitoDataIndex waits that the jobs service has a certain number of replicas
 func WaitForKogitoDataIndex(namespace string, replicas, timeoutInMin int) error {
-	return WaitFor(namespace, "Kogito data index running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		dataIndex, err := GetKogitoDataIndexDeployment(namespace)
-		if err != nil {
-			return false, err
-		}
-		if dataIndex == nil {
-			return false, nil
-		}
-		return dataIndex.Status.Replicas == int32(replicas) && dataIndex.Status.AvailableReplicas == int32(replicas), nil
-	})
+	return WaitForOnOpenshift(namespace, "Kogito data index running", timeoutInMin,
+		func() (bool, error) {
+			dataIndex, err := GetKogitoDataIndexDeployment(namespace)
+			if err != nil {
+				return false, err
+			}
+			if dataIndex == nil {
+				return false, nil
+			}
+			return dataIndex.Status.Replicas == int32(replicas) && dataIndex.Status.AvailableReplicas == int32(replicas), nil
+		})
 }

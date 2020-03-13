@@ -17,25 +17,25 @@ package framework
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/machinebox/graphql"
 )
 
 // WaitForSuccessfulGraphQLRequest waits for an GraphQL request to be successful
 func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeoutInMin int, response interface{}, analyzeResponse func(response interface{}) (bool, error)) error {
-	return WaitFor(namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful", query, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		success, err := IsGraphQLRequestSuccessful(namespace, uri, path, query, response)
-		if err != nil {
-			return false, err
-		}
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("GraphQL query %s on path '%s' to be successful", query, path), timeoutInMin,
+		func() (bool, error) {
+			success, err := IsGraphQLRequestSuccessful(namespace, uri, path, query, response)
+			if err != nil {
+				return false, err
+			}
 
-		if analyzeResponse != nil {
-			return analyzeResponse(response)
-		}
+			if analyzeResponse != nil {
+				return analyzeResponse(response)
+			}
 
-		return success, nil
-	})
+			return success, nil
+		})
 }
 
 // ExecuteGraphQLRequest executes a GraphQL query

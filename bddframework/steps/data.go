@@ -67,14 +67,14 @@ func (data *Data) AfterScenario(s interface{}, err error) {
 		return nil
 	})
 
-	logScenarioDuration(data, s)
 	handleScenarioResult(data, s, err)
+	logScenarioDuration(data, s)
 }
 
 func logScenarioDuration(data *Data, s interface{}) {
 	endTime := time.Now()
 	duration := endTime.Sub(data.StartTime)
-	framework.GetLogger(data.Namespace).Infof("Scenario '%s'. Duration = %s", framework.GetScenarioName(s), duration.String())
+	framework.GetLogger(data.Namespace).Infof("Scenario duration: %s", duration.String())
 }
 
 func handleScenarioResult(data *Data, s interface{}, err error) {
@@ -84,6 +84,8 @@ func handleScenarioResult(data *Data, s interface{}, err error) {
 		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", framework.GetScenarioName(s), err)
 
 		newLogFolderName = "error - " + newLogFolderName
+	} else {
+		framework.GetLogger(data.Namespace).Infof("Successful scenario '%s'", scenarioName)
 	}
 	err = framework.RenameLogFolder(data.Namespace, newLogFolderName)
 	if err != nil {

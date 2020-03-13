@@ -8,7 +8,7 @@ Feature: Install Kogito Jobs Service
     Given Kogito Operator is deployed
 
     When "<installer>" install Kogito Jobs Service with 1 replicas
-    And Kogito Jobs Service has 1 pods running within 5 minutes
+    And Kogito Jobs Service has 1 pods running within 10 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
       {
@@ -39,7 +39,7 @@ Feature: Install Kogito Jobs Service
     Given Kogito Operator is deployed with Infinispan operator
     
     When "<installer>" install Kogito Jobs Service with 1 replicas and persistence
-    And Kogito Jobs Service has 1 pods running within 5 minutes
+    And Kogito Jobs Service has 1 pods running within 10 minutes
     And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
       {

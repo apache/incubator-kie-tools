@@ -32,37 +32,39 @@ import (
 
 // WaitForBuildComplete waits for a build to be completed
 func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("Build %s complete", buildName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		bc := buildv1.BuildConfig{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      buildName,
-				Namespace: namespace,
-			},
-		}
-		builds, err := openshift.BuildConfigC(kubeClient).GetBuildsStatus(&bc, fmt.Sprintf("%s=%s", "buildconfig", buildName))
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Build %s complete", buildName), timeoutInMin,
+		func() (bool, error) {
+			bc := buildv1.BuildConfig{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      buildName,
+					Namespace: namespace,
+				},
+			}
+			builds, err := openshift.BuildConfigC(kubeClient).GetBuildsStatus(&bc, fmt.Sprintf("%s=%s", "buildconfig", buildName))
 
-		if err != nil {
-			return false, fmt.Errorf("Error while fetching buildconfig %s: %v", buildName, err)
-		} else if builds == nil || len(builds.Complete) < 1 {
-			return false, nil
-		}
+			if err != nil {
+				return false, fmt.Errorf("Error while fetching buildconfig %s: %v", buildName, err)
+			} else if builds == nil || len(builds.Complete) < 1 {
+				return false, nil
+			}
 
-		return true, nil
-	})
+			return true, nil
+		})
 }
 
 // WaitForDeploymentConfigRunning waits for a deployment config to be running, with a specific number of pod
 func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("DeploymentConfig %s running", dcName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		if dc, err := GetDeploymentConfig(namespace, dcName); err != nil {
-			return false, err
-		} else if dc == nil {
-			return false, nil
-		} else {
-			GetLogger(namespace).Debugf("Deployment config has %d available replicas\n", dc.Status.AvailableReplicas)
-			return dc.Status.AvailableReplicas == int32(podNb), nil
-		}
-	})
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("DeploymentConfig %s running", dcName), timeoutInMin,
+		func() (bool, error) {
+			if dc, err := GetDeploymentConfig(namespace, dcName); err != nil {
+				return false, err
+			} else if dc == nil {
+				return false, nil
+			} else {
+				GetLogger(namespace).Debugf("Deployment config has %d available replicas\n", dc.Status.AvailableReplicas)
+				return dc.Status.AvailableReplicas == int32(podNb), nil
+			}
+		})
 }
 
 // GetDeploymentConfig retrieves a deployment config
@@ -78,14 +80,15 @@ func GetDeploymentConfig(namespace, dcName string) (*ocapps.DeploymentConfig, er
 
 // WaitForRoute waits for a route to be available
 func WaitForRoute(namespace, routeName string, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("Route %s available", routeName), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		route, err := GetRoute(namespace, routeName)
-		if err != nil || route == nil {
-			return false, err
-		}
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Route %s available", routeName), timeoutInMin,
+		func() (bool, error) {
+			route, err := GetRoute(namespace, routeName)
+			if err != nil || route == nil {
+				return false, err
+			}
 
-		return true, nil
-	})
+			return true, nil
+		})
 }
 
 // GetRoute retrieves a route
@@ -154,4 +157,14 @@ func WaitAndRetrieveRouteURI(namespace, serviceName string) (string, error) {
 	}
 	GetLogger(namespace).Debugf("Got route %s\n", routeURI)
 	return routeURI, nil
+}
+
+// WaitForOnOpenshift is a specific method
+func WaitForOnOpenshift(namespace, display string, timeoutInMin int, condition func() (bool, error)) error {
+	return WaitFor(namespace, display, GetOpenshiftDurationFromTimeInMin(timeoutInMin), condition)
+}
+
+// GetOpenshiftDurationFromTimeInMin will calculate the time depending on the configured cluster load factor
+func GetOpenshiftDurationFromTimeInMin(timeoutInMin int) time.Duration {
+	return time.Duration(timeoutInMin*GetConfigLoadFactor()) * time.Minute
 }

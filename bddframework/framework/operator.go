@@ -16,7 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"time"
 
 	coreapps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -48,19 +47,19 @@ var (
 	KogitoOperatorCommunityDependencies = map[string]dependentOperator{
 		"Infinispan": {
 			operatorPackageName: "infinispan",
-			timeoutInMin:        20,
+			timeoutInMin:        10,
 			channel:             "stable",
 			crdName:             "infinispans.infinispan.org",
 		},
 		"Kafka": {
 			operatorPackageName: "strimzi-kafka-operator",
-			timeoutInMin:        20,
+			timeoutInMin:        10,
 			channel:             "stable",
 			crdName:             "kafkas.kafka.strimzi.io",
 		},
 		"Keycloak": {
 			operatorPackageName: "keycloak-operator",
-			timeoutInMin:        20,
+			timeoutInMin:        10,
 			channel:             "alpha",
 			crdName:             "keycloaks.keycloak.org",
 		},
@@ -98,9 +97,10 @@ func IsKogitoOperatorRunning(namespace string) (bool, error) {
 
 // WaitForKogitoOperatorRunning waits for Kogito operator running
 func WaitForKogitoOperatorRunning(namespace string) error {
-	return WaitFor(namespace, "Kogito operator running", time.Minute*time.Duration(kogitoOperatorTimeoutInMin), func() (bool, error) {
-		return IsKogitoOperatorRunning(namespace)
-	})
+	return WaitForOnOpenshift(namespace, "Kogito operator running", kogitoOperatorTimeoutInMin,
+		func() (bool, error) {
+			return IsKogitoOperatorRunning(namespace)
+		})
 }
 
 // WaitForKogitoOperatorRunningWithDependencies waits for Kogito operator running as well as other dependent operators
@@ -162,9 +162,10 @@ func InstallOperator(namespace, subscriptionName, operatorSource, channel string
 
 // WaitForOperatorRunning waits for an operator to be running
 func WaitForOperatorRunning(namespace, operatorPackageName, operatorSource string, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("%s operator running", operatorPackageName), time.Minute*time.Duration(timeoutInMin), func() (bool, error) {
-		return IsOperatorRunning(namespace, operatorPackageName, operatorSource)
-	})
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator running", operatorPackageName), timeoutInMin,
+		func() (bool, error) {
+			return IsOperatorRunning(namespace, operatorPackageName, operatorSource)
+		})
 }
 
 // IsOperatorRunning checks whether an operator is running
@@ -234,9 +235,10 @@ func IsCommunityOperatorCrdAvailable(operatorName string) (bool, error) {
 // WaitForKogitoOperatorCrdAvailable waits for dependent operator main crd to be available
 func WaitForKogitoOperatorCrdAvailable(namespace, dependentOperator string) error {
 	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
-		return WaitFor(namespace, fmt.Sprintf("%s operator crd is available", dependentOperator), time.Minute*time.Duration(operatorInfo.timeoutInMin), func() (bool, error) {
-			return IsCrdAvailable(operatorInfo.crdName)
-		})
+		return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator crd is available", dependentOperator), operatorInfo.timeoutInMin,
+			func() (bool, error) {
+				return IsCrdAvailable(operatorInfo.crdName)
+			})
 	}
 	return fmt.Errorf("Operator %s not found", dependentOperator)
 }

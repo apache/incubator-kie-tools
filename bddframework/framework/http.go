@@ -20,14 +20,14 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 )
 
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
 func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", httpMethod, path), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		return IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
-	})
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", httpMethod, path), timeoutInMin,
+		func() (bool, error) {
+			return IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+		})
 }
 
 // ExecuteHTTPRequest executes an HTTP request

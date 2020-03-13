@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -91,14 +90,15 @@ func OperateOnNamespaceIfExists(namespace string, operate func(namespace string)
 
 // WaitForPods waits for pods with specific label to be available and running
 func WaitForPods(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
-		if err != nil || (len(pods.Items) != numberOfPods) {
-			return false, err
-		}
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
+			if err != nil || (len(pods.Items) != numberOfPods) {
+				return false, err
+			}
 
-		return CheckPodsAreRunning(pods), nil
-	})
+			return CheckPodsAreRunning(pods), nil
+		})
 }
 
 // GetPods retrieves all pods in namespace
@@ -161,15 +161,16 @@ func loadResource(namespace, uri string, resourceRef meta.ResourceObject, before
 
 // WaitForAllPodsToContainTextInLog waits for pods of specified deployment config to contain specified text in log
 func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeoutInMin int) error {
-	return WaitFor(namespace, fmt.Sprintf("Pods for deployment config '%s' contain text '%s'", dcName, logText), time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		pods, err := GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
-		if err != nil {
-			return false, err
-		}
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment config '%s' contain text '%s'", dcName, logText), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
+			if err != nil {
+				return false, err
+			}
 
-		// Container name is equal to deployment config name
-		return checkAllPodsContainingTextInLog(namespace, pods, dcName, logText)
-	})
+			// Container name is equal to deployment config name
+			return checkAllPodsContainingTextInLog(namespace, pods, dcName, logText)
+		})
 }
 
 func checkAllPodsContainingTextInLog(namespace string, pods *corev1.PodList, containerName, text string) (bool, error) {

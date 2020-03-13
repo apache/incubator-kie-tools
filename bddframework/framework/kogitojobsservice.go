@@ -17,7 +17,6 @@ package framework
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -87,16 +86,17 @@ func GetKogitoJobsServiceDeployment(namespace string) (*apps.Deployment, error) 
 
 // WaitForKogitoJobsService waits that the jobs service has a certain number of replicas
 func WaitForKogitoJobsService(namespace string, replicas, timeoutInMin int) error {
-	return WaitFor(namespace, "Kogito jobs service running", time.Duration(timeoutInMin)*time.Minute, func() (bool, error) {
-		deployment, err := GetKogitoJobsServiceDeployment(namespace)
-		if err != nil {
-			return false, err
-		}
-		if deployment == nil {
-			return false, nil
-		}
-		return deployment.Status.Replicas == int32(replicas) && deployment.Status.AvailableReplicas == int32(replicas), nil
-	})
+	return WaitForOnOpenshift(namespace, "Kogito jobs service running", timeoutInMin,
+		func() (bool, error) {
+			deployment, err := GetKogitoJobsServiceDeployment(namespace)
+			if err != nil {
+				return false, err
+			}
+			if deployment == nil {
+				return false, nil
+			}
+			return deployment.Status.Replicas == int32(replicas) && deployment.Status.AvailableReplicas == int32(replicas), nil
+		})
 }
 
 // SetKogitoJobsServiceReplicas sets the number of replicas for the Kogito Jobs Service

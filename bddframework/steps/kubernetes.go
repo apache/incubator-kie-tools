@@ -15,8 +15,6 @@
 package steps
 
 import (
-	"time"
-
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -43,10 +41,11 @@ func (data *Data) namespaceIsDeleted() error {
 			return err
 		}
 		// wait for deletion complete
-		err = framework.WaitFor(data.Namespace, "namespace is deleted", time.Duration(2)*time.Minute, func() (bool, error) {
-			exists, err := framework.IsNamespace(data.Namespace)
-			return !exists, err
-		})
+		err = framework.WaitForOnOpenshift(data.Namespace, "namespace is deleted", 2,
+			func() (bool, error) {
+				exists, err := framework.IsNamespace(data.Namespace)
+				return !exists, err
+			})
 	}
 	return nil
 }

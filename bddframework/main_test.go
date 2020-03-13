@@ -91,7 +91,7 @@ func TestMain(m *testing.M) {
 }
 
 func configureTags() {
-	if framework.IsSmokeTests() {
+	if framework.IsConfigSmokeTests() {
 		if len(opt.Tags) > 0 {
 			opt.Tags += " && "
 		}
@@ -109,7 +109,7 @@ func configureTags() {
 }
 
 func configureTestOutput() {
-	if framework.IsSmokeTests() {
+	if framework.IsConfigSmokeTests() {
 		framework.SetLogSubFolder("smoke")
 	} else {
 		framework.SetLogSubFolder("full")
