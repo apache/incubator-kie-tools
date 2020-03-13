@@ -12,6 +12,8 @@
     [ "${lines[0]}" = "Unknown arguments: something" ]
 }
 
+# tests configuration
+
 @test "invoke run-tests with feature" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --feature ${BATS_TEST_DIRNAME}/../test/features --dry_run
     [ "$status" -eq 0 ]
@@ -90,50 +92,56 @@
     [[ "${output}" =~ "-timeout \"240m\"" ]]
 }
 
-@test "invoke run-tests with debug true" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --debug true --dry_run
+@test "invoke run-tests with debug" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --debug --dry_run
     [ "$status" -eq 0 ]
     [[ "${lines[1]}" = "DEBUG=true"* ]]
 }
 
-@test "invoke run-tests with debug false" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --debug false --dry_run
+@test "invoke run-tests without debug" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
     [ "$status" -eq 0 ]
     [[ "${lines[1]}" = "DEBUG=false"* ]]
 }
 
-@test "invoke run-tests with debug missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --debug --dry_run
+@test "invoke run-tests with smoke" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke --dry_run
     [ "$status" -eq 0 ]
-    [[ "${lines[1]}" = "DEBUG=false"* ]]
+    [[ "${output}" =~ "--tests.smoke" ]]
 }
 
-@test "invoke run-tests with debug empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --debug "" --dry_run
+@test "invoke run-tests without smoke" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
     [ "$status" -eq 0 ]
-    [[ "${lines[1]}" = "DEBUG=false"* ]]
+    [[ "${output}" != *"--tests.smoke"* ]]
 }
 
-@test "invoke run-tests with local true" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --local true --dry_run
+@test "invoke run-tests with load_factor" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --load_factor 3 --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.load-factor=3" ]]
+}
+
+@test "invoke run-tests with load_factor missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --load_factor --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.load-factor"* ]]
+}
+
+@test "invoke run-tests with load_factor empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --load_factor "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.load-factor"* ]]
+}
+
+@test "invoke run-tests with local" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --local --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "--tests.local" ]]
 }
 
-@test "invoke run-tests with local false" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --local false --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.local"* ]]
-}
-
-@test "invoke run-tests with local missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --local --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.local"* ]]
-}
-
-@test "invoke run-tests with local empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --local "" --dry_run
+@test "invoke run-tests without local" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.local"* ]]
 }
@@ -156,29 +164,7 @@
     [[ "${output}" != *"--tests.ci"* ]]
 }
 
-@test "invoke run-tests with smoke true" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke true --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.smoke" ]]
-}
-
-@test "invoke run-tests with smoke false" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke false --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.smoke"* ]]
-}
-
-@test "invoke run-tests with smoke missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.smoke"* ]]
-}
-
-@test "invoke run-tests with smoke empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --smoke "" --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.smoke"* ]]
-}
+# operator information
 
 @test "invoke run-tests with operator_image" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_image image --dry_run
@@ -216,23 +202,7 @@
     [[ "${output}" != *"--tests.operator-image-tag"* ]]
 }
 
-@test "invoke run-tests with cli_path" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path cli --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.cli-path=cli" ]]
-}
-
-@test "invoke run-tests with cli_path missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.cli-path"* ]]
-}
-
-@test "invoke run-tests with cli_path empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path "" --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.cli-path"* ]]
-}
+# files/binaries
 
 @test "invoke run-tests with deploy_uri" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --deploy_uri folder --dry_run
@@ -251,6 +221,46 @@
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.operator-deploy-uri"* ]]
 }
+
+@test "invoke run-tests with cli_path" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path cli --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.cli-path=cli" ]]
+}
+
+@test "invoke run-tests with cli_path missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.cli-path"* ]]
+}
+
+@test "invoke run-tests with cli_path empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.cli-path"* ]]
+}
+
+# runtime
+
+@test "invoke run-tests with services_image_version" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_version version --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.services-image-version=version" ]]
+}
+
+@test "invoke run-tests with services_image_version missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_version --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-version"* ]]
+}
+
+@test "invoke run-tests with services_image_version empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_version "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-version"* ]]
+}
+
+# build
 
 @test "invoke run-tests with maven_mirror" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --maven_mirror maven --dry_run
@@ -324,6 +334,8 @@
     [[ "${output}" != *"--tests.build-runtime-image-tag"* ]]
 }
 
+# examples repository
+
 @test "invoke run-tests with examples_uri" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --examples_uri uri --dry_run
     [ "$status" -eq 0 ]
@@ -360,7 +372,9 @@
     [[ "${output}" != *"--tests.examples-ref"* ]]
 }
 
-@test "invoke run-tests with show-scenarios" {
+# dev options
+
+@test "invoke run-tests with show_scenarios" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --show_scenarios --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "--tests.show-scenarios" ]]
@@ -370,4 +384,10 @@
     run ${BATS_TEST_DIRNAME}/run-tests.sh --keep_namespace --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "--tests.keep-namespace" ]]
+}
+
+@test "invoke run-tests without keep_namespace" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.keep-namespace"* ]]
 }

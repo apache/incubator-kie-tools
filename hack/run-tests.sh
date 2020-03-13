@@ -34,6 +34,8 @@ function usage(){
   printf "\nOptions:"
   printf "\n"
   printf "\n-h | --help\n\tPrint the usage of this script."
+  
+  # tests configuration
   printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
@@ -43,29 +45,40 @@ function usage(){
       printf "\n\t\t- '@wip,@undone': run wip or undone scenarios"
     printf "\n\t Scenarios with '@disabled' tag are always ignored."
   printf "\n--concurrent {NUMBER}\n\tSet the number of concurrent tests. Default is 1."
-  printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall run in minutes. Default is 240."
-  printf "\n--debug {BOOLEAN}\n\tRun in debug mode."
-  printf "\n--local {BOOLEAN}\n\tSpecify whether you run test in local."
+  printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall tests run in minutes. Default is 240."
+  printf "\n--debug\n\tRun in debug mode."
+  printf "\n--smoke\n\tFilter to run only the tests tagged with '@smoke'."
+  printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timouts. Default value is 1."
+  printf "\n--local\n\tSpecify whether you run test in local."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
-  printf "\n--smoke {BOOLEAN}\n\tFilter to run only the tests tagged with '@smoke'."
+
+  # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
-  printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
-  printf "\n--deploy_uri {URI}\n\tUrl or Path to operator 'deploy' folder. Default is local 'deploy/' folder."
-  printf "\n--services_image_version\n\tSet the services image version. Default to current operator version"
-  printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
-  printf "\n--build_image_version\n\tSet the build image version. Default to current operator version"
-  printf "\n--build_image_tag\n\tSet the build image full tag."
-  printf "\n--build_s2i_image_tag \n\tSet the S2I build image full tag."
-  printf "\n--build_runtime_image_tag \n\tSet the Runtime build image full tag."
-  printf "\n--examples_uri ${URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
-  printf "\n--examples_ref ${REF}\n\tSet the branch for the kogito-examples repository. Default is none."
 
-  # Dev options
+  # files/binaries
+  printf "\n--deploy_uri {URI}\n\tUrl or Path to operator 'deploy' folder. Default is local 'deploy/' folder."
+  printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
+
+  # runtime
+  printf "\n--services_image_version {VERSION}\n\tSet the services image version. Default to current operator version"
+
+  # build
+  printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
+  printf "\n--build_image_version {VERSION}\n\tSet the build image version. Default to current operator version"
+  printf "\n--build_image_tag {TAG}\n\tSet the build image full tag."
+  printf "\n--build_s2i_image_tag {TAG}\n\tSet the S2I build image full tag."
+  printf "\n--build_runtime_image_tag {NAME}\n\tSet the Runtime build image full tag."
+
+  # examples repository
+  printf "\n--examples_uri {URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
+  printf "\n--examples_ref {REF}\n\tSet the branch for the kogito-examples repository. Default is none."
+
+  # dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
-  printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
-  printf "\n--dry_run ${REF}\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
+  printf "\n--dry_run\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
   printf "\n--keep_namespace\n\tDo not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)."
+  printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
   printf "\n"
 }
 
@@ -135,6 +148,8 @@ CRDS_UPDATE=true
 while (( $# ))
 do
 case $1 in
+
+  # tests configuration
   --feature)
     shift
     if isValueNotOption ${1}; then
@@ -167,42 +182,27 @@ case $1 in
     fi
   ;;
   --debug)
+    DEBUG=true
     shift
-    if isValueNotOption ${1}; then
-      if isValueNotEmpty ${1}; then
-        if [[ "${1}" = "true" ]]; then
-          DEBUG=true
-        fi
-      fi
-      shift
-    fi
+  ;;
+  --smoke)
+    addParam "--tests.smoke"
+    shift
+  ;;
+  --load_factor)
+    shift
+    if addParamKeyValueIfAccepted "--tests.load-factor" ${1}; then shift; fi
   ;;
   --local)
+    addParam "--tests.local"
     shift
-    if isValueNotOption ${1}; then
-      if isValueNotEmpty ${1}; then
-        if [[ "${1}" = "true" ]]; then
-          addParam "--tests.local"
-        fi
-      fi
-      shift
-    fi
   ;;
   --ci)
     shift
     if addParamKeyValueIfAccepted "--tests.ci" ${1}; then shift; fi
   ;;
-  --smoke)
-    shift
-    if isValueNotOption ${1}; then
-      if isValueNotEmpty ${1}; then
-        if [[ "${1}" = "true" ]]; then
-          addParam "--tests.smoke"
-        fi
-      fi
-      shift
-    fi
-  ;;
+
+  # operator information
   --operator_image)
     shift
     if addParamKeyValueIfAccepted "--tests.operator-image-name" ${1}; then shift; fi
@@ -211,18 +211,24 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.operator-image-tag" ${1}; then shift; fi
   ;;
-  --cli_path)
-    shift
-    if addParamKeyValueIfAccepted "--tests.cli-path" ${1}; then shift; fi
-  ;;
+
+  # files/binaries
   --deploy_uri)
     shift
     if addParamKeyValueIfAccepted "--tests.operator-deploy-uri" ${1}; then shift; fi
   ;;
+  --cli_path)
+    shift
+    if addParamKeyValueIfAccepted "--tests.cli-path" ${1}; then shift; fi
+  ;;
+
+  # runtime
   --services_image_version)
     shift
     if addParamKeyValueIfAccepted "--tests.services-image-version" ${1}; then shift; fi
   ;;
+
+  # build
   --maven_mirror)
     shift
     if addParamKeyValueIfAccepted "--tests.maven-mirror-url" ${1}; then shift; fi
@@ -239,6 +245,8 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.build-runtime-image-tag" ${1}; then shift; fi
   ;;
+
+  # examples repository
   --examples_uri)
     shift
     if addParamKeyValueIfAccepted "--tests.examples-uri" ${1}; then shift; fi
@@ -247,12 +255,10 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.examples-ref" ${1}; then shift; fi
   ;;
+
+  # dev options
   --show_scenarios)
-    shift
     addParam "--tests.show-scenarios"
-  ;;
-  --disabled_crds_update)
-    CRDS_UPDATE=false
     shift
   ;;
   --dry_run)
@@ -262,9 +268,15 @@ case $1 in
     shift
   ;;
   --keep_namespace)
-    shift
     addParam "--tests.keep-namespace"
+    shift
   ;;
+  --disabled_crds_update)
+    CRDS_UPDATE=false
+    shift
+  ;;
+
+  # others
   -h|--help)
     usage
     exit 0
