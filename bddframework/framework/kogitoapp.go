@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"strings"
 
+	corev1 "k8s.io/api/core/v1"
+
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -145,7 +147,7 @@ func SetKogitoAppReplicas(namespace, name string, nbPods int) error {
 		return fmt.Errorf("No KogitoApp found with name %s in namespace %s", name, namespace)
 	}
 	replicas := int32(nbPods)
-	kogitoApp.Spec.Replicas = &replicas
+	kogitoApp.Spec.KogitoServiceSpec.Replicas = replicas
 	return kubernetes.ResourceC(kubeClient).Update(kogitoApp)
 }
 
@@ -161,7 +163,7 @@ func getKogitoAppStub(namespace, appName string, labels map[string]string) *v1al
 		},
 		Spec: v1alpha1.KogitoAppSpec{
 			Build: &v1alpha1.KogitoAppBuildObject{
-				Env:       []v1alpha1.Env{},
+				Envs:      []corev1.EnvVar{},
 				GitSource: v1alpha1.GitSource{},
 			},
 		},
@@ -192,19 +194,19 @@ func getKogitoApp(namespace, name string) (*v1alpha1.KogitoApp, error) {
 }
 
 func appendNewEnvToKogitoAppBuild(kogitoApp *v1alpha1.KogitoApp, name, value string) {
-	env := v1alpha1.Env{
+	env := corev1.EnvVar{
 		Name:  name,
 		Value: value,
 	}
-	kogitoApp.Spec.Build.Env = append(kogitoApp.Spec.Build.Env, env)
+	kogitoApp.Spec.Build.Envs = append(kogitoApp.Spec.Build.Envs, env)
 }
 
 func appendNewEnvToKogitoApp(kogitoApp *v1alpha1.KogitoApp, name, value string) {
-	env := v1alpha1.Env{
+	env := corev1.EnvVar{
 		Name:  name,
 		Value: value,
 	}
-	kogitoApp.Spec.Env = append(kogitoApp.Spec.Env, env)
+	kogitoApp.Spec.KogitoServiceSpec.Envs = append(kogitoApp.Spec.KogitoServiceSpec.Envs, env)
 }
 
 func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
