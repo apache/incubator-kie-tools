@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-export enum UploadFileState {
-  VALID,
+export enum UploadFileStateDnd {
+  INITIAL,
+  INVALID_EXTENSION
+}
+
+export enum UploadFileStateInput {
   INITIAL,
   INVALID_EXTENSION
 }

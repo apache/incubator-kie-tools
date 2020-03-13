@@ -48,7 +48,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { InputFileUrlState } from "./InputFileUrlState";
-import { UploadFileState } from "./UploadFileState";
+import { UploadFileStateDnd, UploadFileStateInput } from "./UploadFileState";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -59,22 +59,23 @@ export function HomePage(props: Props) {
   const history = useHistory();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
-  const uploadBoxRef = useRef<HTMLDivElement>(null);
+  const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
-  const [uploadFileState, setUploadFileState] = useState(UploadFileState.INITIAL);
+  const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileStateDnd.INITIAL);
+  const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileStateInput.INITIAL);
 
-  const uploadBoxOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadBoxRef.current!.className = "hover";
-    setUploadFileState(UploadFileState.INITIAL);
+  const uploadDndOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    uploadDndRef.current!.className = "hover";
+    setUploadFileDndState(UploadFileStateDnd.INITIAL);
     e.stopPropagation();
     e.preventDefault();
     return false;
   }, []);
 
-  const uploadBoxOnDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadBoxRef.current!.className = "";
+  const uploadDndOnDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    uploadDndRef.current!.className = "";
     e.stopPropagation();
     e.preventDefault();
     return false;
@@ -96,57 +97,73 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
-  const onFileUpload = useCallback((file: File) => {
+  const onFileUploadFromDnd = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
     if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
-      setUploadFileState(UploadFileState.INVALID_EXTENSION);
+      setUploadFileDndState(UploadFileStateDnd.INVALID_EXTENSION);
     } else {
-      setUploadFileState(UploadFileState.VALID);
       openFile(file);
     }
   }, []);
 
-  const uploadBoxOnDrop = useCallback(
+  const uploadDndOnDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      uploadBoxRef.current!.className = "";
+      uploadDndRef.current!.className = "";
       e.stopPropagation();
       e.preventDefault();
 
       const file = e.dataTransfer.files[0];
-      if (!file.name) return false;
-      onFileUpload(file);
+      onFileUploadFromDnd(file);
 
       return false;
     },
-    [onFileUpload]
+    [onFileUploadFromDnd]
   );
 
-  const uploadSelectedFile = useCallback(() => {
+  const onFileUploadFromInput = useCallback((file: File) => {
+    const fileExtension = extractFileExtension(file.name);
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+      setUploadFileInputState(UploadFileStateInput.INVALID_EXTENSION);
+    } else {
+      openFile(file);
+    }
+  }, []);
+
+  const uploadFileFromInput = useCallback(() => {
     if (uploadInputRef.current!.files) {
       const file = uploadInputRef.current!.files![0];
-      onFileUpload(file);
+      onFileUploadFromInput(file);
     }
-  }, [onFileUpload]);
+  }, [onFileUploadFromInput]);
 
-  const messageForUploadFileState = useMemo(() => {
-    switch (uploadFileState) {
-      case UploadFileState.INVALID_EXTENSION:
+  const messageForUploadFileFromDndState = useMemo(() => {
+    switch (uploadFileDndState) {
+      case UploadFileStateDnd.INVALID_EXTENSION:
         return "File extension is not supported";
       default:
         return "Drop a BPMN or DMN file here";
     }
-  }, [uploadFileState]);
+  }, [uploadFileDndState]);
 
-  const uploadDropZoneClassName = useMemo(() => {
-    switch (uploadFileState) {
-      case UploadFileState.INVALID_EXTENSION:
+  const uploadDndClassName = useMemo(() => {
+    switch (uploadFileDndState) {
+      case UploadFileStateDnd.INVALID_EXTENSION:
         return "invalid";
       default:
         return "";
     }
-  }, [uploadFileState]);
+  }, [uploadFileDndState]);
 
-  const createFile = useCallback(
+  const messageForUploadFileFromInputState = useMemo(() => {
+    switch (uploadFileInputState) {
+      case UploadFileStateInput.INVALID_EXTENSION:
+        return "File extension is not supported";
+      default:
+        return "";
+    }
+  }, [uploadFileInputState]);
+
+  const createEmptyFile = useCallback(
     (fileExtension: string) => {
       props.onFileOpened(EMPTY_FILE);
       history.replace(context.routes.editor.url({ type: fileExtension }));
@@ -185,7 +202,7 @@ export function HomePage(props: Props) {
     }
   }, []);
 
-  const inputFileUrlChanged = useCallback((fileUrl: string) => {
+  const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
     validateUrl(fileUrl);
   }, []);
@@ -195,13 +212,13 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const onInputFileUrlBlur = useCallback(() => {
+  const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState(InputFileUrlState.INITIAL);
     }
   }, [inputFileUrl]);
 
-  const openFileUrl = useCallback(() => {
+  const openFileFromUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
       const fileUrl = new URL(inputFileUrl);
       const fileExtension = extractFileExtension(fileUrl.pathname);
@@ -210,7 +227,7 @@ export function HomePage(props: Props) {
     }
   }, [inputFileUrl, validatedInputUrl]);
 
-  const messageForInputFileUrlState = useMemo(() => {
+  const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INITIAL:
         return "http://";
@@ -229,7 +246,7 @@ export function HomePage(props: Props) {
     e => {
       e.preventDefault();
       e.stopPropagation();
-      openFileUrl();
+      openFileFromUrl();
     },
     [inputFileUrl]
   );
@@ -363,7 +380,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => createFile("bpmn")}>
+              <Button variant="secondary" onClick={() => createEmptyFile("bpmn")}>
                 Create new workflow
               </Button>
             </CardFooter>
@@ -381,7 +398,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => createFile("dmn")}>
+              <Button variant="secondary" onClick={() => createEmptyFile("dmn")}>
                 Create new decision model
               </Button>
             </CardFooter>
@@ -395,27 +412,28 @@ export function HomePage(props: Props) {
             <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
               {/* Upload Drag Target */}
               <div
-                ref={uploadBoxRef}
-                onDragOver={uploadBoxOnDragOver}
-                onDragLeave={uploadBoxOnDragLeave}
-                onDrop={uploadBoxOnDrop}
-                className={uploadDropZoneClassName}
-                onAnimationEnd={() => setUploadFileState(UploadFileState.INITIAL)}
+                ref={uploadDndRef}
+                onDragOver={uploadDndOnDragOver}
+                onDragLeave={uploadDndOnDragLeave}
+                onDrop={uploadDndOnDrop}
+                className={uploadDndClassName}
+                onAnimationEnd={() => setUploadFileDndState(UploadFileStateDnd.INITIAL)}
               >
-                <Bullseye>{messageForUploadFileState}</Bullseye>
+                <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
               </div>
             </CardBody>
             <CardBody>or</CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={uploadSelectedFile} className="kogito--editor-landing__upload-btn">
+              <Button variant="secondary" onClick={uploadFileFromInput} className="kogito--editor-landing__upload-btn">
                 Choose a local file
                 {/* Transparent file input overlays the button */}
                 <input
+                  accept={".dmn, .bpmn, .bpmn2"}
                   className="pf-c-button"
                   type="file"
                   aria-label="File selection"
                   ref={uploadInputRef}
-                  onChange={uploadSelectedFile}
+                  onChange={uploadFileFromInput}
                 />
               </Button>
             </CardFooter>
@@ -434,14 +452,14 @@ export function HomePage(props: Props) {
                   fieldId="url-text-input"
                   isValid={validatedInputUrl}
                   helperText=""
-                  helperTextInvalid={messageForInputFileUrlState}
+                  helperTextInvalid={messageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
-                    onBlur={onInputFileUrlBlur}
+                    onBlur={onInputFileFromUrlBlur}
                     isValid={validatedInputUrl}
                     value={inputFileUrl}
-                    onChange={inputFileUrlChanged}
+                    onChange={inputFileFromUrlChanged}
                     type="url"
                     id="url-text-input"
                     name="urlText"
@@ -451,7 +469,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={() => openFileUrl()} isDisabled={!validatedInputUrl}>
+              <Button variant="secondary" onClick={() => openFileFromUrl()} isDisabled={!validatedInputUrl}>
                 Open from source
               </Button>
             </CardFooter>
