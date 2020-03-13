@@ -32,7 +32,7 @@ function assemble_runtime() {
 
         echo "---> [s2i-core] Adding custom labels..."
         if [ -e "${KOGITO_HOME}/bin/image_metadata.json" ]; then
-            mkdir -v /tmp/.s2i
+            mkdir -pv /tmp/.s2i
             mkdir -pv /tmp/src/.s2i/
             cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
             cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/src/.s2i/image_metadata.json
@@ -50,9 +50,34 @@ function assemble_runtime() {
 
 # copy already built artifacts to the runtime image.
 function runtime_assemble() {
+    echo "-----> [s2i-core] Running runtime assemble script"
     cd ${S2I_DESTINATION_DIR}/src
-    cp -Rv --parents ./* ${KOGITO_HOME}/
+    if [ "${BINARY_BUILD^^}" == "TRUE" ] || ls | grep -E '*.jar|classes|maven*|*-runner|target' 1> /dev/null 2>&1; then
+        echo "-----> Binary build enabled, artifacts were uploaded directly to the image build"
+        if ls target 1> /dev/null 2>&1; then
+            echo "-----> Entire target dir uploaded"
+            cd "target"    
+        fi
+        if ls | grep -E '*-runner.jar' 1> /dev/null 2>&1; then
+            echo "-----> Found jar file, not native build"
+            NATIVE="FALSE"
+        fi
+        echo "-----> Cleaning up unneeded jar files"
+        rm -rfv *-tests.jar
+        rm -rfv *-sources.jar
+
+        echo "-----> Copying uploaded files to ${KOGITO_HOME}"
+        artifactDir="."
+        ARTIFACT_DIR=$artifactDir
+        handle_image_metadata_json
+        copy_kogito_app
+        copy_persistence_files
+    else
+        cp -Rv --parents ./* ${KOGITO_HOME}/
+    fi
     assemble_runtime
+    echo "-----> Cleaning up s2i directory"
+    rm -rfv ${S2I_DESTINATION_DIR}/src/*
 }
 
 

@@ -31,9 +31,9 @@ kogito-jobs-service:
 # Build and test all images
 .PHONY: test
 test:
+	cd tests/test-apps && sh clone-repo.sh
 	cekit -v test --overrides-file kogito-quarkus-overrides.yaml behave
 	cekit -v test --overrides-file kogito-quarkus-jvm-overrides.yaml behave
-	cd tests/test-apps && sh clone-repo.sh
 	cekit -v test --overrides-file kogito-quarkus-s2i-overrides.yaml behave
 	cekit -v test --overrides-file kogito-springboot-overrides.yaml behave
 	cekit -v test --overrides-file kogito-springboot-s2i-overrides.yaml behave

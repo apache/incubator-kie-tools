@@ -18,3 +18,31 @@ Feature: Kogito-quarkus-ubi8 feature.
     Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-1.8.0
     And run sh -c 'echo $JAVA_VENDOR' in container and immediately check its output for openjdk
     And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 1.8.0
+
+  Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port
+    Given s2i build /tmp/kogito-examples/drools-quarkus-example from target
+      | variable            | value                     |
+      | NATIVE              | false                     |
+      | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+
+  
+  Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port
+    Given s2i build /tmp/kogito-examples/drools-quarkus-example from target
+      | variable            | value                     |
+      | NATIVE              | false                     |
+      | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
+      | BINARY_BUILD        | true                      |
+    Then check that page is served
+      | property        | value                    |
+      | port            | 8080                     |
+      | path            | /hello                   |
+      | wait            | 80                       |
+      | expected_phrase | Mario is older than Mark |
+    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist

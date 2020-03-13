@@ -6,7 +6,6 @@ TEST_DIR=`pwd`
 cd /tmp
 rm -rf kogito-examples/
 git clone https://github.com/kiegroup/kogito-examples.git
-cd kogito-examples/drools-quarkus-example
 #git fetch origin --tags
 #git checkout -b 0.8.0 0.8.0
 
@@ -15,10 +14,15 @@ cd kogito-examples/drools-quarkus-example
 # will ensure the use of the port 8080.
 cp ${TEST_DIR}/application.properties src/main/resources/META-INF/
 
+# generating the app binaries to test the binary build
+mvn -f kogito-examples/drools-quarkus-example clean package -DskipTests
+mvn -f kogito-examples/jbpm-springboot-example clean package -DskipTests
+
 # preparing directory to run kogito maven archetypes tests
 cp /tmp/kogito-examples/dmn-quarkus-example/src/main/resources/* /tmp/kogito-examples/dmn-quarkus-example/
 rm -rf /tmp/kogito-examples/dmn-quarkus-example/src
 rm -rf /tmp/kogito-examples/dmn-quarkus-example/pom.xml
 
+cd kogito-examples/drools-quarkus-example
 git add --all
 git commit -am "test"

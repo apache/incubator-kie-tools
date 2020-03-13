@@ -108,7 +108,40 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "'./bin/myapp.jar' -> '$KOGITO_HOME/./bin/myapp.jar'" ]
+    [ "${lines[1]}" = "'./bin/myapp.jar' -> '$KOGITO_HOME/./bin/myapp.jar'" ]
+}
+
+@test "test runtime_assemble with binary builds" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/
+    touch /tmp/src/myapp.jar
+    mkdir -p /tmp/src/lib
+    mkdir -p /tmp/src/classes
+    mkdir -p /tmp/src/maven-archiver
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+    [ "${lines[7]}" = "'./myapp.jar' -> '$KOGITO_HOME/bin/myapp.jar'" ]
+}
+
+@test "test runtime_assemble with binary builds entire target!" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/target
+    touch /tmp/src/target/myapp.jar
+    touch /tmp/src/target/myapp-sources.jar
+    mkdir -p /tmp/src/target/lib
+    mkdir -p /tmp/src/target/classes
+    mkdir -p /tmp/src/target/maven-archiver
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+    [ "${lines[9]}" = "'./myapp.jar' -> '$KOGITO_HOME/bin/myapp.jar'" ]
 }
 
 
