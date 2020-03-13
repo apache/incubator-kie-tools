@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.infinispan.properties
-version: "0.8.0"
+version: "0.9.0-rc1"
 
 envs:
   - name: "INFINISPAN_USEAUTH"
@@ -20,4 +20,4 @@ envs:
     description: "Sasl mechanism to use during authentication. Example: PLAIN (Used to set the infinispan.client.hotrod.sasl_mechanism system property)"
 
 execute:
-- script: configure
+  - script: configure

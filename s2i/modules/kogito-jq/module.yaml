@@ -1,9 +1,9 @@
 schema_version: 1
 name: org.kie.kogito.jq
-version: "0.8.0"
+version: "0.9.0-rc1"
 
 modules:
-    install:
+  install:
     - name: org.kie.kogito.epel
       version: "7"
 

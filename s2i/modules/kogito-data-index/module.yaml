@@ -1,12 +1,12 @@
 schema_version: 1
 name: org.kie.kogito.dataindex
-version: "0.8.0"
+version: "0.9.0-rc1"
 
 artifacts:
-- name: kogito-data-index-runner.jar
-  url: https://repository.jboss.org/org/kie/kogito/data-index-service/0.8.0/data-index-service-0.8.0-runner.jar
-  md5: 2b50f0612b444c68fbfda4761096a3a8
+  - name: kogito-data-index-runner.jar
+    url: https://repository.jboss.org/org/kie/kogito/data-index-service/8.0.0-SNAPSHOT/data-index-service-8.0.0-20200312.091238-181-runner.jar
+    md5: 9128f6e8ec92aa1d3d1686e7bc7325c0
 
 execute:
-- script: configure
+  - script: configure
 
