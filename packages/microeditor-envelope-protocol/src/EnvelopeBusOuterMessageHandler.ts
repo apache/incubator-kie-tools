@@ -145,7 +145,7 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
         const kogitoEdit = message.data as KogitoEdit;
-        console.info(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
+        console.debug(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

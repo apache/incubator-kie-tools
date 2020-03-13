@@ -17,6 +17,7 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const pf = require("../microeditor-envelope/patternflyLoaders");
 
 const commonConfig = {
   mode: "development",
@@ -74,6 +75,9 @@ module.exports = [
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.ts"
+    },
+    module: {
+      rules: [...commonConfig.module.rules, ...pf.patternflyLoaders]
     },
     plugins: [
       new CopyWebpackPlugin([
