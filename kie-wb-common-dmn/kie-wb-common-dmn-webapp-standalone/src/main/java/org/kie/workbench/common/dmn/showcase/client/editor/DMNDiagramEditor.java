@@ -216,7 +216,6 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
         kieView.getMultiPage().addPage(getDocumentationPage());
         kieView.getMultiPage().addPage(dataTypesPage);
         kieView.getMultiPage().addPage(includedModelsPage);
-        feelInitializer.initializeFEELEditor();
 
         setupEditorSearchIndex();
         setupSearchComponent();
@@ -432,6 +431,7 @@ public class DMNDiagramEditor implements KieEditorWrapperView.KieEditorWrapperPr
               final Command callback) {
         screenPanelView.setWidget(presenter.getView());
         layoutHelper.applyLayout(diagram, layoutExecutor);
+        feelInitializer.initializeFEELEditor();
         presenter
                 .withToolbar(true)
                 .withPalette(true)

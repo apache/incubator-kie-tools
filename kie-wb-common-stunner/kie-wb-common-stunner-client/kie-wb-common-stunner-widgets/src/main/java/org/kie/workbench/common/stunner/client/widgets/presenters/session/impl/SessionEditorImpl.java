@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -96,7 +97,7 @@ public class SessionEditorImpl<S extends EditorSession>
 
     @Override
     protected Diagram getDiagram() {
-        return diagramSupplier.get();
+        return Objects.nonNull(diagramSupplier) ? diagramSupplier.get() : null;
     }
 
     @Override

@@ -52,6 +52,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
         ExpressionEditorView getView();
 
+        boolean isActive();
+
         void exit();
     }
 

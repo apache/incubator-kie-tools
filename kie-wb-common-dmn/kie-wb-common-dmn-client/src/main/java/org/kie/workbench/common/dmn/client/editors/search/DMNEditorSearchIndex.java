@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.search;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -25,7 +26,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditor;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.widgets.client.search.common.BaseEditorSearchIndex;
@@ -126,14 +126,18 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
         if (getIsDataTypesTabActiveSupplier().get()) {
             return DATA_TYPES;
         }
-        if (getExpressionEditor().isActive()) {
+        if (isExpressionEditorActive()) {
             return BOXED_EXPRESSION;
         }
         return GRAPH;
     }
 
-    private ExpressionEditor getExpressionEditor() {
-        return (ExpressionEditor) getCurrentSession().getExpressionEditor();
+    private boolean isExpressionEditorActive() {
+        final DMNSession session = getCurrentSession();
+        if (Objects.isNull(session)) {
+            return false;
+        }
+        return session.getExpressionEditor().isActive();
     }
 
     private DMNSession getCurrentSession() {

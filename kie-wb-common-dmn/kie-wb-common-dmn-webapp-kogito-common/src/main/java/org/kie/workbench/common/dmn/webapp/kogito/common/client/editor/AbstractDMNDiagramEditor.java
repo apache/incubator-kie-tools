@@ -114,6 +114,39 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final KogitoClientDiagramService diagramServices;
     protected final MonacoFEELInitializer feelInitializer;
 
+    // --- Workaround : Start ---
+    // This is a workaround for kogito-tooling that calls setContent(..) twice; once with a _valid_ DMN model (a new one) and
+    // then again with whatever content is in the file being opened. If the content is _invalid_ we open an XML Text Editor.
+    // However the call to open the _valid_ DMN model remains in progress as it initiates an asynchronous call. When the
+    // asynchronous call completes the `open(Diagram)` method is invoked that completes initialisation of the UI for a
+    // valid _Diagram_ including both Documentation and Data Types tabs that are not needed when the model is _invalid_.
+    // This work around uses a _proxy_ for the method. It's initial implementation performs the necessary actions for when
+    // the model is _valid_. However it is set to a NOP implementation if there was an error opening the model, so that
+    // when the asynchronous call completes the editor does not have unnecessary components added/initialised.
+    // See https://github.com/kiegroup/kogito-tooling/blob/master/packages/microeditor-envelope/src/EditorEnvelopeController.tsx#L61
+    private final Consumer<Diagram> INVALID_DIAGRAM_PROXY = (diagram) -> {/*NOP*/};
+
+    private final Consumer<Diagram> VALID_DIAGRAM_PROXY = (diagram) -> {
+        getLayoutHelper().applyLayout(diagram, getOpenDiagramLayoutExecutor());
+        getFEELInitializer().initializeFEELEditor();
+        super.open(diagram);
+    };
+
+    private LayoutHelper getLayoutHelper() {
+        return this.layoutHelper;
+    }
+
+    private OpenDiagramLayoutExecutor getOpenDiagramLayoutExecutor() {
+        return this.openDiagramLayoutExecutor;
+    }
+
+    private MonacoFEELInitializer getFEELInitializer() {
+        return this.feelInitializer;
+    }
+
+    private Consumer<Diagram> openDiagramMethodProxy = VALID_DIAGRAM_PROXY;
+    // --- Workaround : End ---
+
     public AbstractDMNDiagramEditor(final View view,
                                     final FileMenuBuilder fileMenuBuilder,
                                     final PlaceManager placeManager,
@@ -186,7 +219,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         diagramPropertiesDock.init(PERSPECTIVE_ID);
         diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
 
-        feelInitializer.initializeFEELEditor();
+        openDiagramMethodProxy = VALID_DIAGRAM_PROXY;
     }
 
     void superDoStartUp(final PlaceRequest place) {
@@ -241,8 +274,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     @Override
     public void open(final Diagram diagram) {
-        this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
-        super.open(diagram);
+        openDiagramMethodProxy.accept(diagram);
     }
 
     @OnOpen
@@ -391,7 +423,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     @Override
     @SetContent
-    public void setContent(final String path, final String value) {
+    public void setContent(final String path,
+                           final String value) {
         superOnClose();
         diagramServices.transform(path,
                                   value,
@@ -399,11 +432,13 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
                                       @Override
                                       public void onSuccess(final Diagram diagram) {
+                                          openDiagramMethodProxy = VALID_DIAGRAM_PROXY;
                                           AbstractDMNDiagramEditor.this.open(diagram);
                                       }
 
                                       @Override
                                       public void onError(final ClientRuntimeError error) {
+                                          openDiagramMethodProxy = INVALID_DIAGRAM_PROXY;
                                           AbstractDMNDiagramEditor.this.getEditor().onLoadError(error);
                                       }
                                   });

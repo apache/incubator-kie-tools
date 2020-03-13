@@ -181,4 +181,16 @@ public class DMNEditorSearchIndexTest {
 
         assertEquals(expectedElements, actualElements);
     }
+
+    @Test
+    public void testGetSearchableElementsWhenSessionIsNull() {
+
+        when(sessionManager.getCurrentSession()).thenReturn(null);
+        when(gridSubIndex.getSearchableElements()).thenReturn(emptyList());
+        when(graphSubIndex.getSearchableElements()).thenReturn(expectedElements);
+
+        final List<DMNSearchableElement> actualElements = searchIndex.getSearchableElements();
+
+        assertEquals(expectedElements, actualElements);
+    }
 }

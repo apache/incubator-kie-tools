@@ -128,6 +128,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).destroy();
         verify(view,
                times(1)).clear();
+        assertNull(tested.getDiagram());
     }
 
     @Override

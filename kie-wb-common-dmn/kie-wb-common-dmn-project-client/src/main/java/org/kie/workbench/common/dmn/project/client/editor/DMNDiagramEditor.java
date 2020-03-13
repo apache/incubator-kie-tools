@@ -197,7 +197,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         getMenuSessionItems().setErrorConsumer(e -> hideLoadingViews());
         editorSearchIndex.setCurrentAssetHashcodeSupplier(getGetCurrentContentHashSupplier());
         editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
-        feelInitializer.initializeFEELEditor();
     }
 
     @Override
@@ -349,6 +348,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     @Override
     public void open(final ProjectDiagram diagram) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
+
+        feelInitializer.initializeFEELEditor();
+
         super.open(diagram);
     }
 

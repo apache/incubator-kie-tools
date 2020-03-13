@@ -147,6 +147,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                never()).destroy();
         verify(view,
                times(1)).clear();
+        assertNull(tested.getDiagram());
     }
 
     @Override

@@ -230,7 +230,6 @@ public class DMNDiagramEditorTest {
         verify(kieView).addMainEditorPage(screenPanelWidget);
         verify(multiPageEditor).addPage(dataTypesPage);
         verify(multiPageEditor).addPage(includedModelsPage);
-        verify(feelInitializer).initializeFEELEditor();
         verify(multiPageEditor).addPage(documentationPage);
         verify(editorSearchIndex).setIsDataTypesTabActiveSupplier(isDataTypesTabActiveSupplier);
         verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(hashcodeSupplier);
@@ -298,6 +297,9 @@ public class DMNDiagramEditorTest {
         when(diagram.getMetadata()).thenReturn(metadata);
 
         editor.open(diagram, callback);
+
+        verify(feelInitializer).initializeFEELEditor();
+        verify(layoutHelper).applyLayout(diagram, layoutExecutor);
 
         final InOrder inOrder = inOrder(decisionNavigatorDock, diagramPreviewAndExplorerDock, diagramPropertiesDock);
         inOrder.verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);

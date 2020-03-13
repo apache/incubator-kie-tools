@@ -312,7 +312,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         //DMNProjectEditorMenuSessionItems.setErrorConsumer(..) is called several times so just check the last invocation
         verify(dmnProjectMenuSessionItems, atLeast(1)).setErrorConsumer(errorConsumerCaptor.capture());
-        verify(feelInitializer, atLeast(1)).initializeFEELEditor();
 
         errorConsumerCaptor.getValue().accept("ERROR");
 
@@ -579,5 +578,14 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         super.testLoadContentWithValidFile();
 
         verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
+        verify(feelInitializer).initializeFEELEditor();
+    }
+
+    @Test
+    @Override
+    public void testLoadContentWithInvalidFile() {
+        super.testLoadContentWithInvalidFile();
+
+        verify(feelInitializer, never()).initializeFEELEditor();
     }
 }

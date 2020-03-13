@@ -151,11 +151,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         }
     }
 
-    Optional<Command> getExitCommand() {
-        return exitCommand;
+    @Override
+    public boolean isActive() {
+        return getExitCommand().isPresent();
     }
 
-    public boolean isActive() {
-        return exitCommand.isPresent();
+    Optional<Command> getExitCommand() {
+        return exitCommand;
     }
 }

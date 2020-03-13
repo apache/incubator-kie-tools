@@ -297,7 +297,6 @@ public abstract class AbstractDMNDiagramEditorTest {
         verify(fileMenuBuilder).build();
 
         verify(multiPageEditorContainerView).init(eq(editor));
-        verify(feelInitializer).initializeFEELEditor();
     }
 
     @Test
@@ -452,7 +451,32 @@ public abstract class AbstractDMNDiagramEditorTest {
         assertThat(serviceCallback).isNotNull();
         serviceCallback.onError(clientRuntimeError);
 
+        verify(feelInitializer, never()).initializeFEELEditor();
         verify(diagramClientErrorHandler).handleError(eq(clientRuntimeError), any());
+    }
+
+    @Test
+    // This is a test for the kogito-tooling workaround in AbstractDMNDiagramEditor
+    public void testSetContentFailureWithConcurrentSuccess() {
+        final String path = "path";
+        editor.setContent(path, CONTENT);
+
+        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
+
+        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
+        assertThat(serviceCallback).isNotNull();
+        serviceCallback.onError(clientRuntimeError);
+
+        verify(feelInitializer, never()).initializeFEELEditor();
+        verify(diagramClientErrorHandler).handleError(eq(clientRuntimeError), any());
+
+        //Emulate completion of an asynchronous callback when a _valid_ diagram was first set
+        editor.open(diagram);
+
+        verify(decisionNavigatorDock, never()).setupCanvasHandler(canvasHandler);
+        verify(layoutHelper, never()).applyLayout(any(Diagram.class), any());
+        verify(feelInitializer, never()).initializeFEELEditor();
+        verify(dataTypesPage, never()).reload();
     }
 
     @Test
@@ -483,6 +507,7 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected void assertOnDiagramLoad() {
         verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
         verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
+        verify(feelInitializer).initializeFEELEditor();
         verify(dataTypesPage).reload();
     }
 
