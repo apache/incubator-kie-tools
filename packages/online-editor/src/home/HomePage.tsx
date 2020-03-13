@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
@@ -120,22 +120,6 @@ export function HomePage(props: Props) {
     [onFileUploadFromDnd]
   );
 
-  const onFileUploadFromInput = useCallback((file: File) => {
-    const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
-      setUploadFileInputState(UploadFileStateInput.INVALID_EXTENSION);
-    } else {
-      openFile(file);
-    }
-  }, []);
-
-  const uploadFileFromInput = useCallback(() => {
-    if (uploadInputRef.current!.files) {
-      const file = uploadInputRef.current!.files![0];
-      onFileUploadFromInput(file);
-    }
-  }, [onFileUploadFromInput]);
-
   const messageForUploadFileFromDndState = useMemo(() => {
     switch (uploadFileDndState) {
       case UploadFileStateDnd.INVALID_EXTENSION:
@@ -154,10 +138,36 @@ export function HomePage(props: Props) {
     }
   }, [uploadFileDndState]);
 
+  const onFileUploadFromInput = useCallback((file: File) => {
+    const fileExtension = extractFileExtension(file.name);
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+      setUploadFileInputState(UploadFileStateInput.INVALID_EXTENSION);
+    } else {
+      openFile(file);
+    }
+  }, []);
+
+  const uploadFileFromInput = useCallback(() => {
+    setUploadFileInputState(UploadFileStateInput.INITIAL);
+    if (uploadInputRef.current!.files) {
+      const file = uploadInputRef.current!.files![0];
+      onFileUploadFromInput(file);
+    }
+  }, [onFileUploadFromInput]);
+
   const messageForUploadFileFromInputState = useMemo(() => {
     switch (uploadFileInputState) {
       case UploadFileStateInput.INVALID_EXTENSION:
         return "File extension is not supported";
+      default:
+        return "";
+    }
+  }, [uploadFileInputState]);
+
+  const uploadInputClassName = useMemo(() => {
+    switch (uploadFileInputState) {
+      case UploadFileStateInput.INVALID_EXTENSION:
+        return "invalid";
       default:
         return "";
     }
@@ -423,8 +433,8 @@ export function HomePage(props: Props) {
               </div>
             </CardBody>
             <CardBody>or</CardBody>
-            <CardFooter>
-              <Button variant="secondary" onClick={uploadFileFromInput} className="kogito--editor-landing__upload-btn">
+            <CardFooter className="kogito--editor-landing__upload-input">
+              <Button variant="secondary" className="kogito--editor-landing__upload-btn">
                 Choose a local file
                 {/* Transparent file input overlays the button */}
                 <input
@@ -436,6 +446,12 @@ export function HomePage(props: Props) {
                   onChange={uploadFileFromInput}
                 />
               </Button>
+              <div
+                className={uploadInputClassName}
+                onAnimationEnd={() => setUploadFileInputState(UploadFileStateInput.INITIAL)}
+              >
+                {messageForUploadFileFromInputState}
+              </div>
             </CardFooter>
           </Card>
           <Card>

@@ -57,20 +57,25 @@
 .kogito--editor-landing__upload-box > div.invalid {
   border-color: red;
   background-color: #fbd7d3;
-  animation-name: color_change;
+  animation-name: upload-box;
   animation-duration: 0.3s;
   animation-delay: 2s;
 }
 
-@keyframes color_change {
+@keyframes upload-box {
   from {
     border-color: red;
     background-color: #fbd7d3;
   }
   to {
     border-color: var(--pf-global--BorderColor--100);
-    background-color: #fff;
+    background-color: transparent;
   }
+}
+
+.kogito--editor-landing__upload-input {
+  display: flex;
+  flex-direction: row;
 }
 
 .kogito--editor-landing__upload-btn {
@@ -86,6 +91,26 @@
   cursor: pointer;
   width: 100%;
   z-index: var(--pf-global--ZIndex--xs);
+}
+
+.kogito--editor-landing__upload-input > div.invalid {
+  color: #c9190b;
+  padding-left: 10px;
+  justify-self: start;
+  align-self: center;
+  animation-name: upload-warning;
+  animation-duration: 0.3s;
+  animation-delay: 2s;
+}
+
+@keyframes upload-warning {
+  from {
+    color: #c9190b;
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .kogito--editor {
