@@ -25,6 +25,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -184,4 +185,14 @@ func checkAllPodsContainingTextInLog(namespace string, pods *corev1.PodList, con
 func isPodContainingTextInLog(namespace string, pod *corev1.Pod, containerName, text string) (bool, error) {
 	log, err := kubernetes.PodC(kubeClient).GetLogs(namespace, pod.GetName(), containerName)
 	return strings.Contains(log, text), err
+}
+
+// IsCrdAvailable returns whether the crd is available on cluster
+func IsCrdAvailable(crdName string) (bool, error) {
+	crdEntity := &apiextensionsv1beta1.CustomResourceDefinition{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: crdName,
+		},
+	}
+	return kubernetes.ResourceC(kubeClient).Fetch(crdEntity)
 }

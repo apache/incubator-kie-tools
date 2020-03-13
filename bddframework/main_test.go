@@ -74,6 +74,10 @@ func TestMain(m *testing.M) {
 			}
 		}
 
+		// Make sure Kafka, Infinispan and Keycloak crds are imported into the cluster before starting the tests
+		// To be deleted once https://issues.redhat.com/browse/KOGITO-1376 is resolved
+		importDependentOperatorCrds()
+
 		status := godog.RunWithOptions("godogs", func(s *godog.Suite) {
 			FeatureContext(s)
 		}, opt)
@@ -186,4 +190,52 @@ func showScenarios(features []*gherkin.Feature) {
 		}
 	}
 	mainLogger.Info("------------------ END SHOW SCENARIOS ------------------")
+}
+
+// This does just create a namespace, install the operators via subscription if crd is missing
+// and then delete the namespace
+// Should be deleted once https://issues.redhat.com/browse/KOGITO-1376 is solved
+func importDependentOperatorCrds() {
+	mainLogger := framework.GetMainLogger()
+	mainLogger.Infof("Install dependent operator crds if needed")
+	namespace := framework.GenerateNamespaceName("crd-install")
+
+	if err := framework.CreateNamespace(namespace); err != nil {
+		panic(err)
+	}
+
+	installErr := installDependentOperatorsIfNeeded(namespace)
+	if installErr != nil {
+		mainLogger.Errorf("Error installing dependent operators: %v", installErr)
+	}
+
+	if err := framework.DeleteNamespace(namespace); err != nil {
+		panic(err)
+	}
+
+	if installErr != nil {
+		panic(installErr)
+	}
+}
+
+// Should be deleted once https://issues.redhat.com/browse/KOGITO-1376 is solved
+func installDependentOperatorsIfNeeded(namespace string) error {
+	var operatorsToWaitFor []string
+	for operatorName := range framework.KogitoOperatorCommunityDependencies {
+		if installed, err := framework.IsCommunityOperatorCrdAvailable(operatorName); err != nil {
+			return err
+		} else if !installed {
+			if err := framework.InstallCommunityKogitoOperatorDependency(namespace, operatorName); err != nil {
+				return err
+			}
+			operatorsToWaitFor = append(operatorsToWaitFor, operatorName)
+		}
+	}
+
+	for _, operatorName := range operatorsToWaitFor {
+		if err := framework.WaitForKogitoOperatorCrdAvailable(namespace, operatorName); err != nil {
+			return err
+		}
+	}
+	return nil
 }

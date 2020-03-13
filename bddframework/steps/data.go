@@ -46,7 +46,7 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 // BeforeScenario configure the data before a scenario is launched
 func (data *Data) BeforeScenario(s interface{}) {
 	data.StartTime = time.Now()
-	data.Namespace = framework.GenerateNamespaceName()
+	data.Namespace = framework.GenerateNamespaceName("cucumber")
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", framework.GetScenarioName(s)))
 	go framework.StartPodLogCollector(data.Namespace)

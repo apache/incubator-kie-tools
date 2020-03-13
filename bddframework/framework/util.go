@@ -29,9 +29,9 @@ import (
 )
 
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
-func GenerateNamespaceName() string {
+func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
-	ns := fmt.Sprintf("cucumber-%s", RandSeq(4))
+	ns := fmt.Sprintf("%s-%s", prefix, RandSeq(4))
 	if IsConfigLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)

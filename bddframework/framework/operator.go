@@ -40,6 +40,7 @@ type dependentOperator struct {
 	operatorPackageName string
 	timeoutInMin        int
 	channel             string
+	crdName             string
 }
 
 var (
@@ -49,16 +50,19 @@ var (
 			operatorPackageName: "infinispan",
 			timeoutInMin:        20,
 			channel:             "stable",
+			crdName:             "infinispans.infinispan.org",
 		},
 		"Kafka": {
 			operatorPackageName: "strimzi-kafka-operator",
 			timeoutInMin:        20,
 			channel:             "stable",
+			crdName:             "kafkas.kafka.strimzi.io",
 		},
 		"Keycloak": {
 			operatorPackageName: "keycloak-operator",
 			timeoutInMin:        20,
 			channel:             "alpha",
+			crdName:             "keycloaks.keycloak.org",
 		},
 	}
 )
@@ -215,4 +219,24 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 
 func getOperatorImageNameAndTag() string {
 	return fmt.Sprintf("%s:%s", GetConfigOperatorImageName(), GetConfigOperatorImageTag())
+}
+
+// IsCommunityOperatorCrdAvailable returns whether the crd is available on cluster
+func IsCommunityOperatorCrdAvailable(operatorName string) (bool, error) {
+	operator, exists := KogitoOperatorCommunityDependencies[operatorName]
+	if !exists {
+		return false, fmt.Errorf("Unknown community operator %s", operatorName)
+	}
+	return IsCrdAvailable(operator.crdName)
+
+}
+
+// WaitForKogitoOperatorCrdAvailable waits for dependent operator main crd to be available
+func WaitForKogitoOperatorCrdAvailable(namespace, dependentOperator string) error {
+	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
+		return WaitFor(namespace, fmt.Sprintf("%s operator crd is available", dependentOperator), time.Minute*time.Duration(operatorInfo.timeoutInMin), func() (bool, error) {
+			return IsCrdAvailable(operatorInfo.crdName)
+		})
+	}
+	return fmt.Errorf("Operator %s not found", dependentOperator)
 }
