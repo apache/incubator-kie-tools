@@ -47,11 +47,27 @@ import {
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
-import { InputFileUrlState } from "./InputFileUrlState";
-import { UploadFileDndState, UploadFileInputState } from "./UploadFileState";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
+}
+
+enum InputFileUrlState {
+  VALID,
+  INITIAL,
+  INVALID_URL,
+  NO_FILE_URL,
+  INVALID_EXTENSION
+}
+
+enum UploadFileInputState {
+  INITIAL,
+  INVALID_EXTENSION
+}
+
+enum UploadFileDndState {
+  INITIAL,
+  INVALID_EXTENSION
 }
 
 export function HomePage(props: Props) {
@@ -213,7 +229,7 @@ export function HomePage(props: Props) {
   const tryBpmnSample = useCallback(() => {
     trySample("bpmn");
   }, [trySample]);
-  
+
   const tryDmnSample = useCallback(() => {
     trySample("dmn");
   }, [trySample]);
