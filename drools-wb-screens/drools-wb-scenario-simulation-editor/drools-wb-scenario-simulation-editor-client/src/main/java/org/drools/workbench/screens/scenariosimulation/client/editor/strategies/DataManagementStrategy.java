@@ -43,6 +43,7 @@ public interface DataManagementStrategy {
             new AbstractMap.SimpleEntry<>(Integer.class.getSimpleName(), new SimpleClassEntry(Integer.class)),
             new AbstractMap.SimpleEntry<>(Number.class.getSimpleName(), new SimpleClassEntry(Number.class)),
             new AbstractMap.SimpleEntry<>(String.class.getSimpleName(), new SimpleClassEntry(String.class)),
+            new AbstractMap.SimpleEntry<>(Object.class.getSimpleName(), new SimpleClassEntry(Object.class)),
             // LocalDate is not supported by GWT
             new AbstractMap.SimpleEntry<>(LOCALDATE_SIMPLE_NAME, new SimpleClassEntry(LOCALDATE_SIMPLE_NAME, LOCALDATE_CANONICAL_NAME))).
             collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
