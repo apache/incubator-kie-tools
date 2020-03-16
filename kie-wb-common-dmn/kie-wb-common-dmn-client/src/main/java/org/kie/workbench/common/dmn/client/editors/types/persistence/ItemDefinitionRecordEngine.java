@@ -112,7 +112,7 @@ public class ItemDefinitionRecordEngine implements DataTypeRecordEngine {
         final List<DataType> affectedDataTypes = new ArrayList<>();
         affectedDataTypes.add(dataType);
 
-        doDestroy(dataType);
+        doDestroy(dataType, false);
 
         return affectedDataTypes;
     }
@@ -148,8 +148,13 @@ public class ItemDefinitionRecordEngine implements DataTypeRecordEngine {
 
     public void doDestroy(final DataType dataType) {
 
+        doDestroy(dataType, true);
+    }
+
+    private void doDestroy(final DataType dataType, final boolean notifyPropertiesPanel) {
+
         dataTypeDestroyHandler.destroy(dataType);
-        itemDefinitionDestroyHandler.destroy(dataType);
+        itemDefinitionDestroyHandler.destroy(dataType, notifyPropertiesPanel);
     }
 
     private List<DataType> refreshDependentDataTypesFromUpdateOperation(final DataType dataType,

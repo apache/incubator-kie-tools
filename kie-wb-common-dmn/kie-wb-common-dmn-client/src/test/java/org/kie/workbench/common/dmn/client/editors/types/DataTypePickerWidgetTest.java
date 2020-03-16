@@ -56,8 +56,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -382,7 +384,24 @@ public class DataTypePickerWidgetTest {
     }
 
     @Test
-    public void testPopulateTypeSelector() {
+    public void testPopulateTypeSelectorWhenValueIsNull() {
+        doReturn(null).when(picker).getValue();
+        picker.populateTypeSelector();
+
+        final InOrder inOrder = inOrder(typeSelector);
+        inOrder.verify(typeSelector).clear();
+        verify(picker).addBuiltInTypes();
+        verify(picker).addItemDefinitions();
+
+        inOrder.verify(typeSelector).refresh();
+        verify(picker, never()).setValue(any(), anyBoolean());
+    }
+
+    @Test
+    public void testPopulateTypeSelectorWhenValueIsNotNull() {
+        final QName value = mock(QName.class);
+        doReturn(value).when(picker).getValue();
+        doNothing().when(picker).setValue(value, false);
 
         picker.populateTypeSelector();
 
@@ -392,5 +411,6 @@ public class DataTypePickerWidgetTest {
         verify(picker).addItemDefinitions();
 
         inOrder.verify(typeSelector).refresh();
+        verify(picker).setValue(value, false);
     }
 }

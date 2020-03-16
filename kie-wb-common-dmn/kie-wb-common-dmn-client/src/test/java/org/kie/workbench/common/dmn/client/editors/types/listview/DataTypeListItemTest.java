@@ -61,6 +61,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.persistence.Crea
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
@@ -797,11 +798,11 @@ public class DataTypeListItemTest {
 
         when(dataType.destroy()).thenReturn(removedDataTypes);
         doReturn(dataType).when(listItem).getDataType();
-        doNothing().when(listItem).destroy(any());
+        doNothing().when(listItem).destroy(any(), eq(true));
 
         listItem.destroyWithDependentTypes();
 
-        verify(listItem).destroy(removedDataTypes);
+        verify(listItem).destroy(removedDataTypes, true);
     }
 
     @Test
@@ -813,11 +814,11 @@ public class DataTypeListItemTest {
 
         when(dataType.destroyWithoutDependentTypes()).thenReturn(removedDataTypes);
         doReturn(dataType).when(listItem).getDataType();
-        doNothing().when(listItem).destroy(any());
+        doNothing().when(listItem).destroy(any(), eq(false));
 
         listItem.destroyWithoutDependentTypes();
 
-        verify(listItem).destroy(removedDataTypes);
+        verify(listItem).destroy(removedDataTypes, false);
     }
 
     @Test

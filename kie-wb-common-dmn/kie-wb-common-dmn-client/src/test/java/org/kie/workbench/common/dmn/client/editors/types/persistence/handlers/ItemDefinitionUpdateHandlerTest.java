@@ -29,17 +29,20 @@ import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -61,12 +64,15 @@ public class ItemDefinitionUpdateHandlerTest {
     @Mock
     private PropertiesPanelNotifier panelNotifier;
 
+    @Mock
+    private EventSourceMock<DataTypeChangedEvent> dataTypeChangedEvent;
+
     private ItemDefinitionUpdateHandler handler;
 
     @Before
     public void setup() {
         itemDefinitionUtils = spy(new ItemDefinitionUtils(dmnGraphUtils));
-        handler = spy(new ItemDefinitionUpdateHandler(dataTypeManager, itemDefinitionUtils, panelNotifier));
+        handler = spy(new ItemDefinitionUpdateHandler(dataTypeManager, itemDefinitionUtils, panelNotifier, dataTypeChangedEvent));
     }
 
     @Test
@@ -95,6 +101,7 @@ public class ItemDefinitionUpdateHandlerTest {
         verify(itemDefinition).setTypeRef(null);
         verify(itemDefinition).setName(name);
         verify(panelNotifier).notifyPanel();
+        verify(dataTypeChangedEvent).fire(any());
     }
 
     @Test
@@ -130,6 +137,7 @@ public class ItemDefinitionUpdateHandlerTest {
         verify(itemDefinition).setTypeRef(qName);
         verify(itemDefinition).setName(name);
         verify(panelNotifier).notifyPanel();
+        verify(dataTypeChangedEvent).fire(any());
         assertTrue(itemDefinitions.isEmpty());
     }
 

@@ -87,7 +87,7 @@ public class ItemDefinitionDestroyHandlerTest {
         doReturn(itemDefinitions).when(handler).itemDefinitions();
         doNothing().when(handler).notifyPropertiesPanel(anyString());
 
-        handler.destroy(dataType);
+        handler.destroy(dataType, true);
 
         assertEquals(emptyList(), itemDefinitionParent.getItemComponent());
         assertEquals(emptyList(), itemDefinitions);

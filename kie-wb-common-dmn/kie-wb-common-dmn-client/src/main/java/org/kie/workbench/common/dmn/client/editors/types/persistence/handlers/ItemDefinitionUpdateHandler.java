@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.persistence.handlers;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
@@ -44,13 +46,17 @@ public class ItemDefinitionUpdateHandler {
 
     private final PropertiesPanelNotifier panelNotifier;
 
+    private final Event<DataTypeChangedEvent> dataTypeChangedEvent;
+
     @Inject
     public ItemDefinitionUpdateHandler(final DataTypeManager dataTypeManager,
                                        final ItemDefinitionUtils itemDefinitionUtils,
-                                       final PropertiesPanelNotifier panelNotifier) {
+                                       final PropertiesPanelNotifier panelNotifier,
+                                       final Event<DataTypeChangedEvent> dataTypeChangedEvent) {
         this.dataTypeManager = dataTypeManager;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.panelNotifier = panelNotifier;
+        this.dataTypeChangedEvent = dataTypeChangedEvent;
     }
 
     public void update(final DataType dataType,
@@ -70,6 +76,11 @@ public class ItemDefinitionUpdateHandler {
         itemDefinition.setAllowedValues(makeAllowedValues(dataType, itemDefinition));
 
         notifyPropertiesPanel(itemDefinitionBeforeUpdate, itemDefinition);
+        fireDataChangedEvent();
+    }
+
+    void fireDataChangedEvent() {
+        dataTypeChangedEvent.fire(new DataTypeChangedEvent());
     }
 
     private void notifyPropertiesPanel(final String itemDefinitionBeforeUpdate,

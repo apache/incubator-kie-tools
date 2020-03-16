@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -155,6 +156,10 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         addItemDefinitions();
 
         typeSelector.refresh();
+
+        if (!Objects.isNull(getValue())) {
+            setValue(getValue(), false);
+        }
     }
 
     void addBuiltInTypes() {

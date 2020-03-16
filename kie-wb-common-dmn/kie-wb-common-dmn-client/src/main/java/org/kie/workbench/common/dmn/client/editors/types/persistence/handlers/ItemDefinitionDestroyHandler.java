@@ -50,7 +50,7 @@ public class ItemDefinitionDestroyHandler {
         this.panelNotifier = panelNotifier;
     }
 
-    public void destroy(final DataType dataType) {
+    public void destroy(final DataType dataType, final boolean notifyPropertiesPanel) {
 
         final ItemDefinition itemDefinition = findItemDefinition(dataType);
         final String destroyedItemDefinition = itemDefinition.getName().getValue();
@@ -63,7 +63,9 @@ public class ItemDefinitionDestroyHandler {
         itemDefinitions().remove(itemDefinition);
         itemDefinitionStore.unIndex(dataType.getUUID());
 
-        notifyPropertiesPanel(destroyedItemDefinition);
+        if (notifyPropertiesPanel) {
+            notifyPropertiesPanel(destroyedItemDefinition);
+        }
     }
 
     void notifyPropertiesPanel(final String destroyedItemDefinition) {
