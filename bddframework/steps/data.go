@@ -46,10 +46,17 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 // BeforeScenario configure the data before a scenario is launched
 func (data *Data) BeforeScenario(s interface{}) {
 	data.StartTime = time.Now()
-	data.Namespace = framework.GenerateNamespaceName("cucumber")
+	data.Namespace = getNamespaceName()
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", framework.GetScenarioName(s)))
 	go framework.StartPodLogCollector(data.Namespace)
+}
+
+func getNamespaceName() string {
+	if namespaceName := framework.GetConfigNamespaceName(); len(namespaceName) > 0 {
+		return namespaceName
+	}
+	return framework.GenerateNamespaceName("cucumber")
 }
 
 // AfterScenario executes some actions on data after a scenario is finished

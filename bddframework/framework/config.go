@@ -54,6 +54,7 @@ type TestConfig struct {
 	showScenarios bool
 	dryRun        bool
 	keepNamespace bool
+	namespaceName string
 }
 
 const (
@@ -76,6 +77,7 @@ var (
 // BindTestsConfigFlags binds BDD tests env flags to given flag set
 func BindTestsConfigFlags(set *flag.FlagSet) {
 	prefix := "tests."
+	developmentOptionsPrefix := prefix + "dev."
 
 	// tests configuration
 	set.BoolVar(&env.smoke, prefix+"smoke", false, "Launch only smoke tests")
@@ -108,6 +110,7 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which should be executed.")
 	set.BoolVar(&env.dryRun, prefix+"dry-run", false, "Dry Run the tests.")
 	set.BoolVar(&env.keepNamespace, prefix+"keep-namespace", false, "Do not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)")
+	set.StringVar(&env.namespaceName, developmentOptionsPrefix+"namespace-name", "", "Use the specified namespace for scenarios, don't generate random namespace.")
 }
 
 // tests configuration
@@ -212,4 +215,9 @@ func IsConfigDryRun() bool {
 // IsConfigKeepNamespace return whether we should keep namespace after scenario run
 func IsConfigKeepNamespace() bool {
 	return env.keepNamespace
+}
+
+// GetConfigNamespaceName return namespace name if it was defined
+func GetConfigNamespaceName() string {
+	return env.namespaceName
 }
