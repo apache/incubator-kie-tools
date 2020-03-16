@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+import {
+  EnvelopeBusOuterMessageHandler,
+  EnvelopeBusOuterMessageHandlerImpl
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { RefObject } from "react";
+
+export class EnvelopeBusOuterMessageHandlerFactory {
+  public createNew(
+    iframeRef: RefObject<HTMLIFrameElement>,
+    impl: (self: EnvelopeBusOuterMessageHandler) => EnvelopeBusOuterMessageHandlerImpl
+  ) {
+    return new EnvelopeBusOuterMessageHandler(
+      {
+        postMessage: msg => {
+          iframeRef.current?.contentWindow?.postMessage(msg, "*");
+        }
+      },
+      impl
+    );
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+import IpcRenderer = Electron.IpcRenderer;
+
+export class FileActions {
+  private readonly ipc: IpcRenderer;
+
+  constructor(ipc: IpcRenderer) {
+    this.ipc = ipc;
+  }
+
+  public createNewFile(type: string) {
+    this.ipc.send("createNewFile", { type: type });
+  }
+
+  public openSample(type: string) {
+    this.ipc.send("openSample", { type: type });
+  }
 }
