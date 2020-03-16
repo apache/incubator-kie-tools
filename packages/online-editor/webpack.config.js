@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pf = require("../microeditor-envelope/patternflyLoaders");
+const envelope = require("../microeditor-envelope/webpackUtils");
 
 module.exports = {
   mode: "development",
@@ -59,7 +59,7 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      ...pf.patternflyLoaders
+      ...envelope.patternflyLoaders
     ]
   },
   devServer: {

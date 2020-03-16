@@ -18,7 +18,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
-const pf = require("../microeditor-envelope/patternflyLoaders");
+const envelope = require("../microeditor-envelope/webpackUtils");
 
 function getLatestGitTag() {
   return require("child_process")
@@ -137,7 +137,7 @@ module.exports = async (env, argv) => {
           exclude: /node_modules/,
           use: ["babel-loader"]
         },
-        ...pf.patternflyLoaders
+        ...envelope.patternflyLoaders
       ]
     },
     resolve: {

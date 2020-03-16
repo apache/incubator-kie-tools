@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const pf = require("./patternflyLoaders");
+const envelope = require("./webpackUtils");
 
 module.exports = {
   mode: "development",
@@ -57,7 +57,7 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      ...pf.patternflyLoaders
+      ...envelope.patternflyLoaders
     ]
   },
   resolve: {
