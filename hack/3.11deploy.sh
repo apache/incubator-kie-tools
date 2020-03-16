@@ -13,11 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-all_files=()
-for file in deploy/crds/*crd.yaml; do all_files=( "${all_files[@]}" "${file}") ; done
-for file in deploy/*.yaml; do all_files=( "${all_files[@]}" "${file}") ; done
+EXIT=0
+FILE_FOUND=0
 
-for FILE in "${all_files[@]}"
+shopt -s nullglob
+for file in deploy/{crds/*_crd.yaml,*.yaml}
 do
-  oc apply -f ${FILE}
+  FILE_FOUND=1
+  oc apply -f "$file"
+  if [[ $? -gt 0 ]]; then
+    EXIT=$?
+    break # Don't try other files if one fails
+  fi
 done
+shopt -u nullglob
+
+if [[ FILE_FOUND -eq 0 ]]; then
+  echo "No deployment files found" >&2
+  EXIT=3
+fi
+
+exit ${EXIT}

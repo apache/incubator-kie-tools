@@ -13,9 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+shopt -s nullglob
+FILES=(deploy/crds/*_crd.yaml)
+shopt -u nullglob
+
 echo "Cleaning up CRDs to run the scorecard tool"
-for crd in deploy/crds/*_crd.yaml; do
-  [[ -e "$crd" ]] || break
+for crd in "${FILES[@]}"; do
   oc delete -f "$crd"
 done
 
@@ -32,9 +35,8 @@ echo "Scorecard finished with code ${exit_code}"
 echo "Cleaning up before leaving"
 oc delete namespace scorecard
 
-echo "Reappling CRDs"
-for crd in deploy/crds/*_crd.yaml; do
-  [[ -e "$crd" ]] || break
+echo "Reapplying CRDs"
+for crd in "${FILES[@]}"; do
   oc apply -f "$crd"
 done
 
