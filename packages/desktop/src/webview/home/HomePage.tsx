@@ -17,7 +17,6 @@
 import * as React from "react";
 import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
 import { useCallback, useState } from "react";
-import { useMemo } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
 import { File } from "../../common/File";
@@ -39,7 +38,7 @@ export function HomePage(props: Props) {
   }, []);
 
   const header = (
-    <PageHeader logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />} />
+    <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />
   );
 
   const navigation = (
