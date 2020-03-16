@@ -18,6 +18,8 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
+import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 
 let loadingScreenContainer: HTMLElement;
 beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
@@ -25,10 +27,11 @@ afterEach(() => loadingScreenContainer.remove());
 
 function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
   let view: EditorEnvelopeView;
+  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
   const render = shallow(
     <EditorEnvelopeView
-      keyboardShortcuts={undefined as any}
-      context={undefined as any}
+      keyboardShortcuts={new DefaultKeyboardShortcutsService(context)}
+      context={context}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
     />

@@ -18,9 +18,10 @@ import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { mount } from "enzyme";
 import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { LanguageData } from "@kogito-tooling/core-api";
+import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentEditorCoordinator } from "../api/resourceContent";
+import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
 
 const StateControlMock = jest.fn(() => ({
   undo: jest.fn(),
@@ -89,7 +90,12 @@ afterEach(() => {
 });
 
 async function startController() {
-  await controller.start({container: envelopeContainer, keyboardShortcuts: undefined as any, context: undefined as any});
+  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
+  await controller.start({
+    container: envelopeContainer,
+    keyboardShortcuts: new DefaultKeyboardShortcutsService(context),
+    context: context
+  });
   return mockComponent!;
 }
 
