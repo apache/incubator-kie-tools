@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.kogito.client.editor;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,8 +42,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
@@ -60,10 +57,13 @@ public abstract class AbstractDiagramEditorMenuSessionItems<BUILDER extends Abst
     private Command loadingCompleted;
     private Consumer<String> errorConsumer;
 
+    private ValidationAction validationAction;
+
     public AbstractDiagramEditorMenuSessionItems(final BUILDER itemsBuilder,
                                                  final EditorSessionCommands sessionCommands) {
         this.itemsBuilder = itemsBuilder;
         this.sessionCommands = sessionCommands;
+        this.validationAction = makeValidation();
         this.menuItems = new HashMap<>(20);
         this.loadingStarts = () -> {
         };
@@ -71,6 +71,13 @@ public abstract class AbstractDiagramEditorMenuSessionItems<BUILDER extends Abst
         };
         this.errorConsumer = e -> {
         };
+    }
+
+    protected ValidationAction makeValidation() {
+        return new ValidationAction(sessionCommands,
+                                    this::loadingStarts,
+                                    this::loadingCompleted,
+                                    this::onError);
     }
 
     public AbstractDiagramEditorMenuSessionItems<BUILDER> setLoadingStarts(final Command loadingStarts) {
@@ -192,18 +199,7 @@ public abstract class AbstractDiagramEditorMenuSessionItems<BUILDER extends Abst
     }
 
     private void validate() {
-        loadingStarts();
-        sessionCommands.getValidateSessionCommand().execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
-            @Override
-            public void onSuccess() {
-                loadingCompleted();
-            }
-
-            @Override
-            public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
-                AbstractDiagramEditorMenuSessionItems.this.onError(violations.toString());
-            }
-        });
+        validationAction.validate();
     }
 
     public void setItemEnabled(final Class<? extends ClientSessionCommand> type,

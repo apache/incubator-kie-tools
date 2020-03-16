@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import org.guvnor.messageconsole.client.console.MessageConsoleScreen;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -29,18 +30,24 @@ import org.kie.workbench.common.dmn.project.client.session.DMNEditorSessionComma
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.editor.ValidationAction;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 @Typed(DMNEditorMenuSessionItems.class)
 public class DMNEditorMenuSessionItems extends AbstractDiagramEditorMenuSessionItems<DMNEditorMenuItemsBuilder> {
 
+    private final PlaceManager placeManager;
+
     @Inject
     public DMNEditorMenuSessionItems(final DMNEditorMenuItemsBuilder itemsBuilder,
-                                     final @DMNEditor DMNEditorSessionCommands sessionCommands) {
+                                     final @DMNEditor DMNEditorSessionCommands sessionCommands,
+                                     final PlaceManager placeManager) {
         super(itemsBuilder,
               sessionCommands);
+        this.placeManager = placeManager;
     }
 
     @Override
@@ -77,5 +84,13 @@ public class DMNEditorMenuSessionItems extends AbstractDiagramEditorMenuSessionI
 
     void superSetEnabled(final boolean enabled) {
         super.setEnabled(enabled);
+    }
+
+    @Override
+    protected ValidationAction makeValidation() {
+        final ValidationAction validationAction = super.makeValidation();
+
+        validationAction.setAfterValidation(() -> placeManager.goTo(MessageConsoleScreen.ALERTS));
+        return validationAction;
     }
 }

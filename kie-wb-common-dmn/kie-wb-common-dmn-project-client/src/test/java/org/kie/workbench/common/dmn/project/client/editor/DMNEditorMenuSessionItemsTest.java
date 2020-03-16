@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.Validat
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.Mock;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
@@ -59,10 +60,13 @@ public class DMNEditorMenuSessionItemsTest {
     @Mock
     private DMNEditorSessionCommands sessionCommands;
 
+    @Mock
+    private PlaceManager placeManager;
+
     @Test
     public void testPopulateMenu() {
 
-        final DMNEditorMenuSessionItems menuItems = spy(new DMNEditorMenuSessionItems(builder, sessionCommands));
+        final DMNEditorMenuSessionItems menuItems = spy(new DMNEditorMenuSessionItems(builder, sessionCommands, placeManager));
         final MenuItem menuItem = mock(MenuItem.class);
         doNothing().when(menuItems).superPopulateMenu(any());
         doReturn(menuItem).when(menuItems).newPerformAutomaticLayout();
@@ -83,7 +87,7 @@ public class DMNEditorMenuSessionItemsTest {
 
     private void testMenu(final boolean enabled) {
 
-        final DMNEditorMenuSessionItems menuItems = spy(new DMNEditorMenuSessionItems(builder, sessionCommands));
+        final DMNEditorMenuSessionItems menuItems = spy(new DMNEditorMenuSessionItems(builder, sessionCommands, placeManager));
 
         menuItems.setEnabled(enabled);
         verify(menuItems).setItemEnabled(ClearSessionCommand.class, enabled);
