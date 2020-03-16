@@ -99,6 +99,12 @@ Develop
 4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag.
 5. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
 
+Contribute
+--------------------
+- When opening PRs, please make sure to provide a detailed description of the issue along with the JIRA, if there's one.
+- Also, since we depend on DMN and BPMN editores and our CI build is *not* integrated with the editors, when you need an updated version of the editors to be used, **please provide a VSIX bundle so people can at least test your changes easily on VSCode. Also, it's a good pratice to put a note on your PR saying that the editors have changed too**.
+
+
 
 Contributing to Kogito
 --------------------
