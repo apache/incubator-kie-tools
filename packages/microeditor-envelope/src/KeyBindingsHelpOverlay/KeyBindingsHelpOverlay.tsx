@@ -30,6 +30,7 @@ import {
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { EditorContext } from "../api/context";
 import { OperatingSystem } from "@kogito-tooling/core-api";
+import "./styles.scss";
 
 export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
   const [showing, setShowing] = useState(false);
@@ -79,24 +80,7 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
 
   return (
     <>
-      <div
-        onClick={() => setShowing(!showing)}
-        style={{
-          userSelect: "none",
-          zIndex: 999,
-          left: 0,
-          bottom: 0,
-          position: "fixed",
-          padding: "7px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "35px",
-          height: "35px",
-          fontSize: "1.2em",
-          cursor: "pointer"
-        }}
-      >
+      <div onClick={() => setShowing(!showing)} className={"kogito-tooling--keyboard-shortcuts-icon"}>
         <KeyboardIcon />
       </div>
 
@@ -124,11 +108,11 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
 }
 
 function handleMacOsCombination(combination: string, context: EditorContext) {
-    if (context.operatingSystem === OperatingSystem.MACOS) {
-        return combination.replace("Ctrl", "Cmd");
-    }
+  if (context.operatingSystem === OperatingSystem.MACOS) {
+    return combination.replace("Ctrl", "Cmd");
+  }
 
-    return combination;
+  return combination;
 }
 
 function removeDuplicatesByAttr<T>(myArr: T[], prop: keyof T) {
