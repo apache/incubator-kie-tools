@@ -109,7 +109,7 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
 
 function handleMacOsCombination(combination: string, context: EditorContext) {
   if (context.operatingSystem === OperatingSystem.MACOS) {
-    return combination.replace("Ctrl", "Cmd");
+    return combination.replace("ctrl", "cmd");
   }
 
   return combination;
