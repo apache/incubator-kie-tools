@@ -40,7 +40,10 @@ import {
   DropdownToggle,
   DropdownItem,
   Tooltip,
-  TextVariants
+  TextVariants,
+  StackItem,
+  Select,
+  SelectOption
 } from "@patternfly/react-core";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
@@ -52,6 +55,7 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { ThIcon, ThListIcon, SortAlphaDownIcon, SearchIcon, FilterIcon } from "@patternfly/react-icons";
+import app = Electron.app;
 
 interface Props {
   openFile: (file: File) => void;
@@ -60,6 +64,7 @@ interface Props {
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
   const [lastOpenedFiles, setLastOpenedFiles] = useState<string[]>([]);
+  const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<string[]>([]);
 
   const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
 
@@ -67,12 +72,10 @@ export function FilesPage(props: Props) {
     ipc.send("openFileByPath", { filePath: filePath });
   }, []);
 
-  const currentCategory = "Status";
-  const isFilterDropdownOpen = "false";
-
   useEffect(() => {
     ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: string[] }) => {
       setLastOpenedFiles(data.lastOpenedFiles);
+      setFilteredLastOpenedFiles(applyFilter(data.lastOpenedFiles));
     });
 
     ipc.send("requestLastOpenedFiles");
@@ -140,8 +143,74 @@ export function FilesPage(props: Props) {
       });
   }, [url, props.openFile, showResponseError, showFetchError]);
 
+  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
+  const [searchFilter, setSearchFilter] = useState("");
+  const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
+
+  const typeFilterOptions = useMemo(() => [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }], []);
+
+  const onSelectTypeFilter = useCallback((event, selection) => {
+    setTypeFilterSelect({
+      isExpanded: false,
+      value: selection
+    });
+  }, []);
+
+  const onToggleTypeFilter = useCallback(
+    isExpanded => {
+      setTypeFilterSelect({
+        isExpanded: isExpanded,
+        value: typeFilterSelect.value
+      });
+      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
+    },
+    [typeFilterSelect, lastOpenedFiles]
+  );
+
+  const onChangeSearchFilter = useCallback(
+    newValue => {
+      setSearchFilter(newValue);
+      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
+    },
+    [lastOpenedFiles]
+  );
+
+  const applyFilter = useCallback(
+    (files: string[]) => {
+      const filteredFiles = files
+        .filter(file =>
+          file
+            ?.split("/")
+            .pop()
+            ?.toUpperCase()
+            .includes(searchFilter.toUpperCase())
+        )
+        .filter(
+          file => typeFilterSelect.value === "All" || file.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
+        );
+
+      if (sortAlphaFilter) {
+        return filteredFiles.sort((file1, file2) => {
+          const f1 = file1.toLowerCase();
+          const f2 = file2.toLowerCase();
+
+          if (f1 < f2) {
+            return -1;
+          } else if (f1 > f2) {
+            return 1;
+          }
+
+          return 0;
+        });
+      }
+
+      return filteredFiles;
+    },
+    [searchFilter, typeFilterSelect, sortAlphaFilter]
+  );
+
   return (
-    <div>
+    <>
       <PageSection>
         <TextContent>
           <Title size={"2xl"} headingLevel={"h2"}>
@@ -195,7 +264,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  {"Sample Workflow (BPMN)"}
+                  {"Sample Workflow (.BPMN)"}
                 </Title>
               }
             </CardHeader>
@@ -264,54 +333,48 @@ export function FilesPage(props: Props) {
         <Title size={"2xl"} headingLevel={"h3"}>
           Recent Files
         </Title>
-        {/* TODO: Make the toolbar work! */}
         <Toolbar>
           {
             <>
               <ToolbarGroup>
                 {
-                  <Dropdown
-                    className={"string"}
-                    dropdownItems={[]}
-                    isOpen={true}
-                    isPlain={false}
-                    toggle={
-                      <DropdownToggle
-                        onToggle={(_isOpen: boolean) => undefined as any}
-                        aria-label={"select a file type"}
-                        type={"button"}
-                        // onEnter={(event?: React.MouseEvent<HTMLButtonElement>) => undefined as void}
-                      >
-                        <FilterIcon className="pf-u-mr-sm" /> {currentCategory}
-                      </DropdownToggle>
-                    }
-                    onSelect={(event?: React.SyntheticEvent<HTMLDivElement>) => undefined as void}
-                    autoFocus={true}
+                  <Select
+                    onSelect={onSelectTypeFilter}
+                    onToggle={onToggleTypeFilter}
+                    isExpanded={typeFilterSelect.isExpanded}
+                    selections={typeFilterSelect.value}
+                    width={"7em"}
                   >
-                    {
-                      <div>
-                        <DropdownItem key="cat1">All</DropdownItem>
-                        <DropdownItem key="cat2">BPMN</DropdownItem>
-                        <DropdownItem key="cat3">DMN</DropdownItem>
-                      </div>
-                    }
-                  </Dropdown>
+                    {typeFilterOptions.map((option, index) => (
+                      <SelectOption key={index} value={option.value} />
+                    ))}
+                  </Select>
                 }
               </ToolbarGroup>
               <ToolbarGroup>
                 <InputGroup>
-                  <TextInput name="textInput1" id="textInput1" type="search" aria-label="search input example" />
-                  <Button variant={"plain"} aria-label="search button for search input">
-                    <SearchIcon />
-                  </Button>
+                  <TextInput
+                    name={"searchInput"}
+                    id={"searchInput"}
+                    type={"search"}
+                    aria-label={"search input example"}
+                    placeholder={"Search"}
+                    onChange={onChangeSearchFilter}
+                  />
                 </InputGroup>
               </ToolbarGroup>
               <ToolbarItem>
-                <Button variant="plain" aria-label="sort file view">
+                <Button
+                  variant="plain"
+                  aria-label="sort file view"
+                  className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
+                  onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+                >
                   <SortAlphaDownIcon />
                 </Button>
               </ToolbarItem>
-              <ToolbarGroup className="pf-u-ml-auto">
+              {/* TODO: Implement grid view */}
+              {/*<ToolbarGroup className="pf-u-ml-auto">
                 <ToolbarItem>
                   <Button variant="plain" aria-label="tiled file view">
                     <ThIcon />
@@ -322,17 +385,17 @@ export function FilesPage(props: Props) {
                     <ThListIcon />
                   </Button>
                 </ToolbarItem>
-              </ToolbarGroup>
+              </ToolbarGroup>*/}
             </>
           }
         </Toolbar>
       </PageSection>
-      <PageSection>
-        {lastOpenedFiles.length === 0 && <Bullseye>No files were opened yet.</Bullseye>}
+      <PageSection isFilled={true}>
+        {filteredLastOpenedFiles.length === 0 && <Bullseye>No files were opened yet.</Bullseye>}
 
-        {lastOpenedFiles.length > 0 && (
+        {filteredLastOpenedFiles.length > 0 && (
           <Gallery gutter="lg" className="kogito-desktop__file-gallery">
-            {lastOpenedFiles.map(filePath => (
+            {filteredLastOpenedFiles.map(filePath => (
               <Card key={filePath} isCompact={true} onClick={() => openFileByPath(filePath)}>
                 <CardBody>
                   <Bullseye>
@@ -355,6 +418,6 @@ export function FilesPage(props: Props) {
           </Gallery>
         )}
       </PageSection>
-    </div>
+    </>
   );
 }

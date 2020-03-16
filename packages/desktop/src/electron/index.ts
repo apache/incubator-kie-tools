@@ -29,8 +29,8 @@ app.on("ready", () => {
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    height: 960,
-    width: 1280,
+    height: 900,
+    width: 1440,
     show: false,
     icon: path.join(__dirname, "images/intelliapp_icon.png"),
     webPreferences: {

@@ -106,6 +106,15 @@
   text-overflow: ellipsis;
 }
 
+.kogito--filter-btn {
+  outline: none;
+}
+
+.kogito--filter-btn-pressed {
+  outline: none;
+  background-color: var(--pf-global--BackgroundColor--light-300);
+}
+
 @media (min-width: 992px) {
   .kogito--editor__toolbar .pf-c-page__header-nav {
     margin-right: 17em;

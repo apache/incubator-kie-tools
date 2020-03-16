@@ -63,19 +63,19 @@ export function LearnMorePage() {
                 lancashire feta caerphilly everyone loves chalk and cheese brie. Red leicester parmesan cheese and
                 biscuits cheesy feet blue castello cheesecake fromage frais smelly cheese.
               </Text>
-            <Text component={TextVariants.p}>
-            <Button
-              className={"''"}
-              component={"a"}
-              isBlock={false}
-              isInline={true}
-              type={"button"}
-              variant={"link"}
-              onClick={event => externalLink(event, "http://kogito.kie.org")}
-            >
-              Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
-            </Button>
-            </Text>
+              <Text component={TextVariants.p}>
+                <Button
+                  className={"''"}
+                  component={"a"}
+                  isBlock={false}
+                  isInline={true}
+                  type={"button"}
+                  variant={"link"}
+                  onClick={event => externalLink(event, "http://kogito.kie.org")}
+                >
+                  Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                </Button>
+              </Text>
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>
@@ -122,16 +122,16 @@ export function LearnMorePage() {
         <Card className={"''"} span={12} style={{ gridColumn: "span 12" }}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
-              About IntelliApp and Kogito
+              About Business Modeler Preview and Kogito
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
             <Split gutter="lg">
               <SplitItem isFilled={true}>
-                IntelliApp and Kogito are open source projects sponsored by Red Hat. Leverage agile frameworks to
-                provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster
-                collaborative thinking to further the overall value proposition. Organically grow the holistic world
-                view of disruptive innovation via workplace diversity and empowerment.
+                Business Modeler Preview and Kogito are open source projects sponsored by Red Hat. Leverage agile
+                frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate
+                strategy foster collaborative thinking to further the overall value proposition. Organically grow the
+                holistic world view of disruptive innovation via workplace diversity and empowerment.
                 <Button
                   className={"pf-u-ml-xs"}
                   component={"a"}
@@ -141,7 +141,7 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "http://kogito.kie.org")}
                 >
-                   Documentation here.
+                  Documentation here.
                 </Button>
               </SplitItem>
               <SplitItem>
