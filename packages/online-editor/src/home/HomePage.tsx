@@ -129,8 +129,12 @@ export function HomePage(props: Props) {
       e.preventDefault();
 
       const file = e.dataTransfer.files[0];
-      onFileUploadFromDnd(file);
+      // FIXME: On chrome it was observed that sometimes `file` is undefined, although its type says that it's not possible.
+      if (!file) {
+        return false;
+      }
 
+      onFileUploadFromDnd(file);
       return false;
     },
     [onFileUploadFromDnd]
