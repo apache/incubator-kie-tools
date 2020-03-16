@@ -83,6 +83,7 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private static final String DECISON_NAVIGATOR_EXPAND = "qe-docks-item-W-org.kie.dmn.decision.navigator";
     private static final String DECISON_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
+    private static final String ACE_EDITOR = "//div[@class='ace_content']";
     private static final String DECISION_NODE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']";
     private static final String DECISION_TABLE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='Decision Table']/div";
     private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
@@ -154,6 +155,17 @@ public class DMNDesignerKogitoSeleniumIT {
                         || Objects.equals(attr.getName(), "name")
                         || Objects.equals(attr.getName(), "namespace")))
                 .areIdentical();
+    }
+
+    @Test
+    public void testAceEditorForInvalidContent() {
+        setContent("<!!!invalid!!!>");
+
+        final WebElement aceEditor = waitOperation().until(element(ACE_EDITOR));
+        assertThat(aceEditor)
+                .as("If invalid dmn is loaded, ace editor needs to be shown")
+                .isNotNull();
+
     }
 
     @Test
