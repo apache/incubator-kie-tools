@@ -391,3 +391,15 @@
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.keep-namespace"* ]]
 }
+
+@test "invoke run-tests with namespace_name" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --namespace_name test-namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.dev.namespace-name=test-namespace" ]]
+}
+
+@test "invoke run-tests with namespace_name missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --namespace_name --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.dev.namespace-name"* ]]
+}

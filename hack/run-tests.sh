@@ -79,6 +79,7 @@ function usage(){
   printf "\n--dry_run\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
   printf "\n--keep_namespace\n\tDo not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)."
   printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
+  printf "\n--namespace_name\n\tSpecify name of the namespace which will be used for scenario execution (intended for development purposes)."
   printf "\n"
 }
 
@@ -274,6 +275,10 @@ case $1 in
   --disabled_crds_update)
     CRDS_UPDATE=false
     shift
+  ;;
+  --namespace_name)
+    shift
+    if addParamKeyValueIfAccepted "--tests.dev.namespace-name" ${1}; then shift; fi
   ;;
 
   # others
