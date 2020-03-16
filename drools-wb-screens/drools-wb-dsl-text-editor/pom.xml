@@ -21,11 +21,4 @@
     <module>drools-wb-dsl-text-editor-api</module>
   </modules>
 
-  <properties>
-    <code.coverage.disabled>true</code.coverage.disabled>
-    <sonar.skip>true</sonar.skip>
-  </properties>
-
-
-
 </project>

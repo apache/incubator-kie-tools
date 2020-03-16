@@ -17,6 +17,7 @@
 
   <properties>
     <java.module.name>org.drools.wb.guided.rule.editor.client</java.module.name>
+    <jacoco.excludes>**/GuidedRuleEditorImages508.class</jacoco.excludes>
   </properties>
 
   <dependencies>

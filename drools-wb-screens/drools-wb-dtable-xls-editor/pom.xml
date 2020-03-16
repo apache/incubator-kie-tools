@@ -37,11 +37,4 @@
     <module>drools-wb-dtable-xls-editor-backend</module>
   </modules>
 
-  <properties>
-    <code.coverage.disabled>true</code.coverage.disabled>
-    <sonar.skip>true</sonar.skip>
-  </properties>
-
-
-
 </project>

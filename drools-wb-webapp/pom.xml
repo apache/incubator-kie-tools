@@ -1941,13 +1941,5 @@
         </plugins>
       </build>
     </profile>
-    <!-- NEEDED TO GENERATE jacoco.exec -->
-    <profile>
-      <id>sonarcloud-analysis</id>
-      <properties>
-        <!-- Excluding the entire module from coverage statistics. -->
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
-      </properties>
-    </profile>
   </profiles>
 </project>

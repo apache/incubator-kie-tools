@@ -17,6 +17,7 @@
 
   <properties>
     <java.module.name>org.drools.wb.scenariosimulation.editor.client</java.module.name>
+    <sonar.coverage.exclusions>**/editor/ScenarioSimulationEditorWrapper.java,**/events/**.java</sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
@@ -195,14 +196,5 @@
     </dependency>
 
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>sonarcloud-analysis</id>
-      <properties>
-        <sonar.coverage.exclusions>**/editor/ScenarioSimulationEditorWrapper.java,**/events/**.java</sonar.coverage.exclusions>
-      </properties>
-    </profile>
-  </profiles>
 
 </project>
