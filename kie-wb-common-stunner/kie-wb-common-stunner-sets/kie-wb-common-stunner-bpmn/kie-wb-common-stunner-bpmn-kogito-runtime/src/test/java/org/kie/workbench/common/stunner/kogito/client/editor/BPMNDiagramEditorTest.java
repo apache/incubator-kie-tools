@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
@@ -113,6 +114,9 @@ public class BPMNDiagramEditorTest {
 
     @Mock
     private KogitoClientDiagramService diagramServices;
+    
+    @Mock
+    private CanvasFileExport canvasFileExport;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -136,7 +140,8 @@ public class BPMNDiagramEditorTest {
                                        diagramPropertiesDock,
                                        layoutHelper,
                                        openDiagramLayoutExecutor,
-                                       diagramServices);
+                                       diagramServices,
+                                       canvasFileExport);
     }
 
     @Test

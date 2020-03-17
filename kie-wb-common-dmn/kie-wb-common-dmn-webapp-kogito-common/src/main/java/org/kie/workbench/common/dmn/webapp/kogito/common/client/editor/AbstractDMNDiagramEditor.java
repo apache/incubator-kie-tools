@@ -43,6 +43,8 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -72,6 +74,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.GetContent;
+import org.uberfire.lifecycle.GetPreview;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -113,6 +116,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     protected final KogitoClientDiagramService diagramServices;
     protected final MonacoFEELInitializer feelInitializer;
+
+    private CanvasFileExport canvasFileExport;
 
     // --- Workaround : Start ---
     // This is a workaround for kogito-tooling that calls setContent(..) twice; once with a _valid_ DMN model (a new one) and
@@ -174,7 +179,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                     final DataTypesPage dataTypesPage,
                                     final KogitoClientDiagramService diagramServices,
-                                    final MonacoFEELInitializer feelInitializer) {
+                                    final MonacoFEELInitializer feelInitializer,
+                                    final CanvasFileExport canvasFileExport) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -208,6 +214,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
         this.diagramServices = diagramServices;
         this.feelInitializer = feelInitializer;
+        this.canvasFileExport = canvasFileExport;
     }
 
     @OnStartup
@@ -447,5 +454,15 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     @Override
     public void resetContentHash() {
         setOriginalContentHash(getCurrentDiagramHash());
+    }
+    
+    @GetPreview
+    public Promise getPreview() {
+        CanvasHandler canvasHandler = getCanvasHandler();
+        if (canvasHandler != null) {
+            return Promise.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
+        } else {
+            return Promise.resolve("");
+        }
     }
 }

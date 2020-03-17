@@ -29,7 +29,9 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
@@ -60,6 +62,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.GetContent;
+import org.uberfire.lifecycle.GetPreview;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -87,6 +90,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     private final KogitoClientDiagramService diagramServices;
 
+    private final CanvasFileExport canvasFileExport;
+
     @Inject
     public BPMNDiagramEditor(final View view,
                              final FileMenuBuilder fileMenuBuilder,
@@ -107,7 +112,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final DiagramEditorPropertiesDock diagramPropertiesDock,
                              final LayoutHelper layoutHelper,
                              final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
-                             final KogitoClientDiagramService diagramServices) {
+                             final KogitoClientDiagramService diagramServices,
+                             final CanvasFileExport canvasFileExport) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -130,6 +136,7 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
 
         this.diagramServices = diagramServices;
+        this.canvasFileExport = canvasFileExport;
     }
 
     @OnStartup
@@ -251,6 +258,16 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     @Override
     public Promise getContent() {
         return diagramServices.transform(getEditor().getEditorProxy().getContentSupplier().get());
+    }
+
+    @GetPreview
+    public Promise getPreview() {
+        CanvasHandler canvasHandler = getCanvasHandler();
+        if (canvasHandler != null) {
+            return Promise.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
+        } else {
+            return Promise.resolve("");
+        }
     }
 
     @Override

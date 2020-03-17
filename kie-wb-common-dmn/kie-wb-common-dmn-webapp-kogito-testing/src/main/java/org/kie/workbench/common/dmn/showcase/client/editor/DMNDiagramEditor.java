@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -125,7 +126,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final KogitoClientDiagramService diagramServices,
                             final DMNVFSService vfsService,
                             final Promises promises,
-                            final MonacoFEELInitializer feelInitializer) {
+                            final MonacoFEELInitializer feelInitializer,
+                            final CanvasFileExport canvasFileExport) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -153,7 +155,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               openDiagramLayoutExecutor,
               dataTypesPage,
               diagramServices,
-              feelInitializer);
+              feelInitializer,
+              canvasFileExport);
         this.notificationEvent = notificationEvent;
         this.vfsService = vfsService;
         this.promises = promises;

@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
@@ -80,6 +81,9 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Mock
     private DMNVFSService vfsService;
+    
+    @Mock
+    CanvasFileExport canvasFileExport;
 
     @Mock
     private Promises promises;
@@ -92,7 +96,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Captor
     private ArgumentCaptor<Path> pathArgumentCaptor;
-
+    
     @Override
     public void setup() {
         super.setup();
@@ -143,7 +147,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     clientDiagramService,
                                     vfsService,
                                     promises,
-                                    feelInitializer) {
+                                    feelInitializer,
+                                    canvasFileExport) {
 
             @Override
             protected PlaceRequest getPlaceRequest() {
