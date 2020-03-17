@@ -34,7 +34,8 @@ enum ActionType {
   NONE,
   SAVE,
   DOWNLOAD,
-  COPY
+  COPY,
+  PREVIEW
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
@@ -48,6 +49,7 @@ export function EditorPage(props: Props) {
   const history = useHistory();
   const editorRef = useRef<EditorRef>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
@@ -64,6 +66,11 @@ export function EditorPage(props: Props) {
   const requestDownload = useCallback(() => {
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
+  }, []);
+
+  const requestPreview = useCallback(() => {
+    action = ActionType.PREVIEW;
+    editorRef.current?.requestPreview();
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
@@ -122,6 +129,17 @@ export function EditorPage(props: Props) {
     [fileNameWithExtension]
   );
 
+  const onPreviewResponse = useCallback(
+    preview => {
+      if (action === ActionType.PREVIEW && downloadPreviewRef.current) {
+        const fileBlob = new Blob([preview], { type: "image/svg+xml" });
+        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+        downloadPreviewRef.current.click();
+      }
+    },
+    [fileNameWithExtension]
+  );
+
   useEffect(() => {
     if (closeCopySuccessAlert) {
       const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
@@ -136,6 +154,9 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     if (downloadRef.current) {
       downloadRef.current.download = fileNameWithExtension;
+    }
+    if (downloadPreviewRef.current) {
+      downloadPreviewRef.current.download = `${fileNameWithExtension}.svg`;
     }
   }, [fileNameWithExtension]);
 
@@ -164,6 +185,7 @@ export function EditorPage(props: Props) {
           onFileNameChanged={props.onFileNameChanged}
           onCopyContentToClipboard={requestCopyContentToClipboard}
           isPageFullscreen={fullscreen}
+          onPreview={requestPreview}
         />
       }
     >
@@ -186,14 +208,20 @@ export function EditorPage(props: Props) {
 
       <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Editor ref={editorRef} fullscreen={fullscreen} onContentResponse={onContentResponse} />
+        <Editor
+          ref={editorRef}
+          fullscreen={fullscreen}
+          onContentResponse={onContentResponse}
+          onPreviewResponse={onPreviewResponse}
+        />
       </PageSection>
-      <a ref={downloadRef} />
       <textarea
         ref={copyContentTextArea}
         aria-hidden={"true"}
         style={{ height: 0, position: "absolute", zIndex: -1 }}
       />
+      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadPreviewRef} />
     </Page>
   );
 }

@@ -51,6 +51,9 @@ beforeEach(() => {
       },
       receive_editorUndo(): void {
         receivedMessages.push(["notify_editorUndo", undefined]);
+      },
+      receive_previewRequest: () => {
+        receivedMessages.push(["receive_previewRequest"]);
       }
     })
   );

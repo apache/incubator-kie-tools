@@ -41,6 +41,10 @@ export class DummyEditor extends AppFormer.Editor {
   public setContent(path: string, content: string) {
     return this.ref!.setContent(content);
   }
+
+  public getPreview(): Promise<string| undefined>{
+    return Promise.resolve(undefined);
+  }
 }
 
 interface Props {

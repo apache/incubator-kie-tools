@@ -20,6 +20,12 @@
   "publisher": "kiegroup",
   "main": "./dist/extension/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "extension.kogito.getPreviewSvg",
+        "title": "Get Editor Preview SVG"
+      }
+    ],
     "languages": [
       {
         "id": "bpmn",
