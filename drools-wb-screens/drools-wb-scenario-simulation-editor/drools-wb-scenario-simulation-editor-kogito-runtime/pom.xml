@@ -505,40 +505,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- NEEDED ? -->
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-widgets</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-validations</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-navigation-client</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-layout-editor-backend</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-renderer-default</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Add for enforcer -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>lienzo-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!-- CoverageReportDonutPresenter in right panel -->
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-displayer-api</artifactId>
@@ -547,6 +514,13 @@
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-displayer-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Add for enforcer -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
