@@ -47,9 +47,7 @@ export class FileOperations {
         dialog
           .showSaveDialog(this.window, {
             title: "Save file",
-            filters: [
-              { name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }
-            ]
+            filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
           })
           .then(result => {
             if (!result.canceled) {
@@ -107,6 +105,9 @@ export class FileOperations {
       })
       .catch(error => {
         console.info("Failed to open file" + filePath + ":" + error);
+        this.window.webContents.send("returnLastOpenedFiles", {
+          lastOpenedFiles: this.userData.getLastOpenedFiles()
+        });
       });
   }
 

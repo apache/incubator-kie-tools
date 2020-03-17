@@ -36,7 +36,6 @@ import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
-import { Link } from "react-router-dom";
 
 export function LearnMorePage() {
   const context = useContext(GlobalContext);
@@ -57,12 +56,7 @@ export function LearnMorePage() {
           </CardHeader>
           <CardBody className={"''"}>
             <TextContent>
-              <Text component={TextVariants.p}>
-                BPMN files are used to generate processes. Brief text explaining airedale the big cheese. Danish fontina
-                cheesy grin airedale danish fontina taleggio the big cheese macaroni cheese port-salut. Edam fromage
-                lancashire feta caerphilly everyone loves chalk and cheese brie. Red leicester parmesan cheese and
-                biscuits cheesy feet blue castello cheesecake fromage frais smelly cheese.
-              </Text>
+              <Text component={TextVariants.p}>BPMN files are used to generate business processes.</Text>
               <Text component={TextVariants.p}>
                 <Button
                   className={"''"}
@@ -71,7 +65,7 @@ export function LearnMorePage() {
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "http://kogito.kie.org")}
+                  onClick={event => externalLink(event, "https://www.omg.org/bpmn/")}
                 >
                   Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
@@ -92,12 +86,7 @@ export function LearnMorePage() {
           </CardHeader>
           <CardBody className={"''"}>
             <TextContent>
-              <Text component={TextVariants.p}>
-                DMN files are used to generate processes. Those options are already baked in with this model shoot me an
-                email clear blue water but we need distributors to evangelize the new line to local markets, but fire up
-                your browser. Strategic high-level 30,000 ft view. Drill down re-inventing the wheel at the end of the
-                day but curate imagineer, or to be inspired is to become creative.
-              </Text>
+              <Text component={TextVariants.p}>DMN files are used to generate decision models.</Text>
               <Text component={TextVariants.p}>
                 <Button
                   className={"''"}
@@ -106,7 +95,7 @@ export function LearnMorePage() {
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "http://kogito.kie.org")}
+                  onClick={event => externalLink(event, "https://www.omg.org/dmn/")}
                 >
                   Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
@@ -122,16 +111,14 @@ export function LearnMorePage() {
         <Card className={"''"} span={12} style={{ gridColumn: "span 12" }}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
-              About Business Modeler Preview and Kogito
+              About Business Modeler Preview
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
             <Split gutter="lg">
               <SplitItem isFilled={true}>
-                Business Modeler Preview and Kogito are open source projects sponsored by Red Hat. Leverage agile
-                frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate
-                strategy foster collaborative thinking to further the overall value proposition. Organically grow the
-                holistic world view of disruptive innovation via workplace diversity and empowerment.
+                These simple BPMN and DMN editors are here to allow you to collaborate quickly and to help introduce you
+                to the new tools and capabilities of Process Automation. Feel free to get in touch in the
                 <Button
                   className={"pf-u-ml-xs"}
                   component={"a"}
@@ -139,10 +126,11 @@ export function LearnMorePage() {
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "http://kogito.kie.org")}
+                  onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
-                  Documentation here.
+                  forum
                 </Button>
+                .
               </SplitItem>
               <SplitItem>
                 <Stack>
@@ -154,7 +142,7 @@ export function LearnMorePage() {
                       isInline={false}
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "http://kogito.kie.org")}
+                      onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
                       Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
@@ -167,7 +155,7 @@ export function LearnMorePage() {
                       isInline={false}
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "http://kogito.kie.org")}
+                      onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
                       Get VSCode extension <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
@@ -180,7 +168,7 @@ export function LearnMorePage() {
                       isInline={false}
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "http://kogito.kie.org")}
+                      onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
                     >
                       Red Hat and open source <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>

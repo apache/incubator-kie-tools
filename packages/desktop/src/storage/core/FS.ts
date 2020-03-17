@@ -26,6 +26,13 @@ import * as util from "util";
 export class FS implements Provider {
   public readonly type = StorageTypes.FS;
 
+  public exists(file: FileMetadata): boolean {
+    if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
+      return fs.existsSync(file.full_name);
+    }
+    return false;
+  }
+
   public read(file: FileMetadata): Promise<string> {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
       const readFile = util.promisify(fs.readFile);

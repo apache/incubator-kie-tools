@@ -42,5 +42,6 @@
   "devDependencies": {
     "electron-packager": "14.2.0",
     "electron-rebuild": "1.10.0"
-  }
+  },
+  "files": ["**/*", "build/icon.*"]
 }

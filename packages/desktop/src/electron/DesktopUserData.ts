@@ -15,6 +15,8 @@
  */
 
 import { UserData } from "../storage/core/UserData";
+import { Files } from "../storage/core/Files";
+import { FS } from "../storage/core/FS";
 
 const NUMBER_OF_FILES_TO_KEEP = 50;
 
@@ -42,7 +44,10 @@ export class DesktopUserData {
   }
 
   public getLastOpenedFiles(): string[] {
-    return this.userData.get("lastOpenedFiles");
+    const updatedData = this.userData.get("lastOpenedFiles").filter(file => Files.exists(FS.newFile(file)));
+    this.userData.set("lastOpenedFiles", updatedData);
+
+    return updatedData;
   }
 
   public clear() {

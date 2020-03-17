@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import * as path from "path";
+
 export function extractFileExtension(fileName: string) {
   return fileName
     .split(".")
@@ -33,5 +35,5 @@ export function removeFileExtension(fileName: string) {
 }
 
 export function removeDirectories(filePath: string) {
-  return filePath.split("/").pop();
+  return filePath.split(path.sep).pop();
 }

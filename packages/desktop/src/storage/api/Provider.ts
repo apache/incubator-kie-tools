@@ -20,7 +20,9 @@ import { FileMetadata } from "./FileMetadata";
 export interface Provider {
   readonly type: StorageTypes;
 
-  write(file: FileMetadata, content: string): Promise<void>;
+  exists(file: FileMetadata): boolean;
 
   read(file: FileMetadata): Promise<string>;
+
+  write(file: FileMetadata, content: string): Promise<void>;
 }

@@ -64,7 +64,8 @@
   );
 }
 
-.kogito--desktop__actions-card {
+.kogito--desktop__actions-card,
+.kogito--desktop__files-card {
   cursor: pointer;
 }
 

@@ -40,4 +40,12 @@ export class Files {
     }
     return Promise.resolve("");
   }
+
+  public static exists(file: FileMetadata): boolean {
+    const provider = this.providers.get(file.storage);
+    if (provider) {
+      return provider.exists(file);
+    }
+    return false;
+  }
 }

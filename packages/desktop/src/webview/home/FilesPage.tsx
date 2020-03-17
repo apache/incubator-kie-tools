@@ -33,15 +33,9 @@ import {
   TextContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarSection,
   InputGroup,
-  Dropdown,
-  DropdownPosition,
-  DropdownToggle,
-  DropdownItem,
   Tooltip,
   TextVariants,
-  StackItem,
   Select,
   SelectOption
 } from "@patternfly/react-core";
@@ -54,8 +48,7 @@ import * as ReactDOM from "react-dom";
 import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import { ThIcon, ThListIcon, SortAlphaDownIcon, SearchIcon, FilterIcon } from "@patternfly/react-icons";
-import app = Electron.app;
+import { SortAlphaDownIcon } from "@patternfly/react-icons";
 
 interface Props {
   openFile: (file: File) => void;
@@ -83,7 +76,8 @@ export function FilesPage(props: Props) {
     return () => {
       ipc.removeAllListeners("returnLastOpenedFiles");
     };
-  }, [ipc, lastOpenedFiles]);
+  }, [ipc]);
+
   const [url, setURL] = useState("");
 
   const showResponseError = useCallback((statusCode: number, description: string) => {
@@ -179,9 +173,7 @@ export function FilesPage(props: Props) {
     (files: string[]) => {
       const filteredFiles = files
         .filter(file =>
-          file
-            ?.split("/")
-            .pop()
+          removeDirectories(file)
             ?.toUpperCase()
             .includes(searchFilter.toUpperCase())
         )
@@ -396,7 +388,12 @@ export function FilesPage(props: Props) {
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery gutter="lg" className="kogito-desktop__file-gallery">
             {filteredLastOpenedFiles.map(filePath => (
-              <Card key={filePath} isCompact={true} onClick={() => openFileByPath(filePath)}>
+              <Card
+                key={filePath}
+                isCompact={true}
+                onClick={() => openFileByPath(filePath)}
+                className={"kogito--desktop__files-card"}
+              >
                 <CardBody>
                   <Bullseye>
                     <img

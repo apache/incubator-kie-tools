@@ -56,9 +56,14 @@ export function EditorToolbar(props: Props) {
     </Toolbar>
   );
 
+  const logoProps = useMemo(() => {
+    return { href: window.location.href.split("?")[0].split("#")[0] };
+  }, []);
+
   return (
     <PageHeader
       logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
+      logoProps={logoProps}
       toolbar={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}

@@ -20,29 +20,28 @@ import * as fs from "fs";
 
 export class UserData {
   private readonly path: string;
-  private data: any;
   private readonly defaults: any;
 
   constructor(options: { configName: string; defaults: any }) {
     const userDataPath = (electron.app || electron.remote.app).getPath("userData");
 
     this.path = path.join(userDataPath, options.configName + ".json");
-    this.data = this.parseDataFile(this.path, options.defaults);
     this.defaults = options.defaults;
   }
 
   public get(key: string): any {
-    return this.data[key];
+    return this.parseDataFile(this.path, this.defaults)[key];
   }
 
   public set(key: string, value: any): void {
-    this.data[key] = value;
-    fs.writeFileSync(this.path, JSON.stringify(this.data));
+    const data = this.parseDataFile(this.path, this.defaults);
+    data[key] = value;
+    fs.writeFileSync(this.path, JSON.stringify(data));
   }
 
   public clear() {
-    this.data = JSON.parse(JSON.stringify(this.defaults));
-    fs.writeFileSync(this.path, JSON.stringify(this.data));
+    const data = JSON.parse(JSON.stringify(this.defaults));
+    fs.writeFileSync(this.path, JSON.stringify(data));
   }
 
   private parseDataFile(filePath: string, defaults: any) {
