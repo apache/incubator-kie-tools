@@ -106,14 +106,4 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>

@@ -26,25 +26,38 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMODataManagementStrategy;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.kogito.client.editor.BaseKogitoEditor;
+import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorViewImpl;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,8 +90,26 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     private ScenarioGridPanel simulationGridPanelMock;
     @Mock
     private ScenarioGridPanel backgroundGridPanelMock;
+    @Mock
+    private ScenarioGridWidget scenarioGridWidgetMock;
+    @Mock
+    private MultiPageEditorContainerView multiPageEditorContainerViewMock;
+    @Mock
+    private MultiPageEditor multiPageEditorMock;
+    @Mock
+    private MultiPageEditorViewImpl multiPageEditorViewMock;
+    @Mock
+    private TranslationService translationServiceMock;
+    @Mock
+    private NavTabs navBarsMock;
+    @Mock
+    private TabListItem editorItemMock;
+    @Mock
+    private TabListItem backgroundItemMock;
     @Captor
     private ArgumentCaptor<DataManagementStrategy> dataManagementStrategyCaptor;
+    @Captor
+    private ArgumentCaptor<Page> pageCaptor;
 
     private ScenarioSimulationEditorKogitoWrapper scenarioSimulationEditorKogitoWrapperSpy;
 
@@ -91,11 +122,27 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         when(scenarioSimulationEditorPresenterMock.getContext()).thenReturn(scenarioSimulationContextMock);
         when(scenarioSimulationContextMock.getScenarioGridPanelByGridWidget(GridWidget.SIMULATION)).thenReturn(simulationGridPanelMock);
         when(scenarioSimulationContextMock.getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND)).thenReturn(backgroundGridPanelMock);
+        when(multiPageEditorContainerViewMock.getMultiPage()).thenReturn(multiPageEditorMock);
+        when(multiPageEditorMock.getView()).thenReturn(multiPageEditorViewMock);
+        when(multiPageEditorViewMock.getPageIndex(KogitoClientConstants.KieEditorWrapperView_EditTabTitle)).thenReturn(1);
+        when(multiPageEditorViewMock.getPageIndex(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle())).thenReturn(2);
+        when(multiPageEditorViewMock.getTabBar()).thenReturn(navBarsMock);
+        when(navBarsMock.getWidget(1)).thenReturn(editorItemMock);
+        when(navBarsMock.getWidget(2)).thenReturn(backgroundItemMock);
+
+
+        when(translationServiceMock.getTranslation(KogitoClientConstants.KieEditorWrapperView_EditTabTitle)).thenReturn(KogitoClientConstants.KieEditorWrapperView_EditTabTitle);
         scenarioSimulationEditorKogitoWrapperSpy = spy(new ScenarioSimulationEditorKogitoWrapper() {
             {
                 this.fileMenuBuilder = fileMenuBuilderMock;
                 this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenterMock;
                 this.promises = promisesMock;
+                this.translationService = translationServiceMock;
+            }
+
+            @Override
+            public MultiPageEditorContainerView getWidget() {
+                return multiPageEditorContainerViewMock;
             }
         });
     }
@@ -167,6 +214,29 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(dataManagementStrategyCaptor.capture(), eq(scenarioSimulationModelMock));
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMNDataManagementStrategy);
         verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks(eq(PlaceStatus.CLOSE));
+    }
+
+    @Test
+    public void addBackgroundPage() {
+        scenarioSimulationEditorKogitoWrapperSpy.addBackgroundPage(scenarioGridWidgetMock);
+        verify(multiPageEditorViewMock, times(1)).addPage(eq(2), pageCaptor.capture());
+        pageCaptor.getValue().onFocus();
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).onBackgroundTabSelected();
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle(), pageCaptor.getValue().getLabel());
+    }
+
+    @Test
+    public void selectSimulationTab() {
+        scenarioSimulationEditorKogitoWrapperSpy.selectSimulationTab();
+        verify(editorItemMock, times(1)).showTab(eq(false));
+        verify(backgroundItemMock, never()).showTab(anyBoolean());
+    }
+
+    @Test
+    public void selectBackGroundTab() {
+        scenarioSimulationEditorKogitoWrapperSpy.selectBackgroundTab();
+        verify(backgroundItemMock, times(1)).showTab(eq(false));
+        verify(editorItemMock, never()).showTab(anyBoolean());
     }
 
     @Test

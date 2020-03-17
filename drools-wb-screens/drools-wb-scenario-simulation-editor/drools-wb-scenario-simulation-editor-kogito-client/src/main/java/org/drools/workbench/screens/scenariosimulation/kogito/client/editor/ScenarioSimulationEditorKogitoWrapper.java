@@ -57,12 +57,13 @@ import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.PlaceManager;
@@ -92,6 +93,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected Path currentPath;
     protected KogitoDMNService dmnTypeService;
     protected KogitoAsyncPackageDataModelOracle kogitoOracle;
+    protected TranslationService translationService;
 
     public ScenarioSimulationEditorKogitoWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -106,7 +108,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             final AuthoringEditorDock authoringWorkbenchDocks,
             final Promises promises,
             final KogitoDMNService dmnTypeService,
-            final KogitoAsyncPackageDataModelOracle kogitoOracle) {
+            final KogitoAsyncPackageDataModelOracle kogitoOracle,
+            final TranslationService translationService) {
         super(scenarioSimulationEditorPresenter.getView(), placeManager, multiPageEditorContainerView);
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.fileMenuBuilder = fileMenuBuilder;
@@ -114,6 +117,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         this.promises = promises;
         this.dmnTypeService = dmnTypeService;
         this.kogitoOracle = kogitoOracle;
+        this.translationService = translationService;
     }
 
     @Override
@@ -172,7 +176,12 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
      */
     @Override
     public void addBackgroundPage(final ScenarioGridWidget scenarioGridWidget) {
-        addPage(new PageImpl(scenarioGridWidget, ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle()) {
+        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
+        final String mainPageTitle = translationService.getTranslation(KogitoClientConstants.KieEditorWrapperView_EditTabTitle);
+        final String backgroundPageTitle = ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle();
+        final int mainPageIndex = editorMultiPageView.getPageIndex(mainPageTitle);
+        final int backgroundPageIndex = mainPageIndex + 1;
+        editorMultiPageView.addPage(backgroundPageIndex, new PageImpl(scenarioGridWidget, backgroundPageTitle) {
             @Override
             public void onFocus() {
                 super.onFocus();
@@ -184,7 +193,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     @Override
     public void selectSimulationTab() {
         final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
-        final int pageIndex = editorMultiPageView.getPageIndex(CommonConstants.INSTANCE.EditTabTitle());
+        final int pageIndex = editorMultiPageView.getPageIndex(translationService.getTranslation(KogitoClientConstants.KieEditorWrapperView_EditTabTitle));
         final TabListItem item = (TabListItem) editorMultiPageView.getTabBar().getWidget(pageIndex);
         if (item != null) {
             item.showTab(false);

@@ -24,7 +24,6 @@ import org.drools.workbench.screens.scenariosimulation.webapp.client.popup.Scena
 import org.gwtbootstrap3.client.ui.Popover;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mvp.Command;
 
 /**
@@ -32,20 +31,21 @@ import org.uberfire.mvp.Command;
  */
 public abstract class AbstractScenarioSimulationEditorKogitoScreen implements KogitoScreen {
 
+    public static final String IDENTIFIER = "ScenarioSimulationEditor";
+    public static final String TITLE = "Scenario Simulation - Kogito";
+
     @Inject
     protected ScenarioSimulationEditorKogitoWrapper scenarioSimulationEditorKogitoWrapper;
-
     @Inject
     protected KogitoScenarioSimulationBuilder scenarioSimulationBuilder;
-
     @Inject
     protected ScenarioKogitoCreationPopupPresenter scenarioKogitoCreationPopupPresenter;
 
     /**
      *
-     * @param baseUri the folder/position into which the file will be saved
+     * @param path the path into which the file will be saved
      */
-    protected void newFile(String baseUri) {
+    protected void newFile(Path path) {
         Command createCommand = () -> {
             final ScenarioSimulationModel.Type selectedType = scenarioKogitoCreationPopupPresenter.getSelectedType();
             if (selectedType == null) {
@@ -60,12 +60,10 @@ public abstract class AbstractScenarioSimulationEditorKogitoScreen implements Ko
                     return;
                 }
             }
-            String savedFileName = "created.scesim";
-            final Path path = PathFactory.newPath(savedFileName, baseUri + savedFileName);
             scenarioSimulationBuilder.populateScenarioSimulationModel(new ScenarioSimulationModel(), selectedType, value, content -> {
                 saveFile(path, content);
                 scenarioSimulationEditorKogitoWrapper.gotoPath(path);
-                scenarioSimulationEditorKogitoWrapper.setContent(path.toURI(), content);
+                scenarioSimulationEditorKogitoWrapper.setContent(path.toURI() + path.getFileName(), content);
             });
         };
         scenarioKogitoCreationPopupPresenter.show("Create new Test Scenario", createCommand);

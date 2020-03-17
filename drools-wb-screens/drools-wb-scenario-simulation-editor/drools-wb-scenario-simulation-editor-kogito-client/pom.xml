@@ -131,17 +131,4 @@
     <!-- END TEST -->
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- MARSHALLING -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- END MARSHALLING -->
-
-    </dependencies>
-  </dependencyManagement>
-
 </project>

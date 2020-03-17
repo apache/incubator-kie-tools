@@ -28,10 +28,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
@@ -82,12 +83,12 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
 
     @Test
     public void newFileEmptySelectedType() {
-        abstractScenarioSimulationEditorKogitoScreenSpy.newFile("fake/path/");
+        Path path = new PathFactory.PathImpl("file.scesim", "path/");
+        abstractScenarioSimulationEditorKogitoScreenSpy.newFile(path);
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).show(isA(String.class), createCommandCaptor.capture());
         createCommandCaptor.getValue().execute();
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
         verify(abstractScenarioSimulationEditorKogitoScreenSpy, times(1)).showPopover(eq("ERROR"), eq("Missing selected type"));
-
         verify(scenarioSimulationBuilderMock, never()).populateScenarioSimulationModel(isA(ScenarioSimulationModel.class),
                                                                                        eq(ScenarioSimulationModel.Type.RULE),
                                                                                        eq(""),
@@ -98,7 +99,8 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
     public void newFileEmptySelectedDMNPath() {
         when(scenarioKogitoCreationPopupPresenterMock.getSelectedPath()).thenReturn(null);
         when(scenarioKogitoCreationPopupPresenterMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.DMN);
-        abstractScenarioSimulationEditorKogitoScreenSpy.newFile("fake/path/");
+        Path path = new PathFactory.PathImpl("file.scesim", "path/");
+        abstractScenarioSimulationEditorKogitoScreenSpy.newFile(path);
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).show(isA(String.class), createCommandCaptor.capture());
         createCommandCaptor.getValue().execute();
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
@@ -112,7 +114,8 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
     @Test
     public void newFileRule() {
         when(scenarioKogitoCreationPopupPresenterMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.RULE);
-        abstractScenarioSimulationEditorKogitoScreenSpy.newFile("fake/path/");
+        Path path = new PathFactory.PathImpl("file.scesim", "path/");
+        abstractScenarioSimulationEditorKogitoScreenSpy.newFile(path);
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).show(isA(String.class), createCommandCaptor.capture());
         createCommandCaptor.getValue().execute();
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
@@ -123,16 +126,16 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
         remoteCallbackArgumentCaptor.getValue().callback("");
         verify(abstractScenarioSimulationEditorKogitoScreenSpy, times(1)).saveFile(pathArgumentCaptor.capture(), isA(String.class));
         verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).gotoPath(eq(pathArgumentCaptor.getValue()));
-        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setContent(eq("fake/path/created.scesim"), isA(String.class));
-        assertEquals("fake/path/created.scesim", pathArgumentCaptor.getValue().toURI());
-        assertEquals("created.scesim", pathArgumentCaptor.getValue().getFileName());
+        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setContent(eq("path/file.scesim"), isA(String.class));
+        assertEquals("path/", pathArgumentCaptor.getValue().toURI());
+        assertEquals("file.scesim", pathArgumentCaptor.getValue().getFileName());
     }
 
     @Test
     public void newFileDMN() {
         when(scenarioKogitoCreationPopupPresenterMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.DMN);
-        abstractScenarioSimulationEditorKogitoScreenSpy.newFile("fake/path/");
-        verify(scenarioKogitoCreationPopupPresenterMock, times(1)).show(isA(String.class), createCommandCaptor.capture());
+        Path path = new PathFactory.PathImpl("file.scesim", "path/");
+        abstractScenarioSimulationEditorKogitoScreenSpy.newFile(path);        verify(scenarioKogitoCreationPopupPresenterMock, times(1)).show(isA(String.class), createCommandCaptor.capture());
         createCommandCaptor.getValue().execute();
         verify(scenarioKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
         verify(scenarioSimulationBuilderMock, times(1)).populateScenarioSimulationModel(isA(ScenarioSimulationModel.class),
@@ -142,8 +145,8 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
         remoteCallbackArgumentCaptor.getValue().callback("");
         verify(abstractScenarioSimulationEditorKogitoScreenSpy, times(1)).saveFile(pathArgumentCaptor.capture(), isA(String.class));
         verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).gotoPath(eq(pathArgumentCaptor.getValue()));
-        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setContent(eq("fake/path/created.scesim"), isA(String.class));
-        assertEquals("fake/path/created.scesim", pathArgumentCaptor.getValue().toURI());
-        assertEquals("created.scesim", pathArgumentCaptor.getValue().getFileName());
+        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setContent(eq("path/file.scesim"), isA(String.class));
+        assertEquals("path/", pathArgumentCaptor.getValue().toURI());
+        assertEquals("file.scesim", pathArgumentCaptor.getValue().getFileName());
     }
 }
