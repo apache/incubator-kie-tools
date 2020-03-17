@@ -55,6 +55,10 @@ public class GWTEditorNativeRegister {
         $wnd.GWTEditor.prototype.getContent = function () {
             return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getContent()();
         };
+        
+        $wnd.GWTEditor.prototype.getPreview = function () {
+            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getPreview()();
+        };        
 
         $wnd.GWTEditor.prototype.getView = function () {
             return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getWidgetElement()();

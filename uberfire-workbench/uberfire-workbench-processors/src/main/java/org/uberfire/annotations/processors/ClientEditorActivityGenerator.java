@@ -119,7 +119,7 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
 
         final boolean isWidgetMethodReturnTypeElement = getWidgetMethod != null && GeneratorUtils.getIsElement(getWidgetMethod.getReturnType(),
-                                                                                                                processingEnvironment);
+                                                                                                               processingEnvironment);
 
         final boolean hasUberView = GeneratorUtils.hasPresenterInitMethod(classElement, processingEnvironment, getWidgetMethod);
 
@@ -138,6 +138,10 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                                                                           processingEnvironment);
 
         final String getContentMethodName = getContentMethod == null ? null : getContentMethod.getSimpleName().toString();
+
+        final ExecutableElement getPreviewMethod = GeneratorUtils.getGetPreviewMethodName(classElement,
+                                                                                          processingEnvironment);
+        final String getPreviewMethodName = getPreviewMethod == null ? null : getPreviewMethod.getSimpleName().toString();
 
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
@@ -185,6 +189,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
             messager.printMessage(Kind.NOTE,
                                   "getContentMethodName: " + getContentMethodName);
             messager.printMessage(Kind.NOTE,
+                                  "getPreviewMethodName: " + getPreviewMethodName);
+            messager.printMessage(Kind.NOTE,
                                   "isDirtyMethodName: " + isDirtyMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
@@ -218,7 +224,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
             throw new GenerationException("The WorkbenchClientEditor must provide a @GetContent annotated method to return a elemental2.promise.Promise.",
                                           packageName + "." + className);
         }
-
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
@@ -271,7 +276,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  setContentMethodName);
         root.put("getContentMethodName",
                  getContentMethodName);
-
+        root.put("getPreviewMethodName",
+                 getPreviewMethodName);
         root.put("isDynamic",
                  isDynamic);
         root.put("qualifiers",

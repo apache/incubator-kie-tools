@@ -146,6 +146,17 @@ public class GeneratorUtils {
                                         },
                                         NO_PARAMS);
     }
+    
+    
+    public static ExecutableElement getGetPreviewMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
+        return getUniqueAnnotatedMethod(classElement,
+                                        processingEnvironment,
+                                        APIModule.getGetPreviewClass(),
+                                        new TypeMirror[]{
+                                                processingEnvironment.getElementUtils().getTypeElement("elemental2.promise.Promise").asType()
+                                        },
+                                        NO_PARAMS);
+    }
 
     /**
      * Finds the {@code @OnStartup} method suitable for {@code @WorkbenchEditor} classes.

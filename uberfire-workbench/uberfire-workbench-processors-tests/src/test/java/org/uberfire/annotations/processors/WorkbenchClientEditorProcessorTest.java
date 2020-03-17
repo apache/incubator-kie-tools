@@ -118,4 +118,19 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
         assertEquals(result.getExpectedCode(),
                      result.getActualCode());
     }
+    
+    @Test
+    public void testSuccessContentWithGetPreview() throws FileNotFoundException {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                "org/uberfire/annotations/processors/WorkbenchClientEditorTest7");
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchClientEditorTest7.expected";
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
+
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
+    }
 }

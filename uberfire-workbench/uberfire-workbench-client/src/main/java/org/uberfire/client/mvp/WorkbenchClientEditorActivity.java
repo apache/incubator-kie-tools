@@ -42,6 +42,14 @@ public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
      * @return
      */
     Promise<String> getContent();
+    
+    
+    /**
+     * Get the editor content preview in SVG format
+     * 
+     * @return
+     */
+    Promise<String> getPreview();
 
     boolean isDirty();
 

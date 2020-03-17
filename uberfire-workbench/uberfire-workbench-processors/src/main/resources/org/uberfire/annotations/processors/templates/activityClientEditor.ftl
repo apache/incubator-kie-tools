@@ -202,7 +202,15 @@ public class ${className} extends AbstractWorkbenchClientEditorActivity {
     public Promise<String> getContent() {
         return realPresenter.${getContentMethodName}();
     }
-    </#if>
+    </#if>    
+    @Override
+    public Promise<String> getPreview() {
+    	<#if getPreviewMethodName??>    
+        return realPresenter.${getPreviewMethodName}();
+        <#else>
+        return null;
+        </#if>
+    }
     <#if getContextIdMethodName??>
     @Override
     public String contextId() {
