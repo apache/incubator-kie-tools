@@ -49,6 +49,11 @@ export function startExtension(args: {
   const webviewProvider = new KogitoWebviewProvider(editorFactory, editingCapabilityFactory);
 
   args.context.subscriptions.push(webviewProvider.register());
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.getPreviewSvg", () => {
+      editorStore.withActive(e => e.requestPreview());
+    })
+  );
 }
 
 export * from "./DefaultVsCodeRouter";

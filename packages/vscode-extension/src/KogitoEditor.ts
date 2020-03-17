@@ -20,10 +20,10 @@ import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-enve
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
   EditorContent,
-  ResourceContentService,
-  Router,
+  KogitoEdit,
   ResourceContentRequest,
-  KogitoEdit
+  ResourceContentService,
+  Router
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
@@ -109,6 +109,11 @@ export class KogitoEditor {
         },
         receive_newEdit: (edit: KogitoEdit) => {
           this.notify_newEdit(edit);
+        },
+        receive_previewRequest: preview => {
+          if (preview) {
+            fs.writeFileSync(`${this.path}.svg`, preview);
+          }
         }
       })
     );
@@ -132,12 +137,16 @@ export class KogitoEditor {
     this.envelopeBusOuterMessageHandler.notify_editorUndo(edits);
   }
 
-  public notify_editorRedo (edits: KogitoEdit[]) {
+  public notify_editorRedo(edits: KogitoEdit[]) {
     this.envelopeBusOuterMessageHandler.notify_editorRedo(edits);
   }
 
   public notify_newEdit(edit: KogitoEdit) {
     this.signalEdit(edit);
+  }
+
+  public requestPreview() {
+    this.envelopeBusOuterMessageHandler.request_previewResponse();
   }
 
   public setupEnvelopeBus() {

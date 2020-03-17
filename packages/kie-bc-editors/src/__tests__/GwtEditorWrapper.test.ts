@@ -19,7 +19,8 @@ import { GwtEditorWrapper } from "../GwtEditorWrapper";
 const MockEditor = jest.fn(() => ({
   getContent: jest.fn(),
   setContent: jest.fn(),
-  isDirty: jest.fn()
+  isDirty: jest.fn(),
+  getPreview: jest.fn()
 }));
 
 const mockEditor = new MockEditor();

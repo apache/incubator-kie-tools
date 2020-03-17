@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "enableProposedApi": true,
   "engines": {
-    "vscode": "^1.41.0"
+    "vscode": "^1.43.0"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,12 @@
             "filenamePattern": "*.{dmn,bpmn,bpmn2}"
           }
         ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "extension.kogito.getPreviewSvg",
+        "title": "Get Editor Preview SVG"
       }
     ],
     "languages": [

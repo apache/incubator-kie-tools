@@ -18,28 +18,29 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import {
+  Brand,
   Button,
-  PageSection,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  DropdownToggle,
+  PageHeader,
   TextInput,
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem,
-  PageHeader,
-  Brand,
-  DropdownToggle,
-  Level,
-  LevelItem
+  ToolbarItem
 } from "@patternfly/react-core";
-import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
+import { CaretDownIcon, CloseIcon, EllipsisVIcon, ExpandIcon } from "@patternfly/react-icons";
+
 import { useLocation } from "react-router";
-import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
+  onPreview: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -109,6 +110,9 @@ export function EditorToolbar(props: Props) {
       </>,
       <DropdownItem key={"copy"} component={"button"} onClick={props.onCopyContentToClipboard}>
         Copy source
+      </DropdownItem>,
+      <DropdownItem key="downloadSVG" component="button" onClick={props.onPreview}>
+        Download SVG
       </DropdownItem>
       /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
         Get shareable URL

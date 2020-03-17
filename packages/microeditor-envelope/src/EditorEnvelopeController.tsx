@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList, KogitoEdit } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -86,6 +86,12 @@ export class EditorEnvelopeController {
       },
       receive_editorRedo: (edits: KogitoEdit[]) => {
         this.stateControl.redo(edits);
+      },
+      receive_previewRequest: () => {
+        this.getEditor()
+          ?.getPreview()
+          .then(preview => self.respond_previewRequest(preview!))
+          .catch(error => console.log(`Error retrieving preview: ${error}`));
       }
     }));
   }
