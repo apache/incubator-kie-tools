@@ -16,27 +16,49 @@ jobs:
           git clone https://github.com/bats-core/bats-core.git
           cd bats-core
           ./install.sh $HOME
+
       - name: run kogito-data-index tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-data-index/tests/bats
+
       - name: run kogito-graalvm-scripts tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-graalvm-scripts/tests/bats
+
       - name: run kogito-infinispan-properties tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-infinispan-properties/tests/bats
+
       - name: run kogito-jobs-service tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-jobs-service/tests/bats
+
+      - name: run kogito-kubernetes-client tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          $HOME/bin/bats s2i/modules/kogito-kubernetes-client/tests/bats/
+
+      - name: run kogito-management-console tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          $HOME/bin/bats s2i/modules/kogito-management-console/tests/bats/
+
       - name: run kogito-maven tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-maven/tests/bats
+
+      - name: run kogito-persistence tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          $HOME/bin/bats s2i/modules/kogito-persistence/tests/bats
+
       - name: run kogito-s2i-core tests
         working-directory: ${{ github.workspace }}
         run: |
           $HOME/bin/bats s2i/modules/kogito-s2i-core/tests/bats
+

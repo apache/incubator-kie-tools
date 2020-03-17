@@ -125,7 +125,7 @@ items:
             description: Runtime image for the Kogito Data Index Service
             iconClass: icon-jbpm
             tags: kogito,data-index
-            supports: infinispan, persitence
+            supports: persistence backed by Infinispan server
             version: '0.9.0-rc1'
           referencePolicy:
             type: Local
@@ -137,13 +137,13 @@ items:
     metadata:
       name: kogito-jobs-service
       annotations:
-        openshift.io/display-name: Runtime image for the Kogito Jobs Service - Tech preview
+        openshift.io/display-name: Runtime image for the Kogito Jobs Service
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '0.9.0-rc1'
           annotations:
-            description: Runtime image for the Kogito Jobs Service - Tech preview
+            description: Runtime image for the Kogito Jobs Service
             iconClass: icon-jbpm
             tags: kogito,jobs-service
             supports: out-of-box process timers
@@ -153,3 +153,25 @@ items:
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-jobs-service:0.9.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-management-console
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Management Console
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.9.0-rc1'
+          annotations:
+            description: Runtime image for the Kogito Management Console
+            iconClass: icon-jbpm
+            tags: kogito,management-console
+            supports: business process management
+            version: '0.9.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-management-console:0.9.0-rc1
+

@@ -1,0 +1,33 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-management-console"
+description: "Runtime image for Kogito Management Console"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito Management Console, manage your Business Process easily."
+- name: "io.k8s.display-name"
+  value: "Kogito Management Console"
+- name: "io.openshift.tags"
+  value: "kogito,management,management-console"
+- name: "io.openshift.expose-services"
+  value: "8080:http"
+
+ports:
+- value: 8080
+
+modules:
+  install:
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.openjdk
+    version: "1.8.0-headless"
+  - name: org.kie.kogito.launch.scripts
+  - name: org.kie.kogito.management.console
+
+run:
+  workdir: "/home/kogito"
+  user: 1001
+  cmd:
+    - "/home/kogito/kogito-app-launch.sh"
+

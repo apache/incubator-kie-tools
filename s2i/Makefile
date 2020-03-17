@@ -4,7 +4,7 @@ BUILD_ENGINE := docker
 
 # Build all images
 .PHONY: build
-build: kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-jobs-service
+build: kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-jobs-service kogito-management-console
 
 kogito-quarkus-ubi8:
 	cekit -v build --overrides-file kogito-quarkus-overrides.yaml ${BUILD_ENGINE}
@@ -27,6 +27,8 @@ kogito-data-index:
 kogito-jobs-service:
 	cekit -v build --overrides-file kogito-jobs-service-overrides.yaml ${BUILD_ENGINE}
 
+kogito-management-console:
+	cekit -v build --overrides-file kogito-management-console-overrides.yaml ${BUILD_ENGINE}
 
 # Build and test all images
 .PHONY: test
@@ -39,6 +41,7 @@ test:
 	cekit -v test --overrides-file kogito-springboot-s2i-overrides.yaml behave
 	cekit -v test --overrides-file kogito-data-index-overrides.yaml behave
 	cekit -v test --overrides-file kogito-jobs-service-overrides.yaml behave
+	cekit -v test --overrides-file kogito-management-console-overrides.yaml behave
 
 
 # push images to quay.io, this requires permissions under kiegroup organization
@@ -59,6 +62,8 @@ _push:
 	docker push quay.io/kiegroup/kogito-data-index:latest
 	docker push quay.io/kiegroup/kogito-jobs-service:${IMAGE_VERSION}
 	docker push quay.io/kiegroup/kogito-jobs-service:latest
+	docker push quay.io/kiegroup/kogito-management-console:${IMAGE_VERSION}
+	docker push quay.io/kiegroup/kogito-management-console:latest
 
 
 # push staging images to quay.io, done before release, this requires permissions under kiegroup organization
