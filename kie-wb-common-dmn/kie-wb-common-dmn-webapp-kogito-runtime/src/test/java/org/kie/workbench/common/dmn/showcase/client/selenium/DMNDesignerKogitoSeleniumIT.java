@@ -30,21 +30,27 @@ import javax.xml.XMLConstants;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -55,6 +61,7 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.util.Predicate;
 
+import static org.apache.commons.io.FileUtils.copyFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMN;
@@ -71,6 +78,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
  * The Designer is represented by single webpage - index.html
  */
 public class DMNDesignerKogitoSeleniumIT {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNDesignerKogitoSeleniumIT.class);
 
     private static final String SET_CONTENT_TEMPLATE =
             "gwtEditorBeans.get(\"DMNDiagramEditor\").get().setContent(\"\",\"%s\")";
@@ -89,6 +98,7 @@ public class DMNDesignerKogitoSeleniumIT {
     private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
 
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
+    private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
 
     private static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
             .put(DMN.getPrefix(), DMN.getUri())
@@ -131,12 +141,30 @@ public class DMNDesignerKogitoSeleniumIT {
                 .isNotNull();
     }
 
-    @After
-    public void teardown() {
-        if (driver != null) {
-            driver.quit();
+    private final File screenshotDirectory = initScreenshotDirectory();
+
+    @Rule
+    public TestWatcher takeScreenShotAndCleanUp = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            final File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            final String testClassName = description.getTestClass().getSimpleName();
+            final String testMethodName = description.getMethodName();
+            final String filename = testClassName + "_" + testMethodName;
+            try {
+                copyFile(screenshotFile, new File(screenshotDirectory, filename + ".png"));
+            } catch (IOException ioe) {
+                LOG.error("Unable to take screenshot", ioe);
+            }
         }
-    }
+
+        @Override
+        protected void finished(Description description) {
+            if (driver != null) {
+                driver.quit();
+            }
+        }
+    };
 
     @Test
     public void testNewDiagram() throws Exception {
@@ -165,7 +193,6 @@ public class DMNDesignerKogitoSeleniumIT {
         assertThat(aceEditor)
                 .as("If invalid dmn is loaded, ace editor needs to be shown")
                 .isNotNull();
-
     }
 
     @Test
@@ -2142,5 +2169,23 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private ExpectedCondition<WebElement> element(final String xpathLocator, final String... parameters) {
         return visibilityOfElementLocated(xpath(String.format(xpathLocator, parameters)));
+    }
+
+    private File initScreenshotDirectory() {
+        if (SCREENSHOTS_DIR == null) {
+            throw new IllegalStateException(
+                    "Property org.kie.dmn.kogito.screenshots.dir (where screenshot taken by WebDriver will be put) was null");
+        }
+        File scd = new File(SCREENSHOTS_DIR);
+        if (!scd.exists()) {
+            boolean mkdirSuccess = scd.mkdir();
+            if (!mkdirSuccess) {
+                throw new IllegalStateException("Creation of screenshots dir failed " + scd);
+            }
+        }
+        if (!scd.canWrite()) {
+            throw new IllegalStateException("The screenshotDir must be writable" + scd);
+        }
+        return scd;
     }
 }

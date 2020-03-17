@@ -525,6 +525,7 @@
           </excludes>
           <systemPropertyVariables>
             <org.kie.dmn.kogito.browser.headless>${org.kie.dmn.kogito.browser.headless}</org.kie.dmn.kogito.browser.headless>
+            <org.kie.dmn.kogito.screenshots.dir>${project.build.directory}/screenshots</org.kie.dmn.kogito.screenshots.dir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
