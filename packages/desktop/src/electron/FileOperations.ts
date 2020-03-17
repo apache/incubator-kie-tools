@@ -76,6 +76,12 @@ export class FileOperations {
     ipcMain.on("openSample", (event: IpcMainEvent, data: { type: string }) => {
       this.openSample(path.join(__dirname, "samples/sample." + data.type));
     });
+
+    ipcMain.on("mainWindowLoaded", (event: IpcMainEvent) => {
+      if (process.argv.length > 1) {
+        this.open(process.argv[1]);
+      }
+    });
   }
 
   public new(type: string) {

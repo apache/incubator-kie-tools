@@ -67,6 +67,10 @@ export function App(props: Props) {
     [page, file]
   );
 
+  const openFileByPath = useCallback((filePath: string) => {
+    ipc.send("openFileByPath", { filePath: filePath });
+  }, []);
+
   const goToHomePage = useCallback(() => {
     ipc.send("setFileMenusEnabled", { enabled: false });
     setPage(Pages.HOME);
@@ -96,13 +100,36 @@ export function App(props: Props) {
   const Router = () => {
     switch (page) {
       case Pages.HOME:
-        return <HomePage openFile={openFile} />;
+        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
       case Pages.EDITOR:
         return <EditorPage editorType={file!.fileType} onHome={goToHomePage} />;
       default:
         return <></>;
     }
   };
+
+  const preventDefaultEvent = useCallback(ev => {
+    ev.preventDefault();
+  }, []);
+
+  const dragAndDropFileEvent = useCallback(ev => {
+    ev.preventDefault();
+    if (ev.dataTransfer) {
+      openFileByPath(ev.dataTransfer.files[0].path);
+    }
+  }, [openFileByPath]);
+
+  useEffect(() => {
+    document.addEventListener("dragover", preventDefaultEvent);
+    document.addEventListener("drop", preventDefaultEvent);
+    document.body.addEventListener("drop", dragAndDropFileEvent);
+
+    return () => {
+      document.removeEventListener("dragover", preventDefaultEvent);
+      document.removeEventListener("drop", preventDefaultEvent);
+      document.body.removeEventListener("drop", dragAndDropFileEvent);
+    };
+  }, [preventDefaultEvent, dragAndDropFileEvent]);
 
   return (
     <GlobalContext.Provider

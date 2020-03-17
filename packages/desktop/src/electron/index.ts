@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, remote } from "electron";
 import * as path from "path";
 import { Menu } from "./Menu";
 import { FS } from "../storage/core/FS";
@@ -32,10 +32,12 @@ const createWindow = () => {
     height: 900,
     width: 1440,
     show: false,
-    icon: path.join(__dirname, "images/intelliapp_icon.png"),
+    icon: path.join(__dirname, "build/icon.png"),
+    minWidth: 800,
+    minHeight: 480,
     webPreferences: {
       nodeIntegrationInWorker: true,
-      nodeIntegration: true //https://github.com/electron/electron/issues/9920#issuecomment-575839738
+      nodeIntegration: true // https://github.com/electron/electron/issues/9920#issuecomment-575839738
     }
   });
 

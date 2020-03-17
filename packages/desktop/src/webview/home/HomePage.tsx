@@ -23,6 +23,7 @@ import { File } from "../../common/File";
 
 interface Props {
   openFile: (file: File) => void;
+  openFileByPath: (filePath: string) => void;
 }
 
 enum NavItems {
@@ -58,7 +59,7 @@ export function HomePage(props: Props) {
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"}>
-      {activeNavItem === NavItems.FILES && <FilesPage openFile={props.openFile} />}
+      {activeNavItem === NavItems.FILES && <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />}
       {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
     </Page>
   );

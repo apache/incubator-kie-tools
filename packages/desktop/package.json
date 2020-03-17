@@ -31,7 +31,7 @@
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist out && webpack --mode development",
-    "build:prod": "yarn run build --mode production --devtool none && electron-packager . \"Business Modeler Preview\" --platform=darwin,linux,win32 --arch=x64 --out=out --overwrite --icon=static/images/intelliapp_icon.icns"
+    "build:prod": "yarn run build --mode production --devtool none && electron-packager . \"Business Modeler Preview\" --platform=darwin,linux --arch=x64 --out=build --overwrite --icon=./build/icon.icns && electron-packager . \"Business Modeler Preview\" --platform=win32 --arch=x64 --out=build --overwrite --icon=./build/icon.ico"
   },
   "babel": {
     "presets": [
@@ -43,5 +43,8 @@
     "electron-packager": "14.2.0",
     "electron-rebuild": "1.10.0"
   },
-  "files": ["**/*", "build/icon.*"]
+  "files": [
+    "**/*",
+    "build/icon.*"
+  ]
 }

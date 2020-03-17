@@ -37,7 +37,9 @@ import {
   Tooltip,
   TextVariants,
   Select,
-  SelectOption
+  SelectOption,
+  Form,
+  FormGroup
 } from "@patternfly/react-core";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
@@ -50,8 +52,17 @@ import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
 
+enum InputFileUrlState {
+  VALID,
+  INITIAL,
+  INVALID_URL,
+  NO_FILE_URL,
+  INVALID_EXTENSION
+}
+
 interface Props {
   openFile: (file: File) => void;
+  openFileByPath: (filePath: string) => void;
 }
 
 export function FilesPage(props: Props) {
@@ -60,10 +71,6 @@ export function FilesPage(props: Props) {
   const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<string[]>([]);
 
   const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
-
-  const openFileByPath = useCallback((filePath: string) => {
-    ipc.send("openFileByPath", { filePath: filePath });
-  }, []);
 
   useEffect(() => {
     ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: string[] }) => {
@@ -113,29 +120,6 @@ export function FilesPage(props: Props) {
       document.getElementById("app")!
     );
   }, []);
-
-  const importFileByUrl = useCallback(() => {
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          response.text().then(content => {
-            const file = {
-              filePath: UNSAVED_FILE_NAME,
-              fileType: extractFileExtension(url)!,
-              fileContent: content
-            };
-
-            ipc.send("enableFileMenus");
-            props.openFile(file);
-          });
-        } else {
-          showResponseError(response.status, response.statusText);
-        }
-      })
-      .catch(error => {
-        showFetchError(error.toString());
-      });
-  }, [url, props.openFile, showResponseError, showFetchError]);
 
   const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
   const [searchFilter, setSearchFilter] = useState("");
@@ -200,6 +184,91 @@ export function FilesPage(props: Props) {
     },
     [searchFilter, typeFilterSelect, sortAlphaFilter]
   );
+
+  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
+
+  const validateFileInput = useCallback((fileUrl: string) => {
+    let urlObject: URL;
+    try {
+      urlObject = new URL(fileUrl);
+    } catch (e) {
+      setInputFileUrlState(InputFileUrlState.INVALID_URL);
+      return;
+    }
+    const fileType = extractFileExtension(urlObject.pathname);
+    if (!fileType) {
+      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+    } else if (!context.router.getLanguageData(fileType)) {
+      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+    } else {
+      setInputFileUrlState(InputFileUrlState.VALID);
+    }
+  }, []);
+
+  const inputFileChanged = useCallback((fileUrl: string) => {
+    setURL(fileUrl);
+    validateFileInput(fileUrl);
+  }, []);
+
+  const validatedInputUrl = useMemo(
+      () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+      [inputFileUrlState]
+  );
+
+  const importFileByUrl = useCallback(() => {
+    if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
+      fetch(url)
+          .then(response => {
+            if (response.ok) {
+              response.text().then(content => {
+                const file = {
+                  filePath: UNSAVED_FILE_NAME,
+                  fileType: extractFileExtension(url)!,
+                  fileContent: content
+                };
+
+                ipc.send("enableFileMenus");
+                props.openFile(file);
+              });
+            } else {
+              showResponseError(response.status, response.statusText);
+            }
+          })
+          .catch(error => {
+            showFetchError(error.toString());
+          });
+    }
+  }, [validatedInputUrl, inputFileUrlState, url, props.openFile, showResponseError, showFetchError]);
+
+  const importFileByUrlFormSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      e.stopPropagation();
+      importFileByUrl();
+    },
+    [url]
+  );
+
+  const messageForStateInputUrl = useMemo(() => {
+    switch (inputFileUrlState) {
+      case InputFileUrlState.INITIAL:
+        return "http://";
+      case InputFileUrlState.INVALID_EXTENSION:
+        return "File type is not supported";
+      case InputFileUrlState.INVALID_URL:
+        return "Enter a valid URL";
+      case InputFileUrlState.NO_FILE_URL:
+        return "File URL is not valid";
+      default:
+        return "";
+    }
+  }, [inputFileUrlState]);
+
+  const onInputFileUrlBlur = useCallback(() => {
+    if (url.trim() === "") {
+      setInputFileUrlState(InputFileUrlState.INITIAL);
+    }
+  }, [url]);
 
   return (
     <>
@@ -297,25 +366,39 @@ export function FilesPage(props: Props) {
           <Card className="kogito--desktop__actions-card--wide">
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>
-                Import file from URL
+                Open from source
               </Title>
             </CardHeader>
             <CardBody>
               <TextContent>
-                <Text component={TextVariants.p}>Paste a URL to a source (GitHub, Dropbox, etc):</Text>
-                <TextInput
-                  id="file-url"
-                  name="file-url"
-                  aria-describedby="file-url-helper"
-                  value={url}
-                  onChange={setURL}
-                  placeholder="URL"
-                />
+                <Text component={TextVariants.p}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</Text>
+                <Form onSubmit={importFileByUrlFormSubmit} disabled={!validatedInputUrl}>
+                  <FormGroup
+                    label="URL"
+                    fieldId="url-text-input"
+                    isValid={validatedInputUrl}
+                    helperText=""
+                    helperTextInvalid={messageForStateInputUrl}
+                  >
+                    <TextInput
+                      isRequired={true}
+                      onBlur={onInputFileUrlBlur}
+                      isValid={validatedInputUrl}
+                      value={url}
+                      onChange={inputFileChanged}
+                      type="url"
+                      id="url-text-input"
+                      name="urlText"
+                      aria-describedby="url-text-input-helper"
+                      placeholder="URL"
+                    />
+                  </FormGroup>
+                </Form>
               </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={importFileByUrl}>
-                Import
+                Open from source
               </Button>
             </CardFooter>
           </Card>
@@ -391,7 +474,7 @@ export function FilesPage(props: Props) {
               <Card
                 key={filePath}
                 isCompact={true}
-                onClick={() => openFileByPath(filePath)}
+                onClick={() => props.openFileByPath(filePath)}
                 className={"kogito--desktop__files-card"}
               >
                 <CardBody>
