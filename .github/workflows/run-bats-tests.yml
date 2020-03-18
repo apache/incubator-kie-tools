@@ -20,45 +20,45 @@ jobs:
       - name: run kogito-data-index tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-data-index/tests/bats
+          $HOME/bin/bats modules/kogito-data-index/tests/bats
 
       - name: run kogito-graalvm-scripts tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-graalvm-scripts/tests/bats
+          $HOME/bin/bats modules/kogito-graalvm-scripts/tests/bats
 
       - name: run kogito-infinispan-properties tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-infinispan-properties/tests/bats
+          $HOME/bin/bats modules/kogito-infinispan-properties/tests/bats
 
       - name: run kogito-jobs-service tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-jobs-service/tests/bats
+          $HOME/bin/bats modules/kogito-jobs-service/tests/bats
 
       - name: run kogito-kubernetes-client tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-kubernetes-client/tests/bats/
+          $HOME/bin/bats modules/kogito-kubernetes-client/tests/bats/
 
       - name: run kogito-management-console tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-management-console/tests/bats/
+          $HOME/bin/bats modules/kogito-management-console/tests/bats/
 
       - name: run kogito-maven tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-maven/tests/bats
+          $HOME/bin/bats modules/kogito-maven/tests/bats
 
       - name: run kogito-persistence tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-persistence/tests/bats
+          $HOME/bin/bats modules/kogito-persistence/tests/bats
 
       - name: run kogito-s2i-core tests
         working-directory: ${{ github.workspace }}
         run: |
-          $HOME/bin/bats s2i/modules/kogito-s2i-core/tests/bats
+          $HOME/bin/bats modules/kogito-s2i-core/tests/bats
 

@@ -16,5 +16,5 @@ jobs:
           mv openshift-template-validator-linux-amd64 ${HOME} 	
       - name: validate imagestream
         run: |
-          ${HOME}/openshift-template-validator-linux-amd64 validate -f s2i/kogito-imagestream.yaml
+          ${HOME}/openshift-template-validator-linux-amd64 validate -f kogito-imagestream.yaml
 

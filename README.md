@@ -1,4 +1,4 @@
-# Kogito S2I images
+# Kogito Container Images
 
 To be able to produce efficient container images for Kogito there are following sets
 of builder images to perform the build and to run the result binaries.
