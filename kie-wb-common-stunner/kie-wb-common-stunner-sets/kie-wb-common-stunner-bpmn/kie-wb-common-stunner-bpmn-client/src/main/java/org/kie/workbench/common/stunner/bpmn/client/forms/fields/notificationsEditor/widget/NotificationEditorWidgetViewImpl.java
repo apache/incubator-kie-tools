@@ -231,7 +231,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
 
     @DataField
     @Inject
-    protected HTMLButtonElement closeButton, saveButton;
+    protected HTMLButtonElement closeButton, okButton;
 
     protected Map<String, HTMLDivElement> panels;
 
@@ -364,7 +364,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
     @PostConstruct
     public void init() {
         closeButton.addEventListener("click", event -> close(), false);
-        saveButton.addEventListener("click", event -> save(), false);
+        okButton.addEventListener("click", event -> ok(), false);
         taskExpiration.addValueChangeHandler(event -> onTaskExpressionChange(event));
         repeatCount.value = "1";
 
@@ -484,7 +484,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        saveButton.disabled = readOnly;
+        okButton.disabled = readOnly;
     }
 
     protected String combineISO8601String() {
@@ -557,7 +557,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
         return matcher.getGroup(1);
     }
 
-    void save() {
+    void ok() {
         // TODO looks like errai data binder doesn't support liststore widgets.
         current.setUsers(multipleLiveSearchSelectionHandlerUsers.getSelectedValues());
         current.setGroups(multipleLiveSearchSelectionHandlerGroups.getSelectedValues());
@@ -570,15 +570,6 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
         current.setType(notStartedInput.checked ? NotificationType.NotStartedNotify : NotificationType.NotCompletedNotify);
         notificationEvent.fire(new NotificationEvent(current));
         hide();
-
-        //Temporary disabled
-/*        Set<ConstraintViolation<NotificationRow>> violations = validator.validate(current);
-        if (violations.isEmpty()) {
-            notificationEvent.fire(new NotificationEvent(current));
-            hide();
-        } else {
-            onViolationError(violations);
-        }*/
     }
 
     void close() {

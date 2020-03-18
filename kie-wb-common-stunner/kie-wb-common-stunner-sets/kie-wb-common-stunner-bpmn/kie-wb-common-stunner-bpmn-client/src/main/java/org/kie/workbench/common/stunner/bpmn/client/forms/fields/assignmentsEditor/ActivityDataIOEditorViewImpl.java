@@ -23,8 +23,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
@@ -32,7 +30,6 @@ import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
@@ -51,7 +48,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Inject
     protected ActivityDataIOEditorWidget outputAssignmentsWidget;
 
-    protected Button btnSave;
+    protected Button btnOk;
 
     private Button btnCancel;
 
@@ -86,27 +83,14 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                                                     Style.Unit.PX);
         final Column btnColumn = new Column(ColumnSize.MD_12);
         btnRow.add(btnColumn);
-        btnSave = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Save());
-        btnSave.setType(ButtonType.PRIMARY);
-        btnSave.setIcon(IconType.SAVE);
-        btnSave.setPull(Pull.RIGHT);
-        btnSave.addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent clickEvent) {
-                        presenter.handleSaveClick();
-                    }
-                }
-        );
-        btnColumn.add(btnSave);
+        btnOk = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Ok());
+        btnOk.setType(ButtonType.PRIMARY);
+        btnOk.setPull(Pull.RIGHT);
+        btnOk.addClickHandler(clickEvent -> presenter.handleOkClick());
+        btnColumn.add(btnOk);
         btnCancel = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Cancel());
         btnCancel.setPull(Pull.RIGHT);
-        btnCancel.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                presenter.handleCancelClick();
-            }
-        });
+        btnCancel.addClickHandler(event -> presenter.handleCancelClick());
         btnColumn.add(btnCancel);
         container.add(btnRow);
         setBody(container);
@@ -221,7 +205,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        btnSave.setEnabled(!readOnly);
+        btnOk.setEnabled(!readOnly);
         inputAssignmentsWidget.setReadOnly(readOnly);
         outputAssignmentsWidget.setReadOnly(readOnly);
     }

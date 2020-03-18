@@ -43,7 +43,7 @@ public class ReassignmentWidgetTest extends ReflectionUtilsTest {
 
     private ReassignmentWidget reassignmentWidget;
 
-    private HTMLButtonElement saveButton, addButton;
+    private HTMLButtonElement okButton, addButton;
 
     @Before
     public void setUp() throws Exception {
@@ -52,14 +52,14 @@ public class ReassignmentWidgetTest extends ReflectionUtilsTest {
 
         reassignmentWidget = spy(new ReassignmentWidget(reassignmentWidgetView, translationService));
 
-        saveButton = spy(new HTMLButtonElement());
+        okButton = spy(new HTMLButtonElement());
         addButton = spy(new HTMLButtonElement());
 
         doCallRealMethod().when(reassignmentWidget).getNameHeader();
         doCallRealMethod().when(reassignmentWidget).setReadOnly(any(boolean.class));
         doCallRealMethod().when(reassignmentWidgetView).setReadOnly(any(boolean.class));
 
-        setFieldValue(reassignmentWidgetView, "saveButton", saveButton);
+        setFieldValue(reassignmentWidgetView, "okButton", okButton);
         setFieldValue(reassignmentWidgetView, "addButton", addButton);
 
         when(translationService.getValue(any(String.class))).thenReturn("Reassignment");
@@ -75,6 +75,6 @@ public class ReassignmentWidgetTest extends ReflectionUtilsTest {
         reassignmentWidget.setReadOnly(false);
         boolean readOnly = getFieldValue(ReassignmentWidgetViewImpl.class, reassignmentWidgetView, "readOnly");
         Assert.assertEquals(false, readOnly);
-        reassignmentWidget.save();
+        reassignmentWidget.ok();
     }
 }

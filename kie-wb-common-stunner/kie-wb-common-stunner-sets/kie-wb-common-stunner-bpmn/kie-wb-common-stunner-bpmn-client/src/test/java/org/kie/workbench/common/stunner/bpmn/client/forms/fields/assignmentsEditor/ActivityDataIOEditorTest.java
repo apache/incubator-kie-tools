@@ -96,7 +96,7 @@ public class ActivityDataIOEditorTest {
         dataTypesDisplayNames.add("Name");
         ActivityDataIOEditor.GetDataCallback mockCallback = mock(ActivityDataIOEditor.GetDataCallback.class);
         ioEditor.setCallback(mockCallback);
-        ioEditor.handleSaveClick();
+        ioEditor.handleOkClick();
         verify(ioEditorView).getInputAssignmentData();
         verify(ioEditorView).getOutputAssignmentData();
         verify(ioEditorView).hideView();
@@ -105,7 +105,7 @@ public class ActivityDataIOEditorTest {
 
     @Test
     public void testSaveClickHide() {
-        ioEditor.handleSaveClick();
+        ioEditor.handleOkClick();
         verify(ioEditorView).hideView();
     }
 

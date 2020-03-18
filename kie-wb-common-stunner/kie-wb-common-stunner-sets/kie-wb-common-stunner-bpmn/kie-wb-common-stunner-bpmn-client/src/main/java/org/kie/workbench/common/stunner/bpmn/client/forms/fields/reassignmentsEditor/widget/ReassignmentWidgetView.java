@@ -44,7 +44,7 @@ public interface ReassignmentWidgetView extends IsWidget {
 
         void hide();
 
-        void save();
+        void ok();
 
         List<ReassignmentRow> getValue();
 

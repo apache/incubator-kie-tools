@@ -43,7 +43,7 @@ public class NotificationWidgetTest extends ReflectionUtilsTest {
 
     private NotificationWidget notificationWidget;
 
-    private HTMLButtonElement saveButton, addButton;
+    private HTMLButtonElement okButton, addButton;
 
     @Before
     public void setUp() throws Exception {
@@ -52,14 +52,14 @@ public class NotificationWidgetTest extends ReflectionUtilsTest {
 
         notificationWidget = spy(new NotificationWidget(notificationWidgetView, translationService));
 
-        saveButton = spy(new HTMLButtonElement());
+        okButton = spy(new HTMLButtonElement());
         addButton = spy(new HTMLButtonElement());
 
         doCallRealMethod().when(notificationWidget).getNameHeader();
         doCallRealMethod().when(notificationWidget).setReadOnly(any(boolean.class));
         doCallRealMethod().when(notificationWidgetView).setReadOnly(any(boolean.class));
 
-        setFieldValue(notificationWidgetView, "saveButton", saveButton);
+        setFieldValue(notificationWidgetView, "okButton", okButton);
         setFieldValue(notificationWidgetView, "addButton", addButton);
 
         when(translationService.getValue(any(String.class))).thenReturn("Notification");
@@ -74,7 +74,7 @@ public class NotificationWidgetTest extends ReflectionUtilsTest {
     public void setReadOnlyTest() {
         notificationWidget.setReadOnly(false);
         boolean readOnly = getFieldValue(NotificationWidgetViewImpl.class, notificationWidgetView, "readOnly");
-        Assert.assertEquals(false, readOnly);
-        notificationWidget.save();
+        Assert.assertFalse(readOnly);
+        notificationWidget.ok();
     }
 }

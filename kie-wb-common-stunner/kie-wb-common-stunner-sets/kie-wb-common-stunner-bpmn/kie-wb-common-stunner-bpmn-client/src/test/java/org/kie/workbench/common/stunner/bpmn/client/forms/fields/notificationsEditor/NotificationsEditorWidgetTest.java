@@ -134,7 +134,7 @@ public class NotificationsEditorWidgetTest extends ReflectionUtilsTest {
     public void testReadOnly() {
 
         setFieldValue(notificationWidgetViewImpl, "addButton", new HTMLButtonElement());
-        setFieldValue(notificationWidgetViewImpl, "saveButton", new HTMLButtonElement());
+        setFieldValue(notificationWidgetViewImpl, "okButton", new HTMLButtonElement());
 
         setFieldValue(notificationWidget, "view", notificationWidgetViewImpl);
         setFieldValue(notificationsEditorWidget, "notificationWidget", notificationWidget);
@@ -148,12 +148,12 @@ public class NotificationsEditorWidgetTest extends ReflectionUtilsTest {
         HTMLButtonElement addButton = getFieldValue(NotificationWidgetViewImpl.class,
                                                     notificationWidgetViewImpl,
                                                     "addButton");
-        HTMLButtonElement saveButton = getFieldValue(NotificationWidgetViewImpl.class,
+        HTMLButtonElement okButton = getFieldValue(NotificationWidgetViewImpl.class,
                                                      notificationWidgetViewImpl,
-                                                     "saveButton");
+                                                     "okButton");
 
         Assert.assertTrue(readOnly);
         Assert.assertTrue(addButton.disabled);
-        Assert.assertTrue(saveButton.disabled);
+        Assert.assertTrue(okButton.disabled);
     }
 }

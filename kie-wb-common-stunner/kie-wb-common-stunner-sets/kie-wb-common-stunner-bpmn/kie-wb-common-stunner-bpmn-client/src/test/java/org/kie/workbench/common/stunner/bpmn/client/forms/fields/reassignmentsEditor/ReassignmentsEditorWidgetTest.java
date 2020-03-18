@@ -134,7 +134,7 @@ public class ReassignmentsEditorWidgetTest extends ReflectionUtilsTest {
     public void testReadOnly() {
 
         setFieldValue(reassignmentWidgetViewImpl, "addButton", new HTMLButtonElement());
-        setFieldValue(reassignmentWidgetViewImpl, "saveButton", new HTMLButtonElement());
+        setFieldValue(reassignmentWidgetViewImpl, "okButton", new HTMLButtonElement());
 
         setFieldValue(reassignmentWidget, "view", reassignmentWidgetViewImpl);
         setFieldValue(reassignmentsEditorWidget, "reassignmentWidget", reassignmentWidget);
@@ -148,12 +148,12 @@ public class ReassignmentsEditorWidgetTest extends ReflectionUtilsTest {
         HTMLButtonElement addButton = getFieldValue(ReassignmentWidgetViewImpl.class,
                                                     reassignmentWidgetViewImpl,
                                                     "addButton");
-        HTMLButtonElement saveButton = getFieldValue(ReassignmentWidgetViewImpl.class,
+        HTMLButtonElement okButton = getFieldValue(ReassignmentWidgetViewImpl.class,
                                                      reassignmentWidgetViewImpl,
-                                                     "saveButton");
+                                                     "okButton");
 
         Assert.assertTrue(readOnly);
         Assert.assertTrue(addButton.disabled);
-        Assert.assertTrue(saveButton.disabled);
+        Assert.assertTrue(okButton.disabled);
     }
 }

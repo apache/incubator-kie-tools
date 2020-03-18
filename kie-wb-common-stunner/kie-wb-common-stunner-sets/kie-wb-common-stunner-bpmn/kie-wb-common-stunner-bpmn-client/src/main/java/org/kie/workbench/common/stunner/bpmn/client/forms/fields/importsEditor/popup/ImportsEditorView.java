@@ -39,7 +39,7 @@ public interface ImportsEditorView {
 
     interface Presenter {
 
-        void save();
+        void ok();
 
         void cancel();
 

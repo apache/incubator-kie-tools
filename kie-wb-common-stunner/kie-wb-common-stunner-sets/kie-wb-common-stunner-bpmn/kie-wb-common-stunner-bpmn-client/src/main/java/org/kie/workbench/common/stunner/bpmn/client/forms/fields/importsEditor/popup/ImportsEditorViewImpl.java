@@ -27,7 +27,6 @@ import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup.editor.defaultImport.DefaultImportsEditorWidget;
@@ -46,7 +45,7 @@ public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorVie
 
     private Presenter presenter;
 
-    private Button btnSave;
+    private Button btnOk;
 
     private Button btnCancel;
 
@@ -72,13 +71,12 @@ public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorVie
         final Column btnColumn = new Column(ColumnSize.MD_12);
         btnRow.add(btnColumn);
 
-        btnSave = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Save());
-        btnSave.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        btnSave.setType(ButtonType.PRIMARY);
-        btnSave.setIcon(IconType.SAVE);
-        btnSave.setPull(Pull.RIGHT);
-        btnSave.addClickHandler(clickEvent -> presenter.save());
-        btnColumn.add(btnSave);
+        btnOk = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Ok());
+        btnOk.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        btnOk.setType(ButtonType.PRIMARY);
+        btnOk.setPull(Pull.RIGHT);
+        btnOk.addClickHandler(clickEvent -> presenter.ok());
+        btnColumn.add(btnOk);
 
         btnCancel = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Cancel());
         btnCancel.setPull(Pull.RIGHT);

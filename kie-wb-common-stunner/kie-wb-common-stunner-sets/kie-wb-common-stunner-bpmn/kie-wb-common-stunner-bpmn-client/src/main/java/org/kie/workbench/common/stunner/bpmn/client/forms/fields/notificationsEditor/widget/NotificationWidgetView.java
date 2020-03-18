@@ -52,7 +52,7 @@ public interface NotificationWidgetView extends IsWidget {
 
         void hide();
 
-        void save();
+        void ok();
 
         List<NotificationRow> getValue();
 

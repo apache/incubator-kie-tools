@@ -127,7 +127,7 @@ public class NotificationWidget implements IsWidget,
     }
 
     @Override
-    public void save() {
+    public void ok() {
         if (callback != null) {
             List<NotificationValue> notifications = getValue()
                     .stream()

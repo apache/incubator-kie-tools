@@ -88,7 +88,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         doCallRealMethod().when(notificationWidgetViewImpl).init(any(NotificationWidgetView.Presenter.class), anyList());
         doCallRealMethod().when(notificationWidgetViewImpl).delete(any(NotificationRow.class));
         doCallRealMethod().when(notificationWidgetViewImpl).hide();
-        doCallRealMethod().when(notificationWidgetViewImpl).save();
+        doCallRealMethod().when(notificationWidgetViewImpl).ok();
         doCallRealMethod().when(notificationWidgetViewImpl).onSubscription(any(NotificationEvent.class));
         doCallRealMethod().when(notificationWidgetViewImpl).addOrEdit(any(NotificationRow.class));
 
@@ -105,7 +105,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
                                                                        any(NotificationRow.class));
 
         doCallRealMethod().when(presenter).getValue();
-        doCallRealMethod().when(presenter).save();
+        doCallRealMethod().when(presenter).ok();
         doCallRealMethod().when(presenter).hide();
         doCallRealMethod().when(presenter).setValue(anyList());
         doCallRealMethod().when(presenter).setValue(anyList(), any(boolean.class));
@@ -174,7 +174,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         setFieldValue(presenter, "view", view);
         notificationWidgetViewImpl.init(presenter, generateRows());
         Assert.assertEquals(4, dataProvider.getList().size());
-        notificationWidgetViewImpl.save();
+        notificationWidgetViewImpl.ok();
         Assert.assertEquals(4, dataProvider.getList().size());
         Assert.assertEquals(4, presenter.getValue().size());
     }
@@ -188,7 +188,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         notificationWidgetViewImpl.init(presenter, generateRows());
         presenter.setCallback(callback);
 
-        notificationWidgetViewImpl.save();
+        notificationWidgetViewImpl.ok();
         notificationWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());
@@ -211,7 +211,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         notificationWidgetViewImpl.addOrEdit(newRow);
         notificationWidgetViewImpl.onSubscription(new NotificationEvent(newRow));
 
-        notificationWidgetViewImpl.save();
+        notificationWidgetViewImpl.ok();
         notificationWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(5, value[0].getValues().size());
@@ -234,7 +234,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         notificationWidgetViewImpl.addOrEdit(newRow);
         notificationWidgetViewImpl.onSubscription(new NotificationEvent(null));
 
-        notificationWidgetViewImpl.save();
+        notificationWidgetViewImpl.ok();
         notificationWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());
@@ -257,7 +257,7 @@ public class NotificationWidgetViewImplTest extends ReflectionUtilsTest {
         notificationWidgetViewImpl.addOrEdit(newRow);
         notificationWidgetViewImpl.onSubscription(new NotificationEvent(newRow));
 
-        notificationWidgetViewImpl.save();
+        notificationWidgetViewImpl.ok();
         notificationWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());

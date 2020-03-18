@@ -73,7 +73,7 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Only_single_entry_allowed();
 
-    String Save();
+    String Ok();
 
     String Source();
 

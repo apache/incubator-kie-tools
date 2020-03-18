@@ -26,7 +26,7 @@ public interface ActivityDataIOEditorView {
 
     interface Presenter {
 
-        void handleSaveClick();
+        void handleOkClick();
 
         void handleCancelClick();
 

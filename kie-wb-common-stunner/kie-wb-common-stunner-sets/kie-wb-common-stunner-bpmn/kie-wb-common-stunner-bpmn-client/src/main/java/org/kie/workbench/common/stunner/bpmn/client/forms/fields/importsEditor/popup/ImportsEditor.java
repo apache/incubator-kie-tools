@@ -34,7 +34,7 @@ public class ImportsEditor implements ImportsEditorView.Presenter {
     }
 
     @Override
-    public void save() {
+    public void ok() {
         if (callback != null) {
             ImportsValue importsValue = new ImportsValue(view.getDefaultImports(), view.getWSDLImports());
             callback.getData(importsValue);

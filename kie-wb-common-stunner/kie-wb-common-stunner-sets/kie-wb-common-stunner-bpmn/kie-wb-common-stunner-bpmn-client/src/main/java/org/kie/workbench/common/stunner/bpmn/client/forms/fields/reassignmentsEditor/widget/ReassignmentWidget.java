@@ -107,7 +107,7 @@ public class ReassignmentWidget implements IsWidget,
     }
 
     @Override
-    public void save() {
+    public void ok() {
         if (callback != null) {
             List<ReassignmentValue> reassignments = getValue()
                     .stream()

@@ -68,7 +68,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     }
 
     @Override
-    public void handleSaveClick() {
+    public void handleOkClick() {
         if (callback != null) {
             AssignmentData data = new AssignmentData(view.getInputAssignmentData(),
                                                      view.getOutputAssignmentData(),

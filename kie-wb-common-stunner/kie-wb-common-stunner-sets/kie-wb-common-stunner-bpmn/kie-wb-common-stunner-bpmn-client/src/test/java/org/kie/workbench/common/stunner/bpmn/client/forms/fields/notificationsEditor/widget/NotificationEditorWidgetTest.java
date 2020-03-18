@@ -154,7 +154,7 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
 
         doCallRealMethod().when(view).setReadOnly(any(boolean.class));
         doCallRealMethod().when(view).createOrEdit(any(NotificationWidgetView.class), any(NotificationRow.class));
-        doCallRealMethod().when(view).save();
+        doCallRealMethod().when(view).ok();
 
         setFieldValue(view, "modal", modal);
         setFieldValue(view, "body", body);
@@ -169,7 +169,7 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         setFieldValue(view, "notificationEvent", notificationEvent);
         setFieldValue(view, "validator", validator);
         setFieldValue(view, "closeButton", new HTMLButtonElement());
-        setFieldValue(view, "saveButton", new HTMLButtonElement());
+        setFieldValue(view, "okButton", new HTMLButtonElement());
         setFieldValue(view, "customerBinder", customerBinder);
         setFieldValue(view, "typeSelect", typeSelect);
         setFieldValue(view, "notStarted", notStarted);
@@ -202,12 +202,12 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         HTMLButtonElement closeButton = getFieldValue(NotificationEditorWidgetViewImpl.class,
                                                       view,
                                                       "closeButton");
-        HTMLButtonElement saveButton = getFieldValue(NotificationEditorWidgetViewImpl.class,
+        HTMLButtonElement okButton = getFieldValue(NotificationEditorWidgetViewImpl.class,
                                                      view,
-                                                     "saveButton");
+                                                     "okButton");
 
         Assert.assertFalse(closeButton.disabled);
-        Assert.assertTrue(saveButton.disabled);
+        Assert.assertTrue(okButton.disabled);
     }
 
     @Test
@@ -231,7 +231,7 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         when(multipleLiveSearchSelectionHandlerGroups.getSelectedValues()).thenReturn(Collections.EMPTY_LIST);
         when(multipleLiveSearchSelectionHandlerUsers.getSelectedValues()).thenReturn(Collections.EMPTY_LIST);
         view.createOrEdit(notificationWidgetViewImpl, test);
-        view.save();
+        view.ok();
 
         NotificationRow result = getFieldValue(NotificationEditorWidgetViewImpl.class, view, "current");
         Assert.assertEquals(result, test);
@@ -261,7 +261,7 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         when(multipleLiveSearchSelectionHandlerGroups.getSelectedValues()).thenReturn(groups);
         when(multipleLiveSearchSelectionHandlerUsers.getSelectedValues()).thenReturn(users);
         view.createOrEdit(notificationWidgetViewImpl, test);
-        view.save();
+        view.ok();
 
         Assert.assertEquals("QWERTY!", test.getSubject());
         Assert.assertEquals("QWERTY!", test.getBody());

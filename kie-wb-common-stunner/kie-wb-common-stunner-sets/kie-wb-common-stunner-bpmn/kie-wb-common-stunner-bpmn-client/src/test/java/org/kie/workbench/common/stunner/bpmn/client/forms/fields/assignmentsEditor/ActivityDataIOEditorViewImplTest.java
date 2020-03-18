@@ -78,7 +78,7 @@ public class ActivityDataIOEditorViewImplTest {
         GwtMockito.initMocks(this);
         view.inputAssignmentsWidget = inputAssignmentsWidget;
         view.outputAssignmentsWidget = outputAssignmentsWidget;
-        view.btnSave = btnSave;
+        view.btnOk = btnSave;
         view.presenter = presenter;
         doCallRealMethod().when(view).setInputAssignmentRows(any(List.class));
         doCallRealMethod().when(view).setOutputAssignmentRows(any(List.class));

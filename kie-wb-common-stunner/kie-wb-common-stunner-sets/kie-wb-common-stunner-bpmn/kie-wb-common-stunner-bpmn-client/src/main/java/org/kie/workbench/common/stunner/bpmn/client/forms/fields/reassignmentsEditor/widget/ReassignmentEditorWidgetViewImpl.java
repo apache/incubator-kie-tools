@@ -97,7 +97,7 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
 
     @DataField
     @Inject
-    private HTMLButtonElement closeButton, saveButton;
+    private HTMLButtonElement closeButton, okButton;
 
     @Inject
     private Validator validator;
@@ -145,7 +145,7 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
     @PostConstruct
     public void init() {
         closeButton.addEventListener("click", event -> close(), false);
-        saveButton.addEventListener("click", event -> save(), false);
+        okButton.addEventListener("click", event -> ok(), false);
     }
 
     @Override
@@ -198,10 +198,10 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        saveButton.disabled = readOnly;
+        okButton.disabled = readOnly;
     }
 
-    void save() {
+    void ok() {
         // TODO looks like errai data binder doenst support liststore widgets.
         current.setUsers(multipleLiveSearchSelectionHandlerUsers.getSelectedValues());
         current.setGroups(multipleLiveSearchSelectionHandlerGroups.getSelectedValues());

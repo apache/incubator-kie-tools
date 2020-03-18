@@ -65,7 +65,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
 
     @DataField
     @Inject
-    private HTMLButtonElement closeButton, addButton, saveButton;
+    private HTMLButtonElement closeButton, addButton, okButton;
 
     @Inject
     private NotificationEditorWidget editor;
@@ -81,7 +81,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
     public void init() {
         addButton.addEventListener("click", event -> addOrEdit(new NotificationRow()), false);
         closeButton.addEventListener("click", event -> hide(), false);
-        saveButton.addEventListener("click", event -> save(), false);
+        okButton.addEventListener("click", event -> ok(), false);
     }
 
     @Override
@@ -343,7 +343,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
     @Override
     public void setReadOnly(boolean readOnly) {
         addButton.disabled = readOnly;
-        saveButton.disabled = readOnly;
+        okButton.disabled = readOnly;
         this.readOnly = readOnly;
     }
 
@@ -372,9 +372,9 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         table.setRowData(0, dataProvider.getList());
     }
 
-    void save() {
+    void ok() {
         presenter.setValue(dataProvider.getList());
-        presenter.save();
+        presenter.ok();
     }
 
     @Override

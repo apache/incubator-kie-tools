@@ -88,7 +88,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         doCallRealMethod().when(reassignmentWidgetViewImpl).init(any(ReassignmentWidgetView.Presenter.class), anyList());
         doCallRealMethod().when(reassignmentWidgetViewImpl).delete(any(ReassignmentRow.class));
         doCallRealMethod().when(reassignmentWidgetViewImpl).hide();
-        doCallRealMethod().when(reassignmentWidgetViewImpl).save();
+        doCallRealMethod().when(reassignmentWidgetViewImpl).ok();
         doCallRealMethod().when(reassignmentWidgetViewImpl).onSubscription(any(ReassignmentEvent.class));
         doCallRealMethod().when(reassignmentWidgetViewImpl).addOrEdit(any(ReassignmentRow.class));
 
@@ -105,7 +105,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
                                                                        any(ReassignmentRow.class));
 
         doCallRealMethod().when(presenter).getValue();
-        doCallRealMethod().when(presenter).save();
+        doCallRealMethod().when(presenter).ok();
         doCallRealMethod().when(presenter).hide();
         doCallRealMethod().when(presenter).setValue(anyList());
         doCallRealMethod().when(presenter).setValue(anyList(), any(boolean.class));
@@ -174,7 +174,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         setFieldValue(presenter, "view", view);
         reassignmentWidgetViewImpl.init(presenter, generateRows());
         Assert.assertEquals(4, dataProvider.getList().size());
-        reassignmentWidgetViewImpl.save();
+        reassignmentWidgetViewImpl.ok();
         Assert.assertEquals(4, dataProvider.getList().size());
         Assert.assertEquals(4, presenter.getValue().size());
     }
@@ -188,7 +188,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         reassignmentWidgetViewImpl.init(presenter, generateRows());
         presenter.setCallback(callback);
 
-        reassignmentWidgetViewImpl.save();
+        reassignmentWidgetViewImpl.ok();
         reassignmentWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());
@@ -211,7 +211,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         reassignmentWidgetViewImpl.addOrEdit(newRow);
         reassignmentWidgetViewImpl.onSubscription(new ReassignmentEvent(newRow));
 
-        reassignmentWidgetViewImpl.save();
+        reassignmentWidgetViewImpl.ok();
         reassignmentWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(5, value[0].getValues().size());
@@ -234,7 +234,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         reassignmentWidgetViewImpl.addOrEdit(newRow);
         reassignmentWidgetViewImpl.onSubscription(new ReassignmentEvent(null));
 
-        reassignmentWidgetViewImpl.save();
+        reassignmentWidgetViewImpl.ok();
         reassignmentWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());
@@ -257,7 +257,7 @@ public class ReassignmentWidgetViewImplTest extends ReflectionUtilsTest {
         reassignmentWidgetViewImpl.addOrEdit(newRow);
         reassignmentWidgetViewImpl.onSubscription(new ReassignmentEvent(newRow));
 
-        reassignmentWidgetViewImpl.save();
+        reassignmentWidgetViewImpl.ok();
         reassignmentWidgetViewImpl.hide();
         Assert.assertEquals(0, presenter.getValue().size());
         Assert.assertEquals(4, value[0].getValues().size());
