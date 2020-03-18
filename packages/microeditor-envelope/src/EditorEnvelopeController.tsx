@@ -86,6 +86,12 @@ export class EditorEnvelopeController {
       },
       receive_editorRedo: () => {
         this.stateControl.redo();
+      },
+      receive_previewRequest: () => {
+        this.getEditor()
+          ?.getPreview()
+          .then(preview => self.respond_previewRequest(preview!))
+          .catch(error => console.log(`Error retrieving preview: ${error}`));
       }
     }));
   }

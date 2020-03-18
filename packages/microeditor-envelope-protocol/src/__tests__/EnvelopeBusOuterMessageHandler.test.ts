@@ -63,6 +63,9 @@ beforeEach(() => {
       },
       receive_ready() {
         receivedMessages.push("ready");
+      },
+      receive_previewRequest(previewSvg: string) {
+        receivedMessages.push("preview");
       }
     })
   );

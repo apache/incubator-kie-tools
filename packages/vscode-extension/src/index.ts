@@ -43,6 +43,8 @@ export function startExtension(args: {
   extension.startReplacingTextEditorsByKogitoEditorsAsTheyOpenIfLanguageIsSupported();
   extension.registerCustomSaveCommand();
   extension.registerCustomSaveAllCommand();
+  extension.registerStateControl()
+  extension.registerGetPreviewCommand();
 }
 
 export * from "./DefaultVsCodeRouter";
