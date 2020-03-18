@@ -42,7 +42,7 @@ func InstallKogitoJobsService(namespace string, installerType InstallerType, rep
 }
 
 func crInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
-	service := getJobsServiceStub(namespace, replicas, persistence)
+	service := getJobsServiceStub(namespace, int32(replicas), persistence)
 
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(service); err != nil {
 		return fmt.Errorf("Error creating Kogito jobs service: %v", err)
@@ -100,7 +100,7 @@ func WaitForKogitoJobsService(namespace string, replicas, timeoutInMin int) erro
 }
 
 // SetKogitoJobsServiceReplicas sets the number of replicas for the Kogito Jobs Service
-func SetKogitoJobsServiceReplicas(namespace string, nbPods int) error {
+func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
 	GetLogger(namespace).Infof("Set Kogito jobs service replica number to %d", nbPods)
 	kogitoJobsService, err := GetKogitoJobsService(namespace)
 	if err != nil {
@@ -108,11 +108,11 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int) error {
 	} else if kogitoJobsService == nil {
 		return fmt.Errorf("No Kogito jobs service found in namespace %s", namespace)
 	}
-	kogitoJobsService.Spec.Replicas = int32(nbPods)
+	kogitoJobsService.Spec.Replicas = &nbPods
 	return kubernetes.ResourceC(kubeClient).Update(kogitoJobsService)
 }
 
-func getJobsServiceStub(namespace string, replicas int, persistence bool) *v1alpha1.KogitoJobsService {
+func getJobsServiceStub(namespace string, replicas int32, persistence bool) *v1alpha1.KogitoJobsService {
 	// Get correct image for tests
 	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
 	image.Tag = GetConfigServicesImageVersion()
@@ -124,7 +124,7 @@ func getJobsServiceStub(namespace string, replicas int, persistence bool) *v1alp
 		},
 		Spec: v1alpha1.KogitoJobsServiceSpec{
 			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
-				Replicas: int32(replicas),
+				Replicas: &replicas,
 				Image:    image,
 			},
 		},

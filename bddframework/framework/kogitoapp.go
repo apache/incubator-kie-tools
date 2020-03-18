@@ -147,7 +147,7 @@ func SetKogitoAppReplicas(namespace, name string, nbPods int) error {
 		return fmt.Errorf("No KogitoApp found with name %s in namespace %s", name, namespace)
 	}
 	replicas := int32(nbPods)
-	kogitoApp.Spec.KogitoServiceSpec.Replicas = replicas
+	kogitoApp.Spec.KogitoServiceSpec.Replicas = &replicas
 	return kubernetes.ResourceC(kubeClient).Update(kogitoApp)
 }
 

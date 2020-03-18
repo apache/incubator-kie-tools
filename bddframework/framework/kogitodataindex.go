@@ -34,13 +34,13 @@ func InstallKogitoDataIndexService(namespace string, installerType InstallerType
 	case CLIInstallerType:
 		return cliInstallKogitoDataIndex(namespace, replicas)
 	case CRInstallerType:
-		return crInstallKogitoDataIndex(namespace, replicas)
+		return crInstallKogitoDataIndex(namespace, int32(replicas))
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-func crInstallKogitoDataIndex(namespace string, replicas int) error {
+func crInstallKogitoDataIndex(namespace string, replicas int32) error {
 	// Get correct image tag
 	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
 	image.Tag = GetConfigServicesImageVersion()
@@ -52,7 +52,7 @@ func crInstallKogitoDataIndex(namespace string, replicas int) error {
 		},
 		Spec: v1alpha1.KogitoDataIndexSpec{
 			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
-				Replicas: int32(replicas),
+				Replicas: &replicas,
 				Image:    image,
 			},
 		},

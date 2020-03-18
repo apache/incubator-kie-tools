@@ -40,7 +40,7 @@ func (data *Data) kogitoJobsServiceHasPodsRunningWithinMinutes(pods, timeoutInMi
 }
 
 func (data *Data) scaleKogitoJobsServiceToPodsWithinMinutes(nbPods, timeoutInMin int) error {
-	err := framework.SetKogitoJobsServiceReplicas(data.Namespace, nbPods)
+	err := framework.SetKogitoJobsServiceReplicas(data.Namespace, int32(nbPods))
 	if err != nil {
 		return err
 	}
