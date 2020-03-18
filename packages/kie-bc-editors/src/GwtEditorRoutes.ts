@@ -112,9 +112,6 @@ export class GwtEditorRoutes implements Routes {
             router.getRelativePathTo(`${this.scesimPath}/model/MainJs.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/SCESIM.js`),
             router.getRelativePathTo(`${this.scesimPath}/model/SCESIMMainJs.js`),
-            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/ace.js`),
-            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/mode-xml.js`),
-            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/ace/theme-chrome.js`),
             router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`)
           ]
         }
