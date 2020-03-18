@@ -33,6 +33,7 @@ import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
 import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils.getDefaultIconData;
@@ -103,6 +104,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
         tested = new WorkItemDefinitionStandaloneClientService(promises,
                                                                registry,
                                                                new ResourceContentService() {
+
                                                                    @Override
                                                                    public Promise<String> get(String uri) {
                                                                        return promises.resolve();
@@ -128,6 +130,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
         tested = new WorkItemDefinitionStandaloneClientService(promises,
                                                                registry,
                                                                new ResourceContentService() {
+
                                                                    @Override
                                                                    public Promise<String> get(String uri) {
                                                                        return promises.resolve();
@@ -146,6 +149,23 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                });
         call();
         assertTrue(registry.items().isEmpty());
+    }
+
+    @Test
+    public void testIconDataUri() {
+        final String testData = "testData";
+        final String iconDataUri = WorkItemDefinitionStandaloneClientService.iconDataUri("test.png", testData);
+        final String badUri = WorkItemDefinitionStandaloneClientService.iconDataUri("bad uri", testData);
+        assertEquals("data:image/png;base64, testData", iconDataUri);
+        assertEquals(testData, badUri);
+    }
+
+    @Test
+    public void testIsDataUri() {
+        boolean notDataUri = WorkItemDefinitionStandaloneClientService.isIconDataUri("test");
+        boolean dataUri = WorkItemDefinitionStandaloneClientService.isIconDataUri("data:test");
+        assertFalse(notDataUri);
+        assertTrue(dataUri);
     }
 
     @Test

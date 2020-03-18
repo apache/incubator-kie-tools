@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionCacheRegistry;
@@ -97,31 +98,31 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
             registry.clear();
             final List<WorkItemDefinition> loaded = new LinkedList<>();
             resourceContentService
-                    .list(RESOURCE_ALL_WID_PATTERN)
-                    .then(paths -> {
-                        if (paths.length > 0) {
-                            log("Work Items found at [" + paths + "]");
-                            promises.all(asList(paths),
-                                         path -> workItemsLoader(path, loaded))
-                                    .then(wids -> {
-                                        wids.forEach(registry::register);
-                                        success.onInvoke(wids);
-                                        return null;
-                                    })
-                                    .catch_(error -> {
-                                        failure.onInvoke(error);
-                                        return null;
-                                    });
-                        } else {
-                            log("NO Work Items found at [" + paths + "]");
-                            success.onInvoke(emptyList());
-                        }
-                        return promises.resolve();
-                    })
-                    .catch_(error -> {
-                        failure.onInvoke(error);
-                        return null;
-                    });
+                                  .list(RESOURCE_ALL_WID_PATTERN)
+                                  .then(paths -> {
+                                      if (paths.length > 0) {
+                                          log("Work Items found at [" + paths + "]");
+                                          promises.all(asList(paths),
+                                                       path -> workItemsLoader(path, loaded))
+                                                  .then(wids -> {
+                                                      wids.forEach(registry::register);
+                                                      success.onInvoke(wids);
+                                                      return null;
+                                                  })
+                                                  .catch_(error -> {
+                                                      failure.onInvoke(error);
+                                                      return null;
+                                                  });
+                                      } else {
+                                          log("NO Work Items found at [" + paths + "]");
+                                          success.onInvoke(emptyList());
+                                      }
+                                      return promises.resolve();
+                                  })
+                                  .catch_(error -> {
+                                      failure.onInvoke(error);
+                                      return null;
+                                  });
         });
     }
 
@@ -131,24 +132,24 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
         log("Processing [" + path + "]");
         if (nonEmpty(path)) {
             return resourceContentService
-                    .get(path)
-                    .then(value -> {
-                        log("Content for path = [" + value + "]");
-                        log("Loading Work Items for path [" + path + "]");
-                        final List<WorkItemDefinition> wids = parse(value);
-                        return promises.create((success, failure) -> {
-                            promises.all(wids, this::workItemIconLoader)
-                                    .then(wid -> {
-                                        loaded.addAll(wids);
-                                        success.onInvoke(loaded);
-                                        return promises.resolve();
-                                    })
-                                    .catch_(error -> {
-                                        failure.onInvoke(error);
-                                        return null;
-                                    });
-                        });
-                    });
+                                         .get(path)
+                                         .then(value -> {
+                                             log("Content for path = [" + value + "]");
+                                             log("Loading Work Items for path [" + path + "]");
+                                             final List<WorkItemDefinition> wids = parse(value);
+                                             return promises.create((success, failure) -> {
+                                                 promises.all(wids, this::workItemIconLoader)
+                                                         .then(wid -> {
+                                                             loaded.addAll(wids);
+                                                             success.onInvoke(loaded);
+                                                             return promises.resolve();
+                                                         })
+                                                         .catch_(error -> {
+                                                             failure.onInvoke(error);
+                                                             return null;
+                                                         });
+                                             });
+                                         });
         }
         return promises.resolve(emptyList());
     }
@@ -158,16 +159,36 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
         log("Loading icon for URI [" + iconUri + "]");
         if (nonEmpty(iconUri)) {
             return resourceContentService
-                    .get(iconUri)
-                    .then(iconData -> {
-                        log("Content for icon = [" + iconData + "]");
-                        if (nonEmpty(iconData)) {
-                            wid.getIconDefinition().setIconData(iconData);
-                        }
-                        return promises.resolve();
-                    });
+                                         .get(iconUri, ResourceContentOptions.binary())
+                                         .then(iconData -> {
+                                             log("Content for icon = [" + iconData + "]");
+                                             if (nonEmpty(iconData)) {
+                                                 if (!isIconDataUri(iconData)) {
+                                                     iconData = iconDataUri(iconUri, iconData);
+                                                 }
+                                                 wid.getIconDefinition().setIconData(iconData);
+                                             }
+                                             return promises.resolve();
+                                         }).catch_(error -> {
+                                             log("Not able to load icon for URI " + iconUri);
+                                             return Promise.resolve("");
+                                         });
         }
         return promises.resolve();
+    }
+
+    protected static boolean isIconDataUri(String iconData) {
+        return iconData.startsWith("data:");
+    }
+
+    protected static String iconDataUri(String iconUri, String iconData) {
+        String[] iconUriParts = iconUri.split("\\.");
+        if (iconUriParts.length > 1) {
+            int fileTypeIndex = iconUriParts.length - 1;
+            String fileType = iconUriParts[fileTypeIndex];
+            return "data:image/" + fileType + ";base64, " + iconData;
+        }
+        return iconData;
     }
 
     private static void log(String s) {
