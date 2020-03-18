@@ -84,7 +84,7 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
         <KeyboardIcon />
       </div>
 
-      <Modal title={"Keyboard shortcuts"} isOpen={showing} isLarge={true} onClose={toggle}>
+      <Modal title={"Keyboard shortcuts"} isOpen={showing} width={"60%"} onClose={toggle}>
         <TextContent>
           <TextList component={TextListVariants.dl}>
             {Array.from(keyBindings.keys()).map(category => (
