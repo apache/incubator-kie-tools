@@ -63,39 +63,40 @@ public class ActivityPropertyWriter extends PropertyWriter {
 
     public void setAssignmentsInfo(AssignmentsInfo info) {
         final ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
-        final InputOutputSpecification ioSpec = getIoSpecification();
+        final List<InitializedInputVariable> inputs = assignmentsInfo.createInitializedInputVariables(getId(),
+                                                                                                      variableScope);
+        if (!inputs.isEmpty()) {
+            final InputOutputSpecification ioSpec = getIoSpecification();
+            for (InitializedInputVariable input : inputs) {
+                if (isReservedIdentifier(input.getIdentifier())) {
+                    continue;
+                }
 
-        List<InitializedInputVariable> inputs =
-                assignmentsInfo.createInitializedInputVariables(getId(), variableScope);
+                DataInput dataInput = input.getDataInput();
+                getInputSet(ioSpec).getDataInputRefs().add(dataInput);
+                ioSpec.getDataInputs().add(dataInput);
 
-        for (InitializedInputVariable input : inputs) {
-            if (isReservedIdentifier(input.getIdentifier())) {
-                continue;
-            }
-
-            DataInput dataInput = input.getDataInput();
-            getInputSet(ioSpec).getDataInputRefs().add(dataInput);
-            ioSpec.getDataInputs().add(dataInput);
-
-            this.addItemDefinition(input.getItemDefinition());
-            DataInputAssociation dataInputAssociation = input.getDataInputAssociation();
-            if (dataInputAssociation != null) {
-                activity.getDataInputAssociations().add(dataInputAssociation);
+                this.addItemDefinition(input.getItemDefinition());
+                DataInputAssociation dataInputAssociation = input.getDataInputAssociation();
+                if (dataInputAssociation != null) {
+                    activity.getDataInputAssociations().add(dataInputAssociation);
+                }
             }
         }
+        final List<InitializedOutputVariable> outputs = assignmentsInfo.createInitializedOutputVariables(getId(),
+                                                                                                         variableScope);
+        if (!outputs.isEmpty()) {
+            final InputOutputSpecification ioSpec = getIoSpecification();
+            for (InitializedOutputVariable output : outputs) {
+                DataOutput dataOutput = output.getDataOutput();
+                getOutputSet(ioSpec).getDataOutputRefs().add(dataOutput);
+                ioSpec.getDataOutputs().add(dataOutput);
 
-        List<InitializedOutputVariable> outputs =
-                assignmentsInfo.createInitializedOutputVariables(getId(), variableScope);
-
-        for (InitializedOutputVariable output : outputs) {
-            DataOutput dataOutput = output.getDataOutput();
-            getOutputSet(ioSpec).getDataOutputRefs().add(dataOutput);
-            ioSpec.getDataOutputs().add(dataOutput);
-
-            this.addItemDefinition(output.getItemDefinition());
-            DataOutputAssociation dataOutputAssociation = output.getDataOutputAssociation();
-            if (dataOutputAssociation != null) {
-                activity.getDataOutputAssociations().add(dataOutputAssociation);
+                this.addItemDefinition(output.getItemDefinition());
+                DataOutputAssociation dataOutputAssociation = output.getDataOutputAssociation();
+                if (dataOutputAssociation != null) {
+                    activity.getDataOutputAssociations().add(dataOutputAssociation);
+                }
             }
         }
     }
