@@ -63,6 +63,7 @@ public class ZoomLevelSelectorPresenter {
     private HandlerRegistration transformChangedHandler;
     private HandlerRegistration selectorOverHandler;
     private Timer hideTimer;
+    private boolean zoomLevelInit = true;
 
     @Inject
     public ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
@@ -150,8 +151,12 @@ public class ZoomLevelSelectorPresenter {
     }
 
     public ZoomLevelSelectorPresenter show() {
-        cancelHide();
-        floatingView.show();
+        if (zoomLevelInit) {
+            zoomLevelInit = false;
+        } else {
+            cancelHide();
+            floatingView.show();
+        }
         return this;
     }
 

@@ -105,6 +105,7 @@ public class ZoomLevelSelectorPresenterTest {
                                                 floatingView,
                                                 selector);
         tested.construct();
+        tested.show();
     }
 
     @Test
@@ -146,6 +147,16 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Test
     public void testShow() {
+        tested.show();
+        verify(floatingView, times(1)).show();
+    }
+
+    @Test
+    public void testHideZoomOnLoad() {
+        //First call on canvas loading
+        verify(floatingView, times(0)).show();
+
+        //Calls when mouse pointer is over the canvas and it has focus
         tested.show();
         verify(floatingView, times(1)).show();
     }

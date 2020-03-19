@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolba
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
@@ -82,7 +81,6 @@ public class SessionEditorPresenter<S extends EditorSession>
                                   final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                   final Event<SessionLostFocusEvent> sessionLostFocusEvent,
                                   final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
@@ -92,7 +90,6 @@ public class SessionEditorPresenter<S extends EditorSession>
               paletteWidgetFactory,
               notificationsObserver,
               sessionFocusedEvent,
-              canvasFocusedEvent,
               sessionLostFocusEvent,
               canvasLostFocusEventEvent);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;

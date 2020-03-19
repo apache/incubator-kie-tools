@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -55,7 +54,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private final SessionPresenter.View view;
     private final NotificationsObserver notificationsObserver;
     private final Event<SessionFocusedEvent> sessionFocusedEvent;
-    private final Event<CanvasFocusedEvent> canvasFocusedEvent;
     private final Event<SessionLostFocusEvent> sessionLostFocusEvent;
     private final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent;
 
@@ -73,7 +71,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                                        final DefaultPaletteFactory<H> paletteFactory,
                                        final NotificationsObserver notificationsObserver,
                                        final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                       final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                        final Event<SessionLostFocusEvent> sessionLostFocusEvent,
                                        final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent) {
         this.definitionUtils = definitionUtils;
@@ -82,7 +79,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         this.notificationsObserver = notificationsObserver;
         this.sessionFocusedEvent = sessionFocusedEvent;
         this.sessionLostFocusEvent = sessionLostFocusEvent;
-        this.canvasFocusedEvent = canvasFocusedEvent;
         this.canvasLostFocusEventEvent = canvasLostFocusEventEvent;
         this.view = view;
         this.hasToolbar = true;
@@ -282,7 +278,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private void fireSessionFocused(final ClientSession session) {
         sessionFocusedEvent.fire(new SessionFocusedEvent(session));
-        canvasFocusedEvent.fire(new CanvasFocusedEvent(session.getCanvas()));
     }
 
     @SuppressWarnings("unchecked")

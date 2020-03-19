@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ViewerToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
@@ -70,7 +69,6 @@ public class SessionViewerPresenter<S extends ViewerSession>
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  Event<CanvasFocusedEvent> canvasFocusedEvent,
                                   final Event<SessionLostFocusEvent> sessionLostFocusEvent,
                                   final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
@@ -80,7 +78,6 @@ public class SessionViewerPresenter<S extends ViewerSession>
               null,
               notificationsObserver,
               sessionFocusedEvent,
-              canvasFocusedEvent,
               sessionLostFocusEvent,
               canvasLostFocusEventEvent);
         this.viewer = viewer;
