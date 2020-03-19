@@ -36,8 +36,10 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreview
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.menus.BPMNStandaloneEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.kogito.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -47,6 +49,8 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -164,5 +168,19 @@ public class BPMNDiagramEditorTest {
         //Second setContent call context
         editor.setContent("", "");
         verify(menuSessionItems, times(2)).destroy();
+    }
+
+    @Test
+    public void testDocksAndOrdering() {
+        editor.initDocks();
+        InOrder initOrder = inOrder(diagramPropertiesDock, diagramPreviewAndExplorerDock);
+        initOrder.verify(diagramPropertiesDock).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
+        initOrder.verify(diagramPreviewAndExplorerDock).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
+        editor.openDocks();
+        initOrder.verify(diagramPropertiesDock).open();
+        initOrder.verify(diagramPreviewAndExplorerDock).open();
+        editor.onClose();
+        initOrder.verify(diagramPropertiesDock).close();
+        initOrder.verify(diagramPreviewAndExplorerDock).close();
     }
 }
