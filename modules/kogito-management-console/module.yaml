@@ -8,8 +8,8 @@ envs:
 
 artifacts:
   - name: kogito-management-console-runner.jar
-    url: https://repository.jboss.org/org/kie/kogito/management-console/8.0.0-SNAPSHOT/management-console-8.0.0-20200312.091545-18-runner.jar
-    md5: 32b6fe5644752cc2c2f83825aab0b1fc
+    url: https://repository.jboss.org/org/kie/kogito/management-console/8.0.0-SNAPSHOT/management-console-8.0.0-20200319.135106-24-runner.jar
+    md5: 39710d6d1f285ebcc1d0e7b4b4aed742
 
 execute:
   - script: configure

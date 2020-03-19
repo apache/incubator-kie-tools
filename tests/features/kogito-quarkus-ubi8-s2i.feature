@@ -56,7 +56,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 02b40df868ebda3acb3b318b6ebcc055
 
   Scenario: Verify if the s2i build is finished as expected performing a native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-stubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable          | value         |
       | NATIVE            | true          |
       | MAVEN_ARGS_APPEND | -Ppersistence |
