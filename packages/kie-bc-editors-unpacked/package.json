@@ -9,8 +9,8 @@
   },
   "scripts": {
     "test": "echo 'No tests to run'",
-    "build:fast": "rm -rf bpmn/* dmn/* && mvn clean package -B -nsu #",
+    "build:fast": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B -nsu #",
     "build": "yarn run build:fast",
-    "build:prod": "rm -rf bpmn/* dmn/* && mvn clean package -B #--no-transfer-progress"
+    "build:prod": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B #--no-transfer-progress"
   }
 }
