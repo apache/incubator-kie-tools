@@ -41,6 +41,8 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerKubernetesSteps(s, data)
 	registerOperatorSteps(s, data)
 	registerPrometheusSteps(s, data)
+	registerProcessSteps(s, data)
+	registerTaskSteps(s, data)
 }
 
 // BeforeScenario configure the data before a scenario is launched

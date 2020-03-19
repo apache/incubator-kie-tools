@@ -36,6 +36,7 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	s.Step(`^"([^"]*)" deploy quarkus example service "([^"]*)" with native "([^"]*)" and persistence and events$`, data.deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents)
 	s.Step(`^"([^"]*)" deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
 	s.Step(`^"([^"]*)" deploy spring boot example service "([^"]*)" with persistence$`, data.deploySpringBootExampleServiceWithPersistence)
+	s.Step(`^"CR" deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// Build steps
 	s.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
@@ -131,6 +132,10 @@ func (data *Data) deploySpringBootExampleServiceWithPersistence(installerType, c
 			Events:      false,
 			Labels:      nil,
 		})
+}
+
+func (data *Data) deployServiceFromExampleFile(exampleFile string) error {
+	return framework.DeployServiceFromExampleFile(data.Namespace, exampleFile)
 }
 
 // Build steps

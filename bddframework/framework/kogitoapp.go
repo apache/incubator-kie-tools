@@ -23,12 +23,15 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/yaml"
 
+	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 )
 
 const (
+	boxExamplesPath       = "../../deploy/examples"
 	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
 	mavenMirrorURLEnvVar  = "MAVEN_MIRROR_URL"
 )
@@ -135,6 +138,32 @@ func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment)
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
+}
+
+// DeployServiceFromExampleFile deploy service from example YAML file (example is located in deploy/examples folder)
+func DeployServiceFromExampleFile(namespace, exampleFile string) error {
+	box := packr.New("examples", boxExamplesPath)
+	yamlContent, err := box.FindString(exampleFile)
+	if err != nil {
+		return fmt.Errorf("Error reading file %s: %v ", exampleFile, err)
+	}
+
+	// Create basic KogitoApp stub
+	kogitoApp := getKogitoAppStub(namespace, "name-should-be overwritten-from-yaml", nil)
+
+	// Apply content from yaml file
+	if err := yaml.NewYAMLOrJSONDecoder(strings.NewReader(yamlContent), len([]byte(yamlContent))).Decode(kogitoApp); err != nil {
+		return fmt.Errorf("Error while unmarshalling file: %v ", err)
+	}
+
+	// Apply custom image configuration
+	setupBuildImageStreams(kogitoApp)
+
+	// Create application
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoApp); err != nil {
+		return fmt.Errorf("Error creating service %s: %v", kogitoApp.Name, err)
+	}
+	return nil
 }
 
 // SetKogitoAppReplicas sets the number of replicas for a Kogito application
