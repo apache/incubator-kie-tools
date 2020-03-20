@@ -46,12 +46,17 @@ public class DecisionTablePropertyConverter {
             }
             result.getInput().add(inputClauseConverted);
         }
-        for (org.kie.dmn.model.api.OutputClause input : dmn.getOutput()) {
-            final OutputClause outputClauseConverted = OutputClausePropertyConverter.wbFromDMN(input);
+        for (org.kie.dmn.model.api.OutputClause output : dmn.getOutput()) {
+            final OutputClause outputClauseConverted = OutputClausePropertyConverter.wbFromDMN(output);
             if (outputClauseConverted != null) {
                 outputClauseConverted.setParent(result);
             }
             result.getOutput().add(outputClauseConverted);
+        }
+        if (result.getOutput().size() == 1) {
+            final OutputClause outputClause = result.getOutput().get(0);
+            outputClause.setName(null); // DROOLS-3281
+            outputClause.setTypeRef(null); // DROOLS-5178
         }
         for (org.kie.dmn.model.api.DecisionRule dr : dmn.getRule()) {
             final DecisionRule decisionRuleConverted = DecisionRulePropertyConverter.wbFromDMN(dr);
@@ -96,7 +101,9 @@ public class DecisionTablePropertyConverter {
             result.getOutput().add(c);
         }
         if (result.getOutput().size() == 1) {
-            result.getOutput().get(0).setName(null); // DROOLS-3281
+            final org.kie.dmn.model.api.OutputClause outputClause = result.getOutput().get(0);
+            outputClause.setName(null); // DROOLS-3281
+            outputClause.setTypeRef(null); // DROOLS-5178
         }
         for (DecisionRule dr : wb.getRule()) {
             final org.kie.dmn.model.api.DecisionRule c = DecisionRulePropertyConverter.dmnFromWB(dr);

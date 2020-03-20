@@ -69,6 +69,12 @@ public class DecisionTablePropertyConverter {
             }
         }
 
+        if (result.getOutput().size() == 1) {
+            final OutputClause outputClause = result.getOutput().get(0);
+            outputClause.setName(null); // DROOLS-3281
+            outputClause.setTypeRef(null); // DROOLS-5178
+        }
+
         final List<JSITDecisionRule> jsiDecisionRules = dmn.getRule();
         for (int i = 0; i < jsiDecisionRules.size(); i++) {
             final JSITDecisionRule dr = Js.uncheckedCast(jsiDecisionRules.get(i));
@@ -120,6 +126,7 @@ public class DecisionTablePropertyConverter {
         if (result.getOutput().size() == 1) {
             final JSITOutputClause at = Js.uncheckedCast(result.getOutput().get(0));
             at.setName(null); // DROOLS-3281
+            at.setTypeRef(null); // DROOLS-5178
         }
         for (DecisionRule dr : wb.getRule()) {
             final JSITDecisionRule c = DecisionRulePropertyConverter.dmnFromWB(dr);

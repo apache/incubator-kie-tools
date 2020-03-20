@@ -2063,6 +2063,33 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:text[text()='default output']");
     }
 
+    @Test
+    public void testDecisionTableSingleOutputClauseTypeRef_DROOLS5178() throws Exception {
+        final String expected = loadResource("DROOLS-5178 (Single Output Clause typeRef).xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
+                                  "/dmn:decisionTable[@id='_3020A76F-53F3-4523-B48D-D8BE634178AF']" +
+                                  "/dmn:output[@id='_76010FA4-0EB5-4B97-AECE-184EB03BCA50']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
+                                  "/dmn:variable[@id='_78742296-0BBA-45E4-88BE-29887F6BF819' and @typeRef='string']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
+                                  "/dmn:decisionTable[@id='_3020A76F-53F3-4523-B48D-D8BE634178AF']" +
+                                  "/dmn:output[@id='_76010FA4-0EB5-4B97-AECE-184EB03BCA50' and not(@typeRef)]");
+    }
+
     private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
         expandDecisionNavigatorDock();
         final WebElement node = waitOperation().until(element(DECISION_NODE, nodeName));
