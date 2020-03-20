@@ -50,7 +50,6 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
               gridLayer,
               gridWidget);
         final Style style = widget.getElement().getStyle();
-        style.setFontSize(10, Style.Unit.PX);
         style.setProperty("resize", "none");
 
         final SimplePanel widgetContainer = getContainer();

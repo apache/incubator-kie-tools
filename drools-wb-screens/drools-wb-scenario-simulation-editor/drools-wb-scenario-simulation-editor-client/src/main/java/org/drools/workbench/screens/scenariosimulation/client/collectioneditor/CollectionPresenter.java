@@ -120,15 +120,11 @@ public class CollectionPresenter implements CollectionView.Presenter {
     @Override
     public void showEditingBox() {
         String key = collectionView.getEditorTitle().getInnerText();
-        if (collectionView.isListWidget()) {
-            LIElement editingBox = listEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key), expandablePropertiesMap.get(key));
-            collectionView.getElementsContainer()
-                    .appendChild(editingBox);
-        } else {
-            LIElement editingBox = mapEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key + "#key"), simplePropertiesMap.get(key + "#value"));
-            collectionView.getElementsContainer()
-                    .appendChild(editingBox);
-        }
+        LIElement editingBox = collectionView.isListWidget() ?
+                listEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key), expandablePropertiesMap.get(key)) :
+                mapEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key + "#key"), simplePropertiesMap.get(key + "#value"));
+        collectionView.getElementsContainer().appendChild(editingBox);
+        editingBox.scrollIntoView();
         toggleEditingStatus(true);
     }
 

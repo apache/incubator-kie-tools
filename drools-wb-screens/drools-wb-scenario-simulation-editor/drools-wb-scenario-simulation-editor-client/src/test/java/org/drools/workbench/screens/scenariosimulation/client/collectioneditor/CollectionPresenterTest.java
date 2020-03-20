@@ -263,6 +263,8 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(listEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap(), anyMap());
         verify(elementsContainerMock, times(1)).appendChild(eq(listEditingBoxMock));
+        verify(listEditingBoxMock, times(1)).scrollIntoView();
+        verify(mapEditingBoxMock, never()).scrollIntoView();
     }
 
     @Test
@@ -275,6 +277,8 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionEditorPresenterSpy, times(1)).toggleEditingStatus(eq(true));
         verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
         verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
+        verify(listEditingBoxMock, never()).scrollIntoView();
+        verify(mapEditingBoxMock, times(1)).scrollIntoView();
     }
 
     @Test

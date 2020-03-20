@@ -200,3 +200,7 @@ span.kie-list-view-pf-main-info__text {
     width: 100%;
     font-size: 12px;
 }
+
+.collection-editor-add-button-container {
+    height: 50px;
+}

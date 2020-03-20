@@ -113,8 +113,11 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
     String listGroupItemContainerFactProperty();
 
     @ClassName("kie-coverage__dl-horizontal")
-    String kieCoverageDlHorizontal();
+    String kieCoverageDlHorizontollectionEditorAddButtonContaineral();
 
     @ClassName("collection-editor-expression_textarea")
     String collectionEditorExpressionTextarea();
+
+    @ClassName("collection-editor-add-button-container")
+    String c();
 }

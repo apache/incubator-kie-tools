@@ -370,7 +370,9 @@ public interface ScenarioSimulationEditorConstants
 
     String cancelButton();
 
-    String collectionEditorAddNewItem();
+    String addNewListItem();
+
+    String addNewMapItem();
 
     String createLabelList();
 
