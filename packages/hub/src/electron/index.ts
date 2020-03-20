@@ -23,8 +23,8 @@ import * as child from "child_process";
 import { Constants } from "../common/Constants";
 import IpcMainEvent = Electron.IpcMainEvent;
 
-const desktop_APPLICATION_PATH = libPath("Desktop.app");
-const vscode_EXTENSION_PATH = libPath("vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix");
+const desktop_APPLICATION_PATH = applicationPath("lib/Desktop.app");
+const vscode_EXTENSION_PATH = applicationPath("lib/vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix");
 
 app.on("ready", () => {
   createWindow();
@@ -208,6 +208,6 @@ function listVsCodeExtensions(userData: HubUserData) {
   });
 }
 
-function libPath(relativePath: string) {
-  return path.join(__dirname, `lib/${relativePath}`).replace(/(\s+)/g, "\\$1");
+function applicationPath(relativePath: string) {
+  return path.join(__dirname, `${relativePath}`).replace(/(\s+)/g, "\\$1");
 }

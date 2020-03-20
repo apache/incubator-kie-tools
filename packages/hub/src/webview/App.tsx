@@ -22,6 +22,9 @@ import "@patternfly/patternfly/patternfly.css";
 import "../../static/resources/style.css";
 import * as electron from "electron";
 import {
+  Alert,
+  AlertActionCloseButton,
+  AlertProps,
   Brand,
   Button,
   ButtonVariant,
@@ -47,26 +50,6 @@ import { Constants } from "../common/Constants";
 import { SearchIcon } from "@patternfly/react-icons";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
-// function FileSelector() {
-//   return (
-//     <div className="fileselector">
-//       <div className="wizard__content fileselector__dialog">
-//         <input
-//           id="name"
-//           label="Location"
-//           type="text"
-//           value={location}
-//           onChange={onSelect}
-//           className="fileselector__dialog__text"
-//         />
-//         <button type="button" onClick={openDialog(onSelect)} className="fileselector__dialog__button btn btn-primary">
-//           Explore
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
 enum ExtensionStatus {
   UNKNOWN,
   NOT_INSTALLED,
@@ -75,7 +58,7 @@ enum ExtensionStatus {
   UNINSTALLING
 }
 
-function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void) {
+function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void, dependencies: any[]) {
   useEffect(() => {
     const ipcCallback = (e: IpcRendererEvent, data: T) => {
       callback(data);
@@ -85,14 +68,39 @@ function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void) 
     return () => {
       electron.ipcRenderer.removeListener(msgKey, ipcCallback);
     };
-  }, []);
+  }, dependencies);
 }
 
 export function App() {
   //
   //
-  // VSCODE
+  //
+  // ALERTS
 
+  const [alerts, setAlerts] = useState(new Array<AlertProps & { time: number }>());
+
+  const removeAlert = useCallback(
+    (time: number) => {
+      setAlerts(alerts.filter(a => a.time !== time));
+    },
+    [alerts]
+  );
+
+  const pushNewAlert = useCallback(
+    (alert: AlertProps) => {
+      const newAlert = {
+        ...alert,
+        time: new Date().getMilliseconds()
+      };
+
+      setAlerts([...alerts, newAlert]);
+    },
+    [alerts]
+  );
+
+  //
+  //
+  // VSCODE
   const [vscode_modalOpen, setVscode_modalOpen] = useState(false);
   const [vscode_kebabOpen, setVscode_kebabOpen] = useState(false);
   const [vscode_location, setVscode_location] = useState("");
@@ -122,34 +130,50 @@ export function App() {
     setVscode_status(ExtensionStatus.UNINSTALLING);
   }, [vscode_location]);
 
-  useElectronIpcResponse("vscode__list_extensions_complete", (data: { extensions: string[] }) => {
-    if (data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1) {
-      setVscode_status(ExtensionStatus.INSTALLED);
-    } else {
-      setVscode_status(ExtensionStatus.NOT_INSTALLED);
-      //FIXME: Show alert
-    }
-  });
+  useElectronIpcResponse(
+    "vscode__list_extensions_complete",
+    (data: { extensions: string[] }) => {
+      if (data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1) {
+        setVscode_status(ExtensionStatus.INSTALLED);
+      } else {
+        setVscode_status(ExtensionStatus.NOT_INSTALLED);
+        pushNewAlert({ variant: "danger", title: "Error checking whether VSCode is installed." });
+      }
+    },
+    [pushNewAlert]
+  );
 
-  useElectronIpcResponse("vscode__install_extension_complete", (data: { success: boolean; msg: string }) => {
-    if (data.success) {
-      setVscode_status(ExtensionStatus.INSTALLED);
-    } else {
-      setVscode_status(ExtensionStatus.NOT_INSTALLED);
-      console.info("ERROR INSTALLING VSCODE EXT");
-      console.info(data.msg);
-    }
-  });
+  useElectronIpcResponse(
+    "vscode__install_extension_complete",
+    (data: { success: boolean; msg: string }) => {
+      if (data.success) {
+        setVscode_status(ExtensionStatus.INSTALLED);
+        pushNewAlert({ variant: "success", title: "VSCode extension successfully installed." });
+      } else {
+        setVscode_status(ExtensionStatus.NOT_INSTALLED);
+        pushNewAlert({ variant: "danger", title: "Error while installing VSCode extension." });
+        console.info("ERROR INSTALLING VSCODE EXT");
+        console.info(data.msg);
+      }
+    },
+    [pushNewAlert]
+  );
 
-  useElectronIpcResponse("vscode__uninstall_extension_complete", (data: { success: boolean; msg: string }) => {
-    if (data.success) {
-      setVscode_status(ExtensionStatus.NOT_INSTALLED);
-    } else {
-      setVscode_status(ExtensionStatus.INSTALLED);
-      console.info("ERROR UNINSTALLING VSCODE EXT");
-      console.info(data.msg);
-    }
-  });
+  useElectronIpcResponse(
+    "vscode__uninstall_extension_complete",
+    (data: { success: boolean; msg: string }) => {
+      if (data.success) {
+        setVscode_status(ExtensionStatus.NOT_INSTALLED);
+        pushNewAlert({ variant: "info", title: "VSCode extension successfully uninstalled." });
+      } else {
+        setVscode_status(ExtensionStatus.INSTALLED);
+        pushNewAlert({ variant: "danger", title: "Error while uninstalling VSCode extension." });
+        console.info("ERROR UNINSTALLING VSCODE EXT");
+        console.info(data.msg);
+      }
+    },
+    [pushNewAlert]
+  );
 
   const vscode_chooseLocation = useCallback(() => {
     return electron.remote.dialog.showOpenDialog({ properties: ["openFile"] }).then(res => {
@@ -201,57 +225,24 @@ export function App() {
   //
   // CHROME
   const [chrome_modalOpen, setChrome_modalOpen] = useState(false);
-  const [chrome_kebabOpen, setChrome_kebabOpen] = useState(false);
-  const [chrome_location, setChrome_location] = useState("");
   const [chrome_status, setChrome_status] = useState(ExtensionStatus.UNKNOWN);
-
-  const chrome_open = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    electron.shell.openExternal(Constants.GITHUB_URL);
-  }, []);
 
   const chrome_toggleModal = useCallback(() => {
     setChrome_modalOpen(!chrome_modalOpen);
   }, [chrome_modalOpen]);
 
-  const chrome_toggleKebab = useCallback(() => {
-    setChrome_kebabOpen(!chrome_kebabOpen);
-  }, [chrome_kebabOpen]);
-
-  const chrome_requestInstall = useCallback(() => {
-    electron.ipcRenderer.send("chrome__install_extension", { location: chrome_location });
-    setChrome_modalOpen(false);
-    setChrome_status(ExtensionStatus.INSTALLING);
-  }, [chrome_location]);
-
-  const chrome_requestUninstall = useCallback(() => {
-    electron.ipcRenderer.send("chrome__uninstall_extension", {});
-    setChrome_modalOpen(false);
-    setChrome_status(ExtensionStatus.UNINSTALLING);
-  }, [chrome_location]);
-
-  const chrome_chooseLocation = useCallback(() => {
-    return electron.remote.dialog.showOpenDialog({ properties: ["openFile"] }).then(res => {
-      setChrome_location(res.filePaths[0]);
-    });
-  }, []);
-
-  const chrome_locationChange = useCallback((value: string) => {
-    setChrome_location(value);
-  }, []);
-
   const chrome_message = useMemo(() => {
     switch (chrome_status) {
       case ExtensionStatus.INSTALLED:
-        return "Installed";
+        return;
       case ExtensionStatus.UNINSTALLING:
-        return "Uninstalling..";
+        return "";
       case ExtensionStatus.INSTALLING:
-        return "Installing..";
+        return "";
       case ExtensionStatus.NOT_INSTALLED:
-        return "Available";
+        return "";
       case ExtensionStatus.UNKNOWN:
-        return "Loading..";
+        return "";
       default:
         return "";
     }
@@ -271,6 +262,22 @@ export function App() {
       header={<PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Kogito Tooling Hub" />} />}
       className={"kogito--editor-landing"}
     >
+      <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
+        <div className={"kogito--alert-container"}>
+          <div style={{ width: "500px" }}>
+            {alerts.map(alert => (
+              <React.Fragment key={alert.time}>
+                <Alert
+                  style={{ marginBottom: "10px" }}
+                  variant={alert.variant}
+                  title={alert.title}
+                  action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+                />
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </PageSection>
       <PageSection isFilled={true}>
         <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
           <Card className={"kogito--desktop__files-card"}>
@@ -282,11 +289,11 @@ export function App() {
                 isOpen={vscode_kebabOpen}
                 isPlain={true}
                 dropdownItems={[
-                  <DropdownItem key="action" component="button" isDisabled={true}>
+                  <DropdownItem key="update" component="button" isDisabled={true}>
                     No updates available
                   </DropdownItem>,
                   <DropdownItem
-                    key="action"
+                    key="uninstall"
                     component="button"
                     onClick={vscode_requestUninstall}
                     isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
@@ -365,25 +372,6 @@ export function App() {
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img src={"images/chrome-github-logo.svg"} />
-              <Dropdown
-                onSelect={chrome_toggleKebab}
-                toggle={<KebabToggle onToggle={chrome_toggleKebab} />}
-                isOpen={chrome_kebabOpen}
-                isPlain={true}
-                dropdownItems={[
-                  <DropdownItem key="action" component="button" isDisabled={true}>
-                    No updates available
-                  </DropdownItem>,
-                  <DropdownItem
-                    key="action"
-                    component="button"
-                    onClick={chrome_requestUninstall}
-                    isDisabled={chrome_status !== ExtensionStatus.INSTALLED}
-                  >
-                    Uninstall
-                  </DropdownItem>
-                ]}
-              />
             </CardHead>
             <CardBody>
               <Text component={TextVariants.h3}>Kogito GitHub extension for Chrome</Text>
@@ -391,24 +379,9 @@ export function App() {
               <Text>Installs the Kogito extension to an existing version of Chrome</Text>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-              {(chrome_status === ExtensionStatus.NOT_INSTALLED || chrome_status === ExtensionStatus.INSTALLING) && (
-                <Button
-                  variant={"secondary"}
-                  isDisabled={chrome_status === ExtensionStatus.INSTALLING}
-                  onClick={chrome_toggleModal}
-                >
-                  Install
-                </Button>
-              )}
-              {(chrome_status === ExtensionStatus.INSTALLED || chrome_status === ExtensionStatus.UNINSTALLING) && (
-                <Button
-                  variant={"secondary"}
-                  isDisabled={chrome_status === ExtensionStatus.UNINSTALLING}
-                  onClick={chrome_open}
-                >
-                  Launch
-                </Button>
-              )}
+              <Button variant={"secondary"} onClick={chrome_toggleModal}>
+                Install
+              </Button>
               <Text style={{ display: "flex", alignItems: "center" }}>{chrome_message}</Text>
             </CardFooter>
           </Card>
@@ -418,35 +391,12 @@ export function App() {
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
-              <Button
-                key="confirm"
-                variant="primary"
-                onClick={chrome_requestInstall}
-                isDisabled={chrome_location === ""}
-              >
-                Install
-              </Button>,
               <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
-                Cancel
+                Done
               </Button>
             ]}
           >
-            <Text>Choose Chrome to install extension</Text>
-            <InputGroup>
-              <TextInput
-                type="search"
-                aria-label="search input example"
-                value={chrome_location}
-                onChange={chrome_locationChange}
-              />
-              <Button
-                onClick={chrome_chooseLocation}
-                variant={ButtonVariant.plain}
-                aria-label="search button for search input"
-              >
-                <SearchIcon />
-              </Button>
-            </InputGroup>
+            <Text>Follow these instructions to install the Kogito GitHub Chrome extension</Text>
           </Modal>
           {/*DESKTOP*/}
           <Card className={"kogito--desktop__files-card"}>
