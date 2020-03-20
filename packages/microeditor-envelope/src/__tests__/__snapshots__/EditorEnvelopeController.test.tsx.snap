@@ -148,12 +148,13 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       ariaDescribedById=""
       className=""
       hideTitle={false}
-      isLarge={true}
+      isLarge={false}
       isOpen={false}
       isSmall={false}
       onClose={[Function]}
       showClose={true}
       title="Keyboard shortcuts"
+      width="60%"
     >
       <Portal
         containerInfo={<div />}
@@ -164,12 +165,13 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
           className=""
           hideTitle={false}
           id="pf-modal-1"
-          isLarge={true}
+          isLarge={false}
           isOpen={false}
           isSmall={false}
           onClose={[Function]}
           showClose={true}
           title="Keyboard shortcuts"
+          width="60%"
         />
       </Portal>
     </Modal>
