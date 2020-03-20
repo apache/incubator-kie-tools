@@ -98,6 +98,7 @@ public abstract class AbstractProcessorTest {
      */
     public String getExpectedSourceCode(final String compilationUnit) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
+        String expectedCode = null;
         try {
             final String path = this.getClass().getResource("/" + compilationUnit).getPath();
             final FileReader fr = new FileReader(path);
@@ -116,7 +117,12 @@ public abstract class AbstractProcessorTest {
         } catch (IOException ioe) {
             fail(ioe.getMessage());
         }
-        return sb.toString();
+        expectedCode = sb.toString();
+        //check to remove extra carriage return character \r from expected code in windows environment
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            expectedCode = expectedCode.replaceAll("\\r", "");
+        }
+        return expectedCode;
     }
 
     /**
