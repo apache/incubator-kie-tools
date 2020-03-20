@@ -156,12 +156,16 @@ public class MonacoEditorDOMElementTest extends BaseDOMElementTest<MonacoEditorW
         final com.google.gwt.user.client.Element element = mock(com.google.gwt.user.client.Element.class);
         final elemental2.dom.Element elemental2Element = mock(elemental2.dom.Element.class);
         final CallbackFunction onKeyDown = mock(CallbackFunction.class);
+        final CallbackFunction widgetTrigger = mock(CallbackFunction.class);
+        final NativeEvent blurEvent = mock(NativeEvent.class);
 
         monaco.editor = editor;
 
         when(widget.getElement()).thenReturn(element);
         when(properties.getConstructionOptions()).thenReturn(constructionOptions);
         doReturn(onKeyDown).when(domElement).getOnKeyDown(standaloneCodeEditor);
+        doReturn(widgetTrigger).when(domElement).getWidgetTrigger(blurEvent);
+        doReturn(blurEvent).when(domElement).getBlurEvent();
         doReturn(properties).when(domElement).makeMonacoPropertiesFactory();
         doReturn(elemental2Element).when(domElement).uncheckedCast(element);
         doReturn(standaloneCodeEditor).when(editor).create(elemental2Element, constructionOptions);
@@ -169,8 +173,20 @@ public class MonacoEditorDOMElementTest extends BaseDOMElementTest<MonacoEditorW
         domElement.onMonacoLoaded().accept(monaco);
 
         verify(standaloneCodeEditor).onKeyDown(onKeyDown);
+        verify(standaloneCodeEditor).onDidBlurEditorWidget(widgetTrigger);
         verify(widget).setCodeEditor(standaloneCodeEditor);
         verify(widget).setFocus(true);
+    }
+
+    @Test
+    public void testGetWidgetTrigger() {
+
+        final NativeEvent triggeredBlur = mock(NativeEvent.class);
+        final NativeEvent monacoBlur = mock(NativeEvent.class);
+
+        domElement.getWidgetTrigger(triggeredBlur).call(monacoBlur);
+
+        verify(domElement).fireNativeEvent(triggeredBlur, widget);
     }
 
     @Test

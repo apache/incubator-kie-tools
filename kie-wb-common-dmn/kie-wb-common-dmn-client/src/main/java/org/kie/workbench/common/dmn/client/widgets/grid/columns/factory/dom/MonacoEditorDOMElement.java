@@ -20,7 +20,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -103,6 +107,7 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
             final MonacoStandaloneCodeEditor codeEditor = monaco.editor.create(uncheckedCast(widget.getElement()), properties.getConstructionOptions());
 
             codeEditor.onKeyDown(getOnKeyDown(codeEditor));
+            codeEditor.onDidBlurEditorWidget(getWidgetTrigger(getBlurEvent()));
 
             widget.setCodeEditor(codeEditor);
             widget.setFocus(true);
@@ -184,6 +189,19 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
                                                                                          gridWidget,
                                                                                          new BaseGridCellValue<>(value))));
         }
+    }
+
+    MonacoStandaloneCodeEditor.CallbackFunction getWidgetTrigger(final NativeEvent nativeEvent) {
+        return (e) -> fireNativeEvent(nativeEvent, widget);
+    }
+
+    void fireNativeEvent(final NativeEvent nativeEvent,
+                         final HasHandlers handlerSource) {
+        DomEvent.fireNativeEvent(nativeEvent, handlerSource);
+    }
+
+    NativeEvent getBlurEvent() {
+        return Document.get().createBlurEvent();
     }
 
     Element uncheckedCast(final com.google.gwt.user.client.Element element) {
