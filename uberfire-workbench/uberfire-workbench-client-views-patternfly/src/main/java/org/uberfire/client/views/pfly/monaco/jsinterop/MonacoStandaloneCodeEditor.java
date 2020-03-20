@@ -40,6 +40,8 @@ public class MonacoStandaloneCodeEditor {
 
     public native void onKeyDown(final CallbackFunction callback);
 
+    public native void onDidBlurEditorWidget(final CallbackFunction callback);
+
     @JsOverlay
     public final boolean isSuggestWidgetVisible() {
         return MonacoStandaloneCodeEditorHelper.isSuggestWidgetVisible(this);
