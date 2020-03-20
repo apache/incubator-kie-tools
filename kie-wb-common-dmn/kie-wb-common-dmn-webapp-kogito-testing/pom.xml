@@ -533,6 +533,19 @@
           </excludes>
         </configuration>
       </plugin>
+
+      <!-- The kogito-testing is used just for development/testing, we don't want to publish it into remote repos. -->
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-deploy</id>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
