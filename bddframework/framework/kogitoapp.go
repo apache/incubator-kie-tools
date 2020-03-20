@@ -19,8 +19,10 @@ import (
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/yaml"
@@ -92,6 +94,15 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 
 	setupBuildImageStreams(kogitoApp)
 
+	// Add a resource request if native building
+	if kogitoAppDeployment.Native {
+		kogitoApp.Spec.Build.Resources = corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				v1.ResourceName("memory"): resource.MustParse("4Gi"),
+			},
+		}
+	}
+
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoApp); err != nil {
 		return fmt.Errorf("Error creating example service %s: %v", kogitoAppDeployment.AppName, err)
 	}
@@ -135,6 +146,11 @@ func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment)
 	}
 
 	cmd = append(cmd, "--image-version", GetConfigBuildImageVersion())
+
+	// Add a resource request if native building
+	if kogitoAppDeployment.Native {
+		cmd = append(cmd, "--build-requests", "memory=4Gi")
+	}
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
