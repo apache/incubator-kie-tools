@@ -229,13 +229,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Needed for the ACE SIMULATION_READER Editor -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- UberFire IO -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -579,30 +572,6 @@
 
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-scenario-simulation-editor-kogito-webapp-common</artifactId>
-        <scope>provided</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- MARSHALLING -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- END MARSHALLING -->
-
-    </dependencies>
-  </dependencyManagement>
-
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
@@ -774,7 +743,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
 
                 <!-- Uberfire Preferences -->
                 <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
@@ -829,7 +797,19 @@
           <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
-              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap,WEB-INF/classes/**</packagingExcludes>
+              <!-- Removing unused inherited modules like ace and monaco-editor-->
+              <packagingExcludes>
+                **/javax/**/*.*,
+                **/client/**/*.class,
+                **/*.symbolMap,
+                WEB-INF/classes/**,
+                **/ace/**,
+                **/monaco-editor/dev/vs/*.*,
+                **/monaco-editor/dev/vs/base/**,
+                **/monaco-editor/dev/vs/basic-languages/**,
+                **/monaco-editor/dev/vs/editor/*.js,
+                **/monaco-editor/dev/vs/language/**,
+              </packagingExcludes>
               <archive>
                 <addMavenDescriptor>false</addMavenDescriptor>
               </archive>
