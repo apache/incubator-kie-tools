@@ -26,7 +26,6 @@
   <inherits name="com.google.gwt.user.User"/>
 
   <inherits name="org.drools.verifier.VerifierAPI"/>
-  <inherits name="org.drools.verifier.core.VerifierCore"/>
   <inherits name="org.kie.workbench.common.services.verifier.api.VerifierApi"/>
   <inherits name="org.kie.workbench.common.services.verifier.reporting.VerifierReporting"/>
 

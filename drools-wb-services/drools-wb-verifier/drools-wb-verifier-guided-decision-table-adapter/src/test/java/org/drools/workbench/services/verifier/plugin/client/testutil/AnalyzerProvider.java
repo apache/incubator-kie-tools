@@ -22,12 +22,12 @@ import java.util.Set;
 import org.drools.verifier.api.Status;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
-import org.drools.verifier.core.index.model.DataType;
 import org.drools.verifier.core.main.Analyzer;
 import org.drools.verifier.core.main.Reporter;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class AnalyzerProvider {
 

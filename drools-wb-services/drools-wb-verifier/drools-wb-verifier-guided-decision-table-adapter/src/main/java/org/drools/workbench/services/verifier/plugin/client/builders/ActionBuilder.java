@@ -37,7 +37,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol5
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.getRealCellValue;
 
@@ -204,40 +203,9 @@ public class ActionBuilder {
 
         return new FieldAction(field,
                                getColumn(),
-                               convert(visibleCellValue.getDataType()),
+                               visibleCellValue.getDataType(),
                                getValues(visibleCellValue),
                                configuration);
-    }
-
-    private org.drools.verifier.core.index.model.DataType.DataTypes convert(final DataType.DataTypes dataType) {
-        switch (dataType) {
-            case STRING:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.STRING;
-            case NUMERIC:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC;
-            case NUMERIC_BIGDECIMAL:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_BIGDECIMAL;
-            case NUMERIC_BIGINTEGER:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_BIGINTEGER;
-            case NUMERIC_BYTE:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_BYTE;
-            case NUMERIC_DOUBLE:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_DOUBLE;
-            case NUMERIC_FLOAT:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_FLOAT;
-            case NUMERIC_INTEGER:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_INTEGER;
-            case NUMERIC_LONG:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_LONG;
-            case NUMERIC_SHORT:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.NUMERIC_SHORT;
-            case DATE:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.DATE;
-            case BOOLEAN:
-                return org.drools.verifier.core.index.model.DataType.DataTypes.BOOLEAN;
-            default:
-                return null;
-        }
     }
 
     private Values getValues(final DTCellValue52 visibleCellValue) {

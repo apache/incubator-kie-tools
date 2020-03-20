@@ -137,7 +137,7 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
                 .add(new FactTypes.FactType("Data",
                                             new Sets.Builder<FactTypes.Field>()
                                                     .add(new FactTypes.Field("totalAmount",
-                                                                             org.drools.verifier.core.index.model.DataType.TYPE_NUMERIC_FLOAT))
+                                                                             DataType.TYPE_NUMERIC_FLOAT))
                                                     .build()));
 
         final String xml = loadResource("DROOLS-5059.gdst");
