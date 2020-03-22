@@ -31,6 +31,8 @@ PR process
 - During commit add appropriate jira issue ID (JBPM, RHPAM or RHDM only) at the beginning of the commit message.
 - Before pushing to Github execute `mvn clean package -Dfull` to execute checkstyle and spotbug plugins locally.
 - When creating multi-repository PR ensure that all repositories have the same branch name otherwise our Jenkins will build PRs separately.
+- Create [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/) instead of regular.
+- If you need to check some particular points (on the code or runtime level) to finish the task or ensure that everything is fine, ask a particular person in the PR comments before you will perform final runtime tests.
 - When PR is created and if you are a part of the [kiegroup](https://github.com/orgs/kiegroup/people) put a comment with content `Jenkins execute full downstream build`.
   - Wait for the results of project Jenkins and full downstream build Jenkins results.
   - If Jenkins results are not green, check the results and if the issues are related to your changes, fix them and re-trigger builds.
@@ -38,7 +40,7 @@ PR process
   - If Jenkins builds are not green but you are sure it is not related to your changes, find the author of the failing tests and ping him/her in the PR comments.
   - Ensure that your PR passed Sonar Cloud gates as well. If you do not agree with the issues reported by Sonar or your tests are running but not measured correctly, put a comment to your PR.
   - If Jenkins builds are green or you are sure that failed tests are not related to your changes and Sonar Cloud gates are passed, download Business Central from Full downstream build and test it locally against Acceptance Criteria / Steps to reproduce. Sometimes the issue is fixed in the showcase but still reproducible in the product.
-  - When everything is done, ask another developer AND QE to do the review.
+  - When everything is done, mark PR as ready for review and ask another developer AND QE to do the review.
 - When PR is merged move Jira issue to state `Status: Resolved`, `Resolution: Done`, set next closest release as `Fix version`.
 
 IDE Environment setup
