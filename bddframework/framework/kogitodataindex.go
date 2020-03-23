@@ -41,10 +41,6 @@ func InstallKogitoDataIndexService(namespace string, installerType InstallerType
 }
 
 func crInstallKogitoDataIndex(namespace string, replicas int32) error {
-	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
-
 	kogitoDataIndex := &v1alpha1.KogitoDataIndex{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      infrastructure.DefaultDataIndexName,
@@ -53,7 +49,7 @@ func crInstallKogitoDataIndex(namespace string, replicas int32) error {
 		Spec: v1alpha1.KogitoDataIndexSpec{
 			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
 				Replicas: &replicas,
-				Image:    image,
+				Image:    getDataIndexImage(),
 			},
 		},
 		Status: v1alpha1.KogitoDataIndexStatus{
@@ -73,16 +69,21 @@ func crInstallKogitoDataIndex(namespace string, replicas int32) error {
 
 func cliInstallKogitoDataIndex(namespace string, replicas int) error {
 	cmd := []string{"install", "data-index"}
-
-	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
-
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getDataIndexImage()))
 	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
+}
+
+func getDataIndexImage() v1alpha1.Image {
+	if len(GetConfigDataIndexImageTag()) > 0 {
+		return framework.ConvertImageTagToImage(GetConfigDataIndexImageTag())
+	}
+
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
+	image.Tag = GetConfigServicesImageVersion()
+	return image
 }
 
 // GetKogitoDataIndexDeployment retrieves the running data index deployment

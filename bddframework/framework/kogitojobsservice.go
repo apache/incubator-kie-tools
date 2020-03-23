@@ -57,15 +57,21 @@ func cliInstallKogitoJobsService(namespace string, replicas int, persistence boo
 		cmd = append(cmd, "--enable-persistence")
 	}
 
-	// Get correct image tag
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(image))
-
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getJobsServiceImageTag()))
 	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
 
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
+}
+
+func getJobsServiceImageTag() v1alpha1.Image {
+	if len(GetConfigJobsServiceImageTag()) > 0 {
+		return framework.ConvertImageTagToImage(GetConfigJobsServiceImageTag())
+	}
+
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
+	image.Tag = GetConfigServicesImageVersion()
+	return image
 }
 
 // GetKogitoJobsService retrieves the running jobs service
@@ -113,10 +119,6 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
 }
 
 func getJobsServiceStub(namespace string, replicas int32, persistence bool) *v1alpha1.KogitoJobsService {
-	// Get correct image for tests
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
-
 	service := &v1alpha1.KogitoJobsService{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      infrastructure.DefaultJobsServiceName,
@@ -125,7 +127,7 @@ func getJobsServiceStub(namespace string, replicas int32, persistence bool) *v1a
 		Spec: v1alpha1.KogitoJobsServiceSpec{
 			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
 				Replicas: &replicas,
-				Image:    image,
+				Image:    getJobsServiceImageTag(),
 			},
 		},
 		Status: v1alpha1.KogitoJobsServiceStatus{

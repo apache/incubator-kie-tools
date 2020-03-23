@@ -39,6 +39,8 @@ type TestConfig struct {
 
 	// runtime
 	servicesImageVersion string
+	dataIndexImageTag    string
+	jobsServiceImageTag  string
 
 	// build
 	mavenMirrorURL       string
@@ -95,6 +97,8 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 
 	// runtime
 	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", version.Version, "Set the services (jobs-service, data-index) image version")
+	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
+	set.StringVar(&env.jobsServiceImageTag, prefix+"jobs-service-image-tag", "", "Set the Kogito Jobs Service image tag ('services-image-version' is ignored)")
 
 	// build
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
@@ -164,6 +168,16 @@ func GetConfigOperatorCliPath() (string, error) {
 // GetConfigServicesImageVersion return the version for the services images
 func GetConfigServicesImageVersion() string {
 	return env.servicesImageVersion
+}
+
+// GetConfigDataIndexImageTag return the Kogito Data Index image tag
+func GetConfigDataIndexImageTag() string {
+	return env.dataIndexImageTag
+}
+
+// GetConfigJobsServiceImageTag return the Kogito Jobs Service image tag
+func GetConfigJobsServiceImageTag() string {
+	return env.jobsServiceImageTag
 }
 
 // build
