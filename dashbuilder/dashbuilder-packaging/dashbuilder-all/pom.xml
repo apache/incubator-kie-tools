@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.dashbuilder</groupId>
     <artifactId>dashbuilder-packaging</artifactId>
-    <version>7.35.0-SNAPSHOT</version>
+    <version>7.36.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>dashbuilder-all</artifactId>

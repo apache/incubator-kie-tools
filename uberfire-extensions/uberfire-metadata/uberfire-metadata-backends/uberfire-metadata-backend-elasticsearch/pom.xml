@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-metadata-backends</artifactId>
-    <version>7.35.0-SNAPSHOT</version>
+    <version>7.36.0-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
   <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
