@@ -62,6 +62,8 @@ function usage(){
 
   # runtime
   printf "\n--services_image_version {VERSION}\n\tSet the services image version. Default to current operator version"
+  printf "\n--data_index_image_tag {IMAGE_TAG}\n\tSet the Kogito Data Index image tag ('services_image_version' is ignored)"
+  printf "\n--jobs_service_image_tag {IMAGE_TAG}\n\tSet the Kogito Jobs Service image tag ('services_image_version' is ignored)"
 
   # build
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
@@ -227,6 +229,14 @@ case $1 in
   --services_image_version)
     shift
     if addParamKeyValueIfAccepted "--tests.services-image-version" ${1}; then shift; fi
+  ;;
+  --data_index_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.data-index-image-tag" ${1}; then shift; fi
+  ;;
+  --jobs_service_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.jobs-service-image-tag" ${1}; then shift; fi
   ;;
 
   # build

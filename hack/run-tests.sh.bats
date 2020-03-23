@@ -260,6 +260,42 @@
     [[ "${output}" != *"--tests.services-image-version"* ]]
 }
 
+@test "invoke run-tests with data_index_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --data_index_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.data-index-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with data_index_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --data_index_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.data-index-image-tag"* ]]
+}
+
+@test "invoke run-tests with data_index_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --data_index_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.data-index-image-tag"* ]]
+}
+
+@test "invoke run-tests with jobs_service_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --jobs_service_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.jobs-service-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with jobs_service_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --jobs_service_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.jobs-service-image-tag"* ]]
+}
+
+@test "invoke run-tests with jobs_service_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --jobs_service_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.jobs-service-image-tag"* ]]
+}
+
 # build
 
 @test "invoke run-tests with maven_mirror" {
