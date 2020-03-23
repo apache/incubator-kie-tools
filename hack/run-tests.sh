@@ -24,6 +24,7 @@ CRD_FILES_TO_IMPORT=(
   "app.kiegroup.org_kogitodataindices_crd.yaml"
   "app.kiegroup.org_kogitoinfras_crd.yaml"
   "app.kiegroup.org_kogitojobsservices_crd.yaml"
+  "app.kiegroup.org_kogitomgmtconsoles_crd.yaml"
   )
 
 function usage(){
