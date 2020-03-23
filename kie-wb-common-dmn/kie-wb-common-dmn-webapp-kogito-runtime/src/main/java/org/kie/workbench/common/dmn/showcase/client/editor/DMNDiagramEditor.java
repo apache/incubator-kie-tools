@@ -81,7 +81,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
 
     private static final PlaceRequest DMN_KOGITO_RUNTIME_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(AbstractDMNDiagramEditor.EDITOR_ID);
 
-
     @Inject
     public DMNDiagramEditor(final View view,
                             final FileMenuBuilder fileMenuBuilder,

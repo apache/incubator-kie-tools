@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
@@ -53,7 +53,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
     private final org.uberfire.mvp.Command undoCanvasOperation;
 
     private final InformationItem oldInformationItem;
-    private final List<Expression> oldColumnData;
+    private final List<HasExpression> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
 
     public DeleteRelationColumnCommand(final Relation relation,
@@ -74,7 +74,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
     }
 
-    private List<Expression> extractColumnData(final int uiColumnIndex) {
+    private List<HasExpression> extractColumnData(final int uiColumnIndex) {
         final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
         return relation.getRow()
                 .stream()
@@ -110,8 +110,8 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
                                          oldInformationItem);
                 IntStream.range(0, relation.getRow().size())
                         .forEach(rowIndex -> {
-                            final Expression value = oldColumnData.get(rowIndex);
-                            relation.getRow().get(rowIndex).getExpression().add(iiIndex, value);
+                            final HasExpression hasExpression = oldColumnData.get(rowIndex);
+                            relation.getRow().get(rowIndex).getExpression().add(iiIndex, hasExpression);
                         });
 
                 return GraphCommandResultBuilder.SUCCESS;

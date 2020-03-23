@@ -148,7 +148,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     public void initialiseUiColumns() {
         final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
         final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(headerMetaData,
-                                                                                          getAndSetInitialWidth(0, ContextGridRowNumberColumn.DEFAULT_WIDTH));
+                                                                                          getAndSetInitialWidth(ContextUIModelMapperHelper.ROW_COLUMN_INDEX,
+                                                                                                                ContextGridRowNumberColumn.DEFAULT_WIDTH));
         if (nesting == 0) {
             rowNumberColumn.getHeaderMetaData().add(new BaseHeaderMetaData("#"));
             headerMetaData.add(new NameColumnHeaderMetaData(hasExpression,
@@ -165,7 +166,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         }
 
         final NameColumn nameColumn = new NameColumn(headerMetaData,
-                                                     getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
+                                                     getAndSetInitialWidth(ContextUIModelMapperHelper.NAME_COLUMN_INDEX,
+                                                                           DMNGridColumn.DEFAULT_WIDTH),
                                                      this,
                                                      (rowIndex) -> rowIndex != getModel().getRowCount() - 1,
                                                      clearValueConsumer(false, new Name()),
@@ -176,7 +178,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                      headerEditor);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    headerMetaData,
-                                                                                   getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),
+                                                                                   getAndSetInitialWidth(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX,
+                                                                                                         UndefinedExpressionColumn.DEFAULT_WIDTH),
                                                                                    this);
 
         model.appendColumn(rowNumberColumn);

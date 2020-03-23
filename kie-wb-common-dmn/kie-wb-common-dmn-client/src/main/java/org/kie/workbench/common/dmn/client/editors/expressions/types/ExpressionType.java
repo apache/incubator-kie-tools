@@ -26,6 +26,7 @@ public enum ExpressionType {
     FUNCTION,
     FUNCTION_JAVA,
     FUNCTION_PMML,
-    INVOCATION
+    INVOCATION,
+    LIST
 
 }

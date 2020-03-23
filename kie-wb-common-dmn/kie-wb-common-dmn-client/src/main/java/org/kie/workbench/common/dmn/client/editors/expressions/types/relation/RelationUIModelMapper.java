@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
@@ -62,7 +63,8 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                 case INFORMATION_ITEM:
                     final org.kie.workbench.common.dmn.api.definition.model.List row = relation.getRow().get(rowIndex);
                     final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, columnIndex);
-                    final Expression e = row.getExpression().get(iiIndex);
+                    final HasExpression hasExpression = row.getExpression().get(iiIndex);
+                    final Expression e = hasExpression.getExpression();
                     final Optional<Expression> expression = Optional.ofNullable(e);
 
                     expression.ifPresent(ex -> {
@@ -92,7 +94,8 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                 case INFORMATION_ITEM:
                     final org.kie.workbench.common.dmn.api.definition.model.List row = relation.getRow().get(rowIndex);
                     final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, columnIndex);
-                    final Expression e = row.getExpression().get(iiIndex);
+                    final HasExpression hasExpression = row.getExpression().get(iiIndex);
+                    final Expression e = hasExpression.getExpression();
                     final Optional<Expression> expression = Optional.ofNullable(e);
 
                     expression.ifPresent(ex -> {

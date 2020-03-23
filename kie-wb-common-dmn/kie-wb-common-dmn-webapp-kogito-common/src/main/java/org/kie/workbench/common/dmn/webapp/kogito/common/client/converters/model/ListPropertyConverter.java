@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -41,18 +42,20 @@ public class ListPropertyConverter {
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
 
-        final java.util.List<Expression> expression = new ArrayList<>();
+        final java.util.List<HasExpression> expression = new ArrayList<>();
         final List result = new List(id, description, typeRef, expression);
         final java.util.List<JSITExpression> jsiExpressions = dmn.getExpression();
         for (int i = 0; i < jsiExpressions.size(); i++) {
             final JSITExpression jsitExpression = Js.uncheckedCast(jsiExpressions.get(i));
-            Expression eConverted = ExpressionPropertyConverter.wbFromDMN(jsitExpression,
-                                                                          Js.uncheckedCast(dmn),
-                                                                          hasComponentWidthsConsumer);
-            expression.add(eConverted);
+            final Expression eConverted = ExpressionPropertyConverter.wbFromDMN(jsitExpression,
+                                                                                Js.uncheckedCast(dmn),
+                                                                                hasComponentWidthsConsumer);
+            final HasExpression hasExpression = HasExpression.wrap(result, eConverted);
+            expression.add(hasExpression);
         }
 
-        for (Expression e : expression) {
+        for (HasExpression hasExpression : expression) {
+            final Expression e = hasExpression.getExpression();
             if (Objects.nonNull(e)) {
                 e.setParent(result);
             }
@@ -69,7 +72,8 @@ public class ListPropertyConverter {
         description.ifPresent(result::setDescription);
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
 
-        for (Expression e : wb.getExpression()) {
+        for (HasExpression hasExpression : wb.getExpression()) {
+            final Expression e = hasExpression.getExpression();
             final JSITExpression eConverted = ExpressionPropertyConverter.dmnFromWB(e, componentWidthsConsumer);
             result.addExpression(eConverted);
         }

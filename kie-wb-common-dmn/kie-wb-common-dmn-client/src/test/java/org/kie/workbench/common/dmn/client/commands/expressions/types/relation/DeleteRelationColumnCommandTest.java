@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
@@ -136,8 +137,9 @@ public class DeleteRelationColumnCommandTest {
 
     @Test
     public void testGraphCommandExecuteWithRows() {
-        relation.getRow().add(new List());
-        relation.getRow().get(0).getExpression().add(new LiteralExpression());
+        final List rowList = new List();
+        relation.getRow().add(rowList);
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, new LiteralExpression()));
 
         makeCommand();
 
@@ -155,16 +157,17 @@ public class DeleteRelationColumnCommandTest {
 
     @Test
     public void testGraphCommandExecuteDeleteMiddleWithRows() {
+        final List rowList = new List();
         uiModel.appendColumn(mock(RelationColumn.class));
         uiModel.appendColumn(mock(RelationColumn.class));
         relation.getColumn().add(new InformationItem());
         relation.getColumn().add(new InformationItem());
-        relation.getRow().add(new List());
+        relation.getRow().add(rowList);
         final LiteralExpression firstExpression = new LiteralExpression();
         final LiteralExpression lastExpression = new LiteralExpression();
-        relation.getRow().get(0).getExpression().add(firstExpression);
-        relation.getRow().get(0).getExpression().add(new LiteralExpression());
-        relation.getRow().get(0).getExpression().add(lastExpression);
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, firstExpression));
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, new LiteralExpression()));
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, lastExpression));
 
         makeCommand(2);
 
@@ -179,9 +182,9 @@ public class DeleteRelationColumnCommandTest {
         assertEquals(2,
                      relation.getRow().get(0).getExpression().size());
         assertEquals(firstExpression,
-                     relation.getRow().get(0).getExpression().get(0));
+                     relation.getRow().get(0).getExpression().get(0).getExpression());
         assertEquals(lastExpression,
-                     relation.getRow().get(0).getExpression().get(1));
+                     relation.getRow().get(0).getExpression().get(1).getExpression());
     }
 
     @Test
@@ -200,10 +203,11 @@ public class DeleteRelationColumnCommandTest {
 
     @Test
     public void testGraphCommandUndoWithRows() {
-        relation.getRow().add(new List());
+        final List rowList = new List();
+        relation.getRow().add(rowList);
         final LiteralExpression literalExpression = new LiteralExpression();
         literalExpression.getText().setValue(VALUE);
-        relation.getRow().get(0).getExpression().add(literalExpression);
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, literalExpression));
 
         makeCommand();
 
@@ -221,7 +225,7 @@ public class DeleteRelationColumnCommandTest {
         assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
         assertEquals(VALUE,
-                     ((LiteralExpression) relation.getRow().get(0).getExpression().get(0)).getText().getValue());
+                     ((LiteralExpression) relation.getRow().get(0).getExpression().get(0).getExpression()).getText().getValue());
     }
 
     @Test
@@ -253,8 +257,9 @@ public class DeleteRelationColumnCommandTest {
 
     @Test
     public void testCanvasCommandExecuteWithRows() {
-        relation.getRow().add(new List());
-        relation.getRow().get(0).getExpression().add(new LiteralExpression());
+        final List rowList = new List();
+        relation.getRow().add(rowList);
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, new LiteralExpression()));
         uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);
         uiModelMapper.fromDMNModel(0, 1);
@@ -303,10 +308,11 @@ public class DeleteRelationColumnCommandTest {
 
     @Test
     public void testCanvasCommandUndoWithRows() {
-        relation.getRow().add(new List());
+        final List rowList = new List();
+        relation.getRow().add(rowList);
         final LiteralExpression literalExpression = new LiteralExpression();
         literalExpression.getText().setValue(VALUE);
-        relation.getRow().get(0).getExpression().add(literalExpression);
+        relation.getRow().get(0).getExpression().add(HasExpression.wrap(rowList, literalExpression));
         uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 1);
 

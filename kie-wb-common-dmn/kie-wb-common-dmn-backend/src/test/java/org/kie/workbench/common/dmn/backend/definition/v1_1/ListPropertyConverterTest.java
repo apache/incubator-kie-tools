@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.dmn.model.v1_2.TList;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
@@ -82,20 +83,21 @@ public class ListPropertyConverterTest {
         assertThat(wb.getTypeRef().getLocalPart()).isEqualTo(LIST_QNAME_LOCALPART);
         assertThat(wb.getExpression()).isNotNull();
         assertThat(wb.getExpression().size()).isEqualTo(1);
-        assertThat(wb.getExpression().get(0).getId().getValue()).isEqualTo(EXPRESSION_UUID);
+        assertThat(wb.getExpression().get(0).getExpression().getId().getValue()).isEqualTo(EXPRESSION_UUID);
 
         verify(hasComponentWidthsConsumer).accept(eq(EXPRESSION_UUID),
                                                   hasComponentWidthsCaptor.capture());
 
         final HasComponentWidths hasComponentWidths = hasComponentWidthsCaptor.getValue();
         assertThat(hasComponentWidths).isNotNull();
-        assertThat(hasComponentWidths).isEqualTo(wb.getExpression().get(0));
+        assertThat(hasComponentWidths).isEqualTo(wb.getExpression().get(0).getExpression());
     }
 
     @Test
     public void testDMNFromWB() {
         final List wb = new List();
         final LiteralExpression literalExpression = new LiteralExpression();
+        final HasExpression hasExpression = HasExpression.wrap(wb, literalExpression);
         literalExpression.getComponentWidths().set(0, 200.0);
         literalExpression.getId().setValue(EXPRESSION_UUID);
 
@@ -103,7 +105,7 @@ public class ListPropertyConverterTest {
         wb.getDescription().setValue(LIST_DESCRIPTION);
         wb.setTypeRef(new org.kie.workbench.common.dmn.api.property.dmn.QName(org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI,
                                                                               LIST_QNAME_LOCALPART));
-        wb.getExpression().add(literalExpression);
+        wb.getExpression().add(hasExpression);
 
         final org.kie.dmn.model.api.List dmn = ListPropertyConverter.dmnFromWB(wb, componentWidthsConsumer);
 

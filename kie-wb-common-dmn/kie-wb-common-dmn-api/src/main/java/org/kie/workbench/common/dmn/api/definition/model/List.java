@@ -18,20 +18,21 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import java.util.ArrayList;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
+import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefsFromExpressions;
 
 @Portable
 public class List extends Expression {
 
-    private static final int STATIC_COLUMNS = 1;
+    private static final int STATIC_COLUMNS = 2;
 
-    private java.util.List<Expression> expression;
+    private java.util.List<HasExpression> expression;
 
     public List() {
         this(new Id(),
@@ -43,14 +44,14 @@ public class List extends Expression {
     public List(final Id id,
                 final Description description,
                 final QName typeRef,
-                final java.util.List<Expression> expression) {
+                final java.util.List<HasExpression> expression) {
         super(id,
               description,
               typeRef);
         this.expression = expression;
     }
 
-    public java.util.List<Expression> getExpression() {
+    public java.util.List<HasExpression> getExpression() {
         if (expression == null) {
             expression = new ArrayList<>();
         }
@@ -59,17 +60,14 @@ public class List extends Expression {
 
     @Override
     public java.util.List<HasTypeRef> getHasTypeRefs() {
-
         final java.util.List<HasTypeRef> hasTypeRefs = super.getHasTypeRefs();
-
-        hasTypeRefs.addAll(getFlatHasTypeRefs(getExpression()));
-
+        hasTypeRefs.addAll(getFlatHasTypeRefsFromExpressions(getExpression()));
         return hasTypeRefs;
     }
 
     @Override
     public int getRequiredComponentWidthCount() {
-        return getExpression().size() + STATIC_COLUMNS;
+        return STATIC_COLUMNS;
     }
 
     @Override

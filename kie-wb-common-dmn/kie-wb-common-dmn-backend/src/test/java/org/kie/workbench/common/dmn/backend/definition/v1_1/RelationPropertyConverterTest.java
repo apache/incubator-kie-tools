@@ -27,6 +27,7 @@ import org.kie.dmn.model.v1_2.TList;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
 import org.kie.dmn.model.v1_2.TRelation;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
@@ -96,14 +97,14 @@ public class RelationPropertyConverterTest {
         assertThat(wb.getRow().get(0)).isNotNull();
         assertThat(wb.getRow().get(0).getExpression()).isNotNull();
         assertThat(wb.getRow().get(0).getExpression().size()).isEqualTo(1);
-        assertThat(wb.getRow().get(0).getExpression().get(0).getId().getValue()).isEqualTo(EXPRESSION_UUID);
+        assertThat(wb.getRow().get(0).getExpression().get(0).getExpression().getId().getValue()).isEqualTo(EXPRESSION_UUID);
 
         verify(hasComponentWidthsConsumer).accept(eq(EXPRESSION_UUID),
                                                   hasComponentWidthsCaptor.capture());
 
         final HasComponentWidths hasComponentWidths = hasComponentWidthsCaptor.getValue();
         assertThat(hasComponentWidths).isNotNull();
-        assertThat(hasComponentWidths).isEqualTo(wb.getRow().get(0).getExpression().get(0));
+        assertThat(hasComponentWidths).isEqualTo(wb.getRow().get(0).getExpression().get(0).getExpression());
     }
 
     @Test
@@ -112,9 +113,10 @@ public class RelationPropertyConverterTest {
         final InformationItem informationItem = new InformationItem();
         final List list = new List();
         final LiteralExpression literalExpression = new LiteralExpression();
+        final HasExpression hasExpression = HasExpression.wrap(wb, literalExpression);
         literalExpression.getComponentWidths().set(0, 200.0);
         literalExpression.getId().setValue(EXPRESSION_UUID);
-        list.getExpression().add(literalExpression);
+        list.getExpression().add(hasExpression);
 
         wb.getId().setValue(RELATION_UUID);
         wb.getDescription().setValue(RELATION_DESCRIPTION);

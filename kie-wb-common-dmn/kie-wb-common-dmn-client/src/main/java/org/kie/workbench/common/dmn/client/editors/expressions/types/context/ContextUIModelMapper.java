@@ -144,7 +144,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                         ecv.getValue().ifPresent(beg -> {
                             beg.getExpression().get().ifPresent(e -> context.getContextEntry()
                                     .get(rowIndex)
-                                    .setExpression((Expression) e));
+                                    .setExpression(e));
                         });
                     });
             }

@@ -107,7 +107,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
             column.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
             final org.kie.workbench.common.dmn.api.definition.model.List row = new org.kie.workbench.common.dmn.api.definition.model.List();
             final LiteralExpression literalExpression = new LiteralExpression();
-            row.getExpression().add(literalExpression);
+            row.getExpression().add(HasExpression.wrap(relation, literalExpression));
             relation.getColumn().add(column);
             relation.getRow().add(row);
 

@@ -160,13 +160,13 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
     private void assertRelationDefinition(final int ii1ColumnIndex,
                                           final int ii2ColumnIndex) {
         assertEquals(makeIdentifier(II1, 0),
-                     relation.getRow().get(0).getExpression().get(ii1ColumnIndex).getId().getValue());
+                     relation.getRow().get(0).getExpression().get(ii1ColumnIndex).getExpression().getId().getValue());
         assertEquals(makeIdentifier(II2, 0),
-                     relation.getRow().get(1).getExpression().get(ii1ColumnIndex).getId().getValue());
+                     relation.getRow().get(1).getExpression().get(ii1ColumnIndex).getExpression().getId().getValue());
         assertEquals(makeIdentifier(II1, 1),
-                     relation.getRow().get(0).getExpression().get(ii2ColumnIndex).getId().getValue());
+                     relation.getRow().get(0).getExpression().get(ii2ColumnIndex).getExpression().getId().getValue());
         assertEquals(makeIdentifier(II2, 1),
-                     relation.getRow().get(1).getExpression().get(ii2ColumnIndex).getId().getValue());
+                     relation.getRow().get(1).getExpression().get(ii2ColumnIndex).getExpression().getId().getValue());
     }
 
     @Test

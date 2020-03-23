@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
@@ -94,7 +95,8 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
 
                 relation.getRow().forEach(row -> {
                     final LiteralExpression le = new LiteralExpression();
-                    row.getExpression().add(iiIndex, le);
+                    final HasExpression hasExpression = HasExpression.wrap(row, le);
+                    row.getExpression().add(iiIndex, hasExpression);
                     le.setParent(row);
                 });
 

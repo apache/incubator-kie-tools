@@ -164,10 +164,11 @@ public class ExpressionPropertyConverterTest {
     public void testDMNFromWB_ListConversion() {
         final org.kie.workbench.common.dmn.api.definition.model.List wb = new org.kie.workbench.common.dmn.api.definition.model.List();
         final List<Double> wbComponentWidths = wb.getComponentWidths();
-        wbComponentWidths.set(0, 200.0);
+        wbComponentWidths.set(0, 50.0);
+        wbComponentWidths.set(1, 200.0);
         wb.getId().setValue(EXPRESSION_UUID);
 
-        assertDMNFromWBConversion(wb, TList.class, 200.0);
+        assertDMNFromWBConversion(wb, TList.class, 50.0, 200.0);
     }
 
     @Test

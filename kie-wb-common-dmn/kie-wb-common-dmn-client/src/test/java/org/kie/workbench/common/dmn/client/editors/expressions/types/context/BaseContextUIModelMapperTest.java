@@ -94,9 +94,6 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     @Captor
     private ArgumentCaptor<GridCellTuple> parentCaptor;
 
-    @Captor
-    private ArgumentCaptor<Optional<String>> nodeUUIDCaptor;
-
     protected BaseGridData uiModel;
 
     protected Context context;

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 
@@ -39,6 +40,14 @@ public class HasTypeRefHelper {
     public static List<HasTypeRef> getFlatHasTypeRefs(final List<? extends HasTypeRefs> hasTypeRefList) {
         return hasTypeRefList
                 .stream()
+                .flatMap(typeRefs -> typeRefs.getHasTypeRefs().stream())
+                .collect(Collectors.toList());
+    }
+
+    public static List<HasTypeRef> getFlatHasTypeRefsFromExpressions(final List<? extends HasExpression> hasTypeRefListExpressions) {
+        return hasTypeRefListExpressions
+                .stream()
+                .map(HasExpression::getExpression)
                 .flatMap(typeRefs -> typeRefs.getHasTypeRefs().stream())
                 .collect(Collectors.toList());
     }

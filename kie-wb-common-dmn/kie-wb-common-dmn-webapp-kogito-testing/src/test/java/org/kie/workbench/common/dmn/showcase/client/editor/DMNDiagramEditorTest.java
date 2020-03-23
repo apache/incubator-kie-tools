@@ -81,9 +81,9 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Mock
     private DMNVFSService vfsService;
-    
+
     @Mock
-    CanvasFileExport canvasFileExport;
+    private CanvasFileExport canvasFileExport;
 
     @Mock
     private Promises promises;
@@ -96,7 +96,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Captor
     private ArgumentCaptor<Path> pathArgumentCaptor;
-    
+
     @Override
     public void setup() {
         super.setup();

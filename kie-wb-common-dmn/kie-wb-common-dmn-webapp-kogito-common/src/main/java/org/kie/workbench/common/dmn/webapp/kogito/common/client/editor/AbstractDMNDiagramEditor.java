@@ -455,7 +455,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     public void resetContentHash() {
         setOriginalContentHash(getCurrentDiagramHash());
     }
-    
+
     @GetPreview
     public Promise getPreview() {
         CanvasHandler canvasHandler = getCanvasHandler();

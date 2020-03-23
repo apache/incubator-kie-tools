@@ -232,7 +232,7 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Mock
     protected MonacoFEELInitializer feelInitializer;
-    
+
     @Mock
     protected CanvasFileExport canvasFileExport;
 

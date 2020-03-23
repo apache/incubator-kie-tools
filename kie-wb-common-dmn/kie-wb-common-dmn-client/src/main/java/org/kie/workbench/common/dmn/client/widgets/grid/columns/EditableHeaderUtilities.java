@@ -16,8 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import java.util.List;
+import java.util.function.Supplier;
+
+import com.ait.lienzo.client.core.shape.Group;
+import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 
 public class EditableHeaderUtilities {
 
@@ -32,5 +38,33 @@ public class EditableHeaderUtilities {
 
     public static boolean isPlaceHolderToBeShown(final EditableHeaderMetaData headerMetaData) {
         return StringUtils.isEmpty(headerMetaData.getTitle()) && headerMetaData.getPlaceHolder().isPresent();
+    }
+
+    public static Group getEditableHeaderContent(final Supplier<Group> defaultHeaderContentSupplier,
+                                                 final List<GridColumn.HeaderMetaData> headerMetaData,
+                                                 final GridHeaderColumnRenderContext context,
+                                                 final int headerRowIndex,
+                                                 final double blockWidth,
+                                                 final double rowHeight) {
+        final Group headerGroup = GWT.create(Group.class);
+
+        if (headerRowIndex >= headerMetaData.size()) {
+            return headerGroup;
+        }
+
+        final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
+        if (headerRowMetaData instanceof EditableHeaderMetaData) {
+            final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) headerRowMetaData;
+            if (EditableHeaderUtilities.isPlaceHolderToBeShown(editableHeaderMetaData)) {
+                return editableHeaderMetaData.renderPlaceHolder(context,
+                                                                blockWidth,
+                                                                rowHeight);
+            }
+
+            return ((EditableHeaderMetaData) headerRowMetaData).render(context,
+                                                                       blockWidth,
+                                                                       rowHeight);
+        }
+        return defaultHeaderContentSupplier.get();
     }
 }

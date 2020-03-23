@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
@@ -147,12 +148,12 @@ public class AddRelationColumnCommandTest {
                      relation.getRow().size());
         assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
-        assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+        assertTrue(relation.getRow().get(0).getExpression().get(0).getExpression() instanceof LiteralExpression);
 
         assertEquals(relation,
                      informationItem.getParent());
         assertEquals(relation.getRow().get(0),
-                     relation.getRow().get(0).getExpression().get(0).getParent());
+                     relation.getRow().get(0).getExpression().get(0).getExpression().getParent());
     }
 
     @Test
@@ -164,7 +165,7 @@ public class AddRelationColumnCommandTest {
         relation.getRow().add(row);
 
         final LiteralExpression existingLiteralExpression = new LiteralExpression();
-        row.getExpression().add(0, existingLiteralExpression);
+        row.getExpression().add(0, HasExpression.wrap(row, existingLiteralExpression));
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
@@ -182,14 +183,14 @@ public class AddRelationColumnCommandTest {
                      relation.getRow().size());
         assertEquals(2,
                      relation.getRow().get(0).getExpression().size());
-        assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+        assertTrue(relation.getRow().get(0).getExpression().get(0).getExpression() instanceof LiteralExpression);
         assertEquals(existingLiteralExpression,
-                     relation.getRow().get(0).getExpression().get(1));
+                     relation.getRow().get(0).getExpression().get(1).getExpression());
 
         assertEquals(relation,
                      informationItem.getParent());
         assertEquals(relation.getRow().get(0),
-                     relation.getRow().get(0).getExpression().get(0).getParent());
+                     relation.getRow().get(0).getExpression().get(0).getExpression().getParent());
     }
 
     @Test
@@ -207,8 +208,8 @@ public class AddRelationColumnCommandTest {
 
         final LiteralExpression existingLiteralExpressionFirst = new LiteralExpression();
         final LiteralExpression existingLiteralExpressionLast = new LiteralExpression();
-        row.getExpression().add(existingLiteralExpressionFirst);
-        row.getExpression().add(existingLiteralExpressionLast);
+        row.getExpression().add(HasExpression.wrap(row, existingLiteralExpressionFirst));
+        row.getExpression().add(HasExpression.wrap(row, existingLiteralExpressionLast));
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
@@ -229,15 +230,15 @@ public class AddRelationColumnCommandTest {
         assertEquals(3,
                      relation.getRow().get(0).getExpression().size());
         assertEquals(existingLiteralExpressionFirst,
-                     relation.getRow().get(0).getExpression().get(0));
-        assertTrue(relation.getRow().get(0).getExpression().get(1) instanceof LiteralExpression);
+                     relation.getRow().get(0).getExpression().get(0).getExpression());
+        assertTrue(relation.getRow().get(0).getExpression().get(1).getExpression() instanceof LiteralExpression);
         assertEquals(existingLiteralExpressionLast,
-                     relation.getRow().get(0).getExpression().get(2));
+                     relation.getRow().get(0).getExpression().get(2).getExpression());
 
         assertEquals(relation,
                      informationItem.getParent());
         assertEquals(relation.getRow().get(0),
-                     relation.getRow().get(0).getExpression().get(1).getParent());
+                     relation.getRow().get(0).getExpression().get(1).getExpression().getParent());
     }
 
     @Test

@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-//@PrepareForTest({HasTypeRefHelper.class})
 public class ListTest {
 
     private org.kie.workbench.common.dmn.api.definition.model.List list;
@@ -47,14 +47,12 @@ public class ListTest {
     public void testGetHasTypeRefs() {
         final Expression expression1 = mock(Expression.class); //added
         final Expression expression2 = mock(Expression.class); //added
-        final List<Expression> expression = asList(expression1, expression2);
+        final List<HasExpression> hasExpressions = asList(HasExpression.wrap(list, expression1), HasExpression.wrap(list, expression2));
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
 
-        doReturn(expression).when(list).getExpression();
+        doReturn(hasExpressions).when(list).getExpression();
 
-        // mockStatic(HasTypeRefHelper.class);
-        //when(HasTypeRefHelper.getFlatHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
         when(expression1.getHasTypeRefs()).thenReturn(asList(hasTypeRef1));
         when(expression2.getHasTypeRefs()).thenReturn(asList(hasTypeRef2));
 

@@ -17,10 +17,12 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -36,16 +38,18 @@ public class ListPropertyConverter {
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
 
-        final java.util.List<Expression> expression = new ArrayList<>();
+        final java.util.List<HasExpression> expression = new ArrayList<>();
+        final List result = new List(id, description, typeRef, expression);
         for (org.kie.dmn.model.api.Expression e : dmn.getExpression()) {
-            Expression eConverted = ExpressionPropertyConverter.wbFromDMN(e,
-                                                                          hasComponentWidthsConsumer);
-            expression.add(eConverted);
+            final Expression eConverted = ExpressionPropertyConverter.wbFromDMN(e,
+                                                                                hasComponentWidthsConsumer);
+            final HasExpression hasExpression = HasExpression.wrap(result, eConverted);
+            expression.add(hasExpression);
         }
 
-        final List result = new List(id, description, typeRef, expression);
-        for (Expression e : expression) {
-            if (e != null) {
+        for (HasExpression hasExpression : expression) {
+            final Expression e = hasExpression.getExpression();
+            if (Objects.nonNull(e)) {
                 e.setParent(result);
             }
         }
@@ -60,10 +64,11 @@ public class ListPropertyConverter {
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 
-        for (Expression e : wb.getExpression()) {
+        for (HasExpression hasExpression : wb.getExpression()) {
+            final Expression e = hasExpression.getExpression();
             final org.kie.dmn.model.api.Expression eConverted = ExpressionPropertyConverter.dmnFromWB(e,
                                                                                                       componentWidthsConsumer);
-            if (eConverted != null) {
+            if (Objects.nonNull(eConverted)) {
                 eConverted.setParent(result);
             }
             result.getExpression().add(eConverted);

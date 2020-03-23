@@ -336,9 +336,10 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiColumnIndex);
             if (section == RelationUIModelMapperHelper.RelationSection.INFORMATION_ITEM) {
                 final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, uiColumnIndex);
-                final Expression relationExpression = relation.getRow().get(uiRowIndex).getExpression().get(iiIndex);
-                if (relationExpression instanceof DomainObject) {
-                    final DomainObject domainObject = (DomainObject) relationExpression;
+                final HasExpression hasExpression = relation.getRow().get(uiRowIndex).getExpression().get(iiIndex);
+                final Expression expression = hasExpression.getExpression();
+                if (expression instanceof DomainObject) {
+                    final DomainObject domainObject = (DomainObject) expression;
                     fireDomainObjectSelectionEvent(domainObject);
                     return;
                 }

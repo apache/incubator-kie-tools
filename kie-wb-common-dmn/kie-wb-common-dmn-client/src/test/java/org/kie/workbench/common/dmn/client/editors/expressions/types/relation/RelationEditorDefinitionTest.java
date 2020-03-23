@@ -168,7 +168,7 @@ public class RelationEditorDefinitionTest {
         assertNotNull(model.getRow());
         assertNotNull(model.getRow().get(0).getId());
         assertNotNull(model.getRow().get(0).getExpression().get(0));
-        assertTrue(model.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+        assertTrue(model.getRow().get(0).getExpression().get(0).getExpression() instanceof LiteralExpression);
 
         assertNotNull(model.getColumn());
         assertEquals(1, model.getColumn().size());
@@ -180,7 +180,7 @@ public class RelationEditorDefinitionTest {
         assertEquals(model,
                      model.getColumn().get(0).getParent());
         assertEquals(model.getRow().get(0),
-                     model.getRow().get(0).getExpression().get(0).getParent());
+                     model.getRow().get(0).getExpression().get(0).getExpression().getParent());
     }
 
     @Test

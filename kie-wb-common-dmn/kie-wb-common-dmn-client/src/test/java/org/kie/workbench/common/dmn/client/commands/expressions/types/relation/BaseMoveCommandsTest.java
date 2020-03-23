@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
@@ -76,9 +77,10 @@ public abstract class BaseMoveCommandsTest<C extends AbstractCanvasGraphCommand>
         final List row = new List();
         for (int index = 0; index < relation.getColumn().size(); index++) {
             final String ii = makeIdentifier(identifier, index);
-            row.getExpression().add(new LiteralExpression() {{
-                setId(new Id(ii));
-            }});
+            row.getExpression().add(HasExpression.wrap(row,
+                                                       new LiteralExpression() {{
+                                                           setId(new Id(ii));
+                                                       }}));
         }
         relation.getRow().add(row);
     }

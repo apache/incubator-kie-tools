@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.google.gwt.core.client.GWT;
 import org.gwtbootstrap3.client.ui.base.TextBoxBase;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -29,6 +28,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnR
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
+
+import static org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities.getEditableHeaderContent;
 
 public class NameAndDataTypeDOMElementColumnRenderer<W extends TextBoxBase, E extends BaseDOMElement<String, W>> extends BaseGridColumnSingletonDOMElementRenderer<String, W, E> {
 
@@ -42,30 +43,16 @@ public class NameAndDataTypeDOMElementColumnRenderer<W extends TextBoxBase, E ex
                                      final int headerRowIndex,
                                      final double blockWidth,
                                      final double rowHeight) {
-        final Group headerGroup = GWT.create(Group.class);
-
-        if (headerRowIndex >= headerMetaData.size()) {
-            return headerGroup;
-        }
-
-        final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
-        if (headerRowMetaData instanceof EditableHeaderMetaData) {
-            final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) headerRowMetaData;
-            if (EditableHeaderUtilities.isPlaceHolderToBeShown(editableHeaderMetaData)) {
-                return editableHeaderMetaData.renderPlaceHolder(context,
-                                                                blockWidth,
-                                                                rowHeight);
-            }
-
-            return ((EditableHeaderMetaData) headerRowMetaData).render(context,
-                                                                       blockWidth,
-                                                                       rowHeight);
-        }
-        return super.renderHeaderContent(headerMetaData,
-                                         context,
-                                         headerRowIndex,
-                                         blockWidth,
-                                         rowHeight);
+        return getEditableHeaderContent(() -> super.renderHeaderContent(headerMetaData,
+                                                                        context,
+                                                                        headerRowIndex,
+                                                                        blockWidth,
+                                                                        rowHeight),
+                                        headerMetaData,
+                                        context,
+                                        headerRowIndex,
+                                        blockWidth,
+                                        rowHeight);
     }
 
     @Override

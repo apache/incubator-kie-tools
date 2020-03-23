@@ -19,8 +19,11 @@ package org.kie.workbench.common.dmn.api.definition.model.common;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -70,6 +73,31 @@ public class HasTypeRefHelperTest {
 
         final List<HasTypeRef> actual = HasTypeRefHelper.getFlatHasTypeRefs(hasTypeRefs);
         final List<HasTypeRef> expected = asList(hasTypeRef3, hasTypeRef4, hasTypeRef5, hasTypeRef6);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetFlatHasTypeRefsFromExpressions() {
+        final Expression expression1 = mock(Expression.class);
+        final Expression expression2 = mock(Expression.class);
+        final DMNModelInstrumentedBase parent = mock(DMNModelInstrumentedBase.class);
+        final HasExpression hasExpression1 = HasExpression.wrap(parent, expression1);
+        final HasExpression hasExpression2 = HasExpression.wrap(parent, expression2);
+        final List<HasExpression> hasExpressions = asList(hasExpression1, hasExpression2);
+
+        final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef3 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef4 = mock(HasTypeRef.class);
+        final List<HasTypeRef> typeRefList1 = asList(hasTypeRef1, hasTypeRef2);
+        final List<HasTypeRef> typeRefList2 = asList(hasTypeRef3, hasTypeRef4);
+
+        when(expression1.getHasTypeRefs()).thenReturn(typeRefList1);
+        when(expression2.getHasTypeRefs()).thenReturn(typeRefList2);
+
+        final List<HasTypeRef> actual = HasTypeRefHelper.getFlatHasTypeRefsFromExpressions(hasExpressions);
+        final List<HasTypeRef> expected = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
 
         assertEquals(expected, actual);
     }

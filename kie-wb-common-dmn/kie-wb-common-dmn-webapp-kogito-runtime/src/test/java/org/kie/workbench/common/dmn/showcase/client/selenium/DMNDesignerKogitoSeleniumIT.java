@@ -1750,6 +1750,41 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dc:Bounds[@x='930' and @y='265' and @width='100' and @height='50']");
     }
 
+    @Test
+    public void testListExpression_DROOLS5131() throws Exception {
+        final String expected = loadResource("DROOLS-5131 (List expression).xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
+                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
+                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
+                                  "/dmn:literalExpression[@id='_3C536533-8EDF-42BC-9ECA-CC01CC86D719']" +
+                                  "/dmn:text[text()='1']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
+                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
+                                  "/dmn:literalExpression[@id='_7CAB8067-1481-41F7-8EA2-68D33679A518']" +
+                                  "/dmn:text[text()='2']");
+    }
+
     /**
      * This tests that the 'Payment Date' DMN model authored by a _third party_ editor can be
      * unmarshalled and marshalled by _our_ editor. However there are some differences between
