@@ -35,13 +35,14 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramImpl, DiagramSet, ProcessData> {
+public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramImpl, DiagramSet, ProcessData, AdvancedData> {
 
     public RootProcessConverter(TypedFactoryManager typedFactoryManager,
                                 PropertyReaderFactory propertyReaderFactory,
@@ -65,14 +66,18 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
                               new Version(e.getVersion()),
                               new AdHoc(e.isAdHoc()),
                               new ProcessInstanceDescription(e.getDescription()),
-                              new GlobalVariables(e.getGlobalVariables()),
                               new Imports(),
                               new Executable(process.isIsExecutable()),
                               new SLADueDate(e.getSlaDueDate()));
     }
 
     @Override
-    protected ProcessData createProcessData(String processVariables) {
+    public ProcessData createProcessData(String processVariables) {
         return new ProcessData(new ProcessVariables(processVariables));
+    }
+
+    @Override
+    public AdvancedData createAdvancedData(String globalVariables) {
+        return new AdvancedData(new GlobalVariables(globalVariables));
     }
 }

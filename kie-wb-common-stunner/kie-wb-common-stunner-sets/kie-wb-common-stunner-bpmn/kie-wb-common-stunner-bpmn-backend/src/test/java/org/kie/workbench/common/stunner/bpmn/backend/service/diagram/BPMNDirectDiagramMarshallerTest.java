@@ -541,7 +541,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("Global Variables", diagram.getMetadata().getTitle());
 
         BPMNDiagramImpl bpmnDiagram = getBpmnDiagram(diagram);
-        GlobalVariables variables = bpmnDiagram.getDiagramSet().getGlobalVariables();
+        GlobalVariables variables = bpmnDiagram.getAdvancedData().getGlobalVariables();
         assertEquals("GV1:Boolean,GV2:Boolean,GV3:Integer",
                      variables.getValue());
 
@@ -549,9 +549,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
         bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
         assertTrue(bpmnDiagram.getDiagramSet() != null);
-        assertTrue(bpmnDiagram.getDiagramSet().getGlobalVariables() != null);
+        assertTrue(bpmnDiagram.getAdvancedData().getGlobalVariables() != null);
 
-        variables = bpmnDiagram.getDiagramSet().getGlobalVariables();
+        variables = bpmnDiagram.getAdvancedData().getGlobalVariables();
         assertEquals("GV1:Boolean,GV2:Boolean,GV3:Integer",
                      variables.getValue());
     }

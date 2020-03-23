@@ -24,13 +24,17 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CaseManagementDiagramTest {
@@ -43,6 +47,7 @@ public class CaseManagementDiagramTest {
     private static final String PACKAGE_INVALID = "";
     private static final String VERSION_VALID = "1.0";
     private static final String VERSION_INVALID = "";
+    final String GLOBAL_VARIABLES = "GV1:Boolean, GV2:Boolean, GV3:Integer";
     private Validator validator;
     private CaseManagementDiagram tested;
 
@@ -94,5 +99,41 @@ public class CaseManagementDiagramTest {
         tested.getDiagramSet().setVersion(new Version(VERSION_INVALID));
         Set<ConstraintViolation<CaseManagementDiagram>> violations = this.validator.validate(tested);
         assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testSetAdvancedData() {
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES));
+
+        assertEquals(advancedData, tested.getAdvancedData());
+        assertEquals(advancedData.getGlobalVariables(), tested.getAdvancedData().getGlobalVariables());
+    }
+
+    @Test
+    public void testCaseManagementEquals() {
+        CaseManagementDiagram caseManagementDiagram = new CaseManagementDiagram();
+        DiagramSet diagramSet = caseManagementDiagram.getDiagramSet();
+        diagramSet.setName(new Name(NAME_VALID));
+        diagramSet.setId(new Id(ID_VALID));
+        diagramSet.setPackageProperty(new Package(PACKAGE_VALID));
+        diagramSet.setVersion(new Version(VERSION_VALID));
+        caseManagementDiagram.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+
+        assertEquals(caseManagementDiagram, tested);
+
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables("id:")));
+        assertNotEquals(tested, caseManagementDiagram);
+
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        assertEquals(tested, caseManagementDiagram);
+
+        tested.setDimensionsSet(new RectangleDimensionsSet(10d, 10d));
+        caseManagementDiagram.setDimensionsSet(new RectangleDimensionsSet(20d, 20d));
+        assertNotEquals(tested, caseManagementDiagram);
+
+        caseManagementDiagram.setDimensionsSet(new RectangleDimensionsSet(10d, 10d));
+        assertEquals(tested, caseManagementDiagram);
     }
 }

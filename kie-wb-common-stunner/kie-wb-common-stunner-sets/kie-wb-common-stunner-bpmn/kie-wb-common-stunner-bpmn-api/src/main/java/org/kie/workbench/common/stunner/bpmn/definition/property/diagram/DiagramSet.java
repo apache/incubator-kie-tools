@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documen
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldType;
-import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -114,14 +113,7 @@ public class DiagramSet implements BaseDiagramSet {
 
     @Property
     @FormField(
-            type = VariablesEditorFieldType.class
-    )
-    @Valid
-    private GlobalVariables globalVariables;
-
-    @Property
-    @FormField(
-            afterElement = "globalVariables",
+            afterElement = "processInstanceDescription",
             type = ImportsFieldType.class
     )
     @Valid
@@ -146,7 +138,6 @@ public class DiagramSet implements BaseDiagramSet {
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
-             new GlobalVariables(),
              new Imports(),
              new Executable(),
              new SLADueDate());
@@ -160,7 +151,6 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo("version") Version version,
                       final @MapsTo(ADHOC) AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
-                      final @MapsTo("globalVariables") GlobalVariables globalVariables,
                       final @MapsTo("imports") Imports imports,
                       final @MapsTo("executable") Executable executable,
                       final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
@@ -172,7 +162,6 @@ public class DiagramSet implements BaseDiagramSet {
         this.version = version;
         this.adHoc = adHoc;
         this.processInstanceDescription = processInstanceDescription;
-        this.globalVariables = globalVariables;
         this.imports = imports;
         this.executable = executable;
         this.slaDueDate = slaDueDate;
@@ -187,7 +176,6 @@ public class DiagramSet implements BaseDiagramSet {
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
-             new GlobalVariables(),
              new Imports(),
              new Executable(),
              new SLADueDate());
@@ -266,15 +254,6 @@ public class DiagramSet implements BaseDiagramSet {
     }
 
     @Override
-    public GlobalVariables getGlobalVariables() {
-        return globalVariables;
-    }
-
-    public void setGlobalVariables(GlobalVariables globalVariables) {
-        this.globalVariables = globalVariables;
-    }
-
-    @Override
     public Imports getImports() {
         return imports;
     }
@@ -311,7 +290,6 @@ public class DiagramSet implements BaseDiagramSet {
                                          Objects.hashCode(version),
                                          Objects.hashCode(adHoc),
                                          Objects.hashCode(processInstanceDescription),
-                                         Objects.hashCode(globalVariables),
                                          Objects.hashCode(imports),
                                          Objects.hashCode(executable),
                                          Objects.hashCode(slaDueDate));
@@ -329,7 +307,6 @@ public class DiagramSet implements BaseDiagramSet {
                     Objects.equals(version, other.version) &&
                     Objects.equals(adHoc, other.adHoc) &&
                     Objects.equals(processInstanceDescription, other.processInstanceDescription) &&
-                    Objects.equals(globalVariables, other.globalVariables) &&
                     Objects.equals(imports, other.imports) &&
                     Objects.equals(executable, other.executable) &&
                     Objects.equals(slaDueDate, other.slaDueDate);

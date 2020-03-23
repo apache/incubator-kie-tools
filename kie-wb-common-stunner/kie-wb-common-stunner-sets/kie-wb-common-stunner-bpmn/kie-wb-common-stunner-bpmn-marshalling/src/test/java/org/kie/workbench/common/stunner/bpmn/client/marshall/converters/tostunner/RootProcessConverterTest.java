@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
+package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner;
 
 import java.util.Collections;
 
@@ -23,16 +23,11 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes.RootProcessConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -41,8 +36,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -81,29 +76,6 @@ public class RootProcessConverterTest {
                                           new PropertyReaderFactory(definitionResolver),
                                           definitionResolver,
                                           new ConverterFactory(definitionResolver, typedFactoryManager));
-    }
-
-    @Test
-    public void createNode() {
-        assertTrue(BPMNDiagramImpl.class.isInstance(tested.createNode("id").getContent().getDefinition()));
-    }
-
-    @Test
-    public void createDiagramSet() {
-        assertTrue(DiagramSet.class.isInstance(tested.createDiagramSet(process,
-                                                                       new ProcessPropertyReader(process,
-                                                                                                 definitionResolver.getDiagram(),
-                                                                                                 definitionResolver.getShape(process.getId()),
-                                                                                                 definitionResolver.getResolutionFactor()),
-                                                                       new DefinitionsPropertyReader(definitionResolver.getDefinitions(),
-                                                                                                     definitionResolver.getDiagram(),
-                                                                                                     definitionResolver.getShape(process.getId()),
-                                                                                                     definitionResolver.getResolutionFactor()))));
-    }
-
-    @Test
-    public void createProcessData() {
-        assertTrue(ProcessData.class.isInstance(tested.createProcessData("id")));
     }
 
     @Test

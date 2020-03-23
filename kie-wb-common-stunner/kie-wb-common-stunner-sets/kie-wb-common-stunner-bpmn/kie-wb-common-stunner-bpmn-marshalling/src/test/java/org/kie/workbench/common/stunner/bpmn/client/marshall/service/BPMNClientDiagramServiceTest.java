@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
@@ -151,6 +152,8 @@ public class BPMNClientDiagramServiceTest {
 
     private ProcessData processData;
 
+    private AdvancedData advancedData;
+
     @Mock
     private Imports imports;
 
@@ -199,7 +202,6 @@ public class BPMNClientDiagramServiceTest {
                                     version,
                                     adHoc,
                                     processInstanceDescription,
-                                    globalVariables,
                                     imports,
                                     executable,
                                     slaDueDate);
@@ -210,7 +212,8 @@ public class BPMNClientDiagramServiceTest {
                 new CaseManagementSet(),
                 new BackgroundSet(),
                 new FontSet(),
-                new RectangleDimensionsSet()
+                new RectangleDimensionsSet(),
+                advancedData
         );
 
         nodes = Arrays.asList(createNode(bpmnDiagram));

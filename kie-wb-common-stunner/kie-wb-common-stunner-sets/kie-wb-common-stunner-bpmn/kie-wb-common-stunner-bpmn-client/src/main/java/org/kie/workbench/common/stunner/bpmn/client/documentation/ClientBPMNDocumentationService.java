@@ -81,6 +81,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionNa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
@@ -287,8 +288,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         //Computing Global, Process, Sub-Processes variables
         final List<Map.Entry> variables = Stream.concat(
                 getDiagramModel(graph)
-                        .map(BPMNDiagram::getDiagramSet)
-                        .map(DiagramSet::getGlobalVariables)
+                        .map(BPMNDiagram::getAdvancedData)
+                        .map(AdvancedData::getGlobalVariables)
                         .map(GlobalVariables::getValue),
                 StreamSupport.stream(graph.nodes().spliterator(), false)
                         .map(Node::getContent)

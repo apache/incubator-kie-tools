@@ -88,6 +88,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.BPMNDocumentation;
@@ -245,6 +246,8 @@ public class ClientBPMNDocumentationServiceTest {
 
     private ProcessData processData;
 
+    private AdvancedData advancedData;
+
     private ProcessVariables processVariables;
 
     private UserTask userTask;
@@ -327,7 +330,6 @@ public class ClientBPMNDocumentationServiceTest {
                                     version,
                                     adHoc,
                                     processInstanceDescription,
-                                    globalVariables,
                                     imports,
                                     executable,
                                     slaDueDate);
@@ -335,13 +337,18 @@ public class ClientBPMNDocumentationServiceTest {
         processVariables = new ProcessVariables(VARIABLES);
         processData = new ProcessData(processVariables);
 
+        //AdvancedData
+        globalVariables = new GlobalVariables(GLOBAL_VARIABLES);
+        advancedData = new AdvancedData(globalVariables);
+
         bpmnDiagram = new BPMNDiagramImpl(
                 diagramSet,
                 processData,
                 new CaseManagementSet(),
                 new BackgroundSet(),
                 new FontSet(),
-                new RectangleDimensionsSet()
+                new RectangleDimensionsSet(),
+                advancedData
         );
 
         userTask = new UserTask(new TaskGeneralSet(new Name(TASK_NAME),

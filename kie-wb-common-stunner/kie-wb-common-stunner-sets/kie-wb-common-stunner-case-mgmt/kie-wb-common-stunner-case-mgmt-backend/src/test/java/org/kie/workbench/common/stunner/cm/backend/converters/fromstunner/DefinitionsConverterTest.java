@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Defi
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
@@ -63,7 +62,6 @@ public class DefinitionsConverterTest {
                                           new Version("1.0"),
                                           new AdHoc(false),
                                           new ProcessInstanceDescription("descr"),
-                                          new GlobalVariables(""),
                                           new Imports(),
                                           new Executable(true),
                                           new SLADueDate("")
@@ -103,7 +101,6 @@ public class DefinitionsConverterTest {
                 new Version(),
                 new AdHoc(false),
                 new ProcessInstanceDescription(),
-                new GlobalVariables(),
                 new Imports(importsValue),
                 new Executable(true),
                 new SLADueDate()

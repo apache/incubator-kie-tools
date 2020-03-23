@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
@@ -103,5 +104,10 @@ public class CaseManagementRootProcessConverterTest {
     @Test
     public void testCreateProcessData() {
         assertTrue(ProcessData.class.isInstance(tested.createProcessData("id")));
+    }
+
+    @Test
+    public void testCreateAdvancedData() {
+        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id")));
     }
 }

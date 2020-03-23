@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManageme
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -53,12 +54,13 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
+public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, AdvancedData> {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
     public static final String DIAGRAM_SET = "diagramSet";
     public static final String PROCESS_DATA = "processData";
+    public static final String ADVANCED_DATA = "advancedData";
     public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
 
     @PropertySet
@@ -76,6 +78,13 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
     @PropertySet
     @FormField(
             afterElement = PROCESS_DATA
+    )
+    @Valid
+    protected AdvancedData advancedData;
+
+    @PropertySet
+    @FormField(
+            afterElement = ADVANCED_DATA
     )
     protected CaseManagementSet caseManagementSet;
 
@@ -104,7 +113,8 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(WIDTH,
-                                        HEIGHT));
+                                        HEIGHT),
+             new AdvancedData());
     }
 
     public BPMNDiagramImpl(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,
@@ -112,13 +122,15 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
                            final @MapsTo(CASE_MANAGEMENT_SET) CaseManagementSet caseManagementSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
-                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                           final @MapsTo(ADVANCED_DATA) AdvancedData advancedData) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.caseManagementSet = caseManagementSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.advancedData = advancedData;
     }
 
     public String getCategory() {
@@ -193,13 +205,24 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
     }
 
     @Override
+    public AdvancedData getAdvancedData() {
+        return advancedData;
+    }
+
+    @Override
+    public void setAdvancedData(AdvancedData advancedData) {
+        this.advancedData = advancedData;
+    }
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(diagramSet.hashCode(),
                                          processData.hashCode(),
                                          caseManagementSet.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         advancedData.hashCode());
     }
 
     @Override
@@ -211,7 +234,8 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
                     caseManagementSet.equals(other.caseManagementSet) &&
                     backgroundSet.equals(other.backgroundSet) &&
                     fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+                    dimensionsSet.equals(other.dimensionsSet) &&
+                    advancedData.equals(other.advancedData);
         }
         return false;
     }

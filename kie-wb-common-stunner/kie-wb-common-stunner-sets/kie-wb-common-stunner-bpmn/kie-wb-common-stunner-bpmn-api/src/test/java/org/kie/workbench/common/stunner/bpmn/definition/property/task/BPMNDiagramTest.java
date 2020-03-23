@@ -27,12 +27,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class BPMNDiagramTest {
@@ -50,6 +55,8 @@ public class BPMNDiagramTest {
 
     private static final String VERSION_VALID = "1.0";
     private static final String VERSION_INVALID = "";
+
+    final String GLOBAL_VARIABLES = "GV1:Boolean, GV2:Boolean, GV3:Integer";
 
     @Before
     public void init() {
@@ -109,5 +116,73 @@ public class BPMNDiagramTest {
         Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertEquals(1,
                      violations.size());
+    }
+
+    @Test
+    public void testSetGlobalVariables() {
+        AdvancedData advancedData = new AdvancedData();
+        assertEquals(advancedData.getGlobalVariables(), new GlobalVariables());
+
+        advancedData.setGlobalVariables(new GlobalVariables(GLOBAL_VARIABLES));
+        assertEquals(advancedData.getGlobalVariables(), new GlobalVariables(GLOBAL_VARIABLES));
+    }
+
+    @Test
+    public void testSetAdvancedData() {
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES));
+
+        assertEquals(advancedData, BPMNDiagramImpl.getAdvancedData());
+        assertEquals(advancedData.getGlobalVariables(), BPMNDiagramImpl.getAdvancedData().getGlobalVariables());
+    }
+
+    @Test
+    public void testAdvancedDataConstructors() {
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES));
+        AdvancedData advancedData2 = new AdvancedData(GLOBAL_VARIABLES);
+
+        assertEquals(advancedData, advancedData2);
+    }
+
+    @Test
+    public void testNotAdvancedData() {
+        ProcessData processData = new ProcessData(GLOBAL_VARIABLES);
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES));
+
+        assertNotEquals(advancedData, processData);
+    }
+
+    @Test
+    public void testNotEqualsAdvancedData() {
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables());
+
+        assertNotEquals(advancedData, BPMNDiagramImpl.getAdvancedData());
+        assertNotEquals(advancedData.getGlobalVariables(), BPMNDiagramImpl.getAdvancedData().getGlobalVariables());
+    }
+
+    @Test
+    public void testBPMNDiagramEquals() {
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        BPMNDiagramImpl BPMNDiagramImpl2 = createValidBpmnDiagram();
+        BPMNDiagramImpl2.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+
+        assertEquals(BPMNDiagramImpl, BPMNDiagramImpl2);
+
+        BPMNDiagramImpl.setAdvancedData(new AdvancedData(new GlobalVariables("id:")));
+        assertNotEquals(BPMNDiagramImpl, BPMNDiagramImpl2);
+
+        BPMNDiagramImpl.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        assertEquals(BPMNDiagramImpl, BPMNDiagramImpl2);
+
+        BPMNDiagramImpl.setDimensionsSet(new RectangleDimensionsSet(10d, 10d));
+        BPMNDiagramImpl2.setDimensionsSet(new RectangleDimensionsSet(20d, 20d));
+        assertNotEquals(BPMNDiagramImpl, BPMNDiagramImpl2);
+
+        BPMNDiagramImpl2.setDimensionsSet(new RectangleDimensionsSet(10d, 10d));
+        assertEquals(BPMNDiagramImpl, BPMNDiagramImpl2);
     }
 }

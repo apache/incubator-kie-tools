@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -44,8 +45,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 /**
  * Convert the root Process with all its children to a BPMNDiagram
  */
-public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
-        S extends BaseDiagramSet, P extends BaseProcessData> {
+public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
+        S extends BaseDiagramSet, P extends BaseProcessData, F extends BaseAdvancedData> {
 
     final ProcessConverterDelegate delegate;
 
@@ -94,6 +95,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
         ));
 
         definition.setProcessData(createProcessData(p.getProcessVariables()));
+        definition.setAdvancedData(createAdvancedData(p.getGlobalVariables()));
 
         diagramNode.getContent().setBounds(p.getBounds());
 
@@ -108,4 +110,6 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
     protected abstract S createDiagramSet(Process process, ProcessPropertyReader p, DefinitionsPropertyReader d);
 
     protected abstract P createProcessData(String processVariables);
+
+    protected abstract F createAdvancedData(String globalVariables);
 }

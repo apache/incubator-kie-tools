@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
@@ -44,7 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class CaseManagementRootProcessConverter extends BaseRootProcessConverter<CaseManagementDiagram, DiagramSet, ProcessData> {
+public class CaseManagementRootProcessConverter extends BaseRootProcessConverter<CaseManagementDiagram, DiagramSet, ProcessData, AdvancedData> {
 
     private TypedFactoryManager factoryManager;
 
@@ -72,7 +73,6 @@ public class CaseManagementRootProcessConverter extends BaseRootProcessConverter
                               new Version(p.getVersion()),
                               new AdHoc(p.isAdHoc()),
                               new ProcessInstanceDescription(p.getDescription()),
-                              new GlobalVariables(p.getGlobalVariables()),
                               new Imports(new ImportsValue(p.getDefaultImports(), d.getWSDLImports())),
                               new Executable(process.isIsExecutable()),
                               new SLADueDate(p.getSlaDueDate()));
@@ -81,5 +81,10 @@ public class CaseManagementRootProcessConverter extends BaseRootProcessConverter
     @Override
     protected ProcessData createProcessData(String processVariables) {
         return new ProcessData(new ProcessVariables(processVariables));
+    }
+
+    @Override
+    protected AdvancedData createAdvancedData(String globalVariables) {
+        return new AdvancedData(new GlobalVariables(globalVariables));
     }
 }
