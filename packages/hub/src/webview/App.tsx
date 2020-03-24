@@ -44,12 +44,15 @@ import {
   Text,
   TextContent,
   TextInput,
+  TextList,
+  TextListItem,
+  TextListVariants,
   TextVariants
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
 import { SearchIcon } from "@patternfly/react-icons";
+import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import {CommandExecutionResult} from "../common/CommandExecutionResult";
 
 enum ExtensionStatus {
   UNKNOWN,
@@ -172,10 +175,8 @@ export function App() {
     (data: CommandExecutionResult & { extensions: string[] }) => {
       if (data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1) {
         setVscode_status(ExtensionStatus.INSTALLED);
-        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        console.info(data.output); //FIXME: remove
       }
     },
     [pushNewAlert]
@@ -187,7 +188,6 @@ export function App() {
       if (data.success) {
         setVscode_status(ExtensionStatus.INSTALLED);
         pushNewAlert({ variant: "success", title: "VSCode extension successfully installed." });
-        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
         pushNewAlert({ variant: "danger", title: "Error while installing VSCode extension." });
@@ -203,7 +203,6 @@ export function App() {
       if (data.success) {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
         pushNewAlert({ variant: "info", title: "VSCode extension successfully uninstalled." });
-        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.INSTALLED);
         pushNewAlert({ variant: "danger", title: "Error while uninstalling VSCode extension." });
@@ -289,6 +288,16 @@ export function App() {
         return "";
     }
   }, [chrome_status]);
+
+  const chrome_openKogitoToolingReleasesPage = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    electron.shell.openExternal(Constants.KOGITO_TOOLING_RELEASES_URL);
+  }, []);
+
+  const chrome_openGitHub = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    electron.shell.openExternal(Constants.GITHUB_URL);
+  }, []);
 
   //
   //
@@ -452,7 +461,7 @@ export function App() {
             </CardFooter>
           </Card>
           <Modal
-            isSmall={true}
+            width={"70%"}
             title="Install Kogito extension on Chrome"
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
@@ -462,7 +471,38 @@ export function App() {
               </Button>
             ]}
           >
-            <Text>Follow these instructions to install the Kogito GitHub Chrome extension</Text>
+            <TextContent>
+              <TextList component={TextListVariants.ol}>
+                <TextListItem>Follow these instructions to install the Kogito GitHub Chrome extension</TextListItem>
+                <TextListItem>
+                  Download the Chrome Extension ZIP from our{" "}
+                  <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
+                    releases page
+                  </Button>
+                  .
+                </TextListItem>
+                <TextListItem>
+                  Open Chrome and go to <b>{Constants.CHROME_EXTENSIONS_TAB}</b>.
+                </TextListItem>
+                <br />
+                <img
+                  width={"550px"}
+                  src={"images/chrome-extension-installation-guide.gif"}
+                  alt={"Chrome Extension installation guide"}
+                />
+                <br />
+                <br />
+                <TextListItem>Enable developer mode on the top-right corner.</TextListItem>
+                <TextListItem>Click in Load Unpacked and choose the unziped Chrome Extension directory.</TextListItem>
+                <TextListItem>
+                  Done! You can go to{" "}
+                  <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
+                    GitHub
+                  </Button>{" "}
+                  now and start using it.
+                </TextListItem>
+              </TextList>
+            </TextContent>
           </Modal>
           {/*DESKTOP*/}
           <Card className={"kogito--desktop__files-card"}>

@@ -17,5 +17,7 @@
 export enum Constants {
   GITHUB_URL = "https://github.com",
   VSCODE_EXTENSION_PACKAGE_NAME = "kiegroup.vscode-extension-pack-kogito-kie-editors",
-  ONLINE_EDITOR_URL = "https://kiegroup.github.io/kogito-online"
+  ONLINE_EDITOR_URL = "https://kiegroup.github.io/kogito-online",
+  KOGITO_TOOLING_RELEASES_URL = "https://github.com/kiegroup/kogito-tooling/releases",
+  CHROME_EXTENSIONS_TAB = "chrome://extensions"
 }
