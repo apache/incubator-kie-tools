@@ -18,7 +18,7 @@ import { UNSAVED_FILE_NAME } from "../common/File";
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";
-import { extractFileExtension } from "../common/utils";
+import {extractFileExtension, removeFileExtension} from "../common/utils";
 import { DesktopUserData } from "./DesktopUserData";
 import IpcMainEvent = Electron.IpcMainEvent;
 import { Menu } from "./Menu";
@@ -39,7 +39,7 @@ export class FileOperations {
     this.menu = menu;
     this.userData = userData;
 
-    ipcMain.on("returnOpenedFile", (event: IpcMainEvent, data: any) => {
+    ipcMain.on("saveFile", (event: IpcMainEvent, data: any) => {
       if (
         data.action === Actions.SAVE_AS ||
         (data.action === Actions.SAVE && data.file.filePath === UNSAVED_FILE_NAME)
@@ -59,9 +59,32 @@ export class FileOperations {
       }
     });
 
+    ipcMain.on("savePreview", (event: IpcMainEvent, data: any) => {
+      console.info(removeFileExtension(data.filePath) + "." + data.fileType);
+      dialog
+        .showSaveDialog(this.window, {
+          defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
+          title: "Save preview",
+          filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
+        })
+        .then(result => {
+          if (!result.canceled) {
+            this.savePreview(result.filePath!, data.fileContent);
+          }
+        });
+    });
+
+    ipcMain.on("saveThumbnail", (event: IpcMainEvent, data: any) => {
+      if (data.filePath !== UNSAVED_FILE_NAME) {
+        this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
+      }
+    });
+
     ipcMain.on("requestLastOpenedFiles", () => {
-      this.window.webContents.send("returnLastOpenedFiles", {
-        lastOpenedFiles: this.userData.getLastOpenedFiles()
+      this.userData.getLastOpenedFiles().then(lastOpenedFiles => {
+        this.window.webContents.send("returnLastOpenedFiles", {
+          lastOpenedFiles: lastOpenedFiles
+        });
       });
     });
 
@@ -78,7 +101,7 @@ export class FileOperations {
     });
 
     ipcMain.on("mainWindowLoaded", (event: IpcMainEvent) => {
-      if (process.argv.length > 1) {
+      if (process.argv.length > 1 && process.argv[1] !== "dist") {
         this.open(process.argv[1]);
       }
     });
@@ -147,13 +170,9 @@ export class FileOperations {
     });
   }
 
-  public getLastOpenedFiles() {
-    return this.userData.getLastOpenedFiles();
-  }
-
   private saveFile(filePath: string, fileContent: string) {
     Files.write(FS.newFile(filePath), fileContent)
-      .then(v => {
+      .then(() => {
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " saved.");
 
@@ -163,6 +182,20 @@ export class FileOperations {
       })
       .catch(error => {
         console.info("Failed to save file" + filePath + ":" + error);
+      });
+  }
+
+  private savePreview(filePath: string, fileContent: string) {
+    Files.write(FS.newFile(filePath), fileContent)
+      .then(() => {
+        console.info("Preview " + filePath + " saved.");
+
+        this.window.webContents.send("savePreviewSuccess", {
+          filePath: filePath
+        });
+      })
+      .catch(error => {
+        console.info("Failed to save preview" + filePath + ":" + error);
       });
   }
 }

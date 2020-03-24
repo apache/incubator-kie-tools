@@ -17,6 +17,9 @@
 import { UserData } from "../storage/core/UserData";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";
+import { PromisedRecentOpenedFile, RecentOpenedFile } from "../common/RecentOpenedFile";
+import * as path from "path";
+import { createHash } from "crypto";
 
 const NUMBER_OF_FILES_TO_KEEP = 50;
 
@@ -26,6 +29,7 @@ export class DesktopUserData {
   constructor() {
     this.userData = new UserData({
       configName: "config",
+      resourceTypes: ["thumbnails"],
       defaults: {
         lastOpenedFiles: []
       }
@@ -43,14 +47,74 @@ export class DesktopUserData {
     );
   }
 
-  public getLastOpenedFiles(): string[] {
-    const updatedData = this.userData.get("lastOpenedFiles").filter(file => Files.exists(FS.newFile(file)));
+  public saveFileThumbnail(filePath: string, fileType: string, fileContent: string) {
+    const thumbnailFileName =
+      createHash("md5")
+        .update(filePath)
+        .digest("hex") +
+      "." +
+      fileType;
+    this.userData.saveResource("thumbnails", thumbnailFileName, fileContent);
+  }
+
+  public getLastOpenedFiles(): Promise<RecentOpenedFile[]> {
+    const updatedData: string[] = this.userData.get("lastOpenedFiles").filter(file => Files.exists(FS.newFile(file)));
     this.userData.set("lastOpenedFiles", updatedData);
 
-    return updatedData;
+    const validThumbnails = updatedData.map(file =>
+      path.join(
+        this.userData.getBasePath(),
+        "thumbnails",
+        createHash("md5")
+          .update(file)
+          .digest("hex") + ".svg"
+      )
+    );
+    const thumbnailsToRemove: string[] = this.userData
+      .listResources("thumbnails")
+      .filter(thumbnailPath => !validThumbnails.includes(thumbnailPath));
+    this.userData.deleteResources(thumbnailsToRemove);
+
+    return this.getPromisedRecentOpenedFiles(
+      updatedData.map(filePath => {
+        return {
+          filePath: filePath,
+          previewPromise: this.userData
+            .readResource(
+              "thumbnails",
+              createHash("md5")
+                .update(filePath)
+                .digest("hex") + ".svg"
+            )
+            .catch(() => Promise.resolve(""))
+        };
+      })
+    );
+  }
+
+  private getPromisedRecentOpenedFiles(promisedFiles: PromisedRecentOpenedFile[]): Promise<RecentOpenedFile[]> {
+    const filesPath = promisedFiles.map(file => file.filePath);
+    const previewPromises = promisedFiles.map(file => file.previewPromise);
+
+    return Promise.all(previewPromises)
+      .then(resolvedPreviews => {
+        const recentOpenedFiles: RecentOpenedFile[] = [];
+        for (let i = 0; i < resolvedPreviews.length; i++) {
+          if (resolvedPreviews[i] !== "") {
+            recentOpenedFiles.push({ filePath: filesPath[i], preview: resolvedPreviews[i] });
+          }
+        }
+        return recentOpenedFiles;
+      })
+      .catch(e => {
+        console.info("Error while listing last opened files: " + e);
+        this.clear();
+        return Promise.resolve([]);
+      });
   }
 
   public clear() {
-    this.userData.clear();
+    this.userData.clearData();
+    this.userData.clearResources("thumbnails");
   }
 }

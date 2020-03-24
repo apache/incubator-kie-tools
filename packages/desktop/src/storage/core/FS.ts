@@ -26,13 +26,6 @@ import * as util from "util";
 export class FS implements Provider {
   public readonly type = StorageTypes.FS;
 
-  public exists(file: FileMetadata): boolean {
-    if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      return fs.existsSync(file.full_name);
-    }
-    return false;
-  }
-
   public read(file: FileMetadata): Promise<string> {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
       const readFile = util.promisify(fs.readFile);
@@ -47,6 +40,48 @@ export class FS implements Provider {
       return writeFile(file.full_name, content, "utf-8");
     }
     return Promise.resolve();
+  }
+
+  public exists(file: FileMetadata): boolean {
+    if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
+      return fs.existsSync(file.full_name);
+    }
+    return false;
+  }
+
+  public remove(file: FileMetadata): void {
+    if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
+      if (this.isDirectory(file)) {
+        return fs.rmdirSync(file.full_name);
+      } else {
+        return fs.unlinkSync(file.full_name);
+      }
+    }
+  }
+
+  public list(directory: FileMetadata): FileMetadata[] {
+    const result: FileMetadata[] = [];
+
+    if (directory.storage.valueOf() === StorageTypes.FS.valueOf()) {
+      fs.readdirSync(directory.full_name).forEach(currentFile => {
+        const currentFileFullPath = path.join(directory.full_name, currentFile);
+        const currentFileObj: FileMetadata = FS.newFile(currentFileFullPath);
+
+        result.push(currentFileObj);
+        if (this.isDirectory(currentFileObj)) {
+          result.push(...this.list(currentFileObj));
+        }
+      });
+    }
+
+    return result;
+  }
+
+  public isDirectory(file: FileMetadata): boolean {
+    if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
+      return fs.lstatSync(file.full_name).isDirectory();
+    }
+    return false;
   }
 
   public static newFile(fullPath: string) {

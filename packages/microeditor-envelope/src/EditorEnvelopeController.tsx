@@ -58,7 +58,8 @@ export class EditorEnvelopeController {
           this.editorEnvelopeView!.setLoading();
           editor
             .setContent(contentPath, editorContent.content)
-            .finally(() => this.editorEnvelopeView!.setLoadingFinished());
+            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
+            .then(() => self.notify_ready());
         }
       },
       receive_contentRequest: () => {

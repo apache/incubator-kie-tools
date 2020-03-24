@@ -55,6 +55,7 @@
   justify-content: center;
   align-items: center;
   padding: 1em;
+  left: 0;
 }
 
 .kogito--desktop__actions-gallery {
@@ -87,18 +88,26 @@
 .kogito-desktop__file-gallery {
   --pf-l-gallery--GridTemplateColumns: repeat(
     auto-fill,
-    calc(var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--md))
+    calc(
+      var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) +
+        var(--pf-global--spacer--md)
+    )
   );
   --pf-l-gallery--GridTemplateRows: repeat(
     auto-fill,
-    calc(var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--md))
+    calc(
+      var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) +
+        var(--pf-global--spacer--md)
+    )
   );
-
 }
 
 .kogito--desktop__file-img {
-  max-height: var(--pf-global--spacer--3xl);
-  max-width: 100%;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: calc(var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl));
+  width: 100%;
 }
 
 .kogito--desktop__filename {

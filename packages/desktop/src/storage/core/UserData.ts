@@ -17,34 +17,98 @@
 import * as electron from "electron";
 import * as path from "path";
 import * as fs from "fs";
+import { Files } from "./Files";
+import { FS } from "./FS";
 
 export class UserData {
-  private readonly path: string;
+  private readonly basePath: string;
+  private readonly dataPath: string;
   private readonly defaults: any;
+  private readonly resourceTypes: string[];
 
-  constructor(options: { configName: string; defaults: any }) {
-    const userDataPath = (electron.app || electron.remote.app).getPath("userData");
-
-    this.path = path.join(userDataPath, options.configName + ".json");
+  constructor(options: { configName: string; resourceTypes: string[], defaults: any }) {
+    this.basePath = (electron.app || electron.remote.app).getPath("userData");
+    this.dataPath = path.join(this.basePath, options.configName + ".json");
     this.defaults = options.defaults;
+    this.resourceTypes = options.resourceTypes;
   }
 
   public get(key: string): any {
-    return this.parseDataFile(this.path, this.defaults)[key];
+    return this.parseDataFile(this.dataPath, this.defaults)[key];
   }
 
-  public set(key: string, value: any): void {
-    const data = this.parseDataFile(this.path, this.defaults);
+  public set(key: string, value: any) {
+    const data = this.parseDataFile(this.dataPath, this.defaults);
     data[key] = value;
-    fs.writeFileSync(this.path, JSON.stringify(data));
+    fs.writeFileSync(this.dataPath, JSON.stringify(data));
   }
 
-  public clear() {
+  public saveResource(type: string, fileName: string, fileContent: string) {
+    const resourcePath = path.join(this.basePath, type, fileName);
+    Files.write(FS.newFile(resourcePath), fileContent)
+      .then(() => {
+        console.info("User resource " + resourcePath + " saved.");
+      })
+      .catch(error => {
+        console.info("Failed to save user resource" + resourcePath + ":" + error);
+      });
+  }
+
+  public readResource(type: string, fileName: string): Promise<string> {
+    this.createResourceFolderIfNecessary(type);
+    const resourcePath = path.join(this.basePath, type, fileName);
+    return Files.read(FS.newFile(resourcePath));
+  }
+
+  public listResources(type: string): string[] {
+    this.createResourceFolderIfNecessary(type);
+    return Files.list(FS.newFile(path.join(this.basePath, type))).map(file => file.full_name);
+  }
+
+  public deleteResources(files: string[]) {
+    files.forEach(file => {
+      Files.delete(FS.newFile(file));
+    });
+  }
+
+  public clearData() {
     const data = JSON.parse(JSON.stringify(this.defaults));
-    fs.writeFileSync(this.path, JSON.stringify(data));
+    fs.writeFileSync(this.dataPath, JSON.stringify(data));
+  }
+
+  public clearResources(...resourceTypes) {
+    resourceTypes.forEach(resourceType => {
+      this.createResourceFolderIfNecessary(resourceType);
+      const resourceTypeDir = path.join(this.basePath, resourceType);
+      Files.delete(FS.newFile(resourceTypeDir));
+    });
+  }
+
+  public getBasePath() {
+    return this.basePath;
+  }
+
+  private createResourceFolderIfNecessary(type: string) {
+    const resourceTypeDir = path.join(this.getBasePath(), type);
+    if (!fs.existsSync(resourceTypeDir)) {
+      fs.mkdirSync(resourceTypeDir);
+    }
+  }
+
+  private createDataFileIfNecessary() {
+    if (!fs.existsSync(this.dataPath)) {
+      fs.writeFileSync(this.dataPath, JSON.stringify(this.defaults));
+      return true;
+    }
+
+    return false;
   }
 
   private parseDataFile(filePath: string, defaults: any) {
+    if (this.createDataFileIfNecessary()) {
+      return this.defaults;
+    }
+
     try {
       return JSON.parse(fs.readFileSync(filePath).toString());
     } catch (error) {

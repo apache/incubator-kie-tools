@@ -48,4 +48,26 @@ export class Files {
     }
     return false;
   }
+
+  public static list(directory: FileMetadata): FileMetadata[] {
+    const provider = this.providers.get(directory.storage);
+    if (provider) {
+      return provider.list(directory);
+    }
+    return [];
+  }
+
+  public static delete(fileOrDir: FileMetadata) {
+    const provider = this.providers.get(fileOrDir.storage);
+    if (provider) {
+      if (provider.isDirectory(fileOrDir)) {
+        provider
+          .list(fileOrDir)
+          .reverse()
+          .forEach(file => provider.remove(file));
+      } else {
+        provider.remove(fileOrDir);
+      }
+    }
+  }
 }

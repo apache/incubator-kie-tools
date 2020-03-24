@@ -30,5 +30,5 @@ MicroEditorEnvelope.init({
     }
   },
   editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
-  editorContext: { channel: ChannelType.ONLINE } //TODO Change to DESKTOP after editors are modified
+  editorContext: { channel: ChannelType.DESKTOP }
 });

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {useCallback, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 import { EditorToolbar } from "./EditorToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
@@ -30,56 +30,95 @@ interface Props {
   onHome: () => void;
 }
 
-enum ActionType {
+enum ContentRequestActionType {
   NONE,
   SAVE,
   DOWNLOAD,
   COPY
 }
 
+enum PreviewRequestActionType {
+  NONE,
+  SAVE,
+  THUMBNAIL
+}
+
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
-// FIXME: This action should be moved inside the React hooks lifecycle.
-let action = ActionType.NONE;
-let saveData: any;
+// FIXME: These variables should be moved inside the React hooks lifecycle.
+let contentRequestAction = ContentRequestActionType.NONE;
+let contentRequestData: any;
+
+let previewRequestAction = PreviewRequestActionType.NONE;
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
   const editorRef = useRef<EditorRef>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
-  const [saveSuccessAlertVisible, setSaveSuccessAlertVisible] = useState(false);
+  const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
+  const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
 
   const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
 
-  const requestSave = useCallback(() => {
-    action = ActionType.SAVE;
+  const requestSaveFile = useCallback(() => {
+    contentRequestAction = ContentRequestActionType.SAVE;
     editorRef.current?.requestContent();
   }, [editorRef.current]);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    action = ActionType.COPY;
+    contentRequestAction = ContentRequestActionType.COPY;
     editorRef.current?.requestContent();
   }, [editorRef.current]);
 
-  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
-  const closeSaveSuccessAlert = useCallback(() => setSaveSuccessAlertVisible(false), []);
+  const requestSavePreview = useCallback(() => {
+    previewRequestAction = PreviewRequestActionType.SAVE;
+    editorRef.current?.requestPreview();
+  }, [editorRef.current]);
 
-  const onContentResponse = useCallback((content: string) => {
-    if (action === ActionType.SAVE) {
-      saveData.file = { filePath: context.file!.filePath, fileType: context.file!.fileType, fileContent: content };
-      ipc.send("returnOpenedFile", saveData);
-    } else if (action === ActionType.COPY && copyContentTextArea.current) {
-      copyContentTextArea.current.value = content;
-      copyContentTextArea.current.select();
-      if (document.execCommand("copy")) {
-        setCopySuccessAlertVisible(true);
+  const requestThumbnailPreview = useCallback(() => {
+    previewRequestAction = PreviewRequestActionType.THUMBNAIL;
+    editorRef.current?.requestPreview();
+  }, [editorRef.current]);
+
+  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
+  const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
+  const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
+
+  const onContentResponse = useCallback(
+    (content: string) => {
+      if (contentRequestAction === ContentRequestActionType.SAVE) {
+        contentRequestData.file = {
+          filePath: context.file!.filePath,
+          fileType: context.file!.fileType,
+          fileContent: content
+        };
+        ipc.send("saveFile", contentRequestData);
+      } else if (contentRequestAction === ContentRequestActionType.COPY && copyContentTextArea.current) {
+        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.select();
+        if (document.execCommand("copy")) {
+          setCopySuccessAlertVisible(true);
+        }
       }
-    }
-  }, []);
+    },
+    [ipc, contentRequestData, copyContentTextArea.current, context.file!.filePath, context.file!.fileType]
+  );
+
+  const onPreviewResponse = useCallback(
+    preview => {
+      if (previewRequestAction === PreviewRequestActionType.SAVE) {
+        ipc.send("savePreview", { filePath: context.file!.filePath, fileType: "svg", fileContent: preview });
+      } else if (previewRequestAction === PreviewRequestActionType.THUMBNAIL) {
+        ipc.send("saveThumbnail", { filePath: context.file!.filePath, fileType: "svg", fileContent: preview });
+      }
+    },
+    [ipc, previewRequestAction, context.file!.filePath]
+  );
 
   useEffect(() => {
-    if (closeCopySuccessAlert) {
+    if (copySuccessAlertVisible) {
       const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
       return () => clearInterval(autoCloseCopySuccessAlert);
     }
@@ -87,37 +126,38 @@ export function EditorPage(props: Props) {
     return () => {
       /* Do nothing */
     };
-  }, [copySuccessAlertVisible]);
+  }, [copySuccessAlertVisible, closeCopySuccessAlert]);
 
   useEffect(() => {
-    if (closeSaveSuccessAlert) {
-      const autoCloseSaveSuccessAlert = setTimeout(closeSaveSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
-      return () => clearInterval(autoCloseSaveSuccessAlert);
+    if (saveFileSuccessAlertVisible) {
+      const autoCloseSaveFileSuccessAlert = setTimeout(closeSaveFileSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseSaveFileSuccessAlert);
     }
 
     return () => {
       /* Do nothing */
     };
-  }, [saveSuccessAlertVisible]);
+  }, [saveFileSuccessAlertVisible, closeSaveFileSuccessAlert]);
+
+  useEffect(() => {
+    if (savePreviewSuccessAlertVisible) {
+      const autoCloseSavePreviewSuccessAlert = setTimeout(closeSavePreviewSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseSavePreviewSuccessAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [savePreviewSuccessAlertVisible, closeSavePreviewSuccessAlert]);
 
   useEffect(() => {
     ipc.on("requestOpenedFile", (event: any, data: any) => {
-      saveData = data;
-      requestSave();
+      contentRequestData = data;
+      requestSaveFile();
     });
 
     return () => {
       ipc.removeAllListeners("requestOpenedFile");
-    };
-  }, [ipc]);
-
-  useEffect(() => {
-    ipc.on("saveFileSuccess", () => {
-      setSaveSuccessAlertVisible(true);
-    });
-
-    return () => {
-      ipc.removeAllListeners("saveFileSuccess");
     };
   }, [ipc]);
 
@@ -128,6 +168,47 @@ export function EditorPage(props: Props) {
 
     return () => {
       ipc.removeAllListeners("copyContentToClipboard");
+    };
+  }, [ipc]);
+
+  useEffect(() => {
+    ipc.on("savePreview", () => {
+      requestSavePreview();
+    });
+
+    return () => {
+      ipc.removeAllListeners("savePreview");
+    };
+  }, [ipc]);
+
+  useEffect(() => {
+    ipc.on("saveThumbnail", () => {
+      requestThumbnailPreview();
+    });
+
+    return () => {
+      ipc.removeAllListeners("saveThumbnail");
+    };
+  }, [ipc, requestThumbnailPreview]);
+
+  useEffect(() => {
+    ipc.on("saveFileSuccess", () => {
+      setSaveFileSuccessAlertVisible(true);
+      requestThumbnailPreview();
+    });
+
+    return () => {
+      ipc.removeAllListeners("saveFileSuccess");
+    };
+  }, [ipc, requestThumbnailPreview]);
+
+  useEffect(() => {
+    ipc.on("savePreviewSuccess", () => {
+      setSavePreviewSuccessAlertVisible(true);
+    });
+
+    return () => {
+      ipc.removeAllListeners("savePreviewSuccess");
     };
   }, [ipc]);
 
@@ -149,16 +230,31 @@ export function EditorPage(props: Props) {
                 />
               </div>
             )}
-            {saveSuccessAlertVisible && (
+            {saveFileSuccessAlertVisible && (
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant="success"
                   title={"File saved successfully!"}
-                  action={<AlertActionCloseButton onClose={closeSaveSuccessAlert} />}
+                  action={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
                 />
               </div>
             )}
-            <Editor ref={editorRef} editorType={props.editorType} onContentResponse={onContentResponse} />
+            {savePreviewSuccessAlertVisible && (
+              <div className={"kogito--alert-container"}>
+                <Alert
+                  variant="success"
+                  title={"Preview saved successfully!"}
+                  action={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
+                />
+              </div>
+            )}
+            <Editor
+              ref={editorRef}
+              editorType={props.editorType}
+              onContentResponse={onContentResponse}
+              onPreviewResponse={onPreviewResponse}
+              onReady={requestThumbnailPreview}
+            />
           </StackItem>
         </Stack>
         <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />

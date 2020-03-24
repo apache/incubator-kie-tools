@@ -29,6 +29,7 @@ import { File } from "../common/File";
 import { DesktopRouter } from "./common/DesktopRouter";
 import * as electron from "electron";
 import { FileActions } from "./common/FileActions";
+import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
 
 interface Props {
   file?: File;
@@ -38,6 +39,8 @@ enum Pages {
   HOME,
   EDITOR
 }
+
+const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 export function App(props: Props) {
   const [page, setPage] = useState(Pages.HOME);
@@ -59,12 +62,38 @@ export function App(props: Props) {
 
   const fileActions = useMemo(() => new FileActions(ipc), [ipc]);
 
+  const Router = () => {
+    switch (page) {
+      case Pages.HOME:
+        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
+      case Pages.EDITOR:
+        return <EditorPage editorType={file!.fileType} onHome={goToHomePage} />;
+      default:
+        return <></>;
+    }
+  };
+
+  const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
+
+  const closeInvalidFileTypeErrorAlert = useCallback(() => setInvalidFileTypeErrorVisible(false), []);
+
+  useEffect(() => {
+    if (invalidFileTypeErrorVisible) {
+      const autoCloseInvalidFileTypeErrorAlert = setTimeout(closeInvalidFileTypeErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseInvalidFileTypeErrorAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
+
   const openFile = useCallback(
-    (fileToOpen: File) => {
-      setFile(fileToOpen);
-      setPage(Pages.EDITOR);
-    },
-    [page, file]
+      (fileToOpen: File) => {
+        setFile(fileToOpen);
+        setPage(Pages.EDITOR);
+      },
+      [page, file]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -79,7 +108,11 @@ export function App(props: Props) {
 
   useEffect(() => {
     ipc.on("openFile", (event: any, data: any) => {
-      openFile(data.file);
+      if (desktopRouter.getLanguageData(data.file.fileType)) {
+        openFile(data.file);
+      } else {
+        setInvalidFileTypeErrorVisible(true);
+      }
     });
 
     return () => {
@@ -97,27 +130,19 @@ export function App(props: Props) {
     };
   }, [ipc, file]);
 
-  const Router = () => {
-    switch (page) {
-      case Pages.HOME:
-        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
-      case Pages.EDITOR:
-        return <EditorPage editorType={file!.fileType} onHome={goToHomePage} />;
-      default:
-        return <></>;
-    }
-  };
-
   const preventDefaultEvent = useCallback(ev => {
     ev.preventDefault();
   }, []);
 
-  const dragAndDropFileEvent = useCallback(ev => {
-    ev.preventDefault();
-    if (ev.dataTransfer) {
-      openFileByPath(ev.dataTransfer.files[0].path);
-    }
-  }, [openFileByPath]);
+  const dragAndDropFileEvent = useCallback(
+      ev => {
+        ev.preventDefault();
+        if (ev.dataTransfer) {
+          openFileByPath(ev.dataTransfer.files[0].path);
+        }
+      },
+      [openFileByPath]
+  );
 
   useEffect(() => {
     document.addEventListener("dragover", preventDefaultEvent);
@@ -141,6 +166,15 @@ export function App(props: Props) {
         file: file
       }}
     >
+      {invalidFileTypeErrorVisible && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title="This file extension is not supported."
+            action={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+          />
+        </div>
+      )}
       <Router />
     </GlobalContext.Provider>
   );

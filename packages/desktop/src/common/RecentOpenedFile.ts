@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-import { StorageTypes } from "./StorageTypes";
-import { FileMetadata } from "./FileMetadata";
+export interface RecentOpenedFile {
+    filePath: string;
+    preview: string;
+}
 
-export interface Provider {
-  readonly type: StorageTypes;
-
-  read(file: FileMetadata): Promise<string>;
-
-  write(file: FileMetadata, content: string): Promise<void>;
-
-  exists(file: FileMetadata): boolean;
-
-  remove(file: FileMetadata): void;
-
-  list(file: FileMetadata): FileMetadata[];
-
-  isDirectory(file: FileMetadata): boolean;
+export interface PromisedRecentOpenedFile {
+    filePath: string;
+    previewPromise: Promise<string>;
 }

@@ -33,5 +33,9 @@ export function removeFileExtension(fileName: string) {
 }
 
 export function removeDirectories(filePath: string) {
-  return filePath.split(process.platform === 'win32' ? '\\\\' : '/').pop();
+  return filePath.split(getPathSeparator()).pop();
+}
+
+export function getPathSeparator() {
+  return navigator.appVersion.indexOf("Win") !== -1 ? "\\" : "/";
 }

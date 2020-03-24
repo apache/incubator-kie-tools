@@ -42,7 +42,6 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
             this.xmlFormatter
           )
         );
-        messageBus.notify_ready();
         return Promise.resolve();
       });
     });

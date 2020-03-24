@@ -17,15 +17,18 @@
 import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import {ResourceContent, ResourcesList, ChannelType, ResourceContentRequest} from "@kogito-tooling/core-api";
+import { ResourceContent, ResourcesList, ChannelType, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 interface Props {
   editorType: string;
   onContentResponse: (content: string) => void;
+  onPreviewResponse: (previewSvg: string) => void;
+  onReady: () => void;
 }
 
 export type EditorRef = {
   requestContent(): void;
+  requestPreview(): void;
 } | null;
 
 const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (props, forwardedRef) => {
@@ -55,6 +58,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       },
       receive_ready() {
         console.info(`Editor is ready`);
+        props.onReady();
       },
       receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
         console.debug(`Resource Content Request`);
@@ -63,9 +67,13 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
       receive_resourceListRequest(globPattern: string) {
         console.debug(`Resource List Request`);
         self.respond_resourceList(new ResourcesList(globPattern, []));
+      },
+      receive_previewRequest(previewSvg: string) {
+        console.debug("received preview");
+        props.onPreviewResponse(previewSvg);
       }
     }));
-  }, [props.editorType, context.file?.fileContent, props.onContentResponse]);
+  }, []);
 
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
@@ -80,7 +88,10 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
 
   useImperativeHandle(
     forwardedRef,
-    () => ({ requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse() }),
+    () => ({
+      requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
+      requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse()
+    }),
     [envelopeBusOuterMessageHandler]
   );
 

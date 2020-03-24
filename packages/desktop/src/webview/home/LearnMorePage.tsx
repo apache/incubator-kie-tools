@@ -100,6 +100,19 @@ export function LearnMorePage() {
                   Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
+              <Text component={TextVariants.p}>
+                <Button
+                  className={"''"}
+                  component={"a"}
+                  isBlock={false}
+                  isInline={true}
+                  type={"button"}
+                  variant={"link"}
+                  onClick={event => externalLink(event, "http://learn-dmn-in-15-minutes.com/")}
+                >
+                  Learn DMN in 15 minutes <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                </Button>
+              </Text>
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>

@@ -108,6 +108,14 @@ export class Menu {
     enabled: false
   };
 
+  private readonly savePreviewAsMenu = {
+    label: "Save Preview As...",
+    click: () => {
+      this.window.webContents.send("savePreview");
+    },
+    enabled: false
+  };
+
   private readonly closeWindowMenu = {
     label: "Close Window",
     accelerator: "Command+W",
@@ -131,6 +139,7 @@ export class Menu {
       this.openMenu,
       this.saveMenu,
       this.saveAsMenu,
+      this.savePreviewAsMenu,
       {
         type: "separator"
       },
@@ -145,6 +154,7 @@ export class Menu {
       this.openMenu,
       this.saveMenu,
       this.saveAsMenu,
+      this.savePreviewAsMenu,
       {
         type: "separator"
       },
@@ -162,9 +172,14 @@ export class Menu {
         click: () => {
           this.window.webContents.send("copyContentToClipboard");
         }
-      }
-    ],
-    enabled: false
+      },
+      { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+      { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ] as MenuItemConstructorOptions[]
   };
 
   private readonly devMenu = {
@@ -241,6 +256,7 @@ export class Menu {
   public setFileMenusEnabled(enabled: boolean) {
     this.getMenuItem("Save", this.menu)!.enabled = enabled;
     this.getMenuItem("Save As...", this.menu)!.enabled = enabled;
+    this.getMenuItem("Save Preview As...", this.menu)!.enabled = enabled;
     this.getMenuItem("Copy source", this.menu)!.enabled = enabled;
   }
 
@@ -269,11 +285,21 @@ export class Menu {
       template.unshift(this.macOSAppMenu);
     }
 
-    if (!app.isPackaged) {
+    //if (!app.isPackaged) {
       template.push(this.devMenu);
-    }
+    //}
 
     this.menu = ElectronMenu.buildFromTemplate(template);
     ElectronMenu.setApplicationMenu(this.menu);
+
+    // These menus cannot be hidden on MacOS, otherwise the shortcuts will not work
+    if (process.platform !== "darwin") {
+      this.getMenuItem("Undo", this.menu)!.visible = false;
+      this.getMenuItem("Redo", this.menu)!.visible = false;
+      this.getMenuItem("Cut", this.menu)!.visible = false;
+      this.getMenuItem("Copy", this.menu)!.visible = false;
+      this.getMenuItem("Paste", this.menu)!.visible = false;
+      this.getMenuItem("Select All", this.menu)!.visible = false;
+    }
   }
 }

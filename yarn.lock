@@ -1046,6 +1046,38 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@kogito-tooling/core-api@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/core-api/-/core-api-0.2.10.tgz#86dc5d0d2acc8dfe9137ee90cefbfba4ca697f07"
+  integrity sha512-C6l8/nx7nyNBRcOqN9pkMvCcfhv/W8+dgBsI5ZlNsdwmf50i90r5J+QFU/kWkpGv3zyJvktKlQbllecHo7B5sg==
+  dependencies:
+    react "16.12.0"
+    react-dom "16.12.0"
+
+"@kogito-tooling/kie-bc-editors@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.2.10.tgz#7070581ea1e11f4532025e3cf2a009c317dec2ee"
+  integrity sha512-HJPMWlIZMB6Y3MHCOaB1IQ5HA9tpDhIqb/yXLZSTHf2MTqOtmDyYCquymtcmLbCau9xWE3RQRqOIsi8pI99Ypg==
+  dependencies:
+    "@kogito-tooling/core-api" "0.2.10"
+    "@kogito-tooling/microeditor-envelope" "0.2.10"
+
+"@kogito-tooling/microeditor-envelope-protocol@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope-protocol/-/microeditor-envelope-protocol-0.2.10.tgz#c5b11d318f61af2fa5b5445f66aa9e2ffc4a423a"
+  integrity sha512-5L1lkb6EGzDYFnf0FI4cU50Dttm3QYy84OJmp9n5uTqECOzrWupEJJc5MlFStFRKhgFnwrpjF7/GfS3xCr47BQ==
+  dependencies:
+    "@kogito-tooling/core-api" "0.2.10"
+
+"@kogito-tooling/microeditor-envelope@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope/-/microeditor-envelope-0.2.10.tgz#56664f075ed981265b3aec0ab3ad8e4368294e04"
+  integrity sha512-c2UcdCba66WJBDuRx1nlUgc0I6s0d7WpRetAsib2t26x9Kn4bY6VqPiRT2qHVman/0JwORPlGeSXF5EreP9wGw==
+  dependencies:
+    "@kogito-tooling/core-api" "0.2.10"
+    "@kogito-tooling/microeditor-envelope-protocol" "0.2.10"
+    "@patternfly/patternfly" "2.40.2"
+
 "@lerna/add@3.18.0":
   version "3.18.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.18.0.tgz#86e38f14d7a0a7c61315dccb402377feb1c9db83"

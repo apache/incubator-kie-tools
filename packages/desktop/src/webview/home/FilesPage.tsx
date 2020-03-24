@@ -39,7 +39,9 @@ import {
   Select,
   SelectOption,
   Form,
-  FormGroup
+  FormGroup,
+  StackItem,
+  AlertActionCloseButton
 } from "@patternfly/react-core";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
@@ -51,6 +53,7 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
+import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 
 enum InputFileUrlState {
   VALID,
@@ -65,15 +68,81 @@ interface Props {
   openFileByPath: (filePath: string) => void;
 }
 
+const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
+
+enum ImportFileErrorType {
+  NONE,
+  FETCH,
+  RESPONSE
+}
+
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
-  const [lastOpenedFiles, setLastOpenedFiles] = useState<string[]>([]);
-  const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<string[]>([]);
+  const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
+  const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
 
   const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
 
+  const [url, setURL] = useState("");
+  const [importFileErrorDetails, setImportFileErrorDetails] = useState<{
+    type: ImportFileErrorType;
+    statusCode?: number;
+    description?: string;
+  }>({ type: ImportFileErrorType.NONE });
+
+  const closeImportFileErrorAlert = useCallback(() => setImportFileErrorDetails({ type: ImportFileErrorType.NONE }), []);
+
   useEffect(() => {
-    ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: string[] }) => {
+    if (importFileErrorDetails.type !== ImportFileErrorType.NONE) {
+      const autoCloseImportFileErrorAlert = setTimeout(closeImportFileErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseImportFileErrorAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [importFileErrorDetails, closeImportFileErrorAlert]);
+
+  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
+  const [searchFilter, setSearchFilter] = useState("");
+  const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
+
+  const applyFilter = useCallback(
+    (files: RecentOpenedFile[]) => {
+      const filteredFiles = files
+        .filter(file =>
+          removeDirectories(file.filePath)
+            ?.toUpperCase()
+            .includes(searchFilter.toUpperCase())
+        )
+        .filter(
+          file =>
+            typeFilterSelect.value === "All" ||
+            file.filePath.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
+        );
+
+      if (sortAlphaFilter) {
+        return filteredFiles.sort((file1, file2) => {
+          const f1 = file1.filePath.toLowerCase();
+          const f2 = file2.filePath.toLowerCase();
+
+          if (f1 < f2) {
+            return -1;
+          } else if (f1 > f2) {
+            return 1;
+          }
+
+          return 0;
+        });
+      }
+
+      return filteredFiles;
+    },
+    [searchFilter, typeFilterSelect, sortAlphaFilter]
+  );
+
+  useEffect(() => {
+    ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
       setLastOpenedFiles(data.lastOpenedFiles);
       setFilteredLastOpenedFiles(applyFilter(data.lastOpenedFiles));
     });
@@ -83,47 +152,7 @@ export function FilesPage(props: Props) {
     return () => {
       ipc.removeAllListeners("returnLastOpenedFiles");
     };
-  }, [ipc]);
-
-  const [url, setURL] = useState("");
-
-  const showResponseError = useCallback((statusCode: number, description: string) => {
-    ReactDOM.render(
-      <div className={"kogito--alert-container"}>
-        <Alert variant={AlertVariant.danger} title="An error happened while fetching your file">
-          <br />
-          <b>Error details: </b>
-          {statusCode}
-          {statusCode && description && " - "}
-          {description}
-        </Alert>
-      </div>,
-      document.getElementById("app")!
-    );
-  }, []);
-
-  const showFetchError = useCallback((description: string) => {
-    ReactDOM.render(
-      <div className={"kogito--alert-container"}>
-        <Alert variant={AlertVariant.danger} title="An unexpected error happened while trying to fetch your file">
-          <br />
-          <b>Error details: </b>
-          {description}
-          <br />
-          <br />
-          <b>Possible cause: </b>
-          The URL to your file must allow CORS in its response, which should contain the following header:
-          <br />
-          <pre>Access-Control-Allow-Origin: *</pre>
-        </Alert>
-      </div>,
-      document.getElementById("app")!
-    );
-  }, []);
-
-  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
-  const [searchFilter, setSearchFilter] = useState("");
-  const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
+  }, [ipc, applyFilter]);
 
   const typeFilterOptions = useMemo(() => [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }], []);
 
@@ -140,50 +169,26 @@ export function FilesPage(props: Props) {
         isExpanded: isExpanded,
         value: typeFilterSelect.value
       });
-      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
     },
-    [typeFilterSelect, lastOpenedFiles]
+    [typeFilterSelect]
   );
 
   const onChangeSearchFilter = useCallback(
     newValue => {
       setSearchFilter(newValue);
-      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
     },
     [lastOpenedFiles]
   );
 
-  const applyFilter = useCallback(
-    (files: string[]) => {
-      const filteredFiles = files
-        .filter(file =>
-          removeDirectories(file)
-            ?.toUpperCase()
-            .includes(searchFilter.toUpperCase())
-        )
-        .filter(
-          file => typeFilterSelect.value === "All" || file.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
-        );
+  useEffect(() => {
+    if (lastOpenedFiles.filter !== undefined) { // used to avoid MacOS issue during first load
+      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
+    }
 
-      if (sortAlphaFilter) {
-        return filteredFiles.sort((file1, file2) => {
-          const f1 = file1.toLowerCase();
-          const f2 = file2.toLowerCase();
-
-          if (f1 < f2) {
-            return -1;
-          } else if (f1 > f2) {
-            return 1;
-          }
-
-          return 0;
-        });
-      }
-
-      return filteredFiles;
-    },
-    [searchFilter, typeFilterSelect, sortAlphaFilter]
-  );
+    return () => {
+      /* Do nothing. */
+    };
+  }, [applyFilter, lastOpenedFiles]);
 
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
 
@@ -211,34 +216,38 @@ export function FilesPage(props: Props) {
   }, []);
 
   const validatedInputUrl = useMemo(
-      () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
-      [inputFileUrlState]
+    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    [inputFileUrlState]
   );
 
   const importFileByUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
       fetch(url)
-          .then(response => {
-            if (response.ok) {
-              response.text().then(content => {
-                const file = {
-                  filePath: UNSAVED_FILE_NAME,
-                  fileType: extractFileExtension(url)!,
-                  fileContent: content
-                };
+        .then(response => {
+          if (response.ok) {
+            response.text().then(content => {
+              const file = {
+                filePath: UNSAVED_FILE_NAME,
+                fileType: extractFileExtension(url)!,
+                fileContent: content
+              };
 
-                ipc.send("enableFileMenus");
-                props.openFile(file);
-              });
-            } else {
-              showResponseError(response.status, response.statusText);
-            }
-          })
-          .catch(error => {
-            showFetchError(error.toString());
-          });
+              ipc.send("setFileMenusEnabled", { enabled: true });
+              props.openFile(file);
+            });
+          } else {
+            setImportFileErrorDetails({
+              type: ImportFileErrorType.RESPONSE,
+              statusCode: response.status,
+              description: response.statusText
+            });
+          }
+        })
+        .catch(error => {
+          setImportFileErrorDetails({ type: ImportFileErrorType.FETCH, description: error.toString() });
+        });
     }
-  }, [validatedInputUrl, inputFileUrlState, url, props.openFile, showResponseError, showFetchError]);
+  }, [validatedInputUrl, inputFileUrlState, url, props.openFile]);
 
   const importFileByUrlFormSubmit = useCallback(
     e => {
@@ -273,6 +282,34 @@ export function FilesPage(props: Props) {
   return (
     <>
       <PageSection>
+        {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
+          <div className={"kogito--alert-container"}>
+            <Alert
+              variant={AlertVariant.danger}
+              title="An error happened while fetching your file"
+              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+            >
+              <br />
+              <b>Error details: </b>
+              {importFileErrorDetails.statusCode}
+              {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
+              {importFileErrorDetails.description}
+            </Alert>
+          </div>
+        )}
+        {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
+          <div className={"kogito--alert-container"}>
+            <Alert
+              variant={AlertVariant.danger}
+              title="An unexpected error happened while trying to fetch your file"
+              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+            >
+              <br />
+              <b>Error details: </b>
+              {importFileErrorDetails.description}
+            </Alert>
+          </div>
+        )}
         <TextContent>
           <Title size={"2xl"} headingLevel={"h2"}>
             {"Create new file"}
@@ -470,30 +507,30 @@ export function FilesPage(props: Props) {
 
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery gutter="lg" className="kogito-desktop__file-gallery">
-            {filteredLastOpenedFiles.map(filePath => (
-              <Card
-                key={filePath}
-                isCompact={true}
-                onClick={() => props.openFileByPath(filePath)}
-                className={"kogito--desktop__files-card"}
-              >
-                <CardBody>
-                  <Bullseye>
-                    <img
-                      title={filePath}
-                      src={"images/" + extractFileExtension(filePath) + "_thumbnail.png"}
-                      className="kogito--desktop__file-img"
-                    />
-                  </Bullseye>
-                </CardBody>
-                <CardFooter>
-                  <Tooltip content={<div>{filePath}</div>}>
+            {filteredLastOpenedFiles.map(file => (
+              <Tooltip content={<div>{file.filePath}</div>} key={file.filePath}>
+                <Card
+                  isCompact={true}
+                  onClick={() => props.openFileByPath(file.filePath)}
+                  className={"kogito--desktop__files-card"}
+                >
+                  <CardBody>
+                    <Bullseye>
+                      <div
+                        className={"kogito--desktop__file-img"}
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(file.preview)}")`
+                        }}
+                      />
+                    </Bullseye>
+                  </CardBody>
+                  <CardFooter>
                     <Title headingLevel="h3" size="xs" className="kogito--desktop__filename">
-                      {removeDirectories(filePath)}
+                      {removeDirectories(file.filePath)}
                     </Title>
-                  </Tooltip>
-                </CardFooter>
-              </Card>
+                  </CardFooter>
+                </Card>
+              </Tooltip>
             ))}
           </Gallery>
         )}
