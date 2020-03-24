@@ -69,3 +69,17 @@ Feature: Kogito-jobs-service feature.
      And container log should contain quarkus.infinispan-client.sasl-mechanism = COOLGSSAPI
      And container log should contain quarkus.infinispan-client.server-list = localhost:11111
 
+  Scenario: verify if container fails if event is enabled but there is no Kafka bootstrap server set.
+    When container is started with env
+      | variable            | value |
+      | ENABLE_EVENTS       | true  |
+     Then container log should contain KAFKA_BOOTSTRAP_SERVERS env not found, please set it.
+    
+  Scenario: verify if the events is correctly enabled
+    When container is started with env
+      | variable                      | value           |
+      | SCRIPT_DEBUG                  | true            |
+      | ENABLE_EVENTS                 | true            |
+      | KAFKA_BOOTSTRAP_SERVERS        | localhost:11111 |
+    Then container log should contain bootstrap.servers = [localhost:11111]
+     And container log should contain Connection to node -1 (localhost/127.0.0.1:11111) could not be established.

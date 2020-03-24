@@ -70,4 +70,14 @@ teardown() {
     [ "${result}" = "${expected}" ]
 }
 
+@test "check if the event is correctly set" {
+    export ENABLE_EVENTS="true"
+    export KAFKA_BOOTSTRAP_SERVERS="localhost:9999"
+    configure_jobs_service
 
+    result="${KOGITO_JOBS_PROPS}"
+    expected=" -Dquarkus.profile=events-support -Dmp.messaging.outgoing.kogito-job-service-job-status-events.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS} -Devents-support.quarkus.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVERS}"
+
+    echo "Result is ${result} and expected is ${expected}"
+    [ "${result}" = "${expected}" ]
+}
