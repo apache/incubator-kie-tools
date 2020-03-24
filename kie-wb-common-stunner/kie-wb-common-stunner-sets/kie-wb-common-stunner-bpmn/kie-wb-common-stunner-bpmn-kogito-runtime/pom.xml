@@ -860,32 +860,6 @@
 
   <profiles>
 
-    <!-- Development profile - Not optimized. -->
-    <profile>
-      <id>dev</id>
-      <activation>
-        <property>
-          <name>dev</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
-              <saveSource>false</saveSource>
-              <logLevel>INFO</logLevel>
-              <optimizationLevel>0</optimizationLevel>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <!-- As Dev Profile but also including Source Maps in the assembled webapp. -->
     <profile>
       <id>sources</id>
@@ -902,6 +876,10 @@
             <configuration>
               <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditorWithSourceMap</module>
               <saveSource>true</saveSource>
+              <logLevel>INFO</logLevel>
+              <optimizationLevel>0</optimizationLevel>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
             </configuration>
           </plugin>
           <plugin>
