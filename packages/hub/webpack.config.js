@@ -35,7 +35,15 @@ const commonConfig = {
       { from: "./static/resources", to: "./resources" },
       { from: "./static/images", to: "./images" },
       { from: "./static/index.html", to: "./index.html" },
+      //TODO: Copy the right extension
+      // On build:fast -> Use what?
+      // On build:prod -> use ../vscode-extension-pack-kogito-kie-editors/dist
       { from: "./vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix", to: "./lib" },
+      //TODO: Copy the right Desktop app
+      // On build:fast -> Use what?
+      // On build:prod -> use ../desktop/out
+      // Always call it Business Modeler Preview
+      // Remember to use the right distribution for the environment
     ])
   ],
   module: {
@@ -57,6 +65,7 @@ const commonConfig = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
+      //TODO: Use patternfly shared configuration.
       {
         test: /\.s[ac]ss$/i,
         use: ["style-loader", "css-loader", "sass-loader"]

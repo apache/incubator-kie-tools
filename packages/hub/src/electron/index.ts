@@ -24,7 +24,6 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcMainEvent = Electron.IpcMainEvent;
 
-const desktop_APPLICATION_PATH = applicationPath("lib/Desktop.app");
 const vscode_EXTENSION_PATH = applicationPath(
   "lib/vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix"
 );
@@ -155,7 +154,10 @@ function createWindow() {
     executeCommand({
       macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
       linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${vscode_EXTENSION_PATH.replace(/\\ /g, " ")}"`
+      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${vscode_EXTENSION_PATH.replace(
+        /\\ /g,
+        " "
+      )}"`
     }).then(result => {
       mainWindow.webContents.send("vscode__install_extension_complete", { ...result });
     });
@@ -189,7 +191,11 @@ function createWindow() {
   //
   // DESKTOP
   ipcMain.on("desktop_launch", (e: IpcMainEvent) => {
-    executeCommand({ macOS: `open ${desktop_APPLICATION_PATH}`, windows: "", linux: "" }).then(result => {
+    executeCommand({
+      macOS: `open ${applicationPath("lib/Business Modeler Preview.app")}`,
+      windows: "", //FIXME: Put right command here
+      linux: "" //FIXME: Put right command here
+    }).then(result => {
       mainWindow.webContents.send("desktop__launch_complete", { ...result });
     });
   });
