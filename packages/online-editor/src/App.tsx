@@ -30,6 +30,7 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import "../static/resources/style.css";
+import "../static/resources/spinner.scss";
 import { File } from "./common/File";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 

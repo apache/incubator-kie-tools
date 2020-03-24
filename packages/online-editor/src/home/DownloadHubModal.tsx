@@ -30,7 +30,7 @@ export function DownloadHubModal(props: {}) {
 
   const [redirectToHome, setRedirectToHome] = useState(false);
   const [isDownloadModal, setIsDownloadModal] = useState(false);
-  const [osSelection, setOsSelection] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
+  const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
   const onDownload = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -49,13 +49,21 @@ export function DownloadHubModal(props: {}) {
     [isSelectExpanded]
   );
 
-  const onSelect = useCallback(
-    (e, selection, isPlaceholder) => {
-      setOsSelection(chosenOs(selection));
-      setSelectIsExpanded(false);
-    },
-    [isSelectExpanded, osSelection]
-  );
+  const onSelect = useCallback((e, selection, isPlaceholder) => {
+    setOperationalSystem(chosenOs(selection));
+    setSelectIsExpanded(false);
+  }, []);
+
+  const downloadHubUrl = useMemo(() => {
+    switch (operationalSystem) {
+      case OperatingSystem.MACOS:
+        return `samples/macos.dmn`;
+      case OperatingSystem.WINDOWS:
+        return `samples/windows.dmn`;
+      default:
+        return `samples/linux.dmn`;
+    }
+  }, [operationalSystem]);
 
   const chosenOs = useCallback(
     (selection: string) => {
@@ -68,7 +76,7 @@ export function DownloadHubModal(props: {}) {
           return OperatingSystem.LINUX;
       }
     },
-    [osSelection]
+    [operationalSystem]
   );
 
   const availableOs = useMemo(() => {
@@ -86,6 +94,48 @@ export function DownloadHubModal(props: {}) {
       isPlaceholder: false
     }));
   }, []);
+
+  const selectOperationalSystem = (
+    <Select
+      variant={SelectVariant.single}
+      aria-label="Select Input"
+      onToggle={onToggle}
+      onSelect={onSelect}
+      selections={availableOs.get(operationalSystem)}
+      isExpanded={isSelectExpanded}
+      ariaLabelledBy={"select-os"}
+      isDisabled={false}
+      width={135} // FIXME
+      direction={SelectDirection.up}
+    >
+      {selectOptions.map((option, index) => (
+        <SelectOption
+          isDisabled={option.disabled}
+          key={index}
+          value={option.value}
+          isPlaceholder={option.isPlaceholder}
+        />
+      ))}
+    </Select>
+  );
+
+  const spinner = (
+    <div>
+      <div className="pf-l-bullseye">
+        <div className="pf-c-empty-state pf-m-lg">
+          <div className="pf-u-mb-lg">
+            <div className="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+              <div className="pf-c-spinner__clipper" />
+              <div className="pf-c-spinner__lead-ball" />
+              <div className="pf-c-spinner__tail-ball" />
+            </div>
+          </div>
+          <h5 className="pf-c-title pf-m-lg">Loading...</h5>
+          <div className="pf-c-empty-state__body" />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -129,27 +179,7 @@ export function DownloadHubModal(props: {}) {
           <br />
           <p>Operation System:</p>
           <div>
-            <Select
-              variant={SelectVariant.single}
-              aria-label="Select Input"
-              onToggle={onToggle}
-              onSelect={onSelect}
-              selections={availableOs.get(osSelection)}
-              isExpanded={isSelectExpanded}
-              ariaLabelledBy={"select-os"}
-              isDisabled={false}
-              width={135} // FIXME
-              direction={SelectDirection.up}
-            >
-              {selectOptions.map((option, index) => (
-                <SelectOption
-                  isDisabled={option.disabled}
-                  key={index}
-                  value={option.value}
-                  isPlaceholder={option.isPlaceholder}
-                />
-              ))}
-            </Select>
+            {selectOperationalSystem}
           </div>
         </Modal>
       ) : (
@@ -164,7 +194,13 @@ export function DownloadHubModal(props: {}) {
           ]}
           onClose={onClose}
         >
-          <p>test</p>
+          {spinner}
+          <p>
+            If the download does not begin automatically{" "}
+            <a href={downloadHubUrl} download={`${operationalSystem.toLowerCase()}.dmn`}>
+              click here
+            </a>
+          </p>
         </Modal>
       )}
     </div>
