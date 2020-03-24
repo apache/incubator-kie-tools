@@ -24,7 +24,9 @@ import { Constants } from "../common/Constants";
 import IpcMainEvent = Electron.IpcMainEvent;
 
 const desktop_APPLICATION_PATH = applicationPath("lib/Desktop.app");
-const vscode_EXTENSION_PATH = applicationPath("lib/vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix");
+const vscode_EXTENSION_PATH = applicationPath(
+  "lib/vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix"
+);
 
 app.on("ready", () => {
   createWindow();
@@ -41,6 +43,11 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+interface CommandExecutionResult {
+  success: boolean;
+  output: string;
+}
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -62,25 +69,65 @@ function createWindow() {
   const menu = new Menu(mainWindow, hubUserData);
   menu.setup();
 
+  function checkIfVsCodeIsOpen(): Promise<{ success: boolean; msg: string; isOpen: boolean }> {
+    return new Promise((res, rej) => {
+      const vsCodeLocation = hubUserData.getVsCodeLocation()!;
+      const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
+      child.exec(`ps aux | grep '${vscodeLocationForGrep}'`, (error, stdout, stderr) => {
+        const isOpen = stdout.trim().length !== 0;
+        res({ success: !error, msg: stdout + stderr, isOpen: isOpen });
+      });
+    });
+  }
+
+  function checkIfVsCodeIsOpenWithProposedApiEnabled(): Promise<
+    CommandExecutionResult & { isProposedApiEnabled: boolean }
+  > {
+    return new Promise((res, rej) => {
+      const vsCodeLocation = hubUserData.getVsCodeLocation()!;
+      const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
+      child.exec(
+        `ps aux | grep '${vscodeLocationForGrep}' | grep '\\--enable-proposed-api ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}' `,
+        (error, stdout, stderr) => {
+          const isProposedApiEnabled = stdout.trim().length !== 0;
+          res({ success: !error, output: stdout + stderr, isProposedApiEnabled: isProposedApiEnabled });
+        }
+      );
+    });
+  }
+
+  function openVsCode(): Promise<CommandExecutionResult> {
+    return new Promise((res, rej) => {
+      child.exec(
+        `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --enable-proposed-api ${
+          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        }`,
+        (error, stdout, stderr) => {
+          res({ success: !error, output: stdout + stderr });
+        }
+      );
+    });
+  }
+
   //
   //
   //
   //
   // VSCODE
-  ipcMain.on("vscode__open", (e: IpcMainEvent) => {
+  ipcMain.on("vscode__launch", async (e: IpcMainEvent) => {
     switch (os.platform()) {
       case "darwin":
-        child.exec(
-          `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --enable-proposed-api ${
-            Constants.VSCODE_EXTENSION_PACKAGE_NAME
-          }`,
-          (error, stdout, stderr) => {
-            console.log(stdout);
-            console.log(error);
-            console.log(stderr);
-            mainWindow.webContents.send("vscode__open_complete", { success: !error, msg: stdout + stderr });
-          }
-        );
+        if (!(await checkIfVsCodeIsOpen()).isOpen) {
+          mainWindow.webContents.send("vscode__launch_complete", await openVsCode());
+          return;
+        }
+
+        if ((await checkIfVsCodeIsOpenWithProposedApiEnabled()).isProposedApiEnabled) {
+          mainWindow.webContents.send("vscode__launch_complete", await openVsCode());
+          return;
+        }
+
+        mainWindow.webContents.send("vscode__already_open", {});
         break;
       case "win32":
       case "linux":
@@ -88,6 +135,15 @@ function createWindow() {
         console.log("Platform not supported");
         break;
     }
+  });
+
+  ipcMain.on("vscode__launch_after_told_to_close", async (e: IpcMainEvent) => {
+    if (!(await checkIfVsCodeIsOpen()).isOpen) {
+      mainWindow.webContents.send("vscode__launch_complete", await openVsCode());
+      return;
+    }
+
+    mainWindow.webContents.send("vscode__still_open_after_told_to_close", {});
   });
 
   ipcMain.on("vscode__uninstall_extension", (e: IpcMainEvent) => {

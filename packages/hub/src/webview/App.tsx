@@ -101,18 +101,29 @@ export function App() {
   //
   //
   // VSCODE
-  const [vscode_modalOpen, setVscode_modalOpen] = useState(false);
+  const [vscode_installModalOpen, setVscode_installModalOpen] = useState(false);
+  const [vscode_alreadyOpenModalOpen, setVscode_alreadyOpenModalOpen] = useState(false);
+  const [vscode_stillOpenAfterRelaunch, setVscode_stillOpenAfterRelaunch] = useState(false);
   const [vscode_kebabOpen, setVscode_kebabOpen] = useState(false);
   const [vscode_location, setVscode_location] = useState("");
   const [vscode_status, setVscode_status] = useState(ExtensionStatus.UNKNOWN);
 
-  const vscode_open = useCallback(() => {
-    electron.ipcRenderer.send("vscode__open", {});
+  const vscode_launch = useCallback(() => {
+    electron.ipcRenderer.send("vscode__launch", {});
   }, []);
 
-  const vscode_toggleModal = useCallback(() => {
-    setVscode_modalOpen(!vscode_modalOpen);
-  }, [vscode_modalOpen]);
+  const vscode_launchAfterToldToClose = useCallback(() => {
+    setVscode_stillOpenAfterRelaunch(false);
+    electron.ipcRenderer.send("vscode__launch_after_told_to_close", {});
+  }, []);
+
+  const vscode_toggleInstallModal = useCallback(() => {
+    setVscode_installModalOpen(!vscode_installModalOpen);
+  }, [vscode_installModalOpen]);
+
+  const vscode_toggleAlreadyOpenModal = useCallback(() => {
+    setVscode_alreadyOpenModalOpen(!vscode_alreadyOpenModalOpen);
+  }, [vscode_alreadyOpenModalOpen]);
 
   const vscode_toggleKebab = useCallback(() => {
     setVscode_kebabOpen(!vscode_kebabOpen);
@@ -120,15 +131,40 @@ export function App() {
 
   const vscode_requestInstall = useCallback(() => {
     electron.ipcRenderer.send("vscode__install_extension", { location: vscode_location });
-    setVscode_modalOpen(false);
+    setVscode_installModalOpen(false);
     setVscode_status(ExtensionStatus.INSTALLING);
   }, [vscode_location]);
 
   const vscode_requestUninstall = useCallback(() => {
     electron.ipcRenderer.send("vscode__uninstall_extension", {});
-    setVscode_modalOpen(false);
+    setVscode_installModalOpen(false);
     setVscode_status(ExtensionStatus.UNINSTALLING);
   }, [vscode_location]);
+
+  useElectronIpcResponse(
+    "vscode__already_open",
+    () => {
+      setVscode_alreadyOpenModalOpen(true);
+    },
+    []
+  );
+
+  useElectronIpcResponse(
+    "vscode__still_open_after_told_to_close",
+    () => {
+      setVscode_stillOpenAfterRelaunch(true);
+    },
+    []
+  );
+
+  useElectronIpcResponse(
+    "vscode__launch_complete",
+    () => {
+      setVscode_stillOpenAfterRelaunch(false);
+      setVscode_alreadyOpenModalOpen(false);
+    },
+    []
+  );
 
   useElectronIpcResponse(
     "vscode__list_extensions_complete",
@@ -315,7 +351,7 @@ export function App() {
                 <Button
                   variant={"secondary"}
                   isDisabled={vscode_status === ExtensionStatus.INSTALLING}
-                  onClick={vscode_toggleModal}
+                  onClick={vscode_toggleInstallModal}
                 >
                   Install
                 </Button>
@@ -324,7 +360,7 @@ export function App() {
                 <Button
                   variant={"secondary"}
                   isDisabled={vscode_status === ExtensionStatus.UNINSTALLING}
-                  onClick={vscode_open}
+                  onClick={vscode_launch}
                 >
                   Launch
                 </Button>
@@ -335,8 +371,8 @@ export function App() {
           <Modal
             isSmall={true}
             title="Install VSCode extension"
-            isOpen={vscode_modalOpen}
-            onClose={vscode_toggleModal}
+            isOpen={vscode_installModalOpen}
+            onClose={vscode_toggleInstallModal}
             actions={[
               <Button
                 key="confirm"
@@ -346,7 +382,7 @@ export function App() {
               >
                 Install
               </Button>,
-              <Button key="cancel" variant="link" onClick={vscode_toggleModal}>
+              <Button key="cancel" variant="link" onClick={vscode_toggleInstallModal}>
                 Cancel
               </Button>
             ]}
@@ -367,6 +403,30 @@ export function App() {
                 <SearchIcon />
               </Button>
             </InputGroup>
+          </Modal>
+          <Modal
+            isSmall={true}
+            title={"Oops!"}
+            isOpen={vscode_alreadyOpenModalOpen}
+            onClose={vscode_toggleAlreadyOpenModal}
+            actions={[
+              <Button key="confirm" variant="primary" onClick={vscode_launchAfterToldToClose}>
+                Launch
+              </Button>,
+              <Button key="cancel" variant="link" onClick={vscode_toggleAlreadyOpenModal}>
+                Cancel
+              </Button>
+            ]}
+          >
+            {vscode_stillOpenAfterRelaunch && (
+              <>
+                <Alert variant="danger" isInline={true} title="Please close VSCode" />
+                <br />
+              </>
+            )}
+            <Text>Looks like VSCode is already open and was not started by Kogito Tooling Hub.</Text>
+            <br/>
+            <Text>Please close VSCode and retry.</Text>
           </Modal>
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
