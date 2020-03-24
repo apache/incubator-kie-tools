@@ -35,8 +35,6 @@ const commonConfig = {
       { from: "./static/resources", to: "./resources" },
       { from: "./static/images", to: "./images" },
       { from: "./static/index.html", to: "./index.html" },
-      { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
-      { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" },
       { from: "./vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix", to: "./lib" },
     ])
   ],

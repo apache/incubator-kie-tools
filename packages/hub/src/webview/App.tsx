@@ -49,6 +49,7 @@ import {
 import { Constants } from "../common/Constants";
 import { SearchIcon } from "@patternfly/react-icons";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import {CommandExecutionResult} from "../common/CommandExecutionResult";
 
 enum ExtensionStatus {
   UNKNOWN,
@@ -168,12 +169,13 @@ export function App() {
 
   useElectronIpcResponse(
     "vscode__list_extensions_complete",
-    (data: { extensions: string[] }) => {
+    (data: CommandExecutionResult & { extensions: string[] }) => {
       if (data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1) {
         setVscode_status(ExtensionStatus.INSTALLED);
+        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error checking whether VSCode is installed." });
+        console.info(data.output); //FIXME: remove
       }
     },
     [pushNewAlert]
@@ -181,15 +183,15 @@ export function App() {
 
   useElectronIpcResponse(
     "vscode__install_extension_complete",
-    (data: { success: boolean; msg: string }) => {
+    (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.INSTALLED);
         pushNewAlert({ variant: "success", title: "VSCode extension successfully installed." });
+        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
         pushNewAlert({ variant: "danger", title: "Error while installing VSCode extension." });
-        console.info("ERROR INSTALLING VSCODE EXT");
-        console.info(data.msg);
+        console.info(data.output);
       }
     },
     [pushNewAlert]
@@ -197,22 +199,26 @@ export function App() {
 
   useElectronIpcResponse(
     "vscode__uninstall_extension_complete",
-    (data: { success: boolean; msg: string }) => {
+    (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
         pushNewAlert({ variant: "info", title: "VSCode extension successfully uninstalled." });
+        console.info(data.output); //FIXME: remove
       } else {
         setVscode_status(ExtensionStatus.INSTALLED);
         pushNewAlert({ variant: "danger", title: "Error while uninstalling VSCode extension." });
-        console.info("ERROR UNINSTALLING VSCODE EXT");
-        console.info(data.msg);
+        console.info(data.output);
       }
     },
     [pushNewAlert]
   );
 
   const vscode_chooseLocation = useCallback(() => {
-    return electron.remote.dialog.showOpenDialog({ properties: ["openFile"] }).then(res => {
+    return electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "openFile"] }).then(res => {
+      if (res.canceled) {
+        return;
+      }
+
       setVscode_location(res.filePaths[0]);
     });
   }, []);
@@ -251,9 +257,9 @@ export function App() {
     setDesktop_kebabOpen(!desktop_kebabOpen);
   }, [desktop_kebabOpen]);
 
-  const desktop_open = useCallback((e: React.MouseEvent) => {
+  const desktop_launch = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    electron.ipcRenderer.send("desktop_open", {});
+    electron.ipcRenderer.send("desktop_launch", {});
   }, []);
 
   //
@@ -425,7 +431,7 @@ export function App() {
               </>
             )}
             <Text>Looks like VSCode is already open and was not started by Kogito Tooling Hub.</Text>
-            <br/>
+            <br />
             <Text>Please close VSCode and retry.</Text>
           </Modal>
           {/*CHROME*/}
@@ -480,7 +486,7 @@ export function App() {
               <Text>Launches the desktop version of Business Modeler Preview</Text>
             </CardBody>
             <CardFooter>
-              <Button variant={"secondary"} onClick={desktop_open}>
+              <Button variant={"secondary"} onClick={desktop_launch}>
                 Launch
               </Button>
             </CardFooter>
