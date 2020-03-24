@@ -1,35 +1,172 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
-import { Modal, Button } from "@patternfly/react-core";
-import { useHistory } from "react-router";
+import { useCallback, useContext, useMemo, useState } from "react";
+import { Modal, Button, Select, SelectOption, SelectDirection, SelectVariant } from "@patternfly/react-core";
+import { Redirect } from "react-router";
+import { GlobalContext } from "../common/GlobalContext";
+import { OperatingSystem, getOperatingSystem } from "../common/utils";
 
-export function DownloadHubModal(props: any) {
-  const history = useHistory();
+const LINUX = "Linux";
+const MACOS = "Mac OS";
+const WINDOWS = "Windows";
 
-  const back = e => {
+export function DownloadHubModal(props: {}) {
+  const context = useContext(GlobalContext);
+
+  const [redirectToHome, setRedirectToHome] = useState(false);
+  const [isDownloadModal, setIsDownloadModal] = useState(false);
+  const [osSelection, setOsSelection] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
+  const [isSelectExpanded, setSelectIsExpanded] = useState(false);
+
+  const onDownload = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    history.goBack();
+    setIsDownloadModal(true);
   };
+
+  const onClose = () => {
+    setRedirectToHome(true);
+  };
+
+  const onToggle = useCallback(
+    isExpanded => {
+      setSelectIsExpanded(isExpanded);
+    },
+    [isSelectExpanded]
+  );
+
+  const onSelect = useCallback(
+    (e, selection, isPlaceholder) => {
+      setOsSelection(chosenOs(selection));
+      setSelectIsExpanded(false);
+    },
+    [isSelectExpanded, osSelection]
+  );
+
+  const chosenOs = useCallback(
+    (selection: string) => {
+      switch (selection) {
+        case MACOS:
+          return OperatingSystem.MACOS;
+        case WINDOWS:
+          return OperatingSystem.WINDOWS;
+        default:
+          return OperatingSystem.LINUX;
+      }
+    },
+    [osSelection]
+  );
+
+  const availableOs = useMemo(() => {
+    return new Map<OperatingSystem, string>([
+      [OperatingSystem.LINUX, LINUX],
+      [OperatingSystem.MACOS, MACOS],
+      [OperatingSystem.WINDOWS, WINDOWS]
+    ]);
+  }, []);
+
+  const selectOptions = useMemo(() => {
+    return Array.from(availableOs.values()).map(value => ({
+      value,
+      disabled: false,
+      isPlaceholder: false
+    }));
+  }, []);
 
   return (
     <div>
-      <Modal
-        title="The Kogito end-to-end hub allows you to access:"
-        isOpen={true}
-        isLarge={true}
-        actions={[
-          <Button key="confirm" variant="primary" onClick={back}>
-            Download Installer
-          </Button>,
-          <Button key="cancel" variant="link" onClick={back}>
-            Cancel
-          </Button>
-        ]}
-      >
-        <h1>VSCode</h1>
-        <h1>Github</h1>
-        <h1>Desktop app</h1>
-        <h1>Business Modeler Preview</h1>
-      </Modal>
+      {redirectToHome && <Redirect push={true} to={context.routes.home.url({})} />}
+      {!isDownloadModal ? (
+        <Modal
+          title="The Kogito end-to-end hub allows you to access:"
+          isOpen={true}
+          isLarge={true}
+          actions={[
+            <Button key="confirm" variant="primary" onClick={onDownload}>
+              Download
+            </Button>,
+            <Button key="cancel" variant="link" onClick={onClose}>
+              Cancel
+            </Button>
+          ]}
+          onClose={onClose}
+        >
+          <p>
+            <strong>VS Code </strong>
+            <small>
+              Installs VS Code extension and gives you a convenient way to launch VS Code ready to work with Kogito
+            </small>
+          </p>
+          <br />
+          <p>
+            <strong>GitHub Chrome Extension </strong>
+            <small>Installs the Kogito GitHub extension for Chrome and gives you a shortcut to launch</small>
+          </p>
+          <br />
+          <p>
+            <strong>Desktop App </strong>
+            <small>Installs the Business Modeler desktop app for use locally and offline</small>
+          </p>
+          <br />
+          <p>
+            <strong>Business Modeler Preview </strong>
+            <small>Provides a quick link to access the website in the same hub</small>
+          </p>
+          <br />
+          <p>Operation System:</p>
+          <div>
+            <Select
+              variant={SelectVariant.single}
+              aria-label="Select Input"
+              onToggle={onToggle}
+              onSelect={onSelect}
+              selections={availableOs.get(osSelection)}
+              isExpanded={isSelectExpanded}
+              ariaLabelledBy={"select-os"}
+              isDisabled={false}
+              width={135} // FIXME
+              direction={SelectDirection.up}
+            >
+              {selectOptions.map((option, index) => (
+                <SelectOption
+                  isDisabled={option.disabled}
+                  key={index}
+                  value={option.value}
+                  isPlaceholder={option.isPlaceholder}
+                />
+              ))}
+            </Select>
+          </div>
+        </Modal>
+      ) : (
+        <Modal
+          title="Downloading Business Modeler..."
+          isOpen={true}
+          isLarge={true}
+          actions={[
+            <Button key="cancel" variant="link" onClick={onClose}>
+              Cancel
+            </Button>
+          ]}
+          onClose={onClose}
+        >
+          <p>test</p>
+        </Modal>
+      )}
     </div>
   );
 }
