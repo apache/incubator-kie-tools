@@ -31,6 +31,7 @@ import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import "../static/resources/style.css";
 import { File } from "./common/File";
+import { DownloadHubModal } from "./home/DownloadHubModal";
 
 interface Props {
   iframeTemplateRelativePath: string;
@@ -87,11 +88,14 @@ export function App(props: Props) {
           <Route path={routes.editor.url({ type: ":type" })}>
             <EditorPage onFileNameChanged={onFileNameChanged} />
           </Route>
-          <Route exact={true} path={routes.home.url({})}>
+          <Route exact={false} path={routes.home.url({})}>
             <HomePage onFileOpened={onFileOpened} />
           </Route>
           <Route component={NoMatchPage} />
         </Switch>
+        <Route exact={true} path={routes.downloadHub.url({})}>
+          <DownloadHubModal />
+        </Route>
       </HashRouter>
     </GlobalContext.Provider>
   );

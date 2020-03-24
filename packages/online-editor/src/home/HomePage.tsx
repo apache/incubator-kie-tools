@@ -47,6 +47,7 @@ import {
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { Link } from "react-router-dom";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -311,15 +312,8 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-        Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
-      </a>
+      <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub</Link>
     </DropdownItem>,
-    <DropdownItem key="vscode-extension-dropdown-link">
-      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-        Get VSCode extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
-      </a>
-    </DropdownItem>
   ];
 
   const userDropdownItems = [
@@ -341,18 +335,7 @@ export function HomePage(props: Props) {
       <Toolbar>
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-              <Button variant="plain">
-                Get GitHub Chrome extension
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
-              </Button>
-            </a>
-            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-              <Button variant="plain">
-                Get VSCode extension
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
-              </Button>
-            </a>
+            <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub</Link>
           </ToolbarItem>
           <ToolbarItem className="pf-u-display-none-on-lg">
             <Dropdown
