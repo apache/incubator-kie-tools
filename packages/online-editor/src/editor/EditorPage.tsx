@@ -221,6 +221,7 @@ export function EditorPage(props: Props) {
         style={{ height: 0, position: "absolute", zIndex: -1 }}
       />
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadRef} />
       <a ref={downloadPreviewRef} />
     </Page>
   );
