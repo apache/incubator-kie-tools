@@ -312,8 +312,11 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub</Link>
-    </DropdownItem>,
+      <Link to={context.routes.downloadHub.url({})}>
+        Get Business Modeler Hub
+        <ExternalLinkAltIcon className="pf-u-mx-sm" />
+      </Link>
+    </DropdownItem>
   ];
 
   const userDropdownItems = [
@@ -335,7 +338,12 @@ export function HomePage(props: Props) {
       <Toolbar>
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub</Link>
+            <Link to={context.routes.downloadHub.url({})}>
+              <Button variant="plain">
+                Get Business Modeler Hub
+                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              </Button>
+            </Link>
           </ToolbarItem>
           <ToolbarItem className="pf-u-display-none-on-lg">
             <Dropdown

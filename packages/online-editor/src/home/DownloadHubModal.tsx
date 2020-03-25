@@ -16,7 +16,15 @@
 
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
-import { Modal, Button, Select, SelectOption, SelectDirection, SelectVariant } from "@patternfly/react-core";
+import {
+  Modal,
+  Button,
+  Select,
+  SelectOption,
+  SelectDirection,
+  SelectVariant,
+  ModalBoxFooter
+} from "@patternfly/react-core";
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
@@ -33,14 +41,14 @@ export function DownloadHubModal(props: {}) {
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
-  const onDownload = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onDownload = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     setIsDownloadModal(true);
-  };
+  }, []);
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setRedirectToHome(true);
-  };
+  }, []);
 
   const onToggle = useCallback(
     isExpanded => {
@@ -54,14 +62,14 @@ export function DownloadHubModal(props: {}) {
     setSelectIsExpanded(false);
   }, []);
 
-  const downloadHubUrl = useMemo(() => {
+  const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
-        return `samples/macos.dmn`;
+        return `samples/business-modeler-hub-macos.zip`;
       case OperatingSystem.WINDOWS:
-        return `samples/windows.dmn`;
+        return `samples/business-modeler-hub-windows.zip`;
       default:
-        return `samples/linux.dmn`;
+        return `samples/business-modeler-hub-linux.zip`;
     }
   }, [operationalSystem]);
 
@@ -95,48 +103,6 @@ export function DownloadHubModal(props: {}) {
     }));
   }, []);
 
-  const selectOperationalSystem = (
-    <Select
-      variant={SelectVariant.single}
-      aria-label="Select Input"
-      onToggle={onToggle}
-      onSelect={onSelect}
-      selections={availableOs.get(operationalSystem)}
-      isExpanded={isSelectExpanded}
-      ariaLabelledBy={"select-os"}
-      isDisabled={false}
-      width={135} // FIXME
-      direction={SelectDirection.up}
-    >
-      {selectOptions.map((option, index) => (
-        <SelectOption
-          isDisabled={option.disabled}
-          key={index}
-          value={option.value}
-          isPlaceholder={option.isPlaceholder}
-        />
-      ))}
-    </Select>
-  );
-
-  const spinner = (
-    <div>
-      <div className="pf-l-bullseye">
-        <div className="pf-c-empty-state pf-m-lg">
-          <div className="pf-u-mb-lg">
-            <div className="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-              <div className="pf-c-spinner__clipper" />
-              <div className="pf-c-spinner__lead-ball" />
-              <div className="pf-c-spinner__tail-ball" />
-            </div>
-          </div>
-          <h5 className="pf-c-title pf-m-lg">Loading...</h5>
-          <div className="pf-c-empty-state__body" />
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div>
       {redirectToHome && <Redirect push={true} to={context.routes.home.url({})} />}
@@ -145,15 +111,24 @@ export function DownloadHubModal(props: {}) {
           title="The Kogito end-to-end hub allows you to access:"
           isOpen={true}
           isLarge={true}
-          actions={[
-            <Button key="confirm" variant="primary" onClick={onDownload}>
-              Download
-            </Button>,
-            <Button key="cancel" variant="link" onClick={onClose}>
-              Cancel
-            </Button>
-          ]}
           onClose={onClose}
+          footer={
+            <ModalBoxFooter
+              className="kogito--editor-modal-download-hub-footer"
+              children={
+                <div>
+                  <a key="download" href={downloadHub} download={true}>
+                    <Button variant="primary" onClick={onDownload}>
+                      Download
+                    </Button>
+                  </a>
+                  <Button key="cancel" variant="link" onClick={onClose}>
+                    Cancel
+                  </Button>
+                </div>
+              }
+            />
+          }
         >
           <p>
             <strong>VS Code </strong>
@@ -179,27 +154,52 @@ export function DownloadHubModal(props: {}) {
           <br />
           <p>Operation System:</p>
           <div>
-            {selectOperationalSystem}
+            <Select
+              variant={SelectVariant.single}
+              aria-label="Select Input"
+              onToggle={onToggle}
+              onSelect={onSelect}
+              selections={availableOs.get(operationalSystem)}
+              isExpanded={isSelectExpanded}
+              ariaLabelledBy={"select-os"}
+              isDisabled={false}
+              width={135} // FIXME
+              direction={SelectDirection.up}
+            >
+              {selectOptions.map((option, index) => (
+                <SelectOption
+                  isDisabled={option.disabled}
+                  key={index}
+                  value={option.value}
+                  isPlaceholder={option.isPlaceholder}
+                />
+              ))}
+            </Select>
           </div>
         </Modal>
       ) : (
         <Modal
-          title="Downloading Business Modeler..."
+          title="Thank you for download the Business Modeler HUB!"
           isOpen={true}
           isLarge={true}
-          actions={[
-            <Button key="cancel" variant="link" onClick={onClose}>
-              Cancel
-            </Button>
-          ]}
           onClose={onClose}
+          footer={
+            <ModalBoxFooter
+              className="kogito--editor-modal-download-hub-footer"
+              children={
+                <div>
+                  <Button key="close" variant="link" onClick={onClose}>
+                    Close
+                  </Button>
+                </div>
+              }
+            />
+          }
         >
-          {spinner}
           <p>
-            If the download does not begin automatically{" "}
-            <a href={downloadHubUrl} download={`${operationalSystem.toLowerCase()}.dmn`}>
-              click here
-            </a>
+            <small>
+              If the download does not begin automatically <a href={downloadHub} download={true}>click here</a>
+            </small>
           </p>
         </Modal>
       )}
