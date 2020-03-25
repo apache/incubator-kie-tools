@@ -52,6 +52,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.mocks.EventSourceMock;
@@ -266,6 +267,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         final JGitPathImpl nioPath = mock(JGitPathImpl.class);
         final JGitFileSystem fs = mock(JGitFileSystem.class);
+        final JGitFileSystemProvider provider = mock(JGitFileSystemProvider.class);
         final Git git = mock(Git.class);
         doNothing().when(git).removeRemote(anyString(),
                                            anyString());
@@ -273,6 +275,8 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                                         anyString());
         doReturn(git).when(fs).getGit();
         doReturn(fs).when(nioPath).getFileSystem();
+        doReturn(provider).when(fs).provider();
+        doNothing().when(provider).executePostCommitHook(fs);
         doReturn(nioPath).when(pathUtil).convert(any(Path.class));
 
         final org.eclipse.jgit.lib.Repository gitRepository = mock(org.eclipse.jgit.lib.Repository.class);
@@ -311,6 +315,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                                                    any(),
                                                    any());
         verify(spaceConfigStorage).endBatch();
+        verify(provider).executePostCommitHook(fs);
         verify(git).addRemote(anyString(),
                               eq(remoteUrl));
     }

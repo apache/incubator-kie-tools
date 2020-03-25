@@ -189,6 +189,7 @@ import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.GitHookSupport;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.PathUtil;
@@ -231,7 +232,8 @@ import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
 import static org.uberfire.java.nio.fs.jgit.util.model.PathType.NOT_FOUND;
 
 public class JGitFileSystemProvider implements SecuredFileSystemProvider,
-                                               Disposable {
+                                               Disposable,
+                                               GitHookSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitFileSystemProvider.class);
     private static final TimeUnit LOCK_LAST_ACCESS_TIME_UNIT = TimeUnit.SECONDS;
@@ -2279,7 +2281,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 if (isOriginalStateBatch && !fileSystem.isOnBatch()) {
                     fileSystem.setBatchCommitInfo(null);
                     firePostponedBatchEvents(fileSystem);
-                    postCommitHook(fileSystem);
+                    executePostCommitHook(fileSystem);
                 }
                 fileSystem.setHadCommitOnBatchState(false);
             } finally {
@@ -2486,7 +2488,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
                 final ObjectId newHead = path.getFileSystem().getGit().getTreeFromRef(branchName);
 
-                postCommitHook(fileSystem);
+                executePostCommitHook(fileSystem);
 
                 notifyDiffs(path.getFileSystem(),
                             branchName,
@@ -2533,8 +2535,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
     }
 
-    private void postCommitHook(final JGitFileSystem fileSystem) {
-
+    @Override
+    public void executePostCommitHook(final JGitFileSystem fileSystem) {
         ProcessResult result = detectedFS.runHookIfPresent(fileSystem.getGit().getRepository(),
                                                            "post-commit",
                                                            new String[0]);

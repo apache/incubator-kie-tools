@@ -57,6 +57,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.TextualDiff;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
@@ -76,6 +77,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -132,6 +134,9 @@ public class ChangeRequestServiceTest {
 
     @Mock
     private JGitFileSystem fs;
+
+    @Mock
+    private JGitFileSystemProvider provider;
 
     @Mock
     private RevCommit commonCommit;
@@ -196,6 +201,9 @@ public class ChangeRequestServiceTest {
         doReturn(fs).when(service).getFileSystemFromBranch(repository, "sourceBranch");
         doReturn(fs).when(service).getFileSystemFromBranch(repository, "targetBranch");
         doReturn(git).when(fs).getGit();
+
+        doNothing().when(provider).executePostCommitHook(any());
+        doReturn(provider).when(fs).provider();
 
         doReturn(mock(PathInfo.class)).when(git).getPathInfo(anyString(),
                                                              anyString());
@@ -831,6 +839,8 @@ public class ChangeRequestServiceTest {
 
         verify(changeRequestStatusUpdatedEventEvent).fire(any(ChangeRequestStatusUpdatedEvent.class));
 
+        verify(provider).executePostCommitHook(fs);
+
         assertTrue(result);
     }
 
@@ -951,6 +961,8 @@ public class ChangeRequestServiceTest {
                                                      any(ChangeRequest.class));
 
         verify(changeRequestStatusUpdatedEventEvent).fire(any(ChangeRequestStatusUpdatedEvent.class));
+
+        verify(provider).executePostCommitHook(fs);
 
         assertTrue(result);
     }
@@ -1105,6 +1117,8 @@ public class ChangeRequestServiceTest {
                                                      any(ChangeRequest.class));
 
         verify(changeRequestStatusUpdatedEventEvent).fire(any(ChangeRequestStatusUpdatedEvent.class));
+
+        verify(provider).executePostCommitHook(fs);
 
         assertTrue(result);
     }

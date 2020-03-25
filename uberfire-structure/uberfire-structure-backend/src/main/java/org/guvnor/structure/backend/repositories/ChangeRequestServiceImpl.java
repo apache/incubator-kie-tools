@@ -67,6 +67,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.GitHookSupport;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.MessageCommitInfo;
@@ -1160,6 +1161,8 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                 throw new NothingToMergeException();
             }
 
+            ((GitHookSupport) fs.provider()).executePostCommitHook(fs);
+
             final RevCommit mergeCommit = getLastCommit(repository,
                                                         targetBranchName);
             final String mergeCommitId = mergeCommit.getName();
@@ -1213,6 +1216,8 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
                                              changeRequest.getMergeCommitId());
 
             if (isDone) {
+                ((GitHookSupport) fs.provider()).executePostCommitHook(fs);
+
                 final RevCommit revertCommit = getLastCommit(repository,
                                                              targetBranchName);
 

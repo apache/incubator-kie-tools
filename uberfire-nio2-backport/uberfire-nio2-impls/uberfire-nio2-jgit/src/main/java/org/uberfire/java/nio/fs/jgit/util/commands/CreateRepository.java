@@ -17,6 +17,8 @@
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -35,6 +37,11 @@ public class CreateRepository {
     private final File hookDir;
     private final KetchLeaderCache leaders;
     private final boolean sslVerify;
+
+    private static final List<String> HOOK_IGNORED = Arrays.asList("system",
+                                                                   "dashbuilder",
+                                                                   ".config",
+                                                                   ".archetypes");
 
     public CreateRepository(final File repoDir) {
         this(repoDir,
@@ -146,6 +153,10 @@ public class CreateRepository {
     }
 
     private boolean setupGitHooks(boolean newRepository) {
-        return newRepository && hookDir != null;
+        if (newRepository && hookDir != null) {
+            final String parentName = repoDir.getParentFile().getName();
+            return !HOOK_IGNORED.contains(parentName);
+        }
+        return false;
     }
 }

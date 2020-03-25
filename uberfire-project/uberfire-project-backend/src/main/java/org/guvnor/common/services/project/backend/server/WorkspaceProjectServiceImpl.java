@@ -60,7 +60,9 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
+import org.uberfire.java.nio.fs.jgit.util.GitHookSupport;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -264,6 +266,8 @@ public class WorkspaceProjectServiceImpl
                         if (remoteRepositoryUrl != null) {
                             addRemoteOrigin(repository,
                                             remoteRepositoryUrl);
+
+                            executePostCommitHook(repository);
                         }
 
                         final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,
@@ -313,9 +317,18 @@ public class WorkspaceProjectServiceImpl
     }
 
     private org.uberfire.java.nio.fs.jgit.util.Git resolveGit(final Repository repository) {
+        return resolveJGitFileSystem(repository).getGit();
+    }
+
+    private void executePostCommitHook(final Repository repository) {
+        final JGitFileSystem fs = resolveJGitFileSystem(repository);
+        ((GitHookSupport) fs.provider()).executePostCommitHook(fs);
+    }
+
+    private JGitFileSystem resolveJGitFileSystem(final Repository repository) {
         final Branch defaultBranch = resolveDefaultBranch(repository);
 
-        return ((JGitPathImpl) pathUtil.convert(defaultBranch.getPath())).getFileSystem().getGit();
+        return ((JGitPathImpl) pathUtil.convert(defaultBranch.getPath())).getFileSystem();
     }
 
     private Module finishCreateFromTemplate(final Repository projectRepository,
