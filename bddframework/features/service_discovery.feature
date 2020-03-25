@@ -1,5 +1,4 @@
 @discovery
-@cr
 Feature: Discovery with onboarding
 
   Background:
@@ -8,17 +7,17 @@ Feature: Discovery with onboarding
   Scenario Outline: Deploy onboarding example
     Given Kogito Operator is deployed
     
-    When "CR" deploy quarkus example service "onboarding-example/hr" with native "<native>" and labels 
+    When Deploy quarkus example service "onboarding-example/hr" with native <native> and labels 
       | department         | process |
       | id                 | process |
       | employeeValidation | process |
 
-    And "CR" deploy quarkus example service "onboarding-example/payroll" with native "<native>" and labels
+    And Deploy quarkus example service "onboarding-example/payroll" with native <native> and labels
       | taxes/rate         | process |
       | vacations/days     | process |
       | payments/date      | process |
 
-    And "CR" deploy quarkus example service "onboarding-example/onboarding" with native "<native>" and labels
+    And Deploy quarkus example service "onboarding-example/onboarding" with native <native> and labels
       | onboarding         | process |
 
     And Kogito application "hr" has 1 pods running within <minutes> minutes
@@ -44,12 +43,12 @@ Feature: Discovery with onboarding
       """
     
     Examples: Non Native
-      | native      | minutes |
-      | false       | 10      |
+      | native   | minutes |
+      | disabled | 10      |
 
     # disabled because of https://issues.redhat.com/browse/KOGITO-1357
     @disabled
     @native
     Examples: Native
-      | native    | minutes |
-      | true      | 20      |
+      | native  | minutes |
+      | enabled | 20      |

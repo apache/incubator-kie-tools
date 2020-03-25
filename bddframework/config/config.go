@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package framework
+package config
 
 import (
 	"flag"
@@ -24,10 +24,11 @@ import (
 // TestConfig contains the information about the tests environment
 type TestConfig struct {
 	// tests configuration
-	smoke      bool
-	loadFactor int
-	localTests bool
-	ciName     string
+	smoke            bool
+	loadFactor       int
+	localTests       bool
+	ciName           string
+	crDeploymentOnly bool
 
 	// operator information
 	operatorImageName string
@@ -76,8 +77,8 @@ var (
 	env = TestConfig{}
 )
 
-// BindTestsConfigFlags binds BDD tests env flags to given flag set
-func BindTestsConfigFlags(set *flag.FlagSet) {
+// BindFlags binds BDD tests env flags to given flag set
+func BindFlags(set *flag.FlagSet) {
 	prefix := "tests."
 	developmentOptionsPrefix := prefix + "dev."
 
@@ -86,6 +87,7 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 	set.IntVar(&env.loadFactor, prefix+"load-factor", defaultLoadFactor, "Set the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timeouts. Default value is 1.")
 	set.BoolVar(&env.localTests, prefix+"local", false, "If tests are launch on local machine")
 	set.StringVar(&env.ciName, prefix+"ci", "", "If tests are launch on ci machine, give the CI name")
+	set.BoolVar(&env.crDeploymentOnly, prefix+"cr-deployment-only", false, "Use this option if you have no CLI to test against. It will use only direct CR deployments.")
 
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
@@ -119,119 +121,124 @@ func BindTestsConfigFlags(set *flag.FlagSet) {
 
 // tests configuration
 
-// IsConfigSmokeTests return whether tests are executed in local
-func IsConfigSmokeTests() bool {
+// IsSmokeTests return whether tests are executed in local
+func IsSmokeTests() bool {
 	return env.smoke
 }
 
-// GetConfigLoadFactor return the load factor of the cluster
-func GetConfigLoadFactor() int {
+// GetLoadFactor return the load factor of the cluster
+func GetLoadFactor() int {
 	return env.loadFactor
 }
 
-// IsConfigLocalTests return whether tests are executed in local
-func IsConfigLocalTests() bool {
+// IsLocalTests return whether tests are executed in local
+func IsLocalTests() bool {
 	return env.localTests
 }
 
-// GetConfigCiName return the CI name that executes the tests, if any
-func GetConfigCiName() string {
+// GetCiName return the CI name that executes the tests, if any
+func GetCiName() string {
 	return env.ciName
+}
+
+// IsCrDeploymentOnly returns whether the deployment should be done only with CR
+func IsCrDeploymentOnly() bool {
+	return env.crDeploymentOnly
 }
 
 // operator information
 
-// GetConfigOperatorImageName return the image name for the operator
-func GetConfigOperatorImageName() string {
+// GetOperatorImageName return the image name for the operator
+func GetOperatorImageName() string {
 	return env.operatorImageName
 }
 
-// GetConfigOperatorImageTag return the image tag for the operator
-func GetConfigOperatorImageTag() string {
+// GetOperatorImageTag return the image tag for the operator
+func GetOperatorImageTag() string {
 	return env.operatorImageTag
 }
 
 // files/binaries
 
-// GetConfigOperatorDeployURI return the uri for deployment folder
-func GetConfigOperatorDeployURI() string {
+// GetOperatorDeployURI return the uri for deployment folder
+func GetOperatorDeployURI() string {
 	return env.operatorDeployURI
 }
 
-// GetConfigOperatorCliPath return the path to the kogito CLI binary
-func GetConfigOperatorCliPath() (string, error) {
+// GetOperatorCliPath return the path to the kogito CLI binary
+func GetOperatorCliPath() (string, error) {
 	return filepath.Abs(env.cliPath)
 }
 
 // runtime
 
-// GetConfigServicesImageVersion return the version for the services images
-func GetConfigServicesImageVersion() string {
+// GetServicesImageVersion return the version for the services images
+func GetServicesImageVersion() string {
 	return env.servicesImageVersion
 }
 
-// GetConfigDataIndexImageTag return the Kogito Data Index image tag
-func GetConfigDataIndexImageTag() string {
+// GetDataIndexImageTag return the Kogito Data Index image tag
+func GetDataIndexImageTag() string {
 	return env.dataIndexImageTag
 }
 
-// GetConfigJobsServiceImageTag return the Kogito Jobs Service image tag
-func GetConfigJobsServiceImageTag() string {
+// GetJobsServiceImageTag return the Kogito Jobs Service image tag
+func GetJobsServiceImageTag() string {
 	return env.jobsServiceImageTag
 }
 
 // build
 
-// GetConfigMavenMirrorURL return the maven mirror url used for building applications
-func GetConfigMavenMirrorURL() string {
+// GetMavenMirrorURL return the maven mirror url used for building applications
+func GetMavenMirrorURL() string {
 	return env.mavenMirrorURL
 }
 
-// GetConfigBuildImageVersion return the version for the build images
-func GetConfigBuildImageVersion() string {
+// GetBuildImageVersion return the version for the build images
+func GetBuildImageVersion() string {
 	return env.buildImageVersion
 }
 
-// GetConfigBuildS2IImageStreamTag return the tag for the s2i build image
-func GetConfigBuildS2IImageStreamTag() string {
+// GetBuildS2IImageStreamTag return the tag for the s2i build image
+func GetBuildS2IImageStreamTag() string {
 	return env.buildS2iImageTag
 }
 
-// GetConfigBuildRuntimeImageStreamTag return the tag for the runtime build image
-func GetConfigBuildRuntimeImageStreamTag() string {
+// GetBuildRuntimeImageStreamTag return the tag for the runtime build image
+func GetBuildRuntimeImageStreamTag() string {
 	return env.buildRuntimeImageTag
 }
 
 // examples repository
 
-// GetConfigExamplesRepositoryURI return the uri for the examples repository
-func GetConfigExamplesRepositoryURI() string {
+// GetExamplesRepositoryURI return the uri for the examples repository
+func GetExamplesRepositoryURI() string {
 	return env.examplesRepositoryURI
 }
 
-// GetConfigExamplesRepositoryRef return the branch for the examples repository
-func GetConfigExamplesRepositoryRef() string {
+// GetExamplesRepositoryRef return the branch for the examples repository
+func GetExamplesRepositoryRef() string {
 	return env.examplesRepositoryRef
 }
 
 // dev options
 
-// IsConfigShowScenarios return whether we should display scenarios
-func IsConfigShowScenarios() bool {
+// IsShowScenarios return whether we should display scenarios
+func IsShowScenarios() bool {
 	return env.showScenarios
 }
 
-// IsConfigDryRun return whether we should do a dry run
-func IsConfigDryRun() bool {
+// IsDryRun return whether we should do a dry run
+func IsDryRun() bool {
 	return env.dryRun
 }
 
-// IsConfigKeepNamespace return whether we should keep namespace after scenario run
-func IsConfigKeepNamespace() bool {
+// IsKeepNamespace return whether we should keep namespace after scenario run
+func IsKeepNamespace() bool {
 	return env.keepNamespace
 }
 
-// GetConfigNamespaceName return namespace name if it was defined
-func GetConfigNamespaceName() string {
+// GetNamespaceName return namespace name if it was defined
+func GetNamespaceName() string {
 	return env.namespaceName
 }

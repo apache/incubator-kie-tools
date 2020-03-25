@@ -28,6 +28,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/openshift"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 // WaitForBuildComplete waits for a build to be completed
@@ -166,5 +167,5 @@ func WaitForOnOpenshift(namespace, display string, timeoutInMin int, condition f
 
 // GetOpenshiftDurationFromTimeInMin will calculate the time depending on the configured cluster load factor
 func GetOpenshiftDurationFromTimeInMin(timeoutInMin int) time.Duration {
-	return time.Duration(timeoutInMin*GetConfigLoadFactor()) * time.Minute
+	return time.Duration(timeoutInMin*config.GetLoadFactor()) * time.Minute
 }

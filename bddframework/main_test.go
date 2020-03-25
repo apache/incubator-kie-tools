@@ -27,6 +27,7 @@ import (
 	"github.com/cucumber/godog/colors"
 	"github.com/cucumber/godog/gherkin"
 
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps"
 )
@@ -46,7 +47,7 @@ var opt = godog.Options{
 
 func init() {
 	godog.BindFlags("godog.", flag.CommandLine, &opt)
-	framework.BindTestsConfigFlags(flag.CommandLine)
+	config.BindFlags(flag.CommandLine)
 }
 
 func TestMain(m *testing.M) {
@@ -60,12 +61,12 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(fmt.Errorf("Error parsing features: %v", err))
 	}
-	if framework.IsConfigShowScenarios() {
+	if config.IsShowScenarios() {
 		showScenarios(features)
 	}
 
-	if !framework.IsConfigDryRun() {
-		if matchingFeature(cliTag, features) {
+	if !config.IsDryRun() {
+		if !config.IsCrDeploymentOnly() || matchingFeature(cliTag, features) {
 			// Check CLI binary is existing if needed
 			if exits, err := framework.CheckCliBinaryExist(); err != nil {
 				panic(fmt.Errorf("Error trying to get CLI binary %v", err))
@@ -73,10 +74,6 @@ func TestMain(m *testing.M) {
 				panic("CLI Binary does not exist on specified path")
 			}
 		}
-
-		// Make sure Kafka, Infinispan and Keycloak crds are imported into the cluster before starting the tests
-		// To be deleted once https://issues.redhat.com/browse/KOGITO-1376 is resolved
-		importDependentOperatorCrds()
 
 		status := godog.RunWithOptions("godogs", func(s *godog.Suite) {
 			FeatureContext(s)
@@ -91,7 +88,7 @@ func TestMain(m *testing.M) {
 }
 
 func configureTags() {
-	if framework.IsConfigSmokeTests() {
+	if config.IsSmokeTests() {
 		if len(opt.Tags) > 0 {
 			opt.Tags += " && "
 		}
@@ -109,7 +106,7 @@ func configureTags() {
 }
 
 func configureTestOutput() {
-	if framework.IsConfigSmokeTests() {
+	if config.IsSmokeTests() {
 		framework.SetLogSubFolder("smoke")
 	} else {
 		framework.SetLogSubFolder("full")
@@ -143,7 +140,7 @@ func FeatureContext(s *godog.Suite) {
 		data.AfterScenario(s, err)
 
 		// Namespace should be deleted after all other operations have been done
-		if !framework.IsConfigKeepNamespace() {
+		if !config.IsKeepNamespace() {
 			deleteNamespaceIfExists(data.Namespace)
 		}
 	})
@@ -190,52 +187,4 @@ func showScenarios(features []*gherkin.Feature) {
 		}
 	}
 	mainLogger.Info("------------------ END SHOW SCENARIOS ------------------")
-}
-
-// This does just create a namespace, install the operators via subscription if crd is missing
-// and then delete the namespace
-// Should be deleted once https://issues.redhat.com/browse/KOGITO-1376 is solved
-func importDependentOperatorCrds() {
-	mainLogger := framework.GetMainLogger()
-	mainLogger.Infof("Install dependent operator crds if needed")
-	namespace := framework.GenerateNamespaceName("crd-install")
-
-	if err := framework.CreateNamespace(namespace); err != nil {
-		panic(err)
-	}
-
-	installErr := installDependentOperatorsIfNeeded(namespace)
-	if installErr != nil {
-		mainLogger.Errorf("Error installing dependent operators: %v", installErr)
-	}
-
-	if err := framework.DeleteNamespace(namespace); err != nil {
-		panic(err)
-	}
-
-	if installErr != nil {
-		panic(installErr)
-	}
-}
-
-// Should be deleted once https://issues.redhat.com/browse/KOGITO-1376 is solved
-func installDependentOperatorsIfNeeded(namespace string) error {
-	var operatorsToWaitFor []string
-	for operatorName := range framework.KogitoOperatorCommunityDependencies {
-		if installed, err := framework.IsCommunityOperatorCrdAvailable(operatorName); err != nil {
-			return err
-		} else if !installed {
-			if err := framework.InstallCommunityKogitoOperatorDependency(namespace, operatorName); err != nil {
-				return err
-			}
-			operatorsToWaitFor = append(operatorsToWaitFor, operatorName)
-		}
-	}
-
-	for _, operatorName := range operatorsToWaitFor {
-		if err := framework.WaitForKogitoOperatorCrdAvailable(namespace, operatorName); err != nil {
-			return err
-		}
-	}
-	return nil
 }

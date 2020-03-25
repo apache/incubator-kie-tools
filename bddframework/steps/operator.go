@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// RegisterCliSteps register all CLI steps existing
 func registerOperatorSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
 	s.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)

@@ -30,6 +30,7 @@ import (
 	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 const (
@@ -68,9 +69,9 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 	kogitoApp.Spec.Runtime = kogitoAppDeployment.Runtime
 
 	kogitoApp.Spec.Build.Native = kogitoAppDeployment.Native
-	kogitoApp.Spec.Build.GitSource.URI = GetConfigExamplesRepositoryURI()
+	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
 	kogitoApp.Spec.Build.GitSource.ContextDir = kogitoAppDeployment.ContextDir
-	kogitoApp.Spec.Build.GitSource.Reference = GetConfigExamplesRepositoryRef()
+	kogitoApp.Spec.Build.GitSource.Reference = config.GetExamplesRepositoryRef()
 
 	// Add namespace for service discovery
 	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
@@ -94,7 +95,6 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 
 	setupBuildImageStreams(kogitoApp)
 
-	// Add a resource request if native building
 	if kogitoAppDeployment.Native {
 		kogitoApp.Spec.Build.Resources = corev1.ResourceRequirements{
 			Requests: corev1.ResourceList{
@@ -110,18 +110,22 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 }
 
 func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
-	cmd := []string{"deploy-service", kogitoAppDeployment.AppName, GetConfigExamplesRepositoryURI()}
+	cmd := []string{"deploy-service", kogitoAppDeployment.AppName, config.GetExamplesRepositoryURI()}
 
 	cmd = append(cmd, "-c", kogitoAppDeployment.ContextDir)
 	cmd = append(cmd, "-r", fmt.Sprintf("%s", kogitoAppDeployment.Runtime))
 	if kogitoAppDeployment.Native {
 		cmd = append(cmd, "--native")
 	}
-	if ref := GetConfigExamplesRepositoryRef(); len(ref) > 0 {
+	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
 		cmd = append(cmd, "-b", ref)
 	}
 
-	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
+	// Add namespace for service discovery
+	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
+	cmd = append(cmd, "-e", fmt.Sprintf("NAMESPACE=%s", namespace))
+
+	if mavenMirrorURL := config.GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
 	}
 
@@ -145,7 +149,7 @@ func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment)
 		cmd = append(cmd, "--svc-labels", fmt.Sprintf("%s=%s", labelKey, labelValue))
 	}
 
-	cmd = append(cmd, "--image-version", GetConfigBuildImageVersion())
+	cmd = append(cmd, "--image-version", config.GetBuildImageVersion())
 
 	// Add a resource request if native building
 	if kogitoAppDeployment.Native {
@@ -221,7 +225,7 @@ func getKogitoAppStub(namespace, appName string, labels map[string]string) *v1al
 		}
 	}
 
-	if mavenMirrorURL := GetConfigMavenMirrorURL(); len(mavenMirrorURL) > 0 {
+	if mavenMirrorURL := config.GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		kogitoApp.Spec.Build.MavenMirrorURL = mavenMirrorURL
 	}
 
@@ -258,8 +262,8 @@ func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 	// If "KOGITO_BUILD_IMAGE_STREAM_TAG" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage
-	kogitoApp.Spec.Build.ImageS2ITag = GetConfigBuildS2IImageStreamTag()
-	kogitoApp.Spec.Build.ImageRuntimeTag = GetConfigBuildRuntimeImageStreamTag()
+	kogitoApp.Spec.Build.ImageS2ITag = config.GetBuildS2IImageStreamTag()
+	kogitoApp.Spec.Build.ImageRuntimeTag = config.GetBuildRuntimeImageStreamTag()
 	// If "KOGITO_BUILD_IMAGE_VERSION" is defined, it's taken into account, otherwise set the current version
-	kogitoApp.Spec.Build.ImageVersion = GetConfigBuildImageVersion()
+	kogitoApp.Spec.Build.ImageVersion = config.GetBuildImageVersion()
 }

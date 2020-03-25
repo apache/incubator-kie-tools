@@ -15,8 +15,7 @@
 package framework
 
 import (
-	"fmt"
-	"strings"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 // InstallerType defines the type of installer for services
@@ -34,14 +33,10 @@ var (
 	CRInstallerType InstallerType = crInstallerKey
 )
 
-// MustParseInstallerType returns the correct installer type, based on the given string
-func MustParseInstallerType(typeStr string) InstallerType {
-	switch t := strings.ToLower(typeStr); t {
-	case cliInstallerKey:
-		return CLIInstallerType
-	case crInstallerKey:
+// GetDefaultInstallerType returns the default installer type for the tests
+func GetDefaultInstallerType() InstallerType {
+	if config.IsCrDeploymentOnly() {
 		return CRInstallerType
-	default:
-		panic(fmt.Errorf("Unknown installer type %s", typeStr))
 	}
+	return CLIInstallerType
 }

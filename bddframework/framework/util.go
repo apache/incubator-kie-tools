@@ -26,17 +26,23 @@ import (
 	"time"
 
 	"github.com/cucumber/godog/gherkin"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
+)
+
+const (
+	enabledKey  = "enabled"
+	disabledKey = "disabled"
 )
 
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
 	ns := fmt.Sprintf("%s-%s", prefix, RandSeq(4))
-	if IsConfigLocalTests() {
+	if config.IsLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
-	} else if len(GetConfigCiName()) > 0 {
-		ns = fmt.Sprintf("%s-%s", GetConfigCiName(), ns)
+	} else if len(config.GetCiName()) > 0 {
+		ns = fmt.Sprintf("%s-%s", config.GetCiName(), ns)
 	}
 	return ns
 }
@@ -149,4 +155,16 @@ func getWhitespaceStr(size int) string {
 // CreateFolder  creates a folder and all its parents if not exist
 func CreateFolder(folder string) error {
 	return os.MkdirAll(folder, os.ModePerm)
+}
+
+// MustParseEnabledDisabled parse a boolean string value
+func MustParseEnabledDisabled(value string) bool {
+	switch value {
+	case enabledKey:
+		return true
+	case disabledKey:
+		return false
+	default:
+		panic(fmt.Errorf("Unknown value for enabled/disabled: %s", value))
+	}
 }

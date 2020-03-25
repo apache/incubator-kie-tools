@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// registerHTTPSteps register all HTTP steps existing
 func registerHTTPSteps(s *godog.Suite, data *Data) {
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)

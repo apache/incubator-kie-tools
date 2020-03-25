@@ -17,11 +17,13 @@ package framework
 import (
 	"os"
 	"os/exec"
+
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 // CheckCliBinaryExist checks if the CLI binary does exist
 func CheckCliBinaryExist() (bool, error) {
-	path, err := GetConfigOperatorCliPath()
+	path, err := config.GetOperatorCliPath()
 	if err != nil {
 		return false, err
 	}
@@ -38,7 +40,7 @@ func CheckCliBinaryExist() (bool, error) {
 // ExecuteCliCommand executes a kogito cli command for a given namespace
 func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 	GetLogger(namespace).Infof("Execute CLI %v", args)
-	path, err := GetConfigOperatorCliPath()
+	path, err := config.GetOperatorCliPath()
 	if err != nil {
 		return "", err
 	}

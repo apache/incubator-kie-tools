@@ -22,6 +22,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	apps "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -65,12 +66,12 @@ func cliInstallKogitoJobsService(namespace string, replicas int, persistence boo
 }
 
 func getJobsServiceImageTag() v1alpha1.Image {
-	if len(GetConfigJobsServiceImageTag()) > 0 {
-		return framework.ConvertImageTagToImage(GetConfigJobsServiceImageTag())
+	if len(config.GetJobsServiceImageTag()) > 0 {
+		return framework.ConvertImageTagToImage(config.GetJobsServiceImageTag())
 	}
 
 	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
+	image.Tag = config.GetServicesImageVersion()
 	return image
 }
 

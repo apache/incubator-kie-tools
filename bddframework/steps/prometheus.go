@@ -19,7 +19,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// RegisterCliSteps register all CLI steps existing
 func registerPrometheusSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Prometheus Operator is deployed$`, data.prometheusOperatorIsDeployed)
 	s.Step(`^Prometheus instance is deployed, monitoring services with label name "([^"]*)" and value "([^"]*)"$`, data.prometheusInstanceIsDeployed)

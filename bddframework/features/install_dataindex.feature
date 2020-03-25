@@ -5,9 +5,9 @@ Feature: Kogito Data Index
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
 
-  Scenario Outline: Install Kogito Data Index
-    When "<installer>" install Kogito Data Index with 1 replicas
-
+  @smoke
+  Scenario: Install Kogito Data Index
+    When Install Kogito Data Index with 1 replicas
     Then Kogito Data Index has 1 pods running within 10 minutes
     And GraphQL request on service "kogito-data-index" is successful within 2 minutes with path "graphql" and query:
     """
@@ -18,25 +18,13 @@ Feature: Kogito Data Index
     }
     """
 
-    @cr
-    Examples: CR
-      | installer |
-      | CR        |
-
-    @smoke
-    @cli
-    Examples: CLI
-      | installer |
-      | CLI       |
-
 #####
 
-  @cr
   @events
   @persistence
   Scenario Outline: Process instance events are stored in Data Index
-    Given "CR" install Kogito Data Index with 1 replicas
-    And "CR" deploy quarkus example service "jbpm-quarkus-example" with native "<native>" and persistence and events
+    Given Install Kogito Data Index with 1 replicas
+    And Deploy quarkus example service "jbpm-quarkus-example" with native <native> and persistence and events
     And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes
 
@@ -54,12 +42,12 @@ Feature: Kogito Data Index
     Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
 
     Examples: Non native
-      | native | minutes |
-      | false  | 10      |
+      | native   | minutes |
+      | disabled | 10      |
 
     # Disabled because of https://issues.redhat.com/browse/KOGITO-1405
     @disabled
     @native
     Examples: Native
-      | native | minutes |
-      | true   | 20      |
+      | native  | minutes |
+      | enabled | 20      |

@@ -19,20 +19,19 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// RegisterCliSteps register all CLI steps existing
 func registerKogitoJobsServiceSteps(s *godog.Suite, data *Data) {
-	s.Step(`^"([^"]*)" install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
-	s.Step(`^"([^"]*)" install Kogito Jobs Service with (\d+) replicas and persistence$`, data.installKogitoJobsServiceWithReplicasAndPersistence)
+	s.Step(`^Install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
+	s.Step(`^Install Kogito Jobs Service with (\d+) replicas and persistence$`, data.installKogitoJobsServiceWithReplicasAndPersistence)
 	s.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
 	s.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
 }
 
-func (data *Data) installKogitoJobsServiceWithReplicas(installerType string, replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.MustParseInstallerType(installerType), replicas, false)
+func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
+	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, false)
 }
 
-func (data *Data) installKogitoJobsServiceWithReplicasAndPersistence(installerType string, replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.MustParseInstallerType(installerType), replicas, true)
+func (data *Data) installKogitoJobsServiceWithReplicasAndPersistence(replicas int) error {
+	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true)
 }
 
 func (data *Data) kogitoJobsServiceHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {

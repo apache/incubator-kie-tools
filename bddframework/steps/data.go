@@ -21,6 +21,7 @@ import (
 
 	"github.com/cucumber/godog"
 
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -55,7 +56,7 @@ func (data *Data) BeforeScenario(s interface{}) {
 }
 
 func getNamespaceName() string {
-	if namespaceName := framework.GetConfigNamespaceName(); len(namespaceName) > 0 {
+	if namespaceName := config.GetNamespaceName(); len(namespaceName) > 0 {
 		return namespaceName
 	}
 	return framework.GenerateNamespaceName("cucumber")

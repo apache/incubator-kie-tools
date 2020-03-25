@@ -1,13 +1,13 @@
 @quarkus
-@cr
+@travelagency
 Feature: Deploy Travel agency service and verify its functionality
 
   Background:
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
-    And "CR" install Kogito Data Index with 1 replicas
-    And "CR" deploy service from example file "travelapp-kogito-travel-agency.yaml"
-    And "CR" deploy service from example file "travelapp-kogito-visas.yaml"
+    And Install Kogito Data Index with 1 replicas
+    And Deploy service from example file "travelapp-kogito-travel-agency.yaml"
+    And Deploy service from example file "travelapp-kogito-visas.yaml"
     And Kogito application "kogito-travel-agency" has 1 pods running within 10 minutes
     And HTTP GET request on service "kogito-travel-agency" with path "travels" is successful within 1 minutes
     And Kogito application "kogito-visas" has 1 pods running within 10 minutes

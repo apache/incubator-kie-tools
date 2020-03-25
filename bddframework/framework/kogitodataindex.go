@@ -24,6 +24,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -77,12 +78,12 @@ func cliInstallKogitoDataIndex(namespace string, replicas int) error {
 }
 
 func getDataIndexImage() v1alpha1.Image {
-	if len(GetConfigDataIndexImageTag()) > 0 {
-		return framework.ConvertImageTagToImage(GetConfigDataIndexImageTag())
+	if len(config.GetDataIndexImageTag()) > 0 {
+		return framework.ConvertImageTagToImage(config.GetDataIndexImageTag())
 	}
 
 	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
-	image.Tag = GetConfigServicesImageVersion()
+	image.Tag = config.GetServicesImageVersion()
 	return image
 }
 

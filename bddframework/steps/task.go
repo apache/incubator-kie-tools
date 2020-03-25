@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// registerTaskSteps register all task steps
 func registerTaskSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:task|tasks) of process with name "([^"]*)" and task name "([^"]*)"$`, data.serviceContainsTasksOfProcessWithNameAndTaskName)
 	s.Step(`^Complete "([^"]*)" task on service "([^"]*)" and process with name "([^"]*)" with body:$`, data.completeTaskOnServiceAndProcessWithName)

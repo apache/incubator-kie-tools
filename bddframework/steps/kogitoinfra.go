@@ -19,20 +19,19 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// registerKogitoInfraSteps register all Kogito Infra steps existing
 func registerKogitoInfraSteps(s *godog.Suite, data *Data) {
-	s.Step(`^"([^"]*)" install Kogito Infra "([^"]*)"$`, data.installKogitoInfra)
-	s.Step(`^"([^"]*)" remove Kogito Infra "([^"]*)"$`, data.removeKogitoInfra)
+	s.Step(`^Install Kogito Infra "([^"]*)"$`, data.installKogitoInfra)
+	s.Step(`^Remove Kogito Infra "([^"]*)"$`, data.removeKogitoInfra)
 	s.Step(`^Kogito Infra "([^"]*)" should be running within (\d+) minutes$`, data.kogitoInfraShouldBeRunningWithinMinutes)
 	s.Step(`^Kogito Infra "([^"]*)" should NOT be running within (\d+) minutes$`, data.kogitoInfraShouldNOTBeRunningWithinMinutes)
 }
 
-func (data *Data) installKogitoInfra(installerType, component string) error {
-	return framework.InstallKogitoInfraComponent(data.Namespace, framework.MustParseInstallerType(installerType), framework.ParseKogitoInfraComponent(component))
+func (data *Data) installKogitoInfra(component string) error {
+	return framework.InstallKogitoInfraComponent(data.Namespace, framework.GetDefaultInstallerType(), framework.ParseKogitoInfraComponent(component))
 }
 
-func (data *Data) removeKogitoInfra(installerType, component string) error {
-	return framework.RemoveKogitoInfraComponent(data.Namespace, framework.MustParseInstallerType(installerType), framework.ParseKogitoInfraComponent(component))
+func (data *Data) removeKogitoInfra(component string) error {
+	return framework.RemoveKogitoInfraComponent(data.Namespace, framework.GetDefaultInstallerType(), framework.ParseKogitoInfraComponent(component))
 }
 
 func (data *Data) kogitoInfraShouldBeRunningWithinMinutes(component string, timeoutInMin int) error {

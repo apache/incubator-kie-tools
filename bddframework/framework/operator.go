@@ -24,6 +24,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -68,7 +69,7 @@ var (
 
 // DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files
 func DeployKogitoOperatorFromYaml(namespace string) error {
-	var deployURI = GetConfigOperatorDeployURI()
+	var deployURI = config.GetOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
 	// TODO: error handling, go lint is screaming about this
@@ -219,7 +220,7 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 }
 
 func getOperatorImageNameAndTag() string {
-	return fmt.Sprintf("%s:%s", GetConfigOperatorImageName(), GetConfigOperatorImageTag())
+	return fmt.Sprintf("%s:%s", config.GetOperatorImageName(), config.GetOperatorImageTag())
 }
 
 // IsCommunityOperatorCrdAvailable returns whether the crd is available on cluster

@@ -19,7 +19,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// RegisterNamespaceSteps register Kubernetes object steps existing
 func registerKubernetesSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Namespace is created$`, data.namespaceIsCreated)
 	s.Step(`^Namespace is deleted$`, data.namespaceIsDeleted)

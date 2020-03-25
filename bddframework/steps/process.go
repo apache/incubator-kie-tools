@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-// registerProcessSteps register all process steps
 func registerProcessSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Start "([^"]*)" process on service "([^"]*)" with body:$`, data.startProcessOnService)
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)"$`, data.serviceContainsInstancesOfProcess)
