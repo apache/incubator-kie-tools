@@ -52,6 +52,7 @@ function usage(){
   printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timouts. Default value is 1."
   printf "\n--local\n\tSpecify whether you run test in local."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
+  printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
 
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
@@ -204,6 +205,10 @@ case $1 in
   --ci)
     shift
     if addParamKeyValueIfAccepted "--tests.ci" ${1}; then shift; fi
+  ;;
+  --cr_deployment_only)
+    addParam "--tests.cr-deployment-only"
+    shift
   ;;
 
   # operator information
