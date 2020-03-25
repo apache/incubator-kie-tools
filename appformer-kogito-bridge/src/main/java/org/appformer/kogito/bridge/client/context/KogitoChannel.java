@@ -23,7 +23,8 @@ public enum KogitoChannel {
     DEFAULT("DEFAULT"),
     ONLINE("ONLINE"),
     VSCODE("VSCODE"),
-    GITHUB("GITHUB");
+    GITHUB("GITHUB"),
+    DESKTOP("DESKTOP");
 
     private final String name;
 

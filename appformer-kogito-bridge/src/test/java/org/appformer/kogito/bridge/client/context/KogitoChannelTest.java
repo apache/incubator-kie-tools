@@ -28,6 +28,7 @@ public class KogitoChannelTest {
         assertEquals(KogitoChannel.DEFAULT, KogitoChannel.withName("dEfAuLt"));
         assertEquals(KogitoChannel.ONLINE, KogitoChannel.withName("ONLine"));
         assertEquals(KogitoChannel.VSCODE, KogitoChannel.withName("VSCode"));
+        assertEquals(KogitoChannel.DESKTOP, KogitoChannel.withName("Desktop"));
     }
 
     @Test(expected = IllegalArgumentException.class)
