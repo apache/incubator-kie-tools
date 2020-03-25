@@ -1,10 +1,10 @@
 schema_version: 1
 name: org.kie.kogito.maven
-version: "3.6.0"
+version: "3.6.2"
 
 envs:
   - name: "MAVEN_VERSION"
-    value: "3.6.0"
+    value: "3.6.2"
   - name: " MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "HTTP_PROXY"
@@ -29,9 +29,9 @@ envs:
 
 # unfortunately by now the version needs to be hardcoded.
 artifacts:
-  - name: apache-maven-3.6.0-bin.tar.gz
-    url: https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
-    md5: 268081b8394502b6bf8a75ca9c5a2c4f
+  - name: apache-maven-3.6.2-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz
+    md5: f1d40d252a4e09429297567a66324db7
 
 execute:
   - script: configure

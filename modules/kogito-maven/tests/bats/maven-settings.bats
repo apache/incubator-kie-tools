@@ -1,13 +1,13 @@
 #!/usr/bin/env bats
 
 # imports
-source $BATS_TEST_DIRNAME/../../3.6.0/added/configure-maven.sh
+source $BATS_TEST_DIRNAME/../../3.6.x/added/configure-maven.sh
 
 
 setup() {
     export HOME=$BATS_TMPDIR/maven
     mkdir -p ${HOME}/.m2/
-    cp $BATS_TEST_DIRNAME/../../3.6.0/maven/settings.xml ${HOME}/.m2/
+    cp $BATS_TEST_DIRNAME/../../3.6.x/maven/settings.xml ${HOME}/.m2/
 }
 
 teardown() {
