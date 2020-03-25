@@ -22,13 +22,13 @@ import { GlobalContext } from "../common/GlobalContext";
 import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
-import { useMemo } from "react";
 import * as electron from "electron";
-import { FileSaveActions } from "../../common/File";
+import { File, FileSaveActions } from "../../common/File";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   editorType: string;
-  onHome: () => void;
+  onClose: () => void;
 }
 
 enum ContentRequestActionType {
@@ -48,7 +48,7 @@ const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 // FIXME: These variables should be moved inside the React hooks lifecycle.
 let contentRequestAction = ContentRequestActionType.NONE;
-let contentRequestData: any;
+let contentRequestData: { action: FileSaveActions; file?: File };
 
 let previewRequestAction = PreviewRequestActionType.NONE;
 
@@ -61,27 +61,25 @@ export function EditorPage(props: Props) {
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
 
-  const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
-
   const requestSaveFile = useCallback(() => {
     contentRequestAction = ContentRequestActionType.SAVE;
     editorRef.current?.requestContent();
-  }, [editorRef.current]);
+  }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
     contentRequestAction = ContentRequestActionType.COPY;
     editorRef.current?.requestContent();
-  }, [editorRef.current]);
+  }, []);
 
   const requestSavePreview = useCallback(() => {
     previewRequestAction = PreviewRequestActionType.SAVE;
     editorRef.current?.requestPreview();
-  }, [editorRef.current]);
+  }, []);
 
   const requestThumbnailPreview = useCallback(() => {
     previewRequestAction = PreviewRequestActionType.THUMBNAIL;
     editorRef.current?.requestPreview();
-  }, [editorRef.current]);
+  }, []);
 
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
   const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
@@ -95,7 +93,7 @@ export function EditorPage(props: Props) {
           fileType: context.file!.fileType,
           fileContent: content
         };
-        ipc.send("saveFile", contentRequestData);
+        electron.ipcRenderer.send("saveFile", contentRequestData);
       } else if (contentRequestAction === ContentRequestActionType.COPY && copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -104,18 +102,26 @@ export function EditorPage(props: Props) {
         }
       }
     },
-    [ipc, contentRequestData, copyContentTextArea.current, context.file!.filePath, context.file!.fileType]
+    [contentRequestData, copyContentTextArea.current, context.file!.filePath, context.file!.fileType]
   );
 
   const onPreviewResponse = useCallback(
     preview => {
       if (previewRequestAction === PreviewRequestActionType.SAVE) {
-        ipc.send("savePreview", { filePath: context.file!.filePath, fileType: "svg", fileContent: preview });
+        electron.ipcRenderer.send("savePreview", {
+          filePath: context.file!.filePath,
+          fileType: "svg",
+          fileContent: preview
+        });
       } else if (previewRequestAction === PreviewRequestActionType.THUMBNAIL) {
-        ipc.send("saveThumbnail", { filePath: context.file!.filePath, fileType: "svg", fileContent: preview });
+        electron.ipcRenderer.send("saveThumbnail", {
+          filePath: context.file!.filePath,
+          fileType: "svg",
+          fileContent: preview
+        });
       }
     },
-    [ipc, previewRequestAction, context.file!.filePath]
+    [previewRequestAction, context.file!.filePath]
   );
 
   const saveFile = useCallback(() => {
@@ -159,73 +165,73 @@ export function EditorPage(props: Props) {
   }, [savePreviewSuccessAlertVisible, closeSavePreviewSuccessAlert]);
 
   useEffect(() => {
-    ipc.on("requestOpenedFile", (event: any, data: any) => {
+    electron.ipcRenderer.on("requestOpenedFile", (event: IpcRendererEvent, data: { action: FileSaveActions, file?: File }) => {
       contentRequestData = data;
       requestSaveFile();
     });
 
     return () => {
-      ipc.removeAllListeners("requestOpenedFile");
+      electron.ipcRenderer.removeAllListeners("requestOpenedFile");
     };
-  }, [ipc]);
+  }, []);
 
   useEffect(() => {
-    ipc.on("copyContentToClipboard", () => {
+    electron.ipcRenderer.on("copyContentToClipboard", () => {
       requestCopyContentToClipboard();
     });
 
     return () => {
-      ipc.removeAllListeners("copyContentToClipboard");
+      electron.ipcRenderer.removeAllListeners("copyContentToClipboard");
     };
-  }, [ipc]);
+  }, []);
 
   useEffect(() => {
-    ipc.on("savePreview", () => {
+    electron.ipcRenderer.on("savePreview", () => {
       requestSavePreview();
     });
 
     return () => {
-      ipc.removeAllListeners("savePreview");
+      electron.ipcRenderer.removeAllListeners("savePreview");
     };
-  }, [ipc]);
+  }, []);
 
   useEffect(() => {
-    ipc.on("saveThumbnail", () => {
+    electron.ipcRenderer.on("saveThumbnail", () => {
       requestThumbnailPreview();
     });
 
     return () => {
-      ipc.removeAllListeners("saveThumbnail");
+      electron.ipcRenderer.removeAllListeners("saveThumbnail");
     };
-  }, [ipc, requestThumbnailPreview]);
+  }, [requestThumbnailPreview]);
 
   useEffect(() => {
-    ipc.on("saveFileSuccess", () => {
+    electron.ipcRenderer.on("saveFileSuccess", () => {
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });
 
     return () => {
-      ipc.removeAllListeners("saveFileSuccess");
+      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
-  }, [ipc, requestThumbnailPreview]);
+  }, [requestThumbnailPreview]);
 
   useEffect(() => {
-    ipc.on("savePreviewSuccess", () => {
+    electron.ipcRenderer.on("savePreviewSuccess", () => {
       setSavePreviewSuccessAlertVisible(true);
     });
 
     return () => {
-      ipc.removeAllListeners("savePreviewSuccess");
+      electron.ipcRenderer.removeAllListeners("savePreviewSuccess");
     };
-  }, [ipc]);
+  }, []);
 
   return (
     <Page className={"kogito--editor-page"}>
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onHome={props.onHome} onSave={saveFile} />
+            <EditorToolbar onClose={props.onClose} onSave={saveFile} />
           </StackItem>
 
           <StackItem className="pf-m-fill">

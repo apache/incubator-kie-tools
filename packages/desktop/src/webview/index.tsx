@@ -19,10 +19,8 @@ import * as ReactDOM from "react-dom";
 import * as electron from "electron";
 import { App } from "./App";
 
-const ipc = electron.ipcRenderer;
-
 document.addEventListener("DOMContentLoaded", () => {
   ReactDOM.render(<App />, document.getElementById("app")!, () => {
-    ipc.send("mainWindowLoaded");
+    electron.ipcRenderer.send("mainWindowLoaded");
   });
 });

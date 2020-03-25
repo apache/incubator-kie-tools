@@ -18,13 +18,11 @@ import * as React from "react";
 import { File } from "../../common/File";
 import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
 import { Router } from "@kogito-tooling/core-api";
-import { FileActions } from "./FileActions";
 
 export interface GlobalContextType {
   router: Router;
   envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
   iframeTemplateRelativePath: string;
-  fileActions: FileActions;
   file?: File;
 }
 

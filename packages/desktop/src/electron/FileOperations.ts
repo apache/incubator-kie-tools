@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {FileSaveActions, UNSAVED_FILE_NAME} from "../common/File";
-import {BrowserWindow, dialog, ipcMain} from "electron";
-import {Files} from "../storage/core/Files";
-import {FS} from "../storage/core/FS";
-import {extractFileExtension, removeFileExtension} from "../common/utils";
-import {DesktopUserData} from "./DesktopUserData";
-import {Menu} from "./Menu";
+import { File, FileSaveActions, UNSAVED_FILE_NAME } from "../common/File";
+import { BrowserWindow, dialog, ipcMain } from "electron";
+import { Files } from "../storage/core/Files";
+import { FS } from "../storage/core/FS";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { DesktopUserData } from "./DesktopUserData";
+import { Menu } from "./Menu";
 import * as path from "path";
 import IpcMainEvent = Electron.IpcMainEvent;
 
@@ -34,27 +34,25 @@ export class FileOperations {
     this.menu = menu;
     this.userData = userData;
 
-    ipcMain.on("saveFile", (event: IpcMainEvent, data: any) => {
-      if (
-        data.action === FileSaveActions.SAVE_AS ||
-        (data.action === FileSaveActions.SAVE && data.file.filePath === UNSAVED_FILE_NAME)
-      ) {
-        dialog
-          .showSaveDialog(this.window, {
-            title: "Save file",
-            filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
-          })
-          .then(result => {
-            if (!result.canceled) {
-              this.saveFile(result.filePath!, data.file.fileContent);
-            }
-          });
-      } else {
-        this.saveFile(data.file.filePath, data.file.fileContent);
+    ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions, file: File }) => {
+      if (data.action !== FileSaveActions.SAVE_AS && data.file.filePath !== UNSAVED_FILE_NAME) {
+        this.writeFile(data.file.filePath, data.file.fileContent);
+        return;
       }
+
+      dialog
+        .showSaveDialog(this.window, {
+          title: "Save file",
+          filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
+        })
+        .then(result => {
+          if (!result.canceled) {
+            this.writeFile(result.filePath!, data.file.fileContent);
+          }
+        });
     });
 
-    ipcMain.on("savePreview", (event: IpcMainEvent, data: any) => {
+    ipcMain.on("savePreview", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
       console.info(removeFileExtension(data.filePath) + "." + data.fileType);
       dialog
         .showSaveDialog(this.window, {
@@ -69,7 +67,7 @@ export class FileOperations {
         });
     });
 
-    ipcMain.on("saveThumbnail", (event: IpcMainEvent, data: any) => {
+    ipcMain.on("saveThumbnail", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
       if (data.filePath !== UNSAVED_FILE_NAME) {
         this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
       }
@@ -84,11 +82,11 @@ export class FileOperations {
     });
 
     ipcMain.on("openFileByPath", (event: IpcMainEvent, data: { filePath: string }) => {
-      this.open(data.filePath);
+      this.openFile(data.filePath);
     });
 
     ipcMain.on("createNewFile", (event: IpcMainEvent, data: { type: string }) => {
-      this.new(data.type);
+      this.newFile(data.type);
     });
 
     ipcMain.on("openSample", (event: IpcMainEvent, data: { type: string }) => {
@@ -97,12 +95,12 @@ export class FileOperations {
 
     ipcMain.on("mainWindowLoaded", (event: IpcMainEvent) => {
       if (process.argv.length > 1 && process.argv[1] !== "dist") {
-        this.open(process.argv[1]);
+        this.openFile(process.argv[1]);
       }
     });
   }
 
-  public new(type: string) {
+  public newFile(type: string) {
     this.window.webContents.send("openFile", {
       file: {
         filePath: UNSAVED_FILE_NAME,
@@ -113,7 +111,7 @@ export class FileOperations {
     this.menu.setFileMenusEnabled(true);
   }
 
-  public open(filePath: string) {
+  public openFile(filePath: string) {
     Files.read(FS.newFile(filePath))
       .then(content => {
         this.window.webContents.send("openFile", {
@@ -153,19 +151,19 @@ export class FileOperations {
       });
   }
 
-  public save() {
+  public saveFile() {
     this.window.webContents.send("requestOpenedFile", {
       action: FileSaveActions.SAVE
     });
   }
 
-  public saveAs() {
+  public saveFileAs() {
     this.window.webContents.send("requestOpenedFile", {
       action: FileSaveActions.SAVE_AS
     });
   }
 
-  private saveFile(filePath: string, fileContent: string) {
+  private writeFile(filePath: string, fileContent: string) {
     Files.write(FS.newFile(filePath), fileContent)
       .then(() => {
         this.userData.registerFile(filePath);

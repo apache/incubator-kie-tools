@@ -34,13 +34,13 @@ export class Menu {
       {
         label: "BPMN",
         click: () => {
-          this.fileOperations.new("bpmn");
+          this.fileOperations.newFile("bpmn");
         }
       },
       {
         label: "DMN",
         click: () => {
-          this.fileOperations.new("dmn");
+          this.fileOperations.newFile("dmn");
         }
       }
     ]
@@ -65,7 +65,7 @@ export class Menu {
             })
             .then(result => {
               if (!result.canceled) {
-                this.fileOperations.open(result.filePaths[0]);
+                this.fileOperations.openFile(result.filePaths[0]);
               }
             });
         }
@@ -94,7 +94,7 @@ export class Menu {
     label: "Save",
     accelerator: "CmdOrCtrl+S",
     click: () => {
-      this.fileOperations.save();
+      this.fileOperations.saveFile();
     },
     enabled: false
   };
@@ -103,7 +103,7 @@ export class Menu {
     label: "Save As...",
     accelerator: "CmdOrCtrl+Shift+S",
     click: () => {
-      this.fileOperations.saveAs();
+      this.fileOperations.saveFileAs();
     },
     enabled: false
   };

@@ -16,6 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const envelope = require("../microeditor-envelope/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -40,7 +41,7 @@ const commonConfig = {
       { from: "./static/index.html", to: "./index.html" },
       { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
       { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" },
-      { from: "./build", to: "./build" },
+      { from: "./build", to: "./build" }
     ])
   ],
   module: {
@@ -61,49 +62,6 @@ const commonConfig = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"]
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.(woff)$/,
-        include: [
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
-        ],
-        use: {
-          loader: "file-loader",
-          options: {
-            limit: 244,
-            outputPath: "fonts",
-            name: "[name].[ext]"
-          }
-        }
-      },
-      {
-        test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pficon\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /fa-solid-900\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pfbg_.*\.jpg$/,
-        loader: "null-loader"
       }
     ]
   },
@@ -128,12 +86,12 @@ module.exports = [
     ...commonConfig,
     target: "electron-main",
     entry: {
-      "index": "./src/electron/index.ts"
+      index: "./src/electron/index.ts"
     },
     node: {
       __dirname: false,
       __filename: false
-    },
+    }
   },
   {
     ...commonConfig,
@@ -142,11 +100,7 @@ module.exports = [
       "webview/index": "./src/webview/index.tsx",
       "envelope/index": "./src/envelope/index.ts"
     },
-    plugins: [
-      new CopyPlugin([
-        { from: "static/index.html" },
-        { from: "static/envelope/index.html" }
-      ])
-    ]
+    module: { rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders] },
+    plugins: [new CopyPlugin([{ from: "static/index.html" }, { from: "static/envelope/index.html" }])]
   }
 ];

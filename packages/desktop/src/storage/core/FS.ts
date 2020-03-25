@@ -29,7 +29,7 @@ export class FS implements Provider {
   public read(file: FileMetadata): Promise<string> {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
       const readFile = util.promisify(fs.readFile);
-      return readFile(file.full_name, "utf-8");
+      return readFile(file.fullName, "utf-8");
     }
     return Promise.resolve("");
   }
@@ -37,14 +37,14 @@ export class FS implements Provider {
   public write(file: FileMetadata, content: string): Promise<void> {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
       const writeFile = util.promisify(fs.writeFile);
-      return writeFile(file.full_name, content, "utf-8");
+      return writeFile(file.fullName, content, "utf-8");
     }
     return Promise.resolve();
   }
 
   public exists(file: FileMetadata): boolean {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      return fs.existsSync(file.full_name);
+      return fs.existsSync(file.fullName);
     }
     return false;
   }
@@ -52,9 +52,9 @@ export class FS implements Provider {
   public remove(file: FileMetadata): void {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
       if (this.isDirectory(file)) {
-        return fs.rmdirSync(file.full_name);
+        return fs.rmdirSync(file.fullName);
       } else {
-        return fs.unlinkSync(file.full_name);
+        return fs.unlinkSync(file.fullName);
       }
     }
   }
@@ -63,8 +63,8 @@ export class FS implements Provider {
     const result: FileMetadata[] = [];
 
     if (directory.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      fs.readdirSync(directory.full_name).forEach(currentFile => {
-        const currentFileFullPath = path.join(directory.full_name, currentFile);
+      fs.readdirSync(directory.fullName).forEach(currentFile => {
+        const currentFileFullPath = path.join(directory.fullName, currentFile);
         const currentFileObj: FileMetadata = FS.newFile(currentFileFullPath);
 
         result.push(currentFileObj);
@@ -79,7 +79,7 @@ export class FS implements Provider {
 
   public isDirectory(file: FileMetadata): boolean {
     if (file.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      return fs.lstatSync(file.full_name).isDirectory();
+      return fs.lstatSync(file.fullName).isDirectory();
     }
     return false;
   }

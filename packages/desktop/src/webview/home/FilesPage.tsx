@@ -15,45 +15,46 @@
  */
 
 import * as React from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
+  AlertActionCloseButton,
   AlertVariant,
   Bullseye,
   Button,
   Card,
   CardBody,
   CardFooter,
-  PageSection,
-  Text,
-  TextInput,
-  Title,
-  Gallery,
   CardHeader,
-  Toolbar,
-  TextContent,
-  ToolbarGroup,
-  ToolbarItem,
-  InputGroup,
-  Tooltip,
-  TextVariants,
-  Select,
-  SelectOption,
   Form,
   FormGroup,
-  StackItem,
-  AlertActionCloseButton
+  Gallery,
+  InputGroup,
+  PageSection,
+  Select,
+  SelectOption,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem,
+  Tooltip
 } from "@patternfly/react-core";
-import { useCallback, useEffect, useState } from "react";
-import { useMemo } from "react";
 import * as electron from "electron";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
-import IpcRendererEvent = Electron.IpcRendererEvent;
-import * as ReactDOM from "react-dom";
 import { File, UNSAVED_FILE_NAME } from "../../common/File";
-import { useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
+import IpcRendererEvent = Electron.IpcRendererEvent;
+
+interface Props {
+  openFile: (file: File) => void;
+  openFileByPath: (filePath: string) => void;
+}
 
 enum InputFileUrlState {
   VALID,
@@ -63,23 +64,19 @@ enum InputFileUrlState {
   INVALID_EXTENSION
 }
 
-interface Props {
-  openFile: (file: File) => void;
-  openFileByPath: (filePath: string) => void;
-}
-
-const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
-
 enum ImportFileErrorType {
   NONE,
   FETCH,
   RESPONSE
 }
 
+const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
+
+const typeFilterOptions = [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }];
+
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
   const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
-  const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
 
   const [url, setURL] = useState("");
   const [importFileErrorDetails, setImportFileErrorDetails] = useState<{
@@ -94,11 +91,7 @@ export function FilesPage(props: Props) {
 
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
 
-  const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
-
-  const typeFilterOptions = useMemo(() => [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }], []);
-
-  const validatedInputUrl = useMemo(
+  const isInputUrlValid = useMemo(
     () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
     [inputFileUrlState]
   );
@@ -123,39 +116,40 @@ export function FilesPage(props: Props) {
     []
   );
 
-  const applyFilter = useCallback(
-    (files: RecentOpenedFile[]) => {
-      const filteredFiles = files
-        .filter(file =>
-          removeDirectories(file.filePath)
-            ?.toUpperCase()
-            .includes(searchFilter.toUpperCase())
-        )
-        .filter(
-          file =>
-            typeFilterSelect.value === "All" ||
-            file.filePath.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
-        );
+  const filteredLastOpenedFiles = useMemo(() => {
+    // condition used to avoid MacOS issue during first load
+    if (lastOpenedFiles.filter === undefined) {
+      return [];
+    }
 
-      if (sortAlphaFilter) {
-        return filteredFiles.sort((file1, file2) => {
-          const f1 = file1.filePath.toLowerCase();
-          const f2 = file2.filePath.toLowerCase();
+    const filteredFiles = lastOpenedFiles
+      .filter(file =>
+        removeDirectories(file.filePath)
+          ?.toUpperCase()
+          .includes(searchFilter.toUpperCase())
+      )
+      .filter(
+        file =>
+          typeFilterSelect.value === "All" || file.filePath.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
+      );
 
-          if (f1 < f2) {
-            return -1;
-          } else if (f1 > f2) {
-            return 1;
-          }
+    if (sortAlphaFilter) {
+      return filteredFiles.sort((file1, file2) => {
+        const f1 = file1.filePath.toLowerCase();
+        const f2 = file2.filePath.toLowerCase();
 
-          return 0;
-        });
-      }
+        if (f1 < f2) {
+          return -1;
+        } else if (f1 > f2) {
+          return 1;
+        }
 
-      return filteredFiles;
-    },
-    [searchFilter, typeFilterSelect, sortAlphaFilter]
-  );
+        return 0;
+      });
+    }
+
+    return filteredFiles;
+  }, [lastOpenedFiles, searchFilter, typeFilterSelect, sortAlphaFilter]);
 
   const onSelectTypeFilter = useCallback((event, selection) => {
     setTypeFilterSelect({
@@ -174,12 +168,9 @@ export function FilesPage(props: Props) {
     [typeFilterSelect]
   );
 
-  const onChangeSearchFilter = useCallback(
-    newValue => {
-      setSearchFilter(newValue);
-    },
-    [lastOpenedFiles]
-  );
+  const onChangeSearchFilter = useCallback(newValue => {
+    setSearchFilter(newValue);
+  }, []);
 
   const validateFileInput = useCallback((fileUrl: string) => {
     let urlObject: URL;
@@ -205,7 +196,7 @@ export function FilesPage(props: Props) {
   }, []);
 
   const importFileByUrl = useCallback(() => {
-    if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
+    if (isInputUrlValid && inputFileUrlState !== InputFileUrlState.INITIAL) {
       fetch(url)
         .then(response => {
           if (response.ok) {
@@ -216,7 +207,7 @@ export function FilesPage(props: Props) {
                 fileContent: content
               };
 
-              ipc.send("setFileMenusEnabled", { enabled: true });
+              electron.ipcRenderer.send("setFileMenusEnabled", { enabled: true });
               props.openFile(file);
             });
           } else {
@@ -231,7 +222,7 @@ export function FilesPage(props: Props) {
           setImportFileErrorDetails({ type: ImportFileErrorType.FETCH, description: error.toString() });
         });
     }
-  }, [validatedInputUrl, inputFileUrlState, url, props.openFile]);
+  }, [isInputUrlValid, inputFileUrlState, url, props.openFile]);
 
   const importFileByUrlFormSubmit = useCallback(
     e => {
@@ -249,28 +240,19 @@ export function FilesPage(props: Props) {
   }, [url]);
 
   useEffect(() => {
-    if (lastOpenedFiles.filter !== undefined) {
-      // used to avoid MacOS issue during first load
-      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
-    }
+    electron.ipcRenderer.on(
+      "returnLastOpenedFiles",
+      (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
+        setLastOpenedFiles(data.lastOpenedFiles);
+      }
+    );
+
+    electron.ipcRenderer.send("requestLastOpenedFiles");
 
     return () => {
-      /* Do nothing. */
+      electron.ipcRenderer.removeAllListeners("returnLastOpenedFiles");
     };
-  }, [applyFilter, lastOpenedFiles]);
-
-  useEffect(() => {
-    ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
-      setLastOpenedFiles(data.lastOpenedFiles);
-      setFilteredLastOpenedFiles(applyFilter(data.lastOpenedFiles));
-    });
-
-    ipc.send("requestLastOpenedFiles");
-
-    return () => {
-      ipc.removeAllListeners("returnLastOpenedFiles");
-    };
-  }, [ipc, applyFilter]);
+  }, []);
 
   useEffect(() => {
     if (importFileErrorDetails.type !== ImportFileErrorType.NONE) {
@@ -325,7 +307,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => context.fileActions.createNewFile("bpmn")}
+            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}
           >
             <CardHeader>
               {
@@ -343,7 +325,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => context.fileActions.createNewFile("dmn")}
+            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}
           >
             <CardHeader>
               {
@@ -361,7 +343,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => context.fileActions.openSample("bpmn")}
+            onClick={() => electron.ipcRenderer.send("openSample", { type: "bpmn" })}
           >
             <CardHeader>
               {
@@ -385,7 +367,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => context.fileActions.openSample("dmn")}
+            onClick={() => electron.ipcRenderer.send("openSample", { type: "dmn" })}
           >
             <CardHeader>
               {
@@ -413,18 +395,18 @@ export function FilesPage(props: Props) {
             <CardBody>
               <TextContent>
                 <Text component={TextVariants.p}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</Text>
-                <Form onSubmit={importFileByUrlFormSubmit} disabled={!validatedInputUrl}>
+                <Form onSubmit={importFileByUrlFormSubmit} disabled={!isInputUrlValid}>
                   <FormGroup
                     label="URL"
                     fieldId="url-text-input"
-                    isValid={validatedInputUrl}
+                    isValid={isInputUrlValid}
                     helperText=""
                     helperTextInvalid={messageForStateInputUrl}
                   >
                     <TextInput
                       isRequired={true}
                       onBlur={onInputFileUrlBlur}
-                      isValid={validatedInputUrl}
+                      isValid={isInputUrlValid}
                       value={url}
                       onChange={inputFileChanged}
                       type="url"

@@ -23,7 +23,7 @@ import { FS } from "./FS";
 export class UserData {
   private readonly basePath: string;
   private readonly dataPath: string;
-  private readonly defaults: any;
+  private readonly defaults: unknown;
   private readonly resourceTypes: string[];
 
   constructor(options: { configName: string; resourceTypes: string[]; defaults: any }) {
@@ -62,7 +62,7 @@ export class UserData {
 
   public listResources(type: string): string[] {
     this.createResourceFolderIfNecessary(type);
-    return Files.list(FS.newFile(path.join(this.basePath, type))).map(file => file.full_name);
+    return Files.list(FS.newFile(path.join(this.basePath, type))).map(file => file.fullName);
   }
 
   public deleteResources(files: string[]) {

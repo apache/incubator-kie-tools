@@ -19,8 +19,8 @@ import { FileType } from "./FileType";
 
 export class FileMetadata {
   public readonly name: string;
-  public readonly full_name: string;
-  public readonly relative_name: string;
+  public readonly fullName: string;
+  public readonly relativeName: string;
   public readonly type: FileType;
   public readonly uri: string;
   public readonly storage: StorageTypes;
@@ -29,8 +29,8 @@ export class FileMetadata {
 
   constructor(
     name: string,
-    full_name: string,
-    relative_name: string,
+    fullName: string,
+    relativeName: string,
     type: FileType,
     uri: string,
     storage: StorageTypes,
@@ -38,8 +38,8 @@ export class FileMetadata {
     id: string
   ) {
     this.name = name;
-    this.full_name = full_name;
-    this.relative_name = relative_name;
+    this.fullName = fullName;
+    this.relativeName = relativeName;
     this.type = type;
     this.uri = uri;
     this.storage = storage;

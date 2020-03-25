@@ -21,20 +21,20 @@ import { PromisedRecentOpenedFile, RecentOpenedFile } from "../common/RecentOpen
 import * as path from "path";
 import { createHash } from "crypto";
 
-const NUMBER_OF_FILES_TO_KEEP = 50;
+const NUMBER_OF_RECENT_FILES_TO_KEEP = 50;
 
-const CONFIG = "config";
+const USER_DATA_FILE_NAME = "config";
 
-const LAST_OPENED_FILES = "lastOpenedFiles";
-const THUMBNAILS = "thumbnails";
+const LAST_OPENED_FILES_FIELD_NAME = "lastOpenedFiles";
+const THUMBNAILS_RESOURCE_TYPE = "thumbnails";
 
 export class DesktopUserData {
   private userData: UserData;
 
   constructor() {
     this.userData = new UserData({
-      configName: CONFIG,
-      resourceTypes: [THUMBNAILS],
+      configName: USER_DATA_FILE_NAME,
+      resourceTypes: [THUMBNAILS_RESOURCE_TYPE],
       defaults: {
         lastOpenedFiles: []
       }
@@ -42,40 +42,44 @@ export class DesktopUserData {
   }
 
   public registerFile(fullPath: string) {
-    const lastOpenedFiles = this.userData.get(LAST_OPENED_FILES);
+    const lastOpenedFiles = this.userData.get(LAST_OPENED_FILES_FIELD_NAME);
     lastOpenedFiles.unshift(fullPath);
     this.userData.set(
-      LAST_OPENED_FILES,
+      LAST_OPENED_FILES_FIELD_NAME,
       lastOpenedFiles
-        .filter((item: string, i: number, ar: string[]) => ar.indexOf(item) === i) // keeps only the first occurence
-        .slice(0, NUMBER_OF_FILES_TO_KEEP)
+        .filter((item: string, i: number, ar: string[]) => ar.indexOf(item) === i) // keeps only the first occurrence
+        .slice(0, NUMBER_OF_RECENT_FILES_TO_KEEP)
     );
   }
 
   public saveFileThumbnail(filePath: string, fileType: string, fileContent: string) {
     const thumbnailFileName = this.buildThumbnailFileName(filePath) + "." + fileType;
-    this.userData.saveResource(THUMBNAILS, thumbnailFileName, fileContent);
+    this.userData.saveResource(THUMBNAILS_RESOURCE_TYPE, thumbnailFileName, fileContent);
   }
 
   public getLastOpenedFiles(): Promise<RecentOpenedFile[]> {
-    const updatedData: string[] = this.userData.get(LAST_OPENED_FILES).filter(file => Files.exists(FS.newFile(file)));
-    this.userData.set(LAST_OPENED_FILES, updatedData);
+    const updatedData: string[] = this.userData
+      .get(LAST_OPENED_FILES_FIELD_NAME)
+      .filter(file => Files.exists(FS.newFile(file)));
+    this.userData.set(LAST_OPENED_FILES_FIELD_NAME, updatedData);
 
     const validThumbnails = updatedData.map(file =>
-      path.join(this.userData.getBasePath(), THUMBNAILS, this.buildThumbnailFileName(file) + ".svg")
+      path.join(this.userData.getBasePath(), THUMBNAILS_RESOURCE_TYPE, this.buildThumbnailFileName(file) + ".svg")
     );
     const thumbnailsToRemove: string[] = this.userData
-      .listResources(THUMBNAILS)
+      .listResources(THUMBNAILS_RESOURCE_TYPE)
       .filter(thumbnailPath => !validThumbnails.includes(thumbnailPath));
     this.userData.deleteResources(thumbnailsToRemove);
 
     return this.getPromisedRecentOpenedFiles(
       updatedData.map(filePath => {
+        const thumbnailFilePath = this.buildThumbnailFileName(filePath) + ".svg";
         return {
           filePath: filePath,
-          previewPromise: this.userData
-            .readResource(THUMBNAILS, this.buildThumbnailFileName(filePath) + ".svg")
-            .catch(() => Promise.resolve(""))
+          previewPromise: this.userData.readResource(THUMBNAILS_RESOURCE_TYPE, thumbnailFilePath).catch(e => {
+            console.log("No thumbnail for file " + filePath);
+            return Promise.resolve("");
+          })
         };
       })
     );
@@ -104,7 +108,7 @@ export class DesktopUserData {
 
   public clear() {
     this.userData.clearData();
-    this.userData.clearResources(THUMBNAILS);
+    this.userData.clearResources(THUMBNAILS_RESOURCE_TYPE);
   }
 
   private buildThumbnailFileName(filePath: string) {

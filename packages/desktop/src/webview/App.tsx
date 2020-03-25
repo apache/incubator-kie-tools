@@ -25,11 +25,11 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import "../../static/resources/style.css";
-import { File } from "../common/File";
+import { File, FileSaveActions } from "../common/File";
 import { DesktopRouter } from "./common/DesktopRouter";
 import * as electron from "electron";
-import { FileActions } from "./common/FileActions";
 import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   file?: File;
@@ -61,21 +61,6 @@ export function App(props: Props) {
     []
   );
 
-  const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
-
-  const fileActions = useMemo(() => new FileActions(ipc), [ipc]);
-
-  const Router = () => {
-    switch (page) {
-      case Pages.HOME:
-        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
-      case Pages.EDITOR:
-        return <EditorPage editorType={file!.fileType} onHome={goToHomePage} />;
-      default:
-        return <></>;
-    }
-  };
-
   const closeInvalidFileTypeErrorAlert = useCallback(() => setInvalidFileTypeErrorVisible(false), []);
 
   const openFile = useCallback(
@@ -87,18 +72,14 @@ export function App(props: Props) {
   );
 
   const openFileByPath = useCallback((filePath: string) => {
-    ipc.send("openFileByPath", { filePath: filePath });
+    electron.ipcRenderer.send("openFileByPath", { filePath: filePath });
   }, []);
 
   const goToHomePage = useCallback(() => {
-    ipc.send("setFileMenusEnabled", { enabled: false });
+    electron.ipcRenderer.send("setFileMenusEnabled", { enabled: false });
     setPage(Pages.HOME);
     setFile(undefined);
   }, [page, file]);
-
-  const preventDefaultEvent = useCallback(ev => {
-    ev.preventDefault();
-  }, []);
 
   const dragAndDropFileEvent = useCallback(
     ev => {
@@ -109,6 +90,17 @@ export function App(props: Props) {
     },
     [openFileByPath]
   );
+
+  const Router = () => {
+    switch (page) {
+      case Pages.HOME:
+        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
+      case Pages.EDITOR:
+        return <EditorPage editorType={file!.fileType} onClose={goToHomePage} />;
+      default:
+        return <></>;
+    }
+  };
 
   useEffect(() => {
     if (invalidFileTypeErrorVisible) {
@@ -122,8 +114,11 @@ export function App(props: Props) {
   }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
 
   useEffect(() => {
-    ipc.on("openFile", (event: any, data: any) => {
+    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: File }) => {
       if (desktopRouter.getLanguageData(data.file.fileType)) {
+        if (page === Pages.EDITOR) {
+          setPage(Pages.HOME);
+        }
         openFile(data.file);
       } else {
         setInvalidFileTypeErrorVisible(true);
@@ -131,31 +126,31 @@ export function App(props: Props) {
     });
 
     return () => {
-      ipc.removeAllListeners("openFile");
+      electron.ipcRenderer.removeAllListeners("openFile");
     };
-  }, [ipc, page, file]);
+  }, [page, file]);
 
   useEffect(() => {
-    ipc.on("saveFileSuccess", (event: any, data: any) => {
+    electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }) => {
       file!.filePath = data.filePath;
     });
 
     return () => {
-      ipc.removeAllListeners("saveFileSuccess");
+      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
-  }, [ipc, file]);
+  }, [file]);
 
   useEffect(() => {
-    document.addEventListener("dragover", preventDefaultEvent);
-    document.addEventListener("drop", preventDefaultEvent);
+    document.addEventListener("dragover", e => e.preventDefault());
+    document.addEventListener("drop", e => e.preventDefault());
     document.body.addEventListener("drop", dragAndDropFileEvent);
 
     return () => {
-      document.removeEventListener("dragover", preventDefaultEvent);
-      document.removeEventListener("drop", preventDefaultEvent);
+      document.removeEventListener("dragover", e => e.preventDefault());
+      document.removeEventListener("drop", e => e.preventDefault());
       document.body.removeEventListener("drop", dragAndDropFileEvent);
     };
-  }, [preventDefaultEvent, dragAndDropFileEvent]);
+  }, [dragAndDropFileEvent]);
 
   return (
     <GlobalContext.Provider
@@ -163,7 +158,6 @@ export function App(props: Props) {
         router: desktopRouter,
         envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
         iframeTemplateRelativePath: "envelope/index.html",
-        fileActions: fileActions,
         file: file
       }}
     >

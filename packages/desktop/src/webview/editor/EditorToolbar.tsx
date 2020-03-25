@@ -23,8 +23,8 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { removeDirectories } from "../../common/utils";
 
 interface Props {
-  onHome: () => void;
   onSave: () => void;
+  onClose: () => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -33,10 +33,6 @@ export function EditorToolbar(props: Props) {
   const editorType = useMemo(() => {
     return context.file!.fileType;
   }, [location]);
-
-  const logoProps = useMemo(() => {
-    return { href: window.location.href.split("?")[0].split("#")[0] };
-  }, []);
 
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
@@ -63,7 +59,7 @@ export function EditorToolbar(props: Props) {
           </Button>
         </ToolbarItem>
         <ToolbarItem>
-          <Button variant={"plain"} onClick={props.onHome} aria-label={"Go to homepage"}>
+          <Button variant={"plain"} onClick={props.onClose} aria-label={"Go to homepage"}>
             <CloseIcon />
           </Button>
         </ToolbarItem>
@@ -73,8 +69,7 @@ export function EditorToolbar(props: Props) {
 
   return (
     <PageHeader
-      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
-      logoProps={logoProps}
+      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />}
       toolbar={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}

@@ -76,7 +76,7 @@ export function LearnMorePage() {
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>
-            <Button variant="secondary" onClick={() => context.fileActions.createNewFile("bpmn")}>
+            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
               Create BPMN
             </Button>
           </CardFooter>
@@ -119,7 +119,7 @@ export function LearnMorePage() {
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>
-            <Button variant="secondary" onClick={() => context.fileActions.createNewFile("dmn")}>
+            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
               Create DMN
             </Button>
           </CardFooter>
