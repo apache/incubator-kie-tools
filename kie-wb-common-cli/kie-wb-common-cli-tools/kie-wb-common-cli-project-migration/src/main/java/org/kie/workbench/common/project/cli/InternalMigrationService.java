@@ -92,6 +92,8 @@ public class InternalMigrationService {
                                             repoConfigs,
                                             orgUnitByRepo);
             migrateProjectsToIndividualRepos();
+
+            configService.cleanUpSystemRepository();
         }
     }
 
@@ -186,6 +188,7 @@ public class InternalMigrationService {
                     Path ouSpace = niogitDir.resolve(group.getName());
                     ouSpace.toFile().mkdir();
                     SpaceInfo space = configGroupToSpaceInfoConverter.toSpaceInfo(group);
+                    configGroupToSpaceInfoConverter.cleanUpRepositories(group);
                     spaceConfigStorageRegistry.get(group.getName()).saveSpaceInfo(space);
                 });
     }

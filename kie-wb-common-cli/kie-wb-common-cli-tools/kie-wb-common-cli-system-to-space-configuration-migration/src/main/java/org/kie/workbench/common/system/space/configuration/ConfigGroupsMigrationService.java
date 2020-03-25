@@ -41,7 +41,9 @@ public class ConfigGroupsMigrationService {
     }
 
     @Inject
-    public ConfigGroupsMigrationService(final ConfigurationService configurationService, final SpaceConfigStorageRegistry spaceConfigStorageRegistry, final ConfigGroupToSpaceInfoConverter configGroupToSpaceInfoConverter) {
+    public ConfigGroupsMigrationService(final ConfigurationService configurationService,
+                                        final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
+                                        final ConfigGroupToSpaceInfoConverter configGroupToSpaceInfoConverter) {
         this.configurationService = configurationService;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
         this.configGroupToSpaceInfoConverter = configGroupToSpaceInfoConverter;
@@ -53,7 +55,10 @@ public class ConfigGroupsMigrationService {
             for (ConfigGroup groupConfig : groups) {
                 saveSpaceInfo(configGroupToSpaceInfoConverter.toSpaceInfo(groupConfig));
                 configurationService.removeConfiguration(groupConfig);
+                configGroupToSpaceInfoConverter.cleanUpRepositories(groupConfig);
             }
+
+            configurationService.cleanUpSystemRepository();
         }
     }
 

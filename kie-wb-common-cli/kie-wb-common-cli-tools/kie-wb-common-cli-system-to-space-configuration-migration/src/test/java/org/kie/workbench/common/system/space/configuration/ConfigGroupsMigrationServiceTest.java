@@ -26,8 +26,8 @@ import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.config.SpaceInfo;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Before;
@@ -87,7 +87,7 @@ public class ConfigGroupsMigrationServiceTest {
         configurationService = spy(weldContainer.instance().select(ConfigurationServiceImpl.class).get());
         spaceConfigStorageRegistry = weldContainer.instance().select(SpaceConfigStorageRegistry.class).get();
         backwardCompatibleUtil = spy(weldContainer.instance().select(BackwardCompatibleUtil.class).get());
-        configGroupToSpaceInfoConverter = new ConfigGroupToSpaceInfoConverter(configurationService, backwardCompatibleUtil, spaceConfigStorageRegistry);
+        configGroupToSpaceInfoConverter = spy(new ConfigGroupToSpaceInfoConverter(configurationService, backwardCompatibleUtil, spaceConfigStorageRegistry));
 
         migrationService = spy(new ConfigGroupsMigrationService(configurationService, spaceConfigStorageRegistry, configGroupToSpaceInfoConverter));
     }
@@ -100,10 +100,11 @@ public class ConfigGroupsMigrationServiceTest {
         ArgumentCaptor<SpaceInfo> infoCaptor = ArgumentCaptor.forClass(SpaceInfo.class);
 
         verify(configurationService).getConfiguration(eq(ConfigType.SPACE));
-        verify(configurationService).getConfiguration(eq(ConfigType.REPOSITORY), eq(SPACE_NAME));
+        verify(configurationService, times(2)).getConfiguration(eq(ConfigType.REPOSITORY), eq(SPACE_NAME));
         verify(migrationService).saveSpaceInfo(infoCaptor.capture());
-        verify(backwardCompatibleUtil, times(3)).compat(any());
+        verify(backwardCompatibleUtil, times(5)).compat(any());
         verify(configurationService).removeConfiguration(any());
+        verify(configGroupToSpaceInfoConverter).cleanUpRepositories(any());
 
         SpaceInfo info = infoCaptor.getValue();
 
@@ -117,6 +118,15 @@ public class ConfigGroupsMigrationServiceTest {
         Assertions.assertThat(info.getContributors().iterator().next())
                 .hasFieldOrPropertyWithValue("username", CONTRIBUTOR)
                 .hasFieldOrPropertyWithValue("type", ContributorType.OWNER);
+
+        info.getRepositories().forEach(repositoryInfo -> {
+            Assertions.assertThat(repositoryInfo.getConfiguration().getEnvironment())
+                    .doesNotContainKeys(EnvironmentParameters.USER_NAME,
+                                        EnvironmentParameters.PASSWORD,
+                                        EnvironmentParameters.SECURE_PREFIX + EnvironmentParameters.PASSWORD);
+        });
+
+        verify(configurationService).cleanUpSystemRepository();
 
         Assertions.assertThat(info.getSecurityGroups())
                 .isEmpty();
@@ -149,8 +159,6 @@ public class ConfigGroupsMigrationServiceTest {
 
         Assertions.assertThat(info.getSecurityGroups())
                 .isEmpty();
-
-
     }
 }
 

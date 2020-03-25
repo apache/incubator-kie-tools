@@ -33,6 +33,7 @@ import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.config.SpaceInfo;
+import org.guvnor.structure.repositories.RepositoryUtils;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -142,16 +143,39 @@ public class ConfigGroupToSpaceInfoConverter {
     }
 
     private RepositoryInfo toRepositoryInfo(ConfigGroup configGroup) {
-        final Map<String, Object> environment = backwardCompatibleUtil.compat(configGroup).getItems().stream().collect(Collectors.toMap(item -> item.getName(),
-                                                                                                                                        item -> item.getValue()));
+        final Map<String, Object> envMap = extractEnvMap(configGroup);
+
+        RepositoryUtils.cleanUpCredentialsFromEnvMap(envMap);
 
         return new RepositoryInfo(configGroup.getName(),
                                   false,
-                                  new RepositoryConfiguration(environment));
+                                  new RepositoryConfiguration(envMap));
     }
 
     private List<String> extractSecurityGroups(final ConfigGroup groupConfig) {
         ConfigItem<List<String>> securityGroups = backwardCompatibleUtil.compat(groupConfig).getConfigItem(SECURITY_GROUPS);
         return securityGroups.getValue();
+    }
+
+    public void cleanUpRepositories(final ConfigGroup configGroup) {
+        final String spaceName = extractName(configGroup);
+
+        configurationService.getConfiguration(ConfigType.REPOSITORY, spaceName)
+                .forEach(cg -> {
+                    final Map<String, Object> envMap = extractEnvMap(cg);
+
+                    final List<String> keysRemoved = RepositoryUtils.cleanUpCredentialsFromEnvMap(envMap);
+                    keysRemoved.forEach(cg::removeConfigItem);
+
+                    configurationService.updateConfiguration(cg);
+                });
+    }
+
+    private Map<String, Object> extractEnvMap(final ConfigGroup configGroup) {
+        return backwardCompatibleUtil.compat(configGroup)
+                .getItems()
+                .stream()
+                .collect(Collectors.toMap(ConfigItem::getName,
+                                          ConfigItem::getValue));
     }
 }
