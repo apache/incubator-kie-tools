@@ -25,7 +25,7 @@ import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcMainEvent = Electron.IpcMainEvent;
 
 const vscode_EXTENSION_PATH = applicationPath(
-  "lib/vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix"
+  "lib/vscode_extension_kogito_kie_editors_0.2.11-new-vscode-webview-api.vsix"
 );
 
 app.on("ready", () => {

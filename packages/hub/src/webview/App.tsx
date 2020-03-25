@@ -310,7 +310,7 @@ export function App() {
 
   return (
     <Page
-      header={<PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Kogito Tooling Hub" />} />}
+      header={<PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Hub Preview" />} />}
       className={"kogito--editor-landing"}
     >
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
@@ -439,7 +439,7 @@ export function App() {
                 <br />
               </>
             )}
-            <Text>Looks like VSCode is already open and was not started by Kogito Tooling Hub.</Text>
+            <Text>Looks like VSCode is already open and was not started by Business Modeler Hub Preview.</Text>
             <br />
             <Text>Please close VSCode and retry.</Text>
           </Modal>

@@ -49,10 +49,10 @@ export class Menu {
     this.userData = userData;
 
     this.macOSAppMenu = {
-      label: "Kogito Tooling Hub",
+      label: "Business Modeler Hub Preview",
       submenu: [
         {
-          label: "About Kogito Tooling Hub",
+          label: "About Business Modeler Hub Preview",
           role: "about"
         },
         {
@@ -67,7 +67,7 @@ export class Menu {
           type: "separator"
         },
         {
-          label: "Hide Kogito Tooling Hub",
+          label: "Hide Business Modeler Hub Preview",
           accelerator: "Command+H",
           role: "hide"
         },

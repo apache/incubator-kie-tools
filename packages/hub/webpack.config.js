@@ -16,6 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const envelope = require("../microeditor-envelope/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -38,7 +39,7 @@ const commonConfig = {
       //TODO: Copy the right extension
       // On build:fast -> Use what?
       // On build:prod -> use ../vscode-extension-pack-kogito-kie-editors/dist
-      { from: "./vscode_extension_kogito_kie_editors_0.2.9-new-webview-api-release.vsix", to: "./lib" },
+      { from: "./vscode_extension_kogito_kie_editors_0.2.11-new-vscode-webview-api.vsix", to: "./lib" }
       //TODO: Copy the right Desktop app
       // On build:fast -> Use what?
       // On build:prod -> use ../desktop/out
@@ -64,50 +65,6 @@ const commonConfig = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      },
-      //TODO: Use patternfly shared configuration.
-      {
-        test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"]
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.(woff)$/,
-        include: [
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
-        ],
-        use: {
-          loader: "file-loader",
-          options: {
-            limit: 244,
-            outputPath: "fonts",
-            name: "[name].[ext]"
-          }
-        }
-      },
-      {
-        test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pficon\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /fa-solid-900\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pfbg_.*\.jpg$/,
-        loader: "null-loader"
       }
     ]
   },
@@ -144,6 +101,9 @@ module.exports = [
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.tsx"
+    },
+    module: {
+      rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders]
     },
     plugins: [new CopyPlugin([{ from: "static/index.html" }])]
   }
