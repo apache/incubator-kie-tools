@@ -27,7 +27,6 @@ import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
 
 export class EditorEnvelopeController {
-  public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
 
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
@@ -58,9 +57,8 @@ export class EditorEnvelopeController {
         if (editor) {
           this.editorEnvelopeView!.setLoading();
           editor
-            .setContent("", "")
-            .finally(() => this.waitForEmptySetContentThenSetLoadingFinished())
-            .then(() => editor.setContent(contentPath, editorContent.content));
+            .setContent(contentPath, editorContent.content)
+            .finally(() => this.editorEnvelopeView!.setLoadingFinished());
         }
       },
       receive_contentRequest: () => {
@@ -94,15 +92,6 @@ export class EditorEnvelopeController {
           .catch(error => console.log(`Error retrieving preview: ${error}`));
       }
     }));
-  }
-
-  private waitForEmptySetContentThenSetLoadingFinished() {
-    return new Promise(res => {
-      setTimeout(
-        () => this.editorEnvelopeView!.setLoadingFinished().then(res),
-        EditorEnvelopeController.ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT
-      );
-    });
   }
 
   //TODO: Create messages to control the lifecycle of enveloped components?
