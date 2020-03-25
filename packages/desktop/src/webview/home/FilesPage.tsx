@@ -129,8 +129,10 @@ export function FilesPage(props: Props) {
           .includes(searchFilter.toUpperCase())
       )
       .filter(
-        file =>
-          typeFilterSelect.value === "All" || file.filePath.toUpperCase().endsWith(typeFilterSelect.value.toUpperCase())
+        file => {
+          const fileExtension = extractFileExtension(file.filePath)!;
+          return typeFilterSelect.value === "All" || fileExtension?.toLowerCase().includes(typeFilterSelect.value.toLowerCase());
+        }
       );
 
     if (sortAlphaFilter) {
