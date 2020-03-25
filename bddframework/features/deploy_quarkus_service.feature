@@ -7,10 +7,40 @@ Feature: Deploy quarkus service
   Scenario Outline: Deploy drools-quarkus-example service without persistence
     Given Kogito Operator is deployed
     
-    When "<installer>" deploy quarkus example service "drools-quarkus-example" with native "<native>"
+    When "<installer>" deploy quarkus example service "ruleunit-quarkus-example" with native "<native>"
 
-    Then Kogito application "drools-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "drools-quarkus-example" with path "persons/all" is successful within 2 minutes
+    Then Kogito application "ruleunit-quarkus-example" has 1 pods running within <minutes> minutes
+    And HTTP POST request on service "ruleunit-quarkus-example" is successful within 2 minutes with path "find-approved" and body:
+       """json
+       {
+         "maxAmount" : 5000,
+         "loanApplications": [{ 
+            "id" : "ABC10001",
+            "amount" : 2000,
+            "deposit" : 100,
+            "applicant": {
+              "age" : 45,
+              "name" : "John"
+            }
+          }, {
+            "id" : "ABC10002",
+            "amount" : 5000,
+            "deposit" : 100,
+            "applicant" : {
+              "age" : 25,
+              "name" : "Paul"
+            }
+          }, {
+            "id" : "ABC10015",
+            "amount" : 1000,
+            "deposit" : 100,
+            "applicant" : {
+              "age" : 12,
+              "name" : "George"
+            }
+          }]
+        }
+      """
     
     @cr
     Examples: CR Non Native
