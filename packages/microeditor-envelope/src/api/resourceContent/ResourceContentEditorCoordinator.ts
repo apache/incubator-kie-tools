@@ -46,11 +46,31 @@ export class ResourceContentEditorCoordinator {
     const pendingResourceRequests = this.pendingResourceRequests;
     const pendingResourceListRequests = this.pendingResourceListRequests;
     return {
-      async get(path: string, opts?: ResourceContentOptions) {
-        return undefined;
+      get(path: string, opts?: ResourceContentOptions) {
+        messageBus.request_resourceContent(path, opts);
+
+        return new Promise(resolve => {
+          const previousCallback = pendingResourceRequests.get(path);
+          pendingResourceRequests.set(path, (value: string) => {
+            if (previousCallback) {
+              previousCallback(value);
+            }
+            resolve(value);
+          });
+        });
       },
-      async list(pattern: string) {
-        return [];
+      list(pattern: string) {
+        messageBus.request_resourceList(pattern);
+        return new Promise(resolve => {
+          const previousCallback = pendingResourceListRequests.get(pattern);
+          pendingResourceListRequests.set(pattern, (value: string[]) => {
+            value.sort();
+            if (previousCallback) {
+              previousCallback(value);
+            }
+            resolve(value);
+          });
+        });
       }
     };
   }
