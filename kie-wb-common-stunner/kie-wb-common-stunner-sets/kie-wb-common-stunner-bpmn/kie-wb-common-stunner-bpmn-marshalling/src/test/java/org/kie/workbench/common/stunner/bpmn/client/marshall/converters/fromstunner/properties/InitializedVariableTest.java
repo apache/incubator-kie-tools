@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,19 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.impl.PropertyImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.InitializedVariable;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.VariableDeclaration;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.InitializedVariable.createCustomInput;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.asCData;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class InitializedVariableTest {
 
@@ -107,6 +113,22 @@ public class InitializedVariableTest {
         assertEquals(dataInputAssociationValue, DATA_INPUT_ASSOCIATION_VALUE);
         assertEquals(initVarID, INIT_INPUT_VAR_ID);
         assertEquals(initVarType, INIT_INPUT_VAR_TYPE);
+    }
+
+    @Test
+    public void testInputCustomVariable() {
+        URL url = mock(URL.class);
+
+        StringUtils.setURL(url);
+        VariableDeclaration declaration = new VariableDeclaration("Identifier", "type");
+
+        when(url.decodeQueryString("#{expression}")).thenReturn("#{expression}");
+        InitializedVariable.InitializedInputVariable input = createCustomInput("parent", declaration, "#{expression}");
+        assertTrue(input instanceof InitializedVariable.InputExpression);
+
+        when(url.decodeQueryString("constant")).thenReturn("constant");
+        input = createCustomInput("parent", declaration, "constant");
+        assertTrue(input instanceof InitializedVariable.InputConstant);
     }
 
     @Test

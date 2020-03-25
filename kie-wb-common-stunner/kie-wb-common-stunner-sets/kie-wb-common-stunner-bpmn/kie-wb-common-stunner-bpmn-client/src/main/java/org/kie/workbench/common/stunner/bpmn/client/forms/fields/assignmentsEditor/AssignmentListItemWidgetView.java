@@ -28,8 +28,8 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     String CUSTOM_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Custom() + ListBoxValues.EDIT_SUFFIX;
     String ENTER_TYPE_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Enter_type() + ListBoxValues.EDIT_SUFFIX;
-    String CONSTANT_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Constant() + ListBoxValues.EDIT_SUFFIX;
-    String ENTER_CONSTANT_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Enter_constant() + ListBoxValues.EDIT_SUFFIX;
+    String EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Expression() + ListBoxValues.EDIT_SUFFIX;
+    String ENTER_EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Enter_expression() + ListBoxValues.EDIT_SUFFIX;
 
     void init();
 
@@ -39,7 +39,7 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     void setProcessVariables(final ListBoxValues processVarListBoxValues);
 
-    void setShowConstants(final boolean showConstants);
+    void setShowExpressions(final boolean showExpressions);
 
     void setDisallowedNames(final Set<String> disallowedNames,
                             final String disallowedNameErrorMessage);
@@ -65,9 +65,9 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     void setCustomDataType(final String customDataType);
 
-    String getConstant();
+    String getExpression();
 
-    void setConstant(final String constant);
+    void setExpression(final String expression);
 
     void setReadOnly(final boolean readOnly);
 }

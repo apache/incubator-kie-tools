@@ -178,7 +178,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                     .map(ContextEntry::getExpression)
                     .filter(cee -> cee instanceof IsLiteralExpression)
                     .map(cee -> (IsLiteralExpression) cee)
-                    .map(ile -> StringUtils.createUnquotedConstant(ile.getText().getValue()))
+                    .map(ile -> StringUtils.createUnquotedString(ile.getText().getValue()))
                     .orElse("");
         }
         return "";

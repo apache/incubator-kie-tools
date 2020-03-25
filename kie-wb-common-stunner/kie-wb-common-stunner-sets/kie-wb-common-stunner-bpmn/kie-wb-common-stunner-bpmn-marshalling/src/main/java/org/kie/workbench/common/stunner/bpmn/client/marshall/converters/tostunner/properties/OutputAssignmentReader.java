@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,32 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
+import java.util.Optional;
+
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.Property;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
 
 public class OutputAssignmentReader {
 
     private final AssociationDeclaration associationDeclaration;
 
     public static OutputAssignmentReader fromAssociation(DataOutputAssociation out) {
-        String sourceName = ((DataOutput) out.getSourceRef().get(0)).getName();
         if (out.getTargetRef() instanceof Property) {
+            String sourceName = ((DataOutput) out.getSourceRef().get(0)).getName();
             return new OutputAssignmentReader(sourceName, (Property) out.getTargetRef());
         }
+
+        if (out.getAssignment() != null && !out.getAssignment().isEmpty() && out.getSourceRef() != null && !out.getSourceRef().isEmpty()) {
+            DataOutput target = (DataOutput) out.getSourceRef().get(0);
+            return new OutputAssignmentReader(out.getAssignment().get(0), target.getName());
+        }
+
         return null;
     }
 
@@ -42,6 +54,17 @@ public class OutputAssignmentReader {
                 propertyName);
     }
 
+    OutputAssignmentReader(Assignment assignment, String targetName) {
+        FormalExpression to = (FormalExpression) assignment.getTo();
+        String body = FormalExpressionBodyHandler.of(to).getBody();
+        String encodedBody = encode(body);
+        this.associationDeclaration = new AssociationDeclaration(
+                AssociationDeclaration.Direction.Output,
+                AssociationDeclaration.Type.FromTo,
+                targetName,
+                encodedBody);
+    }
+
     public AssociationDeclaration getAssociationDeclaration() {
         return associationDeclaration;
     }
@@ -49,5 +72,13 @@ public class OutputAssignmentReader {
     // fallback to ID for https://issues.jboss.org/browse/JBPM-6708
     private static String getPropertyName(Property prop) {
         return prop.getName() == null ? prop.getId() : prop.getName();
+    }
+
+    private String encode(String body) {
+        return Optional
+                .ofNullable(body)
+                .filter(b -> !"null".equals(b))
+                .map(StringUtils::urlEncode)
+                .orElse("");
     }
 }

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.kie.workbench.common.stunner.core.util.StringUtils.isQuotedConstant;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isQuoted;
 
 /**
  * Class containing a list of values for a ValueListBox<String>.
@@ -103,12 +103,8 @@ public class ListBoxValues {
     public String addCustomValue(final String newValue,
                                  final String oldValue) {
         if (oldValue != null && !oldValue.isEmpty()) {
-            if (acceptableValuesWithCustomValues.contains(oldValue)) {
-                acceptableValuesWithCustomValues.remove(oldValue);
-            }
-            if (customValues.contains(oldValue)) {
-                customValues.remove(oldValue);
-            }
+            acceptableValuesWithCustomValues.remove(oldValue);
+            customValues.remove(oldValue);
             // Do not remove from mapDisplayValuesToValues
         }
         if (newValue != null && !newValue.isEmpty()) {
@@ -222,7 +218,7 @@ public class ListBoxValues {
         }
         String displayValue = value;
         // Create special displayValue only for quoted constants longer than maxDisplayLength
-        if (maxDisplayLength > 0 && value != null && isQuotedConstant(value) && value.length() > maxDisplayLength + 2) {
+        if (maxDisplayLength > 0 && value != null && isQuoted(value) && value.length() > maxDisplayLength + 2) {
             String displayValueStart = value.substring(0,
                                                        maxDisplayLength + 1);
             int nextIndex = 0;

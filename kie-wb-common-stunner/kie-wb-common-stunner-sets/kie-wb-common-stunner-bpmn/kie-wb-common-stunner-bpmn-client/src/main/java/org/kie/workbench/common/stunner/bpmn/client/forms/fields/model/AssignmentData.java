@@ -25,6 +25,9 @@ import java.util.Map;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.isEmpty;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.nonEmpty;
+
 /**
  * Class which contains everything associated with Assignments which
  * is passed between the Designer properties and the DataIOEditor, i.e.
@@ -118,13 +121,13 @@ public class AssignmentData {
             addVariable(var);
         }
         String processVarName;
-        // If there's a constant, use it rather than processVar
-        String constant = assignmentRow.getConstant();
-        if (constant != null && !constant.isEmpty()) {
+        // If there's a expression, use it rather than processVar
+        String expression = assignmentRow.getExpression();
+        if (nonEmpty(expression)) {
             processVarName = null;
         } else {
             processVarName = assignmentRow.getProcessVar();
-            if (processVarName != null && !processVarName.isEmpty()) {
+            if (nonEmpty(processVarName)) {
                 HashSet<String> processVarsNames = new HashSet<String>();
                 for (Variable var : processVariables) {
                     processVarsNames.add(var.getName());
@@ -138,14 +141,14 @@ public class AssignmentData {
                 }
             }
         }
-        if ((constant == null || constant.isEmpty()) && (processVarName == null || processVarName.isEmpty())) {
+        if (isEmpty(expression) && isEmpty(processVarName)) {
             return;
         }
         Assignment assignment = new Assignment(this,
                                                assignmentRow.getName(),
                                                assignmentRow.getVariableType(),
                                                processVarName,
-                                               constant);
+                                               expression);
         assignments.add(assignment);
     }
 
@@ -451,8 +454,8 @@ public class AssignmentData {
      * @return
      */
     public List<AssignmentRow> getAssignmentRows(final Variable.VariableType varType) {
-        List<AssignmentRow> rows = new ArrayList<AssignmentRow>();
-        List<Variable> handledVariables = new ArrayList<Variable>();
+        List<AssignmentRow> rows = new ArrayList<>();
+        List<Variable> handledVariables = new ArrayList<>();
         // Create an AssignmentRow for each Assignment
         for (Assignment assignment : assignments) {
             if (assignment.getVariableType() == varType) {
@@ -462,7 +465,7 @@ public class AssignmentData {
                                                       dataType,
                                                       assignment.getCustomDataType(),
                                                       assignment.getProcessVarName(),
-                                                      assignment.getConstant());
+                                                      assignment.getExpression());
                 rows.add(row);
                 handledVariables.add(assignment.getVariable());
             }
@@ -632,7 +635,7 @@ public class AssignmentData {
         return result;
     }
 
-    private String getStringForList(final List<? extends Object> objects) {
+    private String getStringForList(final List<?> objects) {
         StringBuilder sb = new StringBuilder();
         for (Object o : objects) {
             sb.append(o.toString()).append(',');

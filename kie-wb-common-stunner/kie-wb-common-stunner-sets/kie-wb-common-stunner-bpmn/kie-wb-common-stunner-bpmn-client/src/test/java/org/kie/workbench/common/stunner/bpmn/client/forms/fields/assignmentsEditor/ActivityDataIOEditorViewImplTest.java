@@ -164,7 +164,7 @@ public class ActivityDataIOEditorViewImplTest {
         assertEquals(3,
                      variablesWithCustomValue.size());
         assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("",
-                                                                      "Constant ...",
+                                                                      "Expression ...",
                                                                       "variable")));
     }
 
@@ -177,7 +177,7 @@ public class ActivityDataIOEditorViewImplTest {
         assertEquals(3,
                      variablesWithCustomValue.size());
         assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("",
-                                                                      "Constant ...",
+                                                                      "Expression ...",
                                                                       "variable")));
     }
 

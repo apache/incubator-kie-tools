@@ -37,7 +37,7 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
 
     protected boolean addCustomValues = true;
 
-    protected String customPrompt;
+    protected String expressionPrompt;
 
     ComboBoxView.ModelPresenter modelPresenter;
 
@@ -57,7 +57,7 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
                      final String placeholder) {
         this.quoteStringValues = quoteStringValues;
         this.addCustomValues = addCustomValues;
-        this.customPrompt = customPrompt;
+        this.expressionPrompt = customPrompt;
         this.modelPresenter = modelPresenter;
         this.notifyModelChanges = notifyModelChanges;
         view.init(this,
@@ -110,8 +110,8 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
 
     @Override
     public void listBoxValueChanged(final String newValue) {
-        if (customPrompt.equals(newValue)) {
-            // "Custom..." selected, show textBox with empty value
+        if (expressionPrompt.equals(newValue)) {
+            // "Expression..." selected, show textBox with empty value
             setListBoxValue("");
             setTextBoxValue("");
             view.setListBoxVisible(false);
@@ -132,14 +132,14 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
             // A Custom value has been selected
             String textValue = listBoxValues.getValueForDisplayValue(newValue);
             if (quoteStringValues) {
-                textValue = StringUtils.createUnquotedConstant(textValue);
+                textValue = StringUtils.createUnquotedString(textValue);
             }
             setListBoxValue(newValue);
             setTextBoxValue(textValue);
             if (notifyModelChanges) {
                 notifyModelChanged();
             }
-        } else if (newValue != null) {
+        } else {
             // A non-custom value has been selected
             setListBoxValue(newValue);
             setTextBoxValue("");
@@ -166,9 +166,9 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
                     String oldValue = currentTextValue;
                     String displayValue = addCustomValueToListBoxValues(newValue,
                                                                         oldValue);
-                    setTextBoxValue(newValue);
                     currentTextValue = newValue;
                     setListBoxValue(displayValue);
+                    setTextBoxValue(newValue);
                 }
             } else {
                 // Set the value even if it's ""
@@ -188,8 +188,8 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
     public String addCustomValueToListBoxValues(String newValue,
                                                 String oldValue) {
         if (quoteStringValues) {
-            newValue = StringUtils.createQuotedConstantOptionalNumeric(newValue);
-            oldValue = StringUtils.createQuotedConstantOptionalNumeric(oldValue);
+            newValue = StringUtils.createQuotedStringIfNotNumeric(newValue);
+            oldValue = StringUtils.createQuotedStringIfNotNumeric(oldValue);
         }
         if (addCustomValues) {
             return listBoxValues.addCustomValue(newValue,

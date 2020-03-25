@@ -27,15 +27,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({StringUtils.class})
+@RunWith(MockitoJUnitRunner.class)
 public class AssignmentDataMarshallerTest extends AssignmentBaseTest {
 
     private AssignmentDataMarshaller marshaller;
@@ -52,10 +49,10 @@ public class AssignmentDataMarshallerTest extends AssignmentBaseTest {
     public void setUp() throws Exception {
         super.setUp();
         marshaller = new AssignmentDataMarshaller();
-        inputs = new ArrayList<AssignmentRow>();
-        outputs = new ArrayList<AssignmentRow>();
-        dataTypes = new ArrayList<String>();
-        dataTypesDisplayNames = new ArrayList<String>();
+        inputs = new ArrayList<>();
+        outputs = new ArrayList<>();
+        dataTypes = new ArrayList<>();
+        dataTypesDisplayNames = new ArrayList<>();
         dataTypes.add("String");
         dataTypesDisplayNames.add("String");
         dataTypes.add("Integer");

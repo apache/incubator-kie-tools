@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,25 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.impl.DataOutputAssociationImpl;
 import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class OutputAssignmentReaderTest {
@@ -42,7 +49,7 @@ public class OutputAssignmentReaderTest {
         DataOutputAssociation outputAssociation = mockDataOutputAssociation(SOURCE_NAME, property);
         OutputAssignmentReader outputReader = OutputAssignmentReader.fromAssociation(outputAssociation);
         assertNotNull(outputReader);
-        assertResult(SOURCE_NAME, TARGET_NAME, outputReader.getAssociationDeclaration());
+        assertResult(SOURCE_NAME, TARGET_NAME, AssociationDeclaration.Type.SourceTarget, outputReader.getAssociationDeclaration());
     }
 
     @Test
@@ -51,7 +58,7 @@ public class OutputAssignmentReaderTest {
         DataOutputAssociation outputAssociation = mockDataOutputAssociation(SOURCE_NAME, property);
         OutputAssignmentReader outputReader = OutputAssignmentReader.fromAssociation(outputAssociation);
         assertNotNull(outputReader);
-        assertResult(SOURCE_NAME, TARGET_ID, outputReader.getAssociationDeclaration());
+        assertResult(SOURCE_NAME, TARGET_ID, AssociationDeclaration.Type.SourceTarget, outputReader.getAssociationDeclaration());
     }
 
     @Test
@@ -61,11 +68,44 @@ public class OutputAssignmentReaderTest {
         assertNull(OutputAssignmentReader.fromAssociation(outputAssociation));
     }
 
-    private void assertResult(String sourceName, String targetId, AssociationDeclaration associationDeclaration) {
+    @Test
+    public void testFromAssociationWithExpression() {
+        URL url = mock(URL.class);
+        when(url.encodeQueryString(SOURCE_NAME)).thenReturn(SOURCE_NAME);
+        StringUtils.setURL(url);
+
+        DataOutput output = spy(DataOutput.class);
+        when(output.getName()).thenReturn(TARGET_NAME);
+        Assignment assignment = spy(Assignment.class);
+        FormalExpression to = mock(FormalExpression.class);
+        when(assignment.getTo()).thenReturn(to);
+        when(to.getBody()).thenReturn("");
+        EList<Assignment> assignments = mock(EList.class);
+        when(assignments.get(0)).thenReturn(assignment);
+        DataOutputAssociationImpl out = spy(DataOutputAssociationImpl.class);
+        when(out.getAssignment()).thenReturn(assignments);
+
+        OutputAssignmentReader outputReader = OutputAssignmentReader.fromAssociation(out);
+        assertNull(outputReader);
+
+        EList<ItemAwareElement> outputs = mock(EList.class);
+        when(outputs.get(0)).thenReturn(output);
+        when(outputs.isEmpty()).thenReturn(false);
+        when(out.getSourceRef()).thenReturn(outputs);
+
+        outputReader = OutputAssignmentReader.fromAssociation(out);
+        assertResult(TARGET_NAME, "", AssociationDeclaration.Type.FromTo, outputReader.getAssociationDeclaration());
+
+        when(to.getBody()).thenReturn("null");
+        outputReader = OutputAssignmentReader.fromAssociation(out);
+        assertResult(TARGET_NAME, "", AssociationDeclaration.Type.FromTo, outputReader.getAssociationDeclaration());
+    }
+
+    private void assertResult(String sourceName, String targetId, AssociationDeclaration.Type type, AssociationDeclaration associationDeclaration) {
         assertNotNull(associationDeclaration);
         assertEquals(sourceName, associationDeclaration.getSource());
         assertEquals(targetId, associationDeclaration.getTarget());
-        assertEquals(AssociationDeclaration.Type.SourceTarget, associationDeclaration.getType());
+        assertEquals(type, associationDeclaration.getType());
         assertEquals(AssociationDeclaration.Direction.Output, associationDeclaration.getDirection());
     }
 

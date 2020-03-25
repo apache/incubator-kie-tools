@@ -196,7 +196,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "a constant";
-        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
+        String quotedConstant = StringUtils.createQuotedStringIfNotNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -217,7 +217,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "\"hello\"";
-        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
+        String quotedConstant = StringUtils.createQuotedStringIfNotNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -238,7 +238,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "greeting={\"hello\"}";
-        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
+        String quotedConstant = StringUtils.createQuotedStringIfNotNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -357,7 +357,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String value = "something new";
-        String quotedValue = StringUtils.createQuotedConstantOptionalNumeric(value);
+        String quotedValue = StringUtils.createQuotedStringIfNotNumeric(value);
         when(listBoxValues.getNonCustomValueForUserString(value)).thenReturn(null);
         when(comboBox.addCustomValueToListBoxValues(value,
                                                     "")).thenReturn(quotedValue);

@@ -274,11 +274,6 @@
     </dependency>
 
     <!-- test -->
-
-    <!-- TODO:
-    Lienzo mockito is not compatible with PowerMock, once running both
-    in same classpath the build does not work - the use of power mock must be removed.
-    -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
@@ -327,19 +322,6 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- powermock -->
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
       <scope>test</scope>
     </dependency>
 

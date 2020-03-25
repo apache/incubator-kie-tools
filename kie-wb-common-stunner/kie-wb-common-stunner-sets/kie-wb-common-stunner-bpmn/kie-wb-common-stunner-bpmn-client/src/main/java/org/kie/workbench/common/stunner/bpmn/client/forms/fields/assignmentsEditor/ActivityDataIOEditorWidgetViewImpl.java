@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
@@ -31,6 +32,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -38,6 +40,8 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
+import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -45,6 +49,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class ActivityDataIOEditorWidgetViewImpl extends Composite implements ActivityDataIOEditorWidgetView {
 
     private Presenter presenter;
+    private static final String DATA_CONTENT_ATTR = "data-content";
 
     @Inject
     @DataField
@@ -63,7 +68,18 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     protected TableCellElement datatypeth = Document.get().createTHElement();
 
     @DataField
-    private final TableCellElement processvarorconstantth = Document.get().createTHElement();
+    private final TableCellElement processvarorexpressionth = Document.get().createTHElement();
+
+    @Inject
+    @DataField("pop-up")
+    ParagraphElement popup;
+
+    @Inject
+    private JQueryProducer.JQuery<Popover> sourceTargetHelpPopover;
+
+    @Inject
+    @DataField("source-target")
+    private Anchor sourceTargetHelp;
 
     /**
      * The list of assignments that currently exist.
@@ -120,12 +136,18 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
 
     @Override
     public void setProcessVarAsSource() {
-        processvarorconstantth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Source());
+        sourceTargetHelp.setAttribute(DATA_CONTENT_ATTR,
+                                      StunnerFormsClientFieldsConstants.INSTANCE.assignment_source_help());
+        popup.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Source());
+        sourceTargetHelpPopover.wrap(sourceTargetHelp).popover();
     }
 
     @Override
     public void setProcessVarAsTarget() {
-        processvarorconstantth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Target());
+        sourceTargetHelp.setAttribute(DATA_CONTENT_ATTR,
+                                      StunnerFormsClientFieldsConstants.INSTANCE.assignment_target_help());
+        popup.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Target());
+        sourceTargetHelpPopover.wrap(sourceTargetHelp).popover();
     }
 
     @Override

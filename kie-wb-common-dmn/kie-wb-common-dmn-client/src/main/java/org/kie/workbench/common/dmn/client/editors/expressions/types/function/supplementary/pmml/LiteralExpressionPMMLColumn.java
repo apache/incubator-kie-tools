@@ -72,7 +72,7 @@ public class LiteralExpressionPMMLColumn extends DMNSimpleGridColumn<LiteralExpr
         final ListBox widget = e.getWidget();
         widget.clear();
         documentNames.forEach(documentName -> widget.addItem(documentName,
-                                                             StringUtils.createQuotedConstant(documentName)));
+                                                             StringUtils.createQuotedString(documentName)));
         e.setValue(assertCellValue(assertCell(cell).getValue()).getValue());
     }
 

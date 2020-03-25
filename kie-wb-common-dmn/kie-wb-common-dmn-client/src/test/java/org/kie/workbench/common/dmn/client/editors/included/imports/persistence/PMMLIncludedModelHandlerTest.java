@@ -496,6 +496,6 @@ public class PMMLIncludedModelHandlerTest {
         if (StringUtils.isEmpty(value)) {
             return value;
         }
-        return StringUtils.createQuotedConstant(value);
+        return StringUtils.createQuotedString(value);
     }
 }

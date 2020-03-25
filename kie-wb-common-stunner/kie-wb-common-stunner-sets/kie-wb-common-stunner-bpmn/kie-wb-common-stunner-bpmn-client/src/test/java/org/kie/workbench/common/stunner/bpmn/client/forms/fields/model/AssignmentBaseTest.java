@@ -25,10 +25,12 @@ import java.net.URLEncoder;
 import com.google.gwt.junit.GWTMockUtilities;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AssignmentBaseTest {
 
@@ -36,33 +38,23 @@ public class AssignmentBaseTest {
         // Prevent runtime GWT.create() error at DesignerEditorConstants.INSTANCE
         GWTMockUtilities.disarm();
         // MockDesignerEditorConstants replaces DesignerEditorConstants.INSTANCE
-        final Answer answer = new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getMethod().getName();
-            }
-        };
-        final StunnerFormsClientFieldsConstants constants = PowerMockito.mock(StunnerFormsClientFieldsConstants.class,
-                                                                              answer);
+        final Answer answer = invocation -> invocation.getMethod().getName();
+        final StunnerFormsClientFieldsConstants constants = mock(StunnerFormsClientFieldsConstants.class,
+                                                                 answer);
         setFinalStaticField(StunnerFormsClientFieldsConstants.class.getDeclaredField("INSTANCE"),
                             constants);
-        // Mock StringUtils URL Encoding methods
-        PowerMockito.mockStatic(StringUtils.class);
-        PowerMockito.when(StringUtils.urlEncode(Mockito.anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                return urlEncode((String) args[0]);
-            }
+
+        // Prevent GWT calls in StringUtils
+        URL url = mock(URL.class);
+        when(url.decodeQueryString(anyString())).thenAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            return urlDecode((String) args[0]);
         });
-        PowerMockito.when(StringUtils.urlDecode(Mockito.anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                return urlDecode((String) args[0]);
-            }
+        when(url.encodeQueryString(anyString())).thenAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            return urlEncode((String) args[0]);
         });
-        PowerMockito.when(StringUtils.createDataTypeDisplayName(Mockito.anyString())).thenCallRealMethod();
+        StringUtils.setURL(url);
     }
 
     public void tearDown() {

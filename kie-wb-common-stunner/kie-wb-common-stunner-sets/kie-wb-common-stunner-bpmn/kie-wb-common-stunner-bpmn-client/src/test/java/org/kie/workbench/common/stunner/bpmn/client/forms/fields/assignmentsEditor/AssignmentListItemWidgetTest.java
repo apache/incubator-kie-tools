@@ -44,6 +44,8 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
@@ -102,7 +104,7 @@ public class AssignmentListItemWidgetTest {
         widget.dataType = dataType;
         widget.customDataType = customDataType;
         widget.processVar = processVar;
-        widget.constant = constant;
+        widget.expression = constant;
         widget.dataTypeComboBox = dataTypeComboBox;
         widget.name = name;
         widget.deleteButton = deleteButton;
@@ -117,8 +119,8 @@ public class AssignmentListItemWidgetTest {
         Mockito.doCallRealMethod().when(widget).getDataType();
         Mockito.doCallRealMethod().when(widget).setCustomDataType(anyString());
         Mockito.doCallRealMethod().when(widget).getCustomDataType();
-        Mockito.doCallRealMethod().when(widget).setConstant(anyString());
-        Mockito.doCallRealMethod().when(widget).getConstant();
+        Mockito.doCallRealMethod().when(widget).setExpression(anyString());
+        Mockito.doCallRealMethod().when(widget).getExpression();
         Mockito.doCallRealMethod().when(widget).setProcessVar(anyString());
         Mockito.doCallRealMethod().when(widget).getProcessVar();
         Mockito.doCallRealMethod().when(widget).setDataTypes(any(ListBoxValues.class));
@@ -154,27 +156,20 @@ public class AssignmentListItemWidgetTest {
                               constant,
                               true,
                               true,
-                              AssignmentListItemWidgetView.CONSTANT_PROMPT,
-                              AssignmentListItemWidgetView.ENTER_CONSTANT_PROMPT);
+                              AssignmentListItemWidgetView.EXPRESSION_PROMPT,
+                              AssignmentListItemWidgetView.ENTER_EXPRESSION_PROMPT);
         verify(name,
                times(1)).setRegExp(regExpCaptor.capture(),
                                    anyString(),
                                    anyString());
         RegExp regExp = RegExp.compile(regExpCaptor.getValue());
-        assertEquals(true,
-                     regExp.test("a1 -_+-*?'/"));
-        assertEquals(false,
-                     regExp.test("a1 -_+-*?'/1@"));
-        assertEquals(true,
-                     regExp.test("a1"));
-        assertEquals(true,
-                     regExp.test("multiple words name"));
-        assertEquals(true,
-                     regExp.test("multiple-words-name"));
-        assertEquals(true,
-                     regExp.test("UpperCase"));
-        assertEquals(true,
-                     regExp.test("_car"));
+        assertTrue(regExp.test("a1 -_+-*?'/"));
+        assertFalse(regExp.test("a1 -_+-*?'/1@"));
+        assertTrue(regExp.test("a1"));
+        assertTrue(regExp.test("multiple words name"));
+        assertTrue(regExp.test("multiple-words-name"));
+        assertTrue(regExp.test("UpperCase"));
+        assertTrue(regExp.test("_car"));
         verify(customDataType,
                times(1)).addKeyDownHandler(any(KeyDownHandler.class));
         verify(name,
@@ -190,7 +185,7 @@ public class AssignmentListItemWidgetTest {
         widget.setTextBoxModelValue(constant,
                                     "abc");
         verify(widget,
-               times(1)).setConstant("abc");
+               times(1)).setExpression("abc");
     }
 
     @Test
@@ -214,7 +209,7 @@ public class AssignmentListItemWidgetTest {
                never()).setVisible(anyBoolean());
         verify(widget).getCustomDataType();
         verify(widget).getDataType();
-        verify(widget).getConstant();
+        verify(widget).getExpression();
         verify(widget).getProcessVar();
     }
 
@@ -226,7 +221,7 @@ public class AssignmentListItemWidgetTest {
         verify(constant).setVisible(false);
         verify(widget).getCustomDataType();
         verify(widget).getDataType();
-        verify(widget).getConstant();
+        verify(widget).getExpression();
         verify(widget).getProcessVar();
     }
 
@@ -234,7 +229,7 @@ public class AssignmentListItemWidgetTest {
     public void testQuotedConstant1() {
         AssignmentRow row = new AssignmentRow();
         String s = "abc";
-        row.setConstant(s);
+        row.setExpression(s);
         when(widget.getModel()).thenReturn(row);
         widget.setModel(row);
         verify(constant).setValue(s);
@@ -244,7 +239,7 @@ public class AssignmentListItemWidgetTest {
     public void testQuotedConstant2() {
         AssignmentRow row = new AssignmentRow();
         String s = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
-        row.setConstant(s);
+        row.setExpression(s);
         when(widget.getModel()).thenReturn(row);
         widget.setModel(row);
         verify(constant).setValue(s);
@@ -279,9 +274,9 @@ public class AssignmentListItemWidgetTest {
     @Test
     public void testSetGetConstant() {
         String constant = "any constant";
-        widget.setTextBoxModelValue(widget.constant,
+        widget.setTextBoxModelValue(widget.expression,
                                     constant);
-        String returnedConstant = widget.getConstant();
+        String returnedConstant = widget.getExpression();
         assertEquals(constant,
                      returnedConstant);
         String returnedConstant2 = widget.getModelValue(widget.processVar);
@@ -317,18 +312,14 @@ public class AssignmentListItemWidgetTest {
 
     @Test
     public void testSetProcessVariablesVar() {
-        ListBoxValues.ValueTester processVarTester = new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String userValue) {
-                return null;
-            }
-        };
-        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+        ListBoxValues.ValueTester processVarTester = userValue -> null;
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
                                                                   processVarTester,
-                                                                  ActivityDataIOEditorViewImpl.CONSTANT_MAX_DISPLAY_LENGTH);
+                                                                  ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarComboBox.setListBoxValues(processVarListBoxValues);
         String sConstant = "sVariableWithALongName";
-        widget.setConstant(sConstant);
+        widget.setExpression(sConstant);
         widget.setProcessVariables(processVarListBoxValues);
         verify(processVarComboBox,
                times(1)).setListBoxValues(processVarListBoxValues);
@@ -341,19 +332,15 @@ public class AssignmentListItemWidgetTest {
 
     @Test
     public void testSetProcessVariablesConst() {
-        ListBoxValues.ValueTester processVarTester = new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String userValue) {
-                return null;
-            }
-        };
-        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+        ListBoxValues.ValueTester processVarTester = userValue -> null;
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
                                                                   processVarTester,
-                                                                  ActivityDataIOEditorViewImpl.CONSTANT_MAX_DISPLAY_LENGTH);
+                                                                  ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarComboBox.setAddCustomValues(true);
         processVarComboBox.setListBoxValues(processVarListBoxValues);
         String sConstant = "\"abcdeabcde12345\"";
-        widget.setConstant(sConstant);
+        widget.setExpression(sConstant);
         widget.setProcessVariables(processVarListBoxValues);
         verify(processVarComboBox,
                times(1)).setListBoxValues(processVarListBoxValues);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,11 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataType
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.OUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.EXPRESSION;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.isEmpty;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.nonEmpty;
+
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link AssignmentRow}s.
@@ -63,7 +68,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     private static final String EMPTY_VALUE = "";
 
-    private final static String ALLOWED_CHARS = "^[a-zA-Z0-9\\-\\_\\ \\+\\/\\*\\?\\'\\.]*$";
+    private static final String ALLOWED_CHARS = "^[a-zA-Z0-9\\-\\_\\ \\+\\/\\*\\?\\'\\.]*$";
 
     /**
      * Errai's data binding module will automatically bind the provided instance
@@ -126,7 +131,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     @Inject
     @DataField
-    protected TextBox constant;
+    protected TextBox expression;
 
     @Inject
     @DataField
@@ -147,8 +152,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                                      final String value) {
         if (textBox == customDataType) {
             setCustomDataType(value);
-        } else if (textBox == constant) {
-            setConstant(value);
+        } else if (textBox == expression) {
+            setExpression(value);
         }
     }
 
@@ -166,19 +171,15 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     public String getModelValue(final ValueListBox<String> listBox) {
         if (listBox == dataType) {
             String value = getCustomDataType();
-            if (value == null || value.isEmpty()) {
-                value = getDataType();
-            }
-            return value;
-        } else if (listBox == processVar) {
-            String value = getConstant();
-            if (value == null || value.isEmpty()) {
-                value = getProcessVar();
-            }
-            return value;
-        } else {
-            return EMPTY_VALUE;
+            return isEmpty(value) ? getDataType() : value;
         }
+
+        if (listBox == processVar) {
+            String value = getExpression();
+            return isEmpty(value) ? getProcessVar() : value;
+        }
+
+        return EMPTY_VALUE;
     }
 
     @PostConstruct
@@ -220,11 +221,11 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         processVarComboBox.init(this,
                                 false,
                                 processVar,
-                                constant,
+                                expression,
                                 true,
                                 true,
-                                CONSTANT_PROMPT,
-                                ENTER_CONSTANT_PROMPT);
+                                EXPRESSION_PROMPT,
+                                ENTER_EXPRESSION_PROMPT);
     }
 
     @Override
@@ -274,13 +275,23 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     }
 
     @Override
-    public String getConstant() {
-        return getModel().getConstant();
+    public String getExpression() {
+        return getModel().getExpression();
     }
 
     @Override
-    public void setConstant(final String constant) {
-        getModel().setConstant(constant);
+    public void setExpression(final String expression) {
+        if (getModel().getVariableType() == OUTPUT && isConstant(expression)) {
+            notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Only_expressions_allowed_for_output(),
+                                                    NotificationEvent.NotificationType.ERROR));
+            processVarComboBox.textBoxValueChanged("");
+        } else {
+            getModel().setExpression(expression);
+        }
+    }
+
+    private static boolean isConstant(String expression) {
+        return !isEmpty(expression) && !EXPRESSION.test(expression);
     }
 
     @Override
@@ -299,17 +310,17 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         processVarComboBox.setCurrentTextValue(EMPTY_VALUE);
         ListBoxValues copyProcessVarListBoxValues = new ListBoxValues(processVarListBoxValues, false);
         processVarComboBox.setListBoxValues(copyProcessVarListBoxValues);
-        String con = getConstant();
+        String exp = getExpression();
         // processVar set here because the ListBoxValues must already have been set
-        if (con != null && !con.isEmpty()) {
-            String displayValue = processVarComboBox.addCustomValueToListBoxValues(con, EMPTY_VALUE);
+        if (nonEmpty(exp)) {
+            String displayValue = processVarComboBox.addCustomValueToListBoxValues(exp, EMPTY_VALUE);
             processVar.setValue(displayValue);
         }
     }
 
     @Override
-    public void setShowConstants(final boolean showConstants) {
-        processVarComboBox.setShowCustomValues(showConstants);
+    public void setShowExpressions(final boolean showExpressions) {
+        processVarComboBox.setShowCustomValues(showExpressions);
     }
 
     @Override
@@ -356,20 +367,20 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
      */
     private void initAssignmentControls() {
         deleteButton.setIcon(IconType.TRASH);
-        if (getVariableType() == VariableType.OUTPUT) {
-            constant.setVisible(false);
+        if (getVariableType() == OUTPUT) {
+            expression.setVisible(false);
         }
         String cdt = getCustomDataType();
-        if (cdt != null && !cdt.isEmpty()) {
+        if (nonEmpty(cdt)) {
             customDataType.setValue(cdt);
             dataType.setValue(cdt);
         } else if (getDataType() != null) {
             dataType.setValue(getDataType());
         }
-        String con = getConstant();
-        if (con != null && !con.isEmpty()) {
+        String exp = getExpression();
+        if (nonEmpty(exp)) {
             // processVar ListBox is set in setProcessVariables because its ListBoxValues are required
-            constant.setValue(con);
+            expression.setValue(exp);
         } else if (getProcessVar() != null) {
             processVar.setValue(getProcessVar());
         }

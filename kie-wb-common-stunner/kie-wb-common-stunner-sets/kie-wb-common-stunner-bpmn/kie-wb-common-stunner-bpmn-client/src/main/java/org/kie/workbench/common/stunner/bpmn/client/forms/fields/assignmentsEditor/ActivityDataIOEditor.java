@@ -52,9 +52,9 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     @Inject
     ActivityDataIOEditorView view;
 
-    private List<String> dataTypes = new ArrayList<String>();
+    private List<String> dataTypes = new ArrayList<>();
 
-    private List<String> dataTypeDisplayNames = new ArrayList<String>();
+    private List<String> dataTypeDisplayNames = new ArrayList<>();
 
     private AssignmentData assignmentData;
 
@@ -126,7 +126,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     }
 
     public void setDisallowedPropertyNames(final List<String> disallowedPropertyNames) {
-        Set<String> propertyNames = new HashSet<String>();
+        Set<String> propertyNames = new HashSet<>();
         if (disallowedPropertyNames != null) {
             for (String name : disallowedPropertyNames) {
                 propertyNames.add(name.toLowerCase());
@@ -158,23 +158,17 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
 
     @Override
     public ListBoxValues.ValueTester dataTypesTester() {
-        return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String userValue) {
-                if (assignmentData != null) {
-                    return assignmentData.getDataTypeDisplayNameForUserString(userValue);
-                } else {
-                    return null;
-                }
+        return userValue -> {
+            if (assignmentData != null) {
+                return assignmentData.getDataTypeDisplayNameForUserString(userValue);
+            } else {
+                return null;
             }
         };
     }
 
     @Override
     public ListBoxValues.ValueTester processVarTester() {
-        return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String userValue) {
-                return null;
-            }
-        };
+        return userValue -> null;
     }
 }

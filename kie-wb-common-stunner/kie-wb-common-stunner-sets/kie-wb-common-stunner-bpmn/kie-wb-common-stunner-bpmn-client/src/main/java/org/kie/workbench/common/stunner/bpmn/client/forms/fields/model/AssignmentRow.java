@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
 import org.jboss.errai.databinding.client.api.Bindable;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
+
 /**
  * Class which is bound to rows in the DataIOEditor
  */
@@ -30,7 +33,7 @@ public class AssignmentRow {
     private String dataType;
     private String customDataType;
     private String processVar;
-    private String constant;
+    private String expression;
 
     // Field which is incremented for each row.
     // Required to implement equals function which needs a unique field
@@ -45,14 +48,14 @@ public class AssignmentRow {
                          final String dataType,
                          final String customDataType,
                          final String processVar,
-                         final String constant) {
+                         final String expression) {
         this.id = lastId++;
         this.name = name;
         this.variableType = variableType;
         this.dataType = dataType;
         this.customDataType = customDataType;
         this.processVar = processVar;
-        this.constant = constant;
+        this.expression = expression;
     }
 
     public long getId() {
@@ -103,26 +106,24 @@ public class AssignmentRow {
         this.processVar = processVar;
     }
 
-    public String getConstant() {
-        return constant;
+    public String getExpression() {
+        return expression;
     }
 
-    public void setConstant(final String constant) {
-        this.constant = constant;
+    public void setExpression(final String expression) {
+        this.expression = expression;
     }
 
     public boolean isComplete() {
-        if (name == null || name.isEmpty()) {
+        if (isEmpty(name)) {
             return false;
-        } else if ((dataType == null || dataType.isEmpty())
-                && (customDataType == null || customDataType.isEmpty())) {
-            return false;
-        } else if ((processVar == null || processVar.isEmpty())
-                && (constant == null || constant.isEmpty())) {
-            return false;
-        } else {
-            return true;
         }
+
+        if (isEmpty(dataType) && isEmpty(customDataType)) {
+            return false;
+        }
+
+        return nonEmpty(processVar) || nonEmpty(expression);
     }
 
     @Override
@@ -147,6 +148,6 @@ public class AssignmentRow {
 
     @Override
     public String toString() {
-        return "Assignment [name=" + name + ", variableType=" + variableType.toString() + ", dataType=" + dataType + ", customDataType=" + customDataType + ", processVar=" + processVar + ", constant=" + constant + "]";
+        return "Assignment [name=" + name + ", variableType=" + variableType.toString() + ", dataType=" + dataType + ", customDataType=" + customDataType + ", processVar=" + processVar + ", expression=" + expression + "]";
     }
 }

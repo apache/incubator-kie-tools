@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util;
 
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 public class FormalExpressionBodyHandler extends AbstractConverterHandler {
 
@@ -37,6 +38,10 @@ public class FormalExpressionBodyHandler extends AbstractConverterHandler {
 
     public void setBody(String newBody) {
         set(newBody);
+    }
+
+    public void setCDataBody(String newBody) {
+        set(XMLTypePackage.eINSTANCE.getXMLTypeDocumentRoot_CDATA(), newBody);
     }
 
     protected FeatureMap getMixed() {

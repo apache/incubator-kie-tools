@@ -31,7 +31,7 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Cancel();
 
-    String Constant();
+    String Expression();
 
     String Custom();
 
@@ -57,7 +57,7 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Edit();
 
-    String Enter_constant();
+    String Enter_expression();
 
     String Enter_type();
 
@@ -73,11 +73,17 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Only_single_entry_allowed();
 
+    String Only_expressions_allowed_for_output();
+
     String Ok();
 
     String Source();
 
+    String assignment_source_help();
+
     String Target();
+
+    String assignment_target_help();
 
     String This_input_should_be_entered_as_a_property_for_the_task();
 

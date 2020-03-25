@@ -190,7 +190,7 @@ public class ListBoxValuesTest {
         ListBoxValues processVarValues = new ListBoxValues("Constant ...",
                                                            "Edit ",
                                                            null,
-                                                           ActivityDataIOEditorViewImpl.CONSTANT_MAX_DISPLAY_LENGTH);
+                                                           ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         // not double-quoted string - displayValue is the same
         String value = "sVar1";
         String displayValue = processVarValues.addDisplayValue(value);

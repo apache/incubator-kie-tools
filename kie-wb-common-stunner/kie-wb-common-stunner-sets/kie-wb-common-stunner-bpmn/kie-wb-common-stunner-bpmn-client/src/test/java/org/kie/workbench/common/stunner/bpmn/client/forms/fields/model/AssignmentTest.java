@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.OUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.PROCESS;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(StringUtils.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AssignmentTest extends AssignmentBaseTest {
 
     AssignmentData ad = Mockito.mock(AssignmentData.class);
@@ -93,13 +93,34 @@ public class AssignmentTest extends AssignmentBaseTest {
     public void serializeDeserialize(AssignmentData ad,
                                      Assignment assignment,
                                      String constant) {
-        assignment.setConstant(constant);
+        assignment.setExpression(constant);
         String s = assignment.toString();
         Assignment newA = Assignment.deserialize(ad,
                                                  s);
-        String deserializedConstant = newA.getConstant();
+        String deserializedConstant = newA.getExpression();
         assertEquals(constant,
                      deserializedConstant);
+    }
+
+    @Test
+    public void testSerialization() {
+        Assignment a = new Assignment(ad,
+                                      "input1",
+                                      Variable.VariableType.INPUT,
+                                      "String",
+                                      null,
+                                      null,
+                                      "#{variableName}");
+        assertEquals("[din]input1=%23%7BvariableName%7D", a.toString());
+
+        a = new Assignment(ad,
+                           "output1",
+                           OUTPUT,
+                           "String",
+                           null,
+                           null,
+                           "#{variableName}");
+        assertEquals("[dout]%23%7BvariableName%7D=output1", a.toString());
     }
 
     /**
@@ -167,15 +188,51 @@ public class AssignmentTest extends AssignmentBaseTest {
                             String constant,
                             String jsonEncodedConstant,
                             String bpmn2EncodedConstant) {
-        assignment.setConstant(constant);
+        assignment.setExpression(constant);
         String s = assignment.toString();
         // replace the mocked encoded constant with the one that would occur at runtime
         s = s.replace(bpmn2EncodedConstant,
                       jsonEncodedConstant);
         Assignment newA = Assignment.deserialize(ad,
                                                  s);
-        String deserializedConstant = newA.getConstant();
+        String deserializedConstant = newA.getExpression();
         assertEquals(constant,
                      deserializedConstant);
+    }
+
+    @Test
+    public void testEquals() {
+        AssignmentData data = new AssignmentData();
+        Variable v1 = new Variable("processVar", PROCESS);
+        Variable v2 = new Variable("variable2", PROCESS);
+        data.addVariable(v1);
+
+        Assignment tested = new Assignment(data, "varName", OUTPUT, v1.getName(), null);
+        assertNotEquals(tested, new Object());
+        assertEquals(tested, tested);
+
+        Assignment b = new Assignment(data, "varName2", OUTPUT, v1.getName(), null);
+        assertNotEquals(tested, b);
+        b = new Assignment(data, "varName", OUTPUT, "processVar", null);
+        assertEquals(tested, b);
+
+        b.setProcessVarName(null);
+        assertNotEquals(tested, b);
+        tested.setProcessVarName(null);
+        assertEquals(tested, b);
+        b.setExpression("#{expression}");
+        assertNotEquals(tested, b);
+        tested.setExpression("#{expression}");
+        assertEquals(tested, b);
+    }
+
+    @Test
+    public void testOutputExpression() {
+        AssignmentData data = new AssignmentData();
+        Assignment tested = new Assignment(data, "newVariable", OUTPUT, null, "#{expression}");
+        String serialized = tested.toString();
+        assertEquals("[dout]%23%7Bexpression%7D=newVariable", serialized);
+
+        assertEquals(tested, Assignment.deserialize(data, serialized));
     }
 }

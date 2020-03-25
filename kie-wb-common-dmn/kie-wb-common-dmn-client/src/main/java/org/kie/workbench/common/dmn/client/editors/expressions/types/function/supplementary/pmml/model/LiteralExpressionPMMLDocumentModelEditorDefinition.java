@@ -174,7 +174,7 @@ public class LiteralExpressionPMMLDocumentModelEditorDefinition extends BaseEdit
                     //Command to set PMMLDocumentModel parameters
                     getParentFunctionGrid().ifPresent(parentFunctionGrid -> {
                         final String pmmlDocumentName = getExpressionPMMLValue(LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT);
-                        final String pmmlDocumentModelName = StringUtils.createUnquotedConstant((String) gridCellValueTuple.getValue().getValue());
+                        final String pmmlDocumentModelName = StringUtils.createUnquotedString((String) gridCellValueTuple.getValue().getValue());
                         final List<String> parameters = pmmlDocumentMetadataProvider.getPMMLDocumentModelParameterNames(pmmlDocumentName,
                                                                                                                         pmmlDocumentModelName);
 

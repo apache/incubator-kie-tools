@@ -67,8 +67,8 @@ public class PMMLIncludedModelHandler implements DRGElementHandler {
         final Collection<Context> contexts = getPMMLContexts(functions).values();
 
         //The values in the DMN model are stored with quotes
-        final String quotedOldModelName = StringUtils.createQuotedConstant(oldModelName);
-        final String quotedNewModelName = StringUtils.createQuotedConstant(newModelName);
+        final String quotedOldModelName = StringUtils.createQuotedString(oldModelName);
+        final String quotedNewModelName = StringUtils.createQuotedString(newModelName);
 
         contexts.stream()
                 .map(Context::getContextEntry)
@@ -93,7 +93,7 @@ public class PMMLIncludedModelHandler implements DRGElementHandler {
         final Map<FunctionDefinition, Context> contexts = getPMMLContexts(functions);
 
         //The values in the DMN model are stored with quotes
-        final String quotedOldModelName = StringUtils.createQuotedConstant(oldModelName);
+        final String quotedOldModelName = StringUtils.createQuotedString(oldModelName);
 
         for (final Map.Entry<FunctionDefinition, Context> entry : contexts.entrySet()) {
             final Context context = entry.getValue();

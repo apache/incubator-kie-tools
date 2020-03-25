@@ -58,12 +58,11 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
     private boolean allowDuplicateNames = true;
     private String duplicateNameErrorMessage = "";
 
-    private Set<String> disallowedNames = new HashSet<String>();
+    private Set<String> disallowedNames = new HashSet<>();
     private String disallowedNameErrorMessage = "";
 
     // List of rows that won't be shown in the UI
-    List<AssignmentRow> hiddenPropertyRows = new ArrayList<AssignmentRow>();
-    private boolean readOnly;
+    List<AssignmentRow> hiddenPropertyRows = new ArrayList<>();
 
     @PostConstruct
     public void init() {
@@ -108,8 +107,8 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         this.duplicateNameErrorMessage = duplicateNameErrorMessage;
     }
 
-    private boolean getShowConstants() {
-        return (this.variableType == VariableType.INPUT) ? true : false;
+    private boolean getShowExpression() {
+        return true;
     }
 
     private void addAssignment() {
@@ -123,7 +122,7 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         AssignmentListItemWidgetView widget = view.getAssignmentWidget(view.getAssignmentsCount() - 1);
         widget.setDataTypes(dataTypeListBoxValues);
         widget.setProcessVariables(processVarListBoxValues);
-        widget.setShowConstants(getShowConstants());
+        widget.setShowExpressions(getShowExpression());
         widget.setDisallowedNames(disallowedNames,
                                   disallowedNameErrorMessage);
         widget.setAllowDuplicateNames(allowDuplicateNames,
@@ -169,7 +168,7 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
     }
 
     public List<AssignmentRow> getData() {
-        List<AssignmentRow> rows = new ArrayList<AssignmentRow>();
+        List<AssignmentRow> rows = new ArrayList<>();
         if (!view.getAssignmentRows().isEmpty()) {
             rows.addAll(view.getAssignmentRows());
         }
@@ -195,7 +194,7 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         for (int i = 0; i < view.getAssignmentsCount(); i++) {
             AssignmentListItemWidgetView widget = view.getAssignmentWidget(i);
             widget.setProcessVariables(processVarListBoxValues);
-            widget.setShowConstants(getShowConstants());
+            widget.setShowExpressions(getShowExpression());
         }
     }
 
@@ -252,7 +251,6 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
     }
 
     public void setReadOnly(final boolean readOnly) {
-        this.readOnly = readOnly;
         view.setReadOnly(readOnly);
     }
 }

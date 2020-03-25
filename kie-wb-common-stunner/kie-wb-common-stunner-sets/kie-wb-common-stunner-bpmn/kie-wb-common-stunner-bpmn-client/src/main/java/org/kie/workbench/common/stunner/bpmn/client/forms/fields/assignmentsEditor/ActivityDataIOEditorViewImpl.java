@@ -58,7 +58,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private Column column = new Column(ColumnSize.MD_12);
 
-    public static final int CONSTANT_MAX_DISPLAY_LENGTH = 10;
+    public static final int EXPRESSION_MAX_DISPLAY_LENGTH = 10;
 
     public ActivityDataIOEditorViewImpl() {
         super();
@@ -173,24 +173,25 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     public void setPossibleOutputAssignmentsDataTypes(final List<String> dataTypeDisplayNames) {
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CUSTOM_PROMPT,
                                                                 StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
-                                                                presenter.dataTypesTester());
+                                                                presenter.dataTypesTester(),
+                                                                EXPRESSION_MAX_DISPLAY_LENGTH);
         dataTypeListBoxValues.addValues(dataTypeDisplayNames);
         outputAssignmentsWidget.setDataTypes(dataTypeListBoxValues);
     }
 
     @Override
     public void setInputAssignmentsProcessVariables(final List<String> processVariables) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
                                                                   presenter.processVarTester(),
-                                                                  CONSTANT_MAX_DISPLAY_LENGTH);
+                                                                  EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarListBoxValues.addValues(processVariables);
         inputAssignmentsWidget.setProcessVariables(processVarListBoxValues);
     }
 
     @Override
     public void setOutputAssignmentsProcessVariables(final List<String> processVariables) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
                                                                   presenter.processVarTester());
         processVarListBoxValues.addValues(processVariables);

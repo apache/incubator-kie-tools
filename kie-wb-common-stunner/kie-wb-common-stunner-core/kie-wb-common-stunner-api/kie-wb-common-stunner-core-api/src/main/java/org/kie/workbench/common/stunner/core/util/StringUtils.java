@@ -39,7 +39,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static boolean isQuotedConstant(String str) {
+    public static boolean isQuoted(String str) {
         if (str == null || str.isEmpty()) {
             return false;
         }
@@ -51,7 +51,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static String createQuotedConstant(final String str) {
+    public static String createQuotedString(final String str) {
         if (isEmpty(str)) {
             return str;
         }
@@ -63,7 +63,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static String createQuotedConstantOptionalNumeric(String str) {
+    public static String createQuotedStringIfNotNumeric(String str) {
         if (isEmpty(str)) {
             return str;
         }
@@ -80,7 +80,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static String createUnquotedConstant(String str) {
+    public static String createUnquotedString(String str) {
         if (isEmpty(str)) {
             return str;
         }
