@@ -37,7 +37,7 @@ enum ModalState {
 
 const availableOperatingSystems = new Map<OperatingSystem, string>([
   [OperatingSystem.LINUX, "Linux"],
-  [OperatingSystem.MACOS, "Mac OS"],
+  [OperatingSystem.MACOS, "macOS"],
   [OperatingSystem.WINDOWS, "Windows"]
 ]);
 
