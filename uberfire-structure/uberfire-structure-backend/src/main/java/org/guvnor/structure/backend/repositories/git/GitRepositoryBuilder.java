@@ -34,6 +34,7 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
+import org.guvnor.structure.repositories.RepositoryUtils;
 import org.guvnor.structure.repositories.impl.DefaultPublicURI;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.PasswordService;
@@ -94,6 +95,8 @@ public class GitRepositoryBuilder {
             setBranches(fileSystem);
 
             setPublicURIs(fileSystem);
+
+            RepositoryUtils.cleanUpCredentialsFromEnvMap(repo.getEnvironment());
 
             return repo;
         }

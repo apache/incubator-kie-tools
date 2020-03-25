@@ -287,6 +287,19 @@ public class ConfigurationServiceImplTest {
                      configGroups.size());
     }
 
+    @Test
+    public void cleanUpSystemRepositoryTest() {
+        final ConfigGroup config = configurationFactory.newConfigGroup(ConfigType.REPOSITORY,
+                                                                       "namespace",
+                                                                       "config",
+                                                                       "description");
+        configurationService.addConfiguration(config);
+
+        final boolean result = configurationService.cleanUpSystemRepository();
+
+        assertTrue(result);
+    }
+
     private IOService mockIoService() {
         final IOService ioService = spy(fileSystemTestingUtils.getIoService());
 

@@ -38,4 +38,6 @@ public interface ConfigurationService {
     boolean updateConfiguration(final ConfigGroup configGroup);
 
     boolean removeConfiguration(final ConfigGroup configGroup);
+
+    boolean cleanUpSystemRepository();
 }

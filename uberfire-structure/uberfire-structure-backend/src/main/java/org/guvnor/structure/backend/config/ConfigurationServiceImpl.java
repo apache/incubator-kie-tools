@@ -15,6 +15,7 @@
 
 package org.guvnor.structure.backend.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -46,6 +48,8 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
@@ -59,10 +63,13 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService,
                                                  AsyncWatchServiceCallback {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
     protected static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
 
@@ -470,6 +477,21 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         // invalidate cached values as system repo has changed
         configGroupsByTypeWithoutNamespace.clear();
         configGroupsByTypeWithNamespace.clear();
+    }
+
+    @Override
+    public boolean cleanUpSystemRepository() {
+        try {
+            final FileSystem fileSystem = ioService.get(systemRepository.getUri()).getFileSystem();
+            if (fileSystem instanceof JGitFileSystem) {
+                return ((JGitFileSystem) fileSystem)
+                        .getGit()
+                        .resetWithSquash("Repository clean up.");
+            }
+        } catch (IOException e) {
+            LOGGER.error("Unable to reset git repository.", e);
+        }
+        return false;
     }
 
     private class CheckConfigurationUpdates implements AsyncConfigWatchService {

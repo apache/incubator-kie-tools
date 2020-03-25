@@ -105,6 +105,7 @@ public class GitImpl implements Git {
     private static final String DEFAULT_JGIT_RETRY_SLEEP_TIME = "50";
     private static int JGIT_RETRY_TIMES = initRetryValue();
     private static final int JGIT_RETRY_SLEEP_TIME = initSleepTime();
+    private static final String MASTER_BRANCH = "master";
     private boolean isEnabled = false;
 
     private static int initSleepTime() {
@@ -390,6 +391,28 @@ public class GitImpl implements Git {
                    branch,
                    startCommit,
                    commitMessage).execute();
+    }
+
+    @Override
+    public boolean resetWithSquash(String commitMessage) throws IOException {
+        return resetWithSquash(MASTER_BRANCH,
+                               commitMessage);
+    }
+
+    @Override
+    public boolean resetWithSquash(final String branch,
+                                   final String commitMessage) throws IOException {
+        final Ref branchRef = getRef(branch);
+        final RevCommit firstCommit = getFirstCommit(branchRef);
+        final RevCommit lastCommit = getLastCommit(branchRef);
+
+        if (!firstCommit.equals(lastCommit)) {
+            squash(branch,
+                   firstCommit.getName(),
+                   commitMessage);
+            return true;
+        }
+        return false;
     }
 
     public LogCommand _log() {

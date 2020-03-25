@@ -236,6 +236,20 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
         assertTrue(repository.getDefaultBranch().get().getPath().toURI().contains("master"));
     }
 
+    @Test
+    public void testCredentialsAreNotStoredAfterRepositoryCreation() {
+        final RepositoryInfo repositoryInfo = new RepositoryInfo("myRepository",
+                                                                 false,
+                                                                 this.getConfig());
+
+        final Repository repository = helper.newRepository(repositoryInfo);
+
+        assertFalse(repository.getEnvironment().containsKey(EnvironmentParameters.USER_NAME));
+        assertFalse(repository.getEnvironment().containsKey(EnvironmentParameters.PASSWORD));
+        assertFalse(repository.getEnvironment()
+                            .containsKey(EnvironmentParameters.SECURE_PREFIX + EnvironmentParameters.PASSWORD));
+    }
+
     protected Path createPath(String uri) {
         Path path = mock(Path.class);
         when(path.toUri()).thenReturn(URI.create(uri));
@@ -246,6 +260,7 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
     protected RepositoryConfiguration getConfig() {
         RepositoryConfiguration repositoryConfiguration = new RepositoryConfiguration();
         repositoryConfiguration.add(EnvironmentParameters.USER_NAME, "user");
+        repositoryConfiguration.add(EnvironmentParameters.PASSWORD, "pw");
         repositoryConfiguration.add(EnvironmentParameters.SECURE_PREFIX + EnvironmentParameters.PASSWORD, "pass");
         repositoryConfiguration.add(EnvironmentParameters.SCHEME, "git");
         repositoryConfiguration.add(EnvironmentParameters.SPACE, "space");

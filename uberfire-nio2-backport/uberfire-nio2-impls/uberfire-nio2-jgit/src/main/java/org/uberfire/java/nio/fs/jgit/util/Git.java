@@ -289,6 +289,11 @@ public interface Git {
                 final String startCommit,
                 final String commitMessage);
 
+    boolean resetWithSquash(final String commitMessage) throws IOException;
+
+    boolean resetWithSquash(final String branch,
+                            final String commitMessage) throws IOException;
+
     boolean commit(final String branchName,
                    final CommitInfo commitInfo,
                    final boolean amend,
