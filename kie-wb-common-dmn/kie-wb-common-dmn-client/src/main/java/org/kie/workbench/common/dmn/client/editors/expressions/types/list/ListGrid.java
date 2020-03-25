@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.list;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -25,11 +26,9 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.AddListRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.DeleteListRowCommand;
@@ -62,7 +61,6 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModelMapper> implements HasListSelectorControl {
 
@@ -138,25 +136,10 @@ public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModel
 
     @Override
     public void initialiseUiColumns() {
-        final java.util.List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
-        final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(headerMetaData,
+        final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(Collections.emptyList(),
                                                                                           getAndSetInitialWidth(ListUIModelMapperHelper.ROW_COLUMN_INDEX,
                                                                                                                 ContextGridRowNumberColumn.DEFAULT_WIDTH));
-
-        if (nesting == 0) {
-            rowNumberColumn.getHeaderMetaData().add(new BaseHeaderMetaData("#"));
-            headerMetaData.add(new ListExpressionColumnHeaderMetaData(hasExpression,
-                                                                      hasName,
-                                                                      clearValueConsumer(true, new Name()),
-                                                                      setValueConsumer(true),
-                                                                      setTypeRefConsumer(),
-                                                                      translationService,
-                                                                      cellEditorControls,
-                                                                      headerEditor));
-        }
-
         final GridColumn listColumn = new ListExpressionEditorColumn(gridLayer,
-                                                                     headerMetaData,
                                                                      getAndSetInitialWidth(ListUIModelMapperHelper.EXPRESSION_COLUMN_INDEX,
                                                                                            ExpressionEditorColumn.DEFAULT_WIDTH),
                                                                      this);
@@ -317,21 +300,5 @@ public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModel
             }
         }
         super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
-    }
-
-    @Override
-    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                             final int uiHeaderColumnIndex) {
-        if (getExpression().get().isPresent()) {
-            final ListUIModelMapperHelper.ListSection section = ListUIModelMapperHelper.getSection(uiHeaderColumnIndex);
-            if (section == ListUIModelMapperHelper.ListSection.EXPRESSION) {
-                final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-                if (base instanceof DomainObject) {
-                    fireDomainObjectSelectionEvent((DomainObject) base);
-                    return;
-                }
-            }
-        }
-        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

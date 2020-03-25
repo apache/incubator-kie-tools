@@ -15,21 +15,21 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.types.list;
 
-import java.util.List;
+import java.util.Collections;
 
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 public class ListExpressionEditorColumn extends ExpressionEditorColumn {
 
     public ListExpressionEditorColumn(final GridWidgetRegistry registry,
-                                      final List<HeaderMetaData> headerMetaData,
                                       final double width,
                                       final BaseGrid<? extends Expression> gridWidget) {
-        super(headerMetaData,
-              new ListExpressionEditorColumnRenderer(registry),
+        super(Collections.emptyList(),
+              new ExpressionEditorColumnRenderer(registry),
               width,
               gridWidget);
     }

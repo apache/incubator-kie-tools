@@ -35,18 +35,12 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.AddListRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.list.DeleteListRowCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -103,7 +97,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -753,125 +746,5 @@ public class ListGridTest {
         grid.selectFirstCell();
 
         assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
-    }
-
-    @Test
-    public void testGetDisplayName() {
-        setupGrid();
-
-        assertThat(extractHeaderMetaData().getValue().getValue()).isEqualTo(NAME);
-    }
-
-    private ListExpressionColumnHeaderMetaData extractHeaderMetaData() {
-        final ExpressionEditorColumn column = (ExpressionEditorColumn) grid.getModel().getColumns().get(1);
-        return (ListExpressionColumnHeaderMetaData) column.getHeaderMetaData().get(0);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testSetDisplayNameWithNoChange() {
-        setupGrid();
-
-        extractHeaderMetaData().setValue(new Name(NAME));
-
-        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
-                                                       any(org.kie.workbench.common.stunner.core.command.Command.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testSetDisplayNameWithEmptyValue() {
-        setupGrid();
-
-        extractHeaderMetaData().setValue(new Name());
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              compositeCommandCaptor.capture());
-
-        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasValueCommand.class,
-                                               UpdateElementPropertyCommand.class);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testSetDisplayNameWithNullValue() {
-        setupGrid();
-
-        extractHeaderMetaData().setValue(null);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              compositeCommandCaptor.capture());
-
-        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               DeleteHasValueCommand.class,
-                                               UpdateElementPropertyCommand.class);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testSetDisplayNameWithNonEmptyValue() {
-        setupGrid();
-
-        extractHeaderMetaData().setValue(new Name(NAME_NEW));
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              compositeCommandCaptor.capture());
-
-        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
-                                               SetHasValueCommand.class,
-                                               UpdateElementPropertyCommand.class);
-    }
-
-    @Test
-    public void testGetTypeRef() {
-        setupGrid();
-
-        assertThat(extractHeaderMetaData().getTypeRef()).isNotNull();
-    }
-
-    @Test
-    public void testSetTypeRef() {
-        setupGrid();
-
-        extractHeaderMetaData().setTypeRef(new QName(QName.NULL_NS_URI,
-                                                     BuiltInType.DATE.getName()));
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(SetTypeRefCommand.class));
-    }
-
-    @Test
-    public void testSetTypeRefWithoutChange() {
-        setupGrid();
-
-        extractHeaderMetaData().setTypeRef(new QName());
-
-        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
-                                                       any(SetTypeRefCommand.class));
-    }
-
-    @Test
-    public void testSelectHeaderRowNumberColumn() {
-        setupGrid();
-
-        grid.selectHeaderCell(0, 0, false, false);
-
-        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
-
-        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
-        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
-    }
-
-    @Test
-    public void testSelectHeaderExpressionEditorColumn() {
-        setupGrid();
-
-        grid.selectHeaderCell(0, 1, false, false);
-
-        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
-
-        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
-        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(hasExpression);
     }
 }
