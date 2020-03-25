@@ -29,6 +29,12 @@ import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
 
+enum ModalState {
+  SELECT_OS,
+  DONWLOADED,
+  CLOSE
+}
+
 const availableOperatingSystems = new Map<OperatingSystem, string>([
   [OperatingSystem.LINUX, "Linux"],
   [OperatingSystem.MACOS, "Mac OS"],
@@ -38,18 +44,17 @@ const availableOperatingSystems = new Map<OperatingSystem, string>([
 export function DownloadHubModal(props: {}) {
   const context = useContext(GlobalContext);
 
-  const [redirectToHome, setRedirectToHome] = useState(false);
-  const [isDownloadModal, setIsDownloadModal] = useState(false);
+  const [modalState, setModalState] = useState(ModalState.SELECT_OS);
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
   const onDownload = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    setIsDownloadModal(true);
+    setModalState(ModalState.DONWLOADED);
   }, []);
 
   const onClose = useCallback(() => {
-    setRedirectToHome(true);
+    setModalState(ModalState.CLOSE);
   }, []);
 
   const onSelectOsToggle = useCallback(isExpanded => {
@@ -61,6 +66,7 @@ export function DownloadHubModal(props: {}) {
     setSelectIsExpanded(false);
   }, []);
 
+  // FIXME: use correct URL
   const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
@@ -75,8 +81,8 @@ export function DownloadHubModal(props: {}) {
 
   return (
     <div>
-      {redirectToHome && <Redirect push={true} to={context.routes.home.url({})} />}
-      {!isDownloadModal ? (
+      {modalState === ModalState.CLOSE && <Redirect push={true} to={context.routes.home.url({})} />}
+      {modalState === ModalState.SELECT_OS && (
         <Modal
           title="The Business Modeler Hub Preview allows you to access:"
           isOpen={true}
@@ -144,7 +150,8 @@ export function DownloadHubModal(props: {}) {
             </Select>
           </div>
         </Modal>
-      ) : (
+      )}
+      {modalState === ModalState.DONWLOADED && (
         <Modal
           title="Thank you for downloading Business Modeler Hub Preview!"
           isOpen={true}
