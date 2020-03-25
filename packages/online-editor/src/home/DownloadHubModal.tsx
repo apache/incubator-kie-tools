@@ -29,9 +29,11 @@ import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
 
-const LINUX = "Linux";
-const MACOS = "Mac OS";
-const WINDOWS = "Windows";
+const availableOperatingSystems = new Map<OperatingSystem, string>([
+  [OperatingSystem.LINUX, "Linux"],
+  [OperatingSystem.MACOS, "Mac OS"],
+  [OperatingSystem.WINDOWS, "Windows"]
+]);
 
 export function DownloadHubModal(props: {}) {
   const context = useContext(GlobalContext);
@@ -50,65 +52,33 @@ export function DownloadHubModal(props: {}) {
     setRedirectToHome(true);
   }, []);
 
-  const onToggle = useCallback(
-    isExpanded => {
-      setSelectIsExpanded(isExpanded);
-    },
-    [isSelectExpanded]
-  );
+  const onSelectOsToggle = useCallback(isExpanded => {
+    setSelectIsExpanded(isExpanded);
+  }, []);
 
-  const onSelect = useCallback((e, selection, isPlaceholder) => {
-    setOperationalSystem(chosenOs(selection));
+  const onSelectOperatingSystem = useCallback((e, selection) => {
+    setOperationalSystem(selection);
     setSelectIsExpanded(false);
   }, []);
 
   const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
-        return `samples/business-modeler-hub-macos.zip`;
+        return "samples/business-modeler-hub-macos.zip";
       case OperatingSystem.WINDOWS:
-        return `samples/business-modeler-hub-windows.zip`;
+        return "samples/business-modeler-hub-windows.zip";
+      case OperatingSystem.LINUX:
       default:
-        return `samples/business-modeler-hub-linux.zip`;
+        return "samples/business-modeler-hub-linux.zip";
     }
   }, [operationalSystem]);
-
-  const chosenOs = useCallback(
-    (selection: string) => {
-      switch (selection) {
-        case MACOS:
-          return OperatingSystem.MACOS;
-        case WINDOWS:
-          return OperatingSystem.WINDOWS;
-        default:
-          return OperatingSystem.LINUX;
-      }
-    },
-    [operationalSystem]
-  );
-
-  const availableOs = useMemo(() => {
-    return new Map<OperatingSystem, string>([
-      [OperatingSystem.LINUX, LINUX],
-      [OperatingSystem.MACOS, MACOS],
-      [OperatingSystem.WINDOWS, WINDOWS]
-    ]);
-  }, []);
-
-  const selectOptions = useMemo(() => {
-    return Array.from(availableOs.values()).map(value => ({
-      value,
-      disabled: false,
-      isPlaceholder: false
-    }));
-  }, []);
 
   return (
     <div>
       {redirectToHome && <Redirect push={true} to={context.routes.home.url({})} />}
       {!isDownloadModal ? (
         <Modal
-          title="The Kogito end-to-end hub allows you to access:"
+          title="The Business Modeler Hub Preview allows you to access:"
           isOpen={true}
           isLarge={true}
           onClose={onClose}
@@ -133,23 +103,23 @@ export function DownloadHubModal(props: {}) {
           <p>
             <strong>VS Code </strong>
             <small>
-              Installs VS Code extension and gives you a convenient way to launch VS Code ready to work with Kogito
+              Installs VS Code extension and gives you a convenient way to launch VS Code ready to work with Kogito.
             </small>
           </p>
           <br />
           <p>
             <strong>GitHub Chrome Extension </strong>
-            <small>Installs the Kogito GitHub extension for Chrome and gives you a shortcut to launch</small>
+            <small>Provides detailed instructions on how to install Kogito GitHub Extension for Chrome.</small>
           </p>
           <br />
           <p>
             <strong>Desktop App </strong>
-            <small>Installs the Business Modeler desktop app for use locally and offline</small>
+            <small>Installs the Business Modeler desktop app for use locally and offline.</small>
           </p>
           <br />
           <p>
             <strong>Business Modeler Preview </strong>
-            <small>Provides a quick link to access the website in the same hub</small>
+            <small>Provides a quick link to access the website in the same hub.</small>
           </p>
           <br />
           <p>Operation System:</p>
@@ -157,29 +127,26 @@ export function DownloadHubModal(props: {}) {
             <Select
               variant={SelectVariant.single}
               aria-label="Select Input"
-              onToggle={onToggle}
-              onSelect={onSelect}
-              selections={availableOs.get(operationalSystem)}
+              onToggle={onSelectOsToggle}
+              onSelect={onSelectOperatingSystem}
+              selections={operationalSystem}
               isExpanded={isSelectExpanded}
               ariaLabelledBy={"select-os"}
               isDisabled={false}
-              width={135} // FIXME
+              width={"135px"}
               direction={SelectDirection.up}
             >
-              {selectOptions.map((option, index) => (
-                <SelectOption
-                  isDisabled={option.disabled}
-                  key={index}
-                  value={option.value}
-                  isPlaceholder={option.isPlaceholder}
-                />
+              {Array.from(availableOperatingSystems.entries()).map(([key, label]) => (
+                <SelectOption isDisabled={false} key={key} value={key} isPlaceholder={false}>
+                  {label}
+                </SelectOption>
               ))}
             </Select>
           </div>
         </Modal>
       ) : (
         <Modal
-          title="Thank you for download the Business Modeler HUB!"
+          title="Thank you for downloading Business Modeler Hub Preview!"
           isOpen={true}
           isLarge={true}
           onClose={onClose}
@@ -198,7 +165,10 @@ export function DownloadHubModal(props: {}) {
         >
           <p>
             <small>
-              If the download does not begin automatically <a href={downloadHub} download={true}>click here</a>
+              If the download does not begin automatically,{" "}
+              <a href={downloadHub} download={true}>
+                click here
+              </a>
             </small>
           </p>
         </Modal>
