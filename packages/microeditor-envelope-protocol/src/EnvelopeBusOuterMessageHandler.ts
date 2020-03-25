@@ -122,7 +122,7 @@ export class EnvelopeBusOuterMessageHandler {
     if (message.busId !== this.busId) {
       return;
     }
-    console.warn(`EnvelopeBusOuterMessageHandler: Received new message: ` + message);
+
     switch (message.type) {
       case EnvelopeBusMessageType.RETURN_INIT:
         this.stopInitPolling();
@@ -152,7 +152,6 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_resourceListRequest(message.data as string);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
-        console.warn(`EnvelopeBusOuterMessageHandler: Received new edit`);
         const kogitoEdit = message.data as KogitoEdit;
         console.warn(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
         this.impl.receive_newEdit(kogitoEdit);

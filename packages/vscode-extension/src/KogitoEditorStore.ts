@@ -15,9 +15,10 @@
  */
 
 import { KogitoEditor } from "./KogitoEditor";
+import { KogitoActiveEditor } from "./KogitoActiveEditor";
 
 export class KogitoEditorStore {
-  public activeEditor?: KogitoEditor;
+  private activeEditor?: KogitoActiveEditor;
   public openEditors: Set<KogitoEditor>;
 
   constructor() {
@@ -25,25 +26,27 @@ export class KogitoEditorStore {
   }
 
   public addAsActive(editor: KogitoEditor) {
-    this.activeEditor = editor;
+    this.setActive(editor);
     this.openEditors.add(editor);
   }
 
   public setActive(editor: KogitoEditor) {
-    this.activeEditor = editor;
+    this.setNoneActive();
+    this.activeEditor = new KogitoActiveEditor(editor);
   }
 
   public isActive(editor: KogitoEditor) {
-    return this.activeEditor === editor;
+    return this.activeEditor?.editor === editor;
   }
 
   public setNoneActive() {
+    this.activeEditor?.dispose();
     this.activeEditor = undefined;
   }
 
   public withActive(consumer: (activeEditor: KogitoEditor) => void) {
     if (this.activeEditor) {
-      consumer(this.activeEditor);
+      consumer(this.activeEditor.editor);
     }
   }
 

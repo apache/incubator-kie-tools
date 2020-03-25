@@ -18,22 +18,21 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import {
-  Brand,
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  DropdownToggle,
-  PageHeader,
+  PageSection,
   TextInput,
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
+  PageHeader,
+  Brand,
+  DropdownToggle
 } from "@patternfly/react-core";
-import { CaretDownIcon, CloseIcon, EllipsisVIcon, ExpandIcon } from "@patternfly/react-icons";
+import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
 
 import { useLocation } from "react-router";
+import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;

@@ -189,24 +189,16 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <Title size={"xs"} className={"sr-only"} headingLevel={"h1"}>
-        Kogito editor
-      </Title>
-      {!fullscreen && (
-        <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
-          {copySuccessAlertVisible && (
+      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
+        {!fullscreen && copySuccessAlertVisible && (
             <div className={"kogito--alert-container"}>
               <Alert
-                variant="success"
-                title="Content copied to clipboard"
-                action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+                  variant="success"
+                  title="Content copied to clipboard"
+                  action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
               />
             </div>
-          )}
-        </PageSection>
-      )}
-
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
+        )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor
           ref={editorRef}
@@ -215,12 +207,8 @@ export function EditorPage(props: Props) {
           onPreviewResponse={onPreviewResponse}
         />
       </PageSection>
-      <textarea
-        ref={copyContentTextArea}
-        aria-hidden={"true"}
-        style={{ height: 0, position: "absolute", zIndex: -1 }}
-      />
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadRef} />
       <a ref={downloadPreviewRef} />
     </Page>
   );
