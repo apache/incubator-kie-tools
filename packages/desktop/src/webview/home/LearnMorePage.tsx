@@ -32,7 +32,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
@@ -40,11 +40,14 @@ import * as electron from "electron";
 export function LearnMorePage() {
   const context = useContext(GlobalContext);
 
-  const externalLink = (event: React.MouseEvent<HTMLElement>, link: string) => {
+  const externalLink = useCallback((event: React.MouseEvent<HTMLElement>, link: string) => {
     console.log(typeof event);
     event.preventDefault();
-    electron.shell.openExternal(link);
-  };
+    electron.shell.openExternal(link).catch(e => {
+      console.error("Error while opening link: " + e);
+    });
+  }, []);
+
   return (
     <PageSection>
       <Grid sm={12} lg={6} gutter="lg">

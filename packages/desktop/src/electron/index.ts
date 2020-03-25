@@ -21,35 +21,40 @@ import { FS } from "../storage/core/FS";
 import { Files } from "../storage/core/Files";
 import { DesktopUserData } from "./DesktopUserData";
 
+let mainWindow: BrowserWindow | null = null;
+let forceQuit = false; // flag needed to keep app running on MacOS when the window is closed
+
 app.on("ready", () => {
   Files.register(new FS());
   createWindow();
 });
 
-let mainWindow: BrowserWindow | null = null;
-let forceQuit = false;
-app.on('before-quit', () => {
+app.on("before-quit", () => {
   forceQuit = true;
 });
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    height: 900,
     width: 1440,
-    show: false,
-    icon: path.join(__dirname, "images/icon.png"),
+    height: 900,
     minWidth: 800,
     minHeight: 480,
+    show: false,
+    icon: path.join(__dirname, "images/icon.png"),
     webPreferences: {
       nodeIntegrationInWorker: true,
       nodeIntegration: true // https://github.com/electron/electron/issues/9920#issuecomment-575839738
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, "index.html"));
+  mainWindow
+    .loadFile(path.join(__dirname, "index.html"))
+    .catch(e => console.error("Error while loading webview index.html"));
+
   mainWindow.once("ready-to-show", () => {
     mainWindow?.show();
   });
+
   if (process.platform === "darwin") {
     mainWindow.on("close", e => {
       if (!forceQuit) {
@@ -58,12 +63,13 @@ const createWindow = () => {
       }
     });
   }
+
   const userData = new DesktopUserData();
   const menu = new Menu(mainWindow, userData);
   menu.setup();
 };
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   } else {

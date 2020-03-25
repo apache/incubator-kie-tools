@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-import { UNSAVED_FILE_NAME } from "../common/File";
-import { BrowserWindow, dialog, ipcMain } from "electron";
-import { Files } from "../storage/core/Files";
-import { FS } from "../storage/core/FS";
+import {FileSaveActions, UNSAVED_FILE_NAME} from "../common/File";
+import {BrowserWindow, dialog, ipcMain} from "electron";
+import {Files} from "../storage/core/Files";
+import {FS} from "../storage/core/FS";
 import {extractFileExtension, removeFileExtension} from "../common/utils";
-import { DesktopUserData } from "./DesktopUserData";
-import IpcMainEvent = Electron.IpcMainEvent;
-import { Menu } from "./Menu";
+import {DesktopUserData} from "./DesktopUserData";
+import {Menu} from "./Menu";
 import * as path from "path";
-
-export enum Actions {
-  SAVE,
-  SAVE_AS
-}
+import IpcMainEvent = Electron.IpcMainEvent;
 
 export class FileOperations {
   private readonly window: BrowserWindow;
@@ -41,8 +36,8 @@ export class FileOperations {
 
     ipcMain.on("saveFile", (event: IpcMainEvent, data: any) => {
       if (
-        data.action === Actions.SAVE_AS ||
-        (data.action === Actions.SAVE && data.file.filePath === UNSAVED_FILE_NAME)
+        data.action === FileSaveActions.SAVE_AS ||
+        (data.action === FileSaveActions.SAVE && data.file.filePath === UNSAVED_FILE_NAME)
       ) {
         dialog
           .showSaveDialog(this.window, {
@@ -160,13 +155,13 @@ export class FileOperations {
 
   public save() {
     this.window.webContents.send("requestOpenedFile", {
-      action: Actions.SAVE
+      action: FileSaveActions.SAVE
     });
   }
 
   public saveAs() {
     this.window.webContents.send("requestOpenedFile", {
-      action: Actions.SAVE_AS
+      action: FileSaveActions.SAVE_AS
     });
   }
 

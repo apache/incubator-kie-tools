@@ -46,7 +46,10 @@ export function App(props: Props) {
   const [page, setPage] = useState(Pages.HOME);
   const [file, setFile] = useState(props.file);
 
+  const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
+
   const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
+
   const desktopRouter = useMemo(
     () =>
       new DesktopRouter(
@@ -73,27 +76,14 @@ export function App(props: Props) {
     }
   };
 
-  const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
-
   const closeInvalidFileTypeErrorAlert = useCallback(() => setInvalidFileTypeErrorVisible(false), []);
 
-  useEffect(() => {
-    if (invalidFileTypeErrorVisible) {
-      const autoCloseInvalidFileTypeErrorAlert = setTimeout(closeInvalidFileTypeErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
-      return () => clearInterval(autoCloseInvalidFileTypeErrorAlert);
-    }
-
-    return () => {
-      /* Do nothing */
-    };
-  }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
-
   const openFile = useCallback(
-      (fileToOpen: File) => {
-        setFile(fileToOpen);
-        setPage(Pages.EDITOR);
-      },
-      [page, file]
+    (fileToOpen: File) => {
+      setFile(fileToOpen);
+      setPage(Pages.EDITOR);
+    },
+    [page, file]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -105,6 +95,31 @@ export function App(props: Props) {
     setPage(Pages.HOME);
     setFile(undefined);
   }, [page, file]);
+
+  const preventDefaultEvent = useCallback(ev => {
+    ev.preventDefault();
+  }, []);
+
+  const dragAndDropFileEvent = useCallback(
+    ev => {
+      ev.preventDefault();
+      if (ev.dataTransfer) {
+        openFileByPath(ev.dataTransfer.files[0].path);
+      }
+    },
+    [openFileByPath]
+  );
+
+  useEffect(() => {
+    if (invalidFileTypeErrorVisible) {
+      const autoCloseInvalidFileTypeErrorAlert = setTimeout(closeInvalidFileTypeErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseInvalidFileTypeErrorAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
 
   useEffect(() => {
     ipc.on("openFile", (event: any, data: any) => {
@@ -129,20 +144,6 @@ export function App(props: Props) {
       ipc.removeAllListeners("saveFileSuccess");
     };
   }, [ipc, file]);
-
-  const preventDefaultEvent = useCallback(ev => {
-    ev.preventDefault();
-  }, []);
-
-  const dragAndDropFileEvent = useCallback(
-      ev => {
-        ev.preventDefault();
-        if (ev.dataTransfer) {
-          openFileByPath(ev.dataTransfer.files[0].path);
-        }
-      },
-      [openFileByPath]
-  );
 
   useEffect(() => {
     document.addEventListener("dragover", preventDefaultEvent);

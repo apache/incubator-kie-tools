@@ -15,11 +15,11 @@
  */
 
 export interface RecentOpenedFile {
-    filePath: string;
-    preview: string;
+  filePath: string;
+  preview: string;
 }
 
 export interface PromisedRecentOpenedFile {
-    filePath: string;
-    previewPromise: Promise<string>;
+  filePath: string;
+  previewPromise: Promise<string>;
 }

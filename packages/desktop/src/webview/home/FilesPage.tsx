@@ -81,8 +81,6 @@ export function FilesPage(props: Props) {
   const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
   const [filteredLastOpenedFiles, setFilteredLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
 
-  const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
-
   const [url, setURL] = useState("");
   const [importFileErrorDetails, setImportFileErrorDetails] = useState<{
     type: ImportFileErrorType;
@@ -90,22 +88,40 @@ export function FilesPage(props: Props) {
     description?: string;
   }>({ type: ImportFileErrorType.NONE });
 
-  const closeImportFileErrorAlert = useCallback(() => setImportFileErrorDetails({ type: ImportFileErrorType.NONE }), []);
-
-  useEffect(() => {
-    if (importFileErrorDetails.type !== ImportFileErrorType.NONE) {
-      const autoCloseImportFileErrorAlert = setTimeout(closeImportFileErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
-      return () => clearInterval(autoCloseImportFileErrorAlert);
-    }
-
-    return () => {
-      /* Do nothing */
-    };
-  }, [importFileErrorDetails, closeImportFileErrorAlert]);
-
   const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
   const [searchFilter, setSearchFilter] = useState("");
   const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
+
+  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
+
+  const ipc = useMemo(() => electron.ipcRenderer, [electron.ipcRenderer]);
+
+  const typeFilterOptions = useMemo(() => [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }], []);
+
+  const validatedInputUrl = useMemo(
+    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    [inputFileUrlState]
+  );
+
+  const messageForStateInputUrl = useMemo(() => {
+    switch (inputFileUrlState) {
+      case InputFileUrlState.INITIAL:
+        return "http://";
+      case InputFileUrlState.INVALID_EXTENSION:
+        return "File type is not supported";
+      case InputFileUrlState.INVALID_URL:
+        return "Enter a valid URL";
+      case InputFileUrlState.NO_FILE_URL:
+        return "File URL is not valid";
+      default:
+        return "";
+    }
+  }, [inputFileUrlState]);
+
+  const closeImportFileErrorAlert = useCallback(
+    () => setImportFileErrorDetails({ type: ImportFileErrorType.NONE }),
+    []
+  );
 
   const applyFilter = useCallback(
     (files: RecentOpenedFile[]) => {
@@ -141,21 +157,6 @@ export function FilesPage(props: Props) {
     [searchFilter, typeFilterSelect, sortAlphaFilter]
   );
 
-  useEffect(() => {
-    ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
-      setLastOpenedFiles(data.lastOpenedFiles);
-      setFilteredLastOpenedFiles(applyFilter(data.lastOpenedFiles));
-    });
-
-    ipc.send("requestLastOpenedFiles");
-
-    return () => {
-      ipc.removeAllListeners("returnLastOpenedFiles");
-    };
-  }, [ipc, applyFilter]);
-
-  const typeFilterOptions = useMemo(() => [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }], []);
-
   const onSelectTypeFilter = useCallback((event, selection) => {
     setTypeFilterSelect({
       isExpanded: false,
@@ -180,18 +181,6 @@ export function FilesPage(props: Props) {
     [lastOpenedFiles]
   );
 
-  useEffect(() => {
-    if (lastOpenedFiles.filter !== undefined) { // used to avoid MacOS issue during first load
-      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
-    }
-
-    return () => {
-      /* Do nothing. */
-    };
-  }, [applyFilter, lastOpenedFiles]);
-
-  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
-
   const validateFileInput = useCallback((fileUrl: string) => {
     let urlObject: URL;
     try {
@@ -214,11 +203,6 @@ export function FilesPage(props: Props) {
     setURL(fileUrl);
     validateFileInput(fileUrl);
   }, []);
-
-  const validatedInputUrl = useMemo(
-    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
-    [inputFileUrlState]
-  );
 
   const importFileByUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
@@ -258,26 +242,46 @@ export function FilesPage(props: Props) {
     [url]
   );
 
-  const messageForStateInputUrl = useMemo(() => {
-    switch (inputFileUrlState) {
-      case InputFileUrlState.INITIAL:
-        return "http://";
-      case InputFileUrlState.INVALID_EXTENSION:
-        return "File type is not supported";
-      case InputFileUrlState.INVALID_URL:
-        return "Enter a valid URL";
-      case InputFileUrlState.NO_FILE_URL:
-        return "File URL is not valid";
-      default:
-        return "";
-    }
-  }, [inputFileUrlState]);
-
   const onInputFileUrlBlur = useCallback(() => {
     if (url.trim() === "") {
       setInputFileUrlState(InputFileUrlState.INITIAL);
     }
   }, [url]);
+
+  useEffect(() => {
+    if (lastOpenedFiles.filter !== undefined) {
+      // used to avoid MacOS issue during first load
+      setFilteredLastOpenedFiles(applyFilter(lastOpenedFiles));
+    }
+
+    return () => {
+      /* Do nothing. */
+    };
+  }, [applyFilter, lastOpenedFiles]);
+
+  useEffect(() => {
+    ipc.on("returnLastOpenedFiles", (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
+      setLastOpenedFiles(data.lastOpenedFiles);
+      setFilteredLastOpenedFiles(applyFilter(data.lastOpenedFiles));
+    });
+
+    ipc.send("requestLastOpenedFiles");
+
+    return () => {
+      ipc.removeAllListeners("returnLastOpenedFiles");
+    };
+  }, [ipc, applyFilter]);
+
+  useEffect(() => {
+    if (importFileErrorDetails.type !== ImportFileErrorType.NONE) {
+      const autoCloseImportFileErrorAlert = setTimeout(closeImportFileErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      return () => clearInterval(autoCloseImportFileErrorAlert);
+    }
+
+    return () => {
+      /* Do nothing */
+    };
+  }, [importFileErrorDetails, closeImportFileErrorAlert]);
 
   return (
     <>

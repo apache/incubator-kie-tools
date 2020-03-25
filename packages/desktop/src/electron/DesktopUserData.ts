@@ -23,13 +23,18 @@ import { createHash } from "crypto";
 
 const NUMBER_OF_FILES_TO_KEEP = 50;
 
+const CONFIG = "config";
+
+const LAST_OPENED_FILES = "lastOpenedFiles";
+const THUMBNAILS = "thumbnails";
+
 export class DesktopUserData {
   private userData: UserData;
 
   constructor() {
     this.userData = new UserData({
-      configName: "config",
-      resourceTypes: ["thumbnails"],
+      configName: CONFIG,
+      resourceTypes: [THUMBNAILS],
       defaults: {
         lastOpenedFiles: []
       }
@@ -37,41 +42,30 @@ export class DesktopUserData {
   }
 
   public registerFile(fullPath: string) {
-    const lastOpenedFiles = this.userData.get("lastOpenedFiles");
+    const lastOpenedFiles = this.userData.get(LAST_OPENED_FILES);
     lastOpenedFiles.unshift(fullPath);
     this.userData.set(
-      "lastOpenedFiles",
+      LAST_OPENED_FILES,
       lastOpenedFiles
-        .filter((item: string, i: number, ar: string[]) => ar.indexOf(item) === i)
+        .filter((item: string, i: number, ar: string[]) => ar.indexOf(item) === i) // keeps only the first occurence
         .slice(0, NUMBER_OF_FILES_TO_KEEP)
     );
   }
 
   public saveFileThumbnail(filePath: string, fileType: string, fileContent: string) {
-    const thumbnailFileName =
-      createHash("md5")
-        .update(filePath)
-        .digest("hex") +
-      "." +
-      fileType;
-    this.userData.saveResource("thumbnails", thumbnailFileName, fileContent);
+    const thumbnailFileName = this.buildThumbnailFileName(filePath) + "." + fileType;
+    this.userData.saveResource(THUMBNAILS, thumbnailFileName, fileContent);
   }
 
   public getLastOpenedFiles(): Promise<RecentOpenedFile[]> {
-    const updatedData: string[] = this.userData.get("lastOpenedFiles").filter(file => Files.exists(FS.newFile(file)));
-    this.userData.set("lastOpenedFiles", updatedData);
+    const updatedData: string[] = this.userData.get(LAST_OPENED_FILES).filter(file => Files.exists(FS.newFile(file)));
+    this.userData.set(LAST_OPENED_FILES, updatedData);
 
     const validThumbnails = updatedData.map(file =>
-      path.join(
-        this.userData.getBasePath(),
-        "thumbnails",
-        createHash("md5")
-          .update(file)
-          .digest("hex") + ".svg"
-      )
+      path.join(this.userData.getBasePath(), THUMBNAILS, this.buildThumbnailFileName(file) + ".svg")
     );
     const thumbnailsToRemove: string[] = this.userData
-      .listResources("thumbnails")
+      .listResources(THUMBNAILS)
       .filter(thumbnailPath => !validThumbnails.includes(thumbnailPath));
     this.userData.deleteResources(thumbnailsToRemove);
 
@@ -80,12 +74,7 @@ export class DesktopUserData {
         return {
           filePath: filePath,
           previewPromise: this.userData
-            .readResource(
-              "thumbnails",
-              createHash("md5")
-                .update(filePath)
-                .digest("hex") + ".svg"
-            )
+            .readResource(THUMBNAILS, this.buildThumbnailFileName(filePath) + ".svg")
             .catch(() => Promise.resolve(""))
         };
       })
@@ -115,6 +104,12 @@ export class DesktopUserData {
 
   public clear() {
     this.userData.clearData();
-    this.userData.clearResources("thumbnails");
+    this.userData.clearResources(THUMBNAILS);
+  }
+
+  private buildThumbnailFileName(filePath: string) {
+    return createHash("md5")
+      .update(filePath)
+      .digest("hex");
   }
 }

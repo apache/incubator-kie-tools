@@ -30,8 +30,16 @@
     "test": "echo 'No tests to run.'",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:fast": "rm -rf dist build/Business* && webpack --mode development",
-    "build:prod": "yarn run build --mode production --devtool none && electron-packager . \"Business Modeler Preview\" --platform=darwin,linux --arch=x64 --out=build --overwrite --icon=./build/icon.icns && electron-packager . \"Business Modeler Preview\" --platform=win32 --arch=x64 --out=build --overwrite --icon=./build/icon.ico"
+    "build:fast": "rm -rf dist && webpack --mode development",
+    "build:prod-clean": "rm -rf out/*",
+    "build:prod-build": "yarn run build --mode production --devtool none",
+    "build:prod-package-linux": "electron-packager . \"Business Modeler Preview\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\" && (cd out && zip -ry \"Business Modeler Preview-linux-x64.zip\" \"Business Modeler Preview-linux-x64\")",
+    "build:prod-package-macos": "electron-packager . \"Business Modeler Preview\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\" && (cd out && zip -ry \"Business Modeler Preview-darwin-x64.zip\" \"Business Modeler Preview-darwin-x64\")",
+    "build:prod-package-windows": "electron-packager . \"Business Modeler Preview\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\" && (cd out && zip -ry \"Business Modeler Preview-win32-x64.zip\" \"Business Modeler Preview-win32-x64\")",
+    "build:prod-linux": "yarn run build:prod-clean && yarn run build:prod-build && yarn run build:prod-package-linux",
+    "build:prod-macos": "yarn run build:prod-clean && yarn run build:prod-build && yarn run build:prod-package-macos",
+    "build:prod-windows": "yarn run build:prod-clean && yarn run build:prod-build && yarn run build:prod-package-windows",
+    "build:prod": "yarn run build:prod-clean && yarn run build:prod-build && yarn run build:prod-package-linux && yarn run build:prod-package-macos && yarn run build:prod-package-windows"
   },
   "babel": {
     "presets": [
@@ -44,7 +52,6 @@
     "electron-rebuild": "1.10.0"
   },
   "files": [
-    "**/*",
-    "build/icon.*"
+    "**/*"
   ]
 }

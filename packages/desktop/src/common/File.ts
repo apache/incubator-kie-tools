@@ -21,3 +21,8 @@ export interface File {
   fileType: string;
   fileContent: string;
 }
+
+export enum FileSaveActions {
+  SAVE,
+  SAVE_AS
+}

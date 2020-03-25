@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import {useCallback, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { EditorToolbar } from "./EditorToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
@@ -24,6 +24,7 @@ import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
 import { useMemo } from "react";
 import * as electron from "electron";
+import { FileSaveActions } from "../../common/File";
 
 interface Props {
   editorType: string;
@@ -116,6 +117,13 @@ export function EditorPage(props: Props) {
     },
     [ipc, previewRequestAction, context.file!.filePath]
   );
+
+  const saveFile = useCallback(() => {
+    contentRequestData = {
+      action: FileSaveActions.SAVE
+    };
+    requestSaveFile();
+  }, [requestSaveFile]);
 
   useEffect(() => {
     if (copySuccessAlertVisible) {
@@ -217,7 +225,7 @@ export function EditorPage(props: Props) {
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onHome={props.onHome} />
+            <EditorToolbar onHome={props.onHome} onSave={saveFile} />
           </StackItem>
 
           <StackItem className="pf-m-fill">

@@ -18,12 +18,13 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } from "@patternfly/react-core";
-import { HomeIcon } from "@patternfly/react-icons";
+import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
 
 interface Props {
   onHome: () => void;
+  onSave: () => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -32,6 +33,10 @@ export function EditorToolbar(props: Props) {
   const editorType = useMemo(() => {
     return context.file!.fileType;
   }, [location]);
+
+  const logoProps = useMemo(() => {
+    return { href: window.location.href.split("?")[0].split("#")[0] };
+  }, []);
 
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
@@ -48,17 +53,23 @@ export function EditorToolbar(props: Props) {
     <Toolbar>
       <ToolbarGroup className={"kogito--right"}>
         <ToolbarItem>
+          <Button
+            variant={"secondary"}
+            onClick={props.onSave}
+            className={"pf-u-display-flex-on-lg"}
+            aria-label={"Save file"}
+          >
+            Save
+          </Button>
+        </ToolbarItem>
+        <ToolbarItem>
           <Button variant={"plain"} onClick={props.onHome} aria-label={"Go to homepage"}>
-            <HomeIcon />
+            <CloseIcon />
           </Button>
         </ToolbarItem>
       </ToolbarGroup>
     </Toolbar>
   );
-
-  const logoProps = useMemo(() => {
-    return { href: window.location.href.split("?")[0].split("#")[0] };
-  }, []);
 
   return (
     <PageHeader

@@ -39,7 +39,8 @@ const commonConfig = {
       { from: "./static/images", to: "./images" },
       { from: "./static/index.html", to: "./index.html" },
       { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
-      { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" }
+      { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" },
+      { from: "./build", to: "./build" },
     ])
   ],
   module: {

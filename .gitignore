@@ -2,7 +2,7 @@ node_modules/
 dist/
 coverage/
 target/
-**/build/Business*
+out/
 .idea
 **/.DS_Store
 *.log

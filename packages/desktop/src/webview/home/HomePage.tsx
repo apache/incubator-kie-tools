@@ -38,9 +38,7 @@ export function HomePage(props: Props) {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
-  const header = (
-    <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />
-  );
+  const header = <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />;
 
   const navigation = (
     <Nav onSelect={onNavSelect} className={"pf-m-dark"}>
@@ -59,7 +57,9 @@ export function HomePage(props: Props) {
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"}>
-      {activeNavItem === NavItems.FILES && <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />}
+      {activeNavItem === NavItems.FILES && (
+        <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
+      )}
       {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
     </Page>
   );

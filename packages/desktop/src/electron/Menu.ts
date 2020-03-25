@@ -285,9 +285,9 @@ export class Menu {
       template.unshift(this.macOSAppMenu);
     }
 
-    //if (!app.isPackaged) {
+    if (!app.isPackaged) {
       template.push(this.devMenu);
-    //}
+    }
 
     this.menu = ElectronMenu.buildFromTemplate(template);
     ElectronMenu.setApplicationMenu(this.menu);
