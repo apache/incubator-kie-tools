@@ -24,7 +24,7 @@ interface Props {
 export function FullScreenToolbar(props: Props) {
   return (
     <div className="kogito--full-screen__toolbar">
-      <Button variant="primary" onClick={props.onExitFullScreen}>
+      <Button className="kogito--full-screen__toolbar-button" variant="primary" onClick={props.onExitFullScreen}>
         Exit full screen
       </Button>
     </div>
