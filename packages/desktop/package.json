@@ -29,12 +29,12 @@
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack --mode development",
-    "clean:prod": "rm -rf out/*",
+    "clean:prod": "rm -rf out && mkdir out",
     "compile:prod": "yarn run build --mode production --devtool none",
     "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\"\"",
     "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && (cd out && zip -ry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
     "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\"\"",
-    "package:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
+    "package:prod:all": "yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
     "package:prod": "run-script-os",
     "build:prod:linux": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux",
     "build:prod:darwin": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:darwin",
@@ -47,14 +47,6 @@
       "@babel/env",
       "@babel/react"
     ]
-  },
-  "devDependencies": {
-    "@types/react-router": "5.1.1",
-    "@types/react-router-dom": "5.1.1",
-    "electron-packager": "14.2.0",
-    "electron-rebuild": "1.10.0",
-    "run-script-os": "1.1.1",
-    "cross-var": "1.1.0"
   },
   "files": [
     "**/*"

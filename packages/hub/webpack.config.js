@@ -17,6 +17,8 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const envelope = require("../microeditor-envelope/webpackUtils");
+const packageJson = require("./package.json");
+const os = require("os");
 
 const commonConfig = {
   mode: "development",
@@ -36,10 +38,17 @@ const commonConfig = {
       { from: "./static/resources", to: "./resources" },
       { from: "./static/images", to: "./images" },
       { from: "./static/index.html", to: "./index.html" },
-      //TODO: Copy the right extension
-      // On build:fast -> Use what?
-      // On build:prod -> use ../vscode-extension-pack-kogito-kie-editors/dist
-      { from: "./vscode_extension_kogito_kie_editors_0.2.11-new-vscode-webview-api.vsix", to: "./lib" }
+      {
+        from:
+          "../vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_" +
+          packageJson.version +
+          ".vsix",
+        to: "./lib/vscode_extension.vsix"
+      },
+      {
+        from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
+        to: "./lib/"
+      }
       //TODO: Copy the right Desktop app
       // On build:fast -> Use what?
       // On build:prod -> use ../desktop/out

@@ -24,9 +24,7 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcMainEvent = Electron.IpcMainEvent;
 
-const vscode_EXTENSION_PATH = applicationPath(
-  "lib/vscode_extension_kogito_kie_editors_0.2.11-new-vscode-webview-api.vsix"
-);
+const vscode_EXTENSION_PATH = applicationPath("lib/vscode_extension.vsix");
 
 app.on("ready", () => {
   createWindow();
@@ -192,9 +190,9 @@ function createWindow() {
   // DESKTOP
   ipcMain.on("desktop_launch", (e: IpcMainEvent) => {
     executeCommand({
-      macOS: `open ${applicationPath("lib/Business Modeler Preview.app")}`,
-      windows: "", //FIXME: Put right command here
-      linux: "" //FIXME: Put right command here
+      macOS: `open ${applicationPath("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}`,
+      linux: "./lib/Business Modeler Preview-linux-x64/Business Modeler Preview",
+      windows: `"./lib/Business Modeler Preview-linux-x64/Business Modeler Preview.exe"`
     }).then(result => {
       mainWindow.webContents.send("desktop__launch_complete", { ...result });
     });
