@@ -18,7 +18,13 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { EditorContent, ResourceContentRequest, ResourceContentService, Router } from "@kogito-tooling/core-api";
+import {
+  EditorContent,
+  KogitoEdit,
+  ResourceContentRequest,
+  ResourceContentService,
+  Router
+} from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -32,8 +38,7 @@ export class KogitoEditor {
   private readonly editorStore: KogitoEditorStore;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
   private readonly resourceContentService: ResourceContentService;
-
-  private enabledUndoRedo: boolean = true;
+  private readonly signalEdit: (edit: KogitoEdit) => void;
 
   public constructor(
     relativePath: string,
@@ -43,7 +48,8 @@ export class KogitoEditor {
     router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
-    resourceContentService: ResourceContentService
+    resourceContentService: ResourceContentService,
+    signalEdit: (edit: KogitoEdit) => void
   ) {
     this.relativePath = relativePath;
     this.path = path;
@@ -53,6 +59,7 @@ export class KogitoEditor {
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
     this.resourceContentService = resourceContentService;
+    this.signalEdit = signalEdit;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
       {
         postMessage: msg => {
@@ -92,13 +99,16 @@ export class KogitoEditor {
           this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
-            /**/  
+          /**/
         },
-        notify_editorUndo: () => {
-          this.envelopeBusOuterMessageHandler.notify_editorUndo();
+        notify_editorUndo: (edits: KogitoEdit[]) => {
+          this.notify_editorUndo(edits);
         },
-        notify_editorRedo: () => {
-          this.envelopeBusOuterMessageHandler.notify_editorRedo();
+        notify_editorRedo: (edits: KogitoEdit[]) => {
+          this.notify_editorRedo(edits);
+        },
+        receive_newEdit: (edit: KogitoEdit) => {
+          this.notify_newEdit(edit);
         },
         receive_previewRequest: preview => {
           if (preview) {
@@ -121,6 +131,18 @@ export class KogitoEditor {
 
   public requestSave() {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
+  }
+
+  public notify_editorUndo(edits: KogitoEdit[]) {
+    this.envelopeBusOuterMessageHandler.notify_editorUndo(edits);
+  }
+
+  public notify_editorRedo(edits: KogitoEdit[]) {
+    this.envelopeBusOuterMessageHandler.notify_editorRedo(edits);
+  }
+
+  public notify_newEdit(edit: KogitoEdit) {
+    this.signalEdit(edit);
   }
 
   public requestPreview() {
@@ -184,22 +206,6 @@ export class KogitoEditor {
 
   public focus() {
     this.panel.reveal(this.viewColumn(), true);
-  }
-
-  public notifyUndo() {
-    this.executeUndoRedo(() => this.envelopeBusOuterMessageHandler.notify_editorUndo());
-  }
-
-  public notifyRedo() {
-    this.executeUndoRedo(() => this.envelopeBusOuterMessageHandler.notify_editorRedo());
-  }
-
-  private executeUndoRedo(runnable: () => void) {
-    if(this.enabledUndoRedo) {
-      this.enabledUndoRedo = false;
-      runnable();
-      setTimeout(() => this.enabledUndoRedo = true, 100);
-    }
   }
 
   public setupWebviewContent() {

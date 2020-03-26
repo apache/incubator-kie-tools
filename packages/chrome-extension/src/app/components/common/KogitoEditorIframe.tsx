@@ -22,7 +22,7 @@ import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useGitHubApi } from "../common/GitHubContext";
-import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -107,8 +107,17 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         receive_resourceListRequest(pattern: string) {
           resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
+        notify_editorUndo: (edits: KogitoEdit[]) => {
+          console.debug("Notify Undo");
+        },
+        notify_editorRedo: (edits: KogitoEdit[]) => {
+          console.debug("Notify Redo");
+        },
+        receive_newEdit(edit: KogitoEdit): void {
+          console.debug("New Edit: " + edit.id);
+        },
         receive_previewRequest(previewSvg: string) {
-          console.debug("received preview: " + previewSvg ) ;
+          console.debug("received preview: " + previewSvg);
         }
       })
     );

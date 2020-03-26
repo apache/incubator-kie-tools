@@ -21,7 +21,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem, Title } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Title } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";

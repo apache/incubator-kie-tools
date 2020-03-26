@@ -4,8 +4,9 @@
   "description": "",
   "version": "0.2.10",
   "license": "Apache-2.0",
+  "enableProposedApi": true,
   "engines": {
-    "vscode": "^1.33.0"
+    "vscode": "^1.43.0"
   },
   "repository": {
     "type": "git",
@@ -15,11 +16,22 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onCustomEditor:kieKogitoWebviewEditors"
   ],
   "publisher": "kiegroup",
   "main": "./dist/extension/extension.js",
   "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditors",
+        "displayName": "KIE Kogito Editors",
+        "selector": [
+          {
+            "filenamePattern": "*.{dmn,bpmn,bpmn2}"
+          }
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "extension.kogito.getPreviewSvg",
@@ -48,18 +60,6 @@
           "dmn",
           "Decision Model and Notation"
         ]
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "undo",
-        "key": "ctrl+z",
-        "mac": "cmd+z"
-      },
-      {
-        "command": "redo",
-        "key": "ctrl+y",
-        "mac": "cmd+shift+z"
       }
     ]
   },

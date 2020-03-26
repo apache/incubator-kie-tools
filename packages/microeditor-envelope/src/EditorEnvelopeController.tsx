@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -81,11 +81,11 @@ export class EditorEnvelopeController {
       receive_resourceContentList: (resourcesList: ResourcesList) => {
         this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       },
-      receive_editorUndo: () => {
-        this.stateControl.undo();
+      receive_editorUndo: (edits: KogitoEdit[]) => {
+        this.stateControl.undo(edits);
       },
-      receive_editorRedo: () => {
-        this.stateControl.redo();
+      receive_editorRedo: (edits: KogitoEdit[]) => {
+        this.stateControl.redo(edits);
       },
       receive_previewRequest: () => {
         this.getEditor()
