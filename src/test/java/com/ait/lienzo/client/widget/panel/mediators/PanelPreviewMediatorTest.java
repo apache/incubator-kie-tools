@@ -124,13 +124,6 @@ public class PanelPreviewMediatorTest {
     }
 
     @Test
-    public void testMouseBoxZoomMediatorCancelCallback() {
-        tested.getMediator().setEnabled(true);
-        tested.getMediator().getOnCancel().run();
-        assertFalse(tested.getMediator().isEnabled());
-    }
-
-    @Test
     public void testMouseBoxZoomMediatorTransformCallback() {
         Viewport viewport = mock(Viewport.class);
         when(layer.getViewport()).thenReturn(viewport);
@@ -193,7 +186,6 @@ public class PanelPreviewMediatorTest {
     public void testOnRemoveHandler() {
         tested.removeHandler();
         assertFalse(tested.getMediator().isEnabled());
-        assertNull(tested.getMediator().getOnCancel());
         assertNull(tested.getMediator().getOnTransform());
         assertEquals(0, tested.getPreviewLayer().length());
         assertEquals(1, tested.getPreviewPanel().getWidthPx());
