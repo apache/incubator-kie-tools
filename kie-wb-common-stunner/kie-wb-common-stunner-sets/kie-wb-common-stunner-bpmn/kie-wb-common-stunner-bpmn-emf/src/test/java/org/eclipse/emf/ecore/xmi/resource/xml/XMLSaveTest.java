@@ -18,6 +18,7 @@ package org.eclipse.emf.ecore.xmi.resource.xml;
 
 import com.google.gwt.xml.client.Attr;
 import com.google.gwt.xml.client.Node;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.impl.BaseElementImpl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -76,10 +77,13 @@ public class XMLSaveTest {
     @Test
     public void testSaveElementID() {
         BaseElementImpl obj = mock(BaseElementImpl.class);
+        FormalExpression expression = mock(FormalExpression.class);
+        when(currentNode.getParentNode()).thenReturn(currentNode);
         when(xmlHelper.getID(any(EObject.class))).thenReturn(null);
         Attr attr = mock(Attr.class);
         when(gwtDOMHandler.createAttributeNS(anyString(), anyString())).thenReturn(attr);
         tested.saveElementID(obj);
+        tested.saveElementID(expression);
         ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
         verify(obj, times(1)).setId(idCaptor.capture());
         String id = idCaptor.getValue();

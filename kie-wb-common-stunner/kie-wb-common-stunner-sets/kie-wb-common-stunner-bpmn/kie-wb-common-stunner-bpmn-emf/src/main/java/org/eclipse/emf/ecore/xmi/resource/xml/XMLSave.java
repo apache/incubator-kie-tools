@@ -29,7 +29,26 @@ import com.google.gwt.xml.client.Attr;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.CompensateEventDefinition;
+import org.eclipse.bpmn2.ConditionalEventDefinition;
+import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.Documentation;
+import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.EscalationEventDefinition;
+import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.InputOutputSpecification;
+import org.eclipse.bpmn2.InputSet;
+import org.eclipse.bpmn2.LaneSet;
+import org.eclipse.bpmn2.MessageEventDefinition;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
+import org.eclipse.bpmn2.OutputSet;
+import org.eclipse.bpmn2.Relationship;
+import org.eclipse.bpmn2.SignalEventDefinition;
+import org.eclipse.bpmn2.TerminateEventDefinition;
+import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -377,7 +396,7 @@ public class XMLSave {
         } else {
             // DOM serialization
             if (handler instanceof XMLDOMHandler) {
-                ((XMLDOMHandler) handler).setExtendedMetaData(extendedMetaData);
+                handler.setExtendedMetaData(extendedMetaData);
             }
         }
         processDanglingHREF = (String) options.get(XMLResource.OPTION_PROCESS_DANGLING_HREF);
@@ -2015,6 +2034,30 @@ public class XMLSave {
         return svalue;
     }
 
+    private static boolean isIdNeeded(EObject o) {
+        return !(
+                o instanceof Documentation
+                        || o instanceof LaneSet
+                        || o instanceof InputOutputSpecification
+                        || o instanceof InputSet
+                        || o instanceof OutputSet
+                        || o instanceof DataInputAssociation
+                        || o instanceof DataOutputAssociation
+                        || o instanceof Assignment
+                        || o instanceof TimerEventDefinition
+                        || o instanceof CompensateEventDefinition
+                        || o instanceof SignalEventDefinition
+                        || o instanceof ErrorEventDefinition
+                        || o instanceof TerminateEventDefinition
+                        || o instanceof MessageEventDefinition
+                        || o instanceof EscalationEventDefinition
+                        || o instanceof ConditionalEventDefinition
+                        || o instanceof MultiInstanceLoopCharacteristics
+                        || o instanceof Relationship
+                        || o instanceof FormalExpression
+        );
+    }
+
     protected void saveElementID(EObject o) {
         String id = helper.getID(o);
 
@@ -2024,7 +2067,7 @@ public class XMLSave {
         // See also XMLHelper#getHREF(EObject)
         if (null == id && o instanceof BaseElement) {
             String eId = ((BaseElement) o).getId();
-            if (null == eId) {
+            if (null == eId && isIdNeeded(o)) {
                 id = EcoreUtil.generateUUID();
                 ((BaseElement) o).setId(id);
             }

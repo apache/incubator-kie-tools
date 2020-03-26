@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
-import org.uberfire.commons.uuid.UUID;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 
@@ -134,7 +133,6 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
     public void setActors(Actors actors) {
         for (String actor : fromActorString(actors.getValue())) {
             PotentialOwner potentialOwner = bpmn2.createPotentialOwner();
-            potentialOwner.setId(UUID.uuid());
 
             FormalExpression formalExpression = bpmn2.createFormalExpression();
             FormalExpressionBodyHandler.of(formalExpression).setBody(actor);
