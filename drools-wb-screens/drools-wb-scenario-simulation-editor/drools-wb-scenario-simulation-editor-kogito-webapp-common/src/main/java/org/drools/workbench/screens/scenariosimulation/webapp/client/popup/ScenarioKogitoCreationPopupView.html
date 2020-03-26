@@ -23,19 +23,37 @@
                 <h4 class="modal-title" data-field="main-title"></h4>
             </div>
             <div class="modal-body">
-                <div style="margin-left: 3em;">
-                    <h2>Source type</h2>
-                    <div>
-                        <input type="radio" name="scesimType" data-field="rule-button" value="rule">Rule<br>
-                        <input type="radio" name="scesimType" data-field="dmn-button" value="dmn">DMN<br>
+                <div class="form-group" data-field="handlerExtensionsGroup" style="display: block;">
+                    <div data-field="handlerExtensions">
+                        <label class="control-label" data-field="source-type-label"></label>
+                        <div>
+                            <div class="radio">
+                                <label>
+                                    <input data-field="rule-button" disabled name="scesimType" type="radio" value="rule">
+                                    <span>RULE</span>
+                                    <sup>
+                                        <div class="pficon pficon-info kie-test-tools-info__icon" data-field="info-rule-icon" data-placement="left" data-toggle="tooltip"></div>
+                                    </sup>
+                                </label>
+                            </div>
+                            <div>
+                                <div class="radio">
+                                    <label>
+                                        <input data-field="dmn-button" name="scesimType" type="radio" value="dmn">
+                                        <span>DMN</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div data-field="dmn-assets" hidden></div>
+                        </div>
                     </div>
-                </div>
-                <div style="margin-left: 3em;" data-field="dmn-assets" hidden>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-dismiss="modal" data-field="ok-button" type="button"></button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancel-button"></button>
+                <button class="btn btn-primary" data-dismiss="modal" data-field="ok-button" type="button">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <button class="btn btn-default" data-dismiss="modal" data-field="cancel-button" type="button"></button>
             </div>
         </div>
     </div>

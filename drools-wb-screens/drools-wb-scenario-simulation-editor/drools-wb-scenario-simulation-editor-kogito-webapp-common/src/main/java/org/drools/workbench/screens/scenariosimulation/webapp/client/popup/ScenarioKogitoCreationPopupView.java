@@ -23,8 +23,10 @@ import javax.inject.Inject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLLabelElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.popup.AbstractScenarioPopupView;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.drools.workbench.screens.scenariosimulation.webapp.client.dropdown.ScenarioKogitoCreationAssetsDropdown;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -47,7 +49,18 @@ public class ScenarioKogitoCreationPopupView extends AbstractScenarioPopupView i
 
     @Inject
     @DataField("dmn-assets")
-    protected HTMLDivElement divElement;
+    protected HTMLDivElement dmnAssetsDivElement;
+
+    @Inject
+    protected HTMLLabelElement dmnAssetsLabelElement;
+
+    @Inject
+    @DataField("source-type-label")
+    protected HTMLLabelElement sourceTypeLabelElement;
+
+    @Inject
+    @DataField("info-rule-icon")
+    protected HTMLDivElement infoRuleIconDivElement;
 
     protected ScenarioSimulationModel.Type selectedType = null;
 
@@ -59,23 +72,20 @@ public class ScenarioKogitoCreationPopupView extends AbstractScenarioPopupView i
     @Override
     public void show(String mainTitleText, Command okCommand) {
         initialize();
-        super.show(mainTitleText, "Create", okCommand);
+        super.show(mainTitleText, ScenarioSimulationEditorConstants.INSTANCE.createButton(), okCommand);
     }
 
     protected void initialize() {
         okButton.setEnabled(false);
-        cancelButton.setText("Cancel");
-        divElement.setAttribute(ConstantHolder.HIDDEN, "");
+        cancelButton.setText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
+        dmnAssetsDivElement.setAttribute(ConstantHolder.HIDDEN, "");
+        sourceTypeLabelElement.textContent = ScenarioSimulationEditorConstants.INSTANCE.sourceType();
         ruleButton.checked = false;
         dmnButton.checked = false;
-        divElement.appendChild(scenarioKogitoCreationAssetsDropdown.getElement());
-        scenarioKogitoCreationAssetsDropdown.clear();
-        scenarioKogitoCreationAssetsDropdown.init();
-        scenarioKogitoCreationAssetsDropdown.initializeDropdown();
-        scenarioKogitoCreationAssetsDropdown.registerOnChangeHandler(() -> {
-            final Optional<KieAssetsDropdownItem> value = scenarioKogitoCreationAssetsDropdown.getValue();
-            selectedPath = value.map(KieAssetsDropdownItem::getValue).orElse(null);
-        });
+        dmnAssetsLabelElement.textContent = ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset();
+        dmnAssetsDivElement.appendChild(dmnAssetsLabelElement);
+        infoRuleIconDivElement.setAttribute("title", ScenarioSimulationEditorConstants.INSTANCE.currentlyNotAvailable());
+        initializeDropdown();
     }
 
     @Override
@@ -92,8 +102,8 @@ public class ScenarioKogitoCreationPopupView extends AbstractScenarioPopupView i
     public void onDmnClick(final ClickEvent event) {
         if (dmnButton.checked) {
             selectedType = ScenarioSimulationModel.Type.DMN;
-            divElement.removeAttribute(ConstantHolder.HIDDEN);
-            okButton.setEnabled(true);
+            dmnAssetsDivElement.removeAttribute(ConstantHolder.HIDDEN);
+            enableCreateButtonForDMNScenario();
         }
     }
 
@@ -101,7 +111,25 @@ public class ScenarioKogitoCreationPopupView extends AbstractScenarioPopupView i
     public void onRuleClick(final ClickEvent event) {
         if (ruleButton.checked) {
             selectedType = ScenarioSimulationModel.Type.RULE;
-            divElement.setAttribute(ConstantHolder.HIDDEN, "");
+            dmnAssetsDivElement.setAttribute(ConstantHolder.HIDDEN, "");
+            okButton.setEnabled(true);
+        }
+    }
+
+    protected void initializeDropdown() {
+        dmnAssetsDivElement.appendChild(scenarioKogitoCreationAssetsDropdown.getElement());
+        scenarioKogitoCreationAssetsDropdown.clear();
+        scenarioKogitoCreationAssetsDropdown.init();
+        scenarioKogitoCreationAssetsDropdown.initializeDropdown();
+        scenarioKogitoCreationAssetsDropdown.registerOnChangeHandler(() -> {
+            final Optional<KieAssetsDropdownItem> value = scenarioKogitoCreationAssetsDropdown.getValue();
+            selectedPath = value.map(KieAssetsDropdownItem::getValue).orElse(null);
+            enableCreateButtonForDMNScenario();
+        });
+    }
+
+    protected void enableCreateButtonForDMNScenario() {
+        if (selectedPath != null && !selectedPath.isEmpty()) {
             okButton.setEnabled(true);
         }
     }

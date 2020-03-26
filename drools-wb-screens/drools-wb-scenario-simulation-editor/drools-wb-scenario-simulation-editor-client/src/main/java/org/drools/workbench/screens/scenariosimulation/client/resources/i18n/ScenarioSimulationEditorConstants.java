@@ -44,6 +44,8 @@ public interface ScenarioSimulationEditorConstants
 
     String remove();
 
+    String currentlyNotAvailable();
+
     String invalidDefinitionDisabled();
 
     String testTools();
@@ -363,6 +365,8 @@ public interface ScenarioSimulationEditorConstants
     String testToolClearSelection();
 
     String commonCheatSheetBackground(String background, String model);
+
+    String createButton();
 
     String saveButton();
 
