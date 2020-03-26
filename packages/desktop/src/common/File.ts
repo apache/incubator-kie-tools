@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+export const UNSAVED_FILE_NAME = "unsaved file";
+
+export interface File {
+  filePath: string;
+  fileType: string;
+  fileContent: string;
+}
+
+export enum FileSaveActions {
+  SAVE,
+  SAVE_AS
 }

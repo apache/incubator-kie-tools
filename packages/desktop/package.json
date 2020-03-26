@@ -1,0 +1,62 @@
+{
+  "name": "@kogito-tooling/desktop",
+  "version": "0.2.12",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kogito-tooling/core-api": "0.2.12",
+    "@kogito-tooling/kie-bc-editors": "0.2.12",
+    "@kogito-tooling/microeditor-envelope": "0.2.12",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.12",
+    "@patternfly/patternfly": "2.40.2",
+    "@patternfly/react-core": "3.90.0",
+    "@patternfly/react-icons": "3.14.7",
+    "react-router": "5.1.1",
+    "react-router-dom": "5.1.1",
+    "electron": "7.1.9"
+  },
+  "scripts": {
+    "start": "electron dist",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "test": "echo 'No tests to run.'",
+    "init": "yarn -f",
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:fast": "rm -rf dist && webpack --mode development",
+    "clean:prod": "rm -rf out/*",
+    "compile:prod": "yarn run build --mode production --devtool none",
+    "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\"\"",
+    "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && (cd out && zip -ry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
+    "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\"\"",
+    "package:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
+    "package:prod": "run-script-os",
+    "build:prod:linux": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux",
+    "build:prod:darwin": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:darwin",
+    "build:prod:win32": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:win32",
+    "build:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
+    "build:prod": "run-script-os"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-router": "5.1.1",
+    "@types/react-router-dom": "5.1.1",
+    "electron-packager": "14.2.0",
+    "electron-rebuild": "1.10.0",
+    "run-script-os": "1.1.1",
+    "cross-var": "1.1.0"
+  },
+  "files": [
+    "**/*"
+  ]
+}

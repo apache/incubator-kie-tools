@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+import { StorageTypes } from "./StorageTypes";
+import { FileMetadata } from "./FileMetadata";
+
+export interface Provider {
+  readonly type: StorageTypes;
+
+  read(file: FileMetadata): Promise<string>;
+
+  write(file: FileMetadata, content: string): Promise<void>;
+
+  exists(file: FileMetadata): boolean;
+
+  remove(file: FileMetadata): void;
+
+  list(file: FileMetadata): FileMetadata[];
+
+  isDirectory(file: FileMetadata): boolean;
 }

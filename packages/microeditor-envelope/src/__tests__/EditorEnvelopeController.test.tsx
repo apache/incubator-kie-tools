@@ -134,7 +134,7 @@ describe("EditorEnvelopeController", () => {
     sentMessages = [];
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
 
-    expect(sentMessages).toEqual([]);
+    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }]);
     expect(render.update()).toMatchSnapshot();
   });
 

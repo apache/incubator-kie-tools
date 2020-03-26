@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+import * as React from "react";
+import { File } from "../../common/File";
+import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
+import { Router } from "@kogito-tooling/core-api";
+
+export interface GlobalContextType {
+  router: Router;
+  envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
+  iframeTemplateRelativePath: string;
+  file?: File;
 }
+
+export const GlobalContext = React.createContext<GlobalContextType>({} as any);
