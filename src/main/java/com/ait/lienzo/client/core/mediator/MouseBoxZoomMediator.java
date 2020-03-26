@@ -30,16 +30,16 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * MouseBoxZoomMediator zooms in when the user drags a rectangular area.
  * <p>
- * The visual style of the drag box can be modified by changing the 
+ * The visual style of the drag box can be modified by changing the
  * attributes of the Rectangle primitive.
- * The default drag box uses a black outline of 1 pixel wide and 
+ * The default drag box uses a black outline of 1 pixel wide and
  * an opacity (alpha value) of 0.5.
  * <p>
  * The dimensions of the zoom box will be adjusted to match the aspect ratio
  * of the viewport, thus maintaining the same scale in the X and Y axes.
- * 
+ *
  * @see Mediators
- * 
+ *
  * @since 1.1
  */
 public class MouseBoxZoomMediator extends AbstractMediator
@@ -59,14 +59,6 @@ public class MouseBoxZoomMediator extends AbstractMediator
     private Rectangle m_rectangle        = null;
 
     private boolean   m_addedRectangle   = false;
-
-    private Runnable m_onCancel          = new Runnable()
-    {
-        @Override
-        public void run() {
-
-        }
-    };
 
     private Consumer<Transform> m_onTransform     = new Consumer<Transform>()
     {
@@ -89,9 +81,9 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
     /**
      * Sets the maximum scale of the viewport.
-     * 
+     *
      * The default value is Double.MAX_VALUE (unlimited.)
-     * 
+     *
      * @return double
      */
     public double getMaxScale()
@@ -101,9 +93,9 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
     /**
      * Sets the maximum scale of the viewport.
-     * 
+     *
      * The default value is Double.MAX_VALUE (unlimited.)
-     * 
+     *
      * @param maxScale double
      * @return MouseBoxZoomMediator
      */
@@ -116,7 +108,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
     /**
      * Returns the {@link Rectangle} that is used to draw the zoom box.
-     * 
+     *
      * @return {@link Rectangle}
      */
     public Rectangle getRectangle()
@@ -146,18 +138,6 @@ public class MouseBoxZoomMediator extends AbstractMediator
     public Consumer<Transform> getOnTransform()
     {
         return m_onTransform;
-    }
-
-    public MouseBoxZoomMediator setOnCancel(final Runnable m_onCancel)
-    {
-        this.m_onCancel = m_onCancel;
-
-        return this;
-    }
-
-    public Runnable getOnCancel()
-    {
-        return m_onCancel;
     }
 
     @Override
@@ -300,20 +280,20 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
             dy = -dy;
         }
-        // prevent zooming in too far
         double scaleX = getViewport().getWidth() / dx;
-
         double scaleY = getViewport().getHeight() / dy;
+        double scale = Math.min(scaleX, scaleY);
 
-        double scale = (scaleX > scaleY) ? scaleY : scaleX;
+        Transform transform = Transform.createViewportTransform(x, y, dx, dy, getViewport().getWidth(), getViewport().getHeight());
 
-        if (scale > m_maxScale)
+        // prevent zooming in too far
+        if (null != transform && scale > m_maxScale)
         {
-            m_onCancel.run();
-            return;
+            double ds = m_maxScale / scale;
+            transform.scaleAboutPoint(ds, m_start.getX(), m_start.getY());
         }
 
-        Transform transform = createTransform(x, y, dx, dy);
+        transform = transform != null ? transform : new Transform();
 
         setTransform(transform);
 
@@ -334,8 +314,4 @@ public class MouseBoxZoomMediator extends AbstractMediator
         setRectangle(new Rectangle(1, 1).setStrokeColor(new Color(0, 0, 0, 0.5)));
     }
 
-    protected Transform createTransform(final double x, final double y, final double dx, final double dy)
-    {
-        return Transform.createViewportTransform(x, y, dx, dy, getViewport().getWidth(), getViewport().getHeight());
-    }
 }

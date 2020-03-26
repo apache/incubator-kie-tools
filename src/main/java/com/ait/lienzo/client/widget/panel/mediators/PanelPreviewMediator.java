@@ -172,7 +172,6 @@ public class PanelPreviewMediator extends AbstractPanelMediator<PanelPreviewMedi
     @Override
     public void onRemoveHandler() {
         super.onRemoveHandler();
-        mediator.setOnCancel(null);
         mediator.setOnTransform(null);
         previewPanel.removeFromParent();
         area = null;
@@ -184,12 +183,6 @@ public class PanelPreviewMediator extends AbstractPanelMediator<PanelPreviewMedi
         mediator.setEnabled(false);
         mediator
                 .setRectangle(new Rectangle(1, 1).setStrokeColor(ColorName.RED))
-                .setOnCancel(new Runnable() {
-                    @Override
-                    public void run() {
-                        disable();
-                    }
-                })
                 .setOnTransform(new Consumer<Transform>() {
                     @Override
                     public void accept(Transform transform) {
