@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.model.menu.impl.DefaultMenus;
 
 import static org.mockito.Mockito.times;
@@ -70,7 +71,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     dataTypesPage,
                                     clientDiagramService,
                                     feelInitializer,
-                                    canvasFileExport) {
+                                    canvasFileExport,
+                                    new SyncPromises()) {
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;

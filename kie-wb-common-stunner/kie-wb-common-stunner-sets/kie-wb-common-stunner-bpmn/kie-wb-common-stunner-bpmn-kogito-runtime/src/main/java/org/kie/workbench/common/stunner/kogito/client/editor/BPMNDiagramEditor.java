@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
@@ -58,6 +59,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
@@ -84,13 +86,11 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     private final DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock;
     private final DiagramEditorPropertiesDock diagramPropertiesDock;
-
     private final LayoutHelper layoutHelper;
     private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
-
     private final KogitoClientDiagramService diagramServices;
-
     private final CanvasFileExport canvasFileExport;
+    private final Promises promises;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -113,7 +113,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final LayoutHelper layoutHelper,
                              final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                              final KogitoClientDiagramService diagramServices,
-                             final CanvasFileExport canvasFileExport) {
+                             final CanvasFileExport canvasFileExport,
+                             final Promises promises) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -131,12 +132,11 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
               documentationView);
         this.diagramPreviewAndExplorerDock = diagramPreviewAndExplorerDock;
         this.diagramPropertiesDock = diagramPropertiesDock;
-
         this.layoutHelper = layoutHelper;
         this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
-
         this.diagramServices = diagramServices;
         this.canvasFileExport = canvasFileExport;
+        this.promises = promises;
     }
 
     @OnStartup
@@ -152,9 +152,10 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
-    public void open(final Diagram diagram) {
+    public void open(final Diagram diagram,
+                     final Viewer.Callback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
-        super.open(diagram);
+        super.open(diagram, callback);
     }
 
     @OnOpen
@@ -273,21 +274,39 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     @SetContent
     @Override
-    public void setContent(final String path, final String value) {
-        superOnClose();
-        diagramServices.transform(value,
-                                  new ServiceCallback<Diagram>() {
+    @SuppressWarnings("all")
+    public Promise setContent(final String path, final String value) {
+        Promise<Void> promise =
+                promises.create((success, failure) -> {
+                    superOnClose();
+                    diagramServices.transform(value,
+                                              new ServiceCallback<Diagram>() {
 
-                                      @Override
-                                      public void onSuccess(final Diagram diagram) {
-                                          getEditor().open(diagram);
-                                      }
+                                                  @Override
+                                                  public void onSuccess(final Diagram diagram) {
+                                                      getEditor().open(diagram,
+                                                                       new Viewer.Callback() {
+                                                                           @Override
+                                                                           public void onSuccess() {
+                                                                               success.onInvoke((Void) null);
+                                                                           }
 
-                                      @Override
-                                      public void onError(final ClientRuntimeError error) {
-                                          BPMNDiagramEditor.this.getEditor().onLoadError(error);
-                                      }
-                                  });
+                                                                           @Override
+                                                                           public void onError(ClientRuntimeError error) {
+                                                                               BPMNDiagramEditor.this.getEditor().onLoadError(error);
+                                                                               failure.onInvoke(error);
+                                                                           }
+                                                                       });
+                                                  }
+
+                                                  @Override
+                                                  public void onError(final ClientRuntimeError error) {
+                                                      BPMNDiagramEditor.this.getEditor().onLoadError(error);
+                                                      failure.onInvoke(error);
+                                                  }
+                                              });
+                });
+        return promise;
     }
 
     @Override
@@ -309,5 +328,4 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         diagramPropertiesDock.close();
         diagramPreviewAndExplorerDock.close();
     }
-
 }

@@ -34,6 +34,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -335,7 +336,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                          new ServiceCallback<ProjectDiagram>() {
                                              @Override
                                              public void onSuccess(final ProjectDiagram item) {
-                                                 AbstractProjectDiagramEditor.this.open(item);
+                                                 AbstractProjectDiagramEditor.this.open(item,
+                                                                                        AbstractProjectDiagramEditor.this.editor::onLoadError);
                                              }
 
                                              @Override
@@ -383,6 +385,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     /**
      * Considering the diagram valid at this point ,
      * it delegates the save operation to the diagram services bean.
+     *
      * @param commitMessage The commit's message.
      */
     @Override
@@ -541,6 +544,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     /**
      * Format the Diagram title to be displayed on the Editor.
      * This method can be override to customization and the default implementation just return the title from the diagram metadata.
+     *
      * @param title diagram metadata title
      * @return formatted title
      */
@@ -588,8 +592,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     @Override
-    public void open(final ProjectDiagram diagram) {
-        editor.open(diagram);
+    public void open(final ProjectDiagram diagram,
+                     final Viewer.Callback callback) {
+        editor.open(diagram, callback);
     }
 
     @Override

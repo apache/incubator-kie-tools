@@ -40,6 +40,7 @@ import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.util.URIUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -85,8 +86,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     @Mock
     private CanvasFileExport canvasFileExport;
 
-    @Mock
-    private Promises promises;
+    private Promises promises = new SyncPromises();
 
     @Captor
     private ArgumentCaptor<Command> commandArgumentCaptor;

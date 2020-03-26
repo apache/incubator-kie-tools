@@ -31,6 +31,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -290,8 +291,9 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     }
 
     @Override
-    public void open(final Diagram diagram) {
-        editor.open(diagram);
+    public void open(final Diagram diagram,
+                     final Viewer.Callback callback) {
+        editor.open(diagram, callback);
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -89,6 +90,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -460,30 +462,6 @@ public abstract class AbstractDMNDiagramEditorTest {
     }
 
     @Test
-    // This is a test for the kogito-tooling workaround in AbstractDMNDiagramEditor
-    public void testSetContentFailureWithConcurrentSuccess() {
-        final String path = "path";
-        editor.setContent(path, CONTENT);
-
-        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
-
-        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
-        assertThat(serviceCallback).isNotNull();
-        serviceCallback.onError(clientRuntimeError);
-
-        verify(feelInitializer, never()).initializeFEELEditor();
-        verify(diagramClientErrorHandler).handleError(eq(clientRuntimeError), any());
-
-        //Emulate completion of an asynchronous callback when a _valid_ diagram was first set
-        editor.open(diagram);
-
-        verify(decisionNavigatorDock, never()).setupCanvasHandler(canvasHandler);
-        verify(layoutHelper, never()).applyLayout(any(Diagram.class), any());
-        verify(feelInitializer, never()).initializeFEELEditor();
-        verify(dataTypesPage, never()).reload();
-    }
-
-    @Test
     public void testResetContentHash() {
         openDiagram();
 
@@ -503,7 +481,7 @@ public abstract class AbstractDMNDiagramEditorTest {
         when(editorPresenter.getInstance()).thenReturn(session);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
 
-        editor.open(diagram);
+        editor.open(diagram, mock(Viewer.Callback.class));
 
         assertOnDiagramLoad();
     }

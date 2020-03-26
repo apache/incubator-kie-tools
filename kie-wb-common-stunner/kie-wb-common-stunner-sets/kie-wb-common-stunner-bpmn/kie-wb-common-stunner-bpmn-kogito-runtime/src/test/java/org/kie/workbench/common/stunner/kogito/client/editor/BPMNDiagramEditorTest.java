@@ -42,10 +42,12 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
@@ -118,9 +120,11 @@ public class BPMNDiagramEditorTest {
 
     @Mock
     private KogitoClientDiagramService diagramServices;
-    
+
     @Mock
     private CanvasFileExport canvasFileExport;
+
+    private Promises promises = new SyncPromises();
 
     @SuppressWarnings("unchecked")
     @Before
@@ -145,7 +149,8 @@ public class BPMNDiagramEditorTest {
                                        layoutHelper,
                                        openDiagramLayoutExecutor,
                                        diagramServices,
-                                       canvasFileExport);
+                                       canvasFileExport,
+                                       promises);
     }
 
     @Test

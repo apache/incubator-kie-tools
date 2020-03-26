@@ -50,6 +50,7 @@ import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
@@ -346,12 +347,13 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     @Override
-    public void open(final ProjectDiagram diagram) {
+    public void open(final ProjectDiagram diagram,
+                     final Viewer.Callback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
 
         feelInitializer.initializeFEELEditor();
 
-        super.open(diagram);
+        super.open(diagram, callback);
     }
 
     @OnOpen

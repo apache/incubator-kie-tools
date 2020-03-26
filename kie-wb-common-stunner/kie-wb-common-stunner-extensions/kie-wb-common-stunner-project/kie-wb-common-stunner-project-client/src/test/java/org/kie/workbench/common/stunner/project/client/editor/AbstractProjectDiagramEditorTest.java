@@ -39,6 +39,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -630,7 +631,7 @@ public class AbstractProjectDiagramEditorTest {
         final DefinitionSet definitionSet = mock(DefinitionSet.class);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getContent()).thenReturn(definitionSet);
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         return overview;
     }
 

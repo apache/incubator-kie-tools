@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -45,7 +46,7 @@ public interface DiagramEditorCore<M extends Metadata, D extends Diagram> {
         void setWidget(final IsWidget widget);
     }
 
-    void open(final D diagram);
+    void open(final D diagram, Viewer.Callback callback);
 
     Annotation[] getDockQualifiers();
 

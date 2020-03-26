@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
@@ -169,9 +170,10 @@ public class BPMNStandaloneDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
-    public void open(final Diagram diagram) {
+    public void open(final Diagram diagram,
+                     final Viewer.Callback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
-        super.open(diagram);
+        super.open(diagram, callback);
     }
 
     @OnOpen
@@ -300,13 +302,13 @@ public class BPMNStandaloneDiagramEditor extends AbstractDiagramEditor {
 
     @Override
     // @SetContent
-    public void setContent(final String path, final String value) {
+    public Promise setContent(final String path, final String value) {
         diagramServices.transform(value,
                                   new ServiceCallback<Diagram>() {
-
                                       @Override
                                       public void onSuccess(final Diagram diagram) {
-                                          getEditor().open(diagram);
+                                          getEditor().open(diagram,
+                                                           error -> BPMNStandaloneDiagramEditor.this.getEditor().onLoadError(error));
                                       }
 
                                       @Override
@@ -314,6 +316,7 @@ public class BPMNStandaloneDiagramEditor extends AbstractDiagramEditor {
                                           BPMNStandaloneDiagramEditor.this.getEditor().onLoadError(error);
                                       }
                                   });
+        return null;
     }
 
     @Override

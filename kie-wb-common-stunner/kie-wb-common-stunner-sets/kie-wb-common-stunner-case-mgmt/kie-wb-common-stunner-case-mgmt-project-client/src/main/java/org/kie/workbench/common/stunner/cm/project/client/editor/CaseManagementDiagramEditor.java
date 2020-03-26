@@ -255,7 +255,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
         switchSessionHash = hasUnsavedChanges() ? OptionalInt.of(originalHash) : OptionalInt.empty();
         getMenuSessionItems().getCommands().getCommands().clearCommands();
         destroySession();
-        open(diagram);
+        open(diagram, error -> {
+        });
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
 import org.kie.workbench.common.stunner.cm.project.service.CaseManagementSwitchViewService;
@@ -165,7 +166,7 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
             }
         });
 
-        tested.open(mock(ProjectDiagram.class));
+        tested.open(mock(ProjectDiagram.class), mock(Viewer.Callback.class));
         when(sessionEditorPresenters.get()).thenReturn(sessionEditorPresenter);
 
         return tested;

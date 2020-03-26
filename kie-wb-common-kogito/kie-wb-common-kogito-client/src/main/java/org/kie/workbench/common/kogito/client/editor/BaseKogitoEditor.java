@@ -145,7 +145,7 @@ public abstract class BaseKogitoEditor<CONTENT> {
      * @param value
      * Editor's content
      */
-    public abstract void setContent(final String path, final String value);
+    public abstract Promise setContent(final String path, final String value);
 
     /**
      * Used by Kogito to get the XML content of the editor. This should return a {@link String}

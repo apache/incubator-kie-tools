@@ -94,7 +94,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     private final Event<NotificationEvent> notificationEvent;
     private final DMNVFSService vfsService;
-    private final Promises promises;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -156,10 +155,10 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               dataTypesPage,
               diagramServices,
               feelInitializer,
-              canvasFileExport);
+              canvasFileExport,
+              promises);
         this.notificationEvent = notificationEvent;
         this.vfsService = vfsService;
-        this.promises = promises;
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -395,7 +396,7 @@ public class ProjectDiagramEditorTest {
     @Test
     public void testIsDirty() {
         presenter.init();
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         assertFalse(presenter.isDirty(presenter.getCurrentDiagramHash()));
         presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
         assertTrue(presenter.isDirty(presenter.getCurrentDiagramHash()));
@@ -404,7 +405,7 @@ public class ProjectDiagramEditorTest {
     @Test
     public void testHasChanges() {
         presenter.init();
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         assertFalse(presenter.hasUnsavedChanges());
         presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
         assertTrue(presenter.hasUnsavedChanges());
@@ -414,7 +415,7 @@ public class ProjectDiagramEditorTest {
 
     @Test
     public void testOnSaveWithoutChanges() {
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         when(versionRecordManager.isCurrentLatest()).thenReturn(true);
 
         presenter.onSave();
@@ -425,7 +426,7 @@ public class ProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnSaveWithChanges() {
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         presenter.setOriginalHash(diagram.hashCode() + 1);
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
@@ -440,7 +441,7 @@ public class ProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnSaveRestore() {
-        presenter.open(diagram);
+        presenter.open(diagram, mock(Viewer.Callback.class));
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
             return null;

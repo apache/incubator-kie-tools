@@ -27,6 +27,7 @@ import javax.enterprise.event.Observes;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -98,15 +99,16 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
 
     @Override
     @SuppressWarnings("unchecked")
-    public void open(final D diagram) {
+    public void open(final D diagram,
+                     final Viewer.Callback callback) {
         editorProxy = makeStunnerEditorProxy();
         baseEditorView.showLoading();
 
         //Open applicable SessionPresenter
         if (!isReadOnly()) {
-            openSession(diagram);
+            openSession(diagram, callback);
         } else {
-            openReadOnlySession(diagram);
+            openReadOnlySession(diagram, callback);
         }
     }
 
@@ -156,12 +158,14 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
         return proxy;
     }
 
-    public void openSession(final D diagram) {
+    public void openSession(final D diagram,
+                            final Viewer.Callback callback) {
         editorSessionPresenter = Optional.ofNullable(newSessionEditorPresenter());
-        editorSessionPresenter.ifPresent(p -> p.open(diagram, getSessionPresenterCallback(diagram)));
+        editorSessionPresenter.ifPresent(p -> p.open(diagram, getSessionPresenterCallback(diagram, callback)));
     }
 
-    private SessionPresenter.SessionPresenterCallback<Diagram> getSessionPresenterCallback(D diagram) {
+    private SessionPresenter.SessionPresenterCallback<Diagram> getSessionPresenterCallback(final D diagram,
+                                                                                           final Viewer.Callback callback) {
         return new SessionPresenter.SessionPresenterCallback<Diagram>() {
             @Override
             public void afterSessionOpened() {
@@ -177,18 +181,21 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
             public void onSuccess() {
                 initialiseKieEditorForSession(diagram);
                 menuSessionItems.ifPresent(menuItems -> menuItems.bind(getSession()));
+                callback.onSuccess();
             }
 
             @Override
             public void onError(final ClientRuntimeError error) {
                 onLoadError(error);
+                callback.onError(error);
             }
         };
     }
 
-    public void openReadOnlySession(final D diagram) {
+    public void openReadOnlySession(final D diagram,
+                                    final Viewer.Callback callback) {
         viewerSessionPresenter = Optional.ofNullable(newSessionViewerPresenter());
-        viewerSessionPresenter.ifPresent(p -> p.open(diagram, getSessionPresenterCallback(diagram)));
+        viewerSessionPresenter.ifPresent(p -> p.open(diagram, getSessionPresenterCallback(diagram, callback)));
     }
 
     public abstract void onLoadError(final ClientRuntimeError error);
