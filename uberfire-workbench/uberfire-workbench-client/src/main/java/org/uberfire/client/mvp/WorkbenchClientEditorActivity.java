@@ -34,7 +34,7 @@ public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
      * @param value
      *  The editor content
      */
-    void setContent(String path, String value);
+    Promise<Void> setContent(String path, String value);
 
     /**
      * Get the editor content

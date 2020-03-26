@@ -27,6 +27,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import javax.tools.Diagnostic.Kind;
 
+import elemental2.promise.Promise;
 import org.junit.Test;
 
 public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {

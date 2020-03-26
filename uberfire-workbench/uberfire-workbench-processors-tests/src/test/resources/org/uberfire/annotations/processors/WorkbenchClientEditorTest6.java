@@ -19,8 +19,8 @@ public class WorkbenchClientEditorTest6 extends Widget {
     }
     
     @SetContent
-    public void setContent(String path, String content) {
-        
+    public Promise setContent(String path, String content) {
+        return null;
     }
     
     @GetContent

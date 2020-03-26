@@ -63,8 +63,8 @@ public class WorkbenchClientEditorTest6Activity extends AbstractWorkbenchClientE
     }
 
     @Override
-    public void setContent(String path, String value) {
-        realPresenter.setContent(path, value);
+    public Promise<Void> setContent(String path, String value) {
+        return realPresenter.setContent(path, value);
     }
     @Override
     public Promise<String> getContent() {

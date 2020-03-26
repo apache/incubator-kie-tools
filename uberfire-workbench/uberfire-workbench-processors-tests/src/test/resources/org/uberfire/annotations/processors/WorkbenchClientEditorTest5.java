@@ -1,5 +1,6 @@
 package org.uberfire.annotations.processors;
 
+import elemental2.promise.Promise;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.lifecycle.SetContent;
@@ -16,8 +17,8 @@ public class WorkbenchClientEditorTest5 extends Widget {
     }
     
     @SetContent
-    public void setContent(String path, String content) {
-        
+    public Promise setContent(String path, String content) {
+        return null;
     }
 
 }

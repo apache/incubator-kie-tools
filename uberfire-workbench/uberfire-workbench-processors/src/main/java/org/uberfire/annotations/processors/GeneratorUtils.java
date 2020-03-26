@@ -126,14 +126,13 @@ public class GeneratorUtils {
     }
 
     public static ExecutableElement getSetContentMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final TypeMirror requiredReturnType = typeUtils.getNoType(TypeKind.VOID);
-
         return getUniqueAnnotatedMethod(
                 classElement,
                 processingEnvironment,
                 APIModule.getSetContentClass(),
-                requiredReturnType,
+                new TypeMirror[]{
+                        processingEnvironment.getElementUtils().getTypeElement("elemental2.promise.Promise").asType()
+                },
                 new String[]{"java.lang.String", "java.lang.String"});
     }
 
@@ -146,8 +145,8 @@ public class GeneratorUtils {
                                         },
                                         NO_PARAMS);
     }
-    
-    
+
+
     public static ExecutableElement getGetPreviewMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
         return getUniqueAnnotatedMethod(classElement,
                                         processingEnvironment,
