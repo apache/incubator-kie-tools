@@ -345,7 +345,7 @@ export function App() {
       }
       className={"kogito--editor-landing"}
     >
-      <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
+      <PageSection isFilled={true}>
         <div className={"kogito--alert-container"}>
           <div style={{ width: "500px" }}>
             {alerts.map(alert => (
@@ -360,12 +360,10 @@ export function App() {
             ))}
           </div>
         </div>
-      </PageSection>
-      <PageSection isFilled={true}>
         <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "130px" }} src={"images/vscode-logo.svg"} />
+              <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
                 onSelect={vscode_toggleKebab}
                 toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
@@ -479,7 +477,7 @@ export function App() {
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "130px" }} src={"images/chrome-github-logo.svg"} />
+              <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHead>
             <CardBody>
               <Title size={"xl"}>Kogito GitHub extension for Chrome</Title>
@@ -542,7 +540,7 @@ export function App() {
           {/*DESKTOP*/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "130px" }} src={"images/desktop-logo.svg"} />
+              <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
                 onSelect={desktop_toggleKebab}
                 toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
@@ -571,7 +569,7 @@ export function App() {
           {/**/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "130px" }} src={"images/online-logo.svg"} />
+              <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHead>
             <CardBody>
               <Title size={"xl"}>Business Modeler Preview</Title>
