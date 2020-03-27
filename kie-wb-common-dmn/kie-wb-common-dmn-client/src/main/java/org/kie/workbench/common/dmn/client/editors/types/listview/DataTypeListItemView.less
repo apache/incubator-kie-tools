@@ -58,13 +58,23 @@
   }
 
   .list-view-pf-main-info {
+    text-align: left;
+    position: absolute;
+    width: ~"calc(100% - 210px)";
+    height: 50px;
     padding: 0;
-    height: 100%;
-    float: left;
+    left: 25px;
+    top: 8px;
 
     .list-view-pf-body {
       padding-left: 24px;
       position: relative;
+      white-space: nowrap;
+
+      & > div {
+        padding-top: 4px;
+        display: inline-block;
+      }
     }
 
     [data-type-field="arrow-button"] {
@@ -100,9 +110,14 @@
   }
 
   .list-view-pf-actions {
-    float: right;
+    text-align: right;
+    position: absolute;
     padding: 7px;
     margin: 0;
+    width: 160px;
+    height: 50px;
+    right: 15px;
+    top: 8px;
 
     button.btn {
       box-shadow: none;
@@ -213,6 +228,82 @@
 
     &.key-highlight {
       background: #E5EEF5;
+    }
+  }
+}
+
+@media (max-width: 1470px) {
+
+  [data-i18n-prefix="DataTypeListItemView."] {
+    .collection-component > div {
+      margin: 0;
+    }
+  }
+
+  [data-i18n-prefix="DNDListComponentView."] {
+    div[data-row-uuid].focused-data-type {
+      .list-group-item .constraint-component {
+        [data-field="constraints-tooltip"] {
+          display: none;
+        }
+      }
+
+      .collection-component {
+        padding: 4px 0 0;
+        width: 70px;
+
+        [data-i18n-key="List"] {
+          display: none;
+        }
+      }
+    }
+  }
+
+  [data-i18n-prefix="DataTypeConstraintView."] {
+    [data-field="constraints-anchor-container"] {
+      font-size: 10px;
+    }
+  }
+}
+
+@media (max-width: 1350px) {
+  [data-i18n-prefix="DataTypeListItemView."] {
+    .list-view-pf-main-info {
+      .list-view-pf-body {
+        .name-input {
+          width: 110px;
+        }
+
+        .bootstrap-select {
+          width: 130px;
+        }
+      }
+    }
+  }
+
+  [data-i18n-prefix="DataTypeSearchBarView."] {
+    .kie-data-type-search {
+      width: 250px;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  [data-i18n-prefix="DataTypeListItemView."] {
+    .list-view-pf-main-info {
+      .list-view-pf-body {
+        [data-field="constraints-anchor-text"] {
+          display: none;
+        }
+      }
+    }
+  }
+
+  [data-i18n-prefix="DataTypeListView."] {
+    .data-type-button {
+      .expand-collapse {
+        display: none;
+      }
     }
   }
 }
