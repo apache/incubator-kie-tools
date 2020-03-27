@@ -15,8 +15,6 @@ Feature: Deploy spring boot service
 
 #####
 
-  # Disabled because of https://issues.redhat.com/browse/KOGITO-948
-  @disabled
   @persistence
   Scenario: Deploy jbpm-springboot-example service with persistence
     Given Kogito Operator is deployed with Infinispan operator
