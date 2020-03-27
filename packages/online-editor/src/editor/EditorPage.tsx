@@ -21,7 +21,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem, Title } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
@@ -191,13 +191,13 @@ export function EditorPage(props: Props) {
     >
       <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
         {!fullscreen && copySuccessAlertVisible && (
-            <div className={"kogito--alert-container"}>
-              <Alert
-                  variant="success"
-                  title="Content copied to clipboard"
-                  action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
-              />
-            </div>
+          <div className={"kogito--alert-container"}>
+            <Alert
+              variant="success"
+              title="Content copied to clipboard"
+              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+            />
+          </div>
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor

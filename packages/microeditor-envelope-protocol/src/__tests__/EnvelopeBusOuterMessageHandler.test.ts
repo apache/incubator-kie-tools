@@ -17,7 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
-import { EditorContent, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContentRequest } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -63,6 +63,15 @@ beforeEach(() => {
       },
       receive_ready() {
         receivedMessages.push("ready");
+      },
+      notify_editorUndo(edits: KogitoEdit[]) {
+        receivedMessages.push("undo_" + edits.length);
+      },
+      notify_editorRedo(edits: KogitoEdit[]) {
+        receivedMessages.push("redo_" + edits.length);
+      },
+      receive_newEdit(edit: KogitoEdit) {
+        receivedMessages.push("receiveNewEdit_" + edit.id);
       },
       receive_previewRequest(previewSvg: string) {
         receivedMessages.push("preview");

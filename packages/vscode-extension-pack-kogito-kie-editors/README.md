@@ -1,7 +1,7 @@
 BPMN and DMN Editors
 --
 
-## Release notes - 0.2.9 (alpha)
+## Release notes - 0.2.11 (alpha)
 
 ### Features and fixes included on this release
 

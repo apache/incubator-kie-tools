@@ -42,7 +42,7 @@ export class DummyEditor extends AppFormer.Editor {
     return this.ref!.setContent(content);
   }
 
-  public getPreview(): Promise<string| undefined>{
+  public getPreview(): Promise<string | undefined> {
     return Promise.resolve(undefined);
   }
 }

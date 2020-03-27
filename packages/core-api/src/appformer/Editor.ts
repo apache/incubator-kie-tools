@@ -22,17 +22,17 @@ import { ComponentTypes } from "./ComponentTypes";
  */
 export abstract class Editor extends Component {
   public af_componentTitle?: string = undefined;
-  public af_subscriptions: Map<string, ((event: any) => void)> = new Map();
+  public af_subscriptions: Map<string, (event: any) => void> = new Map();
 
   protected constructor(componentId: string) {
     super({ type: ComponentTypes.EDITOR, af_componentId: componentId });
   }
 
-  public abstract setContent(path: string, content: string): Promise<void>; 
+  public abstract setContent(path: string, content: string): Promise<void>;
 
   public abstract getContent(): Promise<string>;
 
   public abstract isDirty(): boolean;
 
-  public abstract getPreview() : Promise<string | undefined>;
+  public abstract getPreview(): Promise<string | undefined>;
 }

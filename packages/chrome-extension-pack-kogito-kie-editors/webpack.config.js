@@ -20,8 +20,13 @@ const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
 
 function getLatestGitTag() {
+  const tagName = require("child_process")
+      .execSync("git rev-list --tags --max-count=1")
+      .toString()
+      .trim();
+
   return require("child_process")
-    .execSync("git describe --tags `git rev-list --tags --max-count=1`")
+    .execSync("git describe --tags " + tagName)
     .toString()
     .trim();
 }
