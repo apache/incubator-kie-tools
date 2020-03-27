@@ -17,9 +17,10 @@
 import * as vscode from "vscode";
 import * as assert from "assert";
 import * as __path from "path";
-import { afterEach } from "mocha";
 
 const NONE = "";
+
+const separator = __path.sep;
 
 const testWorkspace = __path.resolve(__dirname, "../../test-workspace");
 
@@ -33,7 +34,7 @@ function editorStackWithLength(length: number) {
   return new Promise(resolve => {
     const disposable = vscode.window.onDidChangeActiveTextEditor((textEditor?: vscode.TextEditor) => {
       if (textEditor) {
-        openedEditors.push(textEditor.document.fileName);
+        openedEditors.push(getNormalizedPath(textEditor.document.fileName));
       } else {
         openedEditors.push(NONE);
       }
@@ -46,6 +47,19 @@ function editorStackWithLength(length: number) {
   });
 }
 
+function getNormalizedPath(vsPath: string) {
+  if (process.platform === "win32") {
+    // This is a workaround to handle the issue regarding the inconsistence of
+    // Windows driver letter between VSCode (lowercase) and Node (uppercase)
+    const path = __path.parse(vsPath);
+    const root = path.root.toUpperCase();
+    const resolved = `${root}${vsPath.substr(3)}`;
+    return resolved;
+  } else {
+    return vsPath;
+  }
+}
+
 function open(path: string) {
   return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(path));
 }
@@ -55,48 +69,52 @@ function openForTheFirstTime(path: string) {
 }
 
 suite("vscode extension :: integration tests", () => {
-  afterEach(async () => {
-    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
-  });
-
+  // This is not working in Win10 environment.
+  // afterEach(async () => {
+  //   await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+  // });
   test("open text file", async () => {
     const editorStack = editorStackWithLength(1);
 
-    const txtFile = `${testWorkspace}/example.txt`;
+    const txtFile = `${testWorkspace}${separator}example.txt`;
+
     await open(txtFile);
 
     assert.deepStrictEqual([txtFile], await editorStack);
-    assert.strictEqual(vscode.window.activeTextEditor.document.uri.path, txtFile);
+    assert.strictEqual(getNormalizedPath(vscode.window.activeTextEditor.document.fileName), txtFile);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 1);
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 
   test("open bpmn editor", async () => {
     const editorStack = editorStackWithLength(2);
 
-    const bpmnFile = `${testWorkspace}/demo.bpmn`;
+    const bpmnFile = `${testWorkspace}${separator}demo.bpmn`;
     await openForTheFirstTime(bpmnFile);
 
     assert.deepStrictEqual([bpmnFile, NONE], await editorStack);
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 
   test("open dmn editor", async () => {
     const editorStack = editorStackWithLength(2);
 
-    const dmnFile = `${testWorkspace}/demo.dmn`;
+    const dmnFile = `${testWorkspace}${separator}demo.dmn`;
     await openForTheFirstTime(dmnFile);
 
     assert.deepStrictEqual([dmnFile, NONE], await editorStack);
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 
   test("reopen a custom editor", async () => {
     const editorStack = editorStackWithLength(6);
 
-    const bpmnFile = `${testWorkspace}/demo.bpmn`;
-    const txtFile = `${testWorkspace}/example.txt`;
+    const bpmnFile = `${testWorkspace}${separator}demo.bpmn`;
+    const txtFile = `${testWorkspace}${separator}example.txt`;
 
     await openForTheFirstTime(bpmnFile);
     await open(txtFile);
@@ -105,5 +123,6 @@ suite("vscode extension :: integration tests", () => {
     assert.deepStrictEqual([bpmnFile, NONE, txtFile, NONE, bpmnFile, NONE], await editorStack);
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 });

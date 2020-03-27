@@ -18,12 +18,20 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
+const os = require('os');
 
-function getLatestGitTag() {
-  return require("child_process")
-    .execSync("git describe --tags `git rev-list --tags --max-count=1`")
-    .toString()
-    .trim();
+function getLatestGitTag() {	
+	if (os.platform() == "win32"){
+		return require("child_process")
+		.execSync("for /F %T in ('git rev-list --tags --max-count=1') do git describe --tags %T")
+		.toString()
+		.trim();	
+	} else{
+	  return require("child_process")
+		.execSync("git describe --tags `git rev-list --tags --max-count=1`")
+		.toString()
+		.trim();
+	}	
 }
 
 function getRouterArgs(argv) {
