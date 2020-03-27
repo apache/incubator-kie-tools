@@ -50,10 +50,13 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoDMNService;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoScenarioSimulationBuilder;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.fakes.KogitoAsyncPackageDataModelOracle;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioKogitoCreationPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
+import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -65,12 +68,14 @@ import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstan
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorViewImpl;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -83,7 +88,8 @@ import static org.drools.workbench.screens.scenariosimulation.kogito.client.conv
 @Dependent
 public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContainerPresenter<ScenarioSimulationModel> implements ScenarioSimulationEditorWrapper {
 
-    public static final String DEFAULT_PACKAGE = "com";
+    protected static final String DEFAULT_PACKAGE = "com";
+    protected static final String NEW_FILE_NAME = "new-file.scesim";
 
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
     protected FileMenuBuilder fileMenuBuilder;
@@ -94,6 +100,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected KogitoDMNService dmnTypeService;
     protected KogitoAsyncPackageDataModelOracle kogitoOracle;
     protected TranslationService translationService;
+    protected ScenarioKogitoCreationPopupPresenter scenarioKogitoCreationPopupPresenter;
+    protected KogitoScenarioSimulationBuilder scenarioSimulationBuilder;
 
     public ScenarioSimulationEditorKogitoWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -109,7 +117,9 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             final Promises promises,
             final KogitoDMNService dmnTypeService,
             final KogitoAsyncPackageDataModelOracle kogitoOracle,
-            final TranslationService translationService) {
+            final TranslationService translationService,
+            final ScenarioKogitoCreationPopupPresenter scenarioKogitoCreationPopupPresenter,
+            final KogitoScenarioSimulationBuilder scenarioSimulationBuilder) {
         super(scenarioSimulationEditorPresenter.getView(), placeManager, multiPageEditorContainerView);
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.fileMenuBuilder = fileMenuBuilder;
@@ -118,6 +128,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         this.dmnTypeService = dmnTypeService;
         this.kogitoOracle = kogitoOracle;
         this.translationService = translationService;
+        this.scenarioSimulationBuilder = scenarioSimulationBuilder;
+        this.scenarioKogitoCreationPopupPresenter = scenarioKogitoCreationPopupPresenter;
     }
 
     @Override
@@ -132,8 +144,26 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     @Override
-    public void setContent(String path, String value) {
-        unmarshallContent(value);
+    public Promise setContent(String fullPath, String value) {
+        return promises.create((success, failure) -> {
+            /* Retrieving file name and its related path */
+            String finalName = NEW_FILE_NAME;
+            String pathString = "/";
+            if (fullPath != null && !fullPath.isEmpty()) {
+                int idx = fullPath.replaceAll("\\\\", "/").lastIndexOf('/');
+                finalName = idx >= 0 ? fullPath.substring(idx + 1) : fullPath;
+                pathString = idx >= 0 ? fullPath.substring(0, idx + 1) : pathString;
+            }
+            final Path path = PathFactory.newPath(finalName, pathString);
+
+            if (value == null || value.isEmpty()) {
+                newFile(path);
+            } else {
+                gotoPath(path);
+                unmarshallContent(value);
+            }
+            success.onInvoke((Object) null);
+        });
     }
 
     @Override
@@ -330,5 +360,34 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     protected void onBackgroundTabSelected() {
         scenarioSimulationEditorPresenter.onBackgroundTabSelected();
+    }
+
+    protected void newFile(Path path) {
+        Command createCommand = () -> {
+            final ScenarioSimulationModel.Type selectedType = scenarioKogitoCreationPopupPresenter.getSelectedType();
+            if (selectedType == null) {
+                showPopover("ERROR", "Missing selected type");
+                return;
+            }
+            String value = "";
+            if (ScenarioSimulationModel.Type.DMN.equals(selectedType)) {
+                value = scenarioKogitoCreationPopupPresenter.getSelectedPath();
+                if (value == null || value.isEmpty()) {
+                    showPopover("ERROR", "Missing dmn path");
+                    return;
+                }
+            }
+            scenarioSimulationBuilder.populateScenarioSimulationModel(new ScenarioSimulationModel(), selectedType, value, content -> {
+                //saveFile(path, content);
+                gotoPath(path);
+                unmarshallContent(content);
+            });
+        };
+        scenarioKogitoCreationPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.addScenarioSimulation(),
+                                                  createCommand);
+    }
+
+    protected void showPopover(String title, String content) {
+        new Popover(title, content).show();
     }
 }

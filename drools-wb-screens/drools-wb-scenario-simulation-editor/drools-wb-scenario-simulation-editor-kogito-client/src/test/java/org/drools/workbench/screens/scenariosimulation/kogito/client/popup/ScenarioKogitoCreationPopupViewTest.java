@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.webapp.client.popup;
+package org.drools.workbench.screens.scenariosimulation.kogito.client.popup;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -24,7 +24,7 @@ import elemental2.dom.HTMLLabelElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
-import org.drools.workbench.screens.scenariosimulation.webapp.client.dropdown.ScenarioKogitoCreationAssetsDropdown;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown.ScenarioKogitoCreationAssetsDropdown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -24,8 +24,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -107,24 +105,8 @@ public class ScenarioSimulationEditorKogitoRuntimeScreen extends AbstractScenari
     }
 
     @SetContent
-    public void setContent(String fullPath, String value) {
-        /* Retrieving file name and its related path */
-        String finalName = NEW_FILE_NAME;
-        String pathString = "/";
-        if (fullPath != null && !fullPath.isEmpty()) {
-            int idx = fullPath.replaceAll("\\\\", "/").lastIndexOf('/');
-            finalName = idx >= 0 ? fullPath.substring(idx + 1) : fullPath;
-            pathString = idx >= 0 ? fullPath.substring(0, idx + 1) : pathString;
-        }
-        final Path path = PathFactory.newPath(finalName, pathString);
-
-        if (value == null || value.isEmpty()) {
-            newFile(path);
-        } else {
-            scenarioSimulationEditorKogitoWrapper.gotoPath(path);
-            scenarioSimulationEditorKogitoWrapper.setContent(path.toURI() + path.getFileName(), value);
-            scenarioKogitoCreationPopupPresenter.hide();
-        }
+    public Promise setContent(String fullPath, String value) {
+        return scenarioSimulationEditorKogitoWrapper.setContent(fullPath, value);
     }
 
     @IsDirty

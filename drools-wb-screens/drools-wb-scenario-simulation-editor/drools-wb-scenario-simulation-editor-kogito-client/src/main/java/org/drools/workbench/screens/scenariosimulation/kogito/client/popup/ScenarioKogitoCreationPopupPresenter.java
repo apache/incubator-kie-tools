@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.webapp.client.popup;
+package org.drools.workbench.screens.scenariosimulation.kogito.client.popup;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
