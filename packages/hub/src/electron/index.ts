@@ -223,9 +223,10 @@ function getApplicationPathForWindows(relativePath: string) {
   return path.join(__dirname, `${relativePath}`);
 }
 
-function executeCommand(args: { macOS: string; linux: string; windows: string }): Promise<CommandExecutionResult> {
+function executeCommand(args: { macOS: string; linux: string; windows: string }): Thenable<CommandExecutionResult> {
   let command;
   let platform;
+
   switch (os.platform()) {
     case "darwin":
       command = args.macOS;
@@ -244,9 +245,9 @@ function executeCommand(args: { macOS: string; linux: string; windows: string })
   }
 
   console.info(`Executing command ' ${command} ' on ${platform}`);
-  return new Promise((res, rej) => {
+  return new Promise(res => {
     child.exec(command, (error, stdout, stderr) => {
-      const result: CommandExecutionResult = error
+      const result = error
         ? { success: false, output: stderr, os: platform }
         : { success: true, output: stdout, os: platform };
 
