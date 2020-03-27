@@ -22,7 +22,6 @@ import MenuItem = Electron.MenuItem;
 export class Menu {
   private readonly window: BrowserWindow;
   private readonly userData: HubUserData;
-  private menu: ElectronMenu;
 
   private readonly macOSAppMenu;
 
@@ -99,11 +98,10 @@ export class Menu {
       template.unshift(this.macOSAppMenu);
     }
 
-    // if (!app.isPackaged) {
+    if (!app.isPackaged) {
       template.push(this.devMenu);
-    // }
+    }
 
-    this.menu = ElectronMenu.buildFromTemplate(template);
-    ElectronMenu.setApplicationMenu(this.menu);
+    ElectronMenu.setApplicationMenu(ElectronMenu.buildFromTemplate(template));
   }
 }
