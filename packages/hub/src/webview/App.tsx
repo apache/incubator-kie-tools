@@ -32,6 +32,7 @@ import {
   CardBody,
   CardFooter,
   CardHead,
+  ClipboardCopy,
   Dropdown,
   DropdownItem,
   Gallery,
@@ -320,6 +321,27 @@ export function App() {
   }, []);
 
   useElectronIpcResponse(
+    "desktop__launch_complete",
+    (data: CommandExecutionResult & { appPath: string }) => {
+      if (data.os === OperatingSystem.MACOS && !data.success) {
+        pushNewAlert({
+          variant: "danger",
+          width: "90%",
+          title: (
+            <>
+              <p>Error while launching Business Modeler Preview Desktop. This is a known issue on macOS.</p>
+              <br />
+              <p>Try again after executing the command below on a Terminal window.</p>
+              <ClipboardCopy isReadOnly={true}>{`chmod -R u+x ${data.appPath}`}</ClipboardCopy>
+            </>
+          )
+        });
+      }
+    },
+    []
+  );
+
+  useElectronIpcResponse(
     "business_modeler_hub__init_complete",
     (data: { username: string }) => {
       switch (getOperatingSystem()) {
@@ -347,18 +369,16 @@ export function App() {
     >
       <PageSection isFilled={true}>
         <div className={"kogito--alert-container"}>
-          <div style={{ width: "500px" }}>
-            {alerts.map(alert => (
-              <React.Fragment key={alert.time}>
-                <Alert
-                  style={{ marginBottom: "10px" }}
-                  variant={alert.variant}
-                  title={alert.title}
-                  action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
-                />
-              </React.Fragment>
-            ))}
-          </div>
+          {alerts.map(alert => (
+            <React.Fragment key={alert.time}>
+              <Alert
+                style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
+                variant={alert.variant}
+                title={alert.title}
+                action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+              />
+            </React.Fragment>
+          ))}
         </div>
         <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
           <Card className={"kogito--desktop__files-card"}>

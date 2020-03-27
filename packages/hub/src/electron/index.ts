@@ -22,6 +22,7 @@ import * as os from "os";
 import * as child from "child_process";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
+import { OperatingSystem } from "@kogito-tooling/core-api";
 import IpcMainEvent = Electron.IpcMainEvent;
 
 const vscode_EXTENSION_PATH = getApplicationPathForUnix("lib/vscode_extension.vsix");
@@ -75,8 +76,8 @@ function createWindow() {
   }
 
   function checkIfVsCodeIsOpenWithProposedApiEnabled(): Promise<
-      CommandExecutionResult & { isProposedApiEnabled: boolean }
-      > {
+    CommandExecutionResult & { isProposedApiEnabled: boolean }
+  > {
     const vsCodeLocation = hubUserData.getVsCodeLocation()!;
     const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
     return executeCommand({
@@ -91,13 +92,13 @@ function createWindow() {
   function launchVsCode(): Promise<CommandExecutionResult> {
     return executeCommand({
       macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --enable-proposed-api ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
       linux: `${hubUserData.getVsCodeLocation()}/bin/code --enable-proposed-api ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
       windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --enable-proposed-api ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`
     });
   }
@@ -133,13 +134,13 @@ function createWindow() {
   ipcMain.on("vscode__uninstall_extension", (e: IpcMainEvent) => {
     executeCommand({
       macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --uninstall-extension ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
       linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --uninstall-extension ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
       windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --uninstall-extension ${
-          Constants.VSCODE_EXTENSION_PACKAGE_NAME
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`
     }).then(result => {
       mainWindow.webContents.send("vscode__uninstall_extension_complete", { ...result });
@@ -153,8 +154,8 @@ function createWindow() {
       macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
       linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
       windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${vscode_EXTENSION_PATH.replace(
-          /\\ /g,
-          " "
+        /\\ /g,
+        " "
       )}"`
     }).then(result => {
       mainWindow.webContents.send("vscode__install_extension_complete", { ...result });
@@ -173,14 +174,14 @@ function createWindow() {
       linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --list-extensions`,
       windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --list-extensions`
     })
-        .then(result => {
-          if (!result.success) {
-            return [];
-          } else {
-            return result.output.split("\n");
-          }
-        })
-        .then(extensions => mainWindow.webContents.send("vscode__list_extensions_complete", { extensions }));
+      .then(result => {
+        if (!result.success) {
+          return [];
+        } else {
+          return result.output.split("\n");
+        }
+      })
+      .then(extensions => mainWindow.webContents.send("vscode__list_extensions_complete", { extensions }));
   });
 
   //
@@ -191,16 +192,16 @@ function createWindow() {
   ipcMain.on("desktop__launch", (e: IpcMainEvent) => {
     executeCommand({
       linux: `chmod -R u+x ${getApplicationPathForUnix("")} && ${getApplicationPathForUnix(
-          "lib/Business Modeler Preview-linux-x64/Business Modeler Preview"
+        "lib/Business Modeler Preview-linux-x64/Business Modeler Preview"
       )}`,
       macOS: `open ${getApplicationPathForUnix(
-          "lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app"
+        "lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app"
       )}`,
       windows: `"${getApplicationPathForWindows(
-          "lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe"
+        "lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe"
       )}"`
     }).then(result => {
-      mainWindow.webContents.send("desktop__launch_complete", { ...result });
+      mainWindow.webContents.send("desktop__launch_complete", { ...result, appPath: getApplicationPathForUnix("") });
     });
   });
 
@@ -229,15 +230,15 @@ function executeCommand(args: { macOS: string; linux: string; windows: string })
   switch (os.platform()) {
     case "darwin":
       command = args.macOS;
-      platform = "macOS";
+      platform = OperatingSystem.MACOS;
       break;
     case "win32":
       command = args.windows;
-      platform = "windows";
+      platform = OperatingSystem.WINDOWS;
       break;
     case "linux":
       command = args.linux;
-      platform = "linux";
+      platform = OperatingSystem.LINUX;
       break;
     default:
       throw new Error("Unknown platform " + os.platform());
@@ -247,8 +248,8 @@ function executeCommand(args: { macOS: string; linux: string; windows: string })
   return new Promise(res => {
     child.exec(command, (error, stdout, stderr) => {
       const result = error
-          ? { success: false, output: stderr, os: platform }
-          : { success: true, output: stdout, os: platform };
+        ? { success: false, output: stderr, os: platform }
+        : { success: true, output: stdout, os: platform };
 
       console.info("Success: " + result.success);
       console.info(result.output);

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { OperatingSystem } from "@kogito-tooling/core-api";
+
 export interface CommandExecutionResult {
-    success: boolean;
-    output: string;
-    os: "macOS" | "linux" | "windows";
+  success: boolean;
+  output: string;
+  os: OperatingSystem;
 }
