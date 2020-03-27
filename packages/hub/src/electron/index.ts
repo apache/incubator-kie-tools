@@ -24,8 +24,6 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcMainEvent = Electron.IpcMainEvent;
 
-const vscode_EXTENSION_PATH = getApplicationPathForUnix("lib/vscode_extension.vsix");
-
 app.on("ready", () => {
   createWindow();
 });
@@ -150,11 +148,14 @@ function createWindow() {
   ipcMain.on("vscode__install_extension", (e: IpcMainEvent, data: { location: string }) => {
     hubUserData.setVsCodeLocation(data.location);
     executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
-      linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --install-extension ${vscode_EXTENSION_PATH}`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${vscode_EXTENSION_PATH.replace(
-        /\\ /g,
-        " "
+      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --install-extension ${getApplicationPathForUnix(
+        "lib/vscode_extension.vsix"
+      )}`,
+      linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --install-extension ${getApplicationPathForUnix(
+        "lib/vscode_extension.vsix"
+      )}`,
+      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${getApplicationPathForWindows(
+        "lib/vscode_extension.vsix"
       )}"`
     }).then(result => {
       mainWindow.webContents.send("vscode__install_extension_complete", { ...result });
@@ -188,11 +189,17 @@ function createWindow() {
   //
   //
   // DESKTOP
-  ipcMain.on("desktop_launch", (e: IpcMainEvent) => {
+  ipcMain.on("desktop__launch", (e: IpcMainEvent) => {
     executeCommand({
-      linux: `chmod -R u+x ${getApplicationPathForUnix("")} && ${getApplicationPathForUnix("lib/Business Modeler Preview-linux-x64/Business Modeler Preview")}`,
-      macOS: `open ${getApplicationPathForUnix("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}`,
-      windows: `"${getApplicationPathForWindows("lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe")}"`
+      linux: `chmod -R u+x ${getApplicationPathForUnix("")} && ${getApplicationPathForUnix(
+        "lib/Business Modeler Preview-linux-x64/Business Modeler Preview"
+      )}`,
+      macOS: `open ${getApplicationPathForUnix(
+        "lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app"
+      )}`,
+      windows: `"${getApplicationPathForWindows(
+        "lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe"
+      )}"`
     }).then(result => {
       mainWindow.webContents.send("desktop__launch_complete", { ...result });
     });

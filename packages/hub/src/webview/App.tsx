@@ -47,7 +47,7 @@ import {
   TextList,
   TextListItem,
   TextListVariants,
-  TextVariants
+  Title
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
 import { SearchIcon } from "@patternfly/react-icons";
@@ -258,13 +258,12 @@ export function App() {
 
   const desktop_launch = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    electron.ipcRenderer.send("desktop_launch", {});
+    electron.ipcRenderer.send("desktop__launch", {});
   }, []);
 
   useElectronIpcResponse(
     "desktop__launch_complete",
     (data: CommandExecutionResult) => {
-      console.info(data.success);
       console.info(data.output);
     },
     []
@@ -320,7 +319,7 @@ export function App() {
   return (
     <Page
       header={
-        <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Hub Preview" />} />
+        <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
       }
       className={"kogito--editor-landing"}
     >
@@ -344,7 +343,7 @@ export function App() {
         <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img src={"images/desktop-logo.svg"} />
+              <img style={{ height: "130px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
                 onSelect={vscode_toggleKebab}
                 toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
@@ -366,9 +365,10 @@ export function App() {
               />
             </CardHead>
             <CardBody>
+              <Title size={"xl"}>Kogito VSCode extension</Title>
+              <Title size={"xl"}>&nbsp;</Title>
+              <br />
               <TextContent>
-                <Text component={TextVariants.h3}>Kogito VSCode extension</Text>
-                <br />
                 <Text>Launches VSCode ready to use with Kogito</Text>
               </TextContent>
             </CardBody>
@@ -457,12 +457,14 @@ export function App() {
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img src={"images/chrome-github-logo.svg"} />
+              <img style={{ height: "130px" }} src={"images/chrome-github-logo.svg"} />
             </CardHead>
             <CardBody>
-              <Text component={TextVariants.h3}>Kogito GitHub extension for Chrome</Text>
+              <Title size={"xl"}>Kogito GitHub extension for Chrome</Title>
               <br />
-              <Text>Installs the Kogito extension to an existing version of Chrome</Text>
+              <TextContent>
+                <Text>Installs the Kogito extension to an existing version of Chrome</Text>
+              </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               <Button variant={"secondary"} onClick={chrome_toggleModal}>
@@ -518,7 +520,7 @@ export function App() {
           {/*DESKTOP*/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img src={"images/desktop-logo.svg"} />
+              <img style={{ height: "130px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
                 onSelect={desktop_toggleKebab}
                 toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
@@ -532,9 +534,11 @@ export function App() {
               />
             </CardHead>
             <CardBody>
-              <Text component={TextVariants.h3}>Business Modeler Desktop Preview</Text>
+              <Title size={"xl"}>Business Modeler Desktop Preview</Title>
               <br />
-              <Text>Launches the desktop version of Business Modeler Preview</Text>
+              <TextContent>
+                <Text>Launches the desktop version of Business Modeler Preview</Text>
+              </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant={"secondary"} onClick={desktop_launch}>
@@ -545,12 +549,12 @@ export function App() {
           {/**/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img src={"images/online-logo.svg"} />
+              <img style={{ height: "130px" }} src={"images/online-logo.svg"} />
             </CardHead>
             <CardBody>
+              <Title size={"xl"}>Business Modeler Preview</Title>
+              <br />
               <TextContent>
-                <Text component={TextVariants.h3}>Business Modeler Preview</Text>
-                <br />
                 <Text>Navigates to the Online Modeler Preview site</Text>
               </TextContent>
             </CardBody>
