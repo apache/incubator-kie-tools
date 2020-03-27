@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -41,7 +42,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTe
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests the data get/set behaviour of AssignmentListItemWidget
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class AssignmentListItemWidgetTest {
 
     ValueListBox<String> dataType;
