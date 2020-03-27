@@ -204,6 +204,15 @@ function createWindow() {
       mainWindow.webContents.send("desktop__launch_complete", { ...result });
     });
   });
+
+  //
+  //
+  //
+  //
+  // GENERAL
+  ipcMain.on("business_modeler_hub__init", (e: IpcMainEvent) => {
+    mainWindow.webContents.send("business_modeler_hub__init_complete", { username: os.userInfo().username });
+  });
 }
 
 function getApplicationPathForUnix(relativePath: string) {
@@ -237,11 +246,15 @@ function executeCommand(args: { macOS: string; linux: string; windows: string })
   console.info(`Executing command ' ${command} ' on ${platform}`);
   return new Promise((res, rej) => {
     child.exec(command, (error, stdout, stderr) => {
-      if (error) {
-        res({ success: false, output: stderr, os: platform });
-      } else {
-        res({ success: true, output: stdout, os: platform });
-      }
+      const result: CommandExecutionResult = error
+        ? { success: false, output: stderr, os: platform }
+        : { success: true, output: stdout, os: platform };
+
+      console.info("Success: " + result.success);
+      console.info(result.output);
+      console.info("");
+
+      res(result);
     });
   });
 }

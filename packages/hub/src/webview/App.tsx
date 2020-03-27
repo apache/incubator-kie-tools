@@ -52,6 +52,7 @@ import {
 import { Constants } from "../common/Constants";
 import { SearchIcon } from "@patternfly/react-icons";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
+import { getOperatingSystem, OperatingSystem } from "@kogito-tooling/core-api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 enum ExtensionStatus {
@@ -78,9 +79,7 @@ function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void, 
 export function App() {
   //
   //
-  //
   // ALERTS
-
   const [alerts, setAlerts] = useState(new Array<AlertProps & { time: number }>());
 
   const removeAlert = useCallback(
@@ -249,7 +248,6 @@ export function App() {
 
   //
   //
-  //
   // DESKTOP
   const [desktop_kebabOpen, setDesktop_kebabOpen] = useState(false);
   const desktop_toggleKebab = useCallback(() => {
@@ -269,7 +267,6 @@ export function App() {
     []
   );
 
-  //
   //
   //
   // CHROME
@@ -309,12 +306,37 @@ export function App() {
 
   //
   //
-  //
   // ONLINE
   const online_open = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     electron.shell.openExternal(Constants.ONLINE_EDITOR_URL);
   }, []);
+
+  //
+  //
+  //GENERAL
+  useEffect(() => {
+    electron.ipcRenderer.send("business_modeler_hub__init", {});
+  }, []);
+
+  useElectronIpcResponse(
+    "business_modeler_hub__init_complete",
+    (data: { username: string }) => {
+      switch (getOperatingSystem()) {
+        case OperatingSystem.MACOS:
+          setVscode_location("/Applications/Visual Studio Code.app/");
+          break;
+        case OperatingSystem.WINDOWS:
+          setVscode_location(`C:\\Users\\${data.username}\\AppData\\Local\\Programs\\Microsoft VS Code`);
+          break;
+        case OperatingSystem.LINUX:
+        default:
+          setVscode_location("/usr/share/code");
+          break;
+      }
+    },
+    []
+  );
 
   return (
     <Page

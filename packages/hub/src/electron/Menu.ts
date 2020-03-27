@@ -47,55 +47,68 @@ export class Menu {
     this.window = window;
     this.userData = userData;
 
-    this.macOSAppMenu = {
-      label: "Business Modeler Hub Preview",
-      submenu: [
-        {
-          label: "About Business Modeler Hub Preview",
-          role: "about"
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "Services",
-          role: "services",
-          submenu: []
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "Hide Business Modeler Hub Preview",
-          accelerator: "Command+H",
-          role: "hide"
-        },
-        {
-          label: "Hide Others",
-          accelerator: "Command+Alt+H",
-          role: "hideothers"
-        },
-        {
-          label: "Show All",
-          role: "unhide"
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "Quit",
-          accelerator: "Command+Q",
-          click: () => app.quit()
-        }
-      ]
-    };
+    this.macOSAppMenu = [
+      {
+        label: "Business Modeler Hub Preview",
+        submenu: [
+          {
+            label: "About Business Modeler Hub Preview",
+            role: "about"
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "Services",
+            role: "services",
+            submenu: []
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "Hide Business Modeler Hub Preview",
+            accelerator: "Command+H",
+            role: "hide"
+          },
+          {
+            label: "Hide Others",
+            accelerator: "Command+Alt+H",
+            role: "hideothers"
+          },
+          {
+            label: "Show All",
+            role: "unhide"
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "Quit",
+            accelerator: "Command+Q",
+            click: () => app.quit()
+          }
+        ]
+      },
+      {
+        label: "Edit",
+        submenu: [
+          { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+          { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+          { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+          { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+          { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        ]
+      }
+    ];
   }
 
   public setup() {
     const template: Array<MenuItemConstructorOptions | MenuItem> = [];
 
     if (process.platform === "darwin") {
-      template.unshift(this.macOSAppMenu);
+      template.unshift(...this.macOSAppMenu);
     }
 
     if (!app.isPackaged) {
