@@ -27,7 +27,7 @@
         "displayName": "KIE Kogito Editors",
         "selector": [
           {
-            "filenamePattern": "*.{dmn,bpmn,bpmn2}"
+            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim}"
           }
         ]
       }
