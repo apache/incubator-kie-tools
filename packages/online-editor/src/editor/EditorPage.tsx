@@ -25,7 +25,8 @@ import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/re
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
-import { removeFileExtension } from "../common/utils";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { GithubTokenModal } from '../common/GithubTokenModal';
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -36,7 +37,8 @@ enum ActionType {
   SAVE,
   DOWNLOAD,
   COPY,
-  PREVIEW
+  PREVIEW,
+  EXPORT_GIST
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
@@ -54,6 +56,7 @@ export function EditorPage(props: Props) {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
+  const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
 
   const close = useCallback(() => {
     window.location.href = window.location.href.split("?")[0].split("#")[0];
@@ -72,6 +75,11 @@ export function EditorPage(props: Props) {
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;
     editorRef.current?.requestPreview();
+  }, []);
+
+  const requestExportGist = useCallback(() => {
+    action = ActionType.EXPORT_GIST;
+    editorRef.current?.requestContent();
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
@@ -103,6 +111,8 @@ export function EditorPage(props: Props) {
 
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
 
+  const closeGithubTokenModal = useCallback(() => setGithubTokenModalVisible(false), []);
+
   const onContentResponse = useCallback(
     (content: EditorContent) => {
       if (action === ActionType.SAVE) {
@@ -124,6 +134,23 @@ export function EditorPage(props: Props) {
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
           setCopySuccessAlertVisible(true);
+        }
+      } else if (action === ActionType.EXPORT_GIST) {
+        if (context.githubService.isAuthenticated()) {
+          context.githubService
+            .createGist(fileNameWithExtension, content.content, content.path || fileNameWithExtension, true)
+            .then(gistUrl => {
+              setGithubTokenModalVisible(false);
+              const fileUrl = new URL(gistUrl);
+              const fileExtension = extractFileExtension(fileUrl.pathname);
+              // FIXME: KOGITO-1202
+              window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
+            })
+            .catch(e => {
+              setGithubTokenModalVisible(true);
+            });
+        } else {
+          setGithubTokenModalVisible(true);
         }
       }
     },
@@ -188,6 +215,7 @@ export function EditorPage(props: Props) {
           onCopyContentToClipboard={requestCopyContentToClipboard}
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
+          onExportGist={requestExportGist}
         />
       }
     >
@@ -200,6 +228,11 @@ export function EditorPage(props: Props) {
               action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
             />
           </div>
+        )}
+        {!fullscreen && githubTokenModalVisible && (
+          <GithubTokenModal
+            onClose={closeGithubTokenModal}
+            onContinue={requestExportGist} />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor

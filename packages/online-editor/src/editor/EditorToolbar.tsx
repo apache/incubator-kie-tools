@@ -40,6 +40,7 @@ interface Props {
   onSave: () => void;
   onDownload: () => void;
   onPreview: () => void;
+  onExportGist: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -112,12 +113,15 @@ export function EditorToolbar(props: Props) {
       </DropdownItem>,
       <DropdownItem key="downloadSVG" component="button" onClick={props.onPreview}>
         Download SVG
+      </DropdownItem>,
+      <DropdownItem key="exportGist" component="button" onClick={props.onExportGist}>
+        Gist it
       </DropdownItem>
       /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
         Get shareable URL
       </DropdownItem>*/
     ],
-    [context.external, context.readonly, props.onSave, props.onDownload, props.onCopyContentToClipboard]
+    [context.external, context.readonly, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onExportGist]
   );
 
   const filenameInput = (

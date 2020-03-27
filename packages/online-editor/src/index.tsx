@@ -25,17 +25,26 @@ import { Alert, AlertVariant, AlertActionLink } from "@patternfly/react-core";
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
 
-if (urlParams.has("ext")) {
-  waitForEventWithFileData();
-} else if (urlParams.has("file")) {
-  openFileByUrl();
-} else {
-  openDefaultOnlineEditor();
-}
+githubService.authenticate()
+  .then(() => {
+    if (urlParams.has("ext")) {
+      waitForEventWithFileData();
+    } else if (urlParams.has("file")) {
+      openFileByUrl();
+    } else {
+      openDefaultOnlineEditor();
+    }
+  });
 
 function openDefaultOnlineEditor() {
   ReactDOM.render(
-    <App iframeTemplateRelativePath={"envelope/index.html"} file={EMPTY_FILE} readonly={false} external={false} />,
+    <App
+      iframeTemplateRelativePath={"envelope/index.html"}
+      file={EMPTY_FILE}
+      readonly={false}
+      external={false}
+      githubService={githubService}
+    />,
     document.getElementById("app")!
   );
 }
@@ -50,6 +59,7 @@ function waitForEventWithFileData() {
         readonly={e.detail.readonly}
         external={true}
         senderTabId={e.detail.senderTabId}
+        githubService={githubService}
       />,
       document.getElementById("app")!
     );
@@ -88,7 +98,13 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
     getFileContents: () => getFileContent
   };
   ReactDOM.render(
-    <App iframeTemplateRelativePath={"envelope/index.html"} file={file} readonly={false} external={false} />,
+    <App
+      iframeTemplateRelativePath={"envelope/index.html"}
+      file={file}
+      readonly={false}
+      external={false}
+      githubService={githubService}
+    />,
     document.getElementById("app")!
   );
 }

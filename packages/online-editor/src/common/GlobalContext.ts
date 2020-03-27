@@ -18,6 +18,7 @@ import * as React from "react";
 import { Router } from "@kogito-tooling/core-api";
 import { File } from "./File";
 import { Routes } from "./Routes";
+import { GithubService } from "./GithubService";
 import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
 
 export interface GlobalContextType {
@@ -29,6 +30,7 @@ export interface GlobalContextType {
   readonly: boolean;
   external: boolean;
   senderTabId?: string;
+  githubService: GithubService;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);

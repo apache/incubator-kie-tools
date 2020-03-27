@@ -58,7 +58,9 @@ enum InputFileUrlState {
   INITIAL,
   INVALID_URL,
   NO_FILE_URL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
+  INVALID_GIST,
+  INVALID_GIST_EXTENSION
 }
 
 enum UploadFileInputState {
@@ -79,6 +81,7 @@ export function HomePage(props: Props) {
   const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
+  const [gistRawUrl, setGistRawUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
@@ -247,18 +250,36 @@ export function HomePage(props: Props) {
       setInputFileUrlState(InputFileUrlState.INVALID_URL);
       return;
     }
-    const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension) {
-      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-    } else if (!context.router.getLanguageData(fileExtension)) {
-      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+
+    if (context.githubService.isGist(fileUrl)) {
+      const gistId = context.githubService.extractGistId(fileUrl);
+      context.githubService.getGistRawUrlFromId(gistId)
+        .then((rawUrlStr: string) => {
+          const rawUrl = new URL(rawUrlStr);
+          const fileExtension = extractFileExtension(rawUrl.pathname);
+          if (fileExtension && context.router.getLanguageData(fileExtension)) {
+            setGistRawUrl(rawUrlStr);
+            setInputFileUrlState(InputFileUrlState.VALID);
+          } else {
+            setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
+          }
+        })
+        .catch(() => setInputFileUrlState(InputFileUrlState.INVALID_GIST));
     } else {
-      setInputFileUrlState(InputFileUrlState.VALID);
+      const fileExtension = extractFileExtension(url.pathname);
+      if (!fileExtension) {
+        setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+      } else if (!context.router.getLanguageData(fileExtension)) {
+        setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+      } else {
+        setInputFileUrlState(InputFileUrlState.VALID);
+      }
     }
   }, []);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
+    setGistRawUrl("");
     validateUrl(fileUrl);
   }, []);
 
@@ -275,19 +296,24 @@ export function HomePage(props: Props) {
 
   const openFileFromUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
-      const fileUrl = new URL(inputFileUrl);
+      const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
+      const fileUrl = new URL(urlToLoad);
       const fileExtension = extractFileExtension(fileUrl.pathname);
       // FIXME: KOGITO-1202
-      window.location.href = `?file=${inputFileUrl}#/editor/${fileExtension}`;
+      window.location.href = `?file=${urlToLoad}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, validatedInputUrl]);
+  }, [inputFileUrl, gistRawUrl, validatedInputUrl, inputFileUrlState]);
 
   const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INITIAL:
         return "http://";
+      case InputFileUrlState.INVALID_GIST_EXTENSION:
+        return "File type on the provided gist is not supported";
       case InputFileUrlState.INVALID_EXTENSION:
         return "File type is not supported";
+      case InputFileUrlState.INVALID_GIST:
+        return "Enter a valid Gist URL";
       case InputFileUrlState.INVALID_URL:
         return "Enter a valid URL";
       case InputFileUrlState.NO_FILE_URL:
@@ -501,6 +527,7 @@ export function HomePage(props: Props) {
                 >
                   <TextInput
                     isRequired={true}
+                    autoComplete={"off"}
                     onBlur={onInputFileFromUrlBlur}
                     isValid={validatedInputUrl}
                     value={inputFileUrl}
