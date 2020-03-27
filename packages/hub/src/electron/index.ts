@@ -223,7 +223,7 @@ function getApplicationPathForWindows(relativePath: string) {
   return path.join(__dirname, `${relativePath}`);
 }
 
-function executeCommand(args: { macOS: string; linux: string; windows: string }): Thenable<CommandExecutionResult> {
+function executeCommand(args: { macOS: string; linux: string; windows: string }): Promise<CommandExecutionResult> {
   let command;
   let platform;
 
