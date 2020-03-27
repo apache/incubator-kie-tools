@@ -261,6 +261,15 @@ export function App() {
     electron.ipcRenderer.send("desktop_launch", {});
   }, []);
 
+  useElectronIpcResponse(
+    "desktop__launch_complete",
+    (data: CommandExecutionResult) => {
+      console.info(data.success);
+      console.info(data.output);
+    },
+    []
+  );
+
   //
   //
   //
@@ -310,7 +319,9 @@ export function App() {
 
   return (
     <Page
-      header={<PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Hub Preview" />} />}
+      header={
+        <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Hub Preview" />} />
+      }
       className={"kogito--editor-landing"}
     >
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>

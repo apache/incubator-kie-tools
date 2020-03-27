@@ -24,7 +24,7 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import IpcMainEvent = Electron.IpcMainEvent;
 
-const vscode_EXTENSION_PATH = applicationPath("lib/vscode_extension.vsix");
+const vscode_EXTENSION_PATH = getApplicationPathForUnix("lib/vscode_extension.vsix");
 
 app.on("ready", () => {
   createWindow();
@@ -190,17 +190,21 @@ function createWindow() {
   // DESKTOP
   ipcMain.on("desktop_launch", (e: IpcMainEvent) => {
     executeCommand({
-      macOS: `open ${applicationPath("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}`,
-      linux: "./lib/Business Modeler Preview-linux-x64/Business Modeler Preview",
-      windows: `"./lib/Business Modeler Preview-linux-x64/Business Modeler Preview.exe"`
+      linux: `chmod -R u+x ${getApplicationPathForUnix("")} && ${getApplicationPathForUnix("lib/Business Modeler Preview-linux-x64/Business Modeler Preview")}`,
+      macOS: `open ${getApplicationPathForUnix("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}`,
+      windows: `"${getApplicationPathForWindows("lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe")}"`
     }).then(result => {
       mainWindow.webContents.send("desktop__launch_complete", { ...result });
     });
   });
 }
 
-function applicationPath(relativePath: string) {
+function getApplicationPathForUnix(relativePath: string) {
   return path.join(__dirname, `${relativePath}`).replace(/(\s+)/g, "\\$1");
+}
+
+function getApplicationPathForWindows(relativePath: string) {
+  return path.join(__dirname, `${relativePath}`);
 }
 
 function executeCommand(args: { macOS: string; linux: string; windows: string }): Promise<CommandExecutionResult> {

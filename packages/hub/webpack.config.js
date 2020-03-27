@@ -47,13 +47,8 @@ const commonConfig = {
       },
       {
         from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
-        to: "./lib/"
+        to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
       }
-      //TODO: Copy the right Desktop app
-      // On build:fast -> Use what?
-      // On build:prod -> use ../desktop/out
-      // Always call it Business Modeler Preview
-      // Remember to use the right distribution for the environment
     ])
   ],
   module: {
