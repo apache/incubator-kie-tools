@@ -29,7 +29,7 @@ modules:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
   - name: org.kie.kogito.openjdk
-    version: "1.8.0-headless"
+    version: "11-headless"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.springboot
 

@@ -4,8 +4,8 @@ set -e
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 
-tar xzf ${SOURCES_DIR}/graalvm-ce-java8-linux-amd64-${GRAALVM_VERSION}.tar.gz -C /usr/share
-mv /usr/share/graalvm-ce-java8-${GRAALVM_VERSION} /usr/share/graalvm
+tar xzf ${SOURCES_DIR}/graalvm-ce-java${GRAALVM_JAVA_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz -C /usr/share
+mv /usr/share/graalvm-ce-java${GRAALVM_JAVA_VERSION}-${GRAALVM_VERSION} /usr/share/graalvm
 
 #KOGITO-384 - Add libsunec.so and cacerts to Kogito runtime native image
 mkdir -p $KOGITO_HOME/ssl-libs

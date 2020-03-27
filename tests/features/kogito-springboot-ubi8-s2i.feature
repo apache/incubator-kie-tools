@@ -60,9 +60,9 @@ Feature: kogito-springboot-ubi8-s2i image tests
 
   Scenario: verify if the maven and java installation is correct
     When container is started with command bash
-    Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-1.8.0
+    Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
     And run sh -c 'echo $JAVA_VENDOR' in container and immediately check its output for openjdk
-    And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 1.8.0
-    And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.6.2
+    And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 11
     And run sh -c 'echo $MAVEN_HOME' in container and immediately check its output for /usr/share/maven
+    And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.6.2
 

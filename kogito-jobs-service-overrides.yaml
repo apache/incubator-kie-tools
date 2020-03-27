@@ -41,7 +41,7 @@ modules:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
   - name: org.kie.kogito.openjdk
-    version: "1.8.0-headless"
+    version: "11-headless"
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.infinispan.properties
   - name: org.kie.kogito.jobs.service

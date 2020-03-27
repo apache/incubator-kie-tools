@@ -30,6 +30,6 @@ modules:
   - name: org.kie.kogito.maven
     version: "3.6.2"
   - name: org.kie.kogito.openjdk
-    version: "1.8.0"
+    version: "11"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.springboot.s2i

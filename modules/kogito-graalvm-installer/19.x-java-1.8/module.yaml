@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.graalvm.installer
-version: "19.3.1"
+version: "19.3.1-java-1.8"
 
 envs:
   - name: "JAVA_HOME"
@@ -10,6 +10,8 @@ envs:
   #version without prefix ce
   - name: "GRAALVM_VERSION"
     value: "19.3.1"
+  - name: "GRAALVM_JAVA_VERSION"
+    value: "8"
 
 artifacts:
 - name: graalvm-ce-java8-linux-amd64-19.3.1.tar.gz
