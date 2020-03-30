@@ -21,7 +21,7 @@ Feature: kogito-management-console feature
       | variable     | value |
       | SCRIPT_DEBUG | true  |
     Then container log should contain + exec java -XshowSettings:properties -Dkogito.dataindex.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-management-console-runner.jar
-     And container log should not contain Data index url not set, default will be used: http://localhost:8180
+     And container log should contain Data index url not set, default will be used: http://localhost:8180
 
   Scenario: Verify if the debug is correctly enabled and set data-index url
     When container is started with env
