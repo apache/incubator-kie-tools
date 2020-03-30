@@ -165,6 +165,11 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  pointer-events: none;
+}
+
+.kogito--full-screen__toolbar-button {
+  pointer-events: visible;
 }
 
 .kogito--alert-container {
