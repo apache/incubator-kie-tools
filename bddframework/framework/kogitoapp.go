@@ -80,11 +80,11 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 	var profiles []string
 	if kogitoAppDeployment.Persistence {
 		profiles = append(profiles, "persistence")
-		kogitoApp.Spec.Infra.InstallInfinispan = v1alpha1.KogitoAppInfraInstallInfinispanAlways
+		kogitoApp.Spec.EnablePersistence = true
 	}
 	if kogitoAppDeployment.Events {
 		profiles = append(profiles, "events")
-		kogitoApp.Spec.Infra.InstallKafka = v1alpha1.KogitoAppInfraInstallKafkaAlways
+		kogitoApp.Spec.EnableEvents = true
 		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
 		appendNewEnvToKogitoApp(kogitoApp, "MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
 	}
@@ -132,11 +132,11 @@ func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment)
 	var profiles []string
 	if kogitoAppDeployment.Persistence {
 		profiles = append(profiles, "persistence")
-		cmd = append(cmd, "--install-infinispan", "Always")
+		cmd = append(cmd, "--enable-persistence")
 	}
 	if kogitoAppDeployment.Events {
 		profiles = append(profiles, "events")
-		cmd = append(cmd, "--install-kafka", "Always")
+		cmd = append(cmd, "--enable-events")
 		cmd = append(cmd, "--env", "MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS=")
 		cmd = append(cmd, "--env", "MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS=")
 	}
