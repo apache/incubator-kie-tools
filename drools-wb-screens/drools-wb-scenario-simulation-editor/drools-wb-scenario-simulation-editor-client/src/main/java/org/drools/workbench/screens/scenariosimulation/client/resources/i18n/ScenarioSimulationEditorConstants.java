@@ -266,6 +266,8 @@ public interface ScenarioSimulationEditorConstants
 
     String dmnPathErrorLabel(String dmnPath);
 
+    String dmnPathErrorDetailedLabel(String dmnPath);
+
     String coverageReport();
 
     String uploadWarning();
