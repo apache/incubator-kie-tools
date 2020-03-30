@@ -322,7 +322,7 @@ export function App() {
 
   useElectronIpcResponse(
     "desktop__launch_complete",
-    (data: CommandExecutionResult & { appPath: string }) => {
+    (data: CommandExecutionResult) => {
       if (data.os === OperatingSystem.MACOS && !data.success) {
         pushNewAlert({
           variant: "danger",
@@ -332,7 +332,8 @@ export function App() {
               <p>Error while launching Business Modeler Preview Desktop. This is a known issue on macOS.</p>
               <br />
               <p>Try again after executing the command below on a Terminal window.</p>
-              <ClipboardCopy isReadOnly={true}>{`chmod -R u+x ${data.appPath}`}</ClipboardCopy>
+              <p>You have to be at the same directory as 'Business Modeler Hub Preview.app'.</p>
+              <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
         });

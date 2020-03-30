@@ -201,7 +201,7 @@ function createWindow() {
         "lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe"
       )}"`
     }).then(result => {
-      mainWindow.webContents.send("desktop__launch_complete", { ...result, appPath: getApplicationPathForUnix("") });
+      mainWindow.webContents.send("desktop__launch_complete", result);
     });
   });
 
