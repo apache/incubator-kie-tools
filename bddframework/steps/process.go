@@ -25,6 +25,7 @@ import (
 func registerProcessSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Start "([^"]*)" process on service "([^"]*)" with body:$`, data.startProcessOnService)
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)"$`, data.serviceContainsInstancesOfProcess)
+	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.serviceContainsInstancesOfProcessWithinMinutes)
 }
 
 func (data *Data) startProcessOnService(processName, serviceName string, body *gherkin.DocString) error {
@@ -54,4 +55,23 @@ func (data *Data) serviceContainsInstancesOfProcess(serviceName string, processI
 		return fmt.Errorf("expected %d of process instances, but got %d", processInstances, len(foundProcessInstances))
 	}
 	return nil
+}
+
+func (data *Data) serviceContainsInstancesOfProcessWithinMinutes(serviceName string, processInstances int, processName string, timeoutInMin int) error {
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Process %s has %d instances", processName, processInstances), timeoutInMin,
+		func() (bool, error) {
+			foundProcessInstances, err := framework.GetProcessInstances(data.Namespace, routeURI, processName)
+			if err != nil {
+				return false, err
+			}
+			if len(foundProcessInstances) != processInstances {
+				return false, nil
+			}
+			return true, nil
+		})
 }

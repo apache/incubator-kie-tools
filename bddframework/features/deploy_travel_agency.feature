@@ -86,7 +86,7 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
 	  """
-	And Service "kogito-visas" contains 1 instance of process with name "visaApplications"
+	And Service "kogito-visas" contains 1 instance of process with name "visaApplications" within 1 minutes
 	And Service "kogito-visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
 	And Complete "ApplicationApproval" task on service "kogito-visas" and process with name "visaApplications" with body:
 	  """json
