@@ -21,3 +21,4 @@ export enum Constants {
   KOGITO_TOOLING_RELEASES_URL = "https://github.com/kiegroup/kogito-tooling/releases",
   CHROME_EXTENSIONS_TAB = "chrome://extensions"
 }
+
