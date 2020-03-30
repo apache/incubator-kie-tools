@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +33,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
@@ -39,6 +41,7 @@ import org.junit.runner.Description;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
+import org.kie.workbench.common.dmn.showcase.client.model.ListSeleniumModel;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
@@ -90,12 +93,22 @@ public class DMNDesignerKogitoSeleniumIT {
     private static final String INDEX_HTML = "target/kie-wb-common-dmn-webapp-kogito-runtime/index.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
+    // panels
     private static final String DECISON_NAVIGATOR_EXPAND = "qe-docks-item-W-org.kie.dmn.decision.navigator";
     private static final String DECISON_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
+    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
+
+    // editors
     private static final String ACE_EDITOR = "//div[@class='ace_content']";
+
+    // decision navigator
     private static final String DECISION_NODE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']";
     private static final String DECISION_TABLE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='Decision Table']/div";
-    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
+    private static final String LIST = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='List']/div";
+    private static final String NOT_PRESENT_IN_NAVIGATOR = "' was not present in the decision navigator";
+
+    // context menus/popups
+    private static final String MENU_ENTRY = "//div[@data-field='cellEditorControlsContainer']//ul/li/a/span[text()='%s']";
 
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
     private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
@@ -1751,18 +1764,18 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    @Ignore("KOGITO-1581")
     public void testListExpression_DROOLS5131() throws Exception {
         final String expected = loadResource("DROOLS-5131 (List expression).xml");
         setContent(expected);
 
+        final ListSeleniumModel listModel = new ListSeleniumModel();
+        listModel.setName("Decision-1");
+        listModel.setItems(Arrays.asList("1", "2"));
+        appendBoxedListExpressionItem(listModel, "3");
+
         final String actual = getContent();
         assertThat(actual).isNotBlank();
-
-        XmlAssert.assertThat(actual)
-                .and(expected)
-                .ignoreComments()
-                .ignoreWhitespace()
-                .areIdentical();
 
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
@@ -1783,6 +1796,13 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
                                   "/dmn:literalExpression[@id='_7CAB8067-1481-41F7-8EA2-68D33679A518']" +
                                   "/dmn:text[text()='2']");
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
+                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
+                                  "/dmn:literalExpression[3]" +
+                                  "/dmn:text[text()='3']");
     }
 
     /**
@@ -2129,7 +2149,7 @@ public class DMNDesignerKogitoSeleniumIT {
         expandDecisionNavigatorDock();
         final WebElement node = waitOperation().until(element(DECISION_NODE, nodeName));
         assertThat(node)
-                .as("Node '" + nodeName + "'was not present in the list of nodes")
+                .as("Node '" + nodeName + NOT_PRESENT_IN_NAVIGATOR)
                 .isNotNull();
         collapseDecisionNavigatorDock();
     }
@@ -2141,7 +2161,7 @@ public class DMNDesignerKogitoSeleniumIT {
         expandDecisionNavigatorDock();
         final WebElement node = waitOperation().until(element(DECISION_TABLE, decisionTable.getName()));
         assertThat(node)
-                .as("Decision table of '" + decisionTable.getName() + "'was not present in the list of nodes")
+                .as("Decision table of '" + decisionTable.getName() + NOT_PRESENT_IN_NAVIGATOR)
                 .isNotNull();
         node.click();
 
@@ -2156,6 +2176,40 @@ public class DMNDesignerKogitoSeleniumIT {
 
         expandPropertiesPanelGroup("Default output");
         fillInProperty("Default output value", decisionTable.getDefaultOutput());
+
+        collapseDecisionNavigatorDock();
+    }
+
+    /**
+     * This method extends coverage of DROOLS-5131
+     */
+    private void appendBoxedListExpressionItem(final ListSeleniumModel list, final String item) {
+        expandDecisionNavigatorDock();
+        final WebElement node = waitOperation().until(element(LIST, list.getName()));
+        assertThat(node)
+                .as("List expression '" + list.getName() + NOT_PRESENT_IN_NAVIGATOR)
+                .isNotNull();
+        node.click();
+
+        final WebElement editor = getEditor();
+        for (int i = 0; i < list.getItems().size() - 1; i++) {
+            editor.sendKeys(Keys.ARROW_DOWN);
+        }
+
+        // invoke context menu for adding an item
+        editor.sendKeys(Keys.CONTROL, Keys.SPACE);
+
+        final WebElement insertBelow = waitOperation().until(element(MENU_ENTRY, "Insert below"));
+        assertThat(insertBelow)
+                .as("Insert below entry in context menu not available")
+                .isNotNull();
+        insertBelow.click();
+
+        // move to the new cell and start edit mode
+        editor.sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
+
+        // put in new value and finish edit mode
+        getAutocompleteEditor().sendKeys(item, Keys.TAB);
 
         collapseDecisionNavigatorDock();
     }
@@ -2225,6 +2279,14 @@ public class DMNDesignerKogitoSeleniumIT {
     private WebElement getEditor() {
         final WebElement editor = waitOperation()
                 .until(presenceOfElementLocated(xpath("//div[@class='kie-dmn-expression-editor']/div/div/input")));
+
+        return editor;
+    }
+
+    private WebElement getAutocompleteEditor() {
+        final WebElement editor = waitOperation()
+                .until(presenceOfElementLocated(
+                        xpath("//div[contains(@class,'monaco-editor')]//textarea")));
 
         return editor;
     }
