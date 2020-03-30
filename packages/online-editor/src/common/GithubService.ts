@@ -64,4 +64,28 @@ export class GithubService {
         ).then(res => (res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.")));
       });
   }
+
+  public validateGithubFile(fileUrl: string): Promise<boolean> {
+    const fileInfo = this.retrieveFileInfo(fileUrl);
+
+    return this.octokit.repos
+      .getContents({
+        repo: fileInfo.repo,
+        owner: fileInfo.org,
+        ref: fileInfo.gitRef,
+        path: fileInfo.path,
+        headers: {
+          "If-None-Match": ""
+        }
+      })
+      .then(res => true)
+      .catch(octokitError => {
+          console.log(octokitError)
+        return fetch(
+          `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
+        )
+          .then(res => res.ok)
+          .catch(fetchError => false);
+      });
+  }
 }

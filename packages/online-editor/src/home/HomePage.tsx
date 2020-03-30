@@ -47,6 +47,7 @@ import {
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { GithubService } from "../common/GithubService";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -57,7 +58,8 @@ enum InputFileUrlState {
   INITIAL,
   INVALID_URL,
   NO_FILE_URL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
+  URL_NOT_FOUND
 }
 
 enum UploadFileInputState {
@@ -69,6 +71,8 @@ enum UploadFileDndState {
   INITIAL,
   INVALID_EXTENSION
 }
+
+const githubService = new GithubService();
 
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
@@ -238,6 +242,27 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
+  const checkFileExistence = useCallback(hasFile => {
+    if (hasFile) {
+      setInputFileUrlState(InputFileUrlState.VALID);
+    } else {
+      setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND);
+    }
+  }, []);
+
+  const validateFileOnUrl = useCallback((fileUrl: string) => {
+    if (githubService.isGithub(fileUrl)) {
+      githubService
+        .validateGithubFile(fileUrl)
+        .then(checkFileExistence)
+        .catch(err => setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND));
+    } else {
+      fetch(fileUrl)
+        .then(res => checkFileExistence(res.ok))
+        .catch(err => setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND));
+    }
+  }, []);
+
   const validateUrl = useCallback((fileUrl: string) => {
     let url: URL;
     try {
@@ -252,7 +277,7 @@ export function HomePage(props: Props) {
     } else if (!context.router.getLanguageData(fileExtension)) {
       setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
     } else {
-      setInputFileUrlState(InputFileUrlState.VALID);
+      validateFileOnUrl(fileUrl);
     }
   }, []);
 
@@ -266,6 +291,11 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
+  const openFromUrlButton = useMemo(
+      () => inputFileUrlState === InputFileUrlState.VALID,
+      [inputFileUrlState]
+  );
+
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState(InputFileUrlState.INITIAL);
@@ -273,7 +303,7 @@ export function HomePage(props: Props) {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
+    if (validatedInputUrl) {
       const fileUrl = new URL(inputFileUrl);
       const fileExtension = extractFileExtension(fileUrl.pathname);
       // FIXME: KOGITO-1202
@@ -283,8 +313,6 @@ export function HomePage(props: Props) {
 
   const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
-      case InputFileUrlState.INITIAL:
-        return "http://";
       case InputFileUrlState.INVALID_EXTENSION:
         return "File type is not supported";
       case InputFileUrlState.INVALID_URL:
@@ -526,7 +554,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validatedInputUrl}>
+              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!openFromUrlButton}>
                 Open from source
               </Button>
             </CardFooter>
