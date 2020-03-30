@@ -27,12 +27,14 @@ import (
 
 // Data contains all data needed by Gherkin steps to run
 type Data struct {
-	Namespace string
-	StartTime time.Time
+	Namespace              string
+	StartTime              time.Time
+	KogitoExamplesLocation string
 }
 
 // RegisterAllSteps register all steps available to the test suite
 func (data *Data) RegisterAllSteps(s *godog.Suite) {
+	registerGitSteps(s, data)
 	registerGraphQLSteps(s, data)
 	registerHTTPSteps(s, data)
 	registerKogitoAppSteps(s, data)
@@ -40,6 +42,8 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerKogitoInfraSteps(s, data)
 	registerKogitoJobsServiceSteps(s, data)
 	registerKubernetesSteps(s, data)
+	registerMavenSteps(s, data)
+	registerOpenShiftSteps(s, data)
 	registerOperatorSteps(s, data)
 	registerPrometheusSteps(s, data)
 	registerProcessSteps(s, data)
@@ -50,6 +54,7 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 func (data *Data) BeforeScenario(s interface{}) {
 	data.StartTime = time.Now()
 	data.Namespace = getNamespaceName()
+	data.KogitoExamplesLocation = createTemporaryFolder()
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", framework.GetScenarioName(s)))
 	go framework.StartPodLogCollector(data.Namespace)
@@ -60,6 +65,14 @@ func getNamespaceName() string {
 		return namespaceName
 	}
 	return framework.GenerateNamespaceName("cucumber")
+}
+
+func createTemporaryFolder() string {
+	dir, err := framework.CreateTemporaryFolder("kogito-examples")
+	if err != nil {
+		panic(fmt.Errorf("Error creating new temporary folder: %v", err))
+	}
+	return dir
 }
 
 // AfterScenario executes some actions on data after a scenario is finished
@@ -79,6 +92,7 @@ func (data *Data) AfterScenario(s interface{}, err error) {
 
 	handleScenarioResult(data, s, err)
 	logScenarioDuration(data, s)
+	deleteTemporaryExamplesFolder(data)
 }
 
 func logScenarioDuration(data *Data, s interface{}) {
@@ -100,5 +114,12 @@ func handleScenarioResult(data *Data, s interface{}, err error) {
 	err = framework.RenameLogFolder(data.Namespace, newLogFolderName)
 	if err != nil {
 		framework.GetMainLogger().Errorf("Error while moving log foler for namespace %s. New name is %s. Error = %v", data.Namespace, newLogFolderName, err)
+	}
+}
+
+func deleteTemporaryExamplesFolder(data *Data) {
+	err := framework.DeleteFolder(data.KogitoExamplesLocation)
+	if err != nil {
+		framework.GetMainLogger().Errorf("Error while deleting temporary examples folder %s: %v", data.KogitoExamplesLocation, err)
 	}
 }

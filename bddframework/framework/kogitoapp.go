@@ -41,37 +41,47 @@ const (
 
 // KogitoAppDeployment defines the elements for the deployment of a kogito application
 type KogitoAppDeployment struct {
-	AppName     string
-	ContextDir  string
-	Runtime     v1alpha1.RuntimeType
-	Native      bool
-	Persistence bool
-	Events      bool
-	Labels      map[string]string
+	AppName            string
+	GitSourceURI       string
+	GitSourceReference string
+	ContextDir         string
+	Runtime            v1alpha1.RuntimeType
+	Native             bool
+	Persistence        bool
+	Events             bool
+	Labels             map[string]string
 }
 
-// DeployExample deploy a Kogito example
-func DeployExample(namespace string, installerType InstallerType, kogitoAppDeployment KogitoAppDeployment) error {
+// DeployService deploy a Kogito service
+func DeployService(namespace string, installerType InstallerType, kogitoAppDeployment KogitoAppDeployment) error {
 	GetLogger(namespace).Infof("%s deploy %s example %s with name %s, native %v, persistence %v, events %v and labels %v", installerType, kogitoAppDeployment.Runtime, kogitoAppDeployment.ContextDir, kogitoAppDeployment.AppName, kogitoAppDeployment.Native, kogitoAppDeployment.Persistence, kogitoAppDeployment.Events, kogitoAppDeployment.Labels)
 	switch installerType {
 	case CLIInstallerType:
-		return cliDeployExample(namespace, kogitoAppDeployment)
+		return cliDeployService(namespace, kogitoAppDeployment)
 	case CRInstallerType:
-		return crDeployExample(namespace, kogitoAppDeployment)
+		return crDeployService(namespace, kogitoAppDeployment)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-// DeployExample deploys an example
-func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
+func crDeployService(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
 	kogitoApp := getKogitoAppStub(namespace, kogitoAppDeployment.AppName, kogitoAppDeployment.Labels)
 	kogitoApp.Spec.Runtime = kogitoAppDeployment.Runtime
 
 	kogitoApp.Spec.Build.Native = kogitoAppDeployment.Native
-	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
-	kogitoApp.Spec.Build.GitSource.ContextDir = kogitoAppDeployment.ContextDir
-	kogitoApp.Spec.Build.GitSource.Reference = config.GetExamplesRepositoryRef()
+
+	if gitSourceURI := kogitoAppDeployment.GitSourceURI; len(gitSourceURI) > 0 {
+		kogitoApp.Spec.Build.GitSource.URI = gitSourceURI
+
+		if contextDir := kogitoAppDeployment.ContextDir; len(contextDir) > 0 {
+			kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
+		}
+
+		if ref := kogitoAppDeployment.GitSourceReference; len(ref) > 0 {
+			kogitoApp.Spec.Build.GitSource.Reference = kogitoAppDeployment.GitSourceReference
+		}
+	}
 
 	// Add namespace for service discovery
 	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
@@ -109,16 +119,24 @@ func crDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) 
 	return nil
 }
 
-func cliDeployExample(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
-	cmd := []string{"deploy-service", kogitoAppDeployment.AppName, config.GetExamplesRepositoryURI()}
+func cliDeployService(namespace string, kogitoAppDeployment KogitoAppDeployment) error {
+	cmd := []string{"deploy-service", kogitoAppDeployment.AppName}
 
-	cmd = append(cmd, "-c", kogitoAppDeployment.ContextDir)
+	if gitSourceURI := kogitoAppDeployment.GitSourceURI; len(gitSourceURI) > 0 {
+		cmd = append(cmd, gitSourceURI)
+
+		if contextDir := kogitoAppDeployment.ContextDir; len(contextDir) > 0 {
+			cmd = append(cmd, "-c", contextDir)
+		}
+
+		if ref := kogitoAppDeployment.GitSourceReference; len(ref) > 0 {
+			cmd = append(cmd, "-b", kogitoAppDeployment.GitSourceReference)
+		}
+	}
+
 	cmd = append(cmd, "-r", fmt.Sprintf("%s", kogitoAppDeployment.Runtime))
 	if kogitoAppDeployment.Native {
 		cmd = append(cmd, "--native")
-	}
-	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
-		cmd = append(cmd, "-b", ref)
 	}
 
 	// Add namespace for service discovery

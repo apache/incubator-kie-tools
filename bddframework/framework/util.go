@@ -157,6 +157,16 @@ func CreateFolder(folder string) error {
 	return os.MkdirAll(folder, os.ModePerm)
 }
 
+// CreateTemporaryFolder creates a folder in default directory for temporary files
+func CreateTemporaryFolder(folderPrefix string) (string, error) {
+	return ioutil.TempDir("", folderPrefix)
+}
+
+// DeleteFolder deletes a folder and all its subfolders
+func DeleteFolder(folder string) error {
+	return os.RemoveAll(folder)
+}
+
 // MustParseEnabledDisabled parse a boolean string value
 func MustParseEnabledDisabled(value string) bool {
 	switch value {

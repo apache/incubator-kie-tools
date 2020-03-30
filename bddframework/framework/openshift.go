@@ -53,6 +53,29 @@ func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
 		})
 }
 
+// WaitForBuildConfigCreated waits for a build config to be created
+func WaitForBuildConfigCreated(namespace, buildConfigName string, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("BuildConfig %s created", buildConfigName), timeoutInMin,
+		func() (bool, error) {
+			if bc, err := getBuildConfig(namespace, buildConfigName); err != nil {
+				return false, err
+			} else if bc == nil {
+				return false, nil
+			}
+			return true, nil
+		})
+}
+
+func getBuildConfig(namespace, buildConfigName string) (*buildv1.BuildConfig, error) {
+	bc := &buildv1.BuildConfig{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: buildConfigName, Namespace: namespace}, bc); err != nil && !errors.IsNotFound(err) {
+		return nil, fmt.Errorf("Error while trying to look for BuildConfig %s: %v ", buildConfigName, err)
+	} else if errors.IsNotFound(err) || !exists {
+		return nil, nil
+	}
+	return bc, nil
+}
+
 // WaitForDeploymentConfigRunning waits for a deployment config to be running, with a specific number of pod
 func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("DeploymentConfig %s running", dcName), timeoutInMin,

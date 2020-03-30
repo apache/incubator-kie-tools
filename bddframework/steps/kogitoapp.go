@@ -20,6 +20,7 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/rdumont/assistdog"
 )
@@ -34,10 +35,8 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and persistence and events$`, data.deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents)
 	s.Step(`^Deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
 	s.Step(`^Deploy spring boot example service "([^"]*)" with persistence$`, data.deploySpringBootExampleServiceWithPersistence)
+	s.Step(`^Create service "([^"]*)"$`, data.createService)
 	s.Step(`^Deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
-
-	// Build steps
-	s.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
 
 	// DeploymentConfig steps
 	s.Step(`^Kogito application "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoApplicationHasPodsRunningWithinMinutes)
@@ -51,15 +50,17 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 
 // Deploy service steps
 func (data *Data) deployQuarkusExampleServiceWithNative(contextDir, native string) error {
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.QuarkusRuntimeType,
-			Native:      framework.MustParseEnabledDisabled(native),
-			Persistence: false,
-			Events:      false,
-			Labels:      nil,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.QuarkusRuntimeType,
+			Native:             framework.MustParseEnabledDisabled(native),
+			Persistence:        false,
+			Events:             false,
+			Labels:             nil,
 		})
 }
 
@@ -68,77 +69,90 @@ func (data *Data) deployQuarkusExampleServiceWithNativeAndLabels(contextDir, nat
 	if err != nil {
 		return err
 	}
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.QuarkusRuntimeType,
-			Native:      framework.MustParseEnabledDisabled(native),
-			Persistence: false,
-			Events:      false,
-			Labels:      labels,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.QuarkusRuntimeType,
+			Native:             framework.MustParseEnabledDisabled(native),
+			Persistence:        false,
+			Events:             false,
+			Labels:             labels,
 		})
 }
 
 func (data *Data) deployQuarkusExampleServiceWithNativeAndPersistence(contextDir, native string) error {
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.QuarkusRuntimeType,
-			Native:      framework.MustParseEnabledDisabled(native),
-			Persistence: true,
-			Events:      false,
-			Labels:      nil,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.QuarkusRuntimeType,
+			Native:             framework.MustParseEnabledDisabled(native),
+			Persistence:        true,
+			Events:             false,
+			Labels:             nil,
 		})
 }
 
 func (data *Data) deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents(contextDir, native string) error {
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.QuarkusRuntimeType,
-			Native:      framework.MustParseEnabledDisabled(native),
-			Persistence: true,
-			Events:      true,
-			Labels:      nil,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.QuarkusRuntimeType,
+			Native:             framework.MustParseEnabledDisabled(native),
+			Persistence:        true,
+			Events:             true,
+			Labels:             nil,
 		})
 }
 
 func (data *Data) deploySpringBootExampleService(contextDir string) error {
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.SpringbootRuntimeType,
-			Native:      false,
-			Persistence: false,
-			Events:      false,
-			Labels:      nil,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.SpringbootRuntimeType,
+			Native:             false,
+			Persistence:        false,
+			Events:             false,
+			Labels:             nil,
 		})
 }
 
 func (data *Data) deploySpringBootExampleServiceWithPersistence(contextDir string) error {
-	return framework.DeployExample(data.Namespace, framework.GetDefaultInstallerType(),
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
 		framework.KogitoAppDeployment{
-			AppName:     filepath.Base(contextDir),
-			ContextDir:  contextDir,
-			Runtime:     v1alpha1.SpringbootRuntimeType,
-			Native:      false,
-			Persistence: true,
-			Events:      false,
-			Labels:      nil,
+			AppName:            filepath.Base(contextDir),
+			GitSourceURI:       config.GetExamplesRepositoryURI(),
+			GitSourceReference: config.GetExamplesRepositoryRef(),
+			ContextDir:         contextDir,
+			Runtime:            v1alpha1.SpringbootRuntimeType,
+			Native:             false,
+			Persistence:        true,
+			Events:             false,
+			Labels:             nil,
+		})
+}
+
+func (data *Data) createService(serviceName string) error {
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(),
+		framework.KogitoAppDeployment{
+			AppName: serviceName,
+			Runtime: v1alpha1.SpringbootRuntimeType,
 		})
 }
 
 func (data *Data) deployServiceFromExampleFile(exampleFile string) error {
 	return framework.DeployServiceFromExampleFile(data.Namespace, exampleFile)
-}
-
-// Build steps
-func (data *Data) buildIsCompleteAfterMinutes(buildName string, timeoutInMin int) error {
-	return framework.WaitForBuildComplete(data.Namespace, buildName, timeoutInMin)
 }
 
 // DeploymentConfig steps
