@@ -48,7 +48,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { GithubService } from "../common/GithubService";
-import {fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -255,7 +255,7 @@ export function HomePage(props: Props) {
   const validateFileOnUrl = useCallback((fileUrl: string) => {
     if (githubService.isGithub(fileUrl)) {
       githubService
-        .validateGithubFile(fileUrl)
+        .checkGithubFileExistence(fileUrl)
         .then(checkResponseFromFetch)
         .catch(err => setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL));
     } else {
@@ -290,12 +290,12 @@ export function HomePage(props: Props) {
     validateUrl(fileUrl);
   }, []);
 
-  const validInputUrlText = useMemo(
+  const validateUrlInputText = useMemo(
     () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
     [inputFileUrlState]
   );
 
-  const validInputUrlButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+  const validateUrlInputButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
@@ -304,20 +304,20 @@ export function HomePage(props: Props) {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (validInputUrlText) {
+    if (validateUrlInputText) {
       const fileUrl = new URL(inputFileUrl);
       const fileExtension = extractFileExtension(fileUrl.pathname);
       // FIXME: KOGITO-1202
       window.location.href = `?file=${inputFileUrl}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, validInputUrlText]);
+  }, [inputFileUrl, validateUrlInputText]);
 
   const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INVALID_EXTENSION:
         return "The file type of this URL is not supported.";
       case InputFileUrlState.INVALID_URL:
-        return "This URL is not valid (don't forget the \"https://\"!).";
+        return 'This URL is not valid (don\'t forget the "https://"!).';
       case InputFileUrlState.NO_FILE_URL:
         return "This URL is not from a file.";
       case InputFileUrlState.NOT_FOUND_URL:
@@ -536,18 +536,18 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
             <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!validInputUrlText} spellCheck={false}>
+              <Form onSubmit={externalFileFormSubmit} disabled={!validateUrlInputText} spellCheck={false}>
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
-                  isValid={validInputUrlText}
+                  isValid={validateUrlInputText}
                   helperText=""
                   helperTextInvalid={messageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
-                    isValid={validInputUrlText}
+                    isValid={validateUrlInputText}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
                     type="url"
@@ -559,7 +559,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validInputUrlButton}>
+              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validateUrlInputButton}>
                 Open from source
               </Button>
             </CardFooter>

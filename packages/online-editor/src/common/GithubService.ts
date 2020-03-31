@@ -43,19 +43,22 @@ export class GithubService {
     };
   }
 
+  private octokitGet(fileInfo: FileInfo) {
+    return this.octokit.repos.getContents({
+      repo: fileInfo.repo,
+      owner: fileInfo.org,
+      ref: fileInfo.gitRef,
+      path: fileInfo.path,
+      headers: {
+        "If-None-Match": ""
+      }
+    });
+  }
+
   public fetchGithubFile(fileUrl: string): Promise<string> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
 
-    return this.octokit.repos
-      .getContents({
-        repo: fileInfo.repo,
-        owner: fileInfo.org,
-        ref: fileInfo.gitRef,
-        path: fileInfo.path,
-        headers: {
-          "If-None-Match": ""
-        }
-      })
+    return this.octokitGet(fileInfo)
       .then(res => atob((res.data as any).content))
       .catch(e => {
         console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
@@ -65,19 +68,10 @@ export class GithubService {
       });
   }
 
-  public validateGithubFile(fileUrl: string): Promise<boolean> {
+  public checkGithubFileExistence(fileUrl: string): Promise<boolean> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
 
-    return this.octokit.repos
-      .getContents({
-        repo: fileInfo.repo,
-        owner: fileInfo.org,
-        ref: fileInfo.gitRef,
-        path: fileInfo.path,
-        headers: {
-          "If-None-Match": ""
-        }
-      })
+    return this.octokitGet(fileInfo)
       .then(res => true)
       .catch(octokitError => {
         return fetch(
