@@ -536,7 +536,7 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
             <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!validInputUrlText}>
+              <Form onSubmit={externalFileFormSubmit} disabled={!validInputUrlText} spellCheck={false}>
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
