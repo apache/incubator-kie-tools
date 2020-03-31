@@ -111,6 +111,17 @@ func GetScenarioName(s interface{}) string {
 	return s.(*gherkin.ScenarioOutline).Name
 }
 
+func GetExamplesNames(outline *gherkin.ScenarioOutline) (names []string) {
+	for _ , examples := range outline.Examples {
+		examplesName := examples.Name
+		if len(examples.Name) == 0 {
+			examplesName = "Unnamed Examples"
+		}
+		names = append(names, examplesName)
+	}
+	return
+}
+
 // PrintDataMap prints a formatted dataMap using the given writer
 func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringWriter) {
 	// Get size of strings to be written, to be able to format correctly

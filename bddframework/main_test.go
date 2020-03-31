@@ -121,7 +121,6 @@ func configureTestOutput() {
 		panic(fmt.Errorf("Error creating junit file: %v", err))
 	}
 
-	opt.Format = "junit"
 	opt.Output = io.MultiWriter(opt.Output, mainLogFile)
 }
 
@@ -182,7 +181,12 @@ func showScenarios(features []*gherkin.Feature) {
 		if len(ft.ScenarioDefinitions) > 0 {
 			mainLogger.Infof("Feature: %s", ft.Name)
 			for _, scenario := range ft.ScenarioDefinitions {
-				mainLogger.Info(framework.GetScenarioName(scenario))
+				scenarioMessage := framework.GetScenarioName(scenario)
+
+				if scenarioOutline, ok := scenario.(*gherkin.ScenarioOutline); ok {
+					scenarioMessage += fmt.Sprintf(" (Examples: %s)", strings.Join(framework.GetExamplesNames(scenarioOutline), ", "))
+				}
+				mainLogger.Info(scenarioMessage)
 			}
 		}
 	}
