@@ -60,7 +60,7 @@ enum InputFileUrlState {
   INVALID_URL,
   NO_FILE_URL,
   INVALID_EXTENSION,
-  URL_NOT_FOUND,
+  NOT_FOUND_URL,
   CORS_NOT_AVAILABLE
 }
 
@@ -244,11 +244,11 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
-  const checkFileExistence = useCallback(hasFile => {
-    if (hasFile) {
+  const checkResponseFromFetch = useCallback(responseSucceed => {
+    if (responseSucceed) {
       setInputFileUrlState(InputFileUrlState.VALID);
     } else {
-      setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND);
+      setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL);
     }
   }, []);
 
@@ -256,11 +256,11 @@ export function HomePage(props: Props) {
     if (githubService.isGithub(fileUrl)) {
       githubService
         .validateGithubFile(fileUrl)
-        .then(checkFileExistence)
-        .catch(err => setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND));
+        .then(checkResponseFromFetch)
+        .catch(err => setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL));
     } else {
       fetch(fileUrl)
-        .then(res => checkFileExistence(res.ok))
+        .then(({ ok }) => checkResponseFromFetch(ok))
         .catch(err => {
           setInputFileUrlState(InputFileUrlState.CORS_NOT_AVAILABLE);
         });
@@ -290,12 +290,12 @@ export function HomePage(props: Props) {
     validateUrl(fileUrl);
   }, []);
 
-  const validatedInputUrl = useMemo(
+  const validInputUrlText = useMemo(
     () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
     [inputFileUrlState]
   );
 
-  const openFromUrlButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+  const validInputUrlButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
@@ -304,26 +304,26 @@ export function HomePage(props: Props) {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (validatedInputUrl) {
+    if (validInputUrlText) {
       const fileUrl = new URL(inputFileUrl);
       const fileExtension = extractFileExtension(fileUrl.pathname);
       // FIXME: KOGITO-1202
       window.location.href = `?file=${inputFileUrl}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, validatedInputUrl]);
+  }, [inputFileUrl, validInputUrlText]);
 
   const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INVALID_EXTENSION:
-        return "File type is not supported";
+        return "The file type of this URL is not supported.";
       case InputFileUrlState.INVALID_URL:
-        return "Enter a valid URL";
+        return "This URL is not valid (don't forget the \"https://\"!).";
       case InputFileUrlState.NO_FILE_URL:
-        return "The provided URL is not from a valid file";
-      case InputFileUrlState.URL_NOT_FOUND:
-        return "The provided URL does not exist";
+        return "This URL is not from a file.";
+      case InputFileUrlState.NOT_FOUND_URL:
+        return "This URL does not exist.";
       case InputFileUrlState.CORS_NOT_AVAILABLE:
-        return `This URL cannot be opened because “${inputFileUrl}” does not allow other websites to download their files.`;
+        return "This URL cannot be opened because it not allow other websites to download their files.";
       default:
         return "";
     }
@@ -536,18 +536,18 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
             <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!validatedInputUrl}>
+              <Form onSubmit={externalFileFormSubmit} disabled={!validInputUrlText}>
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
-                  isValid={validatedInputUrl}
+                  isValid={validInputUrlText}
                   helperText=""
                   helperTextInvalid={messageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
-                    isValid={validatedInputUrl}
+                    isValid={validInputUrlText}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
                     type="url"
@@ -559,7 +559,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!openFromUrlButton}>
+              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validInputUrlButton}>
                 Open from source
               </Button>
             </CardFooter>
