@@ -16,105 +16,118 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const envelope = require("../microeditor-envelope/webpackUtils");
 
-module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
-  entry: {
-    index: "./src/index.tsx",
-    "envelope/index": "./src/envelope/index.ts"
-  },
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js"
-  },
-  externals: {},
-  plugins: [
-    new CopyPlugin([
-      { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" },
-      { from: "./static/images", to: "./images" },
-      { from: "./static/samples", to: "./samples" },
-      { from: "./static/index.html", to: "./index.html" },
-      { from: "../kie-bc-editors-unpacked", to: "./gwt-editors" }
-    ])
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"]
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.(woff)$/,
-        include: [
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
-        ],
-        use: {
-          loader: "file-loader",
-          options: {
-            limit: 244,
-            outputPath: "fonts",
-            name: "[name].[ext]"
-          }
-        }
-      },
-      {
-        test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pficon\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /fa-solid-900\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pfbg_.*\.jpg$/,
-        loader: "null-loader"
-      }
-    ]
-  },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
+function getLatestGitTag() {
+  return require("child_process")
+    .execSync("git describe --tags `git rev-list --tags --max-count=1`")
+    .toString()
+    .trim();
+}
+
+function getDownloadHubArgs(argv) {
+  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] || process.env["DOWNLOAD_HUB_linuxUrl"];
+  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] || process.env["DOWNLOAD_HUB_macOsUrl"];
+  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] || process.env["DOWNLOAD_HUB_windowsUrl"];
+
+  linuxUrl =
+    linuxUrl ||
+    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
+  macOsUrl =
+    macOsUrl ||
+    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
+  windowsUrl =
+    windowsUrl ||
+    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
+
+  console.info("Download Hub :: Linux URL: " + linuxUrl);
+  console.info("Download Hub :: macOS URL: " + macOsUrl);
+  console.info("Download Hub :: Windows URL: " + windowsUrl);
+
+  return [linuxUrl, macOsUrl, windowsUrl];
+}
+
+module.exports = async (env, argv) => {
+  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+
+  return {
+    mode: "development",
+    devtool: "inline-source-map",
+    entry: {
+      index: "./src/index.tsx",
+      "envelope/index": "./src/envelope/index.ts"
     },
-    disableHostCheck: true,
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
-    compress: true,
-    port: 9001
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js"
+    },
+    externals: {},
+    plugins: [
+      new CopyPlugin([
+        { from: "./static/resources", to: "./resources" },
+        { from: "./static/envelope", to: "./envelope" },
+        { from: "./static/images", to: "./images" },
+        { from: "./static/samples", to: "./samples" },
+        { from: "./static/index.html", to: "./index.html" },
+        { from: "./static/favicon.ico", to: "./favicon.ico" },
+        { from: "../kie-bc-editors-unpacked", to: "./gwt-editors" }
+      ])
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          include: path.resolve(__dirname, "src"),
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                configFile: path.resolve("./tsconfig.json")
+              }
+            }
+          ]
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: ["babel-loader"]
+        },
+        {
+          test: /DownloadHubModal\.tsx$/,
+          loader: "string-replace-loader",
+          options: {
+            multiple: [
+              {
+                search: "$_{WEBPACK_REPLACE__hubLinuxUrl}",
+                replace: downloadHub_linuxUrl
+              },
+              {
+                search: "$_{WEBPACK_REPLACE__hubMacOsUrl}",
+                replace: downloadHub_macOsUrl
+              },
+              {
+                search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
+                replace: downloadHub_windowsUrl
+              }
+            ]
+          }
+        },
+        ...envelope.patternflyLoaders
+      ]
+    },
+    devServer: {
+      historyApiFallback: {
+        disableDotRule: true
+      },
+      disableHostCheck: true,
+      watchContentBase: true,
+      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      compress: true,
+      port: 9001
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    }
+  };
 };
