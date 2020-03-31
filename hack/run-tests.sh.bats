@@ -164,6 +164,18 @@
     [[ "${output}" != *"--tests.ci"* ]]
 }
 
+@test "invoke run-tests with load_default_config" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --load_default_config --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "Load default test config" ]]
+}
+
+@test "invoke run-tests without load_default_config" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"Load default test config"* ]]
+}
+
 # operator information
 
 @test "invoke run-tests with operator_image" {

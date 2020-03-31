@@ -45,6 +45,7 @@ function usage(){
   printf "\n--local\n\tSpecify whether you run test in local."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
   printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
+  printf "\n--load_default_config\n\tTo be used if you want to directly use the default test config contained into ${SCRIPT_DIR}/../test/.default_config"
 
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
@@ -116,6 +117,7 @@ FEATURE=""
 TIMEOUT=240
 DEBUG=false
 CRDS_UPDATE=true
+LOAD_DEFAULT_CONFIG=false
 
 while (( $# ))
 do
@@ -175,6 +177,10 @@ case $1 in
   ;;
   --cr_deployment_only)
     addParam "--tests.cr-deployment-only"
+    shift
+  ;;
+  --load_default_config)
+    LOAD_DEFAULT_CONFIG=true
     shift
   ;;
 
@@ -280,6 +286,17 @@ case $1 in
   ;;
 esac
 done
+
+# load test default config options if not set already
+if [ "${LOAD_DEFAULT_CONFIG}" = "true" ]; then
+  echo "Load default test config"
+  while IFS="=" read -r key value
+  do
+    if [[ $PARAMS != *"${key}"* ]]; then
+      addParam "--${key}=${value}"
+    fi
+  done < "${SCRIPT_DIR}/../test/.default_config"
+fi
 
 if ${CRDS_UPDATE}; then
   echo "-------- Apply CRD files"
