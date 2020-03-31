@@ -18,8 +18,9 @@ import { GwtEditorWrapper } from "../GwtEditorWrapper";
 
 const MockEditor = jest.fn(() => ({
   getContent: jest.fn(),
-  setContent: jest.fn(),
-  isDirty: jest.fn()
+  setContent: jest.fn(() => Promise.resolve()),
+  isDirty: jest.fn(),
+  getPreview: jest.fn()
 }));
 
 const mockEditor = new MockEditor();
@@ -36,7 +37,7 @@ describe("GwtEditorWrapper", () => {
 
   test("set content error", async () => {
     mockEditor.setContent = jest.fn(() => {
-      throw new Error();
+      return Promise.reject();
     });
 
     await wrapper.setContent("path", " a content ");

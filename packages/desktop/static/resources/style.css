@@ -1,0 +1,132 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.kogito--editor {
+  width: 100%;
+  height: 100%;
+}
+
+.kogito--editor-landing {
+  /* this adjusts the max specifically for our logo */
+  --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+}
+
+.kogito--editor-page main {
+  overflow-y: hidden;
+}
+
+/* TODO: Fix to only affect the correct header */
+.kogito--editor__toolbar .pf-c-page__header-nav {
+  align-self: center;
+  justify-content: center;
+}
+
+.kogito--editor__toolbar-section {
+  --pf-c-page__main-nav--PaddingBottom: var(--pf-global--spacer--sm);
+  border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
+}
+
+.kogito--editor__toolbar-section button {
+  outline: none;
+}
+
+.kogito--right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.kogito--alert-container {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  left: 0;
+}
+
+.kogito--desktop__actions-gallery {
+  --pf-l-gallery--GridTemplateColumns: repeat(
+    auto-fill,
+    calc(var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--md))
+  );
+}
+
+.kogito--desktop__actions-card,
+.kogito--desktop__files-card {
+  cursor: pointer;
+}
+
+.kogito--desktop__actions-card-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.kogito--desktop__actions-card--wide {
+  grid-column: span 2;
+}
+
+.kogito--desktop__actions-img {
+  max-width: var(--pf-global--spacer--3xl);
+  opacity: 30%;
+}
+
+.kogito-desktop__file-gallery {
+  --pf-l-gallery--GridTemplateColumns: repeat(
+    auto-fill,
+    calc(
+      var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) +
+        var(--pf-global--spacer--md)
+    )
+  );
+  --pf-l-gallery--GridTemplateRows: repeat(
+    auto-fill,
+    calc(
+      var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl) +
+        var(--pf-global--spacer--md)
+    )
+  );
+}
+
+.kogito--desktop__file-img {
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: calc(var(--pf-global--spacer--3xl) + var(--pf-global--spacer--3xl));
+  width: 100%;
+}
+
+.kogito--desktop__filename {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kogito--filter-btn {
+  outline: none;
+}
+
+.kogito--filter-btn-pressed {
+  outline: none;
+  background-color: var(--pf-global--BackgroundColor--light-300);
+}
+
+@media (min-width: 992px) {
+  .kogito--editor__toolbar .pf-c-page__header-nav {
+    margin-right: 14em;
+  }
+}

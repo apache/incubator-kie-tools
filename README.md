@@ -99,6 +99,18 @@ Develop
 4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag.
 5. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
 
+##### Desktop and Hub
+1. After you've successfully built the project following the instructions above, go to `packages/desktop` or `packages/hub`. They work exactly the same.
+2. To start the application in development mode, you can run `yarn start`. If you make changes and want to reload the app, run `yarn run build:fasts && yarn start`. This will recompile the module and restart the Electron app. Remember: if you make changes to other modules, you have to build them too!
+3. To build and package the application for production (i.e. generating an executable), you can run `yarn run build:prod`. This will pack the application for the current OS. If you want to pack the application for a different OS, run `yarn run pack:linux`, for example. See `package.json` for more details.
+
+
+Contribute
+--------------------
+- When opening PRs, please make sure to provide a detailed description of the issue along with the JIRA, if there's one.
+- Also, since we depend on DMN and BPMN editores and our CI build is *not* integrated with the editors, when you need an updated version of the editors to be used, **please provide a VSIX bundle so people can at least test your changes easily on VSCode. Also, it's a good pratice to put a note on your PR saying that the editors have changed too**.
+
+
 
 Contributing to Kogito
 --------------------

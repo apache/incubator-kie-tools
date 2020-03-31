@@ -14,10 +14,31 @@
  * limitations under the License.
  */
 
-export enum InputFileUrlState {
-  VALID,
-  INITIAL,
-  INVALID_URL,
-  NO_FILE_URL,
-  INVALID_EXTENSION
+import { UserData } from "./UserData";
+
+export class HubUserData {
+  private userData: UserData;
+
+  constructor() {
+    this.userData = new UserData({
+      configName: "kogito-tooling-hub",
+      defaults: {}
+    });
+  }
+
+  public setVsCodeLocation(location: string) {
+    this.userData.set("vscode_location", location);
+  }
+
+  public getVsCodeLocation() {
+    return this.userData.get("vscode_location") as string | undefined;
+  }
+
+  public deleteVsCodeLocation() {
+    this.userData.delete("vscode_location");
+  }
+
+  public clearAll() {
+    this.userData.clearAll();
+  }
 }

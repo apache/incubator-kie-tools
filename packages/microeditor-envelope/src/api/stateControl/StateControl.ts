@@ -15,21 +15,33 @@
  */
 
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
-import { StateControlApi } from "./StateControlApi";
+import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { KogitoEdit } from "@kogito-tooling/core-api";
+
+/**
+ * PUBLIC ENVELOPE API
+ *
+ * State Control API for command-based editors. It gives access to the {@link KogitoCommandRegistry} and allows setting
+ * the editor undo & redo commands for a correct integration with the envelope.
+ */
+export interface StateControlApi {
+  registry: KogitoCommandRegistry<any>;
+  setUndoCommand(undoCommand: () => void): void;
+  setRedoCommand(redoCommand: () => void): void;
+}
 
 export class StateControl {
   private undoCommand: () => void;
   private redoCommand: () => void;
 
-  public undo(): void {
+  public undo(edits?: KogitoEdit[]): void {
     if (this.undoCommand) {
       this.undoCommand();
     }
   }
 
-  public redo(): void {
-    if (this.redoCommand) {
+  public redo(edits?: KogitoEdit[]): void {
+    if(this.redoCommand) {
       this.redoCommand();
     }
   }

@@ -35,7 +35,11 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_dirtyIndicatorChange(isDirty: boolean): void;
   receive_resourceContentRequest(resourceContentService: ResourceContentRequest): void;
   receive_resourceListRequest(globPattern: string): void;
+  receive_previewRequest(previewSvg: string): void;
   receive_ready(): void;
+  notify_editorUndo(edits: KogitoEdit[]): void;
+  notify_editorRedo(edits: KogitoEdit[]): void;
+  receive_newEdit(edit: KogitoEdit): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -90,12 +94,12 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
   }
 
-  public notify_editorUndo() {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: undefined });
+  public notify_editorUndo(edits: KogitoEdit[]) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: edits });
   }
 
-  public notify_editorRedo() {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
+  public notify_editorRedo(edits: KogitoEdit[]) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: edits });
   }
 
   public request_initResponse(origin: string) {
@@ -108,6 +112,10 @@ export class EnvelopeBusOuterMessageHandler {
 
   public respond_resourceList(resourcesList: ResourcesList) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
+  }
+
+  public request_previewResponse() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_PREVIEW, data: undefined });
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
@@ -145,7 +153,11 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
         const kogitoEdit = message.data as KogitoEdit;
-        console.debug(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
+        console.warn(`EnvelopeBusOuterMessageHandler: Received new edit: ${kogitoEdit.id}`);
+        this.impl.receive_newEdit(kogitoEdit);
+        break;
+      case EnvelopeBusMessageType.RETURN_PREVIEW:
+        this.impl.receive_previewRequest(message.data as string);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

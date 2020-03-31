@@ -44,7 +44,7 @@ beforeEach(() => {
 afterEach(() => loadingScreenContainer.remove());
 
 const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
+  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
 };
 
 const languageData = {
@@ -131,7 +131,7 @@ describe("EditorEnvelopeController", () => {
     expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined }]);
   });
 
-  test("right after received content", async () => {
+  test("after received content", async () => {
     const render = await startController();
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
@@ -140,21 +140,7 @@ describe("EditorEnvelopeController", () => {
     sentMessages = [];
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
 
-    expect(sentMessages).toEqual([]);
-    expect(render.update()).toMatchSnapshot();
-  });
-
-  test("after received content and set empty first", async () => {
-    const render = await startController();
-
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
-
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
-    sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
-    await delay(EditorEnvelopeController.ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT);
-
-    expect(sentMessages).toEqual([]);
+    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }]);
     expect(render.update()).toMatchSnapshot();
   });
 

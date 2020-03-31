@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import { KogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { OperatingSystem } from "@kogito-tooling/core-api";
 
-/**
- * PUBLIC ENVELOPE API
- *
- * State Control API for command-based editors. It gives access to the {@link KogitoCommandRegistry} and allows setting
- * the editor undo & redo commands for a correct integration with the envelope.
- */
-export interface StateControlApi {
-  registry: KogitoCommandRegistry<any>;
-  setUndoCommand(undoCommand: () => void): void;
-  setRedoCommand(redoCommand: () => void): void;
+export interface CommandExecutionResult {
+  success: boolean;
+  output: string;
+  os: OperatingSystem;
 }

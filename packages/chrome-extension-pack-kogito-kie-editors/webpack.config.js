@@ -21,8 +21,13 @@ const packageJson = require("./package.json");
 const envelope = require("../microeditor-envelope/webpackUtils");
 
 function getLatestGitTag() {
+  const tagName = require("child_process")
+      .execSync("git rev-list --tags --max-count=1")
+      .toString()
+      .trim();
+
   return require("child_process")
-    .execSync("git describe --tags `git rev-list --tags --max-count=1`")
+    .execSync("git describe --tags " + tagName)
     .toString()
     .trim();
 }

@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         node: [12.13.0]
         yarn: [1.19.0]
 
@@ -26,7 +26,6 @@ jobs:
       - name: Checkout upstream
         uses: actions/checkout@v1
         with:
-          repository: kiegroup/kogito-tooling
           ref: master
 
       - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
@@ -39,11 +38,12 @@ jobs:
         if: github.base_ref
         run: git merge ${{ github.sha }}
 
+      # This bash script will set an output for this step. It can be used with steps.version.outputs.version
       - name: Output version
         id: version
         run: |
-          # This bash script will set an output for this step. It can be used with steps.version.outputs.version
           echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+        shell: bash
 
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -72,26 +72,21 @@ jobs:
         run: npx lerna run test --stream
         continue-on-error: true
 
-      - name: "Build :: prod"
-        if: success()
-        run: npx lerna run --stream build:fast -- --mode production --devtool none
-
-      - name: Run integration tests
-        run: npx lerna run test:it --stream
+      - name: "Build :: prod and pack"
+        run: yarn run build:prod
+        continue-on-error: true
         env:
           DISPLAY: ":99.0"
-        continue-on-error: true
 
-      - name: Pack artifacts
-        run: npx lerna run pack-extension --stream
-
-      - name: Upload DMN editor
+      - name: Upload DMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: dmn-editor
           path: packages/kie-bc-editors-unpacked/dmn
 
-      - name: Upload BPMN editor
+      - name: Upload BPMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: bpmn-editor
@@ -110,3 +105,45 @@ jobs:
         with:
           name: chrome-extension
           path: packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
+
+      - name: Upload Desktop App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-linux
+          path: "packages/desktop/out/Business Modeler Preview-linux-x64"
+
+      - name: Upload Desktop App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-macos
+          path: "packages/desktop/out/Business Modeler Preview-darwin-x64.zip"
+
+      - name: Upload Desktop App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-windows
+          path: "packages/desktop/out/Business Modeler Preview-win32-x64"
+
+      - name: Upload Hub App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-linux
+          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64"
+
+      - name: Upload Hub App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-macos
+          path: "packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip"
+
+      - name: Upload Hub App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-windows
+          path: "packages/hub/out/Business Modeler Hub Preview-win32-x64"

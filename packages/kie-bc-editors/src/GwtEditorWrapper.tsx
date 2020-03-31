@@ -69,17 +69,17 @@ export class GwtEditorWrapper extends AppFormer.Editor {
   }
 
   public setContent(path: string, content: string) {
-    //FIXME: Make setContent return a promise.
-    try {
-      this.gwtEditor.setContent(path, content.trim());
       setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
-    } catch (e) {
-      this.messageBus.notify_setContentError(
-        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
-      );
-    }
+      return this.gwtEditor.setContent(path, content.trim()).catch(() => {
+        this.messageBus.notify_setContentError(
+          `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+        );
+        return Promise.resolve();
+      });
+  }
 
-    return Promise.resolve();
+  public getPreview(): Promise<string | undefined> {
+    return this.gwtEditor.getPreview();
   }
 
   private removeBusinessCentralHeaderPanel() {

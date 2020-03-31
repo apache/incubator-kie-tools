@@ -1,33 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EditorEnvelopeController after received content and set empty first 1`] = `
+exports[`EditorEnvelopeController after received content 1`] = `
 <EditorEnvelopeView
-  context={
-    Object {
-      "channel": "VSCODE",
-      "operatingSystem": "WINDOWS",
-    }
-  }
   exposing={[Function]}
-  keyboardShortcuts={
-    DefaultKeyboardShortcutsService {
-      "editorContext": Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      },
-      "eventIdentifiers": 2,
-      "keyBindings": Map {
-        1 => Object {
-          "combination": "shift+/",
-          "label": "Help | Show keyboard shortcuts",
-          "listener": [Function],
-          "opts": Object {
-            "element": [Window],
-          },
-        },
-      },
-    }
-  }
   loadingScreenContainer={
     <div
       id="loading-screen"
@@ -85,97 +60,6 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
     </div>
   }
 >
-  <KeyBindingsHelpOverlay
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 2,
-        "keyBindings": Map {
-          1 => Object {
-            "combination": "shift+/",
-            "label": "Help | Show keyboard shortcuts",
-            "listener": [Function],
-            "opts": Object {
-              "element": [Window],
-            },
-          },
-        },
-      }
-    }
-  >
-    <div
-      className="kogito-tooling--keyboard-shortcuts-icon"
-      onClick={[Function]}
-    >
-      <KeyboardIcon
-        color="currentColor"
-        noVerticalAlign={false}
-        size="sm"
-        title={null}
-      >
-        <svg
-          aria-hidden={true}
-          aria-labelledby={null}
-          fill="currentColor"
-          height="1em"
-          role="img"
-          style={
-            Object {
-              "verticalAlign": "-0.125em",
-            }
-          }
-          viewBox="0 0 576 512"
-          width="1em"
-        >
-          <path
-            d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
-            transform=""
-          />
-        </svg>
-      </KeyboardIcon>
-    </div>
-    <Modal
-      actions={Array []}
-      ariaDescribedById=""
-      className=""
-      hideTitle={false}
-      isLarge={false}
-      isOpen={false}
-      isSmall={false}
-      onClose={[Function]}
-      showClose={true}
-      title="Keyboard shortcuts"
-      width="60%"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={Array []}
-          ariaDescribedById=""
-          className=""
-          hideTitle={false}
-          id="pf-modal-1"
-          isLarge={false}
-          isOpen={false}
-          isSmall={false}
-          onClose={[Function]}
-          showClose={true}
-          title="Keyboard shortcuts"
-          width="60%"
-        />
-      </Portal>
-    </Modal>
-  </KeyBindingsHelpOverlay>
   <Portal
     containerInfo={
       <div
@@ -702,23 +586,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
 
 exports[`EditorEnvelopeController right after received content 1`] = `
 <EditorEnvelopeView
-  context={
-    Object {
-      "channel": "VSCODE",
-      "operatingSystem": "WINDOWS",
-    }
-  }
   exposing={[Function]}
-  keyboardShortcuts={
-    DefaultKeyboardShortcutsService {
-      "editorContext": Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      },
-      "eventIdentifiers": 1,
-      "keyBindings": Map {},
-    }
-  }
   loadingScreenContainer={
     <div
       id="loading-screen"

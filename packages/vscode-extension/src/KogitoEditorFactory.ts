@@ -15,10 +15,9 @@
  */
 
 import * as vscode from "vscode";
-import * as path_ from "path";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { Router, ResourceContentService } from "@kogito-tooling/core-api";
+import { ResourceContentService, Router, KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
@@ -41,30 +40,34 @@ export class KogitoEditorFactory {
     this.resourceContentService = resourceContentService;
   }
 
-  public openNew(path: string) {
+  public configureNew(uri: vscode.Uri, panel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {
+    const path = uri.fsPath;
     if (path.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
     }
-    
+
+    panel.webview.options = {
+      enableCommandUris: true,
+      enableScripts: true,
+      localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
+    };
+
     const workspacePath = vscode.workspace.asRelativePath(path);
-    const panel = this.openNewPanel(path);
-    const editor = new KogitoEditor(workspacePath, path, panel, this.context, this.router, this.webviewLocation, this.editorStore, this.resourceContentService);
+    const editor = new KogitoEditor(
+      workspacePath,
+      path,
+      panel,
+      this.context,
+      this.router,
+      this.webviewLocation,
+      this.editorStore,
+      this.resourceContentService,
+      signalEdit
+    );
     this.editorStore.addAsActive(editor);
     editor.setupEnvelopeBus();
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();
-  }
-
-  private openNewPanel(path: string) {
-    const panelTitle = path.split(path_.sep).pop()!;
-
-    //this will open a panel on vscode's UI.
-    return vscode.window.createWebviewPanel(
-      "kogito-editor",
-      panelTitle,
-      { viewColumn: vscode.ViewColumn.Active, preserveFocus: false },
-      { enableCommandUris: true, enableScripts: true, retainContextWhenHidden: true }
-    );
   }
 }

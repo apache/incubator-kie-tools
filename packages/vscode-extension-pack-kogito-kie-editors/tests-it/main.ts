@@ -26,7 +26,7 @@ async function main() {
     await vscodeTest.runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      launchArgs: [workspace, "--disableExtensions"]
+      launchArgs: [workspace, "--disableExtensions", "--enable-proposed-api", "kiegroup.vscode-extension-pack-kogito-kie-editors"]
     });
   } catch (e) {
     console.error("Failed to run integration tests");

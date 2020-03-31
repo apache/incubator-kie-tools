@@ -2,10 +2,11 @@
   "name": "vscode-extension-pack-kogito-kie-editors",
   "displayName": "BPMN and DMN Editors",
   "description": "",
-  "version": "0.2.10",
+  "version": "0.2.12",
   "license": "Apache-2.0",
+  "enableProposedApi": true,
   "engines": {
-    "vscode": "^1.33.0"
+    "vscode": "^1.43.0"
   },
   "repository": {
     "type": "git",
@@ -15,11 +16,28 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onCustomEditor:kieKogitoWebviewEditors"
   ],
   "publisher": "kiegroup",
   "main": "./dist/extension/extension.js",
   "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditors",
+        "displayName": "KIE Kogito Editors",
+        "selector": [
+          {
+            "filenamePattern": "*.{dmn,bpmn,bpmn2}"
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "extension.kogito.getPreviewSvg",
+        "title": "Get Editor Preview SVG"
+      }
+    ],
     "languages": [
       {
         "id": "bpmn",
@@ -43,39 +61,29 @@
           "Decision Model and Notation"
         ]
       }
-    ],
-    "keybindings": [
-      {
-        "command": "undo",
-        "key": "ctrl+z",
-        "mac": "cmd+z"
-      },
-      {
-        "command": "redo",
-        "key": "ctrl+y",
-        "mac": "cmd+shift+z"
-      }
     ]
   },
   "scripts": {
-    "pack-extension": "vsce package --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix",
+    "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix\"",
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "test:it": "rm -rf tests-it/out && tsc -p tests-it && node tests-it/out/main.js",
+    "test:it": "rm -rf tests-it/out && tsc --sourceMap false -p tests-it && node tests-it/out/main.js",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none && yarn run test && yarn run test:it && yarn run pack-extension"
+    "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run test:it && yarn run package:prod",
+    "build:prod:windows": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
+    "build:prod": "run-script-os"
   },
   "jest-junit": {
     "outputDirectory": "./target"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.10",
-    "@kogito-tooling/kie-bc-editors": "0.2.10",
-    "@kogito-tooling/kie-bc-editors-unpacked": "0.2.10",
-    "@kogito-tooling/microeditor-envelope": "0.2.10",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.10",
-    "@kogito-tooling/vscode-extension": "0.2.10"
+    "@kogito-tooling/core-api": "0.2.12",
+    "@kogito-tooling/kie-bc-editors": "0.2.12",
+    "@kogito-tooling/kie-bc-editors-unpacked": "0.2.12",
+    "@kogito-tooling/microeditor-envelope": "0.2.12",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.2.12",
+    "@kogito-tooling/vscode-extension": "0.2.12"
   }
 }
