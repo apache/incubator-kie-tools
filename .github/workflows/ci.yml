@@ -23,21 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Checkout upstream
-        uses: actions/checkout@v2
-        with:
-          ref: master
-
-      - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
-        uses: actions/checkout@v2
-        if: github.base_ref
-        with:
-          ref: ${{ github.base_ref }}
-
-      - name: Merge PR branch with PRs base branch (PR only)
-        if: github.base_ref
-        run: git merge --squash ${{ github.sha }}
-
       # This bash script will set an output for this step. It can be used with steps.version.outputs.version
       - name: Output version
         id: version
