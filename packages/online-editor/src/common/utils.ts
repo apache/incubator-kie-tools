@@ -36,6 +36,7 @@ export function removeDirectories(filePath: string) {
   return filePath.split("/").pop();
 }
 
+
 // FIXME: remove duplications
 export enum OperatingSystem {
   MACOS = "MACOS",
