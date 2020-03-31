@@ -11,6 +11,6 @@
     "test": "echo 'No tests to run'",
     "build:fast": "rm -rf bpmn/* dmn/* && mvn clean package -B -nsu && echo ",
     "build": "yarn run build:fast",
-    "build:prod": "rm -rf bpmn/* dmn/* && mvn clean package -B && echo "
+    "build:prod": "rm -rf bpmn/* dmn/* && mvn clean package -B -nsu && echo "
   }
 }
