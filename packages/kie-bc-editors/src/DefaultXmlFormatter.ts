@@ -21,7 +21,7 @@ let cachedXsltProcessor: XSLTProcessor;
 function newXsltProcessor() {
   const xsltDoc = new DOMParser().parseFromString(
     [
-      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">',
+      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:drools="http://www.jboss.org/drools" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" version="3.0">',
       '  <xsl:strip-space elements="*"/>',
       '  <xsl:template match="para[content-style][not(text())]">',
       '    <xsl:value-of select="normalize-space(.)"/>',
@@ -29,7 +29,9 @@ function newXsltProcessor() {
       '  <xsl:template match="node()|@*">',
       '    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
       "  </xsl:template>",
-      '  <xsl:output indent="yes"/>',
+      // indent="yes" prettifies output
+      // cdata-section-elements="list of nodes with cdata separated by space"
+      '  <xsl:output indent="yes" encoding="UTF-8" cdata-section-elements="bpmn2:completionCondition bpmn2:condition bpmn2:conditionExpression bpmn2:from bpmn2:to bpmn2:documentation drools:metaValue drools:script"/>',
       "</xsl:stylesheet>"
     ].join("\n"),
     "application/xml"
