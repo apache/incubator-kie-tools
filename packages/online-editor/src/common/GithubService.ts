@@ -80,7 +80,6 @@ export class GithubService {
       })
       .then(res => true)
       .catch(octokitError => {
-          console.log(octokitError)
         return fetch(
           `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
         )

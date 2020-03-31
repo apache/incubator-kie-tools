@@ -48,6 +48,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { GithubService } from "../common/GithubService";
+import {fileURLToPath} from "url";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -59,7 +60,8 @@ enum InputFileUrlState {
   INVALID_URL,
   NO_FILE_URL,
   INVALID_EXTENSION,
-  URL_NOT_FOUND
+  URL_NOT_FOUND,
+  CORS_NOT_AVAILABLE
 }
 
 enum UploadFileInputState {
@@ -259,7 +261,9 @@ export function HomePage(props: Props) {
     } else {
       fetch(fileUrl)
         .then(res => checkFileExistence(res.ok))
-        .catch(err => setInputFileUrlState(InputFileUrlState.URL_NOT_FOUND));
+        .catch(err => {
+          setInputFileUrlState(InputFileUrlState.CORS_NOT_AVAILABLE);
+        });
     }
   }, []);
 
@@ -291,10 +295,7 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const openFromUrlButton = useMemo(
-      () => inputFileUrlState === InputFileUrlState.VALID,
-      [inputFileUrlState]
-  );
+  const openFromUrlButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
@@ -318,7 +319,11 @@ export function HomePage(props: Props) {
       case InputFileUrlState.INVALID_URL:
         return "Enter a valid URL";
       case InputFileUrlState.NO_FILE_URL:
-        return "File URL is not valid";
+        return "The provided URL is not from a valid file";
+      case InputFileUrlState.URL_NOT_FOUND:
+        return "The provided URL does not exist";
+      case InputFileUrlState.CORS_NOT_AVAILABLE:
+        return `This URL cannot be opened because “${inputFileUrl}” does not allow other websites to download their files.`;
       default:
         return "";
     }
