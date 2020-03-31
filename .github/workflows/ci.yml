@@ -21,15 +21,15 @@ jobs:
         yarn: [1.19.0]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Checkout upstream
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           ref: master
 
       - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         if: github.base_ref
         with:
           ref: ${{ github.base_ref }}
