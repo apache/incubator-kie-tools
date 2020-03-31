@@ -36,7 +36,7 @@ jobs:
 
       - name: Merge PR branch with PRs base branch (PR only)
         if: github.base_ref
-        run: git merge ${{ github.sha }}
+        run: git merge --squash ${{ github.sha }}
 
       # This bash script will set an output for this step. It can be used with steps.version.outputs.version
       - name: Output version
