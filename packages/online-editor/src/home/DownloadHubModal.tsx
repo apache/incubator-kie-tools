@@ -31,7 +31,7 @@ import { OperatingSystem, getOperatingSystem } from "../common/utils";
 
 enum ModalState {
   SELECT_OS,
-  DONWLOADED,
+  DOWNLOADED,
   CLOSE
 }
 
@@ -50,7 +50,7 @@ export function DownloadHubModal(props: {}) {
 
   const onDownload = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    setModalState(ModalState.DONWLOADED);
+    setModalState(ModalState.DOWNLOADED);
   }, []);
 
   const onClose = useCallback(() => {
@@ -66,16 +66,15 @@ export function DownloadHubModal(props: {}) {
     setSelectIsExpanded(false);
   }, []);
 
-  // FIXME: use correct URL
   const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
-        return "samples/business-modeler-hub-macos.zip";
+        return "$_{WEBPACK_REPLACE__hubMacOsUrl}";
       case OperatingSystem.WINDOWS:
-        return "samples/business-modeler-hub-windows.zip";
+        return "$_{WEBPACK_REPLACE__hubWindowsUrl}";
       case OperatingSystem.LINUX:
       default:
-        return "samples/business-modeler-hub-linux.zip";
+        return "$_{WEBPACK_REPLACE__hubLinuxUrl}";
     }
   }, [operationalSystem]);
 
@@ -151,7 +150,7 @@ export function DownloadHubModal(props: {}) {
           </div>
         </Modal>
       )}
-      {modalState === ModalState.DONWLOADED && (
+      {modalState === ModalState.DOWNLOADED && (
         <Modal
           title="Thank you for downloading Business Modeler Hub Preview!"
           isOpen={true}
