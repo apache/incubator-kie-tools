@@ -124,4 +124,13 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | NATIVE            | false                           |
       | KOGITO_VERSION    | 8.0.0-SNAPSHOT                  |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist
+    And check that page is served
+      | property        | value                                                                                            |
+      | port            | 8080                                                                                             |
+      | path            | /Traffic%20Violation                                                                             |
+      | wait            | 80                                                                                               |
+      | expected_phrase | Should the driver be suspended?                                                                  |
+      | request_method  | POST                                                                                             |
+      | content_type    | application/json                                                                                 |
+      | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
