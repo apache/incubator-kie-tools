@@ -149,8 +149,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/desktop/out/Business Modeler Preview-windows-x64
-          asset_name: Business Modeler Preview-windows-x64.zip
+          asset_path: "./packages/desktop/out/Business Modeler Preview-windows-x64"
+          asset_name: "Business Modeler Preview-windows-x64.zip"
           asset_content_type: application/zip
 
       - name: Upload Hub App for Linux (Ubuntu only)
@@ -185,6 +185,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/hub/out/Business Modeler Hub Preview-windows-x64
-          asset_name: Business Modeler Hub Preview-windows-x64.zip
+          asset_path: "./packages/hub/out/Business Modeler Hub Preview-windows-x64"
+          asset_name: "Business Modeler Hub Preview-windows-x64.zip"
           asset_content_type: application/zip
