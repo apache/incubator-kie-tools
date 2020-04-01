@@ -13,19 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 # runs all BDD tests for the operator
 SCRIPT_NAME=`basename $0`
 SCRIPT_DIR=`dirname $0`
 
 MASTER_RAW_URL=https://raw.githubusercontent.com/kiegroup/kogito-cloud-operator/master/deploy
-CRD_FILES_TO_IMPORT=(
-  "app.kiegroup.org_kogitoapps_crd.yaml"
-  "app.kiegroup.org_kogitodataindices_crd.yaml"
-  "app.kiegroup.org_kogitoinfras_crd.yaml"
-  "app.kiegroup.org_kogitojobsservices_crd.yaml"
-  "app.kiegroup.org_kogitomgmtconsoles_crd.yaml"
-  )
 
 function usage(){
   printf "Run BDD tests."
@@ -86,32 +78,6 @@ function usage(){
   printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
   printf "\n--namespace_name\n\tSpecify name of the namespace which will be used for scenario execution (intended for development purposes)."
   printf "\n"
-}
-
-function download_remote_crds(){
-  deploy_folder=${1}
-  url=${2}
-  echo "Download crd files into '${deploy_folder}' from ${url}"
-
-  mkdir -p "${deploy_folder}/crds"
-  for file in ${CRD_FILES_TO_IMPORT[*]}
-  do
-    curl -k -o "${deploy_folder}/crds/${file}" "${url}/crds/${file}"
-  done
-}
-
-function apply_crds(){
-  deploy_folder=${1}
-  for file in ${CRD_FILES_TO_IMPORT[*]}
-  do
-    crd_file="${deploy_folder}/crds/${file}"
-    echo "Replace crds file ${crd_file}"
-    oc replace -f ${crd_file}
-    if [ "$?" != 0 ]; then
-      echo "crd from file '${file}' may not exist yet in cluster, try to simply apply it"
-      oc apply -f ${crd_file}
-    fi
-  done
 }
 
 function addParam(){
@@ -317,6 +283,7 @@ done
 
 if ${CRDS_UPDATE}; then
   echo "-------- Apply CRD files"
+  source $SCRIPT_DIR/crds-utils.sh
 
   deploy_folder="${SCRIPT_DIR}/../deploy"
   if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then 
