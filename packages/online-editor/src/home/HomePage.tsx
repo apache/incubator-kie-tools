@@ -48,6 +48,7 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { GithubService } from "../common/GithubService";
+import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -60,7 +61,8 @@ enum InputFileUrlState {
   NO_FILE_URL,
   INVALID_EXTENSION,
   NOT_FOUND_URL,
-  CORS_NOT_AVAILABLE
+  CORS_NOT_AVAILABLE,
+  VALIDATING
 }
 
 enum UploadFileInputState {
@@ -252,6 +254,7 @@ export function HomePage(props: Props) {
   }, []);
 
   const validateFileOnUrl = useCallback((fileUrl: string) => {
+    setInputFileUrlState(InputFileUrlState.VALIDATING);
     if (githubService.isGithub(fileUrl)) {
       githubService
         .checkGithubFileExistence(fileUrl)
@@ -267,6 +270,10 @@ export function HomePage(props: Props) {
   }, []);
 
   const validateUrl = useCallback((fileUrl: string) => {
+    if (fileUrl.trim() === "") {
+      setInputFileUrlState(InputFileUrlState.INITIAL);
+      return false;
+    }
     let url: URL;
     try {
       url = new URL(fileUrl);
@@ -290,7 +297,10 @@ export function HomePage(props: Props) {
   }, []);
 
   const validateUrlInputText = useMemo(
-    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    () =>
+      inputFileUrlState === InputFileUrlState.VALID ||
+      inputFileUrlState === InputFileUrlState.INITIAL ||
+      inputFileUrlState === InputFileUrlState.VALIDATING,
     [inputFileUrlState]
   );
 
@@ -311,18 +321,27 @@ export function HomePage(props: Props) {
     }
   }, [inputFileUrl, validateUrlInputText]);
 
-  const messageForInputFileFromUrlState = useMemo(() => {
+  const helperMessageForInputFileFromUrlState = useMemo(() => {
+    switch (inputFileUrlState) {
+      case InputFileUrlState.VALIDATING:
+        return <AnimatedTripleDotLabel label={"Validating URL"} />;
+      default:
+        return "";
+    }
+  }, [inputFileUrlState]);
+
+  const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INVALID_EXTENSION:
         return "The file type of this URL is not supported.";
       case InputFileUrlState.INVALID_URL:
-        return 'This URL is not valid (don\'t forget the "https://"!).';
+        return 'This URL is not valid (don\'t forget "https://"!).';
       case InputFileUrlState.NO_FILE_URL:
         return "This URL is not from a file.";
       case InputFileUrlState.NOT_FOUND_URL:
         return "This URL does not exist.";
       case InputFileUrlState.CORS_NOT_AVAILABLE:
-        return "This URL cannot be opened because it not allow other websites to download their files.";
+        return "This URL cannot be opened because it doesn't allow other websites to access it.";
       default:
         return "";
     }
@@ -540,8 +559,8 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   isValid={validateUrlInputText}
-                  helperText=""
-                  helperTextInvalid={messageForInputFileFromUrlState}
+                  helperText={helperMessageForInputFileFromUrlState}
+                  helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
