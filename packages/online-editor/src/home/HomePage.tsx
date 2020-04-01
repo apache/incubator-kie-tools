@@ -48,7 +48,6 @@ import {
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { GithubService } from "../common/GithubService";
-import { fileURLToPath } from "url";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
