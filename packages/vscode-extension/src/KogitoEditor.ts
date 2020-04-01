@@ -16,6 +16,7 @@
 
 import * as vscode from "vscode";
 import * as fs from "fs";
+import { parse } from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
@@ -112,7 +113,8 @@ export class KogitoEditor {
         },
         receive_previewRequest: preview => {
           if (preview) {
-            fs.writeFileSync(`${this.path}.svg`, preview);
+            const parsedPath = parse(this.path);
+            fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         }
       })
