@@ -27,7 +27,7 @@ oc create namespace scorecard
 oc project scorecard
 
 echo "Running scorecard"
-operator-sdk scorecard
+operator-sdk scorecard --verbose
 exit_code=$?
 
 echo "Scorecard finished with code ${exit_code}"
