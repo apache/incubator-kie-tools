@@ -41,6 +41,7 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerKogitoDataIndexServiceSteps(s, data)
 	registerKogitoInfraSteps(s, data)
 	registerKogitoJobsServiceSteps(s, data)
+	registerKogitoManagementConsoleSteps(s, data)
 	registerKubernetesSteps(s, data)
 	registerMavenSteps(s, data)
 	registerOpenShiftSteps(s, data)
