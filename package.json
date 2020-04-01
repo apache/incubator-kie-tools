@@ -1,0 +1,37 @@
+{
+  "name": "uniforms-patternfly",
+  "version": "1.0.0",
+  "description": "Patternfly forms for uniforms",
+  "repository": "git@github.com:kingsleyzissou/uniforms-patternfly.git",
+  "author": "Gianluca <gianlucazuccarelli@gmail.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc",
+    "clean": "tsc && rimraf coverage",
+    "coverage": "jest --coverage",
+    "lint": "eslint --ext js,ts,tsx src",
+    "reset": "rimraf node_modules",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "24.0.17",
+    "@types/react": "^16.9.29",
+    "@typescript-eslint/eslint-plugin": "2.25.0",
+    "@typescript-eslint/parser": "2.25.0",
+    "classnames": "^2.2.6",
+    "invariant": "^2.2.4",
+    "jest": "24.8.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "16.8.6",
+    "rimraf": "2.6.3",
+    "ts-jest": "^25.3.0",
+    "ts-node": "^8.8.1",
+    "typescript": "3.7.2",
+    "uniforms": "^2.6.7"
+  },
+  "dependencies": {
+    "@patternfly/react-core": "^3.146.0",
+    "@patternfly/react-icons": "^3.15.14"
+  }
+}
