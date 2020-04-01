@@ -296,6 +296,24 @@
     [[ "${output}" != *"--tests.jobs-service-image-tag"* ]]
 }
 
+@test "invoke run-tests with management_console_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --management_console_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.management-console-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with management_console_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --management_console_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.management-console-image-tag"* ]]
+}
+
+@test "invoke run-tests with management_console_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --management_console_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.management-console-image-tag"* ]]
+}
+
 # build
 
 @test "invoke run-tests with maven_mirror" {

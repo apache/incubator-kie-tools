@@ -55,7 +55,7 @@ function usage(){
   printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
 
   # operator information
-  printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup' one."
+  printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
 
   # files/binaries
@@ -66,6 +66,7 @@ function usage(){
   printf "\n--services_image_version {VERSION}\n\tSet the services image version. Default to current operator version"
   printf "\n--data_index_image_tag {IMAGE_TAG}\n\tSet the Kogito Data Index image tag ('services_image_version' is ignored)"
   printf "\n--jobs_service_image_tag {IMAGE_TAG}\n\tSet the Kogito Jobs Service image tag ('services_image_version' is ignored)"
+  printf "\n--management_console_image_tag {IMAGE_TAG}\n\tSet the Kogito Management Console image tag ('services_image_version' is ignored)"
 
   # build
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
@@ -244,6 +245,10 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.jobs-service-image-tag" ${1}; then shift; fi
   ;;
+  --management_console_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.management-console-image-tag" ${1}; then shift; fi
+  ;;
 
   # build
   --maven_mirror)
@@ -328,9 +333,8 @@ if ${CRDS_UPDATE}; then
 fi
 
 echo "-------- Running BDD tests"
-
-echo "DEBUG=${DEBUG} go test ./test -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
-DEBUG=${DEBUG} go test ./test -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
+echo "DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
+DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
 
