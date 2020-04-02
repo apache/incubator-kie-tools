@@ -1,0 +1,72 @@
+{
+  "extends": ["plugin:import/errors", "vazco"],
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "extends": ["plugin:import/typescript", "vazco/typescript"],
+      "rules": {
+        "@typescript-eslint/ban-ts-ignore": "off",
+        "@typescript-eslint/class-name-casing": [
+          "error",
+          { "allowUnderscorePrefix": true }
+        ],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/require-await": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "import/default": "off",
+        "prefer-rest-params": "off",
+        "react/no-children-prop": "off",
+        "react/prop-types": "off"
+      },
+      "settings": {
+        "import/resolver": {
+          "typescript": {}
+        }
+      }
+    },
+    {
+      "files": ["**/__mocks__/**/*", "**/__tests__/*"],
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": ["website/**/*"],
+      "settings": {
+        "import/resolver": {
+          "alias": {
+            "map": [
+              ["@docusaurus", "@docusaurus/core/lib/client/exports"],
+              ["@theme", "@docusaurus/theme-classic/src/theme"]
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "root": true,
+  "rules": {
+    "import/default": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          ["builtin", "external", "internal"],
+          ["index", "parent", "sibling"],
+          ["unknown"]
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "react/prop-types": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
