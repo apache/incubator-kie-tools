@@ -43,13 +43,13 @@
   <dependency>
     <groupId>junit</groupId>
     <artifactId>junit</artifactId>
-    <version>4.12</version>
+    <version>${version.junit}</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>com.thoughtworks.xstream</groupId>
     <artifactId>xstream</artifactId>
-    <version>1.4.10</version>
+    <version>${version.com.thoughtworks.xstream}</version>
     <scope>test</scope>
   </dependency>
 </dependencies>
