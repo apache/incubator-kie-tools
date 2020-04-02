@@ -59,12 +59,12 @@ if [ "$release" = "true" ]; then
     cleanTemplateFiles
 
     if [ "${i}" = "windows" ]; then
-      zip -j "build/_output/release/kogito-${version}-${i}-${arch}.zip" build/_output/bin/kogito
+      zip -j "build/_output/release/kogito-cli-${version}-${i}-${arch}.zip" build/_output/bin/kogito
       if [ $? -ne 0 ]; then
         exit 1
       fi
     else
-      tar -czvf "build/_output/release/kogito-${version}-${i}-${arch}.tar.gz" -C build/_output/bin kogito
+      tar -czvf "build/_output/release/kogito-cli-${version}-${i}-${arch}.tar.gz" -C build/_output/bin kogito
       if [ $? -ne 0 ]; then
         exit 1
       fi
