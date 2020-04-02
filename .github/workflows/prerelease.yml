@@ -125,9 +125,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64
-          asset_name: Business Modeler Preview-linux-x64.zip
-          asset_content_type: application/zip
+          asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
+          asset_name: Business Modeler Preview-linux-x64.tar.gz
+          asset_content_type: application/tar+gzip
 
       - name: Upload Desktop App for macOS (macOS only)
         if: matrix.os == 'macos-latest'
@@ -137,7 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64
+          asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64.zip
           asset_name: Business Modeler Preview-darwin-x64.zip
           asset_content_type: application/zip
 
@@ -161,9 +161,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/hub/out/Business Modeler Hub Preview-linux-x64
-          asset_name: Business Modeler Hub Preview-linux-x64.zip
-          asset_content_type: application/zip
+          asset_path: ./packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+          asset_name: Business Modeler Hub Preview-linux-x64.tar.gz
+          asset_content_type: application/tar+gzip
 
       - name: Upload Hub App for macOS (macOS only)
         if: matrix.os == 'macos-latest'
@@ -173,7 +173,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64
+          asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
           asset_name: Business Modeler Hub Preview-darwin-x64.zip
           asset_content_type: application/zip
 
