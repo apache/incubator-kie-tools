@@ -1,6 +1,7 @@
 import { SyntheticEvent } from 'react';
 
 import Bridge from './Bridge';
+import useField from './useField';
 
 export type ChangedMap<T> = T extends {}
   ? { [P in keyof T]?: ChangedMap<T[P]> }

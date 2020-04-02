@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 import { Children, ReactElement, ReactNode, cloneElement } from 'react';
 
-import { joinName } from 'uniforms';
+import joinName from './joinName';
 
 export default function injectName(
   name: string,
