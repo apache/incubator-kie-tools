@@ -113,6 +113,11 @@ export function EditorPage(props: Props) {
 
   const closeGithubTokenModal = useCallback(() => setGithubTokenModalVisible(false), []);
 
+  const continueExport = useCallback(() => {
+    closeGithubTokenModal();
+    requestExportGist();
+  }, []);
+
   const onContentResponse = useCallback(
     (content: EditorContent) => {
       if (action === ActionType.SAVE) {
@@ -136,22 +141,20 @@ export function EditorPage(props: Props) {
           setCopySuccessAlertVisible(true);
         }
       } else if (action === ActionType.EXPORT_GIST) {
-        if (context.githubService.isAuthenticated()) {
-          context.githubService
-            .createGist(fileNameWithExtension, content.content, content.path || fileNameWithExtension, true)
-            .then(gistUrl => {
-              setGithubTokenModalVisible(false);
-              const fileUrl = new URL(gistUrl);
-              const fileExtension = extractFileExtension(fileUrl.pathname);
-              // FIXME: KOGITO-1202
-              window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
-            })
-            .catch(e => {
-              setGithubTokenModalVisible(true);
-            });
-        } else {
+        if (!context.githubService.isAuthenticated()) {
           setGithubTokenModalVisible(true);
+          return;
         }
+
+        context.githubService
+          .createGist(fileNameWithExtension, content.content, content.path ?? fileNameWithExtension, true)
+          .then(gistUrl => {
+            setGithubTokenModalVisible(false);
+            const fileExtension = extractFileExtension(new URL(gistUrl).pathname);
+            // FIXME: KOGITO-1202
+            window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
+          })
+          .catch(() => setGithubTokenModalVisible(true));
       }
     },
     [fileNameWithExtension]
@@ -231,8 +234,9 @@ export function EditorPage(props: Props) {
         )}
         {!fullscreen && githubTokenModalVisible && (
           <GithubTokenModal
+            isOpen={githubTokenModalVisible}
             onClose={closeGithubTokenModal}
-            onContinue={requestExportGist} />
+            onContinue={continueExport} />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <Editor

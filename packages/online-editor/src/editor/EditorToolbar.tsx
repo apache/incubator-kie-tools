@@ -115,7 +115,7 @@ export function EditorToolbar(props: Props) {
         Download SVG
       </DropdownItem>,
       <DropdownItem key="exportGist" component="button" onClick={props.onExportGist}>
-        Gist it
+        Gist it!
       </DropdownItem>
       /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
         Get shareable URL

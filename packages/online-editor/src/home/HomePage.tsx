@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
@@ -82,7 +82,6 @@ export function HomePage(props: Props) {
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [gistRawUrl, setGistRawUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
@@ -242,45 +241,54 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
-  const validateUrl = useCallback((fileUrl: string) => {
-    let url: URL;
-    try {
-      url = new URL(fileUrl);
-    } catch (e) {
-      setInputFileUrlState(InputFileUrlState.INVALID_URL);
-      return;
+  useEffect(() => {
+    if (context.githubService.isGist(inputFileUrl)) {
+      const gistId = context.githubService.extractGistId(inputFileUrl);
+      context.githubService.getGistRawUrlFromId(gistId)
+        .then(rawUrlStr => setGistRawUrl(rawUrlStr));
     }
 
-    if (context.githubService.isGist(fileUrl)) {
-      const gistId = context.githubService.extractGistId(fileUrl);
-      context.githubService.getGistRawUrlFromId(gistId)
-        .then((rawUrlStr: string) => {
-          const rawUrl = new URL(rawUrlStr);
-          const fileExtension = extractFileExtension(rawUrl.pathname);
-          if (fileExtension && context.router.getLanguageData(fileExtension)) {
-            setGistRawUrl(rawUrlStr);
-            setInputFileUrlState(InputFileUrlState.VALID);
-          } else {
-            setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
-          }
-        })
-        .catch(() => setInputFileUrlState(InputFileUrlState.INVALID_GIST));
-    } else {
-      const fileExtension = extractFileExtension(url.pathname);
-      if (!fileExtension) {
-        setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-      } else if (!context.router.getLanguageData(fileExtension)) {
-        setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+    return () => { /* Do nothing */ };
+  }, [inputFileUrl]);
+
+  const inputFileUrlState = useMemo(() => {
+    if (inputFileUrl.trim() === "") {
+      return InputFileUrlState.INITIAL;
+    }
+
+    if (context.githubService.isGist(inputFileUrl)) {
+      if (!gistRawUrl) {
+        return InputFileUrlState.INVALID_GIST;
+      }
+
+      const gistExtension = extractFileExtension(new URL(gistRawUrl).pathname);
+      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+        return InputFileUrlState.VALID;
       } else {
-        setInputFileUrlState(InputFileUrlState.VALID);
+        return InputFileUrlState.INVALID_GIST_EXTENSION;
       }
     }
-  }, []);
+
+    let url: URL;
+    try {
+      url = new URL(inputFileUrl);
+    } catch (e) {
+      return InputFileUrlState.INVALID_URL;
+    }
+
+    const fileExtension = extractFileExtension(url.pathname);
+    if (!fileExtension) {
+      return InputFileUrlState.NO_FILE_URL;
+    } else if (!context.router.getLanguageData(fileExtension)) {
+      return InputFileUrlState.INVALID_EXTENSION;
+    } else {
+      return InputFileUrlState.VALID;
+    }
+  }, [inputFileUrl, gistRawUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
     setGistRawUrl("");
-    validateUrl(fileUrl);
   }, []);
 
   const validatedInputUrl = useMemo(
@@ -288,17 +296,10 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const onInputFileFromUrlBlur = useCallback(() => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState(InputFileUrlState.INITIAL);
-    }
-  }, [inputFileUrl]);
-
   const openFileFromUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
       const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
-      const fileUrl = new URL(urlToLoad);
-      const fileExtension = extractFileExtension(fileUrl.pathname);
+      const fileExtension = extractFileExtension(new URL(urlToLoad).pathname);
       // FIXME: KOGITO-1202
       window.location.href = `?file=${urlToLoad}#/editor/${fileExtension}`;
     }
@@ -528,7 +529,6 @@ export function HomePage(props: Props) {
                   <TextInput
                     isRequired={true}
                     autoComplete={"off"}
-                    onBlur={onInputFileFromUrlBlur}
                     isValid={validatedInputUrl}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
