@@ -4,7 +4,7 @@ const PatternFly = (parent: any): any =>
   class extends parent {
     static PatternFly = PatternFly;
 
-    static displayName = `AntD${parent.displayName}`;
+    static displayName = `Patternfly${parent.displayName}`;
   };
 
 export default PatternFly(BaseForm);

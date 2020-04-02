@@ -1,11 +1,10 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
 import { connectField, filterDOMProps, joinName } from 'uniforms';
-import { List } from '@patternfly/react-core';
+import { List, Tooltip } from '@patternfly/react-core';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
-import { Tooltip } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 export type ListFieldProps<T> = {
   value: T[];
@@ -55,10 +54,9 @@ function ListField<T>({
       )}
 
       {!!(error && showInlineError) && <div>{errorMessage}</div>}
-      
-      <List component="ul"> 
-        {
-          children
+
+      <List component="ul">
+        {children
           ? value.map((item: any, index: number) =>
               Children.map(children as JSX.Element, child =>
                 React.cloneElement(child, {
@@ -78,14 +76,13 @@ function ListField<T>({
                 name={joinName(name, index)}
                 {...itemProps}
               />
-            ))
-        }
+            ))}
       </List>
 
       <ListAddField name={`${name}.$`} initialCount={initialCount} />
     </div>
   );
-};
+}
 
 export default connectField(ListField, {
   includeInChain: false,

@@ -1,6 +1,7 @@
 import React, { Ref } from 'react';
 import { connectField } from 'uniforms';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
+
 import wrapField from './wrapField';
 
 const DateConstructor = (typeof global === 'object' ? global : window).Date;
@@ -21,8 +22,8 @@ export type DateFieldProps = {
   disabled: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
 
-const Date = (props: DateFieldProps) => (
-  wrapField(
+function Date(props: DateFieldProps) {
+  return wrapField(
     props,
     <TextInput
       isDisabled={props.disabled}
@@ -30,14 +31,13 @@ const Date = (props: DateFieldProps) => (
       max={dateFormat(props.max)}
       min={dateFormat(props.min)}
       name={props.name}
-      onChange={(value) => dateParse(value, props.onChange)}
+      onChange={value => dateParse(value, props.onChange)}
       placeholder={props.placeholder}
       ref={props.inputRef}
       type="datetime-local"
-      css=""
       value={dateFormat(props.value)}
-    />
-  )
-);
+    />,
+  );
+}
 
 export default connectField(Date);

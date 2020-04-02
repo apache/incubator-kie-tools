@@ -1,6 +1,7 @@
-import React, { HTMLProps, Ref } from 'react';
-import useForm from './helpers/useForm';
-import { ButtonProps, Button } from '@patternfly/react-core'
+import React from 'react';
+import { ButtonProps, Button } from '@patternfly/react-core';
+
+import useForm from './uniforms/useForm';
 
 export type SubmitFieldProps = {
   inputRef: undefined;
@@ -18,7 +19,9 @@ function SubmitField({
 
   return (
     <Button
-      isDisabled={disabled === undefined ? !!(error || state.disabled) : disabled}
+      isDisabled={
+        disabled === undefined ? !!(error || state.disabled) : disabled
+      }
       type="submit"
       ref={inputRef}
       variant="primary"

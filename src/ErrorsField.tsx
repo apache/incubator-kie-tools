@@ -1,7 +1,7 @@
- 
 import React, { HTMLProps } from 'react';
 import { filterDOMProps } from 'uniforms';
-import useForm from './helpers/useForm';
+
+import useForm from './uniforms/useForm';
 
 export type ErrorsFieldProps = HTMLProps<HTMLDivElement>;
 

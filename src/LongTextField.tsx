@@ -7,7 +7,7 @@ export type LongTextFieldProps = {
   inputRef: Ref<TextArea>;
   value?: string;
   prefix?: string;
-} &  TextAreaProps;
+} & TextAreaProps;
 
 const LongText = ({
   disabled,
@@ -23,7 +23,7 @@ const LongText = ({
   <TextArea
     disabled={disabled}
     name={name}
-    onChange={(value) => onChange(value)}
+    onChange={value => onChange(value)}
     placeholder={placeholder}
     ref={inputRef}
     value={value}

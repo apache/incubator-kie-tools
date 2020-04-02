@@ -1,8 +1,9 @@
 import React from 'react';
 import { connectField, filterDOMProps, joinName } from 'uniforms';
 import { Button, ButtonProps } from '@patternfly/react-core';
-import useField from './helpers/useField';
 import { MinusCircleIcon } from '@patternfly/react-icons';
+
+import useField from './uniforms/useField';
 
 export type ListDelFieldProps<T> = {
   name: string;
@@ -39,6 +40,6 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
       <MinusCircleIcon />
     </Button>
   );
-};
+}
 
 export default ListDel;

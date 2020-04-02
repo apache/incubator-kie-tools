@@ -21,16 +21,16 @@ const Bool = ({
   value,
   ...props
 }) => (
-    <Checkbox
-      isChecked={!!value}
-      isDisabled={disabled}
-      id={id}
-      name={name}
-      onChange={() => disabled || onChange(!value)}
-      ref={inputRef}
-      label={label}
-      {...filterDOMProps(props)}
-    />
-  );
+  <Checkbox
+    isChecked={!!value}
+    isDisabled={disabled}
+    id={id}
+    name={name}
+    onChange={() => disabled || onChange(!value)}
+    ref={inputRef}
+    label={label}
+    {...filterDOMProps(props)}
+  />
+);
 
 export default connectField(Bool);

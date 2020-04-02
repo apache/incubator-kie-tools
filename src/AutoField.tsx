@@ -1,7 +1,7 @@
 import invariant from 'invariant';
 import { ComponentType, createElement } from 'react';
-import useField from './helpers/useField';
 
+import { useField } from './uniforms';
 import BoolField from './BoolField';
 import DateField from './DateField';
 import ListField from './ListField';
@@ -56,4 +56,4 @@ export default function AutoField(originalProps: AutoFieldProps) {
 
   // TODO: The flow along with the invariant above ensures its existence.
   return createElement(component!, originalProps);
-};
+}

@@ -1,11 +1,5 @@
 import React from 'react';
-// import omit from 'lodash/omit';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
-import { any } from 'prop-types';
-// import { filterDOMProps } from 'uniforms';
-
-// const _filterDOMPropsList = ['fullWidth', 'helperText', 'margin', 'variant'];
-// const _filterDOMProps = props => omit(props, _filterDOMPropsList);
 
 type WrapperProps = {
   error?: boolean;
@@ -30,16 +24,14 @@ export default function wrapField(
 ) {
   return (
     <FormGroup
-      fieldId={ id }
-      label={ label }
-      isValid={ error }
-      type={ type }
-      helperText={ help }
-      helperTextInvalid={ errorMessage }
+      fieldId={id}
+      label={label}
+      isValid={error}
+      type={type}
+      helperText={help}
+      helperTextInvalid={errorMessage}
     >
-      { children }
+      {children}
     </FormGroup>
   );
 }
-
-// filterDOMProps.register();
