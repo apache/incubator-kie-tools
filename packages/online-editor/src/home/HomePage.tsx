@@ -247,8 +247,6 @@ export function HomePage(props: Props) {
       context.githubService.getGistRawUrlFromId(gistId)
         .then(rawUrlStr => setGistRawUrl(rawUrlStr));
     }
-
-    return () => { /* Do nothing */ };
   }, [inputFileUrl]);
 
   const inputFileUrlState = useMemo(() => {

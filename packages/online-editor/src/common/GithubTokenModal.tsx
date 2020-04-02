@@ -72,12 +72,12 @@ export function GithubTokenModal(props: Props) {
       onClose={props.onClose}
       title=""
       header={
-        <React.Fragment>
+        <>
           <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
             GitHub OAuth Token
           </Title>
           <p className="pf-u-pt-sm">Authentication required for exporting to GitHub gist.</p>
-        </React.Fragment>
+        </>
       }
       footer={
         <div className="pf-u-w-100">
@@ -97,7 +97,6 @@ export function GithubTokenModal(props: Props) {
               isValid={!!authenticated}
               value={tokenToDisplay}
               onPaste={onPasteHandler}
-              onChange={() => { /**/ }}
               autoFocus={true}
             />
             {authenticated && (

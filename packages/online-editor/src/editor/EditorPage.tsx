@@ -116,7 +116,7 @@ export function EditorPage(props: Props) {
   const continueExport = useCallback(() => {
     closeGithubTokenModal();
     requestExportGist();
-  }, []);
+  }, [closeGithubTokenModal, requestExportGist]);
 
   const onContentResponse = useCallback(
     (content: EditorContent) => {
@@ -147,7 +147,12 @@ export function EditorPage(props: Props) {
         }
 
         context.githubService
-          .createGist(fileNameWithExtension, content.content, content.path ?? fileNameWithExtension, true)
+          .createGist({
+            filename: fileNameWithExtension,
+            content: content.content,
+            description: content.path ?? fileNameWithExtension,
+            isPublic: true
+          })
           .then(gistUrl => {
             setGithubTokenModalVisible(false);
             const fileExtension = extractFileExtension(new URL(gistUrl).pathname);
@@ -204,6 +209,14 @@ export function EditorPage(props: Props) {
       document.removeEventListener("mozfullscreenchange", toggleFullScreen);
       document.removeEventListener("msfullscreenchange", toggleFullScreen);
     };
+  });
+
+  useEffect(() => {
+    (async function tryAuthenticate() {
+      if (!context.githubService.isAuthenticated()) {
+        await context.githubService.authenticate();
+      }
+    })();
   });
 
   return (

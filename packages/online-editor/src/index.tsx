@@ -25,16 +25,13 @@ import { Alert, AlertVariant, AlertActionLink } from "@patternfly/react-core";
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
 
-githubService.authenticate()
-  .then(() => {
-    if (urlParams.has("ext")) {
-      waitForEventWithFileData();
-    } else if (urlParams.has("file")) {
-      openFileByUrl();
-    } else {
-      openDefaultOnlineEditor();
-    }
-  });
+if (urlParams.has("ext")) {
+  waitForEventWithFileData();
+} else if (urlParams.has("file")) {
+  openFileByUrl();
+} else {
+  openDefaultOnlineEditor();
+}
 
 function openDefaultOnlineEditor() {
   ReactDOM.render(

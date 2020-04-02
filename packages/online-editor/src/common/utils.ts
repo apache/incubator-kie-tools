@@ -62,6 +62,7 @@ export function getOperatingSystem() {
 
   return undefined;
 }
+
 export function getCookie(name: string) {
   const value = "; " + document.cookie;
   const parts = value.split("; " + name + "=");

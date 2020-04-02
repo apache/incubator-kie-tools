@@ -32,15 +32,28 @@ export interface FileInfo {
   path: string;
 }
 
+export interface CreateGistArgs {
+  filename: string;
+  content: string;
+  description: string;
+  isPublic: boolean;
+}
+
 export class GithubService {
   private octokit: Octokit;
   private authenticated: boolean;
 
-  private init(): void {
+  constructor() {
+    this.init(false);
+  }
+
+  private init(resetToken: boolean): void {
     this.octokit = new Octokit();
     this.authenticated = false;
 
-    setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, EMPTY_TOKEN);
+    if (resetToken) {
+      setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, EMPTY_TOKEN);
+    }
   }
 
   private initAuthenticated(token: string): void {
@@ -63,26 +76,24 @@ export class GithubService {
   }
 
   public reset(): void {
-    this.init();
+    this.init(true);
   }
 
-  public authenticate(token: string = EMPTY_TOKEN): Promise<boolean> {
+  public async authenticate(token: string = EMPTY_TOKEN) {
     token = this.resolveToken(token);
 
-    return this.validateToken(token).then(isValid => {
-      if (isValid) {
-        this.initAuthenticated(token);
-      } else {
-        this.init();
-      }
+    if (!(await this.validateToken(token))) {
+      this.init(true);
+      return false;
+    }
 
-      return Promise.resolve(isValid);
-    });
+    this.initAuthenticated(token);
+    return true;
   }
 
   public resolveToken(token: string = EMPTY_TOKEN): string {
     if (!token) {
-      token = getCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME) || EMPTY_TOKEN;
+      return getCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME) ?? EMPTY_TOKEN;
     }
 
     return token;
@@ -136,24 +147,24 @@ export class GithubService {
       });
   }
 
-  public createGist(filename: string, content: string, description: string, publicGist: boolean): Promise<string> {
+  public createGist(args: CreateGistArgs): Promise<string> {
     if (!this.isAuthenticated()) {
       return Promise.reject("User not authenticated.");
     }
 
     const gistContent: any = {
-      description: description,
-      public: publicGist,
+      description: args.description,
+      public: args.isPublic,
       files: {
-        [filename]: {
-          content: content
+        [args.filename]: {
+          content: args.content
         }
       }
     };
 
     return this.octokit.gists
       .create(gistContent)
-      .then(response => Promise.resolve(response.data.files[filename].raw_url))
+      .then(response => response.data.files[args.filename].raw_url)
       .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
@@ -162,7 +173,7 @@ export class GithubService {
       .get({ gist_id: gistId })
       .then(response => {
         const filename = Object.keys(response.data.files)[0];
-        return Promise.resolve(response.data.files[filename].raw_url);
+        return response.data.files[filename].raw_url;
       })
       .catch(e => Promise.reject("Not able to get gist from Github."));
   }
