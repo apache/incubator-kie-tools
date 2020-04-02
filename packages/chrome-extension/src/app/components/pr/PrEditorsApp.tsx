@@ -24,29 +24,39 @@ import { Logger } from "../../../Logger";
 
 export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
   const globals = useGlobals();
-  const [prFileContainers, setPrFileContainers] = useState(
-    supportedPrFileElements(globals.logger, globals.router, globals.dependencies)
-  );
 
-  useMutationObserverEffect(
-    new MutationObserver(mutations => {
+  const [prFileContainers, setPrFileContainers] = useState<HTMLElement[]>([]);
+
+  useEffect(() => {
+    setPrFileContainers(supportedPrFileElements(globals.logger, globals.router, globals.dependencies));
+  }, []);
+
+  useEffect(() => {
+    const observer = new MutationObserver(mutations => {
       const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
-
       if (addedNodes.length <= 0) {
         return;
       }
 
       const newContainers = supportedPrFileElements(globals.logger, globals.router, globals.dependencies);
-      if (newContainers.length !== prFileContainers.length) {
-        globals.logger.log("Found new containers...");
-        setPrFileContainers(newContainers);
+      if (newContainers.length === prFileContainers.length) {
+        globals.logger.log("Found new unsupported containers");
+        return;
       }
-    }),
-    {
+
+      globals.logger.log("Found new containers...");
+      setPrFileContainers(newContainers);
+    });
+
+    observer.observe(globals.dependencies.all.pr__mutationObserverTarget()!, {
       childList: true,
       subtree: true
-    }
-  );
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [prFileContainers]);
 
   return (
     <>
@@ -73,10 +83,9 @@ function supportedPrFileElements(logger: Logger, router: Router, dependencies: D
   );
 }
 
-function useMutationObserverEffect(observer: MutationObserver, options: MutationObserverInit) {
-  const globals = useGlobals();
+function useMutationObserverEffect(target: HTMLElement, observer: MutationObserver, options: MutationObserverInit) {
   useEffect(() => {
-    observer.observe(globals.dependencies.all.pr__mutationObserverTarget()!, options);
+    observer.observe(target, options);
     return () => observer.disconnect();
   }, []);
 }
