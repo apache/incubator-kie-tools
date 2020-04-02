@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./ResourceContentService";
-export * from "./ResourceContent";
-export * from "./ResourcesList";
-export * from "./ContentType";
-export * from "./ResourceContentOptions";
-export * from "./ResourceContentRequest";
-export * from "./SearchType";
-export * from "./ResourceListOptions";
-export * from "./ResourceListRequest";
+import { ListType } from "./SearchType";
+
+export interface ResourceListOptions {
+  type: ListType;
+}

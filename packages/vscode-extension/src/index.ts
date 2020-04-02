@@ -36,8 +36,8 @@ export function startExtension(args: {
   context: vscode.ExtensionContext;
   router: Router;
 }) {
-  const resourceContentService = new VsCodeResourceContentService();
   const editorStore = new KogitoEditorStore();
+  const resourceContentService = new VsCodeResourceContentService(editorStore);
   const editorFactory = new KogitoEditorFactory(
     args.context,
     args.router,

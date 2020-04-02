@@ -22,6 +22,7 @@ import {
   ResourcesList,
   ChannelType,
   ResourceContentRequest,
+  ResourceListRequest,
   KogitoEdit
 } from "@kogito-tooling/core-api";
 
@@ -70,9 +71,9 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         console.debug(`Resource Content Request`);
         self.respond_resourceContent(new ResourceContent(resourceContentRequest.path, undefined));
       },
-      receive_resourceListRequest(globPattern: string) {
+      receive_resourceListRequest(request:ResourceListRequest) {
         console.debug(`Resource List Request`);
-        self.respond_resourceList(new ResourcesList(globPattern, []));
+        self.respond_resourceList(new ResourcesList(request.pattern, []));
       },
       receive_previewRequest(previewSvg: string) {
         console.debug("received preview");

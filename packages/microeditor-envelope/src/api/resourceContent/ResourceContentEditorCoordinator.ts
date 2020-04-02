@@ -15,7 +15,7 @@
  */
 
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { ResourcesList, ResourceContent, ResourceContentOptions } from "@kogito-tooling/core-api";
+import { ResourcesList, ResourceContent, ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
 import { ResourceContentApi } from "./ResourceContentApi";
 
 export class ResourceContentEditorCoordinator {
@@ -48,7 +48,6 @@ export class ResourceContentEditorCoordinator {
     return {
       get(path: string, opts?: ResourceContentOptions) {
         messageBus.request_resourceContent(path, opts);
-
         return new Promise(resolve => {
           const previousCallback = pendingResourceRequests.get(path);
           pendingResourceRequests.set(path, (value: string) => {
@@ -59,8 +58,8 @@ export class ResourceContentEditorCoordinator {
           });
         });
       },
-      list(pattern: string) {
-        messageBus.request_resourceList(pattern);
+      list(pattern: string, opts?: ResourceListOptions) {
+        messageBus.request_resourceList(pattern, opts);
         return new Promise(resolve => {
           const previousCallback = pendingResourceListRequests.get(pattern);
           pendingResourceListRequests.set(pattern, (value: string[]) => {
