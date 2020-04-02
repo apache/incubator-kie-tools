@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
+
 .pf-c-page__header {
   /* this adjusts the max specifically for our logo */
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+}
+
+.kogito--editor-hub-download_link {
+  text-decoration: none;
+  color: var(--pf-global--Color--light-100);
+}
+
+.kogito--editor-hub-download_modal-footer {
+  --pf-c-modal-box__footer--MarginTop: 0.5rem;
 }
 
 .kogito--editor-landing__gallery {
