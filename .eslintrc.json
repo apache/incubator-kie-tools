@@ -10,6 +10,7 @@
           "error",
           { "allowUnderscorePrefix": true }
         ],
+        "@typescript-eslint/no-unnecessary-type-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-explicit-any": "off",
@@ -20,7 +21,8 @@
         "import/default": "off",
         "prefer-rest-params": "off",
         "react/no-children-prop": "off",
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+        "prettier/prettier": "off"
       },
       "settings": {
         "import/resolver": {
