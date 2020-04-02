@@ -5,10 +5,11 @@ import { ButtonProps, Button } from '@patternfly/react-core'
 export type SubmitFieldProps = {
   inputRef: undefined;
   name: string;
-} & ButtonProps;
+  disabled: boolean;
+} & Omit<ButtonProps, 'isDisabled'>;
 
 function SubmitField({
-  isDisabled,
+  disabled,
   inputRef,
   value,
   ...props
@@ -17,7 +18,7 @@ function SubmitField({
 
   return (
     <Button
-      isDisabled={isDisabled === undefined ? !!(error || state.disabled) : isDisabled}
+      isDisabled={disabled === undefined ? !!(error || state.disabled) : disabled}
       type="submit"
       ref={inputRef}
       variant="primary"
@@ -27,7 +28,5 @@ function SubmitField({
     </Button>
   );
 }
-
-SubmitField.defaultProps = { value: 'Submit' };
 
 export default SubmitField;
