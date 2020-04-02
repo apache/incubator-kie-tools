@@ -7,7 +7,8 @@ export type RadioFieldProps = {
   allowedValues: string[];
   onChange: (string) => void;
   value?: string;
-} & RadioProps;
+  disabled: boolean;
+} & Omit<RadioProps, 'isDisabled'>;
 
 const Radio = (props: RadioFieldProps) => (
   <React.Fragment>
@@ -15,7 +16,7 @@ const Radio = (props: RadioFieldProps) => (
       < RadioField
         key={item}
         isChecked={item === props.value}
-        isDisabled={props.isDisabled}
+        isDisabled={props.disabled}
         id={`${props.id}-${escape(item)}`}
         name={name}
         label={props.label}
