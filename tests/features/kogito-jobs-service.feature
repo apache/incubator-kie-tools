@@ -75,6 +75,7 @@ Feature: Kogito-jobs-service feature.
       | ENABLE_EVENTS       | true  |
      Then container log should contain KAFKA_BOOTSTRAP_SERVERS env not found, please set it.
     
+     @ignore
   Scenario: verify if the events is correctly enabled
     When container is started with env
       | variable                      | value           |

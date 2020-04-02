@@ -22,8 +22,8 @@ rm -rf /tmp/kogito-examples/dmn-quarkus-example/pom.xml
 # by adding the application.properties file telling quarkus to start on
 # port 10000, the purpose of this tests is make sure that the images
 # will ensure the use of the port 8080.
-cp ${TEST_DIR}/application.properties kogito-examples/drools-quarkus-example/src/main/resources/META-INF/
+cp ${TEST_DIR}/application.properties /tmp/kogito-examples/drools-quarkus-example/src/main/resources/META-INF/
 
 cd drools-quarkus-example
-git add --all
+git add --all  :/
 git commit -am "test"
