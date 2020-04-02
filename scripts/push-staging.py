@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # This script will be responsible to fetch the latest rc tags from each image and define the next
-# rc tag to avoid images get overriden.
+# rc tag to avoid images get overridden.
 #
 # Requires QUAY_TOKEN env to be set.
 # export QUAY_TOKEN=XXXXX

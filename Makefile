@@ -70,5 +70,5 @@ _push:
 .PHONY: push-staging
 push-staging: build _push-staging
 _push-staging:
-	python3 push-staging.py
+	python3 scripts/push-staging.py
 
