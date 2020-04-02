@@ -4,13 +4,12 @@ import wrapField from './wrapField';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
 
 export type TextFieldProps = {
-  // inputClassName?: string;
-  // error?: boolean;
   id: any,
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value: string) => void;
   value?: string;
-} & TextInputProps;
+  disabled: boolean;
+} & Omit<TextInputProps, 'isDisabled'>;
 
 const Text = (props: TextFieldProps) => (
   wrapField(
@@ -19,7 +18,7 @@ const Text = (props: TextFieldProps) => (
       id={props.id}
       name={name}
       css={CSS}
-      isDisabled={props.isDisabled}
+      isDisabled={props.disabled}
       onChange={(value) => props.onChange(value)}
       placeholder={props.placeholder}
       ref={props.inputRef}
