@@ -25,6 +25,7 @@ import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/re
 import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
+import { removeFileExtension } from "../common/utils";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -156,7 +157,8 @@ export function EditorPage(props: Props) {
       downloadRef.current.download = fileNameWithExtension;
     }
     if (downloadPreviewRef.current) {
-      downloadPreviewRef.current.download = `${fileNameWithExtension}.svg`;
+      const fileName = removeFileExtension(fileNameWithExtension);
+      downloadPreviewRef.current.download = `${fileName}-svg.svg`;
     }
   }, [fileNameWithExtension]);
 

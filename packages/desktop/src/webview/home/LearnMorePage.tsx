@@ -41,7 +41,6 @@ export function LearnMorePage() {
   const context = useContext(GlobalContext);
 
   const externalLink = useCallback((event: React.MouseEvent<HTMLElement>, link: string) => {
-    console.log(typeof event);
     event.preventDefault();
     electron.shell.openExternal(link).catch(e => {
       console.error("Error while opening link: " + e);

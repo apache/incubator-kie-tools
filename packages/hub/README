@@ -1,0 +1,19 @@
+Please follow these instructions for running Business Modeler Hub Preview.
+
+Linux
+=====
+1. Before running the application, make sure that you give the right permissions to the executable.
+2. Run `chmod u+x ./Business\ Modeler\ Hub\ Preview`.
+3. Then, to run the application, simply run `./Business\ Modeler\ Hub\ Preview`
+
+
+Windows
+=====
+1. Simply double-click on "Business Modeler Hub Preview.exe".
+
+
+macOS
+=====
+1. Right-click on "Business Modeler Hub Preview.app" and choose "Open". Close the popup that will appear.
+2. Right-click on it again and choose Open. A slightly different popup will appear. Choose "Open" and the application will open.
+3. To be able to run the Business Modeler Preview Desktop, run the following command on a Terminal window: `chmod -R u+x Business\ Modeler\ Hub\ Preview.app`
