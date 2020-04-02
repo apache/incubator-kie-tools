@@ -11,6 +11,9 @@
     "esModuleInterop": true,
     "target": "es5",
     "jsx": "react",
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
