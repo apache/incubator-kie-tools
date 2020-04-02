@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import joinName from './joinName';
+import { joinName } from 'uniforms';
 import useForm from './useForm';
 import { GuaranteedProps } from './types';
 

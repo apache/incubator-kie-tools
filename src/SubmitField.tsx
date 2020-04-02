@@ -1,5 +1,5 @@
 import React, { HTMLProps, Ref } from 'react';
-import useForm from './useForm';
+import useForm from './helpers/useForm';
 import { ButtonProps, Button } from '@patternfly/react-core'
 
 export type SubmitFieldProps = {

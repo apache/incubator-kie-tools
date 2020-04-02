@@ -4,7 +4,6 @@ import wrapField from './wrapField';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
 
 export type TextFieldProps = {
-  id: any,
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value: string) => void;
   value?: string;
