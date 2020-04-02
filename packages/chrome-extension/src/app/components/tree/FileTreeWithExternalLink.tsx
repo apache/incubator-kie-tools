@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import {extractOpenFileExtension} from "../../utils";
-import {ExternalEditorManager} from "../../../ExternalEditorManager";
-import {OpenExternalEditorButton} from "./OpenExternalEditorButton";
-import {useGlobals} from "../common/GlobalContext";
-import {Router} from "@kogito-tooling/core-api";
+import { extractOpenFileExtension } from "../../utils";
+import { ExternalEditorManager } from "../../../ExternalEditorManager";
+import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
+import { useGlobals } from "../common/GlobalContext";
+import { Router } from "@kogito-tooling/core-api";
 
 interface ExternalLinkInfo {
   id: string;
