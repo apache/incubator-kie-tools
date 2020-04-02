@@ -89,7 +89,7 @@ export function DownloadHubModal(props: {}) {
           onClose={onClose}
           footer={
             <ModalBoxFooter
-              className="kogito--editor-modal-download-hub-footer"
+              className="kogito--editor-hub-download_modal-footer"
               children={
                 <div>
                   <a key="download" href={downloadHub} download={true}>
@@ -158,7 +158,7 @@ export function DownloadHubModal(props: {}) {
           onClose={onClose}
           footer={
             <ModalBoxFooter
-              className="kogito--editor-modal-download-hub-footer"
+              className="kogito--editor-hub-download_modal-footer"
               children={
                 <div>
                   <Button key="close" variant="link" onClick={onClose}>

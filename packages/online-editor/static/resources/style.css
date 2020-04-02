@@ -20,7 +20,12 @@
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
-.kogito--editor-modal-download-hub-footer {
+.kogito--editor-hub-download_link {
+  text-decoration: none;
+  color: var(--pf-global--Color--light-100);
+}
+
+.kogito--editor-hub-download_modal-footer {
   --pf-c-modal-box__footer--MarginTop: 0.5rem;
 }
 

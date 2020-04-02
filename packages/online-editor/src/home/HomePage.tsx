@@ -312,7 +312,9 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub Preview</Link>
+      <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+        Get Business Modeler Hub Preview
+      </Link>
     </DropdownItem>
   ];
 
@@ -335,8 +337,9 @@ export function HomePage(props: Props) {
       <Toolbar>
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <Link to={context.routes.downloadHub.url({})}>
-              <Button variant="plain">Get Business Modeler Hub Preview</Button>
+            <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+              Get Business Modeler Hub Preview
+              {/*<Button variant="plain">Get Business Modeler Hub Preview</Button>*/}
             </Link>
           </ToolbarItem>
           <ToolbarItem className="pf-u-display-none-on-lg">
