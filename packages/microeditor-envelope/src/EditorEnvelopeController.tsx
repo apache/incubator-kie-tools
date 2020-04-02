@@ -27,7 +27,6 @@ import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
 
 export class EditorEnvelopeController {
-
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
   private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;

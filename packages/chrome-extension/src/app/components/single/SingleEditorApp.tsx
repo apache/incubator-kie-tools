@@ -57,16 +57,19 @@ export function SingleEditorApp(props: {
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
 
-  const IsolatedEditorComponent = (
-    <IsolatedEditor
-      getFileContents={props.getFileContents}
-      contentPath={props.fileInfo.path}
-      openFileExtension={props.openFileExtension}
-      textMode={textMode}
-      readonly={props.readonly}
-      keepRenderedEditorInTextMode={true}
-      ref={isolatedEditorRef}
-    />
+  const IsolatedEditorComponent = useMemo(
+    () => (
+      <IsolatedEditor
+        getFileContents={props.getFileContents}
+        contentPath={props.fileInfo.path}
+        openFileExtension={props.openFileExtension}
+        textMode={textMode}
+        readonly={props.readonly}
+        keepRenderedEditorInTextMode={true}
+        ref={isolatedEditorRef}
+      />
+    ),
+    [textMode]
   );
 
   const exitFullScreen = useCallback(() => {
@@ -78,11 +81,11 @@ export function SingleEditorApp(props: {
   const activateTextMode = useCallback(() => setTextMode(true), []);
   const goFullScreen = useCallback(() => setFullscreen(true), []);
 
-  const openExternalEditor = () => {
+  const openExternalEditor = useCallback(() => {
     props.getFileContents().then(fileContent => {
       globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
     });
-  };
+  }, [globals.externalEditorManager]);
 
   const linkToExternalEditor = useMemo(() => {
     return globals.externalEditorManager?.getLink(
@@ -100,22 +103,31 @@ export function SingleEditorApp(props: {
     };
   }, [globals.externalEditorManager]);
 
+  const onEditorReady = useCallback(() => {
+    setTextModeEnabled(true);
+  }, []);
+
+  const repoInfo = useMemo(() => {
+    return {
+      gitref: props.fileInfo.gitRef,
+      owner: props.fileInfo.org,
+      repo: props.fileInfo.repo
+    };
+  }, []);
+
   return (
     <>
       <IsolatedEditorContext.Provider
         value={{
-          onEditorReady: () => setTextModeEnabled(true),
+          onEditorReady: onEditorReady,
           fullscreen: fullscreen,
           textMode: textMode,
-          repoInfo: {
-            gitref: props.fileInfo.gitRef,
-            owner: props.fileInfo.org,
-            repo: props.fileInfo.repo
-          }
+          repoInfo: repoInfo
         }}
       >
         {!fullscreen && (
           <>
+            {ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
             {ReactDOM.createPortal(
               <SingleEditorToolbar
                 textMode={textMode}
@@ -129,7 +141,6 @@ export function SingleEditorApp(props: {
               />,
               props.toolbarContainer
             )}
-            {ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
           </>
         )}
 
