@@ -26,7 +26,7 @@ func registerKogitoManagementConsoleSteps(s *godog.Suite, data *Data) {
 }
 
 func (data *Data) installKogitoManagementConsoleWithReplicas(replicas int) error {
-	return framework.InstallKogitoManagementConsole(data.Namespace, framework.CRInstallerType, replicas)
+	return framework.InstallKogitoManagementConsole(data.Namespace, framework.GetDefaultInstallerType(), replicas)
 }
 
 func (data *Data) kogitoManagementConsoleHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {

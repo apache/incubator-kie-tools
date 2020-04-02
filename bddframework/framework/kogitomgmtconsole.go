@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -30,11 +31,23 @@ import (
 func InstallKogitoManagementConsole(namespace string, installerType InstallerType, replicas int) error {
 	GetLogger(namespace).Infof("%s install Kogito Management Console with %d replicas", installerType, replicas)
 	switch installerType {
+	case CLIInstallerType:
+		return cliInstallKogitoManagementConsole(namespace, replicas)
 	case CRInstallerType:
 		return crInstallKogitoManagementConsole(namespace, replicas)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
+}
+
+func cliInstallKogitoManagementConsole(namespace string, replicas int) error {
+	cmd := []string{"install", "mgmt-console"}
+
+	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getManagementConsoleImageTag()))
+	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
+	return err
 }
 
 func crInstallKogitoManagementConsole(namespace string, replicas int) error {
