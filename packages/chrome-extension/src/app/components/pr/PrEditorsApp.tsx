@@ -83,13 +83,6 @@ function supportedPrFileElements(logger: Logger, router: Router, dependencies: D
   );
 }
 
-function useMutationObserverEffect(target: HTMLElement, observer: MutationObserver, options: MutationObserverInit) {
-  useEffect(() => {
-    observer.observe(target, options);
-    return () => observer.disconnect();
-  }, []);
-}
-
 function prFileElements(logger: Logger, dependencies: Dependencies) {
   const elements = dependencies.all.array.pr__supportedPrFileContainers();
   if (!elements) {
