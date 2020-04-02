@@ -22,11 +22,13 @@ jobs:
       # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
       - name: Parse `tag`
         id: prerelease-tag
+        shell: bash
         run: |          
           echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
 
       # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
       - name: Check `tag` against `lerna.json.version`
+        shell: bash
         run: |
           [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
