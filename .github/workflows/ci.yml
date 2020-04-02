@@ -111,7 +111,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: desktop-app-linux
-          path: "packages/desktop/out/Business Modeler Preview-linux-x64"
+          path: "packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz"
 
       - name: Upload Desktop App - macOS (macOS only)
         if: matrix.os == 'macos-latest'
@@ -132,7 +132,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: hub-app-linux
-          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64"
+          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz"
 
       - name: Upload Hub App - macOS (macOS only)
         if: matrix.os == 'macos-latest'
