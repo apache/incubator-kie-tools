@@ -15,7 +15,8 @@
  */
 package org.uberfire.security.impl.authz;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -30,21 +31,25 @@ import org.uberfire.security.authz.PermissionCollection;
 public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
 
     DefaultAuthorizationEntry defaultEntry = new DefaultAuthorizationEntry();
-    private Set<DefaultAuthorizationEntry> entrySet = new HashSet<>();
+    private final Map<Group, DefaultAuthorizationEntry> groupEntryMap = new HashMap<>();
+    private final Map<Role, DefaultAuthorizationEntry> rolesEntryMap = new HashMap<>();
 
     public DefaultAuthorizationPolicy() {
     }
 
     protected DefaultAuthorizationEntry registerAuthzEntry(DefaultAuthorizationEntry entry) {
-        entrySet.add(entry);
+        if (entry.getGroup() != null) {
+            groupEntryMap.put(entry.getGroup(), entry);
+        }
+        if (entry.getRole() != null) {
+            rolesEntryMap.put(entry.getRole(), entry);
+        }
         return entry;
     }
 
     protected DefaultAuthorizationEntry getAuthzEntry(Role role) {
-        for (DefaultAuthorizationEntry entry : entrySet) {
-            if (entry.getRole() != null && entry.getRole().equals(role)) {
-                return entry;
-            }
+        if (rolesEntryMap.containsKey(role)) {
+            return rolesEntryMap.get(role);
         }
         DefaultAuthorizationEntry entry = new DefaultAuthorizationEntry(role);
         entry.setRole(role);
@@ -52,10 +57,8 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     }
 
     protected DefaultAuthorizationEntry getAuthzEntry(Group group) {
-        for (DefaultAuthorizationEntry entry : entrySet) {
-            if (entry.getGroup() != null && entry.getGroup().equals(group)) {
-                return entry;
-            }
+        if (groupEntryMap.containsKey(group)) {
+            return groupEntryMap.get(group);
         }
         DefaultAuthorizationEntry entry = new DefaultAuthorizationEntry(group);
         entry.setGroup(group);
@@ -64,24 +67,12 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
 
     @Override
     public Set<Role> getRoles() {
-        Set<Role> result = new HashSet<>();
-        for (DefaultAuthorizationEntry entry : entrySet) {
-            if (entry.getRole() != null) {
-                result.add(entry.getRole());
-            }
-        }
-        return result;
+        return rolesEntryMap.keySet();
     }
 
     @Override
     public Set<Group> getGroups() {
-        Set<Group> result = new HashSet<>();
-        for (DefaultAuthorizationEntry entry : entrySet) {
-            if (entry.getGroup() != null) {
-                result.add(entry.getGroup());
-            }
-        }
-        return result;
+        return groupEntryMap.keySet();
     }
 
     @Override
@@ -114,14 +105,14 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     public int getPriority(Role role) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         Integer priority = entry.getPriority();
-        return priority != null ?  priority : defaultEntry.getPriority();
+        return priority != null ? priority : defaultEntry.getPriority();
     }
 
     @Override
     public int getPriority(Group group) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         Integer priority = entry.getPriority();
-        return priority != null ?  priority : defaultEntry.getPriority();
+        return priority != null ? priority : defaultEntry.getPriority();
     }
 
     @Override
@@ -197,14 +188,14 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     public String getHomePerspective(Role role) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         String home = entry.getHomePerspective();
-        return home != null ?  home : defaultEntry.getHomePerspective();
+        return home != null ? home : defaultEntry.getHomePerspective();
     }
 
     @Override
     public String getHomePerspective(Group group) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         String home = entry.getHomePerspective();
-        return home != null ?  home : defaultEntry.getHomePerspective();
+        return home != null ? home : defaultEntry.getHomePerspective();
     }
 
     @Override
@@ -257,7 +248,8 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        entrySet.forEach(e -> out.append(e.toString()).append("\n"));
+        rolesEntryMap.keySet().forEach(e -> out.append(e.toString()).append("\n"));
+        groupEntryMap.keySet().forEach(e -> out.append(e.toString()).append("\n"));
         return out.toString();
     }
 }

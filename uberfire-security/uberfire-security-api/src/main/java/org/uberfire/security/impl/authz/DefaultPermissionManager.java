@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class DefaultPermissionManager implements PermissionManager {
     private DefaultAuthzResultCache cache;
     private VotingStrategy defaultVotingStrategy = VotingStrategy.PRIORITY;
     private Map<VotingStrategy, VotingAlgorithm> votingAlgorithmMap = new HashMap<>();
+    private Map<String, PermissionCollection> permissionCollectionCache = new HashMap<>();
 
     @Inject
     public DefaultPermissionManager(PermissionTypeRegistry permissionTypeRegistry) {
@@ -81,6 +83,7 @@ public class DefaultPermissionManager implements PermissionManager {
     public void setAuthorizationPolicy(AuthorizationPolicy authorizationPolicy) {
         this.authorizationPolicy = authorizationPolicy != null ? authorizationPolicy : new DefaultAuthorizationPolicy();
         this.cache.clear();
+        this.permissionCollectionCache.clear();
     }
 
     @Override
@@ -284,12 +287,17 @@ public class DefaultPermissionManager implements PermissionManager {
      * Get all the permissions assigned to any of the user's roles/groups plus the default permissions
      * ({@link AuthorizationPolicy#getPermissions()}) and it creates a single permission collection where
      * the permission are added by priority.
+     *
      * @param user The target user
      * @return An unified permission collection
      */
     private PermissionCollection resolvePermissionsPriority(User user) {
         if (authorizationPolicy == null) {
             return null;
+        }
+
+        if (permissionCollectionCache.containsKey(user.getIdentifier())) {
+            return permissionCollectionCache.get(user.getIdentifier());
         }
         // Get the default permissions as lowest priority
         PermissionCollection result = authorizationPolicy.getPermissions();
@@ -302,6 +310,7 @@ public class DefaultPermissionManager implements PermissionManager {
         result = mergeGroupPermissions(user,
                                        result,
                                        priority);
+        permissionCollectionCache.put(user.getIdentifier(), result);
         return result;
     }
 

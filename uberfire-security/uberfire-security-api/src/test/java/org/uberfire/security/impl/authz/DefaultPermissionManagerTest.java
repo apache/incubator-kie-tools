@@ -35,8 +35,11 @@ import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.VotingStrategy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPermissionManagerTest {
@@ -47,9 +50,15 @@ public class DefaultPermissionManagerTest {
 
     private DefaultPermissionManager defaultPermissionManager;
 
+    private DefaultPermissionTypeRegistry permissionTypeRegistry;
+
+    private DefaultAuthzResultCache cache;
+
     @Before
     public void setUp() {
-        defaultPermissionManager = spy(new DefaultPermissionManager());
+        permissionTypeRegistry = spy(new DefaultPermissionTypeRegistry());
+        cache = spy(new DefaultAuthzResultCache());
+        defaultPermissionManager = spy(new DefaultPermissionManager(permissionTypeRegistry, cache));
         authorizationPolicy = spy(new DefaultAuthorizationPolicy());
 
         defaultPermissionManager.setAuthorizationPolicy(authorizationPolicy);
@@ -198,6 +207,46 @@ public class DefaultPermissionManagerTest {
         final Permission permission = resolvedPermission.get(PERMISSION_NAME);
 
         assertEquals(AuthorizationResult.ACCESS_GRANTED, permission.getResult());
+    }
+
+    @Test
+    public void testPermissionCache() {
+
+        final VotingStrategy priority = VotingStrategy.PRIORITY;
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Role managerRole = new RoleImpl("manager");
+        final Group directorGroup = new GroupImpl("director");
+
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole, managerRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeDeniedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeDeniedPermissionCollection(),
+                            businessUserRole,
+                            0);
+        mockRolePermissions(authorizationPolicy,
+                            makeGrantedPermissionCollection(),
+                            managerRole,
+                            0);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeDeniedPermissionCollection(),
+                                    directorGroup);
+
+        assertNull(cache.get(user, makePermissionGranted()));
+        final AuthorizationResult resolvedGrantedPermission = defaultPermissionManager.checkPermission(makePermissionGranted(), user, priority);
+        verify(defaultPermissionManager).resolvePermissions(user, priority);
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, resolvedGrantedPermission);
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, cache.get(user, makePermissionGranted()));
+
+        assertNull(cache.get(user, makePermissionDenied()));
+        final AuthorizationResult resolvedDeniedPermission = defaultPermissionManager.checkPermission(makePermissionDenied(), user, priority);
+        verify(defaultPermissionManager, times(2)).resolvePermissions(user, priority);
+        assertEquals(AuthorizationResult.ACCESS_DENIED, resolvedDeniedPermission);
+        assertEquals(AuthorizationResult.ACCESS_DENIED, cache.get(user, makePermissionDenied()));
+
+        assertEquals(2, cache.size(user));
     }
 
     private void mockDefaultGroupPermissions(final DefaultAuthorizationPolicy authorizationPolicy,
