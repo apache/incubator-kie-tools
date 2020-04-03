@@ -14,6 +14,8 @@
 /website/build
 /website/node_modules
 
+jest.config.js
+
 # Broke with Prettier upgrade.
 /docs/examples-common-forms.mdx
 /docs/examples-custom-fields.mdx
