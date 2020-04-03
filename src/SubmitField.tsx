@@ -1,7 +1,8 @@
 import React from 'react';
 import { ButtonProps, Button } from '@patternfly/react-core';
 
-import useForm from './uniforms/useForm';
+import { useForm } from './uniforms';
+import wrapField from './wrapField';
 
 export type SubmitFieldProps = {
   inputRef: undefined;
@@ -18,17 +19,19 @@ function SubmitField({
   const { error, state } = useForm();
 
   return (
-    <Button
-      isDisabled={
-        disabled === undefined ? !!(error || state.disabled) : disabled
-      }
-      type="submit"
-      ref={inputRef}
-      variant="primary"
-      {...props}
-    >
-      {value}
-    </Button>
+    wrapField(
+      props,
+      <Button
+        isDisabled={
+          disabled === undefined ? !!(error || state.disabled) : disabled
+        }
+        type="submit"
+        ref={inputRef}
+        variant="primary"
+      >
+        {value}
+      </Button>
+    )
   );
 }
 

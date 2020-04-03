@@ -1,8 +1,8 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
-import { connectField, filterDOMProps, joinName } from 'uniforms';
 import { List, Tooltip } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
+import { connectField, filterDOMProps, joinName } from './uniforms';
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
 
@@ -84,6 +84,6 @@ function ListField<T>({
   );
 }
 
-export default connectField(ListField, {
+export default connectField<ListFieldProps<any>>(ListField, {
   includeInChain: false,
 });

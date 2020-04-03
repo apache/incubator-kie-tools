@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { connectField, filterDOMProps } from 'uniforms';
+import React from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -9,6 +8,9 @@ import {
   SelectProps,
   SelectOption,
 } from '@patternfly/react-core';
+
+import { connectField, filterDOMProps } from './uniforms';
+import { default as wrapField } from './wrapField';
 
 type CheckboxesProps = {
   fieldType?: typeof Array | any;
@@ -23,24 +25,20 @@ type CheckboxesProps = {
 
 function renderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
-  const checkboxProps = {
-    disabled: props.disabled,
-    id: props.id,
-    name: props.name,
-    onChange:
-      props.fieldType === Array
-        ? value => props.onChange && props.onChange(value)
-        : event => props.onChange && props.onChange(event.target.value),
-    options: props.allowedValues.map(value => {
-      return {
-        label: props.transform ? props.transform(value) : value,
-        value,
-      };
-    }),
-    value: props.value,
-    ...filterDOMProps(props),
-  };
-  return <Group {...checkboxProps} />;
+  const onChange = props.fieldType === Array
+    ? value => props.onChange && props.onChange(value)
+    : event => props.onChange && props.onChange(event.target.value);
+
+  return wrapField(
+    props,
+    <Group
+      id={props.id}
+      isDisabled={props.disabled}
+      name={props.name}
+      value={props.value}
+      onChange={onChange}
+    />
+  );
 }
 
 type SelectInputProps = {
@@ -101,13 +99,9 @@ export type SelectFieldProps = { checkboxes?: boolean } & (
 );
 
 function SelectField({ checkboxes, ...props }: SelectFieldProps) {
-  return (
-    <React.Fragment>
-      {checkboxes
-        ? renderCheckboxes(props as CheckboxesProps)
-        : renderSelect(props as SelectInputProps)}
-    </React.Fragment>
-  );
+  return checkboxes
+    ? renderCheckboxes(props as CheckboxesProps)
+    : renderSelect(props as SelectInputProps);
 }
 
 export default connectField(SelectField);

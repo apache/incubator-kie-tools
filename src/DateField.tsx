@@ -1,7 +1,7 @@
 import React, { Ref } from 'react';
-import { connectField } from 'uniforms';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
 
+import { connectField } from './uniforms';
 import wrapField from './wrapField';
 
 const DateConstructor = (typeof global === 'object' ? global : window).Date;

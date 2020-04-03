@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
+import { filterDOMProps } from 'uniforms';
 
 type WrapperProps = {
   error?: boolean;
@@ -30,6 +31,7 @@ export default function wrapField(
       type={type}
       helperText={help}
       helperTextInvalid={errorMessage}
+      {...filterDOMProps(props)}
     >
       {children}
     </FormGroup>

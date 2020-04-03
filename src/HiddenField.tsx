@@ -1,7 +1,6 @@
 import React, { HTMLProps, Ref, useEffect } from 'react';
-import { filterDOMProps } from 'uniforms';
 
-import useField from './uniforms/useField';
+import { useField, filterDOMProps } from './uniforms';
 
 export type HiddenFieldProps = {
   inputRef?: Ref<HTMLInputElement>;

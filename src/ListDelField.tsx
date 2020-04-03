@@ -1,9 +1,8 @@
 import React from 'react';
-import { connectField, filterDOMProps, joinName } from 'uniforms';
 import { Button, ButtonProps } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons';
 
-import useField from './uniforms/useField';
+import { useField, filterDOMProps, joinName } from './uniforms';
 
 export type ListDelFieldProps<T> = {
   name: string;

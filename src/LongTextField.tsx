@@ -1,6 +1,7 @@
 import React, { Ref } from 'react';
-import { connectField } from 'uniforms';
 import { TextArea, TextAreaProps } from '@patternfly/react-core';
+
+import { connectField } from './uniforms';
 
 export type LongTextFieldProps = {
   onChange: (value?: any) => void;

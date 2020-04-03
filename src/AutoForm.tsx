@@ -1,5 +1,4 @@
-import { AutoForm } from 'uniforms';
-
+import { AutoForm } from './uniforms';
 import ValidatedQuickForm from './ValidatedQuickForm';
 
 const Auto = (parent: any): any =>

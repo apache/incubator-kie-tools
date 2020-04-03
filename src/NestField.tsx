@@ -1,8 +1,7 @@
 import React, { HTMLProps } from 'react';
-import { connectField, joinName } from 'uniforms';
 import { Label } from '@patternfly/react-core';
 
-import injectName from './uniforms/injectName';
+import { connectField, joinName, injectName } from './uniforms';
 import AutoField from './AutoField';
 import wrapField from './wrapField';
 

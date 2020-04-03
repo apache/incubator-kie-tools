@@ -1,4 +1,4 @@
-import { BaseForm } from 'uniforms';
+import { BaseForm } from './uniforms';
 
 const PatternFly = (parent: any): any =>
   class extends parent {

@@ -1,5 +1,4 @@
-import { QuickForm } from 'uniforms';
-
+import { QuickForm } from './uniforms';
 import AutoField from './AutoField';
 import BaseForm from './BaseForm';
 import ErrorsField from './ErrorsField';

@@ -1,7 +1,7 @@
 import React, { Children, ReactNode } from 'react';
-import { joinName } from 'uniforms';
 import { ListItem } from '@patternfly/react-core';
 
+import { joinName } from './uniforms';
 import AutoField from './AutoField';
 import ListDelField from './ListDelField';
 
