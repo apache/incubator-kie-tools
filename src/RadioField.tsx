@@ -1,7 +1,7 @@
 import React from 'react';
 import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
 
-import { connectField } from './uniforms';
+import { connectField, filterDOMProps } from './uniforms';
 import { default as wrapField } from './wrapField';
 
 export type RadioFieldProps = {
@@ -12,23 +12,23 @@ export type RadioFieldProps = {
   disabled: boolean;
 } & Omit<RadioProps, 'isDisabled'>;
 
-const Radio = (props: RadioFieldProps) => (
-  wrapField(
-    props,
-    props.allowedValues.map(item => (
-      <>
-        <label htmlFor={props.id}>{props.label}</label>
+const Radio = (props: RadioFieldProps) => {
+  return <div {...filterDOMProps(props)} >
+    {props.label && <label>{props.label}</label>}
+    {props.allowedValues.map(item => (
+      <React.Fragment key={item}>
+        <label htmlFor={props.id}>{props.transform ? props.transform(item) : item}</label>
         <RadioField
-          key={item}
           isChecked={item === props.value}
           isDisabled={props.disabled}
-          id={`${props.id}-${escape(item)}`}
-          name={name}
+          id={`${props.id}`}
+          name={props.name}
+          aria-label={props.name}
           onChange={() => props.onChange(item)}
         />
-      </>
-    ))
-  )
-);
+      </React.Fragment>
+    ))}
+  </div>
+}
 
 export default connectField(Radio);

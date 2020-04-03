@@ -1,7 +1,7 @@
 import React from 'react';
 import { ButtonProps, Button } from '@patternfly/react-core';
 
-import { useForm } from './uniforms';
+import { useForm, filterDOMProps } from './uniforms';
 import wrapField from './wrapField';
 
 export type SubmitFieldProps = {
@@ -19,8 +19,7 @@ function SubmitField({
   const { error, state } = useForm();
 
   return (
-    wrapField(
-      props,
+    <div {...filterDOMProps(props)}>
       <Button
         isDisabled={
           disabled === undefined ? !!(error || state.disabled) : disabled
@@ -31,8 +30,8 @@ function SubmitField({
       >
         {value}
       </Button>
-    )
-  );
-}
+    </div>
+  )
+} 
 
 export default SubmitField;

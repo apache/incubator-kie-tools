@@ -1,7 +1,7 @@
 import React, { HTMLProps } from 'react';
 import { Label } from '@patternfly/react-core';
 
-import { connectField, joinName, injectName } from './uniforms';
+import { connectField, joinName, injectName, filterDOMProps } from './uniforms';
 import AutoField from './AutoField';
 import wrapField from './wrapField';
 
@@ -24,18 +24,22 @@ const Nest = ({
   name,
   showInlineError,
   ...props
-}: NestFieldProps) =>
-  wrapField(
-    props,
-    <>
-      {label && <Label>{label}</Label>}
+}: NestFieldProps) => {
+
+  return (
+    <div
+      {...filterDOMProps(props)}
+    >
+      {label && <label>{label}</label>}
       {children
-      ? injectName(name, children)
-      : fields?.map(key => (
-          <AutoField key={key} name={joinName(name, key)} {...itemProps} />
-        ))}
-    </>,
+        ? injectName(name, children)
+        : fields?.map(key => (
+            <AutoField key={key} name={joinName(name, key)} {...itemProps} />
+          ))}
+    </div>
   );
+  
+}
 
 export default connectField(Nest, {
   includeInChain: false,

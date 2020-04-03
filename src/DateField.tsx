@@ -17,12 +17,17 @@ const dateParse = (timestamp, onChange) => {
 
 export type DateFieldProps = {
   inputRef?: Ref<HTMLInputElement>;
-  onChange: (value: string) => void;
+  onChange: (value: string, event: React.FormEvent<HTMLInputElement>) => void;
   value?: string;
   disabled: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
 
 function Date(props: DateFieldProps) {
+
+  const onChange = (value, event) => {
+    props.disabled || dateParse(event.target.valueAsNumber, props.onChange)
+  }
+
   return wrapField(
     props,
     <TextInput
@@ -31,11 +36,11 @@ function Date(props: DateFieldProps) {
       max={dateFormat(props.max)}
       min={dateFormat(props.min)}
       name={props.name}
-      onChange={value => dateParse(value, props.onChange)}
+      onChange={onChange}
       placeholder={props.placeholder}
       ref={props.inputRef}
       type="datetime-local"
-      value={dateFormat(props.value)}
+      value={dateFormat(props.value) ?? ''}
     />,
   );
 }

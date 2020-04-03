@@ -12,11 +12,18 @@ import {
 import { connectField, filterDOMProps } from './uniforms';
 import { default as wrapField } from './wrapField';
 
+const xor = (item, array) => {
+  const index = array.indexOf(item);
+  if (index === -1) {
+    return array.concat([item]);
+  }
+
+  return array.slice(0, index).concat(array.slice(index + 1));
+};
+
 type CheckboxesProps = {
   fieldType?: typeof Array | any;
-  onChange: (
-    value?: string | boolean[] | number | { [key: string]: any },
-  ) => void;
+  onChange: (value?: string | string[]) => void;
   transform?: (value?: string) => string;
   allowedValues: string[];
   id: string;
@@ -25,20 +32,33 @@ type CheckboxesProps = {
 
 function renderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
-  const onChange = props.fieldType === Array
-    ? value => props.onChange && props.onChange(value)
-    : event => props.onChange && props.onChange(event.target.value);
-
-  return wrapField(
-    props,
-    <Group
-      id={props.id}
-      isDisabled={props.disabled}
-      name={props.name}
-      value={props.value}
-      onChange={onChange}
-      label={props.label}
-    />
+  
+  return (
+    <div {...filterDOMProps(props)}>
+      {props.label && <label>{props.label}</label>}
+      {props.allowedValues.map((item: any, index: number) => {
+        return (
+          <React.Fragment key={index}>
+            <label htmlFor={props.id}>{props.transform ? props.transform(item) : item}</label>
+            <Group
+              id={`${props.id}-${item}`}
+              isDisabled={props.disabled}
+              name={props.name}
+              aria-label={props.name}
+              value={props.value}
+              isChecked={
+                // @ts-ignore
+                // eslint-disable-next-line
+                props.fieldType === Array ? props.value!.includes(item) : props.value === item
+              }
+              onChange={() => {
+                props.onChange(props.fieldType === Array ? xor(item, props.value) : item)
+              }}
+            />
+          </React.Fragment>
+        );
+      })}
+    </div>
   );
 }
 
@@ -46,7 +66,7 @@ type SelectInputProps = {
   required?: boolean;
   id: string;
   fieldType?: typeof Array | any;
-  onChange: (value?: string | string[]) => void;
+  onSelect: (value?: string | string[]) => void;
   placeholder: string;
   allowedValues?: string[];
   disabled?: boolean;
@@ -54,43 +74,31 @@ type SelectInputProps = {
 } & Omit<SelectProps, 'isDisabled'>;
 
 function renderSelect(props: SelectInputProps) {
-  // const [expanded, setExpanded] = useState<boolean>(false);
-  // const [selections, setSelections] = useState([]);
-
-  // const onSelect = (event, selection) => {
-  //   event.preventDefault();
-  //   const selectionSet = new Set(selections);
-  //   selectionSet.add(selection);
-  //   setSelections(Array.from(selectionSet));
-  // }
-
-  // const clearSelection = () => {
-  //   setSelections([]);
-  //   setExpanded(false);
-  // }
-
   return (
-    <Select
-      isDisabled={props.disabled}
-      id={props.id}
-      variant={props.fieldType === Array ? 'typeaheadmulti' : 'single'}
-      name={props.name}
-      onChange={value => props.onChange(value)}
-      placeholder={props.placeholder}
-      // eslint-disable-next-line
-      onToggle={() => console.log('toggled') }
-      // onSelect={() => console.log('hello')}
-      // onClear={() => console.log('hi')}
-      selections={[]}
-      value={props.value || (props.fieldType === Array ? [] : undefined)}
-      {...filterDOMProps(props)}
-    >
-      {props.allowedValues!.map(value => (
-        <SelectOption key={value} value={value}>
-          {props.transform ? props.transform(value) : value}
-        </SelectOption>
-      ))}
-    </Select>
+    <div {...filterDOMProps(props)}>
+      {props.label && <label htmlFor={props.id}>{props.label}</label>}
+      <Select
+        isDisabled={props.disabled}
+        id={props.id}
+        variant={props.fieldType === Array ? 'typeaheadmulti' : 'single'}
+        name={props.name}
+        placeholder={props.placeholder}
+        // eslint-disable-next-line
+        onToggle={() => console.log('toggled') }
+        onSelect={(value) => {
+          // @ts-ignore
+          props.onChange(value !== '' ? value : '');
+        }}
+        selections={[]}
+        value={props.value || (props.fieldType === Array ? [] : undefined)}
+      >
+        {props.allowedValues!.map(value => (
+          <SelectOption key={value} value={value}>
+            {props.transform ? props.transform(value) : value}
+          </SelectOption>
+        ))}
+      </Select>
+    </div>
   );
 }
 
