@@ -26,6 +26,7 @@ try {
 
   Object.keys(json).forEach(key => {
     core.setOutput(key, json[key]);
+    console.log("Set output '" + key + "' to '" + json[key] + "'");
   });
 } catch (error) {
   core.setFailed(error.message);

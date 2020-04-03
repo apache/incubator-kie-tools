@@ -32,7 +32,7 @@ try {
   const json = filterObjectProperties(process.env, "env-to-json__");
   const path = core.getInput("path");
 
-  console.log(JSON.stringify(json));
+  console.log(JSON.stringify(json, null, 4));
 
   fs.writeFile(path, JSON.stringify(json), "utf8", function(err) {
     if (err) {
