@@ -8,6 +8,9 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
+    
+    - uses: actions/checkout@v2
+          
     # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
     - name: Parse `tag`
       id: prerelease-tag
