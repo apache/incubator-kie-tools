@@ -221,14 +221,21 @@ jobs:
           cd kogito-online
           rm -rf $KOGITO_ONLINE_CHROME_EXT_DIR
           mkdir -p $KOGITO_ONLINE_CHROME_EXT_DIR
+          echo "WWWWWWW -1"
           cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_DIR/
           cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_DIR/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_DIR/
+          echo "WWWWWWW 0"
           rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR
           cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_STAGING_DIR
+          echo "WWWWWWW 1"
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          echo "WWWWWWW 2"
           git add . && git commit -m "${{ steps.release_json.outputs.tag }} resources" || echo "No changes."
+          echo "WWWWWWW 2"
           git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
+          echo "WWWWWWW 3"
           git push origin gh-pages
+          echo "WWWWWWW 4"
           cd -
