@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.DECISION_SERVICE;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.ITEM;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.ROOT;
 import static org.mockito.Mockito.spy;
@@ -40,6 +42,9 @@ public class DecisionNavigatorItemFactoryTest {
 
     @Mock
     private Node<View, Edge> node;
+
+    @Mock
+    private View content;
 
     @Mock
     private DecisionNavigatorItem item;
@@ -63,6 +68,26 @@ public class DecisionNavigatorItemFactoryTest {
     public void testMakeItem() {
 
         when(baseItemFactory.makeItem(node, ITEM)).thenReturn(item);
+
+        assertEquals(item, factory.makeItem(node));
+    }
+
+    @Test
+    public void testMakeItemWhenTypeIsDecisionService() {
+
+        when(baseItemFactory.makeItem(node, DECISION_SERVICE)).thenReturn(item);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(new DecisionService());
+
+        assertEquals(item, factory.makeItem(node));
+    }
+
+    @Test
+    public void testMakeItemWhenTypeIsNotMapped() {
+
+        when(baseItemFactory.makeItem(node, ITEM)).thenReturn(item);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(new Object());
 
         assertEquals(item, factory.makeItem(node));
     }

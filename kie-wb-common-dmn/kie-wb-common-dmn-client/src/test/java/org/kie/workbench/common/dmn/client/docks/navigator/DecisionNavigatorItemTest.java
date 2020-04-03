@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.TreeSet;
 
 import org.junit.Test;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type;
 import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -157,5 +159,25 @@ public class DecisionNavigatorItemTest {
         final int result = item.compareTo(object);
 
         assertTrue(result > 0);
+    }
+
+    @Test
+    public void testTypeEnumWhenRetrievingByExistingItemClassName() {
+        assertThat(Type.ofExpressionNodeClassName("InputData")).isEqualTo(Type.INPUT_DATA);
+    }
+
+    @Test
+    public void testTypeEnumWhenRetrievingByNotExistingItemClassName() {
+        assertThat(Type.ofExpressionNodeClassName("NOT_EXISTING")).isEqualTo(ITEM);
+    }
+
+    @Test
+    public void testTypeEnumWhenRetrievingByEmptyClassName() {
+        assertThat(Type.ofExpressionNodeClassName("")).isEqualTo(ITEM);
+    }
+
+    @Test
+    public void testTypeEnumWhenRetrievingByNullClassName() {
+        assertThat(Type.ofExpressionNodeClassName(null)).isEqualTo(ITEM);
     }
 }
