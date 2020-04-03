@@ -191,7 +191,7 @@ jobs:
           asset_name: business_modeler_hub_preview_macos_${{ steps.release_json.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      - run: "Compress-Archive -Path \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Hub Preview-win32-x64.zip\""
+      - run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Hub Preview-win32-x64.zip\""
         if: matrix.os == 'windows-latest'
 
       - name: Upload Hub App for Windows (Windows only)
