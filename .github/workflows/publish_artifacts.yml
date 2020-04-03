@@ -9,17 +9,17 @@ jobs:
     if: github.repository == 'kiegroup/kogito-tooling'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
+      # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
       - name: Parse `tag`
         id: release-tag
         run: |
-          # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
           echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)$/)[1])")
 
+      # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
       - name: Check release `tag` against `lerna.json.version`
         run: |
-          # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
           [ "${{ steps.release-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
       - name: Setup Node
@@ -37,6 +37,9 @@ jobs:
         env:
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
+          DOWNLOAD_HUB_linuxUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_linux_${{ steps.release-tag.outputs.tag }}.tar.gz"
+          DOWNLOAD_HUB_macOsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_macos_${{ steps.release-tag.outputs.tag }}.zip"
+          DOWNLOAD_HUB_windowsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_windows_${{ steps.release-tag.outputs.tag }}.zip"
           DISPLAY: ":99.0"
         run: yarn run init && yarn run build:prod
 
