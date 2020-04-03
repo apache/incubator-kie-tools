@@ -1,25 +1,19 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "composite": true,
+    "declaration": true,
     "esModuleInterop": true,
-    "target": "es5",
+    "importHelpers": true,
     "jsx": "react",
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2017",
-      "dom"
-    ]
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "paths": {
+      "uniforms": ["src/uniforms"],
+      "uniforms/*": ["src/uniforms/*"],
+      "uniforms-patternfly": ["src"],
+      "uniforms-patternfly/*": ["src/*"],
+    },
+    "strict": true
   }
 }
