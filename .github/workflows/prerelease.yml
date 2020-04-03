@@ -226,7 +226,7 @@ jobs:
           echo "WWWWWWW 0"
           rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR
           cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_STAGING_DIR
-          echo "WWWWWWW 1
+          echo "WWWWWWW 1"
           git add . && git commit -m "${{ steps.release_json.outputs.tag }} resources" || echo "No changes."
           echo "WWWWWWW 2"
           git push origin gh-pages
