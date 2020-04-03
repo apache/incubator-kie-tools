@@ -8,47 +8,46 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-    
-    - uses: actions/checkout@v2
-          
-    # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
-    - name: Parse `tag`
-      id: prerelease-tag
-      shell: bash
-      run: |
-        echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
+      - uses: actions/checkout@v2
 
-    # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
-    - name: Check `tag` against `lerna.json.version`
-      shell: bash
-      run: |
-        [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+      # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
+      - name: Parse `tag`
+        id: prerelease-tag
+        shell: bash
+        run: |
+          echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
 
-    - name: Create Draft Release
-      id: create_release
-      uses: actions/create-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.prerelease-tag.outputs.tag }}
-        release_name: ${{ steps.prerelease-tag.outputs.tag }} (alpha)
-        draft: true
-        prerelease: true
+      # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
+      - name: Check `tag` against `lerna.json.version`
+        shell: bash
+        run: |
+          [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
-    - name: Generate release.json
-      env:
-        env-to-json__release_upload_url: ${{ steps.create_release.outputs.upload_url }}
-        env-to-json__release_html_url: ${{ steps.create_release.outputs.html_url }}
-        env-to-json__release_id: ${{ steps.create_release.outputs.id }}
-      uses: ./.github/actions/env-to-json
-      with:
-        path: release.json
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.prerelease-tag.outputs.tag }}
+          release_name: ${{ steps.prerelease-tag.outputs.tag }} (alpha)
+          draft: true
+          prerelease: true
 
-    - name: Upload release.json
-      uses: actions/upload-artifact@v1
-      with:
-        name: release_json
-        path: release.json
+      - name: Generate release.json
+        env:
+          env-to-json__release_upload_url: ${{ steps.create_release.outputs.upload_url }}
+          env-to-json__release_html_url: ${{ steps.create_release.outputs.html_url }}
+          env-to-json__release_id: ${{ steps.create_release.outputs.id }}
+        uses: ./.github/actions/env-to-json
+        with:
+          path: release.json
+
+      - name: Upload release.json
+        uses: actions/upload-artifact@v1
+        with:
+          name: release.json
+          path: release.json
 
   prerelease:
     needs: create-release
@@ -63,13 +62,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-
       - name: Download release.json
         uses: actions/download-artifact@v1
         with:
-          name: release_json
-          path: release_json/release.json
-
+          name: release.json
+          path: release.json
 
       - run: find .
         if: matrix.os == 'ubuntu-latest'
