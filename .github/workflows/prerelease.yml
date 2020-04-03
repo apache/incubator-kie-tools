@@ -47,7 +47,6 @@ jobs:
     - name: Upload release.json
       uses: actions/upload-artifact@v1
       with:
-        name: release_json
         path: release.json
 
   prerelease:
@@ -66,9 +65,10 @@ jobs:
       - name: Download release.json
         uses: actions/download-artifact@v1
         with:
-          name: release_json
+          name: release.json
 
       - name: Parse and output release.json
+        id: release_json
         uses: ./.github/actions/json-to-output
         with:
           path: release.json
