@@ -92,7 +92,7 @@ jobs:
       - name: Generate download URL for Draft Release
         id: release_json_ext
         shell: python
-        run: print "::set-output name=download_url::" + string.replace("${{ steps.release_json.outputs.html_url }}".replace("/tag/", "/download/");
+        run: print "::set-output name=download_url::" + "${{ steps.release_json.outputs.html_url }}".replace("/tag/", "/download/");
 
       - name: Build
         env:
