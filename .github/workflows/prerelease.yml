@@ -47,7 +47,7 @@ jobs:
     - name: Upload release.json
       uses: actions/upload-artifact@v1
       with:
-        name: release.json
+        name: release_json
         path: release.json
 
   prerelease:
@@ -63,14 +63,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: find .
-        if: matrix.os == 'ubuntu-latest'
 
       - name: Download release.json
         uses: actions/download-artifact@v1
         with:
-          name: release.json
-          path: release.json
+          name: release_json
+          path: release_json/release.json
+
+
+      - run: find .
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Parse and output release.json
         id: release_json
