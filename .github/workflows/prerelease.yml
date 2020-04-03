@@ -137,7 +137,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-          asset_name: Business Modeler Preview-linux-x64.tar.gz
+          asset_name: business_modeler_preview_linux_${{ steps.release_json.outputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: Upload Desktop App for macOS (macOS only)
@@ -149,7 +149,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-          asset_name: Business Modeler Preview-darwin-x64.zip
+          asset_name: business_modeler_preview_macos_${{ steps.release_json.outputs.tag }}.zip
           asset_content_type: application/zip
 
       - run: "dir /s"
@@ -164,7 +164,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: "\"kogito-tooling\packages\desktop\out\Business Modeler Preview-windows-x64\""
-          asset_name: "Business Modeler Preview-windows-x64.zip"
+          asset_name: "business_modeler_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           asset_content_type: application/zip
 
       - name: Upload Hub App for Linux (Ubuntu only)
@@ -176,7 +176,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
-          asset_name: Business Modeler Hub Preview-linux-x64.tar.gz
+          asset_name: business_modeler_hub_preview_linux_${{ steps.release_json.outputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: Upload Hub App for macOS (macOS only)
@@ -188,7 +188,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
-          asset_name: Business Modeler Hub Preview-darwin-x64.zip
+          asset_name: business_modeler_hub_preview_macos_${{ steps.release_json.outputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: Upload Hub App for Windows (Windows only)
@@ -200,7 +200,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: "./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-windows-x64"
-          asset_name: "Business Modeler Hub Preview-windows-x64.zip"
+          asset_name: "business_modeler_hub_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           asset_content_type: application/zip
 
       - name: Checkout "kogito-online" (Ubuntu only)
