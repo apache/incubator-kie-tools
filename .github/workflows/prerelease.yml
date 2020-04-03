@@ -34,9 +34,9 @@ jobs:
 
     - name: Generate release.properties
       env:
-        env-to-json__release_upload_url: {{ steps.create_release.outputs.upload_url }}
-        env-to-json__release_html_url: {{ steps.create_release.outputs.html_url }}
-        env-to-json__release_id: {{ steps.create_release.outputs.id }}
+        env-to-json__release_upload_url: ${{ steps.create_release.outputs.upload_url }}
+        env-to-json__release_html_url: ${{ steps.create_release.outputs.html_url }}
+        env-to-json__release_id: ${{ steps.create_release.outputs.id }}
       uses: ./.github/actions/env-to-json
       with:
         path: release.properties
