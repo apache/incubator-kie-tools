@@ -106,28 +106,6 @@ jobs:
           repository: kiegroup/kogito-online
           ref: gh-pages
 
-      # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
-      - name: Update "kogito-online" resources (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        env:
-          KOGITO_ONLINE_CHROME_EXT_DIR: ./editors/${{ steps.prerelease-tag.outputs.tag }}
-          KOGITO_ONLINE_EDITOR_STAGING_DIR: ./online-editor-staging
-        run: |
-          cd ../kogito-online
-          rm -rf $KOGITO_ONLINE_CHROME_EXT_DIR
-          mkdir -p $KOGITO_ONLINE_CHROME_EXT_DIR
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_DIR/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_DIR/
-          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_DIR/
-          rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR
-          cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_STAGING_DIR
-          git config --global user.email "kogito-tooling-bot@gmail.com"
-          git config --global user.name "Kogito Tooling Bot (kiegroup)"
-          git add . && git commit -m "${{ steps.prerelease-tag.outputs.tag }} resources" || echo "No changes."
-          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
-          git push origin gh-pages
-          cd -
-
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-vscode-extension
@@ -223,3 +201,23 @@ jobs:
           asset_path: "./packages/hub/out/Business Modeler Hub Preview-windows-x64"
           asset_name: "Business Modeler Hub Preview-windows-x64.zip"
           asset_content_type: application/zip
+
+            # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
+            - name: Update "kogito-online" resources (Ubuntu only)
+              if: matrix.os == 'ubuntu-latest'
+              env:
+                KOGITO_ONLINE_CHROME_EXT_DIR: ./editors/${{ steps.prerelease-tag.outputs.tag }}
+                KOGITO_ONLINE_EDITOR_STAGING_DIR: ./online-editor-staging
+              run: |
+                rm -rf $KOGITO_ONLINE_CHROME_EXT_DIR
+                mkdir -p $KOGITO_ONLINE_CHROME_EXT_DIR
+                cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_DIR/
+                cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_DIR/
+                cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_DIR/
+                rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR
+                cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_STAGING_DIR
+                git config --global user.email "kogito-tooling-bot@gmail.com"
+                git config --global user.name "Kogito Tooling Bot (kiegroup)"
+                git add . && git commit -m "${{ steps.prerelease-tag.outputs.tag }} resources" || echo "No changes."
+                git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
+                git push origin gh-pages
