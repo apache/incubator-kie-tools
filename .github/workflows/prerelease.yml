@@ -35,22 +35,23 @@ jobs:
         draft: true
         prerelease: true
 
-    - name: Generate release.properties
+    - name: Generate release.json
       env:
         env-to-json__release_upload_url: ${{ steps.create_release.outputs.upload_url }}
         env-to-json__release_html_url: ${{ steps.create_release.outputs.html_url }}
         env-to-json__release_id: ${{ steps.create_release.outputs.id }}
       uses: ./.github/actions/env-to-json
       with:
-        path: release.properties
+        path: release.json
 
-    - name: Upload release.properties
+    - name: Upload release.json
       uses: actions/upload-artifact@v1
       with:
-        name: release_properties
-        path: release.properties
+        name: release_json
+        path: release.json
 
   prerelease:
+    needs: create-release
     if: github.repository == 'kiegroup/kogito-tooling'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -62,15 +63,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download release.properties
+      - name: Download release.json
         uses: actions/download-artifact@v1
         with:
-          name: release_properties
+          name: release_json
 
-      - name: Parse and output release.properties
+      - name: Parse and output release.json
         uses: ./.github/actions/json-to-output
         with:
-          path: release.properties
+          path: release.json
 
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -130,7 +131,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
           asset_name: vscode_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.vsix
           asset_content_type: application/zip
@@ -142,7 +143,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
           asset_name: chrome_extension_kogito_kie_editors_${{ steps.prerelease-tag.outputs.tag }}.zip
           asset_content_type: application/zip
@@ -154,7 +155,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
           asset_name: Business Modeler Preview-linux-x64.tar.gz
           asset_content_type: application/tar+gzip
@@ -166,7 +167,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64.zip
           asset_name: Business Modeler Preview-darwin-x64.zip
           asset_content_type: application/zip
@@ -178,7 +179,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: "./packages/desktop/out/Business Modeler Preview-windows-x64"
           asset_name: "Business Modeler Preview-windows-x64.zip"
           asset_content_type: application/zip
@@ -190,7 +191,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
           asset_name: Business Modeler Hub Preview-linux-x64.tar.gz
           asset_content_type: application/tar+gzip
@@ -202,7 +203,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
           asset_name: Business Modeler Hub Preview-darwin-x64.zip
           asset_content_type: application/zip
@@ -214,7 +215,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release_properties.outputs.upload_url }}
+          upload_url: ${{ steps.release_json.outputs.upload_url }}
           asset_path: "./packages/hub/out/Business Modeler Hub Preview-windows-x64"
           asset_name: "Business Modeler Hub Preview-windows-x64.zip"
           asset_content_type: application/zip
