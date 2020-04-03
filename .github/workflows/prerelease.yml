@@ -69,9 +69,6 @@ jobs:
           name: release.json
           path: .
 
-      - run: find .
-        if: matrix.os == 'ubuntu-latest'
-
       - name: Parse and output release.json
         id: release_json
         uses: ./.github/actions/json-to-output
@@ -207,6 +204,9 @@ jobs:
         with:
           repository: kiegroup/kogito-online
           ref: gh-pages
+
+      - run: find ..
+        if: matrix.os == 'ubuntu-latest'
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
       - name: Update "kogito-online" resources (Ubuntu only)
