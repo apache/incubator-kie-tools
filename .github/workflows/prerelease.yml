@@ -63,6 +63,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run: find .
+        if: matrix.os == 'ubuntu-latest'
+
       - name: Download release.json
         uses: actions/download-artifact@v1
         with:
