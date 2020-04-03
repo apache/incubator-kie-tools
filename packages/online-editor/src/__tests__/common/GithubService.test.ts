@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GithubService } from "../common/GithubService";
+import { GithubService } from "../../common/GithubService";
 
 const githubService = new GithubService();
 

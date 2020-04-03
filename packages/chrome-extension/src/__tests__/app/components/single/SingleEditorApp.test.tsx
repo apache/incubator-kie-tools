@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { fireEvent, render, screen, wait } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { SingleEditorApp } from "../../../../app/components/single/SingleEditorApp";
 import { usingTestingGitHubContext, usingTestingGlobalContext } from "../../../testing_utils";
 import { removeAllChildren } from "../../../../app/utils";
@@ -154,7 +154,7 @@ describe("SingleEditorApp", () => {
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
-    await wait(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    await waitFor(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
     expect(document.body).toMatchSnapshot();
   });
 
@@ -179,7 +179,7 @@ describe("SingleEditorApp", () => {
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
-    await wait(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    await waitFor(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
     //TODO: Simulate comeback
     //TODO: Match snapshot with new file name and content
     expect(document.body).toMatchSnapshot();

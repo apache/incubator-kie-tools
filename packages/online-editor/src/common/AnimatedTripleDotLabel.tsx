@@ -31,7 +31,7 @@ export function AnimatedTripleDotLabel(props: Props) {
       } else {
         setDots(dots + ".")
       }
-    }, 1000);
+    }, 200);
     return () => {
       clearTimeout(timeout);
     };
