@@ -20,6 +20,16 @@ export interface Route<T> {
   args(url: string): T;
 }
 
+export class DownloadHubRoute implements Route<{}> {
+  public url(args: {}) {
+    return "/download";
+  }
+
+  public args(url: string) {
+    return {};
+  }
+}
+
 export class HomeRoute implements Route<{}> {
   public url(args: {}) {
     return "/";
@@ -51,4 +61,5 @@ export class EditorRoute implements Route<EditorRouteArgs> {
 export class Routes {
   public readonly home = new HomeRoute();
   public readonly editor = new EditorRoute();
+  public readonly downloadHub = new DownloadHubRoute();
 }

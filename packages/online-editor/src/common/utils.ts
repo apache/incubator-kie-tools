@@ -35,3 +35,31 @@ export function removeFileExtension(fileName: string) {
 export function removeDirectories(filePath: string) {
   return filePath.split("/").pop();
 }
+
+
+// FIXME: remove duplications
+export enum OperatingSystem {
+  MACOS = "MACOS",
+  WINDOWS = "WINDOWS",
+  LINUX = "LINUX"
+}
+
+export function getOperatingSystem() {
+  if (navigator.appVersion.indexOf("Win") !== -1) {
+    return OperatingSystem.WINDOWS;
+  }
+
+  if (navigator.appVersion.indexOf("Mac") !== -1) {
+    return OperatingSystem.MACOS;
+  }
+
+  if (navigator.appVersion.indexOf("X11") !== -1) {
+    return OperatingSystem.LINUX;
+  }
+
+  if (navigator.appVersion.indexOf("Linux") !== -1) {
+    return OperatingSystem.LINUX;
+  }
+
+  return undefined;
+}
