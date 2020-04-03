@@ -1,7 +1,6 @@
 import { SyntheticEvent } from 'react';
 
 import Bridge from './Bridge';
-import useField from './useField';
 
 export type ChangedMap<T> = T extends {}
   ? { [P in keyof T]?: ChangedMap<T[P]> }
@@ -53,3 +52,5 @@ export type ModelTransformMode = 'form' | 'submit' | 'validate';
 export type Partialize<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type ValidateMode = 'onChange' | 'onChangeAfterSubmit' | 'onSubmit';
+
+export type Override<T, U> = U & Omit<T, keyof U>;
