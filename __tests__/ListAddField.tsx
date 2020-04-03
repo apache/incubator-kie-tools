@@ -3,6 +3,7 @@ import { ListAddField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';
+import { Button } from '@patternfly/react-core';
 
 const parent = {
   maxCount: 3,
@@ -34,7 +35,7 @@ test('<ListAddField> - prevents onClick when disabled', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -52,7 +53,7 @@ test('<ListAddField> - prevents onClick when limit reached', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -71,6 +72,6 @@ test('<ListAddField> - correctly reacts on click', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith(['y']);
 });

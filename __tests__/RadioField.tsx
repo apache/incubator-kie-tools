@@ -71,13 +71,13 @@ test('<RadioField> - renders a set of checkboxes with correct id (specified)', (
       .find('input')
       .at(0)
       .prop('id'),
-  ).toBe('y-YQ');
+  ).toBe('y');
   expect(
     wrapper
       .find('input')
       .at(1)
       .prop('id'),
-  ).toBe('y-Yg');
+  ).toBe('y');
 });
 
 test('<RadioField> - renders a set of checkboxes with correct name', () => {

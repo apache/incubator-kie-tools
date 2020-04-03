@@ -1,4 +1,5 @@
 import React from 'react';
+import { Select, Radio } from '@patternfly/react-core';
 import { SelectField } from '../src';
 
 import createContext from './_createContext';
@@ -11,7 +12,7 @@ test('<SelectField> - renders a select', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
+  expect(wrapper.find(Select)).toHaveLength(1);
 });
 
 test('<SelectField> - renders a select with correct disabled state', () => {
@@ -21,8 +22,8 @@ test('<SelectField> - renders a select with correct disabled state', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('disabled')).toBe(true);
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('isDisabled')).toBe(true);
 });
 
 test('<SelectField> - renders a select with correct id (inherited)', () => {
@@ -32,8 +33,8 @@ test('<SelectField> - renders a select with correct id (inherited)', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('id')).toBeTruthy();
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('id')).toBeTruthy();
 });
 
 test('<SelectField> - renders a select with correct id (specified)', () => {
@@ -43,8 +44,8 @@ test('<SelectField> - renders a select with correct id (specified)', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('id')).toBe('y');
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('id')).toBe('y');
 });
 
 test('<SelectField> - renders a select with correct name', () => {
@@ -54,8 +55,8 @@ test('<SelectField> - renders a select with correct name', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('name')).toBe('x');
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('name')).toBe('x');
 });
 
 test('<SelectField> - renders a select with correct options', () => {
@@ -65,17 +66,12 @@ test('<SelectField> - renders a select with correct options', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('option')).toHaveLength(3);
-  [
-    ['', ''],
-    ['a', 'a'],
-    ['b', 'b'],
-  ].forEach(([value, text], index) => {
-    const option = wrapper.find('option').at(index);
-    expect(option.prop('value')).toBe(value);
-    expect(option.text()).toBe(text);
-  });
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('children')).toHaveLength(2);
+  expect(wrapper.find(Select).prop('children')[0].props.value).toBe('a');
+  expect(wrapper.find(Select).prop('children')[0].props.children).toBe('a');
+  expect(wrapper.find(Select).prop('children')[1].props.value).toBe('b');
+  expect(wrapper.find(Select).prop('children')[1].props.children).toBe('b');
 });
 
 test('<SelectField> - renders a select with correct options (transform)', () => {
@@ -85,39 +81,12 @@ test('<SelectField> - renders a select with correct options (transform)', () => 
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('option')).toHaveLength(3);
-  [
-    ['', ''],
-    ['a', 'A'],
-    ['b', 'B'],
-  ].forEach(([value, text], index) => {
-    const option = wrapper.find('option').at(index);
-    expect(option.prop('value')).toBe(value);
-    expect(option.text()).toBe(text);
-  });
-});
-
-test('<SelectField> - renders a select with correct placeholder (fallback)', () => {
-  const element = <SelectField name="x" label="y" placeholder="" />;
-  const wrapper = mount(
-    element,
-    createContext({
-      x: { type: String, allowedValues: ['a', 'b'], optional: true },
-    }),
-  );
-
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('option')).toHaveLength(3);
-  [
-    ['', 'y'],
-    ['a', 'a'],
-    ['b', 'b'],
-  ].forEach(([value, text], index) => {
-    const option = wrapper.find('option').at(index);
-    expect(option.prop('value')).toBe(value);
-    expect(option.text()).toBe(text);
-  });
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('children')).toHaveLength(2);
+  expect(wrapper.find(Select).prop('children')[0].props.value).toBe('a');
+  expect(wrapper.find(Select).prop('children')[0].props.children).toBe('A');
+  expect(wrapper.find(Select).prop('children')[1].props.value).toBe('b');
+  expect(wrapper.find(Select).prop('children')[1].props.children).toBe('B');
 });
 
 test('<SelectField> - renders a select with correct placeholder (implicit)', () => {
@@ -127,17 +96,9 @@ test('<SelectField> - renders a select with correct placeholder (implicit)', () 
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('option')).toHaveLength(3);
-  [
-    ['', 'y'],
-    ['a', 'a'],
-    ['b', 'b'],
-  ].forEach(([value, text], index) => {
-    const option = wrapper.find('option').at(index);
-    expect(option.prop('value')).toBe(value);
-    expect(option.text()).toBe(text);
-  });
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('placeholder')).toBe('y');
+  expect(wrapper.find(Select).prop('value')).toBe(undefined);
 });
 
 test('<SelectField> - renders a select with correct value (default)', () => {
@@ -147,8 +108,8 @@ test('<SelectField> - renders a select with correct value (default)', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('value')).toBe('');
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('value')).toBe(undefined);
 });
 
 test('<SelectField> - renders a select with correct value (model)', () => {
@@ -161,8 +122,8 @@ test('<SelectField> - renders a select with correct value (model)', () => {
     ),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('value')).toBe('b');
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('value')).toBe('b');
 });
 
 test('<SelectField> - renders a select with correct value (specified)', () => {
@@ -172,8 +133,8 @@ test('<SelectField> - renders a select with correct value (specified)', () => {
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(wrapper.find('select').prop('value')).toBe('b');
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('value')).toBe('b');
 });
 
 test('<SelectField> - renders a select which correctly reacts on change', () => {
@@ -188,11 +149,30 @@ test('<SelectField> - renders a select which correctly reacts on change', () => 
     ),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(
-    wrapper.find('select').simulate('change', { target: { value: 'b' } }),
-  ).toBeTruthy();
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('onSelect')('b')).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'b');
+});
+
+test('<SelectField> - renders a select which correctly reacts on change (array)', () => {
+  const onChange = jest.fn();
+
+  const element = <SelectField name="x" value={undefined} />;
+  const wrapper = mount(
+    element,
+    createContext(
+      {
+        x: { type: Array },
+        'x.$': { type: String, allowedValues: ['a', 'b'] },
+      },
+      { onChange },
+    ),
+  );
+
+  console.log(wrapper.find(Select).prop('onSelect'));
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('onSelect')(['b'])).toBeFalsy();
+  expect(onChange).toHaveBeenLastCalledWith('x', ['b']);
 });
 
 test('<SelectField> - renders a select which correctly reacts on change (empty)', () => {
@@ -207,11 +187,9 @@ test('<SelectField> - renders a select which correctly reacts on change (empty)'
     ),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(
-    wrapper.find('select').simulate('change', { target: { value: '' } }),
-  ).toBeTruthy();
-  expect(onChange).toHaveBeenLastCalledWith('x', undefined);
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('onSelect')('')).toBeFalsy();
+  expect(onChange).toHaveBeenLastCalledWith('x', '');
 });
 
 test('<SelectField> - renders a select which correctly reacts on change (same value)', () => {
@@ -226,12 +204,22 @@ test('<SelectField> - renders a select which correctly reacts on change (same va
     ),
   );
 
-  expect(wrapper.find('select')).toHaveLength(1);
-  expect(
-    wrapper.find('select').simulate('change', { target: { value: 'b' } }),
-  ).toBeTruthy();
+  expect(wrapper.find(Select)).toHaveLength(1);
+  expect(wrapper.find(Select).prop('onSelect')('b')).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'b');
 });
+
+// test('<SelectField> - renders a wrapper with unknown props', () => {
+//   const element = <SelectField name="x" data-x="x" data-y="y" data-z="z" />;
+//   const wrapper = mount(
+//     element,
+//     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
+//   );
+
+//   expect(wrapper.find(Select).prop('data-x')).toBe('x');
+//   expect(wrapper.find(Select).prop('data-y')).toBe('y');
+//   expect(wrapper.find(Select).prop('data-z')).toBe('z');
+// });
 
 test('<SelectField> - renders a label', () => {
   const element = <SelectField name="x" label="y" />;
@@ -243,7 +231,7 @@ test('<SelectField> - renders a label', () => {
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').prop('children')).toBe('y');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
-    wrapper.find('select').prop('id'),
+    wrapper.find(Select).prop('id'),
   );
 });
 
@@ -338,16 +326,16 @@ test('<SelectField checkboxes> - renders a set of checkboxes with correct id (sp
   expect(wrapper.find('input')).toHaveLength(2);
   expect(
     wrapper
-      .find('input')
+      .find(Radio)
       .at(0)
       .prop('id'),
-  ).toBe('y-YQ');
+  ).toBe('y-a');
   expect(
     wrapper
-      .find('input')
+      .find(Radio)
       .at(1)
       .prop('id'),
-  ).toBe('y-Yg');
+  ).toBe('y-b');
 });
 
 test('<SelectField checkboxes> - renders a set of checkboxes with correct name', () => {

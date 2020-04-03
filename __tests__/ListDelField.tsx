@@ -3,6 +3,7 @@ import { ListDelField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';
+import { Button } from '@patternfly/react-core';
 
 const parent = {
   maxCount: 3,
@@ -35,7 +36,7 @@ test('<ListDelField> - prevents onClick when disabled', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -53,7 +54,7 @@ test('<ListDelField> - prevents onClick when limit reached', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -68,6 +69,6 @@ test('<ListDelField> - correctly reacts on click', () => {
     createContext({ x: { type: Array }, 'x.$': { type: String } }),
   );
 
-  expect(wrapper.find('span').simulate('click')).toBeTruthy();
+  expect(wrapper.find(Button).simulate('click')).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith(['x', 'z']);
 });
