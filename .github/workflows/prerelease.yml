@@ -99,13 +99,6 @@ jobs:
           DISPLAY: ":99.0"
         run: yarn run init && yarn run build:prod
 
-      - name: Checkout "kogito-online" (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/checkout@v2
-        with:
-          repository: kiegroup/kogito-online
-          ref: gh-pages
-
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-vscode-extension
@@ -201,6 +194,13 @@ jobs:
           asset_path: "./packages/hub/out/Business Modeler Hub Preview-windows-x64"
           asset_name: "Business Modeler Hub Preview-windows-x64.zip"
           asset_content_type: application/zip
+
+      - name: Checkout "kogito-online" (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v2
+        with:
+          repository: kiegroup/kogito-online
+          ref: gh-pages
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
       - name: Update "kogito-online" resources (Ubuntu only)
