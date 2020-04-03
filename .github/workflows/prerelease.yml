@@ -40,7 +40,7 @@ jobs:
           env-to-json__html_url: ${{ steps.create_release.outputs.html_url }}
           env-to-json__id: ${{ steps.create_release.outputs.id }}
           env-to-json__tag: ${{ steps.prerelease-tag.outputs.tag }}
-        uses: ./.github/actions/env-to-json
+        uses: ./kogito-tooling/.github/actions/env-to-json
         with:
           path: release.json
 
