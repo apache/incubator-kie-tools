@@ -152,8 +152,7 @@ jobs:
           asset_name: business_modeler_preview_macos_${{ steps.release_json.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      - run: "dir /B /s"
-        shell: cmd
+      - run: "Compress-Archive -Path \"kogito-tooling\packages\desktop\out\Business Modeler Preview-win32-x64\" -DestinationPath \"kogito-tooling\packages\desktop\out\Business Modeler Preview-win32-x64.zip\""
         if: matrix.os == 'windows-latest'
 
       - name: Upload Desktop App for Windows (Windows only)
@@ -164,7 +163,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
-          asset_path: "./kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64"
+          asset_path: "./kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
           asset_name: "business_modeler_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           asset_content_type: application/zip
 
@@ -192,6 +191,9 @@ jobs:
           asset_name: business_modeler_hub_preview_macos_${{ steps.release_json.outputs.tag }}.zip
           asset_content_type: application/zip
 
+      - run: "Compress-Archive -Path \"kogito-tooling\packages\desktop\out\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\packages\desktop\out\Business Modeler Hub Preview-win32-x64.zip\""
+        if: matrix.os == 'windows-latest'
+
       - name: Upload Hub App for Windows (Windows only)
         if: matrix.os == 'windows-latest'
         id: upload-hub-app-windows
@@ -200,7 +202,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
-          asset_path: "./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64"
+          asset_path: "./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
           asset_name: "business_modeler_hub_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           asset_content_type: application/zip
 
