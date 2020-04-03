@@ -81,9 +81,6 @@ typings/
 # Nuxt.js build / generate output
 .nuxt
 dist
-__tests__
-reproductions
-_src
 
 # Gatsby files
 .cache/
@@ -105,3 +102,6 @@ _src
 
 # TernJS port file
 .tern-port
+
+# Custom
+yarn.lock
