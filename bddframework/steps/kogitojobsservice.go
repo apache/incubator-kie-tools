@@ -22,16 +22,21 @@ import (
 func registerKogitoJobsServiceSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
 	s.Step(`^Install Kogito Jobs Service with (\d+) replicas and persistence$`, data.installKogitoJobsServiceWithReplicasAndPersistence)
+	s.Step(`^Install Kogito Jobs Service with (\d+) replicas and persistence and events$`, data.installKogitoJobsServiceWithReplicasAndPersistenceAndEvents)
 	s.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
 	s.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, false)
+	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, false, false)
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicasAndPersistence(replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true)
+	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true, false)
+}
+
+func (data *Data) installKogitoJobsServiceWithReplicasAndPersistenceAndEvents(replicas int) error {
+	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true, true)
 }
 
 func (data *Data) kogitoJobsServiceHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {

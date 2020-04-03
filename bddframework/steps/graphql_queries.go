@@ -22,11 +22,25 @@ var (
 	  }
 	}
   `
+	getJobsIDQuery = `
+	{
+	  Jobs{
+		id
+	  }
+	}
+  `
 )
 
-// GraphqlDataIndexProcessInstanceQueryResponse Quaery response type of Data Index GraphQL endpoint containing process instances
-type GraphqlDataIndexProcessInstanceQueryResponse struct {
+// GraphqlDataIndexProcessInstancesQueryResponse Query response type of Data Index GraphQL endpoint containing process instances
+type GraphqlDataIndexProcessInstancesQueryResponse struct {
 	ProcessInstances []struct {
 		ProcessName string `json:"processName,omitempty"`
+	}
+}
+
+// GraphqlDataIndexJobsQueryResponse Query response type of Data Index GraphQL endpoint containing jobs
+type GraphqlDataIndexJobsQueryResponse struct {
+	Jobs []struct {
+		ID string `json:"id,omitempty"`
 	}
 }

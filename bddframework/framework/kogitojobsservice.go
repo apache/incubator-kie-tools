@@ -30,20 +30,20 @@ import (
 )
 
 // InstallKogitoJobsService deploy the Kogito Jobs service
-func InstallKogitoJobsService(namespace string, installerType InstallerType, replicas int, persistence bool) error {
-	GetLogger(namespace).Infof("%s install Kogito Jobs Service with %d replicas and persistence %v", installerType, replicas, persistence)
+func InstallKogitoJobsService(namespace string, installerType InstallerType, replicas int, persistence, events bool) error {
+	GetLogger(namespace).Infof("%s install Kogito Jobs Service with %d replicas and persistence %v and events %v", installerType, replicas, persistence, events)
 	switch installerType {
 	case CLIInstallerType:
-		return cliInstallKogitoJobsService(namespace, replicas, persistence)
+		return cliInstallKogitoJobsService(namespace, replicas, persistence, events)
 	case CRInstallerType:
-		return crInstallKogitoJobsService(namespace, replicas, persistence)
+		return crInstallKogitoJobsService(namespace, replicas, persistence, events)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-func crInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
-	service := getJobsServiceStub(namespace, int32(replicas), persistence)
+func crInstallKogitoJobsService(namespace string, replicas int, persistence, events bool) error {
+	service := getJobsServiceStub(namespace, int32(replicas), persistence, events)
 
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(service); err != nil {
 		return fmt.Errorf("Error creating Kogito jobs service: %v", err)
@@ -51,11 +51,15 @@ func crInstallKogitoJobsService(namespace string, replicas int, persistence bool
 	return nil
 }
 
-func cliInstallKogitoJobsService(namespace string, replicas int, persistence bool) error {
+func cliInstallKogitoJobsService(namespace string, replicas int, persistence, events bool) error {
 	cmd := []string{"install", "jobs-service"}
 
 	if persistence {
 		cmd = append(cmd, "--enable-persistence")
+	}
+
+	if events {
+		cmd = append(cmd, "--enable-events")
 	}
 
 	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getJobsServiceImageTag()))
@@ -119,7 +123,7 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
 	return kubernetes.ResourceC(kubeClient).Update(kogitoJobsService)
 }
 
-func getJobsServiceStub(namespace string, replicas int32, persistence bool) *v1alpha1.KogitoJobsService {
+func getJobsServiceStub(namespace string, replicas int32, persistence, events bool) *v1alpha1.KogitoJobsService {
 	service := &v1alpha1.KogitoJobsService{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      infrastructure.DefaultJobsServiceName,
@@ -142,6 +146,12 @@ func getJobsServiceStub(namespace string, replicas int32, persistence bool) *v1a
 
 	if persistence {
 		service.Spec.InfinispanProperties = v1alpha1.InfinispanConnectionProperties{
+			UseKogitoInfra: true,
+		}
+	}
+
+	if events {
+		service.Spec.KafkaProperties = v1alpha1.KafkaConnectionProperties{
 			UseKogitoInfra: true,
 		}
 	}
