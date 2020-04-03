@@ -202,7 +202,7 @@ jobs:
 
       - name: Checkout "kogito-online" (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
         with:
           path: kogito-online
           repository: kiegroup/kogito-online
