@@ -8,9 +8,9 @@ Feature: Discovery with onboarding
     Given Kogito Operator is deployed
     
     When Deploy quarkus example service "onboarding-example/hr" with native <native> and labels 
-      | department         | process |
-      | id                 | process |
-      | employeeValidation | process |
+      | department/first          | process |
+      | id                        | process |
+      | employee-validation/first | process |
 
     And Deploy quarkus example service "onboarding-example/payroll" with native <native> and labels
       | taxes/rate         | process |
