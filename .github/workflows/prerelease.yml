@@ -163,7 +163,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_json.outputs.upload_url }}
-          asset_path: "\"kogito-tooling\packages\desktop\out\Business Modeler Preview-windows-x64\""
+          asset_path: "\"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-windows-x64\\""
           asset_name: "business_modeler_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           asset_content_type: application/zip
 
