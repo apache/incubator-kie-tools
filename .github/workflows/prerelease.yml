@@ -218,6 +218,7 @@ jobs:
           KOGITO_ONLINE_CHROME_EXT_DIR: ./editors/${{ steps.release_json.outputs.tag }}
           KOGITO_ONLINE_EDITOR_STAGING_DIR: ./online-editor-staging
         run: |
+          cd kogito-online
           rm -rf $KOGITO_ONLINE_CHROME_EXT_DIR
           mkdir -p $KOGITO_ONLINE_CHROME_EXT_DIR
           cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_DIR/
@@ -230,3 +231,4 @@ jobs:
           git add . && git commit -m "${{ steps.release_json.outputs.tag }} resources" || echo "No changes."
           git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
           git push origin gh-pages
+          cd -
