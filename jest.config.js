@@ -15,7 +15,7 @@ module.exports = {
     "<rootDir>/src"
   ],
   transform: {
-    '^.+\\.(js|ts|tsx)$': './scripts/transform.js'
+    '^.+\\.(js|ts|tsx)$': './transform.js'
   }
 };
 

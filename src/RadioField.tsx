@@ -16,15 +16,17 @@ const Radio = (props: RadioFieldProps) => (
   wrapField(
     props,
     props.allowedValues.map(item => (
-      <RadioField
-        key={item}
-        isChecked={item === props.value}
-        isDisabled={props.disabled}
-        id={`${props.id}-${escape(item)}`}
-        name={name}
-        label={props.label}
-        onChange={() => props.onChange(item)}
-      />
+      <>
+        <label htmlFor={props.id}>{props.label}</label>
+        <RadioField
+          key={item}
+          isChecked={item === props.value}
+          isDisabled={props.disabled}
+          id={`${props.id}-${escape(item)}`}
+          name={name}
+          onChange={() => props.onChange(item)}
+        />
+      </>
     ))
   )
 );

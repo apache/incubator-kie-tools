@@ -26,13 +26,15 @@ const Nest = ({
   ...props
 }: NestFieldProps) =>
   wrapField(
-    { ...props },
-    label && <Label>{label}</Label>,
-    children
+    props,
+    <>
+      {label && <Label>{label}</Label>}
+      {children
       ? injectName(name, children)
       : fields?.map(key => (
           <AutoField key={key} name={joinName(name, key)} {...itemProps} />
-        )),
+        ))}
+    </>,
   );
 
 export default connectField(Nest, {

@@ -37,6 +37,7 @@ function renderCheckboxes(props: CheckboxesProps) {
       name={props.name}
       value={props.value}
       onChange={onChange}
+      label={props.label}
     />
   );
 }
