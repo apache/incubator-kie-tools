@@ -21,7 +21,7 @@ export default function wrapField(
     required,
     ...props
   }: WrapperProps,
-  ...children
+  children
 ) {
   return (
     <FormGroup

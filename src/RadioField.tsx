@@ -13,7 +13,10 @@ export type RadioFieldProps = {
 } & Omit<RadioProps, 'isDisabled'>;
 
 const Radio = (props: RadioFieldProps) => {
-  return <div {...filterDOMProps(props)} >
+  // @ts-ignore - AutoField passes checkboxes prop, which causes console.error
+  // https://codeburst.io/use-es2015-object-rest-operator-to-omit-properties-38a3ecffe90
+  const { checkboxes , ...noCheckboxes } = props;
+  return <div {...filterDOMProps(noCheckboxes)} >
     {props.label && <label>{props.label}</label>}
     {props.allowedValues.map(item => (
       <React.Fragment key={item}>

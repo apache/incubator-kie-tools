@@ -169,7 +169,6 @@ test('<SelectField> - renders a select which correctly reacts on change (array)'
     ),
   );
 
-  console.log(wrapper.find(Select).prop('onSelect'));
   expect(wrapper.find(Select)).toHaveLength(1);
   expect(wrapper.find(Select).prop('onSelect')(['b'])).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', ['b']);

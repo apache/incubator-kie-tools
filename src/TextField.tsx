@@ -7,7 +7,7 @@ import wrapField from './wrapField';
 export type TextFieldProps = {
   decimal?: boolean;
   inputRef?: Ref<HTMLInputElement>;
-  onChange: (value: string) => void;
+  onChange: (value?: string) => void;
   value?: string;
   disabled: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;

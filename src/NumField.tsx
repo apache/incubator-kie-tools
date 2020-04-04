@@ -4,12 +4,10 @@ import { TextInput, TextInputProps } from '@patternfly/react-core';
 import { connectField } from './uniforms';
 import wrapField from './wrapField';
 
-const noneIfNaN = x => (isNaN(x) ? undefined : x);
-
 export type NumFieldProps = {
   decimal?: boolean;
   inputRef?: Ref<HTMLInputElement>;
-  onChange: (value: number, event: React.FormEvent<HTMLInputElement>) => void;
+  onChange: (value?: number) => void;
   disabled: boolean;
   value?: number;
 } & Omit<TextInputProps, 'isDisabled'>;
@@ -23,8 +21,9 @@ const Num = (props: NumFieldProps) => {
     props.onChange(isNaN(v) ? undefined : v);
   }
 
+  const { decimal, ...noDecimal } = props;
   return wrapField(
-    props,
+    noDecimal,
     <TextInput
       name={props.name}
       isDisabled={props.disabled}

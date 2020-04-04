@@ -1,10 +1,13 @@
-import { BaseForm } from './uniforms';
+import { BaseForm } from 'uniforms';
 
-const PatternFly = (parent: any): any =>
-  class extends parent {
-    static PatternFly = PatternFly;
+const Patternfly = (parent: any): any => {
+  class _ extends parent {
+    static Patternfly = Patternfly;
 
     static displayName = `Patternfly${parent.displayName}`;
-  };
+  }
 
-export default PatternFly(BaseForm);
+  return _;
+};
+
+export default Patternfly(BaseForm);
