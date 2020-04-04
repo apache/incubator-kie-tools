@@ -1,5 +1,6 @@
 import React from 'react';
 import { Select, Radio } from '@patternfly/react-core';
+import { act } from '@testing-library/react';
 import { SelectField } from '../src';
 
 import createContext from './_createContext';
@@ -97,7 +98,7 @@ test('<SelectField> - renders a select with correct placeholder (implicit)', () 
   );
 
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(wrapper.find(Select).prop('placeholder')).toBe('y');
+  expect(wrapper.find(Select).prop('placeholderText')).toBe('y');
   expect(wrapper.find(Select).prop('value')).toBe(undefined);
 });
 
@@ -139,7 +140,6 @@ test('<SelectField> - renders a select with correct value (specified)', () => {
 
 test('<SelectField> - renders a select which correctly reacts on change', () => {
   const onChange = jest.fn();
-
   const element = <SelectField name="x" />;
   const wrapper = mount(
     element,
@@ -149,8 +149,12 @@ test('<SelectField> - renders a select which correctly reacts on change', () => 
     ),
   );
 
+  act(() => {
+    const changeEvent = wrapper.find(Select).prop('onSelect')('event', 'b');
+    expect(changeEvent).toBeFalsy();
+  })
+
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(wrapper.find(Select).prop('onSelect')('b')).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'b');
 });
 
@@ -168,9 +172,13 @@ test('<SelectField> - renders a select which correctly reacts on change (array)'
       { onChange },
     ),
   );
+  
+  act(() => {
+    const changeEvent = wrapper.find(Select).prop('onSelect')('event', 'b');
+    expect(changeEvent).toBeFalsy();
+  });
 
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(wrapper.find(Select).prop('onSelect')(['b'])).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', ['b']);
 });
 
@@ -186,8 +194,12 @@ test('<SelectField> - renders a select which correctly reacts on change (empty)'
     ),
   );
 
+  act(() => {
+    const changeEvent = wrapper.find(Select).prop('onSelect')('event', '');
+    expect(changeEvent).toBeFalsy();
+  });
+
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(wrapper.find(Select).prop('onSelect')('')).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', '');
 });
 
@@ -203,22 +215,14 @@ test('<SelectField> - renders a select which correctly reacts on change (same va
     ),
   );
 
+  act(() => {
+    const changeEvent = wrapper.find(Select).prop('onSelect')('event', 'b');
+    expect(changeEvent).toBeFalsy();
+  });
+
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(wrapper.find(Select).prop('onSelect')('b')).toBeFalsy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'b');
 });
-
-// test('<SelectField> - renders a wrapper with unknown props', () => {
-//   const element = <SelectField name="x" data-x="x" data-y="y" data-z="z" />;
-//   const wrapper = mount(
-//     element,
-//     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
-//   );
-
-//   expect(wrapper.find(Select).prop('data-x')).toBe('x');
-//   expect(wrapper.find(Select).prop('data-y')).toBe('y');
-//   expect(wrapper.find(Select).prop('data-z')).toBe('z');
-// });
 
 test('<SelectField> - renders a label', () => {
   const element = <SelectField name="x" label="y" />;

@@ -88,7 +88,7 @@ function RenderSelect(props: SelectInputProps) {
   }
 
   const parseInput = (selection, fieldType) => {
-    if (fieldType !== Array) return (selection) ? selection : '';
+    if (fieldType !== Array) return (selection !== '') ? selection : '';
     return (selected.includes(selection))
       // @ts-ignore
       ? selected.filter(s => s !== selection)
@@ -112,6 +112,7 @@ function RenderSelect(props: SelectInputProps) {
   );
   return (
     <div {...filterDOMProps(props)}>
+      {props.label && <label htmlFor={props.id}>{props.label}</label>}
       <Select
         isDisabled={props.disabled}
         id={props.id}
