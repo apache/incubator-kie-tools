@@ -32,7 +32,6 @@ type CheckboxesProps = {
 
 function renderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
-  
   return (
     <div {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
@@ -113,4 +112,5 @@ function SelectField({ checkboxes, ...props }: SelectFieldProps) {
     : renderSelect(props as SelectInputProps);
 }
 
+// @ts-ignore
 export default connectField(SelectField);

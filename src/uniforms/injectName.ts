@@ -8,6 +8,7 @@ export default function injectName(
   children: ReactNode,
   parent?: ReactNode,
 ): ReactNode[] {
+  // @ts-ignore
   return Children.map(children, child => {
     if (!child || typeof child !== 'object' || get(parent, 'props.name'))
       return child;
