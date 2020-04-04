@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -7,10 +7,10 @@ import {
   Select,
   SelectProps,
   SelectOption,
+  SelectVariant,
 } from '@patternfly/react-core';
 
 import { connectField, filterDOMProps } from './uniforms';
-import { default as wrapField } from './wrapField';
 
 const xor = (item, array) => {
   const index = array.indexOf(item);
@@ -30,12 +30,13 @@ type CheckboxesProps = {
   disabled?: boolean;
 } & (Omit<CheckboxProps, 'isDisabled'> | Omit<RadioProps, 'isDisabled'>);
 
-function renderCheckboxes(props: CheckboxesProps) {
+function RenderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
+  
   return (
     <div {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
-      {props.allowedValues.map((item: any, index: number) => {
+      {props.allowedValues!.map((item: any, index: number) => {
         return (
           <React.Fragment key={index}>
             <label htmlFor={props.id}>{props.transform ? props.transform(item) : item}</label>
@@ -65,37 +66,65 @@ type SelectInputProps = {
   required?: boolean;
   id: string;
   fieldType?: typeof Array | any;
-  onSelect: (value?: string | string[]) => void;
+  onChange: (value?: string | string[]) => void;
   placeholder: string;
   allowedValues?: string[];
   disabled?: boolean;
   transform?: (value?: string) => string;
 } & Omit<SelectProps, 'isDisabled'>;
 
-function renderSelect(props: SelectInputProps) {
+function RenderSelect(props: SelectInputProps) {
+
+  const selectDefault = props.fieldType === Array ? [] : props.placeholder;
+
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string | string[]>(selectDefault);
+
+  const handleSelect = (event, selection) => {
+    const items = parseInput(selection, props.fieldType);
+    props.onChange(items);
+    setSelected(items);
+    setExpanded(false);
+  }
+
+  const parseInput = (selection, fieldType) => {
+    if (fieldType !== Array) return (selection) ? selection : '';
+    return (selected.includes(selection))
+      // @ts-ignore
+      ? selected.filter(s => s !== selection)
+      // @ts-ignore
+      : [selection, ...selected];
+  }
+
+  const selectedOptions = props.allowedValues!.map(value => (
+    <SelectOption key={value} value={value}>
+      {props.transform ? props.transform(value) : value}
+    </SelectOption>
+  ));
+
+  if (props.placeholder) selectedOptions.unshift(
+    <SelectOption
+      key={props.allowedValues!.length}
+      isDisabled
+      isPlaceholder
+      value={props.placeholder}
+    />
+  );
   return (
     <div {...filterDOMProps(props)}>
-      {props.label && <label htmlFor={props.id}>{props.label}</label>}
       <Select
         isDisabled={props.disabled}
         id={props.id}
-        variant={props.fieldType === Array ? 'typeaheadmulti' : 'single'}
+        variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}
         name={props.name}
-        placeholder={props.placeholder}
-        // eslint-disable-next-line
-        onToggle={() => console.log('toggled') }
-        onSelect={(value) => {
-          // @ts-ignore
-          props.onChange(value !== '' ? value : '');
-        }}
-        selections={[]}
+        placeholderText={props.placeholder}
+        isExpanded={expanded}
+        selections={selected}
+        onToggle={() => setExpanded(!expanded) }
+        onSelect={handleSelect}
         value={props.value || (props.fieldType === Array ? [] : undefined)}
       >
-        {props.allowedValues!.map(value => (
-          <SelectOption key={value} value={value}>
-            {props.transform ? props.transform(value) : value}
-          </SelectOption>
-        ))}
+        { selectedOptions }
       </Select>
     </div>
   );
@@ -107,9 +136,9 @@ export type SelectFieldProps = { checkboxes?: boolean } & (
 );
 
 function SelectField({ checkboxes, ...props }: SelectFieldProps) {
-  return checkboxes
-    ? renderCheckboxes(props as CheckboxesProps)
-    : renderSelect(props as SelectInputProps);
+  return checkboxes 
+    ? RenderCheckboxes(props as CheckboxesProps)
+    : RenderSelect(props as SelectInputProps);
 }
 
 // @ts-ignore
