@@ -22,20 +22,19 @@ public class DecisionTableUIModelMapperHelper {
 
     public static final int ROW_INDEX_COLUMN_COUNT = 1;
 
-    public static final int DESCRIPTION_COLUMN_COLUMN_COUNT = 1;
-
     public enum DecisionTableSection {
         NONE,
         ROW_INDEX,
         INPUT_CLAUSES,
         OUTPUT_CLAUSES,
-        DESCRIPTION
+        ANNOTATION_CLAUSES
     }
 
     public static DecisionTableSection getSection(final DecisionTable dtable,
                                                   final int columnIndex) {
         final int inputClauseColumnCount = dtable.getInput().size();
         final int outputClauseColumnCount = dtable.getOutput().size();
+        final int annotationClauseColumnCount = dtable.getAnnotations().size();
 
         int _columnIndex = columnIndex;
         if ((_columnIndex = _columnIndex - ROW_INDEX_COLUMN_COUNT) < 0) {
@@ -47,8 +46,8 @@ public class DecisionTableUIModelMapperHelper {
         if ((_columnIndex = _columnIndex - outputClauseColumnCount) < 0) {
             return DecisionTableSection.OUTPUT_CLAUSES;
         }
-        if (_columnIndex - DESCRIPTION_COLUMN_COLUMN_COUNT < 0) {
-            return DecisionTableSection.DESCRIPTION;
+        if (_columnIndex - annotationClauseColumnCount < 0) {
+            return DecisionTableSection.ANNOTATION_CLAUSES;
         }
         return DecisionTableSection.NONE;
     }
@@ -82,6 +81,30 @@ public class DecisionTableUIModelMapperHelper {
         if (_columnIndex > outputClauseColumnCount - 1) {
             throw new IllegalArgumentException("columnIndex did not reference a valid OutputEntry column.");
         }
+        return _columnIndex;
+    }
+
+    public static int getAnnotationEntryIndex(final DecisionTable dtable,
+                                              final int columnIndex) {
+
+        final int inputClauseColumnCount = dtable.getInput().size();
+        final int outputClauseColumnCount = dtable.getOutput().size();
+        final int annotationClauseColumnCount = dtable.getAnnotations().size();
+
+        int _columnIndex = columnIndex;
+        if ((_columnIndex = _columnIndex - ROW_INDEX_COLUMN_COUNT) < 0) {
+            throw new IllegalArgumentException("columnIndex referenced 'Row index' column. Should be a valid AnnotationEntry column.");
+        }
+        if ((_columnIndex = _columnIndex - inputClauseColumnCount) < 0) {
+            throw new IllegalArgumentException("columnIndex referenced an InputEntry column. Should be a valid AnnotationEntry column.");
+        }
+        if ((_columnIndex = _columnIndex - outputClauseColumnCount) < 0) {
+            throw new IllegalArgumentException("columnIndex referenced an OutputEntry column. Should be a valid AnnotationEntry column.");
+        }
+        if (_columnIndex > annotationClauseColumnCount - 1) {
+            throw new IllegalArgumentException("columnIndex did not reference a valid AnnotationEntry column.");
+        }
+
         return _columnIndex;
     }
 }

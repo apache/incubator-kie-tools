@@ -108,8 +108,10 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
                     uiModelMapper.fromDMNModel(uiRowIndex,
                                                columnIndex++);
                 }
-                uiModelMapper.fromDMNModel(uiRowIndex,
-                                           columnIndex);
+                for (int ani = 0; ani < dtable.getAnnotations().size(); ani++) {
+                    uiModelMapper.fromDMNModel(uiRowIndex,
+                                               columnIndex++);
+                }
 
                 updateRowNumbers();
                 updateParentInformation();

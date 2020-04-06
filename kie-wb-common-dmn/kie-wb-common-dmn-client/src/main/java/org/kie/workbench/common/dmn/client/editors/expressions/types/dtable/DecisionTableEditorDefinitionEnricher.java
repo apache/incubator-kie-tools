@@ -46,8 +46,9 @@ import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -115,6 +116,10 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             outputClause.setTypeRef(!Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName());
             dtable.getOutput().add(outputClause);
 
+            final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
+            ruleAnnotationClause.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
+            dtable.getAnnotations().add(ruleAnnotationClause);
+
             final DecisionRule decisionRule = new DecisionRule();
             final UnaryTests decisionRuleUnaryTest = new UnaryTests();
             decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
@@ -124,9 +129,9 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             decisionRuleLiteralExpression.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
             decisionRule.getOutputEntry().add(decisionRuleLiteralExpression);
 
-            final Description description = new Description();
-            description.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
-            decisionRule.setDescription(description);
+            final RuleAnnotationClauseText ruleAnnotationEntry = new RuleAnnotationClauseText();
+            ruleAnnotationEntry.getText().setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
+            decisionRule.getAnnotationEntry().add(ruleAnnotationEntry);
 
             dtable.getRule().add(decisionRule);
 
@@ -137,6 +142,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             literalExpression.setParent(inputClause);
             decisionRuleUnaryTest.setParent(decisionRule);
             decisionRuleLiteralExpression.setParent(decisionRule);
+            ruleAnnotationEntry.setParent(dtable);
 
             if (nodeUUID.isPresent()) {
                 enrichInputClauses(nodeUUID.get(), dtable);

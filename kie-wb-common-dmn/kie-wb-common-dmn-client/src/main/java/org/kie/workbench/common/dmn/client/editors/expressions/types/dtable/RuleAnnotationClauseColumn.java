@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,38 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 
-public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, String> implements HasSingletonDOMElementResource {
+public class RuleAnnotationClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, String> implements HasDOMElementResources {
 
     private final TextAreaSingletonDOMElementFactory factory;
 
-    public DescriptionColumn(final HeaderMetaData headerMetaData,
-                             final TextAreaSingletonDOMElementFactory factory,
-                             final double width,
-                             final DecisionTableGrid gridWidget) {
-        this(Collections.singletonList(headerMetaData),
-             factory,
-             width,
-             gridWidget);
-    }
-
-    public DescriptionColumn(final List<HeaderMetaData> headerMetaData,
-                             final TextAreaSingletonDOMElementFactory factory,
-                             final double width,
-                             final DecisionTableGrid gridWidget) {
-        super(headerMetaData,
-              new DescriptionColumnRenderer(factory),
+    public RuleAnnotationClauseColumn(final Supplier<List<HeaderMetaData>> headerMetaDataSupplier,
+                                      final TextAreaSingletonDOMElementFactory factory,
+                                      final double width,
+                                      final DecisionTableGrid gridWidget) {
+        super(headerMetaDataSupplier.get(),
+              new NameAndDataTypeDOMElementColumnRenderer<>(factory),
               width,
               gridWidget);
+
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);
-        setMovable(false);
-        setResizable(false);
+        setMovable(true);
+        setResizable(true);
     }
 
     @Override
@@ -62,8 +55,16 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
                      final GridBodyCellRenderContext context,
                      final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.setFocus(true));
+                                 getTextAreaDOMElementConsumerOnCreation(cell),
+                                 getTextAreaDOMElementConsumerOnDisplay());
+    }
+
+    Consumer<TextAreaDOMElement> getTextAreaDOMElementConsumerOnDisplay() {
+        return e -> e.setFocus(true);
+    }
+
+    Consumer<TextAreaDOMElement> getTextAreaDOMElementConsumerOnCreation(final GridCell<String> cell) {
+        return e -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue());
     }
 
     @Override
@@ -72,19 +73,22 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
     }
 
     @Override
-    public void flush() {
-        factory.flush();
-    }
-
-    @Override
     public void destroyResources() {
-        super.destroyResources();
+        superDestroyResources();
         factory.destroyResources();
     }
 
     @Override
     public void setWidth(final double width) {
-        super.setWidth(width);
+        superSetWidth(width);
         updateWidthOfPeers();
+    }
+
+    void superDestroyResources() {
+        super.destroyResources();
+    }
+
+    void superSetWidth(final double width) {
+        super.setWidth(width);
     }
 }

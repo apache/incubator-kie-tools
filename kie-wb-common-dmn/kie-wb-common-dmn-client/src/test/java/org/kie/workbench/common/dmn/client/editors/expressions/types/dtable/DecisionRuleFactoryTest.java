@@ -25,6 +25,8 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +42,9 @@ public class DecisionRuleFactoryTest {
 
     private static final String OUTPUT_CLAUSE_TEXT_2 = "output2";
 
-    private static final String DESCRIPTION_TEXT = "description";
+    private static final String RULE_ANNOTATION_CLAUSE_TEXT_1 = "annotation1";
+
+    private static final String RULE_ANNOTATION_CLAUSE_TEXT_2 = "annotation2";
 
     private DecisionTable dtable;
 
@@ -51,6 +55,8 @@ public class DecisionRuleFactoryTest {
         dtable.getInput().add(new InputClause());
         dtable.getOutput().add(new OutputClause());
         dtable.getOutput().add(new OutputClause());
+        dtable.getAnnotations().add(new RuleAnnotationClause());
+        dtable.getAnnotations().add(new RuleAnnotationClause());
     }
 
     @Test
@@ -70,7 +76,11 @@ public class DecisionRuleFactoryTest {
                 .allSatisfy(literalExpression -> assertLiteralExpressionText(literalExpression, DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT))
                 .allSatisfy(literalExpression -> assertThat(literalExpression.getParent()).isEqualTo(rule));
 
-        assertThat(rule.getDescription().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
+        final List<RuleAnnotationClauseText> annotationEntries = rule.getAnnotationEntry();
+        assertThat(annotationEntries.size()).isEqualTo(2);
+        assertThat(annotationEntries)
+                .allSatisfy(clauseText -> assertAnnotationClauseText(clauseText, DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_EXPRESSION_TEXT))
+                .allSatisfy(clauseText -> assertThat(clauseText.getParent()).isEqualTo(rule));
 
         assertThat(rule.getParent()).isEqualTo(dtable);
     }
@@ -91,7 +101,10 @@ public class DecisionRuleFactoryTest {
         outputEntries.get(0).getText().setValue(OUTPUT_CLAUSE_TEXT_1);
         outputEntries.get(1).getText().setValue(OUTPUT_CLAUSE_TEXT_2);
 
-        rule.getDescription().setValue(DESCRIPTION_TEXT);
+        final List<RuleAnnotationClauseText> annotationEntries = rule.getAnnotationEntry();
+        assertThat(annotationEntries.size()).isEqualTo(2);
+        annotationEntries.get(0).getText().setValue(RULE_ANNOTATION_CLAUSE_TEXT_1);
+        annotationEntries.get(1).getText().setValue(RULE_ANNOTATION_CLAUSE_TEXT_2);
 
         dtable.getRule().add(rule);
 
@@ -115,7 +128,13 @@ public class DecisionRuleFactoryTest {
         assertLiteralExpressionInstancesAreNotTheSame(outputEntries.get(1), duplicateOutputEntries.get(1));
         assertThat(duplicateOutputEntries).allSatisfy(literalExpression -> assertThat(literalExpression.getParent()).isEqualTo(duplicate));
 
-        assertThat(duplicate.getDescription().getValue()).isEqualTo(DESCRIPTION_TEXT);
+        final List<RuleAnnotationClauseText> duplicateRuleAnnotationClauses = duplicate.getAnnotationEntry();
+        assertThat(duplicateRuleAnnotationClauses.size()).isEqualTo(2);
+        assertAnnotationClauseText(duplicateRuleAnnotationClauses.get(0), RULE_ANNOTATION_CLAUSE_TEXT_1);
+        assertAnnotationClauseText(duplicateRuleAnnotationClauses.get(1), RULE_ANNOTATION_CLAUSE_TEXT_2);
+        assertRuleAnnotationClauseInstancesAreNotTheSame(annotationEntries.get(0), duplicateRuleAnnotationClauses.get(0));
+        assertRuleAnnotationClauseInstancesAreNotTheSame(annotationEntries.get(1), duplicateRuleAnnotationClauses.get(1));
+        assertThat(duplicateRuleAnnotationClauses).allSatisfy(ruleAnnotationClauseText -> assertThat(ruleAnnotationClauseText.getParent()).isEqualTo(duplicate));
 
         assertThat(duplicate.getParent()).isEqualTo(dtable);
     }
@@ -140,5 +159,16 @@ public class DecisionRuleFactoryTest {
                                                                final LiteralExpression literalExpression2) {
         assertThat(literalExpression1).isNotSameAs(literalExpression2);
         assertThat(literalExpression1.getText()).isNotSameAs(literalExpression2.getText());
+    }
+
+    private void assertAnnotationClauseText(final RuleAnnotationClauseText ruleAnnotationClauseText,
+                                            final String expectedText) {
+        assertThat(ruleAnnotationClauseText.getText().getValue()).isEqualTo(expectedText);
+    }
+
+    private void assertRuleAnnotationClauseInstancesAreNotTheSame(final RuleAnnotationClauseText ruleAnnotationClauseText1,
+                                                               final RuleAnnotationClauseText ruleAnnotationClauseText2) {
+        assertThat(ruleAnnotationClauseText1).isNotSameAs(ruleAnnotationClauseText2);
+        assertThat(ruleAnnotationClauseText1.getText()).isNotSameAs(ruleAnnotationClauseText2.getText());
     }
 }

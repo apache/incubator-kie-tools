@@ -23,11 +23,13 @@ import java.util.Optional;
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionRule;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITLiteralExpression;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITRuleAnnotation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITUnaryTests;
 
 public class DecisionRulePropertyConverter {
@@ -39,6 +41,23 @@ public class DecisionRulePropertyConverter {
         final DecisionRule result = new DecisionRule();
         result.setId(id);
         result.setDescription(description);
+
+        final List<JSITRuleAnnotation> jsiAnnotationEntries = dmn.getAnnotationEntry();
+        for (int i = 0; i < jsiAnnotationEntries.size(); i++) {
+            final JSITRuleAnnotation jsiRuleAnnotation = Js.uncheckedCast(jsiAnnotationEntries.get(i));
+            final RuleAnnotationClauseText ruleAnnotationClauseText = RuleAnnotationClauseTextPropertyConverter.wbFromDMN(jsiRuleAnnotation);
+            if (Objects.nonNull(ruleAnnotationClauseText)) {
+                ruleAnnotationClauseText.setParent(result);
+                result.getAnnotationEntry().add(ruleAnnotationClauseText);
+            }
+        }
+
+        if (result.getAnnotationEntry().isEmpty()) {
+            final RuleAnnotationClauseText annotationEntryText = new RuleAnnotationClauseText();
+            annotationEntryText.getText().setValue(description.getValue());
+            annotationEntryText.setParent(result);
+            result.getAnnotationEntry().add(annotationEntryText);
+        }
 
         final List<JSITUnaryTests> jsiInputEntries = dmn.getInputEntry();
         for (int i = 0; i < jsiInputEntries.size(); i++) {
@@ -69,6 +88,10 @@ public class DecisionRulePropertyConverter {
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);
 
+        for (final RuleAnnotationClauseText ruleAnnotationClauseText : wb.getAnnotationEntry()) {
+            final JSITRuleAnnotation ruleAnnotation = RuleAnnotationClauseTextPropertyConverter.dmnFromWB(ruleAnnotationClauseText);
+            result.addAnnotationEntry(ruleAnnotation);
+        }
         for (UnaryTests ie : wb.getInputEntry()) {
             final JSITUnaryTests inputEntryConverted = UnaryTestsPropertyConverter.dmnFromWB(ie);
             result.addInputEntry(inputEntryConverted);

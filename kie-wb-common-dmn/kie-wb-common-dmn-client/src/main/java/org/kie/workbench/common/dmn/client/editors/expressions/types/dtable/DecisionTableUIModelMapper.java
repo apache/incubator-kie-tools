@@ -76,12 +76,15 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                                                                             listSelector,
                                                                             lineHeight));
                     break;
-                case DESCRIPTION:
+                case ANNOTATION_CLAUSES:
+                    final int annotationIndex = DecisionTableUIModelMapperHelper.getAnnotationEntryIndex(dtable, columnIndex);
+                    final String textValue = rule.getAnnotationEntry().get(annotationIndex).getText().getValue();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getDescription().getValue()),
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(textValue),
                                                                             listSelector,
                                                                             lineHeight));
+
                     break;
             }
         });
@@ -105,8 +108,9 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
                     rule.getOutputEntry().get(oei).getText().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
                     break;
-                case DESCRIPTION:
-                    rule.getDescription().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
+                case ANNOTATION_CLAUSES:
+                    final int annotationIndex = DecisionTableUIModelMapperHelper.getAnnotationEntryIndex(dtable, columnIndex);
+                    rule.getAnnotationEntry().get(annotationIndex).getText().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
                     break;
             }
         });

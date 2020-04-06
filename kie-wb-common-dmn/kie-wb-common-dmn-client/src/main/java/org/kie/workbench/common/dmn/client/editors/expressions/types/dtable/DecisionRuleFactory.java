@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 
 public class DecisionRuleFactory {
 
@@ -37,9 +37,12 @@ public class DecisionRuleFactory {
             rule.getOutputEntry().add(le);
             le.setParent(rule);
         }
-        final Description d = new Description();
-        d.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
-        rule.setDescription(d);
+        for (int index = 0; index < dtable.getAnnotations().size(); index++) {
+            final RuleAnnotationClauseText ruleAnnotationClauseText = new RuleAnnotationClauseText();
+            ruleAnnotationClauseText.getText().setValue(DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_EXPRESSION_TEXT);
+            rule.getAnnotationEntry().add(ruleAnnotationClauseText);
+            ruleAnnotationClauseText.setParent(rule);
+        }
 
         rule.setParent(dtable);
 
@@ -66,10 +69,12 @@ public class DecisionRuleFactory {
             le.setParent(rule);
         }
 
-        final Description d = new Description();
-        d.setValue(source.getDescription().getValue());
-        rule.setDescription(d);
-
+        for (final RuleAnnotationClauseText text : source.getAnnotationEntry()) {
+            final RuleAnnotationClauseText copy = new RuleAnnotationClauseText();
+            copy.getText().setValue(text.getText().getValue());
+            copy.setParent(rule);
+            rule.getAnnotationEntry().add(copy);
+        }
         rule.setParent(dtable);
 
         return rule;

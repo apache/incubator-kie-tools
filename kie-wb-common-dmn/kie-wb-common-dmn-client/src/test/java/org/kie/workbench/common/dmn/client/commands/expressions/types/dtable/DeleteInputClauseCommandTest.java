@@ -27,8 +27,8 @@ import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RuleAnnotationClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -64,7 +64,7 @@ public class DeleteInputClauseCommandTest {
     private InputClauseColumn uiInputClauseColumn;
 
     @Mock
-    private DescriptionColumn uiDescriptionColumn;
+    private RuleAnnotationClauseColumn uiAnnotationClauseColumn;
 
     @Mock
     private ListSelectorView.Presenter listSelector;
@@ -100,7 +100,7 @@ public class DeleteInputClauseCommandTest {
         this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiInputClauseColumn);
-        this.uiModel.appendColumn(uiDescriptionColumn);
+        this.uiModel.appendColumn(uiAnnotationClauseColumn);
 
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable),
@@ -111,7 +111,7 @@ public class DeleteInputClauseCommandTest {
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumn).getIndex();
-        doReturn(2).when(uiDescriptionColumn).getIndex();
+        doReturn(2).when(uiAnnotationClauseColumn).getIndex();
     }
 
     private void makeCommand(final int uiColumnIndex) {
@@ -219,7 +219,7 @@ public class DeleteInputClauseCommandTest {
                      canvasAddRuleCommand.execute(canvasHandler));
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
-                                                      uiDescriptionColumn);
+                                                      uiAnnotationClauseColumn);
 
         verify(executeCanvasOperation).execute();
         verify(command).updateParentInformation();
@@ -232,7 +232,7 @@ public class DeleteInputClauseCommandTest {
                      canvasAddRuleCommand.execute(canvasHandler));
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
-                                                      uiDescriptionColumn);
+                                                      uiAnnotationClauseColumn);
 
         reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -240,7 +240,7 @@ public class DeleteInputClauseCommandTest {
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
                                                       uiInputClauseColumn,
-                                                      uiDescriptionColumn);
+                                                      uiAnnotationClauseColumn);
 
         verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();

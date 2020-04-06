@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -49,9 +50,11 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddOutputClauseCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddRuleAnnotationClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteRuleAnnotationClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -87,7 +90,6 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.mvp.Command;
 
@@ -97,8 +99,6 @@ import static org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities
 
 public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
                                                                                                                                        HasHitPolicyControl {
-
-    public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
     private final HitPolicyPopoverView.Presenter hitPolicyEditor;
     private final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors;
@@ -200,14 +200,35 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             for (int index = 0; index < e.getOutput().size(); index++) {
                 model.appendColumn(makeOutputClauseColumn(uiColumnIndex++, e.getOutput().get(index)));
             }
-            model.appendColumn(new DescriptionColumn(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_DescriptionColumnHeader),
-                                                                            DESCRIPTION_GROUP),
-                                                     textAreaFactory,
-                                                     getAndSetInitialWidth(uiColumnIndex, DMNGridColumn.DEFAULT_WIDTH),
-                                                     this));
+            for (int index = 0; index < e.getAnnotations().size(); index++) {
+                model.appendColumn(makeRuleAnnotationClauseColumn(uiColumnIndex++, e.getAnnotations().get(index)));
+            }
         }
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer);
+    }
+
+    private RuleAnnotationClauseColumn makeRuleAnnotationClauseColumn(final int index,
+                                                                      final RuleAnnotationClause ruleAnnotationClause) {
+        final RuleAnnotationClauseColumn column = new RuleAnnotationClauseColumn(ruleAnnotationClauseHeaderMetaData(ruleAnnotationClause),
+                                                                                 textAreaFactory,
+                                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
+                                                                                 this);
+        return column;
+    }
+
+    private Supplier<List<GridColumn.HeaderMetaData>> ruleAnnotationClauseHeaderMetaData(final RuleAnnotationClause ruleAnnotationClause) {
+        return () -> {
+            final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
+            metaData.add(new RuleAnnotationClauseColumnHeaderMetaData(() -> ruleAnnotationClause.getName().getValue(),
+                                                                      (value) -> ruleAnnotationClause.getName().setValue(value),
+                                                                      getHeaderTextBoxFactory(),
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EnterAnnotation)),
+                                                                      this::getHeaderItems,
+                                                                      listSelector,
+                                                                      this::onItemSelected));
+            return metaData;
+        };
     }
 
     private InputClauseColumn makeInputClauseColumn(final int index,
@@ -391,6 +412,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                     uiModelMapper.fromDMNModel(rowIndex,
                                                columnIndex++);
                 }
+                for (int index = 0; index < e.getAnnotations().size(); index++) {
+                    uiModelMapper.fromDMNModel(rowIndex,
+                                               columnIndex++);
+                }
                 uiModelMapper.fromDMNModel(rowIndex,
                                            columnIndex);
             }
@@ -437,6 +462,11 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                                 uiHeaderRowIndex,
                                                                                                                 uiHeaderColumnIndex) + 1)));
                     }
+                    break;
+                case ANNOTATION_CLAUSES:
+                    addRuleAnnotationClauseItems(items,
+                                                 uiHeaderColumnIndex,
+                                                 dtable.getAnnotations().size() <= 1);
             }
         });
 
@@ -467,6 +497,14 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                          uiColumnIndex,
                                          isMultiColumn);
                     items.add(new ListSelectorDividerItem());
+                    break;
+
+                case ANNOTATION_CLAUSES:
+                    addRuleAnnotationClauseItems(items,
+                                                 uiColumnIndex,
+                                                 dtable.getAnnotations().size() <= 1);
+                    items.add(new ListSelectorDividerItem());
+                    break;
             }
 
             addDecisionRuleItems(dtable,
@@ -492,6 +530,22 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                  new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteInputClause),
                                                 !isMultiColumn && dtable.getInput().size() > 1,
                                                 () -> deleteInputClause(uiColumnIndex)));
+    }
+
+    private void addRuleAnnotationClauseItems(final List<ListSelectorItem> items,
+                                              final int uiColumnIndex,
+                                              final boolean isSingleAnnotation) {
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_RuleAnnotationClauseHeader)));
+        addItems(items,
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertRuleAnnotationClauseLeft),
+                                                true,
+                                                () -> addRuleAnnotationClause(uiColumnIndex)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertRuleAnnotationClauseRight),
+                                                true,
+                                                () -> addRuleAnnotationClause(uiColumnIndex + 1)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteRuleAnnotationClause),
+                                                !isSingleAnnotation,
+                                                () -> deleteRuleAnnotationClause(uiColumnIndex)));
     }
 
     private void addOutputClauseItems(final List<ListSelectorItem> items,
@@ -597,6 +651,33 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM),
                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
+    }
+
+    void addRuleAnnotationClause(final int index) {
+        getExpression().get().ifPresent(dtable -> {
+            final RuleAnnotationClause clause = new RuleAnnotationClause();
+
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new AddRuleAnnotationClauseCommand(dtable,
+                                                                             clause,
+                                                                             model,
+                                                                             () -> makeRuleAnnotationClauseColumn(index, clause),
+                                                                             index,
+                                                                             uiModelMapper,
+                                                                             () -> resize(BaseExpressionGrid.RESIZE_EXISTING),
+                                                                             () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
+        });
+    }
+
+    void deleteRuleAnnotationClause(final int index) {
+        getExpression().get().ifPresent(decisionTable ->
+                                                sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                              new DeleteRuleAnnotationClauseCommand(decisionTable,
+                                                                                                                    model,
+                                                                                                                    index,
+                                                                                                                    uiModelMapper,
+                                                                                                                    () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM),
+                                                                                                                    () -> resize(BaseExpressionGrid.RESIZE_EXISTING))));
     }
 
     void addOutputClause(final int index) {

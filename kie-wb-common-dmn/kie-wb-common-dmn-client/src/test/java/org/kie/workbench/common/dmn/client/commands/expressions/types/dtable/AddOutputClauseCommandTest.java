@@ -263,15 +263,8 @@ public class AddOutputClauseCommandTest {
                      outputClause.getParent());
     }
 
-    /**
-     * The test is skipped on jdk 11 due to https://issues.jboss.org/browse/DROOLS-3777
-     */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void testGraphCommandUndoNoOutputClauseColumns() throws Exception {
-
-        final String javaVersion = "11";
-        final String javaVersionPropertyKey = "java.version";
-        Assume.assumeFalse(System.getProperty(javaVersionPropertyKey).contains(javaVersion));
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGraphCommandUndoNoOutputClauseColumns() {
 
         makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 

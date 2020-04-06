@@ -27,8 +27,8 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RuleAnnotationClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -64,7 +64,7 @@ public class DeleteOutputClauseCommandTest {
     private OutputClauseColumn uiOutputClauseColumn;
 
     @Mock
-    private DescriptionColumn uiDescriptionColumn;
+    private RuleAnnotationClauseColumn uiRuleAnnotationClauseColumn;
 
     @Mock
     private ListSelectorView.Presenter listSelector;
@@ -100,7 +100,7 @@ public class DeleteOutputClauseCommandTest {
         this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiOutputClauseColumn);
-        this.uiModel.appendColumn(uiDescriptionColumn);
+        this.uiModel.appendColumn(uiRuleAnnotationClauseColumn);
 
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable),
@@ -111,7 +111,7 @@ public class DeleteOutputClauseCommandTest {
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiOutputClauseColumn).getIndex();
-        doReturn(2).when(uiDescriptionColumn).getIndex();
+        doReturn(2).when(uiRuleAnnotationClauseColumn).getIndex();
     }
 
     private void makeCommand(final int uiColumnIndex) {
@@ -219,7 +219,7 @@ public class DeleteOutputClauseCommandTest {
                      canvasAddRuleCommand.execute(canvasHandler));
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
-                                                      uiDescriptionColumn);
+                                                      uiRuleAnnotationClauseColumn);
 
         verify(executeCanvasOperation).execute();
         verify(command).updateParentInformation();
@@ -232,7 +232,7 @@ public class DeleteOutputClauseCommandTest {
                      canvasAddRuleCommand.execute(canvasHandler));
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
-                                                      uiDescriptionColumn);
+                                                      uiRuleAnnotationClauseColumn);
 
         reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -240,7 +240,7 @@ public class DeleteOutputClauseCommandTest {
 
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
                                                       uiOutputClauseColumn,
-                                                      uiDescriptionColumn);
+                                                      uiRuleAnnotationClauseColumn);
 
         verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();

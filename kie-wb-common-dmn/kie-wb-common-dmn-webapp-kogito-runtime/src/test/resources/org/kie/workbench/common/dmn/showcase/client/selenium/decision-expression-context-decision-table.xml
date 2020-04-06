@@ -23,6 +23,7 @@
             </dmn:inputExpression>
           </dmn:input>
           <dmn:output id='_2B19E6D4-DCA2-4792-AB67-B4AF7E6879BB'/>
+          <dmn:annotation/>
           <dmn:rule id='_A8EFD493-8E86-426A-AFF1-6B6E51D823C9'>
             <dmn:inputEntry id='_2F8EE40E-7CB3-4124-B893-E62355009BBE'>
               <dmn:text>-</dmn:text>
@@ -30,6 +31,9 @@
             <dmn:outputEntry id='_F2D57FF8-E321-4FF9-8F3E-6B04A252EDC8'>
               <dmn:text/>
             </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text/>
+            </dmn:annotationEntry>
           </dmn:rule>
         </dmn:decisionTable>
       </dmn:contextEntry>

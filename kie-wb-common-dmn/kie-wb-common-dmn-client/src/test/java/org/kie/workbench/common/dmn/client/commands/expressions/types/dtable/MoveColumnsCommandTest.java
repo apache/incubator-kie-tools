@@ -28,9 +28,12 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RuleAnnotationClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -46,6 +49,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MoveColumnsCommandTest {
@@ -70,6 +75,15 @@ public class MoveColumnsCommandTest {
 
     @Mock
     private OutputClauseColumn uiOutputClauseColumnThree;
+
+    @Mock
+    private RuleAnnotationClauseColumn uiRuleAnnotationClauseColumnOne;
+
+    @Mock
+    private RuleAnnotationClauseColumn uiRuleAnnotationClauseColumnTwo;
+
+    @Mock
+    private RuleAnnotationClauseColumn uiRuleAnnotationClauseColumnThree;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -97,6 +111,15 @@ public class MoveColumnsCommandTest {
     @Mock
     private OutputClause outputClauseThree;
 
+    @Mock
+    private RuleAnnotationClause annotationClauseOne;
+
+    @Mock
+    private RuleAnnotationClause annotationClauseTwo;
+
+    @Mock
+    private RuleAnnotationClause annotationClauseThree;
+
     private DMNGridData uiModel;
 
     private MoveColumnsCommand command;
@@ -109,7 +132,7 @@ public class MoveColumnsCommandTest {
     private org.uberfire.mvp.Command canvasOperation;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.dtable = new DecisionTable();
         this.uiModel = new DMNGridData();
 
@@ -119,6 +142,9 @@ public class MoveColumnsCommandTest {
         dtable.getOutput().add(outputClauseOne);
         dtable.getOutput().add(outputClauseTwo);
         dtable.getOutput().add(outputClauseThree);
+        dtable.getAnnotations().add(annotationClauseOne);
+        dtable.getAnnotations().add(annotationClauseTwo);
+        dtable.getAnnotations().add(annotationClauseThree);
 
         dtable.getRule().add(new DecisionRule() {{
             getInputEntry().add(new UnaryTests());
@@ -127,6 +153,9 @@ public class MoveColumnsCommandTest {
             getOutputEntry().add(new LiteralExpression());
             getOutputEntry().add(new LiteralExpression());
             getOutputEntry().add(new LiteralExpression());
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
         }});
 
         uiModel.appendColumn(uiRowNumberColumn);
@@ -136,6 +165,9 @@ public class MoveColumnsCommandTest {
         uiModel.appendColumn(uiOutputClauseColumnOne);
         uiModel.appendColumn(uiOutputClauseColumnTwo);
         uiModel.appendColumn(uiOutputClauseColumnThree);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumnOne);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumnTwo);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumnThree);
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumnOne).getIndex();
@@ -144,10 +176,13 @@ public class MoveColumnsCommandTest {
         doReturn(4).when(uiOutputClauseColumnOne).getIndex();
         doReturn(5).when(uiOutputClauseColumnTwo).getIndex();
         doReturn(6).when(uiOutputClauseColumnThree).getIndex();
+        doReturn(7).when(uiRuleAnnotationClauseColumnOne).getIndex();
+        doReturn(8).when(uiRuleAnnotationClauseColumnTwo).getIndex();
+        doReturn(9).when(uiRuleAnnotationClauseColumnThree).getIndex();
     }
 
     @Test
-    public void testCommandAllow() throws Exception {
+    public void testCommandAllow() {
         moveColumnsToPositionCommand(Collections.singletonList(uiInputClauseColumnThree), 1);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -158,149 +193,285 @@ public class MoveColumnsCommandTest {
     }
 
     @Test
-    public void testMoveSingleInputColumnLeft() throws Exception {
+    public void testMoveSingleInputColumnLeft() {
         moveColumnsToPositionCommand(Collections.singletonList(uiInputClauseColumnThree), 1);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(1, 2, 0, 0, 1, 2);
+        assertClauses(1, 2, 0, 0, 1, 2, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(2, 3, 1, 4, 5, 6);
+        assertColumns(2, 3, 1, 4, 5, 6, 7, 8, 9);
     }
 
     @Test
-    public void testMoveMultipleInputColumnsLeft() throws Exception {
+    public void testMoveMultipleInputColumnsLeft() {
         moveColumnsToPositionCommand(Arrays.asList(uiInputClauseColumnTwo, uiInputClauseColumnThree), 1);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(2, 0, 1, 0, 1, 2);
+        assertClauses(2, 0, 1, 0, 1, 2, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(3, 1, 2, 4, 5, 6);
+        assertColumns(3, 1, 2, 4, 5, 6, 7, 8, 9);
     }
 
     @Test
-    public void testMoveSingleInputColumnRight() throws Exception {
+    public void testMoveSingleInputColumnRight() {
         moveColumnsToPositionCommand(Collections.singletonList(uiInputClauseColumnOne), 3);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(2, 0, 1, 0, 1, 2);
+        assertClauses(2, 0, 1, 0, 1, 2, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(3, 1, 2, 4, 5, 6);
+        assertColumns(3, 1, 2, 4, 5, 6, 7, 8, 9);
     }
 
     @Test
-    public void testMoveMultipleInputColumnsRight() throws Exception {
+    public void testMoveMultipleInputColumnsRight() {
         moveColumnsToPositionCommand(Arrays.asList(uiInputClauseColumnOne, uiInputClauseColumnTwo), 3);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(1, 2, 0, 0, 1, 2);
+        assertClauses(1, 2, 0, 0, 1, 2, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(2, 3, 1, 4, 5, 6);
+        assertColumns(2, 3, 1, 4, 5, 6, 7, 8, 9);
     }
 
     @Test
-    public void testMoveSingleOutputColumnLeft() throws Exception {
+    public void testMoveSingleOutputColumnLeft() {
         moveColumnsToPositionCommand(Collections.singletonList(uiOutputClauseColumnThree), 4);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(0, 1, 2, 1, 2, 0);
+        assertClauses(0, 1, 2, 1, 2, 0, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(1, 2, 3, 5, 6, 4);
+        assertColumns(1, 2, 3, 5, 6, 4, 7, 8, 9);
     }
 
     @Test
-    public void testMoveMultipleOutputColumnsLeft() throws Exception {
+    public void testMoveMultipleOutputColumnsLeft() {
         moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnTwo, uiOutputClauseColumnThree), 4);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(0, 1, 2, 2, 0, 1);
+        assertClauses(0, 1, 2, 2, 0, 1, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(1, 2, 3, 6, 4, 5);
+        assertColumns(1, 2, 3, 6, 4, 5, 7, 8, 9);
     }
 
     @Test
-    public void testMoveSingleOutputColumnRight() throws Exception {
+    public void testMoveSingleOutputColumnRight() {
         moveColumnsToPositionCommand(Collections.singletonList(uiOutputClauseColumnOne), 6);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(0, 1, 2, 2, 0, 1);
+        assertClauses(0, 1, 2, 2, 0, 1, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(1, 2, 3, 6, 4, 5);
+        assertColumns(1, 2, 3, 6, 4, 5, 7, 8, 9);
     }
 
     @Test
-    public void testMoveMultipleOutputColumnsRight() throws Exception {
+    public void testMoveMultipleOutputColumnsRight() {
         moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnOne, uiOutputClauseColumnTwo), 6);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
 
-        assertClauses(0, 1, 2, 1, 2, 0);
+        assertClauses(0, 1, 2, 1, 2, 0, 0, 1, 2);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasCommand.execute(canvasHandler));
 
-        assertColumns(1, 2, 3, 5, 6, 4);
+        assertColumns(1, 2, 3, 5, 6, 4, 7, 8, 9);
+    }
+
+    @Test
+    public void testMoveSingleAnnotationColumnWithDuplicatedTitle() {
+
+        final DecisionTable decisionTable = new DecisionTable();
+        final DMNGridData model = new DMNGridData();
+
+        final RuleAnnotationClause clauseOne = new RuleAnnotationClause();
+        final RuleAnnotationClause clauseTwo = new RuleAnnotationClause();
+        final RuleAnnotationClause clauseThree = new RuleAnnotationClause();
+        decisionTable.getAnnotations().add(clauseOne);
+        decisionTable.getAnnotations().add(clauseTwo);
+        decisionTable.getAnnotations().add(clauseThree);
+
+        decisionTable.getRule().add(new DecisionRule() {{
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
+            getAnnotationEntry().add(new RuleAnnotationClauseText());
+        }});
+
+        final RuleAnnotationClauseColumn columnOne = mock(RuleAnnotationClauseColumn.class);
+        final RuleAnnotationClauseColumn columnTwo = mock(RuleAnnotationClauseColumn.class);
+        final RuleAnnotationClauseColumn columnThree = mock(RuleAnnotationClauseColumn.class);
+        model.appendColumn(uiRowNumberColumn);
+        model.appendColumn(columnOne);
+        model.appendColumn(columnTwo);
+        model.appendColumn(columnThree);
+        when(columnOne.getIndex()).thenReturn(1);
+        when(columnOne.getIndex()).thenReturn(2);
+        when(columnOne.getIndex()).thenReturn(3);
+
+        command = new MoveColumnsCommand(decisionTable, model, 2, Arrays.asList(columnOne), canvasOperation);
+        graphCommand = command.newGraphCommand(canvasHandler);
+        canvasCommand = command.newCanvasCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+    }
+
+    @Test
+    public void testMoveSingleAnnotationColumnLeft() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiRuleAnnotationClauseColumnThree), 7);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertClauses(0, 1, 2, 0, 1, 2, 1, 2, 0);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertColumns(1, 2, 3, 4, 5, 6, 8, 9, 7);
+    }
+
+    @Test
+    public void testMoveMultipleAnnotationColumnsLeft() {
+        moveColumnsToPositionCommand(Arrays.asList(uiRuleAnnotationClauseColumnTwo, uiRuleAnnotationClauseColumnThree), 7);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertClauses(0, 1, 2, 0, 1, 2, 2, 0, 1);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertColumns(1, 2, 3, 4, 5, 6, 9, 7, 8);
+    }
+
+    @Test
+    public void testMoveSingleAnnotationColumnRight() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiRuleAnnotationClauseColumnOne), 8);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertClauses(0, 1, 2, 0, 1, 2, 1, 0, 2);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertColumns(1, 2, 3, 4, 5, 6, 8, 7, 9);
+    }
+
+    @Test
+    public void testMoveMultipleAnnotationColumnsRight() {
+        moveColumnsToPositionCommand(Arrays.asList(uiRuleAnnotationClauseColumnOne, uiRuleAnnotationClauseColumnTwo), 9);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertClauses(0, 1, 2, 0, 1, 2, 1, 2, 0);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertColumns(1, 2, 3, 4, 5, 6, 8, 9, 7);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMoveSingleInputToOutputs() throws Exception {
+    public void testMoveSingleAnnotationToOutputs() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiRuleAnnotationClauseColumnOne), 4);
+
+        graphCommand.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveSingleAnnotationToInputs() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiRuleAnnotationClauseColumnTwo), 1);
+
+        graphCommand.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveSingleInputToOutputs() {
         moveColumnsToPositionCommand(Collections.singletonList(uiInputClauseColumnOne), 4);
 
         graphCommand.execute(graphCommandExecutionContext);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMoveSingleOutputToInputs() throws Exception {
+    public void testMoveSingleInputToAnnotations() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiInputClauseColumnOne), 7);
+
+        graphCommand.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveSingleOutputToInputs() {
         moveColumnsToPositionCommand(Collections.singletonList(uiOutputClauseColumnOne), 1);
 
         graphCommand.execute(graphCommandExecutionContext);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMoveMixedToInputs() throws Exception {
+    public void testMoveSingleOutputToAnnotations() {
+        moveColumnsToPositionCommand(Collections.singletonList(uiOutputClauseColumnOne), 7);
+
+        graphCommand.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveMixedToInputs() {
         moveColumnsToPositionCommand(Arrays.asList(uiInputClauseColumnOne, uiOutputClauseColumnOne), 3);
 
         graphCommand.execute(graphCommandExecutionContext);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMoveMixedToOutputs() throws Exception {
+    public void testMoveMixedToOutputs() {
         moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnOne, uiInputClauseColumnOne), 6);
+
+        graphCommand.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveMixedToAnnotations() {
+        moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnOne, uiInputClauseColumnOne), 7);
 
         graphCommand.execute(graphCommandExecutionContext);
     }
@@ -317,6 +488,13 @@ public class MoveColumnsCommandTest {
         moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnTwo, uiOutputClauseColumnThree), 4);
 
         assertComponentWidths(4, 5, 6);
+    }
+
+    @Test
+    public void testAnnotationClauseComponentWidths() {
+        moveColumnsToPositionCommand(Arrays.asList(uiRuleAnnotationClauseColumnTwo, uiRuleAnnotationClauseColumnThree), 7);
+
+        assertComponentWidths(7, 8, 9);
     }
 
     private void assertComponentWidths(final int uiColumn1Index,
@@ -373,6 +551,9 @@ public class MoveColumnsCommandTest {
         assertEquals(outputClauseOne, dtable.getOutput().get(clausesIndexes[3]));
         assertEquals(outputClauseTwo, dtable.getOutput().get(clausesIndexes[4]));
         assertEquals(outputClauseThree, dtable.getOutput().get(clausesIndexes[5]));
+        assertEquals(annotationClauseOne, dtable.getAnnotations().get(clausesIndexes[6]));
+        assertEquals(annotationClauseTwo, dtable.getAnnotations().get(clausesIndexes[7]));
+        assertEquals(annotationClauseThree, dtable.getAnnotations().get(clausesIndexes[8]));
     }
 
     private void assertColumns(final int... columnIndexes) {
@@ -382,9 +563,12 @@ public class MoveColumnsCommandTest {
         assertEquals(uiOutputClauseColumnOne, uiModel.getColumns().get(columnIndexes[3]));
         assertEquals(uiOutputClauseColumnTwo, uiModel.getColumns().get(columnIndexes[4]));
         assertEquals(uiOutputClauseColumnThree, uiModel.getColumns().get(columnIndexes[5]));
+        assertEquals(uiRuleAnnotationClauseColumnOne, uiModel.getColumns().get(columnIndexes[6]));
+        assertEquals(uiRuleAnnotationClauseColumnTwo, uiModel.getColumns().get(columnIndexes[7]));
+        assertEquals(uiRuleAnnotationClauseColumnThree, uiModel.getColumns().get(columnIndexes[8]));
     }
 
-    private void moveColumnsToPositionCommand(final List<GridColumn<?>> columns, int position) {
+    private void moveColumnsToPositionCommand(final List<GridColumn<?>> columns, final int position) {
         command = new MoveColumnsCommand(dtable, uiModel, position, columns, canvasOperation);
 
         graphCommand = command.newGraphCommand(canvasHandler);

@@ -30,7 +30,7 @@ import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRe
 @Portable
 public class DecisionTable extends Expression {
 
-    private static final int STATIC_COLUMNS = 2;
+    private static final int STATIC_COLUMNS = 1;
 
     private List<InputClause> input;
     private List<OutputClause> output;
@@ -39,6 +39,7 @@ public class DecisionTable extends Expression {
     private BuiltinAggregator aggregation;
     private DecisionTableOrientation preferredOrientation;
     private String outputLabel;
+    private List<RuleAnnotationClause> annotations;
 
     public DecisionTable() {
         this(new Id(),
@@ -73,6 +74,13 @@ public class DecisionTable extends Expression {
         this.aggregation = aggregation;
         this.preferredOrientation = preferredOrientation;
         this.outputLabel = outputLabel;
+    }
+
+    public List<RuleAnnotationClause> getAnnotations() {
+        if (annotations == null) {
+            annotations = new ArrayList<>();
+        }
+        return this.annotations;
     }
 
     public List<InputClause> getInput() {
@@ -150,7 +158,7 @@ public class DecisionTable extends Expression {
 
     @Override
     public int getRequiredComponentWidthCount() {
-        return getInput().size() + getOutput().size() + STATIC_COLUMNS;
+        return getInput().size() + getOutput().size() + getAnnotations().size() + STATIC_COLUMNS;
     }
 
     @Override
@@ -185,6 +193,9 @@ public class DecisionTable extends Expression {
         if (rule != null ? !rule.equals(that.rule) : that.rule != null) {
             return false;
         }
+        if (annotations != null ? !annotations.equals(that.annotations) : that.annotations != null) {
+            return false;
+        }
         if (hitPolicy != that.hitPolicy) {
             return false;
         }
@@ -209,6 +220,7 @@ public class DecisionTable extends Expression {
                                          hitPolicy != null ? hitPolicy.hashCode() : 0,
                                          aggregation != null ? aggregation.hashCode() : 0,
                                          preferredOrientation != null ? preferredOrientation.hashCode() : 0,
-                                         outputLabel != null ? outputLabel.hashCode() : 0);
+                                         outputLabel != null ? outputLabel.hashCode() : 0,
+                                         annotations != null ? annotations.hashCode() : 0);
     }
 }

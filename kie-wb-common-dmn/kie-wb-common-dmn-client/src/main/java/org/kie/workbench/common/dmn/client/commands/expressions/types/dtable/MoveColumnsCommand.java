@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
@@ -79,7 +80,7 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
             private boolean isColumnInValidSection() {
                 final DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable,
                                                                                                  index);
-                return section == DecisionTableSection.INPUT_CLAUSES || section == DecisionTableSection.OUTPUT_CLAUSES;
+                return section == DecisionTableSection.INPUT_CLAUSES || section == DecisionTableSection.OUTPUT_CLAUSES || section == DecisionTableSection.ANNOTATION_CLAUSES;
             }
 
             @Override
@@ -160,6 +161,39 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
                                         relativeOldIndex,
                                         decisionRulesOutputEntries,
                                         outputClauseIndexesToMove);
+
+                    return GraphCommandResultBuilder.SUCCESS;
+                } else if (section == DecisionTableSection.ANNOTATION_CLAUSES) {
+                    final int oldIndex = uiModel.getColumns().indexOf(columns.get(0));
+                    final int relativeIndex = DecisionTableUIModelMapperHelper.getAnnotationEntryIndex(dtable,
+                                                                                                       index);
+                    final int relativeOldIndex = DecisionTableUIModelMapperHelper.getAnnotationEntryIndex(dtable,
+                                                                                                          oldIndex);
+                    final List<Integer> uiColumnIndexesToMove = columns
+                            .stream()
+                            .map(c -> uiModel.getColumns().indexOf(c))
+                            .collect(Collectors.toList());
+                    final List<Integer> annotationClauseIndexesToMove = uiColumnIndexesToMove
+                            .stream()
+                            .map(i -> DecisionTableUIModelMapperHelper.getAnnotationEntryIndex(dtable, i))
+                            .collect(Collectors.toList());
+                    moveClauses(relativeIndex,
+                                relativeOldIndex,
+                                dtable.getAnnotations(),
+                                annotationClauseIndexesToMove);
+                    CommandUtils.moveComponentWidths(index,
+                                                     oldIndex,
+                                                     dtable.getComponentWidths(),
+                                                     uiColumnIndexesToMove);
+
+                    final List<List<RuleAnnotationClauseText>> decisionRulesAnnotationEntries = dtable.getRule()
+                            .stream()
+                            .map(DecisionRule::getAnnotationEntry)
+                            .collect(Collectors.toList());
+                    updateDecisionRules(relativeIndex,
+                                        relativeOldIndex,
+                                        decisionRulesAnnotationEntries,
+                                        annotationClauseIndexesToMove);
 
                     return GraphCommandResultBuilder.SUCCESS;
                 } else {

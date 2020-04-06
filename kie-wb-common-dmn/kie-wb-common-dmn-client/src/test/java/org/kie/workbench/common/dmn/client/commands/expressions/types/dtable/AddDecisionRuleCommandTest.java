@@ -25,12 +25,13 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionRuleFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RuleAnnotationClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -80,7 +81,7 @@ public class AddDecisionRuleCommandTest {
     private OutputClauseColumn uiOutputClauseColumn;
 
     @Mock
-    private DescriptionColumn uiDescriptionColumn;
+    private RuleAnnotationClauseColumn uiRuleAnnotationClauseColumn;
 
     @Mock
     private ListSelectorView.Presenter listSelector;
@@ -108,7 +109,7 @@ public class AddDecisionRuleCommandTest {
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumn).getIndex();
         doReturn(2).when(uiOutputClauseColumn).getIndex();
-        doReturn(3).when(uiDescriptionColumn).getIndex();
+        doReturn(3).when(uiRuleAnnotationClauseColumn).getIndex();
     }
 
     private void makeCommand(final int index) {
@@ -290,6 +291,7 @@ public class AddDecisionRuleCommandTest {
     public void testCanvasCommandAddRuleAndThenUndo() throws Exception {
         dtable.getInput().add(new InputClause());
         dtable.getOutput().add(new OutputClause());
+        dtable.getAnnotations().add(new RuleAnnotationClause());
 
         makeCommand(0);
 
@@ -298,7 +300,7 @@ public class AddDecisionRuleCommandTest {
 
         uiModel.appendColumn(uiInputClauseColumn);
         uiModel.appendColumn(uiOutputClauseColumn);
-        uiModel.appendColumn(uiDescriptionColumn);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumn);
 
         final Command<AbstractCanvasHandler, CanvasViolation> canvasAddRuleCommand = command.newCanvasCommand(canvasHandler);
         canvasAddRuleCommand.execute(canvasHandler);
@@ -325,12 +327,13 @@ public class AddDecisionRuleCommandTest {
 
         dtable.getInput().add(new InputClause());
         dtable.getOutput().add(new OutputClause());
+        dtable.getAnnotations().add(new RuleAnnotationClause());
 
         makeCommand(1);
 
         uiModel.appendColumn(uiInputClauseColumn);
         uiModel.appendColumn(uiOutputClauseColumn);
-        uiModel.appendColumn(uiDescriptionColumn);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumn);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         final Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = command.newCanvasCommand(canvasHandler);
@@ -360,7 +363,7 @@ public class AddDecisionRuleCommandTest {
 
         uiModel.appendColumn(uiInputClauseColumn);
         uiModel.appendColumn(uiOutputClauseColumn);
-        uiModel.appendColumn(uiDescriptionColumn);
+        uiModel.appendColumn(uiRuleAnnotationClauseColumn);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         final Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = command.newCanvasCommand(canvasHandler);
@@ -384,6 +387,6 @@ public class AddDecisionRuleCommandTest {
         assertEquals(uiRowIndex + 1, uiGridRow.getCells().get(0).getValue().getValue());
         assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, uiGridRow.getCells().get(1).getValue().getValue());
         assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, uiGridRow.getCells().get(2).getValue().getValue());
-        assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION, uiGridRow.getCells().get(3).getValue().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_EXPRESSION_TEXT, uiGridRow.getCells().get(3).getValue().getValue());
     }
 }

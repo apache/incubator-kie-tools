@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Optional;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +27,11 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
@@ -41,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableUIModelMapperTest {
 
     @Mock
@@ -54,7 +55,7 @@ public class DecisionTableUIModelMapperTest {
     private OutputClauseColumn uiOutputClauseColumn;
 
     @Mock
-    private DescriptionColumn uiDescriptionColumn;
+    private RuleAnnotationClauseColumn uiAnnotationClauseColumn;
 
     @Mock
     private ListSelectorView.Presenter listSelector;
@@ -74,15 +75,16 @@ public class DecisionTableUIModelMapperTest {
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiInputClauseColumn);
         this.uiModel.appendColumn(uiOutputClauseColumn);
-        this.uiModel.appendColumn(uiDescriptionColumn);
+        this.uiModel.appendColumn(uiAnnotationClauseColumn);
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumn).getIndex();
         doReturn(2).when(uiOutputClauseColumn).getIndex();
-        doReturn(3).when(uiDescriptionColumn).getIndex();
+        doReturn(3).when(uiAnnotationClauseColumn).getIndex();
 
         this.dtable = new DecisionTable();
         this.dtable.getInput().add(new InputClause());
         this.dtable.getOutput().add(new OutputClause());
+        this.dtable.getAnnotations().add(new RuleAnnotationClause());
         this.dtable.getRule().add(new DecisionRule() {
             {
                 getInputEntry().add(new UnaryTests() {{
@@ -91,7 +93,9 @@ public class DecisionTableUIModelMapperTest {
                 getOutputEntry().add(new LiteralExpression() {{
                     getText().setValue("o1");
                 }});
-                setDescription(new Description("desc1"));
+                getAnnotationEntry().add(new RuleAnnotationClauseText() {{
+                    getText().setValue("a1");
+                }});
             }
         });
         this.dtable.getRule().add(new DecisionRule() {
@@ -102,7 +106,9 @@ public class DecisionTableUIModelMapperTest {
                 getOutputEntry().add(new LiteralExpression() {{
                     getText().setValue("o2");
                 }});
-                setDescription(new Description("desc2"));
+                getAnnotationEntry().add(new RuleAnnotationClauseText() {{
+                    getText().setValue("a2");
+                }});
             }
         });
 
@@ -159,15 +165,15 @@ public class DecisionTableUIModelMapperTest {
     }
 
     @Test
-    public void testFromDMNModelDescription() {
+    public void testFromDMNModelRuleAnnotationClause() {
         mapper.fromDMNModel(0, 3);
         mapper.fromDMNModel(1, 3);
 
-        assertEquals("desc1",
+        assertEquals("a1",
                      uiModel.getCell(0, 3).getValue().getValue());
         assertTrue(uiModel.getCell(0, 3) instanceof DecisionTableGridCell);
 
-        assertEquals("desc2",
+        assertEquals("a2",
                      uiModel.getCell(1, 3).getValue().getValue());
         assertTrue(uiModel.getCell(1, 3) instanceof DecisionTableGridCell);
     }
@@ -197,14 +203,14 @@ public class DecisionTableUIModelMapperTest {
     }
 
     @Test
-    public void testToDMNModelDescription() {
+    public void testToDMNModelRuleAnnotationClause() {
         mapper.toDMNModel(0, 3, Optional::empty);
         mapper.toDMNModel(1, 3, () -> Optional.of(new BaseGridCellValue<>("value")));
 
         assertEquals("",
-                     dtable.getRule().get(0).getDescription().getValue());
+                     dtable.getRule().get(0).getAnnotationEntry().get(0).getText().getValue());
 
         assertEquals("value",
-                     dtable.getRule().get(1).getDescription().getValue());
+                     dtable.getRule().get(1).getAnnotationEntry().get(0).getText().getValue());
     }
 }

@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTableOrientatio
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITHitPolicy;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInputClause;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITOutputClause;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITRuleAnnotationClause;
 
 public class DecisionTablePropertyConverter {
 
@@ -48,6 +50,22 @@ public class DecisionTablePropertyConverter {
         result.setId(id);
         result.setDescription(description);
         result.setTypeRef(typeRef);
+
+        final List<JSITRuleAnnotationClause> jsiRuleAnnotationClauses = dmn.getAnnotation();
+        if (jsiRuleAnnotationClauses.isEmpty()) {
+            final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
+            ruleAnnotationClause.setParent(result);
+            result.getAnnotations().add(ruleAnnotationClause);
+        } else {
+            for (int i = 0; i < jsiRuleAnnotationClauses.size(); i++) {
+                final JSITRuleAnnotationClause ruleAnnotationClause = Js.uncheckedCast(jsiRuleAnnotationClauses.get(i));
+                final RuleAnnotationClause converted = RuleAnnotationClausePropertyConverter.wbFromDMN(ruleAnnotationClause);
+                if (Objects.nonNull(converted)) {
+                    converted.setParent(result);
+                    result.getAnnotations().add(converted);
+                }
+            }
+        }
 
         final List<JSITInputClause> jsiInputClauses = dmn.getInput();
         for (int i = 0; i < jsiInputClauses.size(); i++) {
@@ -115,6 +133,10 @@ public class DecisionTablePropertyConverter {
         description.ifPresent(result::setDescription);
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
 
+        for (final RuleAnnotationClause annotation : wb.getAnnotations()) {
+            final JSITRuleAnnotationClause converted = RuleAnnotationClausePropertyConverter.dmnFromWB(annotation);
+            result.addAnnotation(converted);
+        }
         for (InputClause input : wb.getInput()) {
             final JSITInputClause c = InputClausePropertyConverter.dmnFromWB(input);
             result.addInput(c);

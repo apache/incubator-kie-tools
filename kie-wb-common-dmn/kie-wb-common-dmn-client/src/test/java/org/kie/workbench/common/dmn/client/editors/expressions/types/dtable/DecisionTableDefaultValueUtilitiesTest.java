@@ -22,6 +22,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -136,5 +137,31 @@ public class DecisionTableDefaultValueUtilitiesTest {
         dtable.getOutput().add(outputClause3);
         outputClause3.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
         assertThat(outputClause3.getName()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "3");
+    }
+
+    @Test
+    public void testGetNewRuleAnnotationClauseName() {
+        final RuleAnnotationClause ruleAnnotationClause1 = new RuleAnnotationClause();
+        dtable.getAnnotations().add(ruleAnnotationClause1);
+        ruleAnnotationClause1.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
+        assertThat(ruleAnnotationClause1.getName().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_PREFIX + "1");
+
+        final RuleAnnotationClause ruleAnnotationClause2 = new RuleAnnotationClause();
+        dtable.getAnnotations().add(ruleAnnotationClause2);
+        ruleAnnotationClause2.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
+        assertThat(ruleAnnotationClause2.getName().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_PREFIX + "2");
+    }
+
+    @Test
+    public void testGetNewRuleAnnotationClauseNameWithExistingAnnotationClause() {
+        final RuleAnnotationClause ruleAnnotationClause1 = new RuleAnnotationClause();
+        dtable.getAnnotations().add(ruleAnnotationClause1);
+        ruleAnnotationClause1.getName().setValue("something");
+
+        final RuleAnnotationClause ruleAnnotationClause2 = new RuleAnnotationClause();
+        dtable.getAnnotations().add(ruleAnnotationClause2);
+        ruleAnnotationClause2.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
+
+        assertThat(ruleAnnotationClause2.getName().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_ANNOTATION_CLAUSE_PREFIX + "1");
     }
 }

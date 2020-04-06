@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionTableOrientatio
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -39,6 +40,21 @@ public class DecisionTablePropertyConverter {
         result.setDescription(description);
         result.setTypeRef(typeRef);
 
+        if (!(dmn instanceof org.kie.dmn.model.v1_1.TDecisionTable)) {
+            if (dmn.getAnnotation().isEmpty()) {
+                final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
+                ruleAnnotationClause.setParent(result);
+                result.getAnnotations().add(ruleAnnotationClause);
+            } else {
+                for (final org.kie.dmn.model.api.RuleAnnotationClause ruleAnnotationClause : dmn.getAnnotation()) {
+                    final RuleAnnotationClause converted = RuleAnnotationClauseConverter.wbFromDMN(ruleAnnotationClause);
+                    if (converted != null) {
+                        converted.setParent(result);
+                    }
+                    result.getAnnotations().add(converted);
+                }
+            }
+        }
         for (org.kie.dmn.model.api.InputClause input : dmn.getInput()) {
             final InputClause inputClauseConverted = InputClausePropertyConverter.wbFromDMN(input);
             if (inputClauseConverted != null) {
@@ -86,6 +102,13 @@ public class DecisionTablePropertyConverter {
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
 
+        for (final RuleAnnotationClause annotation : wb.getAnnotations()) {
+            final org.kie.dmn.model.api.RuleAnnotationClause converted = RuleAnnotationClauseConverter.dmnFromWB(annotation);
+            if (converted != null) {
+                converted.setParent(result);
+            }
+            result.getAnnotation().add(converted);
+        }
         for (InputClause input : wb.getInput()) {
             final org.kie.dmn.model.api.InputClause c = InputClausePropertyConverter.dmnFromWB(input);
             if (c != null) {

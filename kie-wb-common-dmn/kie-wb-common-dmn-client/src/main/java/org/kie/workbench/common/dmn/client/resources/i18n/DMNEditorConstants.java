@@ -173,9 +173,6 @@ public class DMNEditorConstants {
     public static final String FunctionEditor_SelectFunctionKind = "FunctionEditor.SelectFunctionKind";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
-
-    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DecisionRuleHeader = "DecisionTableEditor.DecisionRuleHeader";
 
     @TranslationKey(defaultValue = "")
@@ -206,6 +203,18 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_OutputClauseHeader = "DecisionTableEditor.OutputClauseHeader";
 
     @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_RuleAnnotationClauseHeader = "DecisionTableEditor.RuleAnnotationClauseHeader";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_InsertRuleAnnotationClauseLeft = "DecisionTableEditor.InsertRuleAnnotationClauseLeft";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_InsertRuleAnnotationClauseRight = "DecisionTableEditor.InsertRuleAnnotationClauseRight";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_DeleteRuleAnnotationClause = "DecisionTableEditor.DeleteRuleAnnotationClause";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InsertOutputClauseLeft = "DecisionTableEditor.InsertOutputClauseLeft";
 
     @TranslationKey(defaultValue = "")
@@ -231,6 +240,9 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_BuiltinAggregatorLabel = "DecisionTableEditor.BuiltinAggregatorLabel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_EnterAnnotation =  "DecisionTableEditor.EnterAnnotation";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InputClauseColumnHeaderMetaData_ValueLabel = "DecisionTableEditor.InputClauseColumnHeaderMetaData.ValueLabel";

@@ -32,6 +32,7 @@
         </dmn:inputValues>
       </dmn:input>
       <dmn:output id='_CAFBB4C9-4CCA-4B51-9A86-00AC32F11DAD'/>
+      <dmn:annotation/>
       <dmn:rule id='_90A5DAA6-4B96-42FF-B786-B24FA23C0547'>
         <dmn:inputEntry id='_3CDA273C-57EB-4FD9-A86F-F4CCDF003F80'>
           <dmn:text>-</dmn:text>
@@ -42,6 +43,9 @@
         <dmn:outputEntry id='_B7A245B5-6403-428F-9E91-B0E0B85D1CFB'>
           <dmn:text/>
         </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
       </dmn:rule>
     </dmn:decisionTable>
   </dmn:decision>

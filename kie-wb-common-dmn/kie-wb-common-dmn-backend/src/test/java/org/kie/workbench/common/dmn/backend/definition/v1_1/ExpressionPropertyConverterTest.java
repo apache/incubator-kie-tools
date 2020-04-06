@@ -223,10 +223,9 @@ public class ExpressionPropertyConverterTest {
         final DecisionTable wb = new DecisionTable();
         final List<Double> wbComponentWidths = wb.getComponentWidths();
         wbComponentWidths.set(0, 100.0);
-        wbComponentWidths.set(1, 200.0);
         wb.getId().setValue(EXPRESSION_UUID);
 
-        assertDMNFromWBConversion(wb, TDecisionTable.class, 100.0, 200.0);
+        assertDMNFromWBConversion(wb, TDecisionTable.class, 100.0);
     }
 
     @Test

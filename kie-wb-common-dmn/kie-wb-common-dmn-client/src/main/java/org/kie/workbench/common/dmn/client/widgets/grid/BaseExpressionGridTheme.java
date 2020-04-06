@@ -26,9 +26,9 @@ import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RuleAnnotationClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionKindRowColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
@@ -94,7 +94,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
         } else if (column instanceof OutputClauseColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_DARK_BLUE);
-        } else if (column instanceof DescriptionColumn) {
+        } else if (column instanceof RuleAnnotationClauseColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
         } else if (column instanceof ExpressionEditorColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);

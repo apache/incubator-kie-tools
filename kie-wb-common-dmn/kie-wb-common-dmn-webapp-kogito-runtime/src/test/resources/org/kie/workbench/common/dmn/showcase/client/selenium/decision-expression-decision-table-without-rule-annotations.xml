@@ -1,36 +1,34 @@
 <?xml version='1.0' ?>
 <dmn:definitions xmlns:dmn='http://www.omg.org/spec/DMN/20180521/MODEL/'
-                 xmlns='https://kiegroup.org/dmn/_F0D82EBE-14BB-4F15-96F1-B310636D4ADF'
+                 xmlns='https://kiegroup.org/dmn/_EE052E31-8AFE-43BC-9BC4-C8FED1476A28'
                  xmlns:di='http://www.omg.org/spec/DMN/20180521/DI/'
                  xmlns:kie='http://www.drools.org/kie/dmn/1.2'
                  xmlns:dmndi='http://www.omg.org/spec/DMN/20180521/DMNDI/'
                  xmlns:dc='http://www.omg.org/spec/DMN/20180521/DC/'
-                 id='_53027B7A-1149-49ED-8AE4-7409DBEDCC6D'
-                 name='711B0457-B5C9-46F4-A521-465C095D479A'
+                 xmlns:feel='http://www.omg.org/spec/DMN/20180521/FEEL/'
+                 id='_88C2C70C-3D41-4317-A19F-5B71A7350570'
+                 name='C21BE9FD-EA09-4357-9546-69B433F0329F'
                  typeLanguage='http://www.omg.org/spec/DMN/20180521/FEEL/'
-                 namespace='https://kiegroup.org/dmn/_F0D82EBE-14BB-4F15-96F1-B310636D4ADF'>
+                 namespace='https://kiegroup.org/dmn/_EE052E31-8AFE-43BC-9BC4-C8FED1476A28'>
   <dmn:extensionElements/>
-  <dmn:decision id='_97F03625-C4CB-4B07-8656-5807C18FA7EA' name='Decision-1'>
+  <dmn:decision id='_395E1E92-765B-47F5-9387-179B839277B1' name='Decision-1'>
     <dmn:extensionElements/>
-    <dmn:variable id='_4B81760B-B39D-4AB1-89DA-3C70E877E94D' name='Decision-1'/>
-    <dmn:decisionTable id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD' hitPolicy='UNIQUE' preferredOrientation='Rule-as-Row'>
-      <dmn:input id='_E5671D4D-E2D7-4086-A87C-0DA0C782AE46'>
-        <dmn:inputExpression id='_DF9D47A5-9AC9-49D5-9279-CB97B1022390'>
+    <dmn:variable id='_77C96BF6-E02F-41F1-A0F5-6B7B91939C5D' name='Decision-1'/>
+    <dmn:decisionTable id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57' hitPolicy='UNIQUE' preferredOrientation='Rule-as-Row'>
+      <dmn:input id='_FCDB0235-3C5C-442D-B268-C6B34FC9967F'>
+        <dmn:inputExpression id='_4968791C-C9CB-44C5-A0A4-7BDB3B9645D3'>
           <dmn:text>input-1</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C'/>
-      <dmn:annotation/>
-      <dmn:rule id='_524D9108-7D55-4655-807E-410EFB26121B'>
-        <dmn:inputEntry id='_368CE131-3B52-4F2F-A768-E6032AD7FEE2'>
+      <dmn:output id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9'/>
+      <dmn:rule id='_2D2D5ABD-3C71-40E9-B493-73CDA49B3F53'>
+        <dmn:description>the description</dmn:description>
+        <dmn:inputEntry id='_A91CADF4-D0F7-4092-8FEA-9A9002E73644'>
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
-        <dmn:outputEntry id='_7EBD374D-7FFE-4AFD-859F-995C8E2437AA'>
+        <dmn:outputEntry id='_10BE2708-2F08-4B54-96A4-CA70310153B6'>
           <dmn:text/>
         </dmn:outputEntry>
-        <dmn:annotationEntry>
-          <dmn:text/>
-        </dmn:annotationEntry>
       </dmn:rule>
     </dmn:decisionTable>
   </dmn:decision>
@@ -38,7 +36,7 @@
     <dmndi:DMNDiagram>
       <di:extension>
         <kie:ComponentsWidthsExtension>
-          <kie:ComponentWidths dmnElementRef='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD'>
+          <kie:ComponentWidths dmnElementRef='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57'>
             <kie:width>50</kie:width>
             <kie:width>100</kie:width>
             <kie:width>100</kie:width>
@@ -46,13 +44,13 @@
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_97F03625-C4CB-4B07-8656-5807C18FA7EA' dmnElementRef='_97F03625-C4CB-4B07-8656-5807C18FA7EA' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-_395E1E92-765B-47F5-9387-179B839277B1' dmnElementRef='_395E1E92-765B-47F5-9387-179B839277B1' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
           <dmndi:FontColor red='0' green='0' blue='0'/>
         </dmndi:DMNStyle>
-        <dc:Bounds x='469' y='218' width='100' height='50'/>
+        <dc:Bounds x='624' y='227' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
