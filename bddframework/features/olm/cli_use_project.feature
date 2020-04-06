@@ -18,7 +18,7 @@ Feature: CLI: Project
     When CLI use namespace with Kogito Data Index
 
     Then Kogito Data Index has 1 pods running within 5 minutes
-    And GraphQL request on service "kogito-data-index" is successful within 2 minutes with path "graphql" and query:
+    And GraphQL request on service "data-index" is successful within 2 minutes with path "graphql" and query:
       """
       {
         ProcessInstances{
@@ -35,7 +35,7 @@ Feature: CLI: Project
     When CLI use namespace with Kogito Jobs Service
 
     Then Kogito Jobs Service has 1 pods running within 5 minutes
-    And HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
+    And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
       """
       { 
         "id": "1",
@@ -45,4 +45,4 @@ Feature: CLI: Project
       }
       """
 
-    Then HTTP GET request on service "kogito-jobs-service" with path "jobs/1" is successful within 1 minutes
+    Then HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
