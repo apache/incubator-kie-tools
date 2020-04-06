@@ -34,4 +34,6 @@ function SubmitField({
   )
 } 
 
+SubmitField.defaultProps = { value: 'Submit' };
+
 export default SubmitField;
