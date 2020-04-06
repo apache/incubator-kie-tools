@@ -9,18 +9,20 @@ jobs:
     if: github.repository == 'kiegroup/kogito-tooling'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          path: kogito-tooling
 
+      # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
       - name: Parse `tag`
         id: release-tag
         run: |
-          # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
           echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)$/)[1])")
 
+      # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
       - name: Check release `tag` against `lerna.json.version`
         run: |
-          # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
-          [ "${{ steps.release-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+          [ "${{ steps.release-tag.outputs.tag }}" == "$(node -e "console.log(require('./kogito-tooling/lerna.json').version);")" ]
 
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -37,19 +39,24 @@ jobs:
         env:
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
+          DOWNLOAD_HUB_linuxUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_linux_${{ steps.release-tag.outputs.tag }}.tar.gz"
+          DOWNLOAD_HUB_macOsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_macos_${{ steps.release-tag.outputs.tag }}.zip"
+          DOWNLOAD_HUB_windowsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_windows_${{ steps.release-tag.outputs.tag }}.zip"
           DISPLAY: ":99.0"
-        run: yarn run init && yarn run build:prod
+        run: cd kogito-tooling && yarn run init && yarn run build:prod && cd -
 
       - name: Checkout "kogito-online"
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          path: kogito-online
           repository: kiegroup/kogito-online
           ref: gh-pages
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
       - name: Update "kogito-online" latest resources
         run: |
-          cd ../kogito-online
+          cd kogito-online
           rm -rf ./editors/latest
           ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
           cp -r ./online-editor-staging/* .
@@ -57,7 +64,6 @@ jobs:
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           git add . && git commit -m "Update editors/latest to ${{ steps.release-tag.outputs.tag }}" || echo "No changes."
-          git remote set-url --push origin https://${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/kiegroup/kogito-online
           git push origin gh-pages
           cd -
 
@@ -66,5 +72,5 @@ jobs:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/kie-bc-editors-unpacked -- npm publish --access public
+          cd kogito-tooling && npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/kie-bc-editors-unpacked -- npm publish --access public && cd -
 
