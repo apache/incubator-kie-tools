@@ -67,7 +67,7 @@ jobs:
           cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
           cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
-          cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_DIR
+          cp -r ../kogito-tooling/packages/online-editor/dist/* $KOGITO_ONLINE_EDITOR_DIR
           rm -rf ./online-editor-staging
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
