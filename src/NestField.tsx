@@ -3,7 +3,6 @@ import { Label } from '@patternfly/react-core';
 
 import { connectField, joinName, injectName, filterDOMProps } from './uniforms';
 import AutoField from './AutoField';
-import wrapField from './wrapField';
 
 export type NestFieldProps = {
   error?: boolean;

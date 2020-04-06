@@ -30,6 +30,8 @@ type CheckboxesProps = {
   disabled?: boolean;
 } & (Omit<CheckboxProps, 'isDisabled'> | Omit<RadioProps, 'isDisabled'>);
 
+filterDOMProps.register('autoValue');
+
 function RenderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
   

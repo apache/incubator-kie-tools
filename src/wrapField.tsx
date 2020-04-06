@@ -2,7 +2,10 @@ import React from 'react';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
 import { filterDOMProps } from 'uniforms';
 
+filterDOMProps.register('decimal', 'minCount', 'autoValue');
+
 type WrapperProps = {
+  id: string;
   error?: boolean;
   errorMessage?: string;
   help?: string;

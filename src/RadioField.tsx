@@ -2,8 +2,6 @@ import React from 'react';
 import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
 
 import { connectField, filterDOMProps } from './uniforms';
-import { default as wrapField } from './wrapField';
-
 export type RadioFieldProps = {
   transform?: (string?: string) => string;
   allowedValues: string[];
@@ -12,11 +10,10 @@ export type RadioFieldProps = {
   disabled: boolean;
 } & Omit<RadioProps, 'isDisabled'>;
 
+filterDOMProps.register('checkboxes');
+
 const Radio = (props: RadioFieldProps) => {
-  // @ts-ignore - AutoField passes checkboxes prop, which causes console.error
-  // https://codeburst.io/use-es2015-object-rest-operator-to-omit-properties-38a3ecffe90
-  const { checkboxes , ...noCheckboxes } = props;
-  return <div {...filterDOMProps(noCheckboxes)} >
+  return <div {...filterDOMProps(props)} >
     {props.label && <label>{props.label}</label>}
     {props.allowedValues.map(item => (
       <React.Fragment key={item}>

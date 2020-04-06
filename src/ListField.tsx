@@ -22,6 +22,8 @@ export type ListFieldProps<T> = {
   showInlineError?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
 
+filterDOMProps.register('minCount');
+
 function ListField<T>({
   children,
   error,
