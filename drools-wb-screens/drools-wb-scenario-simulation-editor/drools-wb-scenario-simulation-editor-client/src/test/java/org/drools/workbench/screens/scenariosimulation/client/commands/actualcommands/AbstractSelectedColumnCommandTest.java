@@ -136,8 +136,8 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
                 anyString(),
                 eq(columnGroup),
                 eq(factMappingType),
-                eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest),
-                eq(scenarioCellTextAreaSingletonDOMElementFactoryTest),
+                eq(scenarioHeaderTextBoxSingletonDOMElementFactorySpy),
+                eq(scenarioCellTextAreaSingletonDOMElementFactorySpy),
                 eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         if (cloneInstance) {
             verify(createdColumn, times(1)).setFactIdentifier(eq(gridColumnMock.getFactIdentifier()));

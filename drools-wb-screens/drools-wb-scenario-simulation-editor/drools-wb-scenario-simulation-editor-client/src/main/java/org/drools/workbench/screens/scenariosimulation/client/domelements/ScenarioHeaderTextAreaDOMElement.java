@@ -78,11 +78,4 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
         }
     }
 
-    @Override
-    public void detach() {
-        super.detach();
-        if (scenarioHeaderMetaData != null) {
-            scenarioHeaderMetaData.setEditingMode(false);
-        }
-    }
 }

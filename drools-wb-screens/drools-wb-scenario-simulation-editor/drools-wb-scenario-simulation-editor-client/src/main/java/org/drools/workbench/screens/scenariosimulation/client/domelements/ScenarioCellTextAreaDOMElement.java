@@ -42,32 +42,16 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
               gridLayer,
               gridWidget);
 
-        final Style style = widget.getElement().getStyle();
-        style.setWidth(100,
-                       Style.Unit.PCT);
-        style.setHeight(100,
-                        Style.Unit.PCT);
-        style.setPaddingLeft(2,
-                             Style.Unit.PX);
-        style.setPaddingRight(2,
-                              Style.Unit.PX);
-        style.setPaddingTop(2,
-                            Style.Unit.PX);
-        style.setPaddingBottom(2,
-                               Style.Unit.PX);
-        style.setFontSize(10,
-                          Style.Unit.PX);
-        style.setProperty("resize",
-                          "none");
+        init();
+    }
 
-        getContainer().getElement().getStyle().setPaddingLeft(5,
-                                                              Style.Unit.PX);
-        getContainer().getElement().getStyle().setPaddingRight(5,
-                                                               Style.Unit.PX);
-        getContainer().getElement().getStyle().setPaddingTop(5,
-                                                             Style.Unit.PX);
-        getContainer().getElement().getStyle().setPaddingBottom(5,
-                                                                Style.Unit.PX);
+    public void init() {
+        final Style style = widget.getElement().getStyle();
+        style.setWidth(100, Style.Unit.PCT);
+        style.setHeight(100, Style.Unit.PCT);
+        style.setFontSize(12, Style.Unit.PX);
+        style.setProperty("resize", "none");
+
         getContainer().setWidget(widget);
     }
 
@@ -111,7 +95,6 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void flush(final String value) {
         String actualValue = value != null && value.isEmpty() ? null : value;
         if (scenarioGridCell != null) {
@@ -132,9 +115,7 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
 
     @Override
     public void detach() {
+        flush(getValue());
         super.detach();
-        if (scenarioGridCell != null) {
-            scenarioGridCell.setEditingMode(false);
-        }
     }
 }

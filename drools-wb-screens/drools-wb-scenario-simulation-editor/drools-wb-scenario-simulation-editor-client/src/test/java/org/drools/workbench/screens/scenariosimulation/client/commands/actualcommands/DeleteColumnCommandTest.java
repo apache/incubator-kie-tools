@@ -67,7 +67,7 @@ public class DeleteColumnCommandTest extends AbstractScenarioGridCommandTest {
         reset(scenarioGridModelMock);
         doReturn(0l).when(scenarioGridModelMock).getGroupSize(COLUMN_GROUP);
         commandSpy.execute(scenarioSimulationContextLocal);
-        verify(commandSpy, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest), eq(scenarioCellTextAreaSingletonDOMElementFactoryTest), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        verify(commandSpy, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactorySpy), eq(scenarioCellTextAreaSingletonDOMElementFactorySpy), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         verify(scenarioGridModelMock, times(1)).deleteColumn(eq(COLUMN_INDEX));
         verify(scenarioGridModelMock, times(1)).insertColumn(eq(COLUMN_INDEX), eq(gridColumnMock));
     }
@@ -84,7 +84,7 @@ public class DeleteColumnCommandTest extends AbstractScenarioGridCommandTest {
         reset(scenarioGridModelMock);
         doReturn(0l).when(scenarioGridModelMock).getGroupSize(COLUMN_GROUP);
         commandSpy.execute(scenarioSimulationContextLocal);
-        verify(commandSpy, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest), eq(scenarioCellTextAreaSingletonDOMElementFactoryTest), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        verify(commandSpy, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactorySpy), eq(scenarioCellTextAreaSingletonDOMElementFactorySpy), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         verify(scenarioGridModelMock, times(1)).deleteColumn(eq(COLUMN_INDEX));
         verify(scenarioGridModelMock, times(1)).insertColumn(eq(COLUMN_INDEX  -1), eq(gridColumnMock));
     }

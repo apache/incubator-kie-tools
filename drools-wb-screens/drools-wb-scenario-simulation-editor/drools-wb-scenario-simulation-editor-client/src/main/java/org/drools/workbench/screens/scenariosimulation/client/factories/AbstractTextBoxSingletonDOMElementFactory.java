@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
@@ -37,6 +39,11 @@ public abstract class AbstractTextBoxSingletonDOMElementFactory<T extends BaseDO
     @Override
     public TextArea createWidget() {
         final TextArea textArea = GWT.create(TextArea.class);
+        /* Don't propagate MouseWheel and RightClick events to the Grid */
+        textArea.addDomHandler(MouseWheelEvent::stopPropagation,
+                               MouseWheelEvent.getType());
+        textArea.addDomHandler(event -> {event.stopPropagation(); event.preventDefault();},
+                               ContextMenuEvent.getType());
         return textArea;
     }
 

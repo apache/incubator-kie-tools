@@ -163,6 +163,15 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     }
 
     /**
+     * It detaches all DomElement resources for selected DOMElementFactorys
+     */
+    public void destroyAllTextAreaDOMElementFactoryResources() {
+        scenarioCellTextAreaSingletonDOMElementFactory.destroyResources();
+        scenarioExpressionCellTextAreaSingletonDOMElementFactory.destroyResources();
+        scenarioHeaderTextBoxSingletonDOMElementFactory.destroyResources();
+    }
+
+    /**
      * This method <i>append</i> a new row to the grid <b>and</b> to the underlying model
      * @param row
      */

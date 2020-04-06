@@ -17,7 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetGridCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
@@ -43,68 +46,95 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
 
     @Mock
     private ScenarioGridCell scenarioGridCellMock;
-
     @Mock
     private GridCellValue gridCellValueMock;
+    @Mock
+    private Element elementMock;
+    @Mock
+    private Style styleMock;
+    @Mock
+    private SimplePanel simplePanelMock;
 
-    private ScenarioCellTextAreaDOMElement scenarioCellTextAreaDOMElement;
+    private ScenarioCellTextAreaDOMElement scenarioCellTextAreaDOMElementSpy;
 
     @Before
     public void setup() {
         super.setup();
         when(scenarioGridLayerMock.getDomElementContainer()).thenReturn(new AbsolutePanel());
         when(scenarioGridCellMock.getValue()).thenReturn(gridCellValueMock);
-        scenarioCellTextAreaDOMElement = spy(new ScenarioCellTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
+        when(textAreaMock.getElement()).thenReturn(elementMock);
+        when(elementMock.getStyle()).thenReturn(styleMock);
+        scenarioCellTextAreaDOMElementSpy = spy(new ScenarioCellTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
             {
                 this.context = contextMock;
                 this.scenarioGridCell = scenarioGridCellMock;
+            }
+
+            @Override
+            protected SimplePanel getContainer() {
+                return simplePanelMock;
+            }
+
+            @Override
+            public String getValue() {
+                return "value";
             }
         });
     }
 
     @Test
+    public void init() {
+        verify(styleMock, times(1)).setWidth(100, Style.Unit.PCT);
+        verify(styleMock, times(1)).setHeight(100, Style.Unit.PCT);
+        verify(styleMock, times(1)).setFontSize(12, Style.Unit.PX);
+        verify(styleMock, times(1)).setProperty("resize", "none");
+
+        verify(simplePanelMock, times(1)).setWidget(eq(textAreaMock));
+    }
+
+    @Test
     public void flushSameValue() {
         when(gridCellValueMock.getValue()).thenReturn(MULTIPART_VALUE);
-        scenarioCellTextAreaDOMElement.flush(MULTIPART_VALUE);
+        scenarioCellTextAreaDOMElementSpy.flush(MULTIPART_VALUE);
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
-        verify(scenarioCellTextAreaDOMElement, never()).internalFlush(anyString());
+        verify(scenarioCellTextAreaDOMElementSpy, never()).internalFlush(anyString());
     }
 
     @Test
     public void flushDifferentValue() {
         when(gridCellValueMock.getValue()).thenReturn(TEST);
-        scenarioCellTextAreaDOMElement.flush(MULTIPART_VALUE);
+        scenarioCellTextAreaDOMElementSpy.flush(MULTIPART_VALUE);
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
-        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(MULTIPART_VALUE));
+        verify(scenarioCellTextAreaDOMElementSpy, times(1)).internalFlush(eq(MULTIPART_VALUE));
     }
 
     @Test
     public void flushNullString() {
         when(gridCellValueMock.getValue()).thenReturn("");
-        scenarioCellTextAreaDOMElement.flush(null);
+        scenarioCellTextAreaDOMElementSpy.flush(null);
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
-        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(null));
+        verify(scenarioCellTextAreaDOMElementSpy, times(1)).internalFlush(eq(null));
     }
 
     @Test
     public void flushEmptyStringToNullConversion() {
         when(gridCellValueMock.getValue()).thenReturn("");
-        scenarioCellTextAreaDOMElement.flush("");
+        scenarioCellTextAreaDOMElementSpy.flush("");
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
         // empty strings are converted to null during flush
-        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(null));
+        verify(scenarioCellTextAreaDOMElementSpy, times(1)).internalFlush(eq(null));
     }
 
     @Test
     public void internalFlush() {
-        scenarioCellTextAreaDOMElement.internalFlush(MULTIPART_VALUE);
+        scenarioCellTextAreaDOMElementSpy.internalFlush(MULTIPART_VALUE);
         verify(eventBusMock, times(1)).fireEvent(isA(SetGridCellValueEvent.class));
     }
 
     @Test
     public void testDetachCancelEditMode() {
-        scenarioCellTextAreaDOMElement.detach();
+        scenarioCellTextAreaDOMElementSpy.detach();
 
-        verify(scenarioGridCellMock).setEditingMode(false);
+        verify(scenarioCellTextAreaDOMElementSpy).flush(eq("value"));
     }
 }

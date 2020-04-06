@@ -55,6 +55,11 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
             {
                 this.context = contextMock;
             }
+
+            @Override
+            public String getValue() {
+                return "value";
+            }
         });
     }
 
@@ -116,9 +121,8 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
 
     @Test
     public void testDetachCancelEditMode() {
-        scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
         scenarioHeaderTextAreaDOMElement.detach();
 
-        verify(scenarioHeaderMetaDataMock).setEditingMode(false);
+        verify(scenarioHeaderTextAreaDOMElement).flush(eq("value"));
     }
 }

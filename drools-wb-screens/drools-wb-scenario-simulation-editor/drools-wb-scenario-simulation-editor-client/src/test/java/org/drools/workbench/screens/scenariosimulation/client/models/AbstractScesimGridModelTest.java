@@ -160,10 +160,10 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
                 this.eventBus = eventBusMock;
                 this.rows = GRID_ROWS;
                 this.columns = gridColumns;
-                this.scenarioExpressionCellTextAreaSingletonDOMElementFactory = scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock;
+                this.scenarioExpressionCellTextAreaSingletonDOMElementFactory = scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy;
                 this.collectionEditorSingletonDOMElementFactory = collectionEditorSingletonDOMElementFactoryTest;
-                this.scenarioCellTextAreaSingletonDOMElementFactory = scenarioCellTextAreaSingletonDOMElementFactoryTest;
-                this.scenarioHeaderTextBoxSingletonDOMElementFactory = scenarioHeaderTextBoxSingletonDOMElementFactoryTest;
+                this.scenarioCellTextAreaSingletonDOMElementFactory = scenarioCellTextAreaSingletonDOMElementFactorySpy;
+                this.scenarioHeaderTextBoxSingletonDOMElementFactory = scenarioHeaderTextBoxSingletonDOMElementFactorySpy;
             }
 
             @Override
@@ -712,24 +712,32 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         factory = abstractScesimGridModelSpy.getDOMElementFactory("java.util.List", ScenarioSimulationModel.Type.DMN, FactMappingValueType.NOT_EXPRESSION);
         assertSame(collectionEditorSingletonDOMElementFactoryTest, factory);
         factory = abstractScesimGridModelSpy.getDOMElementFactory("java.util.List", ScenarioSimulationModel.Type.DMN, FactMappingValueType.EXPRESSION);
-        assertSame(scenarioCellTextAreaSingletonDOMElementFactoryTest, factory);
+        assertSame(scenarioCellTextAreaSingletonDOMElementFactorySpy, factory);
         factory = abstractScesimGridModelSpy.getDOMElementFactory("java.util.List", ScenarioSimulationModel.Type.RULE, FactMappingValueType.EXPRESSION);
-        assertSame(scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock, factory);
+        assertSame(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, factory);
     }
 
     @Test
     public void getDOMElementFactory_Expression() {
         BaseSingletonDOMElementFactory factory = abstractScesimGridModelSpy.getDOMElementFactory("com.Test", ScenarioSimulationModel.Type.DMN, FactMappingValueType.EXPRESSION);
-        assertSame(scenarioCellTextAreaSingletonDOMElementFactoryTest, factory);
+        assertSame(scenarioCellTextAreaSingletonDOMElementFactorySpy, factory);
         factory = abstractScesimGridModelSpy.getDOMElementFactory("com.Test", ScenarioSimulationModel.Type.RULE, FactMappingValueType.EXPRESSION);
-        assertSame(scenarioExpressionCellTextAreaSingletonDOMElementFactoryMock, factory);
+        assertSame(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, factory);
     }
 
     @Test
     public void getDOMElementFactory_NotExpressionNotCollection() {
         BaseSingletonDOMElementFactory factory = abstractScesimGridModelSpy.getDOMElementFactory("com.Test", ScenarioSimulationModel.Type.DMN, FactMappingValueType.NOT_EXPRESSION);
-        assertSame(scenarioCellTextAreaSingletonDOMElementFactoryTest, factory);
+        assertSame(scenarioCellTextAreaSingletonDOMElementFactorySpy, factory);
         factory = abstractScesimGridModelSpy.getDOMElementFactory("com.Test", ScenarioSimulationModel.Type.RULE, FactMappingValueType.NOT_EXPRESSION);
-        assertSame(scenarioCellTextAreaSingletonDOMElementFactoryTest, factory);
+        assertSame(scenarioCellTextAreaSingletonDOMElementFactorySpy, factory);
+    }
+
+    @Test
+    public void destroyAllTextAreaDOMElementFactoryResources() {
+        abstractScesimGridModelSpy.destroyAllTextAreaDOMElementFactoryResources();
+        verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
+        verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
+        verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).destroyResources();
     }
 }
