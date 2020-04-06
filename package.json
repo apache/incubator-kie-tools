@@ -1,6 +1,6 @@
 {
   "name": "uniforms-patternfly",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:kingsleyzissou/uniforms-patternfly.git",
   "author": "Gianluca <gianlucazuccarelli@gmail.com>",
@@ -10,7 +10,7 @@
     "clean": "tsc && rimraf coverage",
     "coverage": "jest --coverage",
     "lint": "eslint --ext js,ts,tsx src",
-    "reset": "rimraf node_modules",
+    "reset": "rimraf dist node_modules",
     "test": "jest"
   },
   "devDependencies": {
