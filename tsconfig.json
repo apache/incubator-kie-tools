@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": "./src/",
+    "outDir": "./dist/",
     "composite": true,
     "declaration": true,
     "esModuleInterop": true,
@@ -8,13 +10,20 @@
     "jsx": "react",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "outDir": "./dist/",
     "paths": {
-      "uniforms": ["src/uniforms"],
-      "uniforms/*": ["src/uniforms/*"],
-      "uniforms-patternfly": ["src"],
-      "uniforms-patternfly/*": ["src/*"],
+      "uniforms": ["uniforms"],
+      "uniforms/*": ["uniforms/*"],
+      "uniforms-patternfly/*": ["*"],
     },
     "strict": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "example",
+    "reproductions",
+    "__tests__",
+    "__mocks__",
+    "__dep",
+  ]	  
 }
