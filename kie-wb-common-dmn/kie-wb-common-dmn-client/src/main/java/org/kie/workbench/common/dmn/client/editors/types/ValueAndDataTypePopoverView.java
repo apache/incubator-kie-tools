@@ -26,14 +26,12 @@ import org.uberfire.client.mvp.UberElement;
  * Definition of the _view_ to edit a domain object implementing {@link HasValueAndTypeRef}
  */
 public interface ValueAndDataTypePopoverView extends PopoverView,
-                                                     UberElement<ValueAndDataTypePopoverView.Presenter>,
-                                                     CanBeClosedByKeyboard {
+                                                     UberElement<ValueAndDataTypePopoverView.Presenter> {
 
     /**
      * Definition of the _presenter_ to edit a domain object implementing {@link HasValueAndTypeRef}
      */
-    interface Presenter extends HasCellEditorControls.Editor<HasValueAndTypeRef>,
-                                CanBeClosedByKeyboard {
+    interface Presenter extends HasCellEditorControls.Editor<HasValueAndTypeRef> {
 
         /**
          * Sets the domain object value. The {@link String} value from the UI that has been _normalised_.

@@ -13,4 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+[data-i18n-prefix="ListSelectorViewImpl."] {
 
+  /*
+   * Bootstraps dropdown does not respond to the keyboard when the button element has display:none
+   * Therefore apply styling to make the "dropdown" and "trigger" consume zero space.
+   */
+
+  #dropdown, #dropdown-trigger {
+    width: 0px;
+    height: 0px;
+    border: 0px;
+    padding: 0px;
+  }
+}

@@ -40,9 +40,13 @@ public class KindPopoverViewImpl extends AbstractPopoverViewImpl implements Kind
     @DataField("definitions-container")
     private UnorderedList definitionsContainer;
 
-    private final ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews;
+    private ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews;
 
     private KindPopoverView.Presenter presenter;
+
+    public KindPopoverViewImpl() {
+        //CDI proxy
+    }
 
     @Inject
     public KindPopoverViewImpl(final UnorderedList definitionsContainer,

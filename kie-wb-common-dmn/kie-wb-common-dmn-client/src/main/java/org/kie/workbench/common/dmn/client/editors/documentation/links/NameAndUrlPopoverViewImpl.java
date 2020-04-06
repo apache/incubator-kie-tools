@@ -162,6 +162,11 @@ public class NameAndUrlPopoverViewImpl extends AbstractPopoverViewImpl implement
         this.presenter = presenter;
     }
 
+    @Override
+    protected void onShownFocus() {
+        okButton.focus();
+    }
+
     public Consumer<DMNExternalLink> getOnExternalLinkCreated() {
         return onExternalLinkCreated;
     }

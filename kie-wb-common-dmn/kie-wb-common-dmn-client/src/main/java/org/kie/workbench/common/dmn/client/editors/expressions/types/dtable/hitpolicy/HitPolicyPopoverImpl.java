@@ -17,23 +17,20 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverImpl;
 
 @ApplicationScoped
-public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
+public class HitPolicyPopoverImpl extends AbstractPopoverImpl<HitPolicyPopoverView, HasHitPolicyControl> implements HitPolicyPopoverView.Presenter {
 
-    private HitPolicyPopoverView view;
     private TranslationService translationService;
-    private Optional<HasHitPolicyControl> binding = Optional.empty();
 
     public HitPolicyPopoverImpl() {
         //CDI proxy
@@ -43,17 +40,12 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     public HitPolicyPopoverImpl(final HitPolicyPopoverView view,
                                 final TranslationService translationService,
                                 final BuiltinAggregatorUtils builtinAggregatorUtils) {
-        this.view = view;
+        super(view);
         this.translationService = translationService;
 
         view.init(this);
         view.initHitPolicies(Arrays.asList(HitPolicy.values()));
         view.initBuiltinAggregators(builtinAggregatorUtils.getAllValues());
-    }
-
-    @Override
-    public HTMLElement getElement() {
-        return view.getElement();
     }
 
     @Override
@@ -65,7 +57,7 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     public void bind(final HasHitPolicyControl bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
-        binding = Optional.ofNullable(bound);
+        super.bind(bound, uiRowIndex, uiColumnIndex);
         refresh();
     }
 
@@ -92,15 +84,5 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     @Override
     public void setBuiltinAggregator(final BuiltinAggregator aggregator) {
         binding.ifPresent(b -> b.setBuiltinAggregator(aggregator));
-    }
-
-    @Override
-    public void show() {
-        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
-    }
-
-    @Override
-    public void hide() {
-        binding.ifPresent(b -> view.hide());
     }
 }

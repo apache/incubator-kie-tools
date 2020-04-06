@@ -18,26 +18,40 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorHeaderItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
 
 @Templated
 @Dependent
 public class ListSelectorViewImpl implements ListSelectorView {
 
-    private static final String OPEN = "open";
+    static final String DROPDOWN_ACTION = "toggle";
+
+    static final String DROPDOWN_SELECTOR = "#dropdown";
+
+    static final String DROPDOWN_TRIGGER_SELECTOR = "#dropdown-trigger";
+
+    static final String DROPDOWN_MENU_SELECTOR = "#dropdown-menu";
+
+    static final String DROPDOWN_HIDDEN_SELECTOR = ":hidden";
+
+    static final String DROPDOWN_HIDDEN_EVENT = "hidden.bs.dropdown";
 
     @DataField("items-container")
     private UnorderedList itemsContainer;
@@ -46,6 +60,8 @@ public class ListSelectorViewImpl implements ListSelectorView {
     private ManagedInstance<ListSelectorDividerItemView> listSelectorDividerItemViews;
     private ManagedInstance<ListSelectorHeaderItemView> listSelectorHeaderItemViews;
     private Presenter presenter;
+
+    private Optional<Consumer<CanBeClosedByKeyboard>> closedByKeyboardCallback = Optional.empty();
 
     public ListSelectorViewImpl() {
         //CDI proxy
@@ -100,12 +116,49 @@ public class ListSelectorViewImpl implements ListSelectorView {
     }
 
     @Override
-    public void show() {
-        getElement().getClassList().add(OPEN);
+    public void show(final Optional<String> title) {
+        //Schedule programmatic display of dropdown as it has not been attached to the DOM at this point.
+        schedule(() -> {
+            if (isDropdownMenuHidden()) {
+                dropdownHiddenHandler(returnFocusToPanel());
+                dropdownTrigger().dropdown(DROPDOWN_ACTION);
+            }
+        });
     }
 
     @Override
     public void hide() {
-        getElement().getClassList().remove(OPEN);
+        if (!isDropdownMenuHidden()) {
+            dropdownTrigger().dropdown(DROPDOWN_ACTION);
+        }
+    }
+
+    @Override
+    public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
+        closedByKeyboardCallback = Optional.ofNullable(callback);
+    }
+
+    void schedule(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
+    }
+
+    boolean isDropdownMenuHidden() {
+        return dropdown().find(DROPDOWN_MENU_SELECTOR).is(DROPDOWN_HIDDEN_SELECTOR);
+    }
+
+    JQueryDropdownMenu dropdown() {
+        return JQueryDropdownMenu.$(DROPDOWN_SELECTOR);
+    }
+
+    JQueryDropdownMenu dropdownTrigger() {
+        return JQueryDropdownMenu.$(DROPDOWN_TRIGGER_SELECTOR);
+    }
+
+    JQuery dropdownHiddenHandler(final JQuery.CallbackFunction function) {
+        return JQuery.$(DROPDOWN_SELECTOR).on(DROPDOWN_HIDDEN_EVENT, function);
+    }
+
+    JQuery.CallbackFunction returnFocusToPanel() {
+        return (event) -> closedByKeyboardCallback.ifPresent(c -> c.accept(this));
     }
 }

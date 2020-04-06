@@ -23,18 +23,16 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverImpl;
 
 @ApplicationScoped
-public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
+public class ParametersPopoverImpl extends AbstractPopoverImpl<ParametersPopoverView, HasParametersControl> implements ParametersPopoverView.Presenter {
 
-    private ParametersPopoverView view;
     private TranslationService translationService;
-    private Optional<HasParametersControl> binding = Optional.empty();
 
     public ParametersPopoverImpl() {
         //CDI proxy
@@ -43,15 +41,10 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
     @Inject
     public ParametersPopoverImpl(final ParametersPopoverView view,
                                  final TranslationService translationService) {
-        this.view = view;
+        super(view);
         this.translationService = translationService;
 
         view.init(this);
-    }
-
-    @Override
-    public HTMLElement getElement() {
-        return view.getElement();
     }
 
     @Override
@@ -63,10 +56,8 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
     public void bind(final HasParametersControl bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
-        binding = Optional.ofNullable(bound);
-        binding.ifPresent(b -> {
-            view.setParameters(b.getParameters());
-        });
+        super.bind(bound, uiRowIndex, uiColumnIndex);
+        binding.ifPresent(b -> view.setParameters(b.getParameters()));
     }
 
     private void refresh() {
@@ -89,11 +80,6 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
         if (!parameters.isEmpty()) {
             view.focusParameter(parameters.size() - 1);
         }
-    }
-
-    @Override
-    public void hide() {
-        binding.ifPresent(b -> view.hide());
     }
 
     @Override

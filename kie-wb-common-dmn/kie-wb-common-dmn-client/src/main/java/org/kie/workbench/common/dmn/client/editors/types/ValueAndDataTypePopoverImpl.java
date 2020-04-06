@@ -94,6 +94,11 @@ public class ValueAndDataTypePopoverImpl implements ValueAndDataTypePopoverView.
     }
 
     @Override
+    public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
+        binding.ifPresent(b -> view.setOnClosedByKeyboardCallback(callback));
+    }
+
+    @Override
     public void show() {
         binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
     }
@@ -101,11 +106,6 @@ public class ValueAndDataTypePopoverImpl implements ValueAndDataTypePopoverView.
     @Override
     public void hide() {
         binding.ifPresent(b -> view.hide());
-    }
-
-    @Override
-    public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
-        view.setOnClosedByKeyboardCallback(callback);
     }
 
     public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {

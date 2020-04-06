@@ -25,11 +25,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverImpl;
 
 @ApplicationScoped
-public class NameAndUriPopoverImpl implements NameAndUrlPopoverView.Presenter {
-
-    private NameAndUrlPopoverView view;
+public class NameAndUriPopoverImpl extends AbstractPopoverImpl<NameAndUrlPopoverView, NameAndUrlPopoverView.Presenter> implements NameAndUrlPopoverView.Presenter {
 
     public NameAndUriPopoverImpl() {
         //CDI proxy
@@ -37,7 +37,7 @@ public class NameAndUriPopoverImpl implements NameAndUrlPopoverView.Presenter {
 
     @Inject
     public NameAndUriPopoverImpl(final NameAndUrlPopoverView view) {
-        this.view = view;
+        super(view);
     }
 
     @PostConstruct
@@ -48,6 +48,11 @@ public class NameAndUriPopoverImpl implements NameAndUrlPopoverView.Presenter {
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    @Override
+    public void setOnClosedByKeyboardCallback(final Consumer<CanBeClosedByKeyboard> callback) {
+        view.setOnClosedByKeyboardCallback(callback);
     }
 
     @Override

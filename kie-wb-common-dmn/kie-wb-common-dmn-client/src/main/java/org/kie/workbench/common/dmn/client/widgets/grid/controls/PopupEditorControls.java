@@ -17,8 +17,10 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.controls;
 
 import org.jboss.errai.common.client.api.IsElement;
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 
-public interface PopupEditorControls extends IsElement {
+public interface PopupEditorControls extends IsElement,
+                                             CanBeClosedByKeyboard {
 
     /**
      * Returns the {@link String} for the {@link PopupEditorControls} title used to to edit properties.

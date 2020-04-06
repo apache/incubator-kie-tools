@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -88,21 +87,6 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
     private QName previousTypeRef;
 
     private BootstrapSelectDropDownMonitor monitor;
-
-    private Optional<Consumer> closedByKeyboardCallback;
-
-    @Override
-    public void setOnClosedByKeyboardCallback(final Consumer callback) {
-        closedByKeyboardCallback = Optional.ofNullable(callback);
-    }
-
-    public void onClosedByKeyboard() {
-        getClosedByKeyboardCallback().ifPresent(c -> c.accept(this));
-    }
-
-    Optional<Consumer> getClosedByKeyboardCallback() {
-        return closedByKeyboardCallback;
-    }
 
     /**
      * This is a workaround for dismissing a Bootstrap {@link Select} {@link DropDown} child element when
@@ -205,8 +189,6 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
         //GWT runs into an infinite loop if these are defined as method references :-(
         this.monitor = new BootstrapSelectDropDownMonitor(popoverTitle -> ValueAndDataTypePopoverViewImpl.super.show(popoverTitle),
                                                           () -> ValueAndDataTypePopoverViewImpl.super.hide());
-
-        this.closedByKeyboardCallback = Optional.empty();
     }
 
     @Override
@@ -226,10 +208,9 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
         return currentTypeRef;
     }
 
-    void setKeyDownListeners() {
-        popoverElement.addEventListener(BrowserEvents.KEYDOWN,
-                                        getKeyDownEventListener(),
-                                        false);
+    @Override
+    protected void setKeyDownListeners() {
+        super.setKeyDownListeners();
 
         final Element manageButton = getManageButton();
         manageButton.addEventListener(BrowserEvents.KEYDOWN,
@@ -242,16 +223,18 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
                                             false);
     }
 
+    @Override
+    //Overridden with identical access modifier to make visible to tests in this package.
+    protected EventListener getKeyDownEventListener() {
+        return super.getKeyDownEventListener();
+    }
+
     EventListener getTypeSelectorKeyDownEventListener() {
         return (e) -> typeSelectorKeyDownEventListener(e);
     }
 
     EventListener getManageButtonKeyDownEventListener() {
         return (e) -> manageButtonKeyDownEventListener(e);
-    }
-
-    EventListener getKeyDownEventListener() {
-        return (e) -> keyDownEventListener(e);
     }
 
     Button getTypeSelectorButton() {
@@ -296,31 +279,8 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
         }
     }
 
-    void keyDownEventListener(final Object event) {
-        if (event instanceof KeyboardEvent) {
-            final KeyboardEvent keyEvent = (KeyboardEvent) event;
-            if (isEnterKeyPressed(keyEvent)) {
-                hide(true);
-                keyEvent.stopPropagation();
-                onClosedByKeyboard();
-            } else if (isEscapeKeyPressed(keyEvent)) {
-                reset();
-                hide(false);
-                onClosedByKeyboard();
-            }
-        }
-    }
-
     boolean isTabKeyPressed(final KeyboardEvent event) {
         return Objects.equals(event.key, TAB_KEY);
-    }
-
-    boolean isEscapeKeyPressed(final KeyboardEvent event) {
-        return Objects.equals(event.key, ESC_KEY) || Objects.equals(event.key, ESCAPE_KEY);
-    }
-
-    boolean isEnterKeyPressed(final KeyboardEvent event) {
-        return Objects.equals(event.key, ENTER_KEY);
     }
 
     @Override
@@ -347,6 +307,10 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
     public void show(final Optional<String> popoverTitle) {
         valueLabel.setTextContent(presenter.getValueLabel());
         getMonitor().show(popoverTitle);
+    }
+
+    @Override
+    protected void onShownFocus() {
         valueEditor.focus();
     }
 
@@ -387,7 +351,8 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
         }
     }
 
-    void reset() {
+    @Override
+    public void reset() {
         valueEditor.setValue(previousValue);
         if (!Objects.isNull(previousTypeRef)) {
             typeRefEditor.setValue(previousTypeRef);

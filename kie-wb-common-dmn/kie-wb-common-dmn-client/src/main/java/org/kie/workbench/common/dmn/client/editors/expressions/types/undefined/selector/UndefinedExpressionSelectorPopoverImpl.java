@@ -16,28 +16,24 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverImpl;
 
 @ApplicationScoped
-public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressionSelectorPopoverView.Presenter {
+public class UndefinedExpressionSelectorPopoverImpl extends AbstractPopoverImpl<UndefinedExpressionSelectorPopoverView, UndefinedExpressionGrid> implements UndefinedExpressionSelectorPopoverView.Presenter {
 
-    private UndefinedExpressionSelectorPopoverView view;
     private TranslationService translationService;
-
-    private Optional<UndefinedExpressionGrid> binding = Optional.empty();
 
     public UndefinedExpressionSelectorPopoverImpl() {
         //CDI proxy
@@ -47,7 +43,7 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
     public UndefinedExpressionSelectorPopoverImpl(final UndefinedExpressionSelectorPopoverView view,
                                                   final TranslationService translationService,
                                                   final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
-        this.view = view;
+        super(view);
         this.translationService = translationService;
 
         view.init(this);
@@ -68,29 +64,7 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
     }
 
     @Override
-    public HTMLElement getElement() {
-        return view.getElement();
-    }
-
-    @Override
     public String getPopoverTitle() {
         return translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectorTitle);
-    }
-
-    @Override
-    public void bind(final UndefinedExpressionGrid bound,
-                     final int uiRowIndex,
-                     final int uiColumnIndex) {
-        binding = Optional.ofNullable(bound);
-    }
-
-    @Override
-    public void show() {
-        binding.ifPresent(b -> view.show(Optional.ofNullable(getPopoverTitle())));
-    }
-
-    @Override
-    public void hide() {
-        binding.ifPresent(b -> view.hide());
     }
 }

@@ -18,19 +18,18 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import java.util.List;
 
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.PopoverView;
 import org.uberfire.client.mvp.UberElement;
 
-public interface ListSelectorView extends org.jboss.errai.ui.client.local.api.IsElement,
+public interface ListSelectorView extends PopoverView,
                                           UberElement<ListSelectorView.Presenter> {
 
     void setItems(final List<HasListSelectorControl.ListSelectorItem> items);
 
-    void show();
-
-    void hide();
-
-    interface Presenter extends HasCellEditorControls.Editor<HasListSelectorControl> {
+    interface Presenter extends HasCellEditorControls.Editor<HasListSelectorControl>,
+                                CanBeClosedByKeyboard {
 
         void onItemSelected(final HasListSelectorControl.ListSelectorItem item);
     }

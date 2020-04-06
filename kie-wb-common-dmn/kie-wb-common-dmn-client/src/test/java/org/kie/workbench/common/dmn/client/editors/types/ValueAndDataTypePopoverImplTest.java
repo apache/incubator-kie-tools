@@ -128,12 +128,25 @@ public class ValueAndDataTypePopoverImplTest {
     }
 
     @Test
-    public void testSetOnClosedByKeyboardCallback() {
+    @SuppressWarnings("unchecked")
+    public void testSetOnClosedByKeyboardCallback_WhenBound() {
         final Consumer callback = mock(Consumer.class);
+
+        editor.bind(bound, 0, 0);
 
         editor.setOnClosedByKeyboardCallback(callback);
 
         verify(view).setOnClosedByKeyboardCallback(callback);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetOnClosedByKeyboardCallback_WhenNotBound() {
+        final Consumer callback = mock(Consumer.class);
+
+        editor.setOnClosedByKeyboardCallback(callback);
+
+        verify(view, never()).setOnClosedByKeyboardCallback(any(Consumer.class));
     }
 
     @Test

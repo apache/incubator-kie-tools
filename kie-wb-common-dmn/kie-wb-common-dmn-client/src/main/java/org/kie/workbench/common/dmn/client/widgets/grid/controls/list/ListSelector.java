@@ -17,19 +17,15 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverImpl;
 
 @Dependent
-public class ListSelector implements ListSelectorView.Presenter {
-
-    private ListSelectorView view;
-    private Optional<HasListSelectorControl> binding = Optional.empty();
+public class ListSelector extends AbstractPopoverImpl<ListSelectorView, HasListSelectorControl> implements ListSelectorView.Presenter {
 
     public ListSelector() {
         //CDI proxy
@@ -37,13 +33,8 @@ public class ListSelector implements ListSelectorView.Presenter {
 
     @Inject
     public ListSelector(final ListSelectorView view) {
-        this.view = view;
+        super(view);
         this.view.init(this);
-    }
-
-    @Override
-    public HTMLElement getElement() {
-        return view.getElement();
     }
 
     @Override
@@ -55,7 +46,8 @@ public class ListSelector implements ListSelectorView.Presenter {
     public void bind(final HasListSelectorControl bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
-        binding = Optional.ofNullable(bound);
+        super.bind(bound, uiRowIndex, uiColumnIndex);
+
         binding.ifPresent(b -> {
             final List<ListSelectorItem> items = b.getItems(uiRowIndex,
                                                             uiColumnIndex);
@@ -69,16 +61,5 @@ public class ListSelector implements ListSelectorView.Presenter {
                                          uiColumnIndex));
             }
         });
-    }
-
-    @Override
-    @SuppressWarnings("unused")
-    public void show() {
-        binding.ifPresent(b -> view.show());
-    }
-
-    @Override
-    public void hide() {
-        binding.ifPresent(b -> view.hide());
     }
 }

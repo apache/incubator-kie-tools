@@ -18,9 +18,19 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.popover;
 
 import java.util.Optional;
 
-public interface PopoverView extends org.jboss.errai.ui.client.local.api.IsElement {
+import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
+
+public interface PopoverView extends org.jboss.errai.ui.client.local.api.IsElement,
+                                     CanBeClosedByKeyboard {
 
     void show(final Optional<String> popoverTitle);
 
     void hide();
+
+    /**
+     * Reset the the Popover to it's _initial_ state when first shown. No operation by default.
+     */
+    default void reset() {
+        //NOP
+    }
 }

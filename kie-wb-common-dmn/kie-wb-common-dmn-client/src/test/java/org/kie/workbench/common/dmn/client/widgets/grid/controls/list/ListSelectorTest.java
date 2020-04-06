@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class ListSelectorTest {
 
         listSelector.show();
 
-        verify(view).show();
+        verify(view).show(Optional.empty());
     }
 
     @Test
@@ -97,7 +98,7 @@ public class ListSelectorTest {
 
         listSelector.show();
 
-        verify(view).show();
+        verify(view).show(Optional.empty());
     }
 
     @Test
@@ -111,7 +112,7 @@ public class ListSelectorTest {
 
         listSelector.show();
 
-        verify(view, never()).show();
+        verify(view, never()).show(Optional.empty());
     }
 
     @Test
