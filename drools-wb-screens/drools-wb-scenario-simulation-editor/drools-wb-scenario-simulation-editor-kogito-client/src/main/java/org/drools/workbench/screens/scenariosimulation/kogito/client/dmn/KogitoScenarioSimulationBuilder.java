@@ -50,7 +50,7 @@ import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSISce
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.SCESIM;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JSIName;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JsUtils;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.converters.scesim.ApiJSInteropConverter;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.converters.ApiJSInteropConverter;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.common.client.api.RemoteCallback;

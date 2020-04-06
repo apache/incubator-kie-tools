@@ -15,11 +15,20 @@
  */
 package org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown;
 
-import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationAssetsDropdownProvider;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
-/**
- * To be implemented in submodule, defining the source of the DMN files lists.
- */
-public interface ScenarioKogitoCreationAssetsDropdownProvider extends ScenarioSimulationAssetsDropdownProvider {
+import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItemsProvider;
+
+@Dependent
+public class ScenarioSimulationKogitoScesimFilesDropdownProviderKogitoImpl implements KieAssetsDropdownItemsProvider {
+
+    @Override
+    public void getItems(Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
+        assetListConsumer.accept(new ArrayList<>());
+    }
 }

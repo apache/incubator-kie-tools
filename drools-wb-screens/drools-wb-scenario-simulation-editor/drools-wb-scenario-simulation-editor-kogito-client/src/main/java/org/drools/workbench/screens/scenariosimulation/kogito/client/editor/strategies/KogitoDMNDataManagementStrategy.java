@@ -26,6 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoDMNService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12UnmarshallCallback;
@@ -48,18 +49,26 @@ public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementSt
         RemoteCallback<FactModelTuple> callback = getSuccessCallback(testToolsPresenter, context, gridWidget);
         String fileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
         final Path dmnPath = PathFactory.newPath(fileName, dmnFilePath);
-        dmnTypeService.getDMNContent(dmnPath, dmnContent -> {
-                                         DMN12UnmarshallCallback dmn12UnmarshallCallback = getDMN12UnmarshallCallback(callback);
-                                         MainJs.unmarshall(dmnContent, "", dmn12UnmarshallCallback);
-                                     },
-                                     (message, throwable) -> {
-                                         eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath),
-                                                                                          NotificationEvent.NotificationType.ERROR));
-                                         return false;
-                                     });
+        dmnTypeService.getDMNContent(dmnPath, getDMNContentRemoteCallback(callback), getDMNContentErrorCallback(dmnFilePath));
     }
 
-    private DMN12UnmarshallCallback getDMN12UnmarshallCallback(final RemoteCallback<FactModelTuple> callback) {
+    protected RemoteCallback<String> getDMNContentRemoteCallback(RemoteCallback<FactModelTuple> callback) {
+        return dmnContent -> {
+            DMN12UnmarshallCallback dmn12UnmarshallCallback = getDMN12UnmarshallCallback(callback);
+            MainJs.unmarshall(dmnContent, "", dmn12UnmarshallCallback);
+        };
+    }
+
+
+    protected ErrorCallback<Object> getDMNContentErrorCallback(String dmnFilePath) {
+        return (message, throwable) -> {
+            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath),
+                                                             NotificationEvent.NotificationType.ERROR));
+            return false;
+        };
+    }
+
+    protected DMN12UnmarshallCallback getDMN12UnmarshallCallback(final RemoteCallback<FactModelTuple> callback) {
         return dmn12 -> {
             final JSITDefinitions jsitDefinitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
             final FactModelTuple factModelTuple = dmnTypeService.getFactModelTuple(jsitDefinitions);

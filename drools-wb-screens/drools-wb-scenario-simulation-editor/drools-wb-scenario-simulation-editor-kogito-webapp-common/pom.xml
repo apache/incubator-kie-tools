@@ -22,11 +22,6 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ui</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- Uberfire -->
     <dependency>
@@ -35,8 +30,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-      <scope>provided</scope>
+      <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -50,31 +44,14 @@
       <artifactId>uberfire-experimental-api</artifactId>
     </dependency>
 
-    <!-- Generic ui components -->
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-common-ui</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-security-management-client</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.elemental2</groupId>
-      <artifactId>elemental2-dom</artifactId>
+      <artifactId>elemental2-promise</artifactId>
     </dependency>
 
     <!-- Kogito -->
@@ -82,18 +59,12 @@
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-kogito-client</artifactId>
+    </dependency>
 
     <!-- Scenario Simulation -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
-    </dependency>
-
-    <!-- Add for enforcer -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-scenario-simulation-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>

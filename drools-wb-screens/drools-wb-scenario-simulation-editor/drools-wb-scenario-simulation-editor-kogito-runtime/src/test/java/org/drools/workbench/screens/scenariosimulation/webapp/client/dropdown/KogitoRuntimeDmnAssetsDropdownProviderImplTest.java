@@ -53,12 +53,12 @@ public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
     @Captor
     private ArgumentCaptor<List<KieAssetsDropdownItem>> dropDownListCaptor;
 
-    private KogitoRuntimeDmnAssetsDropdownProviderImpl kogitoRuntimeDmnAssetsDropdownProviderImplSpy;
+    private KogitoRuntimeDmnAssetsDropdownProviderImplKogito kogitoRuntimeDmnAssetsDropdownProviderImplSpy;
 
 
     @Before
     public void setup() {
-        kogitoRuntimeDmnAssetsDropdownProviderImplSpy = spy(new KogitoRuntimeDmnAssetsDropdownProviderImpl() {
+        kogitoRuntimeDmnAssetsDropdownProviderImplSpy = spy(new KogitoRuntimeDmnAssetsDropdownProviderImplKogito() {
             {
                 this.resourceContentService = kogitoResourceContentServiceMock;
                 this.errorPopupPresenter = errorPopupPresenterMock;
@@ -69,7 +69,7 @@ public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
     @Test
     public void getItems() {
         kogitoRuntimeDmnAssetsDropdownProviderImplSpy.getItems(assetConsumer);
-        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(KogitoRuntimeDmnAssetsDropdownProviderImpl.DMN_FILE_EXTENSION),
+        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(KogitoRuntimeDmnAssetsDropdownProviderImplKogito.DMN_FILE_EXTENSION),
                                                                                                  isA(RemoteCallback.class),
                                                                                                  isA(ErrorCallback.class));
     }

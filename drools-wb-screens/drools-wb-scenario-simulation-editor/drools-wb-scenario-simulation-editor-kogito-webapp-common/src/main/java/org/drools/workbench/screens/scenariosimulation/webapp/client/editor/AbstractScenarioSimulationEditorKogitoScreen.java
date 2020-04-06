@@ -15,69 +15,81 @@
  */
 package org.drools.workbench.screens.scenariosimulation.webapp.client.editor;
 
+import java.util.function.Consumer;
+
 import javax.inject.Inject;
 
-import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoScenarioSimulationBuilder;
+import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.ScenarioSimulationEditorKogitoWrapper;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioKogitoCreationPopupPresenter;
-import org.gwtbootstrap3.client.ui.Popover;
+import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.lifecycle.GetContent;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.lifecycle.SetContent;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Abstract class to be extended by concrete <b>ScenarioSimulationEditorKogitoScreen</b>s
  */
 public abstract class AbstractScenarioSimulationEditorKogitoScreen implements KogitoScreen {
 
-    public static final String IDENTIFIER = "ScenarioSimulationEditor";
+
     public static final String TITLE = "Scenario Simulation - Kogito";
 
     @Inject
     protected ScenarioSimulationEditorKogitoWrapper scenarioSimulationEditorKogitoWrapper;
-    @Inject
-    protected KogitoScenarioSimulationBuilder scenarioSimulationBuilder;
-    @Inject
-    protected ScenarioKogitoCreationPopupPresenter scenarioKogitoCreationPopupPresenter;
 
-    /**
-     *
-     * @param path the path into which the file will be saved
-     */
-    protected void newFile(Path path) {
-        Command createCommand = () -> {
-            final ScenarioSimulationModel.Type selectedType = scenarioKogitoCreationPopupPresenter.getSelectedType();
-            if (selectedType == null) {
-                showPopover("ERROR", "Missing selected type");
-                return;
-            }
-            String value = "";
-            if (ScenarioSimulationModel.Type.DMN.equals(selectedType)) {
-                value = scenarioKogitoCreationPopupPresenter.getSelectedPath();
-                if (value == null || value.isEmpty()) {
-                    showPopover("ERROR", "Missing dmn path");
-                    return;
-                }
-            }
-            scenarioSimulationBuilder.populateScenarioSimulationModel(new ScenarioSimulationModel(), selectedType, value, content -> {
-                saveFile(path, content);
-                scenarioSimulationEditorKogitoWrapper.gotoPath(path);
-                scenarioSimulationEditorKogitoWrapper.setContent(path.toURI() + path.getFileName(), content);
-            });
-        };
-        scenarioKogitoCreationPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.addScenarioSimulation(),
-                                                  createCommand);
+    @OnStartup
+    public void onStartup(final PlaceRequest place) {
+        scenarioSimulationEditorKogitoWrapper.onStartup(place);
     }
 
-    protected void showPopover(String title, String content) {
-        new Popover(title, content).show();
+    @OnMayClose
+    public boolean mayClose() {
+        return scenarioSimulationEditorKogitoWrapper.mayClose();
     }
 
-    protected void saveFile(final Path path, final String content) {
-        // TO BE OVERRIDDEN
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return TITLE;
     }
 
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return scenarioSimulationEditorKogitoWrapper.getTitle();
+    }
+
+    @WorkbenchPartView
+    public MultiPageEditorContainerView getWidget() {
+        return scenarioSimulationEditorKogitoWrapper.getWidget();
+    }
+
+    @WorkbenchMenu
+    public void setMenus(final Consumer<Menus> menusConsumer) {
+        scenarioSimulationEditorKogitoWrapper.setMenus(menusConsumer);
+    }
+
+    @GetContent
+    public Promise getContent() {
+        return scenarioSimulationEditorKogitoWrapper.getContent();
+    }
+
+    @SetContent
+    public Promise setContent(String fullPath, String value) {
+        return scenarioSimulationEditorKogitoWrapper.setContent(fullPath, value);
+    }
+
+    @IsDirty
+    public boolean isDirty() {
+        return scenarioSimulationEditorKogitoWrapper.isDirty();
+    }
 
 }

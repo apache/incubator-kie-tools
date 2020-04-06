@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.kogito.client.fakes;
+package org.drools.workbench.screens.scenariosimulation.kogito.client.dmo;
 
 import java.util.List;
 

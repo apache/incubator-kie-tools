@@ -15,20 +15,21 @@
  */
 package org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
-import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItemsProvider;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.widgets.client.assets.dropdown.AbstractKieAssetsDropdown;
 
 @Dependent
-public class ScenarioSimulationScesimFilesDropdownProviderKogitoImpl implements KieAssetsDropdownItemsProvider {
+public class ScenarioSimulationKogitoScesimFilesDropdown extends AbstractKieAssetsDropdown {
 
-    @Override
-    public void getItems(Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
-        assetListConsumer.accept(new ArrayList<>());
+    @Inject
+    public ScenarioSimulationKogitoScesimFilesDropdown(ScenarioSimulationKogitoScesimFilesDropdownView view, ScenarioSimulationKogitoScesimFilesDropdownProviderKogitoImpl dataProvider) {
+        super(view, dataProvider);
+    }
+
+    public IsWidget asWidget() {
+        return ((ScenarioSimulationKogitoScesimFilesDropdownView) view).asWidget();
     }
 }

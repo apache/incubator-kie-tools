@@ -383,7 +383,7 @@ public class ScenarioSimulationEditorPresenter {
         context.getStatus().setBackground(background);
 
         if (hasBackgroundError) {
-            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.backgroundErrorNotification(), NotificationEvent.NotificationType.ERROR));
+            sendNotification(ScenarioSimulationEditorConstants.INSTANCE.backgroundErrorNotification(), NotificationEvent.NotificationType.ERROR);
             selectBackgroundTab();
         }
 
@@ -392,6 +392,10 @@ public class ScenarioSimulationEditorPresenter {
         dataManagementStrategy.setModel(model);
 
         this.lastRunResult = newData;
+    }
+
+    public void sendNotification(String text, NotificationEvent.NotificationType type) {
+        eventBus.fireEvent(new ScenarioNotificationEvent(text, type));
     }
 
     protected void registerTestToolsCallback() {
@@ -553,7 +557,7 @@ public class ScenarioSimulationEditorPresenter {
                 confirmPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.validationErrorTitle(),
                                            errorMessage.toString());
             } else {
-                eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.validationSucceed(), NotificationEvent.NotificationType.SUCCESS));
+                sendNotification(ScenarioSimulationEditorConstants.INSTANCE.validationSucceed(), NotificationEvent.NotificationType.SUCCESS);
             }
         };
     }
@@ -562,7 +566,7 @@ public class ScenarioSimulationEditorPresenter {
         return (message, exception) -> {
             CustomBusyPopup.close();
             BusyPopup.close();
-            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.validationFailedNotification(), NotificationEvent.NotificationType.ERROR));
+            sendNotification(ScenarioSimulationEditorConstants.INSTANCE.validationFailedNotification(), NotificationEvent.NotificationType.ERROR);
             return false;
         };
     }

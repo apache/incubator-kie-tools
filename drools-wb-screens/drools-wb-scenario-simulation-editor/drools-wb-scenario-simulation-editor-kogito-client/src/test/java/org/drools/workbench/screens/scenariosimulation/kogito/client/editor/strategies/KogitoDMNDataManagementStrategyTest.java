@@ -20,10 +20,12 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoDMNService;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +52,8 @@ public class KogitoDMNDataManagementStrategyTest {
     private TestToolsPresenter testToolsPresenterMock;
     @Mock
     private GridWidget gridWidgetMock;
+    @Mock
+    private RemoteCallback remoteCallbackMock;
 
     private KogitoDMNDataManagementStrategy kogitoDMNDataManagementStrategySpy;
 
@@ -64,5 +68,21 @@ public class KogitoDMNDataManagementStrategyTest {
         Path expectedPath = new PathFactory.PathImpl("dmnFile.dmn", "path/dmnFile.dmn");
         verify(kogitoDMNDataManagementStrategySpy, times(1)).getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextMock), eq(gridWidgetMock));
         verify(kogitoDMNServiceMock, times(1)).getDMNContent(eq(expectedPath), isA(RemoteCallback.class), isA(ErrorCallback.class));
+    }
+
+    @Test
+    public void getDMNContentRemoteCallback() {
+        RemoteCallback<String> remoteCallback = kogitoDMNDataManagementStrategySpy.getDMNContentRemoteCallback(remoteCallbackMock);
+        Assert.assertNotNull(remoteCallback);
+        remoteCallback.callback("");
+        verify(kogitoDMNDataManagementStrategySpy, times(1)).getDMN12UnmarshallCallback(eq(remoteCallbackMock));
+    }
+
+    @Test
+    public void getDMNContentErrorCallback() {
+        ErrorCallback<Object> remoteCallback = kogitoDMNDataManagementStrategySpy.getDMNContentErrorCallback("dmnpath/");
+        Assert.assertNotNull(remoteCallback);
+        remoteCallback.error("message", new Exception());
+        verify(eventBusMock, times(1)).fireEvent(isA(ScenarioNotificationEvent.class));
     }
 }

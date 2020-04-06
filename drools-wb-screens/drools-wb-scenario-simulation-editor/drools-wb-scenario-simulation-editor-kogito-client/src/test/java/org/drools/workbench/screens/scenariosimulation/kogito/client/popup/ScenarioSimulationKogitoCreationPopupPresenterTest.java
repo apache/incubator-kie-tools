@@ -28,45 +28,45 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioKogitoCreationPopupPresenterTest {
+public class ScenarioSimulationKogitoCreationPopupPresenterTest {
 
     @Mock
     private Command okCommandMock;
     @Mock
-    private ScenarioKogitoCreationPopupView scenarioKogitoCreationPopupViewMock;
+    private ScenarioSimulationKogitoCreationPopupView scenarioSimulationKogitoCreationPopupViewMock;
 
-    private ScenarioKogitoCreationPopupPresenter scenarioKogitoCreationPopupPresenterSpy;
+    private ScenarioSimulationKogitoCreationPopupPresenter scenarioSimulationKogitoCreationPopupPresenterSpy;
 
     @Before
     public void setup() {
-        scenarioKogitoCreationPopupPresenterSpy = spy(new ScenarioKogitoCreationPopupPresenter() {
+        scenarioSimulationKogitoCreationPopupPresenterSpy = spy(new ScenarioSimulationKogitoCreationPopupPresenter() {
             {
-                scenarioKogitoCreationPopupView = scenarioKogitoCreationPopupViewMock;
+                scenarioscenarioSimulationCreationPopupView = scenarioSimulationKogitoCreationPopupViewMock;
             }
         });
     }
 
     @Test
     public void show() {
-        scenarioKogitoCreationPopupPresenterSpy.show("title", okCommandMock);
-        verify(scenarioKogitoCreationPopupViewMock, times(1)).show(eq("title"), eq(okCommandMock));
+        scenarioSimulationKogitoCreationPopupPresenterSpy.show("title", okCommandMock);
+        verify(scenarioSimulationKogitoCreationPopupViewMock, times(1)).show(eq("title"), eq(okCommandMock));
     }
 
     @Test
     public void hide() {
-        scenarioKogitoCreationPopupPresenterSpy.hide();
-        verify(scenarioKogitoCreationPopupViewMock, times(1)).hide();
+        scenarioSimulationKogitoCreationPopupPresenterSpy.hide();
+        verify(scenarioSimulationKogitoCreationPopupViewMock, times(1)).hide();
     }
 
     @Test
     public void getSelectedType() {
-        scenarioKogitoCreationPopupPresenterSpy.getSelectedType();
-        verify(scenarioKogitoCreationPopupViewMock, times(1)).getSelectedType();
+        scenarioSimulationKogitoCreationPopupPresenterSpy.getSelectedType();
+        verify(scenarioSimulationKogitoCreationPopupViewMock, times(1)).getSelectedType();
     }
 
     @Test
     public void getSelectedPath() {
-        scenarioKogitoCreationPopupPresenterSpy.getSelectedPath();
-        verify(scenarioKogitoCreationPopupViewMock, times(1)).getSelectedPath();
+        scenarioSimulationKogitoCreationPopupPresenterSpy.getSelectedPath();
+        verify(scenarioSimulationKogitoCreationPopupViewMock, times(1)).getSelectedPath();
     }
 }

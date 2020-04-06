@@ -28,10 +28,10 @@ import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown
 
 @Dependent
 @Templated
-public class ScenarioSimulationScesimFilesDropdownView extends KieAssetsDropdownView implements ScenarioSimulationScesimFilesDropdown.View {
+public class ScenarioSimulationKogitoScesimFilesDropdownView extends KieAssetsDropdownView implements ScenarioSimulationKogitoScesimFilesDropdown.View {
 
     @Inject
-    public ScenarioSimulationScesimFilesDropdownView(HTMLSelectElement nativeSelect, HTMLOptionElement htmlOptionElement, TranslationService translationService) {
+    public ScenarioSimulationKogitoScesimFilesDropdownView(HTMLSelectElement nativeSelect, HTMLOptionElement htmlOptionElement, TranslationService translationService) {
         super(nativeSelect, htmlOptionElement, translationService);
     }
 

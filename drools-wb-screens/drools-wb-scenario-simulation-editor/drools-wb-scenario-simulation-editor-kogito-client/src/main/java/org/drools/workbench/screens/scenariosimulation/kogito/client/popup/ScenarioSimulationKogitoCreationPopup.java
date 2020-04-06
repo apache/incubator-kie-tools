@@ -18,7 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.kogito.client.popup;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.uberfire.mvp.Command;
 
-public interface ScenarioKogitoCreationPopup {
+public interface ScenarioSimulationKogitoCreationPopup {
 
     /**
      * Makes the <code>ScenarioKogitoCreationPopup</code> visible with OK/CANCEL.

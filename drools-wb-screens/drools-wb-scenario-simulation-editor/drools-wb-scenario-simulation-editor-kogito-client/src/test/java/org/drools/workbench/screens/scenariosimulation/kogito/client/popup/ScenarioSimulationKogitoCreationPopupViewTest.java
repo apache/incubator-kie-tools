@@ -15,6 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.kogito.client.popup;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLDivElement;
@@ -24,10 +27,13 @@ import elemental2.dom.HTMLLabelElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown.ScenarioKogitoCreationAssetsDropdown;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown.ScenarioSimulationKogitoCreationAssetsDropdown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.Modal;
@@ -36,7 +42,6 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -44,7 +49,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioKogitoCreationPopupViewTest {
+public class ScenarioSimulationKogitoCreationPopupViewTest {
 
     @Mock
     private HTMLInputElement dmnButtonMock;
@@ -61,7 +66,7 @@ public class ScenarioKogitoCreationPopupViewTest {
     @Mock
     private ClickEvent clickEventMock;
     @Mock
-    private ScenarioKogitoCreationAssetsDropdown scenarioKogitoCreationAssetsDropdownMock;
+    private ScenarioSimulationKogitoCreationAssetsDropdown scenarioSimulationKogitoCreationAssetsDropdownMock;
     @Mock
     private Modal modalMock;
     @Mock
@@ -72,14 +77,16 @@ public class ScenarioKogitoCreationPopupViewTest {
     private HTMLLabelElement sourceTypeLabelElementMock;
     @Mock
     private HTMLLabelElement dmnAssetsLabelElementMock;
+    @Captor
+    private ArgumentCaptor<Command> commandArgumentCaptor;
 
-    private ScenarioKogitoCreationPopupView scenarioKogitoCreationPopupViewSpy;
+    private ScenarioSimulationKogitoCreationPopupView scenarioSimulationCreationPopupViewSpy;
 
     @Before
     public void setup() {
-        scenarioKogitoCreationPopupViewSpy = spy(new ScenarioKogitoCreationPopupView() {
+        scenarioSimulationCreationPopupViewSpy = spy(new ScenarioSimulationKogitoCreationPopupView() {
             {
-                scenarioKogitoCreationAssetsDropdown = scenarioKogitoCreationAssetsDropdownMock;
+                scenarioSimulationKogitoCreationAssetsDropdown = scenarioSimulationKogitoCreationAssetsDropdownMock;
                 dmnButton = dmnButtonMock;
                 ruleButton = ruleButtonMock;
                 okButton = okButtonMock;
@@ -92,72 +99,75 @@ public class ScenarioKogitoCreationPopupViewTest {
                 selectedPath = "";
             }
         });
-        when(scenarioKogitoCreationAssetsDropdownMock.getElement()).thenReturn(htmlElementMock);
+        when(scenarioSimulationKogitoCreationAssetsDropdownMock.getElement()).thenReturn(htmlElementMock);
     }
 
     @Test
     public void show() {
-        scenarioKogitoCreationPopupViewSpy.show(ScenarioSimulationEditorConstants.INSTANCE.createButton(), okCommandMock);
-        verify(scenarioKogitoCreationPopupViewSpy, times(1)).initialize();
+        scenarioSimulationCreationPopupViewSpy.show(ScenarioSimulationEditorConstants.INSTANCE.createButton(), okCommandMock);
+        verify(scenarioSimulationCreationPopupViewSpy, times(1)).initialize();
     }
 
     @Test
     public void initialize() {
-        scenarioKogitoCreationPopupViewSpy.initialize();
+        scenarioSimulationCreationPopupViewSpy.initialize();
         verify(okButtonMock, times(1)).setEnabled(eq(false));
         verify(cancelButtonMock, times(1)).setText(eq(ScenarioSimulationEditorConstants.INSTANCE.cancelButton()));
         verify(dmnAssetsDivElementMock, times(1)).setAttribute(eq(ConstantHolder.HIDDEN), eq(""));
         verify(dmnAssetsDivElementMock, times(1)).appendChild(eq(dmnAssetsLabelElementMock));
         verify(infoRuleIconDivElementMock, times(1)).setAttribute(eq("title"), eq(ScenarioSimulationEditorConstants.INSTANCE.currentlyNotAvailable()));
-        verify(scenarioKogitoCreationPopupViewSpy, times(1)).initializeDropdown();
+        verify(scenarioSimulationCreationPopupViewSpy, times(1)).initializeDropdown();
     }
 
     @Test
     public void initializeDropdown() {
-        scenarioKogitoCreationPopupViewSpy.initializeDropdown();
+        when(scenarioSimulationKogitoCreationAssetsDropdownMock.getValue()).thenReturn(Optional.of(new KieAssetsDropdownItem("text", "subtext", "path/file.dmn", Collections.emptyMap())));
+        scenarioSimulationCreationPopupViewSpy.initializeDropdown();
         verify(dmnAssetsDivElementMock, times(1)).appendChild(eq(htmlElementMock));
-        verify(scenarioKogitoCreationAssetsDropdownMock, times(1)).clear();
-        verify(scenarioKogitoCreationAssetsDropdownMock, times(1)).init();
-        verify(scenarioKogitoCreationAssetsDropdownMock, times(1)).initializeDropdown();
-        verify(scenarioKogitoCreationAssetsDropdownMock, times(1)).registerOnChangeHandler(isA(Command.class));
-
+        verify(scenarioSimulationKogitoCreationAssetsDropdownMock, times(1)).clear();
+        verify(scenarioSimulationKogitoCreationAssetsDropdownMock, times(1)).init();
+        verify(scenarioSimulationKogitoCreationAssetsDropdownMock, times(1)).initializeDropdown();
+        verify(scenarioSimulationKogitoCreationAssetsDropdownMock, times(1)).registerOnChangeHandler(commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+        verify(scenarioSimulationCreationPopupViewSpy, times(1)).enableCreateButtonForDMNScenario();
+        assertEquals("path/file.dmn", scenarioSimulationCreationPopupViewSpy.selectedPath);
     }
 
     @Test
     public void onDmnClick() {
         dmnButtonMock.checked = true;
-        scenarioKogitoCreationPopupViewSpy.onDmnClick(clickEventMock);
+        scenarioSimulationCreationPopupViewSpy.onDmnClick(clickEventMock);
         verify(dmnAssetsDivElementMock, times(1)).removeAttribute(eq(ConstantHolder.HIDDEN));
-        verify(scenarioKogitoCreationPopupViewSpy, times(1)).enableCreateButtonForDMNScenario();
-        assertEquals(ScenarioSimulationModel.Type.DMN, scenarioKogitoCreationPopupViewSpy.getSelectedType());
+        verify(scenarioSimulationCreationPopupViewSpy, times(1)).enableCreateButtonForDMNScenario();
+        assertEquals(ScenarioSimulationModel.Type.DMN, scenarioSimulationCreationPopupViewSpy.getSelectedType());
     }
 
     @Test
     public void onRuleClick() {
         ruleButtonMock.checked = true;
-        scenarioKogitoCreationPopupViewSpy.onRuleClick(clickEventMock);
+        scenarioSimulationCreationPopupViewSpy.onRuleClick(clickEventMock);
         verify(dmnAssetsDivElementMock, times(1)).setAttribute(eq(ConstantHolder.HIDDEN), eq(""));
         verify(okButtonMock, times(1)).setEnabled(eq(true));
-        assertEquals(ScenarioSimulationModel.Type.RULE, scenarioKogitoCreationPopupViewSpy.getSelectedType());
+        assertEquals(ScenarioSimulationModel.Type.RULE, scenarioSimulationCreationPopupViewSpy.getSelectedType());
     }
 
     @Test
     public void enableCreateButtonForDMNScenarioNullPath() {
-        scenarioKogitoCreationPopupViewSpy.enableCreateButtonForDMNScenario();
+        scenarioSimulationCreationPopupViewSpy.enableCreateButtonForDMNScenario();
         verify(okButtonMock, never()).setEnabled(anyBoolean());
     }
 
     @Test
     public void enableCreateButtonForDMNScenarioEmptyPath() {
-        scenarioKogitoCreationPopupViewSpy.selectedPath = "";
-        scenarioKogitoCreationPopupViewSpy.enableCreateButtonForDMNScenario();
+        scenarioSimulationCreationPopupViewSpy.selectedPath = "";
+        scenarioSimulationCreationPopupViewSpy.enableCreateButtonForDMNScenario();
         verify(okButtonMock, never()).setEnabled(anyBoolean());
     }
 
     @Test
     public void enableCreateButtonForDMNScenarioWithPath() {
-        scenarioKogitoCreationPopupViewSpy.selectedPath = "Path";
-        scenarioKogitoCreationPopupViewSpy.enableCreateButtonForDMNScenario();
+        scenarioSimulationCreationPopupViewSpy.selectedPath = "Path";
+        scenarioSimulationCreationPopupViewSpy.enableCreateButtonForDMNScenario();
         verify(okButtonMock, times(1)).setEnabled(eq(true));
     }
 }

@@ -268,6 +268,10 @@ public interface ScenarioSimulationEditorConstants
 
     String dmnPathErrorDetailedLabel(String dmnPath);
 
+    String missingSelectedType();
+
+    String missingDmnPath();
+
     String coverageReport();
 
     String uploadWarning();
