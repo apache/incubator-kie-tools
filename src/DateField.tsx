@@ -16,13 +16,12 @@ const dateParse = (timestamp, onChange) => {
 };
 
 export type DateFieldProps = {
+  id: string;
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value?: string) => void;
   value?: string;
   disabled: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
-
-
 
 function Date(props: DateFieldProps) {
 

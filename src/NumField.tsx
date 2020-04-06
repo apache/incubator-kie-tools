@@ -5,6 +5,7 @@ import { connectField } from './uniforms';
 import wrapField from './wrapField';
 
 export type NumFieldProps = {
+  id: string;
   decimal?: boolean;
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value?: number) => void;
@@ -21,9 +22,8 @@ const Num = (props: NumFieldProps) => {
     props.onChange(isNaN(v) ? undefined : v);
   }
 
-  const { decimal, ...noDecimal } = props;
   return wrapField(
-    noDecimal,
+    props,
     <TextInput
       name={props.name}
       isDisabled={props.disabled}

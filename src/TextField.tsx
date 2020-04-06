@@ -5,6 +5,7 @@ import { connectField, filterDOMProps } from './uniforms';
 import wrapField from './wrapField';
 
 export type TextFieldProps = {
+  id: string;
   decimal?: boolean;
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value?: string) => void;
