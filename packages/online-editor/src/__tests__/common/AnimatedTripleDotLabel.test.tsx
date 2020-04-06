@@ -15,17 +15,16 @@
  */
 
 import * as React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, queryByText } from "@testing-library/react";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
-import "@testing-library/jest-dom";
 
 describe("AnimatedTripleDotLabel", () => {
-  test("readonly", async () => {
-    const { getByText } = render(<AnimatedTripleDotLabel label={"banana"} />);
-
-    await waitFor(() => expect(getByText("banana")).toBeInTheDocument());
-    await waitFor(() => expect(getByText("banana.")).toBeInTheDocument());
-    await waitFor(() => expect(getByText("banana..")).toBeInTheDocument());
-    await waitFor(() => expect(getByText("banana...")).toBeInTheDocument());
+  test("should be valid", async () => {
+    const label = "label";
+    const validLabels = ["label", "label.", "label..", "label...", "label"];
+    const { getByText } = render(<AnimatedTripleDotLabel label={label} interval={50} />);
+    for (const validLabel of validLabels) {
+      await waitFor(() => expect(getByText(validLabel)).toBeInTheDocument(), { interval: 20, timeout: 500 });
+    }
   });
 });

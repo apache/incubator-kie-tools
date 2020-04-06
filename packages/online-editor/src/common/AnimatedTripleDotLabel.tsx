@@ -19,23 +19,25 @@ import { useEffect, useState } from "react";
 
 interface Props {
   label: string;
+  interval?: number;
 }
 
-export function AnimatedTripleDotLabel(props: Props) {
+export function AnimatedTripleDotLabel({ label, interval = 1000 }: Props) {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (dots.length === 3) {
-        setDots("")
+        setDots("");
       } else {
-        setDots(dots + ".")
+        setDots(dots + ".");
       }
-    }, 200);
+    }, interval);
+
     return () => {
       clearTimeout(timeout);
     };
   }, [dots]);
 
-  return <span>{props.label + dots}</span>;
+  return <span>{label + dots}</span>;
 }
