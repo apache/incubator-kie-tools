@@ -1,6 +1,5 @@
 module.exports = {
   collectCoverageFrom: ['src/*.{ts,tsx}'],
-  coverageReporters: ['html', 'lcovonly', 'text-summary'],
   moduleNameMapper: {
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^meteor/([^:]*):(.*)$':
