@@ -1,12 +1,22 @@
-import { BaseForm } from './uniforms';
+import React from 'react';
+import { BaseForm, context } from './uniforms';
+import { Form } from '@patternfly/react-core';
 
 const Patternfly = (parent: any): any => {
   class _ extends parent {
     static Patternfly = Patternfly;
 
     static displayName = `Patternfly${parent.displayName}`;
-  }
 
+    render() {
+      return (
+        <context.Provider value={this.getContext()}>
+          <Form {...this.getNativeFormProps()} />
+        </context.Provider>
+      );
+    }
+    
+  }
   return _;
 };
 
