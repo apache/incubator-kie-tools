@@ -6,8 +6,8 @@
   "author": "Gianluca <gianlucazuccarelli@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
-    "clean": "tsc && rimraf coverage",
+    "build": "tsc --build --incremental",
+    "clean": "rimraf dist coverage && tsc",
     "coverage": "jest --coverage",
     "lint": "eslint --ext js,ts,tsx src",
     "reset": "rimraf dist node_modules",

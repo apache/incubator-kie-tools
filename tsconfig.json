@@ -21,7 +21,7 @@
     "node_modules",
     "dist",
     "example",
-    "reproductions",
+    "examples",
     "__tests__",
     "__mocks__",
     "__dep",
