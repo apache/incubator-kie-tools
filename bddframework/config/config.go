@@ -16,6 +16,7 @@ package config
 
 import (
 	"flag"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"path/filepath"
 
 	"github.com/kiegroup/kogito-cloud-operator/version"
@@ -101,14 +102,14 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.cliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
 
 	// runtime
-	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", version.Version, "Set the services (jobs-service, data-index) image version")
+	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", infrastructure.GetRuntimeImageVersion(), "Set the services (jobs-service, data-index) image version")
 	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.jobsServiceImageTag, prefix+"jobs-service-image-tag", "", "Set the Kogito Jobs Service image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.mgmtConsoleImageTag, prefix+"management-console-image-tag", "", "Set the Kogito Management Console image tag ('services-image-version' is ignored)")
 
 	// build
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
-	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", version.Version, "Set the build image version")
+	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", infrastructure.GetRuntimeImageVersion(), "Set the build image version")
 	set.StringVar(&env.buildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.buildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
 

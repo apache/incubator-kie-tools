@@ -70,7 +70,7 @@ func getJobsServiceImageTag() v1alpha1.Image {
 		return framework.ConvertImageTagToImage(config.GetJobsServiceImageTag())
 	}
 
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageFullTag)
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultJobsServiceImageNoVersion + infrastructure.GetRuntimeImageVersion())
 	image.Tag = config.GetServicesImageVersion()
 	return image
 }

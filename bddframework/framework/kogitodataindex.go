@@ -82,7 +82,7 @@ func getDataIndexImage() v1alpha1.Image {
 		return framework.ConvertImageTagToImage(config.GetDataIndexImageTag())
 	}
 
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageFullTag)
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageNoVersion + infrastructure.GetRuntimeImageVersion())
 	image.Tag = config.GetServicesImageVersion()
 	return image
 }

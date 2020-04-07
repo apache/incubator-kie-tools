@@ -64,7 +64,7 @@ func getManagementConsoleImageTag() v1alpha1.Image {
 		return framework.ConvertImageTagToImage(config.GetManagementConsoleImageTag())
 	}
 
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultMgmtConsoleImageFullTag)
+	image := framework.ConvertImageTagToImage(infrastructure.DefaultMgmtConsoleImageNoVersion + infrastructure.GetRuntimeImageVersion())
 	image.Tag = config.GetServicesImageVersion()
 	return image
 }
