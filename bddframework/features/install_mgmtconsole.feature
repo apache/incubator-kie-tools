@@ -5,6 +5,7 @@ Feature: Install Kogito Management Console
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
 
+  @smoke
   Scenario: Install Kogito Management Console
     Given Install Kogito Data Index with 1 replicas
     And Kogito Data Index has 1 pods running within 10 minutes
