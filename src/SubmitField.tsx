@@ -1,8 +1,7 @@
 import React from 'react';
-import { ButtonProps, Button } from '@patternfly/react-core';
+import { Button, ButtonProps } from '@patternfly/react-core';
 
 import { useForm, filterDOMProps } from './uniforms';
-import wrapField from './wrapField';
 
 export type SubmitFieldProps = {
   inputRef: undefined;
