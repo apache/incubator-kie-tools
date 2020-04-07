@@ -25,7 +25,6 @@ import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -67,10 +66,17 @@ public class FileUploadPopupView extends AbstractScenarioPopupView implements Fi
         if (!acceptedExtension.isEmpty()) {
             file.setAccept(String.join(",", acceptedExtension));
         }
-        uploadWarning.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.uploadWarning());
         okButton.setEnabled(false);
-        super.show(mainTitleText,
-                   okButtonText, okCommand);
+        super.show(mainTitleText, okButtonText, okCommand);
+    }
+
+    @Override
+    public void show(final String mainTitleText,
+                     final String uploadWarningText,
+                     final String okButtonText,
+                     final Command okCommand) {
+        uploadWarning.setInnerText(uploadWarningText);
+        show(mainTitleText, okButtonText, okCommand);
     }
 
     @Override

@@ -42,7 +42,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
+public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplTest {
     
     @Mock
     private KogitoResourceContentService kogitoResourceContentServiceMock;
@@ -53,12 +53,12 @@ public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
     @Captor
     private ArgumentCaptor<List<KieAssetsDropdownItem>> dropDownListCaptor;
 
-    private KogitoRuntimeDmnAssetsDropdownProviderImplKogito kogitoRuntimeDmnAssetsDropdownProviderImplSpy;
+    private ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy;
 
 
     @Before
     public void setup() {
-        kogitoRuntimeDmnAssetsDropdownProviderImplSpy = spy(new KogitoRuntimeDmnAssetsDropdownProviderImplKogito() {
+        scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy = spy(new ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl() {
             {
                 this.resourceContentService = kogitoResourceContentServiceMock;
                 this.errorPopupPresenter = errorPopupPresenterMock;
@@ -68,15 +68,15 @@ public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
 
     @Test
     public void getItems() {
-        kogitoRuntimeDmnAssetsDropdownProviderImplSpy.getItems(assetConsumer);
-        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(KogitoRuntimeDmnAssetsDropdownProviderImplKogito.DMN_FILE_EXTENSION),
+        scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getItems(assetConsumer);
+        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl.DMN_FILE_EXTENSION),
                                                                                                  isA(RemoteCallback.class),
                                                                                                  isA(ErrorCallback.class));
     }
 
     @Test
     public void getRemoteCallBack() {
-        RemoteCallback<List<String>> remoteCallBack = kogitoRuntimeDmnAssetsDropdownProviderImplSpy.getRemoteCallback(assetConsumer);
+        RemoteCallback<List<String>> remoteCallBack = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getRemoteCallback(assetConsumer);
         remoteCallBack.callback(Arrays.asList("a", "b"));
         verify(assetConsumer, times(1)).accept(dropDownListCaptor.capture());
         assertTrue(dropDownListCaptor.getValue().size() == 2);
@@ -90,7 +90,7 @@ public class KogitoRuntimeDmnAssetsDropdownProviderImplTest {
 
     @Test
     public void getErrorCallback() {
-        ErrorCallback<Object> errorCallback = kogitoRuntimeDmnAssetsDropdownProviderImplSpy.getErrorCallback();
+        ErrorCallback<Object> errorCallback = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getErrorCallback();
         assertFalse(errorCallback.error("message", new Throwable("ex")));
         verify(errorPopupPresenterMock, times(1)).showMessage(eq("message: ex"));
     }

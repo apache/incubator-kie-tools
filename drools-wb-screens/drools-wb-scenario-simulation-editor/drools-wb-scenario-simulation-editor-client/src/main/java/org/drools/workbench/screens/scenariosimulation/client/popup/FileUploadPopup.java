@@ -40,9 +40,29 @@ public interface FileUploadPopup extends AbstractScenarioPopup {
         String getFileContents();
 
         String getFileName();
+
+        /**
+         * Same as default show method but with list of accepted extensions and uploadWarningText
+         *
+         * @param acceptedExtension
+         * @param mainTitleText
+         * @param uploadWarningText
+         * @param okButtonText
+         * @param okCommand
+         */
+        void show(final List<String> acceptedExtension,
+                  String mainTitleText,
+                  String uploadWarningText,
+                  String okButtonText,
+                  Command okCommand);
     }
 
     HTMLElement getElement();
+
+    void show(String mainTitleText,
+              String uploadWarningText,
+              String okButtonText,
+              Command okCommand);
 
     String getFileContents();
 

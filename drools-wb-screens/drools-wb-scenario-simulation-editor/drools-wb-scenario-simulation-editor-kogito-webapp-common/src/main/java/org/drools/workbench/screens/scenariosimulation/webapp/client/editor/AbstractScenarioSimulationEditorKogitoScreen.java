@@ -41,7 +41,6 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 public abstract class AbstractScenarioSimulationEditorKogitoScreen implements KogitoScreen {
 
-
     public static final String TITLE = "Scenario Simulation - Kogito";
 
     @Inject

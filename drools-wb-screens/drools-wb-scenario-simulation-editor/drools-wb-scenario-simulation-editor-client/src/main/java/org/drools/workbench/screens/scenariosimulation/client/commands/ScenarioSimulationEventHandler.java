@@ -281,6 +281,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         };
         fileUploadPopupPresenter.show(Collections.singletonList(CSV.getExtension()),
                                       ScenarioSimulationEditorConstants.INSTANCE.selectImportFile(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.uploadWarning(),
                                       ScenarioSimulationEditorConstants.INSTANCE.importLabel(),
                                       okImportCommand);
     }

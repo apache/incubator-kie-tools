@@ -22,7 +22,6 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 import org.uberfire.mvp.Command;
 
@@ -48,13 +47,28 @@ public class FileUploadPopupPresenter implements FileUploadPopup.Presenter {
                      final Command okCommand) {
         fileUploadPopup = viewsProvider.getFileUploadPopup();
         fileUploadPopup.setAcceptedExtension(acceptedExtension);
-        fileUploadPopup.show(ScenarioSimulationEditorConstants.INSTANCE.selectImportFile(), ScenarioSimulationEditorConstants.INSTANCE.importLabel(), okCommand);
+        fileUploadPopup.show(mainTitleText,
+                             okButtonText,
+                             okCommand);
+    }
 
+    @Override
+    public void show(List<String> acceptedExtension,
+                     String mainTitleText,
+                     String uploadWarningText,
+                     String okButtonText,
+                     Command okCommand) {
+        fileUploadPopup = viewsProvider.getFileUploadPopup();
+        fileUploadPopup.setAcceptedExtension(acceptedExtension);
+        fileUploadPopup.show(mainTitleText,
+                             uploadWarningText,
+                             okButtonText,
+                             okCommand);
     }
 
     @Override
     public void hide() {
-
+        fileUploadPopup.hide();
     }
 
     @Override

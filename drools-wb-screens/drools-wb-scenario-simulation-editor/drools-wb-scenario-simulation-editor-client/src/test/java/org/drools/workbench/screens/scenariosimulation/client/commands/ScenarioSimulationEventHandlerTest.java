@@ -295,6 +295,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         verify(fileUploadPopupPresenterMock, times(1))
                 .show(anyListOf(String.class),
                       eq(ScenarioSimulationEditorConstants.INSTANCE.selectImportFile()),
+                      eq(ScenarioSimulationEditorConstants.INSTANCE.uploadWarning()),
                       eq(ScenarioSimulationEditorConstants.INSTANCE.importLabel()),
                       isA(org.uberfire.mvp.Command.class));
     }

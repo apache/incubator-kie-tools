@@ -31,7 +31,7 @@ import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
-public class KogitoRuntimeDmnAssetsDropdownProviderImplKogito implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {
+public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {
 
     protected static final String DMN_FILE_EXTENSION = "*.dmn";
 

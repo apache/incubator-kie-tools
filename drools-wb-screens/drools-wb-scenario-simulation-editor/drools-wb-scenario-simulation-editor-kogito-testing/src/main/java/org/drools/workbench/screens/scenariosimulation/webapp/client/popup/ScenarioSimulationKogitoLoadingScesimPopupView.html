@@ -1,5 +1,5 @@
-<!--
-  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
++<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div class="modal fade" id="fileupload">
+<div class="modal fade" id="loadscesim" >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -23,20 +23,12 @@
                 <h4 class="modal-title" data-field="main-title"></h4>
             </div>
             <div class="modal-body">
-                <div class="input-group">
-                    <input class= "form-control" data-field="file" type="FILE" style="display: none"/>
-                    <input class= "form-control form-control-readonly" data-field="fileText" type="text" readonly/>
-                    <span class="input-group-addon btn btn-default" title="Choose File..." data-field="chooseButton">
-                        <i class="fa fa-file-o"></i>
-                    </span>
+                <div data-field="assets">
                 </div>
-                <div style="margin: 1em;">
-                    <p data-field="upload-warning"></p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancel-button"></button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-field="ok-button"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancel-button"></button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" data-field="ok-button"></button>
             </div>
         </div>
     </div>
