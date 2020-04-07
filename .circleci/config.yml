@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/uniforms-patternfly
+    docker:
+      # Node 8 LTS
+      - image: circleci/node:lts-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: 
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Build
+          command: yarn build
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Lint code
+          command: yarn lint
+      - run: 
+          name: Run tests
+          command: yarn coverage
+      - store_artifacts:
+            path: coverage
+            prefix: coverage
+workflows:
+    build:
+      jobs:
+        - build
