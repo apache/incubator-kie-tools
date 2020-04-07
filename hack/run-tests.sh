@@ -41,6 +41,7 @@ function usage(){
   printf "\n--timeout {TIMEOUT_IN_MINUTES}\n\tSet a timeout overall tests run in minutes. Default is 240."
   printf "\n--debug\n\tRun in debug mode."
   printf "\n--smoke\n\tFilter to run only the tests tagged with '@smoke'."
+  printf "\n--performance\n\tFilter to run only the tests tagged with '@performance'. If not provided and the tag itself is not specified, these tests will be ignored."
   printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timouts. Default value is 1."
   printf "\n--local\n\tSpecify whether you run test in local."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
@@ -161,6 +162,10 @@ case $1 in
   ;;
   --smoke)
     addParam "--tests.smoke"
+    shift
+  ;;
+  --performance)
+    addParam "--tests.performance"
     shift
   ;;
   --load_factor)
