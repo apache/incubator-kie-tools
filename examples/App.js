@@ -1,29 +1,46 @@
-import React from 'react';
-import { AutoForm } from 'uniforms-patternfly';
-import { Button } from '@patternfly/react-core';
+import React, { useState } from 'react';
+import { AutoForm } from 'uniforms-patternfly/src';
 import '@patternfly/react-core/dist/styles/base.css';
 
-// import schema from './schema/json-schema';
-// import schema from './schema/graphql-schema';
-import schema from './schema/simple-schema-2';
+// patternfly doesn't load styles properly,
+// so unneeded import is required
+import { Divider } from '@patternfly/react-core';
+
+import schema from './schema/json-schema';
+// import schema from './schema/simple-schema-2';
 
 function App() {
+  const [model, setModel] = useState();
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        minHeight: '100vh',
         width: '100vw',
       }}
     >
-      <AutoForm
-        style={{ width: '50%', margin: '0 auto'}}
-        placeholder
-        schema={schema}
-        onSubmit={model => alert(JSON.stringify(model, null, 2))}
-      />
+      <div
+        style={{ width: '60%'}}
+      > 
+        {
+          model && 
+          <div style={{ marginBottom: '1em' }}>
+            <h2>Result:</h2>
+            <pre style={{background: '#eee', padding: '1rem'}}>
+              {(JSON.stringify(model, null, 2))}
+            </pre>
+          </div>
+        }
+        <AutoForm
+          placeholder
+          schema={schema}
+          onSubmit={m => setModel(m)}
+          showInlineError
+        />
+        
+      </div>
     </div>
   );
 }
