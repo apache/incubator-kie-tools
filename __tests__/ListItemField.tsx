@@ -1,5 +1,5 @@
 import React from 'react';
-import { AutoField, ListDelField, ListItemField } from '../src';
+import { AutoField, ListItemField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';
@@ -12,17 +12,6 @@ test('<ListItemField> - works', () => {
   );
 
   expect(wrapper.find(ListItemField)).toHaveLength(1);
-});
-
-test('<ListItemField> - renders ListDelField', () => {
-  const element = <ListItemField name="x.1" />;
-  const wrapper = mount(
-    element,
-    createContext({ x: { type: Array }, 'x.$': { type: String } }),
-  );
-
-  expect(wrapper.find(ListDelField)).toHaveLength(1);
-  expect(wrapper.find(ListDelField).prop('name')).toBe('x.1');
 });
 
 test('<ListItemField> - renders AutoField', () => {

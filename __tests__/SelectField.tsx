@@ -232,7 +232,7 @@ test('<SelectField> - renders a label', () => {
   );
 
   expect(wrapper.find('label')).toHaveLength(1);
-  expect(wrapper.find('label').prop('children')).toBe('y');
+  expect(wrapper.find('label').text()).toBe('y');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
     wrapper.find(Select).prop('id'),
   );
