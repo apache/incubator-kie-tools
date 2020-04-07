@@ -212,6 +212,22 @@ teardown() {
     [ "${lines[2]}" = "---> Copying application libraries" ]
 }
 
+@test "test copy_kogito_app default quarkus java build uberJar runner file present" {
+    NATIVE="false"
+    mkdir $KOGITO_HOME/bin
+    touch target/app-runner.jar
+
+    run copy_kogito_app
+    rm -rf target/*
+
+    echo "result= ${lines[@]}"
+    echo "status= $status"
+
+    [ "$status" -eq 0 ]
+    [ "${lines[0]}" = "---> Installing jar file" ]
+    [ "${lines[1]}" = "'target/app-runner.jar' -> '$KOGITO_HOME/bin/app-runner.jar'" ]
+}
+
 @test "test copy_kogito_app default quarkus native builds file present" {
 
     mkdir $KOGITO_HOME/bin

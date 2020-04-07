@@ -150,8 +150,10 @@ function copy_kogito_app() {
         if ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
             echo "---> Installing jar file"
             cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
-            echo "---> Copying application libraries"
-            cp -r $artifactDir/lib/ $KOGITO_HOME/bin
+            if [ -d "${artifactDir}/lib" ]; then
+                echo "---> Copying application libraries"
+                cp -r $artifactDir/lib/ $KOGITO_HOME/bin
+            fi
         fi
 
     elif ls $artifactDir/*-runner 1> /dev/null 2>&1; then
