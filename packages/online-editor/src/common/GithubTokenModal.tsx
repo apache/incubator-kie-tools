@@ -45,7 +45,7 @@ interface Props {
 export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
 
-  const [potentialToken, setPotentialToken] = useState("");
+  const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
 
   const tokenToDisplay = useMemo(() => {
