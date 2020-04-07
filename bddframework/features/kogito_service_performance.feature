@@ -12,11 +12,11 @@ Feature: Kogito Service Performance
   @quarkus
   Scenario Outline: Quarkus Kogito Service Performance without persistence
     Given Kogito Operator is deployed
-    And Deploy quarkus example service "jbpm-quarkus-example" with native <native>
-    And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes
+    And Deploy quarkus example service "process-quarkus-example" with native <native>
+    And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
+    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
-    When <requests> HTTP POST requests with report using 100 threads on service "jbpm-quarkus-example" with path "orders" and body:
+    When <requests> HTTP POST requests with report using 100 threads on service "process-quarkus-example" with path "orders" and body:
       """json
       {
         "approver" : "john",
@@ -27,8 +27,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "jbpm-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "jbpm-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
+    And HTTP GET request on service "process-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
@@ -53,11 +53,11 @@ Feature: Kogito Service Performance
   @persistence
   Scenario Outline: Quarkus Kogito Service Performance with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy quarkus example service "jbpm-quarkus-example" with native <native> and persistence
-    And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes
+    And Deploy quarkus example service "process-quarkus-example" with native <native> and persistence
+    And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
+    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
-    When <requests> HTTP POST requests with report using 100 threads on service "jbpm-quarkus-example" with path "orders" and body:
+    When <requests> HTTP POST requests with report using 100 threads on service "process-quarkus-example" with path "orders" and body:
       """json
       {
         "approver" : "john",
@@ -68,8 +68,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "jbpm-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "jbpm-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
+    And HTTP GET request on service "process-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
@@ -93,11 +93,11 @@ Feature: Kogito Service Performance
   @springboot
   Scenario Outline: Spring Boot Kogito Service Performance without persistence
     Given Kogito Operator is deployed
-    And Deploy spring boot example service "jbpm-springboot-example"
-    And Kogito application "jbpm-springboot-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "jbpm-springboot-example" with path "orders" is successful within 3 minutes
+    And Deploy spring boot example service "process-springboot-example"
+    And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
+    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
 
-    When <requests> HTTP POST requests with report using 100 threads on service "jbpm-springboot-example" with path "orders" and body:
+    When <requests> HTTP POST requests with report using 100 threads on service "process-springboot-example" with path "orders" and body:
       """json
       {
         "approver" : "john",
@@ -108,8 +108,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "jbpm-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "jbpm-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
+    And HTTP GET request on service "process-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
     Examples:
@@ -125,11 +125,11 @@ Feature: Kogito Service Performance
   @persistence
   Scenario Outline: Spring Boot Kogito Service Performance with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy spring boot example service "jbpm-springboot-example" with persistence
-    And Kogito application "jbpm-springboot-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "jbpm-springboot-example" with path "orders" is successful within 3 minutes
+    And Deploy spring boot example service "process-springboot-example" with persistence
+    And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
+    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
 
-    When <requests> HTTP POST requests with report using 100 threads on service "jbpm-springboot-example" with path "orders" and body:
+    When <requests> HTTP POST requests with report using 100 threads on service "process-springboot-example" with path "orders" and body:
       """json
       {
         "approver" : "john",
@@ -140,8 +140,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "jbpm-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "jbpm-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
+    And HTTP GET request on service "process-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
     Examples:

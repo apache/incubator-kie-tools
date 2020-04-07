@@ -24,11 +24,11 @@ Feature: Kogito Data Index
   @persistence
   Scenario Outline: Process instance events are stored in Data Index
     Given Install Kogito Data Index with 1 replicas
-    And Deploy quarkus example service "jbpm-quarkus-example" with native <native> and persistence and events
-    And Kogito application "jbpm-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "jbpm-quarkus-example" with path "orders" is successful within 3 minutes
+    And Deploy quarkus example service "process-quarkus-example" with native <native> and persistence and events
+    And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
+    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
-    When HTTP POST request on service "jbpm-quarkus-example" with path "orders" and body:
+    When HTTP POST request on service "process-quarkus-example" with path "orders" and body:
       """json
       {
         "approver" : "john", 
