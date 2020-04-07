@@ -20,6 +20,7 @@ export default function wrapField(
     disabled,
     error,
     errorMessage,
+    showInlineError,
     help,
     required,
     ...props
@@ -30,7 +31,7 @@ export default function wrapField(
     <FormGroup
       fieldId={id}
       label={label}
-      isValid={error}
+      isValid={!error}
       type={type}
       helperText={help}
       helperTextInvalid={errorMessage}
