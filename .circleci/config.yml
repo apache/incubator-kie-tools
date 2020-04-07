@@ -28,7 +28,9 @@ jobs:
       - store_artifacts:
             path: coverage
             prefix: coverage
+
 workflows:
-    build:
-      jobs:
-        - build
+  version: 2
+  build-and-test:
+    jobs:
+      - build
