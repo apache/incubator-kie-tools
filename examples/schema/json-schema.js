@@ -49,19 +49,19 @@ const schema = {
       }
     },
     f: {
-      type: 'array',
+      type: 'string',
       title: 'Select',
       uniforms: {
         label: 'Stuff',
-        // showInlineErrors: true,
         placeholder: 'Select some stuff',
+        defaultValue: 'c',
         allowedValues: [
           'a', 'b', 'c', 'd'
         ]
       }
     }
   },
-  required: ['b', 'c', 'd', 'e']
+  required: ['b', 'c', 'd', 'e', 'f']
 };
 
 const schemaValidator = createValidator(schema);

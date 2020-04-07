@@ -44,6 +44,9 @@ const schema = new SimpleSchema({
 
   'friends.$': {
     type: Object,
+    uniforms: {
+      label: false
+    }
   },
 
   'friends.$.name': {
