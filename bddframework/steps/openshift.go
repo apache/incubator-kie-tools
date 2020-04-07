@@ -16,6 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/cucumber/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -26,6 +27,7 @@ func registerOpenShiftSteps(s *godog.Suite, data *Data) {
 
 	// BuildConfig steps
 	s.Step(`^BuildConfig "([^"]*)" is created after (\d+) minutes$`, data.buildConfigIsCreatedAfterMinutes)
+	s.Step(`^BuildConfig "([^"]*)" is created with build resources within (\d+) minutes:$`, data.buildConfigHasResourcesWithinMinutes)
 }
 
 // Build steps
@@ -41,4 +43,14 @@ func (data *Data) buildIsCompleteAfterMinutes(buildName string, timeoutInMin int
 
 func (data *Data) buildConfigIsCreatedAfterMinutes(buildConfigName string, timeoutInMin int) error {
 	return framework.WaitForBuildConfigCreated(data.Namespace, buildConfigName, timeoutInMin)
+}
+
+func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *gherkin.DataTable) error {
+	resources, err := assist.ParseMap(dt)
+	if err != nil {
+		return err
+	}
+
+	requirements := framework.ToResourceRequirements(resources["requests"], resources["limits"])
+	return framework.WaitForBuildConfigToHaveResources(data.Namespace, buildConfigName, requirements, timeoutInMin)
 }

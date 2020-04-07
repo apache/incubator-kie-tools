@@ -110,6 +110,11 @@ func GetPods(namespace string) (*corev1.PodList, error) {
 	return pods, nil
 }
 
+// GetPodsByDeploymentConfig retrieves pods with a deploymentconfig label set to <dcName>
+func GetPodsByDeploymentConfig(namespace string, dcName string) (*corev1.PodList, error) {
+	return GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
+}
+
 // GetPodsWithLabels retrieves pods based on label name and value
 func GetPodsWithLabels(namespace string, labels map[string]string) (*corev1.PodList, error) {
 	pods := &corev1.PodList{}
@@ -163,7 +168,7 @@ func loadResource(namespace, uri string, resourceRef meta.ResourceObject, before
 func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment config '%s' contain text '%s'", dcName, logText), timeoutInMin,
 		func() (bool, error) {
-			pods, err := GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
+			pods, err := GetPodsByDeploymentConfig(namespace, dcName)
 			if err != nil {
 				return false, err
 			}

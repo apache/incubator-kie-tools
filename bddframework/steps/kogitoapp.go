@@ -41,13 +41,16 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and labels$`, data.deployQuarkusExampleServiceWithNativeAndLabels)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and persistence$`, data.deployQuarkusExampleServiceWithNativeAndPersistence)
 	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and persistence and events$`, data.deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents)
+	s.Step(`^Deploy quarkus example service "([^"]*)" with build resources:$`, data.deployQuarkusExampleServiceWithBuildResources)
 	s.Step(`^Deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
 	s.Step(`^Deploy spring boot example service "([^"]*)" with persistence$`, data.deploySpringBootExampleServiceWithPersistence)
 	s.Step(`^Create service "([^"]*)"$`, data.createService)
+	s.Step(`^Create service "([^"]*)" with runtime resources:$`, data.createServiceWithRuntimeResources)
 	s.Step(`^Deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// DeploymentConfig steps
 	s.Step(`^Kogito application "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoApplicationHasPodsRunningWithinMinutes)
+	s.Step(`^Kogito application "([^"]*)" has pods with runtime resources within (\d+) minutes:$`, data.kogitoApplicationHaveResourcesWithinMinutes)
 
 	// Kogito applications steps
 	s.Step(`^Scale Kogito application "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoApplicationToPodsWithinMinutes)
@@ -91,6 +94,18 @@ func (data *Data) deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents(c
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
+func (data *Data) deployQuarkusExampleServiceWithBuildResources(contextDir string, dt *gherkin.DataTable) error {
+	resources, err := assist.ParseMap(dt)
+	if err != nil {
+		return err
+	}
+
+	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, false, false, false)
+	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
+	kogitoApp.Spec.Build.Resources = framework.ToResourceRequirements(resources["requests"], resources["limits"])
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+}
+
 func (data *Data) deploySpringBootExampleService(contextDir string) error {
 	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, false, false, false)
 	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
@@ -112,6 +127,18 @@ func (data *Data) createService(serviceName string) error {
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
+func (data *Data) createServiceWithRuntimeResources(serviceName string, dt *gherkin.DataTable) error {
+	resources, err := assist.ParseMap(dt)
+	if err != nil {
+		return err
+	}
+
+	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
+	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
+	kogitoApp.Spec.Resources = framework.ToResourceRequirements(resources["requests"], resources["limits"])
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+}
+
 func (data *Data) deployServiceFromExampleFile(exampleFile string) error {
 	return framework.DeployServiceFromExampleFile(data.Namespace, exampleFile)
 }
@@ -119,6 +146,16 @@ func (data *Data) deployServiceFromExampleFile(exampleFile string) error {
 // DeploymentConfig steps
 func (data *Data) kogitoApplicationHasPodsRunningWithinMinutes(dcName string, podNb, timeoutInMin int) error {
 	return framework.WaitForDeploymentConfigRunning(data.Namespace, dcName, podNb, timeoutInMin)
+}
+
+func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *gherkin.DataTable) error {
+	resources, err := assist.ParseMap(dt)
+	if err != nil {
+		return err
+	}
+
+	requirements := framework.ToResourceRequirements(resources["requests"], resources["limits"])
+	return framework.WaitForPodsToHaveResources(data.Namespace, dcName, requirements, timeoutInMin)
 }
 
 // Scale steps
