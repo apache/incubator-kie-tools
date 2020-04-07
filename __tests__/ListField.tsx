@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListAddField, ListField, ListItemField } from '../src';
+import { ListAddField, ListDelField, ListField, ListItemField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';
@@ -25,6 +25,18 @@ test('<ListField> - renders ListAddField', () => {
   expect(wrapper.find(ListAddField).prop('name')).toBe('x.$');
 });
 
+test('<ListField> - renders ListDelField', () => {
+  const element = <ListField name="x" />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+  );
+
+  expect(wrapper.find(ListDelField)).toHaveLength(1);
+  expect(wrapper.find(ListDelField).prop('name')).toBe('x.$');
+});
+
+
 test('<ListField> - renders correct label (specified)', () => {
   const element = <ListField name="x" label="ListFieldLabel" />;
   const wrapper = mount(
@@ -34,7 +46,7 @@ test('<ListField> - renders correct label (specified)', () => {
 
   expect(
     wrapper
-      .find('div > div')
+      .find('label')
       .at(0)
       .text(),
   ).toEqual(expect.stringContaining('ListFieldLabel'));

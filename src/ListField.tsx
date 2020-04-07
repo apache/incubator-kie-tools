@@ -1,5 +1,5 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
-import { SimpleList, Tooltip, Split, SplitItem, Divider } from '@patternfly/react-core';
+import { Tooltip, Split, SplitItem, Divider } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 import { connectField, filterDOMProps, joinName } from './uniforms';
@@ -42,16 +42,10 @@ function ListField<T>({
 }: ListFieldProps<T>) {
   return (
     <div {...filterDOMProps(props)}>
-      
-
-      {/* {!!(error && showInlineError) && <div>{errorMessage}</div>} */}
-
-      
-
       <Split gutter="md">
         <SplitItem>
           {label && (
-            <span>
+            <label>
               {label}
               {!!info && (
                 <span>
@@ -61,7 +55,7 @@ function ListField<T>({
                   </Tooltip>
                 </span>
               )}
-            </span>
+            </label>
           )}
         </SplitItem>
         <SplitItem isFilled />
@@ -77,7 +71,7 @@ function ListField<T>({
               Children.map(children as JSX.Element, child =>
                 React.cloneElement(child, {
                   key: index,
-                  label: null,
+                  label: '',
                   name: joinName(
                     name,
                     child.props.name && child.props.name.replace('$', index),

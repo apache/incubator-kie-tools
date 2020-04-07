@@ -1,5 +1,4 @@
 import React, { Children, ReactNode } from 'react';
-import { ListItem } from '@patternfly/react-core';
 
 import { joinName } from './uniforms';
 import AutoField from './AutoField';
@@ -19,7 +18,7 @@ export default function ListItemField(props: ListItemFieldProps) {
         Children.map(props.children as JSX.Element, child =>
           React.cloneElement(child, {
             name: joinName(props.name, child.props.name),
-            label: '',
+            label: null,
           }),
         )
       ) : (
