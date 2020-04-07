@@ -27,6 +27,8 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
   return (
     <Button
       disabled={!limitNotReached || rawProps.disabled}
+      variant="plain"
+      style={{ paddingLeft: '0', paddingRight: '0'}}
       onClick={() => {
         if (limitNotReached) {
           const value = parent.value!.slice();
@@ -36,7 +38,7 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
       }}
       {...filterDOMProps(props)}
     >
-      <MinusCircleIcon />
+      <MinusCircleIcon color="#cc0000" />
     </Button>
   );
 }

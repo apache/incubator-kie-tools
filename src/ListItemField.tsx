@@ -3,7 +3,6 @@ import { ListItem } from '@patternfly/react-core';
 
 import { joinName } from './uniforms';
 import AutoField from './AutoField';
-import ListDelField from './ListDelField';
 
 export type ListItemFieldProps = {
   children?: ReactNode;
@@ -15,18 +14,17 @@ export type ListItemFieldProps = {
 
 export default function ListItemField(props: ListItemFieldProps) {
   return (
-    <ListItem>
+    <div style={{ marginBottom: '1rem'}}>
       {props.children ? (
         Children.map(props.children as JSX.Element, child =>
           React.cloneElement(child, {
             name: joinName(props.name, child.props.name),
-            label: null,
+            label: '',
           }),
         )
       ) : (
         <AutoField {...props} />
       )}
-      <ListDelField name={props.name} />
-    </ListItem>
+    </div>
   );
 }

@@ -28,6 +28,8 @@ function ListAdd<T>(rawProps: ListAddFieldProps<T>) {
 
   return (
     <Button
+      variant="plain"
+      style={{ paddingLeft: '0', paddingRight: '0'}}
       disabled={!limitNotReached || rawProps.disabled}
       onClick={() => {
         if (limitNotReached)
@@ -35,7 +37,7 @@ function ListAdd<T>(rawProps: ListAddFieldProps<T>) {
       }}
       {...filterDOMProps(props)}
     >
-      <PlusCircleIcon />
+      <PlusCircleIcon color="#0088ce" />
     </Button>
   );
 }

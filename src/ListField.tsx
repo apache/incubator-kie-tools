@@ -1,10 +1,11 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
-import { List, Tooltip } from '@patternfly/react-core';
+import { SimpleList, Tooltip, Split, SplitItem, Divider } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 import { connectField, filterDOMProps, joinName } from './uniforms';
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
+import { ListDelField } from '.';
 
 export type ListFieldProps<T> = {
   value: T[];
@@ -41,23 +42,36 @@ function ListField<T>({
 }: ListFieldProps<T>) {
   return (
     <div {...filterDOMProps(props)}>
-      {label && (
-        <div>
-          {label}
-          {!!info && (
+      
+
+      {/* {!!(error && showInlineError) && <div>{errorMessage}</div>} */}
+
+      
+
+      <Split gutter="md">
+        <SplitItem>
+          {label && (
             <span>
-              &nbsp;
-              <Tooltip content={info}>
-                <OutlinedQuestionCircleIcon />
-              </Tooltip>
+              {label}
+              {!!info && (
+                <span>
+                  &nbsp;
+                  <Tooltip content={info}>
+                    <OutlinedQuestionCircleIcon />
+                  </Tooltip>
+                </span>
+              )}
             </span>
           )}
-        </div>
-      )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <ListAddField name={`${name}.$`} initialCount={initialCount} />{' '}
+          <ListDelField name={`${name}.$`} />
+        </SplitItem>
+      </Split>
 
-      {!!(error && showInlineError) && <div>{errorMessage}</div>}
-
-      <List component="ul">
+      <div>
         {children
           ? value.map((item: any, index: number) =>
               Children.map(children as JSX.Element, child =>
@@ -74,14 +88,12 @@ function ListField<T>({
           : value.map((item: any, index: number) => (
               <ListItemField
                 key={index}
-                label={undefined}
+                label={null}
                 name={joinName(name, index)}
                 {...itemProps}
               />
             ))}
-      </List>
-
-      <ListAddField name={`${name}.$`} initialCount={initialCount} />
+      </div>
     </div>
   );
 }
