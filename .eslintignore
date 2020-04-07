@@ -5,6 +5,8 @@
 jest.config.js
 **/__tests__/*
 
+/examples
+
 /node_modules
 /npm-debug.log
 /npm-debug.log*
