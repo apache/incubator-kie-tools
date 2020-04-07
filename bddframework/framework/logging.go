@@ -15,6 +15,7 @@
 package framework
 
 import (
+	"encoding/csv"
 	"errors"
 	"fmt"
 	"io"
@@ -30,8 +31,9 @@ import (
 )
 
 const (
-	defaultLogFolder = "logs"
-	logSuffix        = ".log"
+	defaultLogFolder       = "logs"
+	logSuffix              = ".log"
+	defaultResultsFileName = "results.csv"
 )
 
 var (
@@ -150,9 +152,58 @@ func StartPodLogCollector(namespace string) error {
 	}
 }
 
+// ReportPerformanceMetric reports a new metric with its value and unit to a results file. If the file does not exist,
+// it will be created. It depends on the existence of the log folder which is created by the framework before the tests
+// are run.
+func ReportPerformanceMetric(metric, value, unit string) {
+	resultsFile, err := getOrCreateResultsFile()
+	if err != nil {
+		GetMainLogger().Errorf("Error when retrieving the results file: %v", err)
+		return
+	}
+	defer func() {
+		err = resultsFile.Close()
+		if err != nil {
+			GetMainLogger().Errorf("Error while closing the results file: %v", err)
+		}
+	}()
+
+	if err = writeCsvValue(resultsFile, []string{metric, value, unit}); err != nil {
+		GetMainLogger().Errorf("Error writing a new measurement to the results file: %v", err)
+	}
+}
+
 func isNamespaceMonitored(namespace string) bool {
 	_, exists := monitoredNamespaces[namespace]
 	return exists
+}
+
+func getOrCreateResultsFile() (*os.File, error) {
+	resultsFilePath := GetLogFolder() + "/" + defaultResultsFileName
+	resultsFile, err := os.OpenFile(resultsFilePath, os.O_APPEND | os.O_WRONLY, 0)
+	if err != nil {
+		if os.IsNotExist(err) {
+			resultsFile, err = os.Create(resultsFilePath)
+			if err != nil {
+				return nil, fmt.Errorf("Error creating results file: %v", err)
+			}
+			if err = writeCsvValue(resultsFile, []string{"Metric", "Value", "Unit"}); err != nil {
+				return nil, fmt.Errorf("Error while writing header into the results file: %v", err)
+			}
+		} else {
+			return nil, fmt.Errorf("Error while trying opening the results file: %v", err)
+		}
+	}
+	return resultsFile, nil
+}
+
+func writeCsvValue(file *os.File, row []string) error {
+	csvWriter := csv.NewWriter(file)
+	if err := csvWriter.Write(row); err != nil {
+		return fmt.Errorf("Error while writing %s into the results file: %v", row, err)
+	}
+	csvWriter.Flush()
+	return nil
 }
 
 func getLogFile(namespace, filename string) string {

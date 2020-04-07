@@ -33,9 +33,10 @@ import (
 )
 
 const (
-	disabledTag = "@disabled"
-	cliTag      = "@cli"
-	smokeTag    = "@smoke"
+	disabledTag    = "@disabled"
+	cliTag         = "@cli"
+	smokeTag       = "@smoke"
+	performanceTag = "@performance"
 )
 
 var opt = godog.Options{
@@ -89,20 +90,29 @@ func TestMain(m *testing.M) {
 
 func configureTags() {
 	if config.IsSmokeTests() {
-		if len(opt.Tags) > 0 {
-			opt.Tags += " && "
-		}
 		// Filter with smoke tag
-		opt.Tags += smokeTag
+		appendTag(smokeTag)
+	} else if !strings.Contains(opt.Tags, performanceTag) {
+		if config.IsPerformanceTests() {
+			// Turn on performance tests
+			appendTag(performanceTag)
+		} else {
+			// Turn off performance tests
+			appendTag("~" + performanceTag)
+		}
 	}
 
 	if !strings.Contains(opt.Tags, disabledTag) {
-		if len(opt.Tags) > 0 {
-			opt.Tags += " && "
-		}
 		// Ignore disabled tag
-		opt.Tags += "~" + disabledTag
+		appendTag("~" + disabledTag)
 	}
+}
+
+func appendTag(tag string) {
+	if len(opt.Tags) > 0 {
+		opt.Tags += " && "
+	}
+	opt.Tags += tag
 }
 
 func configureTestOutput() {

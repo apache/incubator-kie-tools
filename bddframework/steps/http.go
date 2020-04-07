@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
@@ -28,6 +29,8 @@ func registerHTTPSteps(s *godog.Suite, data *Data) {
 	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
 	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
 	s.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
+	s.Step(`^(\d+) HTTP POST requests using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsUsingThreadsOnServiceWithPathAndBody)
+	s.Step(`^(\d+) HTTP POST requests with report using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody)
 }
 
 func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(serviceName, path string, timeoutInMin int) error {
@@ -82,4 +85,40 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 		func() (bool, error) {
 			return framework.DoesHTTPResponseContain(data.Namespace, "GET", routeURI, path, "", "", responseContent)
 		})
+}
+
+func (data *Data) httpPostRequestsUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *gherkin.DocString) error {
+	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, false, serviceName, path, body)
+}
+
+func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *gherkin.DocString) error {
+	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, true, serviceName, path, body)
+}
+
+func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *gherkin.DocString) error {
+	framework.GetLogger(data.Namespace).Infof("httpPostRequestsUsingThreadsOnServiceWithPathAndBody with requests %d, threads %d, report %t, service %s, path %s and %s bodyContent %s", requestCount, threadCount, report, serviceName, path, body.ContentType, body.Content)
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	startTime := time.Now()
+	results, err := framework.ExecuteHTTPRequestsInThreads(data.Namespace, "POST", requestCount, threadCount, routeURI, path, body.ContentType, body.Content)
+	duration := time.Since(startTime)
+
+	if err != nil {
+		return err
+	}
+
+	if report {
+		metricName := fmt.Sprintf("%s - %s - %d requests", data.Namespace, data.ScenarioName, requestCount)
+		framework.ReportPerformanceMetric(metricName, fmt.Sprintf("%.5f", duration.Seconds()), "s")
+	}
+
+	for i := 0; i < threadCount; i++ {
+		if result := results[i]; result != framework.HTTPRequestResultSuccess {
+			return fmt.Errorf("One or more go routines have failed, see logs for more information")
+		}
+	}
+	return nil
 }

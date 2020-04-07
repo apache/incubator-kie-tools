@@ -18,8 +18,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
+	"time"
+)
+
+type HTTPRequestResult string
+
+const (
+	HTTPRequestResultSuccess HTTPRequestResult = "success"
+	HTTPRequestResultError   HTTPRequestResult = "error"
 )
 
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
@@ -32,6 +43,11 @@ func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, 
 
 // ExecuteHTTPRequest executes an HTTP request
 func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (*http.Response, error) {
+	return ExecuteHTTPRequestC(&http.Client{}, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+}
+
+// ExecuteHTTPRequestC executes an HTTP request using a given client
+func ExecuteHTTPRequestC(client *http.Client, namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (*http.Response, error) {
 	GetLogger(namespace).Debugf("ExecuteHTTPRequest %s on uri %s, with path %s, %s bodyContent %s", httpMethod, uri, path, bodyFormat, bodyContent)
 
 	request, err := http.NewRequest(httpMethod, uri+"/"+path, strings.NewReader(bodyContent))
@@ -50,7 +66,6 @@ func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyConten
 		return nil, err
 	}
 
-	client := &http.Client{}
 	return client.Do(request)
 }
 
@@ -69,7 +84,7 @@ func ExecuteHTTPRequestWithStringResponse(namespace, httpMethod, uri, path strin
 	buf.ReadFrom(httpResponse.Body)
 	resultBody := buf.String()
 
-	GetLogger(namespace).Infof("Retrieved body %v", resultBody)
+	GetLogger(namespace).Debugf("Retrieved body %v", resultBody)
 	return resultBody, nil
 }
 
@@ -88,11 +103,75 @@ func ExecuteHTTPRequestWithUnmarshalledResponse(namespace, httpMethod, uri, path
 
 // IsHTTPRequestSuccessful makes and checks whether an http request is successful
 func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
-	response, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+	return IsHTTPRequestSuccessfulC(&http.Client{}, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+}
+
+// IsHTTPRequestSuccessful makes and checks whether an http request is successful using a given client
+func IsHTTPRequestSuccessfulC(client *http.Client, namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
+	response, err := ExecuteHTTPRequestC(client, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	if err != nil {
 		return false, err
 	}
+	io.Copy(ioutil.Discard, response.Body)  // Just read the response to be able to close the connection properly
+	defer response.Body.Close()
 	return checkHTTPResponseSuccessful(namespace, response), nil
+}
+
+// ExecuteHTTPRequestsInThreads executes given number of requests using given number of threads (Go routines).
+// Returns []HTTPRequestResult with the outcome of each thread (HTTPRequestResultSuccess or HTTPRequestResultError).
+// Returns error if the desired number of requests cannot be precisely divided to the threads.
+// Useful for performance testing.
+func ExecuteHTTPRequestsInThreads(namespace, httpMethod string, requestCount, threadCount int, routeURI, path, bodyFormat, bodyContent string) ([]HTTPRequestResult, error) {
+	if requestCount % threadCount != 0 {
+		return nil, fmt.Errorf("Cannot precisely divide %d requests to %d threads. Use different numbers.", requestCount, threadCount)
+	}
+	requestPerThread := requestCount / threadCount
+	results := make([]HTTPRequestResult, threadCount)
+	waitGroup := &sync.WaitGroup{}
+	waitGroup.Add(threadCount)
+
+	GetLogger(namespace).Info("Starting request threads")
+	startTime := time.Now()
+
+	for threadId := 0; threadId < threadCount; threadId++ {
+		client := createCustomClient()
+		go runRequestRoutine(threadId, waitGroup, client, namespace, httpMethod, requestPerThread, routeURI, path, bodyFormat, bodyContent, results)
+	}
+
+	GetLogger(namespace).Info("Waiting for requests to finish")
+	waitGroup.Wait()
+
+	duration := time.Since(startTime)
+	GetLogger(namespace).Infof("%d requests finished in %s", requestCount, duration)
+	return results, nil
+}
+
+func createCustomClient() *http.Client {
+	defaultTransport, ok := http.DefaultTransport.(*http.Transport)
+	if !ok {
+		panic("DefaultTransport is not of type *http.Transport")
+	}
+	customTransport := defaultTransport.Clone()
+	client := &http.Client{Transport: customTransport}
+	return client
+}
+
+func runRequestRoutine(threadId int, waitGroup *sync.WaitGroup, client *http.Client, namespace, httpMethod string, requestPerThread int, routeURI, path, bodyFormat, bodyContent string, results []HTTPRequestResult) {
+	defer waitGroup.Done()
+	GetLogger(namespace).Infof("Starting Go routine #%d", threadId)
+	for i := 0; i < requestPerThread; i++ {
+		if success, err := IsHTTPRequestSuccessfulC(client, namespace, httpMethod, routeURI, path, bodyFormat, bodyContent); err != nil {
+			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadId, err)
+			results[threadId] = HTTPRequestResultError
+			return
+		} else if !success {
+			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadId, path)
+			results[threadId] = HTTPRequestResultError
+			return
+		}
+	}
+	GetLogger(namespace).Infof("Go routine #%d finished", threadId)
+	results[threadId] = HTTPRequestResultSuccess
 }
 
 // checkHTTPResponseSuccessful checks the HTTP response is successful

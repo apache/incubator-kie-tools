@@ -30,6 +30,7 @@ type Data struct {
 	Namespace              string
 	StartTime              time.Time
 	KogitoExamplesLocation string
+	ScenarioName           string
 }
 
 // RegisterAllSteps register all steps available to the test suite
@@ -56,6 +57,7 @@ func (data *Data) BeforeScenario(s interface{}) {
 	data.StartTime = time.Now()
 	data.Namespace = getNamespaceName()
 	data.KogitoExamplesLocation = createTemporaryFolder()
+	data.ScenarioName = framework.GetScenarioName(s)
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", framework.GetScenarioName(s)))
 	go framework.StartPodLogCollector(data.Namespace)

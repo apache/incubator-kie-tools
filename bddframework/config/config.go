@@ -25,6 +25,7 @@ import (
 type TestConfig struct {
 	// tests configuration
 	smoke            bool
+	performance      bool
 	loadFactor       int
 	localTests       bool
 	ciName           string
@@ -85,6 +86,7 @@ func BindFlags(set *flag.FlagSet) {
 
 	// tests configuration
 	set.BoolVar(&env.smoke, prefix+"smoke", false, "Launch only smoke tests")
+	set.BoolVar(&env.performance, prefix+"performance", false, "Launch performance tests")
 	set.IntVar(&env.loadFactor, prefix+"load-factor", defaultLoadFactor, "Set the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timeouts. Default value is 1.")
 	set.BoolVar(&env.localTests, prefix+"local", false, "If tests are launch on local machine")
 	set.StringVar(&env.ciName, prefix+"ci", "", "If tests are launch on ci machine, give the CI name")
@@ -123,9 +125,14 @@ func BindFlags(set *flag.FlagSet) {
 
 // tests configuration
 
-// IsSmokeTests return whether tests are executed in local
+// IsSmokeTests return whether smoke tests should be executed
 func IsSmokeTests() bool {
 	return env.smoke
+}
+
+// IsPerformanceTests return whether performance tests should be executed
+func IsPerformanceTests() bool {
+	return env.performance
 }
 
 // GetLoadFactor return the load factor of the cluster
