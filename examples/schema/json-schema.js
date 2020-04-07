@@ -38,29 +38,32 @@ const schema = {
     },
     address_two: {
       type: 'string',
-      title: 'Address Line One',
+      title: 'Address Line Two',
     },
     city: {
       type: 'string',
       title: 'City',
       uniforms: {
         label: 'City',
-        placeholder: 'City'
+        placeholder: 'City',
+        errorMessage: 'City is required'
       }
     },
     state: {
       type: 'string',
       title: 'State/Province/Region',
       uniforms: {
-        label: 'City',
-        placeholder: 'City'
+        label: 'State/Province/Region',
+        placeholder: 'State/Province/Region',
+        errorMessage: 'State/Province/Region is required'
       }
     },
-    zip: {
+    postal_code: {
       type: 'string',
       title: 'Post code',
       uniforms: {
         label: 'Post code',
+        errorMessage: 'Post code is required'
       }
     },
     country: {
@@ -77,7 +80,7 @@ const schema = {
   },
   required: [
     'name', 'surname', 'address_one',
-    'city', 'zip'
+    'city', 'country'
   ]
 };
 
