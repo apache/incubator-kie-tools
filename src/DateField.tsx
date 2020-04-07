@@ -21,6 +21,7 @@ export type DateFieldProps = {
   onChange: (value?: string) => void;
   value?: string;
   disabled: boolean;
+  error?: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
 
 function Date(props: DateFieldProps) {

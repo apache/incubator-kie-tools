@@ -11,6 +11,7 @@ export type NumFieldProps = {
   onChange: (value?: number) => void;
   disabled: boolean;
   value?: number;
+  error?: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
 
 const Num = (props: NumFieldProps) => {

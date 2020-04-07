@@ -11,6 +11,7 @@ export type TextFieldProps = {
   onChange: (value?: string) => void;
   value?: string;
   disabled: boolean;
+  error?: boolean;
 } & Omit<TextInputProps, 'isDisabled'>;
 
 const Text = (props: TextFieldProps) =>
@@ -20,6 +21,7 @@ const Text = (props: TextFieldProps) =>
       id={props.id}
       name={props.name}
       isDisabled={props.disabled}
+      isValid={!props.error}
       // @ts-ignore
       onChange={(value, event) => props.onChange(event.target.value)}
       placeholder={props.placeholder}
