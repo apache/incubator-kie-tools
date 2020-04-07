@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import { AutoForm } from 'uniforms-patternfly/src';
-import '@patternfly/react-core/dist/styles/base.css';
-
-// patternfly doesn't load styles properly,
-// so unneeded import is required
-import { Divider } from '@patternfly/react-core';
+import { AutoForm } from 'uniforms-patternfly';
 
 import schema from './schema/json-schema';
 // import schema from './schema/simple-schema-2';
@@ -39,7 +34,6 @@ function App() {
           onSubmit={m => setModel(m)}
           showInlineError
         />
-        
       </div>
     </div>
   );

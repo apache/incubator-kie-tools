@@ -16,52 +16,69 @@ function createValidator(schema) {
 const schema = {
   type: 'object',
   properties: {
-    a: {
-      type: 'number',
-      title: 'a',
+    name: {
+      type: 'string',
+      title: 'name',
       uniforms: {
-        title: 'Horse'
+        title: 'Name',
       }
     },
-    b: {
+    surname: {
       type: 'string',
       uniforms: {
-        placeholder: 'Horse',
-        required: false
+        placeholder: 'Surname',
       }
     },
-    c: {
+    address_one: {
       type: 'string',
-      title: 'Title',
+      title: 'Address Line One',
       uniforms: {
-        label: 'Horse'
+        label: 'Address Line One'
       }
     },
-    d: {
-      type: 'string'
-    },
-    e: {
+    address_two: {
       type: 'string',
-      title: 'Title',
+      title: 'Address Line One',
+    },
+    city: {
+      type: 'string',
+      title: 'City',
       uniforms: {
-        label: 'Horse A',
-        placeholder: 'Horse B'
+        label: 'City',
+        placeholder: 'City'
       }
     },
-    f: {
+    state: {
       type: 'string',
-      title: 'Select',
+      title: 'State/Province/Region',
       uniforms: {
-        label: 'Stuff',
-        placeholder: 'Select some stuff',
-        defaultValue: 'c',
+        label: 'City',
+        placeholder: 'City'
+      }
+    },
+    zip: {
+      type: 'string',
+      title: 'Post code',
+      uniforms: {
+        label: 'Post code',
+      }
+    },
+    country: {
+      type: 'string',
+      title: 'Country',
+      uniforms: {
+        placeholder: 'Select a country',
+        defaultValue: 'Ireland',
         allowedValues: [
-          'a', 'b', 'c', 'd'
+          'Ireland', 'United Kingdom', 'Australia', 'USA', 'New Zealand'
         ]
       }
     }
   },
-  required: ['b', 'c', 'd', 'e', 'f']
+  required: [
+    'name', 'surname', 'address_one',
+    'city', 'zip'
+  ]
 };
 
 const schemaValidator = createValidator(schema);

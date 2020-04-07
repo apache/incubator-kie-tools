@@ -1,16 +1,15 @@
 {
   "name": "uniforms-reproductions",
   "private": true,
+  "root": true,
   "scripts": {
     "build": "parcel build index.html",
     "start": "parcel serve index.html"
   },
   "dependencies": {
-    "@material-ui/core": "4.5.1",
     "@patternfly/react-core": "^3.153.3",
     "@patternfly/react-icons": "^3.15.15",
     "ajv": "6.10.2",
-    "antd": "3.24.2",
     "react": "^16.13.1",
     "react-dom": "16.9.0",
     "react-scripts": "3.1.1",
