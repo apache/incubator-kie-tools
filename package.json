@@ -1,10 +1,12 @@
 {
   "name": "uniforms-patternfly",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:kingsleyzissou/uniforms-patternfly.git",
   "author": "Gianluca <gianlucazuccarelli@gmail.com>",
   "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --incremental",
     "clean": "rimraf dist coverage && tsc",
