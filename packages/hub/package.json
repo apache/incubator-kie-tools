@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/hub",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,17 +10,17 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/desktop": "0.3.0",
+    "@kogito-tooling/desktop": "0.4.0",
     "@patternfly/patternfly": "2.40.2",
     "@patternfly/react-core": "3.90.0",
     "@patternfly/react-icons": "3.14.7",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
-    "chrome-extension-pack-kogito-kie-editors": "0.3.0",
+    "chrome-extension-pack-kogito-kie-editors": "0.4.0",
     "electron": "7.1.9",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1",
-    "vscode-extension-pack-kogito-kie-editors": "0.3.0"
+    "vscode-extension-pack-kogito-kie-editors": "0.4.0"
   },
   "scripts": {
     "start": "electron dist",
