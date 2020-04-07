@@ -11,6 +11,7 @@ import {
 } from '@patternfly/react-core';
 
 import { connectField, filterDOMProps } from './uniforms';
+import wrapField from './wrapField';
 
 const xor = (item, array) => {
   const index = array.indexOf(item);
@@ -72,6 +73,7 @@ type SelectInputProps = {
   placeholder: string;
   allowedValues?: string[];
   disabled?: boolean;
+  error?: boolean;
   transform?: (value?: string) => string;
 } & Omit<SelectProps, 'isDisabled'>;
 
@@ -113,8 +115,8 @@ function RenderSelect(props: SelectInputProps) {
     />
   );
   return (
-    <div {...filterDOMProps(props)}>
-      {props.label && <label htmlFor={props.id}>{props.label}</label>}
+    wrapField(
+      props,
       <Select
         isDisabled={props.disabled}
         id={props.id}
@@ -129,7 +131,7 @@ function RenderSelect(props: SelectInputProps) {
       >
         { selectedOptions }
       </Select>
-    </div>
+    )
   );
 }
 
