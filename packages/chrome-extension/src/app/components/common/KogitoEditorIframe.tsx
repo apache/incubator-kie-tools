@@ -107,10 +107,10 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         receive_resourceListRequest(pattern: string) {
           resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
         },
-        notify_editorUndo: (edits: KogitoEdit[]) => {
+        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
           console.debug("Notify Undo");
         },
-        notify_editorRedo: (edits: KogitoEdit[]) => {
+        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
           console.debug("Notify Redo");
         },
         receive_newEdit(edit: KogitoEdit): void {

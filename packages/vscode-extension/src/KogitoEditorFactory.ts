@@ -40,13 +40,13 @@ export class KogitoEditorFactory {
     this.resourceContentService = resourceContentService;
   }
 
-  public configureNew(uri: vscode.Uri, panel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {
+  public configureNew(uri: vscode.Uri, webviewPanel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {
     const path = uri.fsPath;
     if (path.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
     }
 
-    panel.webview.options = {
+    webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
@@ -56,7 +56,7 @@ export class KogitoEditorFactory {
     const editor = new KogitoEditor(
       workspacePath,
       path,
-      panel,
+      webviewPanel,
       this.context,
       this.router,
       this.webviewLocation,

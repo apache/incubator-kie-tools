@@ -78,10 +78,10 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         console.debug("received preview");
         props.onPreviewResponse(previewSvg);
       },
-      notify_editorUndo: (edits: KogitoEdit[]) => {
+      notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
         console.debug("Notify Undo");
       },
-      notify_editorRedo: (edits: KogitoEdit[]) => {
+      notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
         console.debug("Notify Redo");
       },
       receive_newEdit(edit: KogitoEdit) {
