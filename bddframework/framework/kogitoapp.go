@@ -116,6 +116,14 @@ func cliDeployService(namespace string, kogitoApp *v1alpha1.KogitoApp) error {
 		cmd = append(cmd, "--build-limits", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
 	}
 
+	for resourceName, quantity := range kogitoApp.Spec.Resources.Requests {
+		cmd = append(cmd, "--requests", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
+	}
+
+	for resourceName, quantity := range kogitoApp.Spec.Resources.Limits {
+		cmd = append(cmd, "--limits", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
+	}
+
 	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 }
