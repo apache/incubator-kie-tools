@@ -58,9 +58,16 @@ function runtime_assemble() {
             echo "-----> Entire target dir uploaded"
             cd "target"    
         fi
-        if ls | grep -E '*-runner.jar' 1> /dev/null 2>&1; then
-            echo "-----> Found jar file, not native build"
-            NATIVE="FALSE"
+
+        local result=$(file -b --mime-type *-runner | grep x-executable)
+        if [ "$result" == "application/x-executable" ]; then
+            echo "-----> Found binary file, native build."
+            NATIVE="TRUE"
+        else
+            if ls | grep -E '*-runner.jar' 1> /dev/null 2>&1;then
+                echo "-----> Found jar file, not native build."
+                NATIVE="FALSE"
+            fi
         fi
         echo "-----> Cleaning up unneeded jar files"
         rm -rfv *-tests.jar

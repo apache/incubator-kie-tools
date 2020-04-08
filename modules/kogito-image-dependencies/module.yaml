@@ -8,6 +8,7 @@ execute:
 
 packages:
   install:
+    - file
     - shadow-utils
     - tar
     - gzip
