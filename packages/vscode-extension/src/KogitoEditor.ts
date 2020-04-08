@@ -31,9 +31,8 @@ import {
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
 
-  public readonly path: string;
-  public readonly relativePath: string;
-
+  private readonly path: string;
+  private readonly relativePath: string;
   private readonly webviewLocation: string;
   private readonly context: vscode.ExtensionContext;
   private readonly router: Router;

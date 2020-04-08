@@ -18,7 +18,6 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { Router } from "@kogito-tooling/core-api";
-import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
 import { KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
 

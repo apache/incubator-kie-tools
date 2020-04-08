@@ -27,7 +27,7 @@ export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
   private readonly webviewLocation: string;
-  private readonly router: Router
+  private readonly router: Router;
 
   constructor(
     context: vscode.ExtensionContext,
@@ -38,7 +38,7 @@ export class KogitoEditorFactory {
     this.context = context;
     this.editorStore = editorStore;
     this.router = router;
-    this.webviewLocation = webviewLocation
+    this.webviewLocation = webviewLocation;
   }
 
   public configureNew(uri: vscode.Uri, panel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {

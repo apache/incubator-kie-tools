@@ -58,7 +58,7 @@ beforeEach(() => {
       receive_readResourceContentError(errorMessage: string): void {
         receivedMessages.push("readResourceContentError_" + errorMessage);
       },
-      receive_resourceListRequest(resourceListRequest:ResourceListRequest): void {
+      receive_resourceListRequest(resourceListRequest: ResourceListRequest): void {
         receivedMessages.push("resourceListRequest_" + resourceListRequest);
       },
       receive_ready() {

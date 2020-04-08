@@ -107,7 +107,7 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public request_resourceList(pattern: string, opts?: ResourceListOptions) {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: {pattern: pattern, opts: opts } });
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: pattern, opts: opts } });
   }
 
   public notify_newEdit(edit: KogitoEdit) {
