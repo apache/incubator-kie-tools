@@ -15,94 +15,35 @@
 package framework
 
 import (
-	"fmt"
-	"strconv"
-
-	apps "k8s.io/api/apps/v1"
-
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// InstallKogitoDataIndexService deploy the Kogito Data Index service
+// InstallKogitoDataIndexService install the Kogito Data Index service
 func InstallKogitoDataIndexService(namespace string, installerType InstallerType, replicas int) error {
-	GetLogger(namespace).Infof("%s install Kogito Data Index with %d replicas", installerType, replicas)
-	switch installerType {
-	case CLIInstallerType:
-		return cliInstallKogitoDataIndex(namespace, replicas)
-	case CRInstallerType:
-		return crInstallKogitoDataIndex(namespace, int32(replicas))
-	default:
-		panic(fmt.Errorf("Unknown installer type %s", installerType))
-	}
+	resource := newKogitoDataIndexResource(namespace, replicas)
+	// Persistence is already configured internally by the Data Index service, so we don't need to add any additional persistence step here.
+	return InstallServiceWithoutCliFlags(resource, installerType, "data-index")
 }
 
-func crInstallKogitoDataIndex(namespace string, replicas int32) error {
-	kogitoDataIndex := &v1alpha1.KogitoDataIndex{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      infrastructure.DefaultDataIndexName,
-			Namespace: namespace,
-		},
+// WaitForKogitoDataIndexService wait for Kogito Data Index to be deployed
+func WaitForKogitoDataIndexService(namespace string, replicas int, timeoutInMin int) error {
+	return WaitForService(namespace, getDataIndexServiceName(), replicas, timeoutInMin)
+}
+
+func getDataIndexServiceName() string {
+	return infrastructure.DefaultDataIndexName
+}
+
+func newKogitoDataIndexResource(namespace string, replicas int) *v1alpha1.KogitoDataIndex {
+	return &v1alpha1.KogitoDataIndex{
+		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
 		Spec: v1alpha1.KogitoDataIndexSpec{
-			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
-				Replicas: &replicas,
-				Image:    getDataIndexImage(),
-			},
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), infrastructure.DefaultDataIndexImageNoVersion+infrastructure.GetRuntimeImageVersion()),
 		},
 		Status: v1alpha1.KogitoDataIndexStatus{
-			KogitoServiceStatus: v1alpha1.KogitoServiceStatus{
-				ConditionsMeta: v1alpha1.ConditionsMeta{
-					Conditions: []v1alpha1.Condition{},
-				},
-			},
+			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}
-
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoDataIndex); err != nil {
-		return fmt.Errorf("Error creating Kogito Data Index service: %v", err)
-	}
-	return nil
-}
-
-func cliInstallKogitoDataIndex(namespace string, replicas int) error {
-	cmd := []string{"install", "data-index"}
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getDataIndexImage()))
-	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
-}
-
-func getDataIndexImage() v1alpha1.Image {
-	if len(config.GetDataIndexImageTag()) > 0 {
-		return framework.ConvertImageTagToImage(config.GetDataIndexImageTag())
-	}
-
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultDataIndexImageNoVersion + infrastructure.GetRuntimeImageVersion())
-	image.Tag = config.GetServicesImageVersion()
-	return image
-}
-
-// GetKogitoDataIndexDeployment retrieves the running data index deployment
-func GetKogitoDataIndexDeployment(namespace string) (*apps.Deployment, error) {
-	return GetDeployment(namespace, infrastructure.DefaultDataIndexName)
-}
-
-// WaitForKogitoDataIndex waits that the jobs service has a certain number of replicas
-func WaitForKogitoDataIndex(namespace string, replicas, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, "Kogito data index running", timeoutInMin,
-		func() (bool, error) {
-			dataIndex, err := GetKogitoDataIndexDeployment(namespace)
-			if err != nil {
-				return false, err
-			}
-			if dataIndex == nil {
-				return false, nil
-			}
-			return dataIndex.Status.Replicas == int32(replicas) && dataIndex.Status.AvailableReplicas == int32(replicas), nil
-		})
 }

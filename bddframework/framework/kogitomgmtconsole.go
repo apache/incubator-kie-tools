@@ -15,100 +15,34 @@
 package framework
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	apps "k8s.io/api/apps/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// InstallKogitoManagementConsole deploy the Kogito Management Console
+// InstallKogitoManagementConsole install the Kogito Management Console component
 func InstallKogitoManagementConsole(namespace string, installerType InstallerType, replicas int) error {
-	GetLogger(namespace).Infof("%s install Kogito Management Console with %d replicas", installerType, replicas)
-	switch installerType {
-	case CLIInstallerType:
-		return cliInstallKogitoManagementConsole(namespace, replicas)
-	case CRInstallerType:
-		return crInstallKogitoManagementConsole(namespace, replicas)
-	default:
-		panic(fmt.Errorf("Unknown installer type %s", installerType))
-	}
+	resource := newManagementConsoleResource(namespace, replicas)
+	return InstallServiceWithoutCliFlags(resource, installerType, "mgmt-console")
 }
 
-func cliInstallKogitoManagementConsole(namespace string, replicas int) error {
-	cmd := []string{"install", "mgmt-console"}
-
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(getManagementConsoleImageTag()))
-	cmd = append(cmd, "--replicas", strconv.Itoa(replicas))
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
+// WaitForKogitoManagementConsoleService wait for Kogito Management Console to be deployed
+func WaitForKogitoManagementConsoleService(namespace string, replicas int, timeoutInMin int) error {
+	return WaitForService(namespace, getManagementConsoleServiceName(), replicas, timeoutInMin)
 }
 
-func crInstallKogitoManagementConsole(namespace string, replicas int) error {
-	service := getManagementConsoleStub(namespace, int32(replicas))
-
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(service); err != nil {
-		return fmt.Errorf("Error creating Kogito Management Console: %v", err)
-	}
-	return nil
+func getManagementConsoleServiceName() string {
+	return infrastructure.DefaultMgmtConsoleName
 }
 
-func getManagementConsoleImageTag() v1alpha1.Image {
-	if len(config.GetManagementConsoleImageTag()) > 0 {
-		return framework.ConvertImageTagToImage(config.GetManagementConsoleImageTag())
-	}
-
-	image := framework.ConvertImageTagToImage(infrastructure.DefaultMgmtConsoleImageNoVersion + infrastructure.GetRuntimeImageVersion())
-	image.Tag = config.GetServicesImageVersion()
-	return image
-}
-
-// GetKogitoManagementConsoleDeployment retrieves the running management console deployment
-func GetKogitoManagementConsoleDeployment(namespace string) (*apps.Deployment, error) {
-	return GetDeployment(namespace, infrastructure.DefaultMgmtConsoleName)
-}
-
-// WaitForKogitoManagementConsole waits that the management console has a certain number of replicas
-func WaitForKogitoManagementConsole(namespace string, replicas, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, "Kogito Management Console running", timeoutInMin,
-		func() (bool, error) {
-			deployment, err := GetKogitoManagementConsoleDeployment(namespace)
-			if err != nil {
-				return false, err
-			}
-			if deployment == nil {
-				return false, nil
-			}
-			return deployment.Status.Replicas == int32(replicas) && deployment.Status.AvailableReplicas == int32(replicas), nil
-		})
-}
-
-func getManagementConsoleStub(namespace string, replicas int32) *v1alpha1.KogitoMgmtConsole {
-	service := &v1alpha1.KogitoMgmtConsole{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      infrastructure.DefaultMgmtConsoleName,
-			Namespace: namespace,
-		},
+func newManagementConsoleResource(namespace string, replicas int) *v1alpha1.KogitoMgmtConsole {
+	return &v1alpha1.KogitoMgmtConsole{
+		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1alpha1.KogitoMgmtConsoleSpec{
-			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
-				Replicas: &replicas,
-				Image:    getManagementConsoleImageTag(),
-			},
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), infrastructure.DefaultMgmtConsoleImageNoVersion+infrastructure.GetRuntimeImageVersion()),
 		},
 		Status: v1alpha1.KogitoMgmtConsoleStatus{
-			KogitoServiceStatus: v1alpha1.KogitoServiceStatus{
-				ConditionsMeta: v1alpha1.ConditionsMeta{
-					Conditions: []v1alpha1.Condition{},
-				},
-			},
+			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}
-
-	return service
 }
