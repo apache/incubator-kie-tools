@@ -55,11 +55,19 @@ jobs:
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online'.
       - name: Update "kogito-online" latest resources
+        env:
+          KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR: ./editors/${{ steps.release-tag.outputs.tag }}
+          KOGITO_ONLINE_EDITOR_DIR: .
         run: |
           cd kogito-online
           rm -rf ./editors/latest
           ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
-          cp -r ./online-editor-staging/* .
+          rm -rf $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR
+          mkdir -p $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/packages/online-editor/dist/* $KOGITO_ONLINE_EDITOR_DIR
           rm -rf ./online-editor-staging
           git config --global user.email "kogito-tooling-bot@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
@@ -72,5 +80,5 @@ jobs:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          cd kogito-tooling && npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/kie-bc-editors-unpacked -- npm publish --access public && cd -
+          cd kogito-tooling && npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/kie-bc-editors-unpacked --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub -- npm publish --access public && cd -
 
