@@ -37,6 +37,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper.LockSyncMenuStateHelper.Operation;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -343,8 +344,10 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     }
 
     @Override
-    public BasicFileMenuBuilder addRestoreVersion(final Path path) {
-        this.restoreCommand = restoreVersionCommandProvider.getCommand(path);
+    public BasicFileMenuBuilder addRestoreVersion(final Path path,
+                                                  final CurrentBranch currentBranch) {
+        this.restoreCommand = restoreVersionCommandProvider.getCommand(path,
+                                                                       currentBranch);
         return this;
     }
 

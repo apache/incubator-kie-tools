@@ -25,6 +25,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
 import org.uberfire.ext.editor.commons.client.file.popups.RestorePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
+import org.uberfire.ext.editor.commons.client.menu.common.DefaultCurrentBranch;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 import static org.junit.Assert.*;
@@ -67,7 +68,8 @@ public class VersionRecordManagerOpenOlderVersionTest {
                                 manager.onVersionSelectedEvent(result);
                             }
                         }),
-                new VersionServiceCallerMock(versions));
+                new VersionServiceCallerMock(versions),
+                mock(DefaultCurrentBranch.class));
     }
 
     private void setUpVersions() {

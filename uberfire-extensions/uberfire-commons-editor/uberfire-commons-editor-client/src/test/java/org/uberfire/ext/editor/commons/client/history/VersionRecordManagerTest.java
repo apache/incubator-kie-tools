@@ -26,7 +26,9 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
 import org.uberfire.ext.editor.commons.client.file.popups.RestorePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -44,12 +46,14 @@ public class VersionRecordManagerTest {
     private ObservablePath pathTo222;
     private ObservablePath pathTo333;
     private VersionSelectedEventMock versionSelectedEvent;
+    private CurrentBranch currentBranch;
 
     @Before
     public void setUp() throws Exception {
         dropDownButton = mock(VersionMenuDropDownButton.class);
         saveButton = mock(SaveButton.class);
         restorePopup = mock(RestorePopUpPresenter.class);
+        currentBranch = mock(CurrentBranch.class);
 
         setUpUtil();
         setUpVersions();
@@ -65,7 +69,8 @@ public class VersionRecordManagerTest {
                                                restorePopup,
                                                util,
                                                versionSelectedEvent,
-                                               new VersionServiceCallerMock(versions)));
+                                               new VersionServiceCallerMock(versions),
+                                               currentBranch));
 
         manager.init(null,
                      pathTo333,
@@ -139,7 +144,21 @@ public class VersionRecordManagerTest {
         manager.restoreToCurrentVersion(true);
 
         verify(restorePopup).show(pathTo111,
-                                  "hehe//111");
+                                  "hehe//111",
+                                  currentBranch.getName());
+    }
+
+    @Test
+    public void testRestoreToCurrentVersionWithNoComment() {
+        manager.onVersionSelectedEvent(new VersionSelectedEvent(pathTo333,
+                                                                getVersionRecord("111")));
+        when(restorePopup.restoreCommand(pathTo111,
+                                         "hehe//111",
+                                         currentBranch.getName())).thenReturn(mock(ParameterizedCommand.class));
+        manager.restoreToCurrentVersion(false);
+        verify(restorePopup).restoreCommand(pathTo111,
+                                            "hehe//111",
+                                            currentBranch.getName());
     }
 
     @Test

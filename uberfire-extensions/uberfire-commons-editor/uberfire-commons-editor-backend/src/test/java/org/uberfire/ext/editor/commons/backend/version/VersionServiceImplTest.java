@@ -48,6 +48,8 @@ public class VersionServiceImplTest {
     private SessionInfo sessionInfo;
     @Mock
     private PathResolver pathResolver;
+    @Mock
+    private VersionUtil versionUtil;
     @InjectMocks
     private VersionServiceImpl versionService;
 
@@ -69,7 +71,8 @@ public class VersionServiceImplTest {
         final InOrder order = inOrder(ioService);
 
         versionService.restore(path,
-                               "Restore comment");
+                               "Restore comment",
+                               "master");
 
         order.verify(ioService).startBatch(nioPath.getFileSystem());
 

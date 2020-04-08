@@ -48,7 +48,8 @@ class VersionServiceMock
 
     @Override
     public Path restore(Path path,
-                        String comment) {
+                        String comment,
+                        String currentBranch) {
         return null;
     }
 

@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -58,6 +59,9 @@ public class RestorePopUpPresenterTest {
 
     @Mock
     ParameterizedCommand<String> commandMock;
+
+    @Mock
+    CurrentBranch currentBranch;
 
     RestorePopUpPresenter presenter;
 
@@ -94,11 +98,13 @@ public class RestorePopUpPresenterTest {
         presenter = spy(presenter);
 
         presenter.show(path,
-                       "uri");
+                       "uri",
+                       currentBranch.getName());
 
         verify(view).show();
         verify(presenter).restoreCommand(path,
-                                         "uri");
+                                         "uri",
+                                         currentBranch.getName());
     }
 
     @Test

@@ -17,6 +17,7 @@ package org.uberfire.ext.editor.commons.client.menu;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -77,7 +78,8 @@ public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
 
     BasicFileMenuBuilder addValidate(final Command command);
 
-    BasicFileMenuBuilder addRestoreVersion(final Path path);
+    BasicFileMenuBuilder addRestoreVersion(final Path path,
+                                           final CurrentBranch currentBranch);
 
     BasicFileMenuBuilder addCommand(final String caption,
                                     final Command command);

@@ -72,9 +72,11 @@ public class RestorePopUpPresenter {
     }
 
     public void show(final ObservablePath currentPath,
-                     final String currentVersionRecordUri) {
+                     final String currentVersionRecordUri,
+                     final String branchName) {
         command = restoreCommand(currentPath,
-                                 currentVersionRecordUri);
+                                 currentVersionRecordUri,
+                                 branchName);
         view.show();
     }
 
@@ -96,12 +98,13 @@ public class RestorePopUpPresenter {
     }
 
     public ParameterizedCommand<String> restoreCommand(final ObservablePath currentPath,
-                                                final String currentVersionRecordUri) {
+                                                       final String currentVersionRecordUri,
+                                                       final String branchName) {
         return comment -> {
             busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Restoring());
             versionService.call(successCallback(currentVersionRecordUri),
                                 errorCallback()).restore(currentPath,
-                                                         comment);
+                                                         comment, branchName);
         };
     }
 

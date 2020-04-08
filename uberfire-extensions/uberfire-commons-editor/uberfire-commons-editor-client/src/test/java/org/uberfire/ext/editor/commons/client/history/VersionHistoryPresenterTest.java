@@ -183,7 +183,8 @@ public class VersionHistoryPresenterTest {
                 }
 
                 public Path restore(final Path path,
-                                    final String comment) {
+                                    final String comment,
+                                    final String currentBranch) {
                     return null;
                 }
             };

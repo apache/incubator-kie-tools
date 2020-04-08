@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -45,7 +46,7 @@ public class RestoreVersionCommandProvider {
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
 
-    public Command getCommand(final Path path) {
+    public Command getCommand(final Path path, final CurrentBranch currentBranch) {
         return new Command() {
 
             @Override
@@ -60,7 +61,7 @@ public class RestoreVersionCommandProvider {
                                                         getRestorationSuccessCallback(),
                                                         new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView))
                                                         .restore(path,
-                                                                 comment);
+                                                                 comment, currentBranch.getName());
                                             }
                                         });
             }

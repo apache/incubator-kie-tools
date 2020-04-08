@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
@@ -28,6 +29,8 @@ import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.SaveButton;
 import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper.LockSyncMenuStateHelper.Operation;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
+import org.uberfire.ext.editor.commons.client.menu.common.DefaultCurrentBranch;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -211,6 +214,18 @@ public class BasicFileMenuBuilderTest {
         verify(provider,
                times(1)).getPath();
     }
+
+    @Test
+    public void testAddRestoreVersion() {
+        CurrentBranch currentBranch = new DefaultCurrentBranch();
+        ArgumentCaptor<CurrentBranch> currentBranchCaptor = ArgumentCaptor.forClass(CurrentBranch.class);
+        builder.addRestoreVersion(mock(Path.class),
+                                  currentBranch);
+        verify(restoreVersionCommandProvider).getCommand(any(Path.class),
+                                                         currentBranchCaptor.capture());
+        assertEquals(currentBranch,
+                     currentBranchCaptor.getValue());
+    };
 
     @Test
     public void menuItemsDisabledWhenLockedByDifferentUser() {
