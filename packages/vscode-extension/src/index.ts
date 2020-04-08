@@ -37,13 +37,11 @@ export function startExtension(args: {
   router: Router;
 }) {
   const editorStore = new KogitoEditorStore();
-  const resourceContentService = new VsCodeResourceContentService(editorStore);
   const editorFactory = new KogitoEditorFactory(
     args.context,
     args.router,
     args.webviewLocation,
-    editorStore,
-    resourceContentService
+    editorStore
   );
   const editingCapabilityFactory = new KogitoEditingCapabilityFactory(editorStore);
   const webviewProvider = new KogitoWebviewProvider(editorFactory, editingCapabilityFactory);

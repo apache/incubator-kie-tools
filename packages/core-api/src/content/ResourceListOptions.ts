@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ListType } from "./SearchType";
+import { SearchType } from "./SearchType";
 
 export interface ResourceListOptions {
-  type: ListType;
+  type: SearchType;
 }
