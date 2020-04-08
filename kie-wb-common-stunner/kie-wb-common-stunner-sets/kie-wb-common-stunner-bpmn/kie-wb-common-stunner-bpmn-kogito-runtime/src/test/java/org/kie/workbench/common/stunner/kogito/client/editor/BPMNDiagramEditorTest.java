@@ -192,7 +192,8 @@ public class BPMNDiagramEditorTest {
         verify(menuSessionItems, times(1)).destroy();
 
         //Second setContent call context
-        editor.setContent("", "");
+        final String path = "/project/src/main/resources/diagrams/process.bpmn";
+        editor.setContent(path, "");
         verify(menuSessionItems, times(2)).destroy();
     }
 

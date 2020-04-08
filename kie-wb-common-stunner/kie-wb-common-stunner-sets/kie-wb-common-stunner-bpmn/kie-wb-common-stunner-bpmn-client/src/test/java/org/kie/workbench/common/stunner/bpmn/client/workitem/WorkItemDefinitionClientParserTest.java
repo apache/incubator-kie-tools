@@ -88,8 +88,22 @@ public class WorkItemDefinitionClientParserTest {
     }
 
     @Test
-    public void widParseTest() {
-        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(WID);
+    public void testWidParseLineFeed() {
+        testWidParse(WID);
+    }
+
+    @Test
+    public void testWidParseCarriageReturn() {
+        testWidParse(WID.replace("\n", "\r"));
+    }
+
+    @Test
+    public void testWidParseCarriageReturnAndLineFeed() {
+        testWidParse(WID.replace("\n", "\r\n"));
+    }
+
+    private void testWidParse(final String wid) {
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(wid);
         assertEquals(3, defs.size());
         WorkItemDefinition wid1 = defs.get(0);
         assertEquals("Email", wid1.getName());

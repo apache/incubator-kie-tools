@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceListOptions;
 import org.uberfire.client.promise.Promises;
 
 public class BPMNStaticResourceContentService implements ResourceContentService {
@@ -100,7 +101,7 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             "  ]\n" +
             "]";
 
-    private static final String PATTERN_ALL_WID = "**/*.wid";
+    private static final String PATTERN_ALL_WID = "*.wid";
     private static final Map<String, String> WID_ENTRIES =
             new HashMap<String, String>() {{
                 put("default.wid", DEFAULT_DECLARATIONS);
@@ -139,5 +140,10 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
                 WID_ENTRIES.keySet().toArray(new String[0]) :
                 new String[0];
         return promises.resolve(allUris);
+    }
+
+    @Override
+    public Promise<String[]> list(String pattern, ResourceListOptions options) {
+        return list(pattern);
     }
 }
