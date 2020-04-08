@@ -70,7 +70,8 @@ enum UploadFileInputState {
 
 enum UploadFileDndState {
   INITIAL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
+  HOVER
 }
 
 export function HomePage(props: Props) {
@@ -78,7 +79,6 @@ export function HomePage(props: Props) {
   const history = useHistory();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
-  const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [gistRawUrl, setGistRawUrl] = useState("");
@@ -86,15 +86,14 @@ export function HomePage(props: Props) {
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
   const uploadDndOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadDndRef.current!.className = "hover";
-    setUploadFileDndState(UploadFileDndState.INITIAL);
+    setUploadFileDndState(UploadFileDndState.HOVER);
     e.stopPropagation();
     e.preventDefault();
     return false;
   }, []);
 
   const uploadDndOnDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadDndRef.current!.className = "";
+    setUploadFileDndState(UploadFileDndState.INITIAL);
     e.stopPropagation();
     e.preventDefault();
     return false;
@@ -127,7 +126,7 @@ export function HomePage(props: Props) {
 
   const uploadDndOnDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      uploadDndRef.current!.className = "";
+      setUploadFileDndState(UploadFileDndState.INITIAL);
       e.stopPropagation();
       e.preventDefault();
 
@@ -156,6 +155,8 @@ export function HomePage(props: Props) {
     switch (uploadFileDndState) {
       case UploadFileDndState.INVALID_EXTENSION:
         return "invalid";
+      case UploadFileDndState.HOVER:
+        return "hover";
       default:
         return "";
     }
@@ -170,21 +171,31 @@ export function HomePage(props: Props) {
     }
   }, []);
 
-  const uploadFileFromInput = useCallback(() => {
-    setUploadFileInputState(UploadFileInputState.INITIAL);
-    if (uploadInputRef.current!.files) {
-      const file = uploadInputRef.current!.files![0];
-      onFileUploadFromInput(file);
-    }
-  }, [onFileUploadFromInput]);
+  const uploadFileFromInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const onDndInvalidFileExtensionAnimationEnd = useCallback(() => {
+      if (uploadInputRef.current!.files) {
+        const file = uploadInputRef.current!.files![0];
+        onFileUploadFromInput(file);
+      }
+      e.target.value = "";
+    },
+    [onFileUploadFromInput]
+  );
+
+  const onDndInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setUploadFileDndState(UploadFileDndState.INITIAL);
-  }, [uploadFileDndState]);
+  }, []);
 
-  const onInputInvalidFileExtensionAnimationEnd = useCallback(() => {
+  const onInputInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setUploadFileInputState(UploadFileInputState.INITIAL);
-  }, [uploadFileInputState]);
+  }, []);
 
   const messageForUploadFileFromInputState = useMemo(() => {
     switch (uploadFileInputState) {
@@ -479,7 +490,6 @@ export function HomePage(props: Props) {
             <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
               {/* Upload Drag Target */}
               <div
-                ref={uploadDndRef}
                 onDragOver={uploadDndOnDragOver}
                 onDragLeave={uploadDndOnDragLeave}
                 onDrop={uploadDndOnDrop}
