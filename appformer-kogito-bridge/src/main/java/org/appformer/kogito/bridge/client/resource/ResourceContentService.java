@@ -18,6 +18,7 @@ package org.appformer.kogito.bridge.client.resource;
 
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceListOptions;
 
 /**
  * Service to access resources in the project or workspace where the editor is open
@@ -56,5 +57,17 @@ public interface ResourceContentService {
      * The list of matched resources URIs
      */
     public Promise<String[]> list(String pattern);
+
+    /**
+     * List files from the project/workspace where the editor is running
+     *
+     * @param pattern
+     * A GLOB pattern to filter files. To list all files use "*"
+     * @param options
+     *  Options when retrieving the resource list
+     * @return
+     * The list of matched resources URIs
+     */
+    public Promise<String[]> list(String pattern, ResourceListOptions options);
 
 }

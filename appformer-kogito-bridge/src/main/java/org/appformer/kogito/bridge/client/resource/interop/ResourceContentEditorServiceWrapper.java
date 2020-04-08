@@ -33,6 +33,8 @@ public class ResourceContentEditorServiceWrapper {
 
     public native Promise<String[]> list(String pattern);
 
+    public native Promise<String[]> list(String pattern, ResourceListOptions options);
+
     @JsProperty(name = "resourceContentEditorService")
     public static native ResourceContentEditorServiceWrapper get();
 
