@@ -56,7 +56,7 @@ Feature: Install Kogito Jobs Service
     And Kogito Data Index has 1 pods running within 10 minutes
     And Kogito Jobs Service has 1 pods running within 10 minutes
 
-    When HTTP POST request on service "kogito-jobs-service" is successful within 2 minutes with path "jobs" and body:
+    When HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
       {
         "id": "jobs-service-data-index-id",
