@@ -108,12 +108,12 @@ public class RootProcessConverterTest {
 
     @Test
     public void createAdvancedData() {
-        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id")));
+        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id", "testßval")));
     }
 
     @Test
     public void convertAdvancedData() {
-        tested.createAdvancedData("id");
+        tested.createAdvancedData("id", "testßval");
         assertTrue(tested.convertProcess().isSuccess());
     }
 }

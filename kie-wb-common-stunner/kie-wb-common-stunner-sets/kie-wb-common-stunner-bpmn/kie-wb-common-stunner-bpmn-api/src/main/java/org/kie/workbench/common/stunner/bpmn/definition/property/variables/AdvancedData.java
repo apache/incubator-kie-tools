@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.variables;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -24,33 +26,46 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
+import org.kie.workbench.common.stunner.bpmn.forms.model.MetaDataEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition
+@FormDefinition(startElement = "metaDataAttributes")
 public class AdvancedData implements BaseAdvancedData {
 
     @Property
     @FormField(
+            type = MetaDataEditorFieldType.class
+    )
+    @Valid
+    private MetaDataAttributes metaDataAttributes;
+
+    @Property
+    @FormField(
+            afterElement = "metaDataAttributes",
             type = VariablesEditorFieldType.class
     )
     @Valid
     private GlobalVariables globalVariables;
 
     public AdvancedData() {
-        this(new GlobalVariables());
+        this(new GlobalVariables(), new MetaDataAttributes());
     }
 
-    public AdvancedData(final @MapsTo("globalVariables") GlobalVariables globalVariables) {
+    public AdvancedData(final @MapsTo("globalVariables") GlobalVariables globalVariables, final @MapsTo("metaDataAttributes") MetaDataAttributes metaDataAttributes) {
         this.globalVariables = globalVariables;
+        this.metaDataAttributes = metaDataAttributes;
     }
 
-    public AdvancedData(final String globalVariables) {
+    public AdvancedData(final String globalVariables, final String metaDataAttributes) {
         this.globalVariables = new GlobalVariables(globalVariables);
+        this.metaDataAttributes = new MetaDataAttributes(metaDataAttributes);
     }
 
     @Override
@@ -63,15 +78,26 @@ public class AdvancedData implements BaseAdvancedData {
     }
 
     @Override
+    public MetaDataAttributes getMetaDataAttributes() {
+        return metaDataAttributes;
+    }
+
+    public void setMetaDataAttributes(MetaDataAttributes metadataAttributes) {
+        this.metaDataAttributes = metadataAttributes;
+    }
+
+    @Override
     public int hashCode() {
-        return globalVariables.hashCode();
+        return HashUtil.combineHashCodes(Objects.hashCode(globalVariables),
+                                         Objects.hashCode(metaDataAttributes));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof AdvancedData) {
             AdvancedData other = (AdvancedData) o;
-            return globalVariables.equals(other.globalVariables);
+            return Objects.equals(globalVariables, other.globalVariables) &&
+                    Objects.equals(metaDataAttributes, other.metaDataAttributes);
         }
         return false;
     }

@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.DefaultImportsElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.ElementDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.GlobalVariablesElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetaDataAttributesElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetadataTypeDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.StringElement;
 
@@ -49,6 +50,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<String> caseRole = new StringElement("customCaseRoles", "");
     public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
+    public static final MetaDataAttributesElement metaDataAttributes = new MetaDataAttributesElement("customMetaDataAttributes");
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
     public static final MetadataTypeDefinition<String> customActivationCondition = new StringElement("customActivationCondition", "");
     public static final MetadataTypeDefinition<Boolean> abortParent = new BooleanElement("customAbortParent", true);

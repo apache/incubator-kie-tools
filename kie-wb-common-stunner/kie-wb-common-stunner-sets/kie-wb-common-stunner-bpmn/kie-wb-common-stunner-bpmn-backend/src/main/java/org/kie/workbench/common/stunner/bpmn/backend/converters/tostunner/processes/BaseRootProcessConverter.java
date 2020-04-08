@@ -66,14 +66,14 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
         BpmnNode processRoot = convertProcessNode(definitionsId, process);
 
         Result<Map<String, BpmnNode>> nodesResult = delegate.convertChildNodes(processRoot,
-                                                                             process.getFlowElements(),
-                                                                             process.getLaneSets());
+                                                                               process.getFlowElements(),
+                                                                               process.getLaneSets());
         Map<String, BpmnNode> nodes = nodesResult.value();
 
         Result<Boolean> edgesResult = delegate.convertEdges(processRoot,
-                                                              Stream.concat(process.getFlowElements().stream(),
-                                                                            process.getArtifacts().stream()).collect(Collectors.toList()),
-                                                              nodes);
+                                                            Stream.concat(process.getFlowElements().stream(),
+                                                                          process.getArtifacts().stream()).collect(Collectors.toList()),
+                                                            nodes);
 
         Result<BpmnNode> postConvertResult = delegate.postConvert(processRoot);
 
@@ -95,7 +95,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
         ));
 
         definition.setProcessData(createProcessData(p.getProcessVariables()));
-        definition.setAdvancedData(createAdvancedData(p.getGlobalVariables()));
+        definition.setAdvancedData(createAdvancedData(p.getGlobalVariables(), p.getMetaDataAttributes()));
 
         diagramNode.getContent().setBounds(p.getBounds());
 
@@ -111,5 +111,5 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
 
     protected abstract P createProcessData(String processVariables);
 
-    protected abstract F createAdvancedData(String globalVariables);
+    protected abstract F createAdvancedData(String globalVariables, String metaDataAttributes);
 }

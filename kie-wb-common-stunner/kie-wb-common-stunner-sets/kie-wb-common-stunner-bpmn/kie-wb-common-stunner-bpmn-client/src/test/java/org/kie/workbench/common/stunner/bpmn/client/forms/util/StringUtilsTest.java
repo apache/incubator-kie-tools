@@ -16,7 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.MetaDataAttribute;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -50,5 +55,31 @@ public class StringUtilsTest {
 
         String test6 = "123Test #";
         assertFalse(test6.matches(StringUtils.ALPHA_NUM_SPACE_REGEXP));
+    }
+
+    @Test
+    public void testgetStringForList() {
+        List<Variable> variables = new ArrayList<>();
+        Variable inputVariable1 = new Variable("input1",
+                                               Variable.VariableType.INPUT,
+                                               "Boolean",
+                                               null);
+        Variable inputVariable2 = new Variable("input2",
+                                               Variable.VariableType.INPUT,
+                                               "Object",
+                                               null);
+        variables.add(inputVariable1);
+        variables.add(inputVariable2);
+
+        List<MetaDataAttribute> attributes = new ArrayList<>();
+        MetaDataAttribute metaDataAttribute1 = new MetaDataAttribute("input1", "value");
+        MetaDataAttribute metaDataAttribute2 = new MetaDataAttribute("input2", "value");
+        attributes.add(metaDataAttribute1);
+        attributes.add(metaDataAttribute2);
+
+        assertEquals("input1:Boolean,input2:Object", StringUtils.getStringForList(variables));
+        assertEquals("input1ßvalue,input2ßvalue", StringUtils.getStringForList(attributes, null));
+        assertEquals("input1ßvalue,input2ßvalue", StringUtils.getStringForList(attributes, ""));
+        assertEquals("input1ßvalueØinput2ßvalue", StringUtils.getStringForList(attributes, "Ø"));
     }
 }

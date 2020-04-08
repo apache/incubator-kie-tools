@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Diagram
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
@@ -77,7 +78,7 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
     }
 
     @Override
-    public AdvancedData createAdvancedData(String globalVariables) {
-        return new AdvancedData(new GlobalVariables(globalVariables));
+    public AdvancedData createAdvancedData(String globalVariables, String metaDataAttributes) {
+        return new AdvancedData(new GlobalVariables(globalVariables), new MetaDataAttributes(metaDataAttributes));
     }
 }

@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -42,6 +43,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessPropertyWriterTest {
@@ -173,5 +176,31 @@ public class ProcessPropertyWriterTest {
         assertNotNull(p.getProcess().getDocumentation());
         assertEquals(1, p.getProcess().getDocumentation().size());
         assertEquals("<![CDATA[DocumentationValue]]>", DocumentationTextHandler.of(p.getProcess().getDocumentation().get(0)).getText());
+    }
+
+    @Test
+    public void testSetMetaData() {
+        MetaDataAttributes metaDataAttributes = new MetaDataAttributes("att1ßval1Øatt2ßval2");
+        p.setMetadata(metaDataAttributes);
+        String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
+        assertThat(metaDataString).isEqualTo("att1ß<![CDATA[val1]]>Øatt2ß<![CDATA[val2]]>");
+    }
+
+    @Test
+    public void testSetMetaDataNull() {
+        MetaDataAttributes metaDataAttributes = mock(MetaDataAttributes.class);
+        when(metaDataAttributes.getValue()).thenReturn(null);
+        p.setMetadata(metaDataAttributes);
+        String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
+        assertThat(metaDataString).isEqualTo("");
+    }
+
+    @Test
+    public void testSetMetaDataEmpty() {
+        MetaDataAttributes metaDataAttributes = mock(MetaDataAttributes.class);
+        when(metaDataAttributes.getValue()).thenReturn("");
+        p.setMetadata(metaDataAttributes);
+        String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
+        assertThat(metaDataString).isEqualTo("");
     }
 }

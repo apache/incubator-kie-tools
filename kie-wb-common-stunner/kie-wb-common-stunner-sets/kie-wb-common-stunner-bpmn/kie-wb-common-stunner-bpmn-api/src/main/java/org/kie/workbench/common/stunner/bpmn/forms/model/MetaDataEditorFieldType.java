@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.definition.property.variables;
+package org.kie.workbench.common.stunner.bpmn.forms.model;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public interface BaseAdvancedData extends BPMNPropertySet {
+@Portable
+public class MetaDataEditorFieldType implements FieldType {
 
-    GlobalVariables getGlobalVariables();
+    public static final String NAME = "MetaDataEditor";
 
-    MetaDataAttributes getMetaDataAttributes();
+    @Override
+    public String getTypeName() {
+        return NAME;
+    }
 }

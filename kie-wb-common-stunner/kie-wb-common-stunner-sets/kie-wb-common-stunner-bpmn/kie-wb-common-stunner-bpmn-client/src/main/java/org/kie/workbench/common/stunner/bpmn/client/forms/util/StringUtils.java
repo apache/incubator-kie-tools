@@ -28,6 +28,7 @@ public class StringUtils {
 
     public static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\_]*$";
     public static final String ALPHA_NUM_UNDERSCORE_DOT_REGEXP = "^[a-zA-Z0-9\\_\\.]*$";
+    public static final String ALPHA_NUM_UNDERSCORE_COMMA_REGEXP = "^[a-zA-Z0-9\\-\\_\\,]*$";
     public static final String ALPHA_NUM_SPACE_REGEXP = "^[a-zA-Z0-9\\-\\_\\ ]*$";
     public static final RegExp EXPRESSION = RegExp.compile(Patterns.EXPRESSION);
 
@@ -35,15 +36,31 @@ public class StringUtils {
 
     /**
      * Creates a string for a list by concatenating each object's String separated by commas
+     *
      * @param objects
      * @return
      */
     public static String getStringForList(List<? extends Object> objects) {
+        return getStringForList(objects, ",");
+    }
+
+    /**
+     * Creates a string for a list by concatenating each object's String separated by a custom delimiter
+     *
+     * @param objects
+     * @param delimiter
+     * @return
+     */
+    public static String getStringForList(List<? extends Object> objects, final String delimiter) {
+        if (null == delimiter || delimiter.isEmpty()) {
+            return getStringForList(objects);
+        }
+
         StringBuilder sb = new StringBuilder();
         objects.forEach(object -> {
             String value = object.toString();
             if (value != null && !value.isEmpty()) {
-                sb.append(value).append(',');
+                sb.append(value).append(delimiter);
             }
         });
         if (sb.length() > 0) {
@@ -54,6 +71,7 @@ public class StringUtils {
 
     /**
      * URLEncode a string
+     *
      * @param s
      * @return
      */
@@ -66,6 +84,7 @@ public class StringUtils {
 
     /**
      * URLDecode a string
+     *
      * @param s
      * @return
      */
@@ -78,6 +97,7 @@ public class StringUtils {
 
     /**
      * Create display name for a datatype, e.g. for "org.test.Person", returns "Person [org.test]"
+     *
      * @param dataType
      * @return
      */

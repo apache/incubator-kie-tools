@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
@@ -47,7 +48,8 @@ public class CaseManagementDiagramTest {
     private static final String PACKAGE_INVALID = "";
     private static final String VERSION_VALID = "1.0";
     private static final String VERSION_INVALID = "";
-    final String GLOBAL_VARIABLES = "GV1:Boolean, GV2:Boolean, GV3:Integer";
+    private final String GLOBAL_VARIABLES = "GV1:Boolean, GV2:Boolean, GV3:Integer";
+    private final String METADATA = "securityRolesß<![CDATA[employees,managers]]>Ø securityRoles2ß<![CDATA[admin,managers]]>";
     private Validator validator;
     private CaseManagementDiagram tested;
 
@@ -103,10 +105,13 @@ public class CaseManagementDiagramTest {
 
     @Test
     public void testSetAdvancedData() {
-        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
-        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES));
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                new MetaDataAttributes(METADATA)));
+        AdvancedData advancedData = new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                     new MetaDataAttributes(METADATA));
 
         assertEquals(advancedData, tested.getAdvancedData());
+        assertEquals(advancedData.getGlobalVariables(), tested.getAdvancedData().getGlobalVariables());
         assertEquals(advancedData.getGlobalVariables(), tested.getAdvancedData().getGlobalVariables());
     }
 
@@ -118,15 +123,27 @@ public class CaseManagementDiagramTest {
         diagramSet.setId(new Id(ID_VALID));
         diagramSet.setPackageProperty(new Package(PACKAGE_VALID));
         diagramSet.setVersion(new Version(VERSION_VALID));
-        caseManagementDiagram.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
-        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        caseManagementDiagram.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                               new MetaDataAttributes(METADATA)));
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                new MetaDataAttributes(METADATA)));
 
         assertEquals(caseManagementDiagram, tested);
 
-        tested.setAdvancedData(new AdvancedData(new GlobalVariables("id:")));
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables("id:"),
+                                                new MetaDataAttributes("securityRoles3ß<![CDATA[employees,clients]]>")));
         assertNotEquals(tested, caseManagementDiagram);
 
-        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES)));
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                new MetaDataAttributes("securityRoles3ß<![CDATA[employees,clients]]>")));
+        assertNotEquals(tested, caseManagementDiagram);
+
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables("id:"),
+                                                new MetaDataAttributes(METADATA)));
+        assertNotEquals(tested, caseManagementDiagram);
+
+        tested.setAdvancedData(new AdvancedData(new GlobalVariables(GLOBAL_VARIABLES),
+                                                new MetaDataAttributes(METADATA)));
         assertEquals(tested, caseManagementDiagram);
 
         tested.setDimensionsSet(new RectangleDimensionsSet(10d, 10d));

@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
@@ -84,7 +85,7 @@ public class CaseManagementRootProcessConverter extends BaseRootProcessConverter
     }
 
     @Override
-    protected AdvancedData createAdvancedData(String globalVariables) {
-        return new AdvancedData(new GlobalVariables(globalVariables));
+    protected AdvancedData createAdvancedData(String globalVariables, String metaDataAttributes) {
+        return new AdvancedData(new GlobalVariables(globalVariables), new MetaDataAttributes(metaDataAttributes));
     }
 }

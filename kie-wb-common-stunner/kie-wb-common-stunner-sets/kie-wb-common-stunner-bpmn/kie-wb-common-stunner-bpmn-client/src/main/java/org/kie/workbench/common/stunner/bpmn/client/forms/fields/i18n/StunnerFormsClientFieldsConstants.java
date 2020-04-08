@@ -65,6 +65,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Invalid_character_in_name();
 
+    String Invalid_character_in_value();
+
     String Name();
 
     String No_Data_Input();
@@ -89,6 +91,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Removed_invalid_characters_from_name();
 
+    String Removed_invalid_characters_from_value();
+
     String A_Data_Input_with_this_name_already_exists();
 
     String ProcessModel();
@@ -100,6 +104,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
     String RenameDiagramVariableError();
 
     String DuplicatedVariableNameError(String variableName);
+
+    String DuplicatedAttributeNameError(String attributeName);
 
     String AssignmentNameAlreadyInUseAsMultipleInstanceInputOutputVariable(String assignmentName);
 

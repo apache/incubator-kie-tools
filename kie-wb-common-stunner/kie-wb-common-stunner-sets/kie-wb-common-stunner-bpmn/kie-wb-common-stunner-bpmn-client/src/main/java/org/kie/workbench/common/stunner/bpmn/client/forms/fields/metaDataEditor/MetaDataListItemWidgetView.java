@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.definition.property.variables;
+package org.kie.workbench.common.stunner.bpmn.client.forms.fields.metaDataEditor;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
+import org.jboss.errai.ui.client.widget.HasModel;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.MetaDataRow;
 
-public interface BaseAdvancedData extends BPMNPropertySet {
+public interface MetaDataListItemWidgetView extends HasModel<MetaDataRow> {
 
-    GlobalVariables getGlobalVariables();
+    void init();
 
-    MetaDataAttributes getMetaDataAttributes();
+    void setParentWidget(final MetaDataEditorWidgetView.Presenter parentWidget);
+
+    void notifyModelChanged();
+
+    String getValue();
+
+    void setValue(final String value);
+
+    void setReadOnly(final boolean readOnly);
 }

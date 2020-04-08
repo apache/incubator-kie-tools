@@ -88,6 +88,7 @@ public class RootProcessConverter {
 
         BaseAdvancedData advancedData = definition.getAdvancedData();
         p.setGlobalVariables(advancedData.getGlobalVariables());
+        p.setMetadata(advancedData.getMetaDataAttributes());
 
         //Case Management
         final CaseIdPrefix caseIdPrefix = definition.getCaseManagementSet().getCaseIdPrefix();

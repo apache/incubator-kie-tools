@@ -108,6 +108,6 @@ public class CaseManagementRootProcessConverterTest {
 
     @Test
     public void testCreateAdvancedData() {
-        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id")));
+        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id", "testßval")));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.definition.property.variables;
+package org.kie.workbench.common.stunner.bpmn.forms.model;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
+import org.junit.Test;
 
-public interface BaseAdvancedData extends BPMNPropertySet {
+import static org.junit.Assert.assertEquals;
 
-    GlobalVariables getGlobalVariables();
+public class MetaDataEditorFieldTypeTest {
 
-    MetaDataAttributes getMetaDataAttributes();
+    @Test
+    public void getTypeName() {
+        assertEquals(MetaDataEditorFieldType.NAME, new MetaDataEditorFieldType().getTypeName());
+    }
 }

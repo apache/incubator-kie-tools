@@ -93,7 +93,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
         ));
 
         definition.setProcessData(createProcessData(e.getProcessVariables()));
-        definition.setAdvancedData(createAdvancedData(e.getGlobalVariables()));
+        definition.setAdvancedData(createAdvancedData(e.getGlobalVariables(), e.getMetaDataAttributes()));
 
         diagramNode.getContent().setBounds(e.getBounds());
 
@@ -109,5 +109,5 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
 
     protected abstract P createProcessData(String processVariables);
 
-    protected abstract F createAdvancedData(String globalVariables);
+    protected abstract F createAdvancedData(String globalVariables, String metaDataAttributes);
 }

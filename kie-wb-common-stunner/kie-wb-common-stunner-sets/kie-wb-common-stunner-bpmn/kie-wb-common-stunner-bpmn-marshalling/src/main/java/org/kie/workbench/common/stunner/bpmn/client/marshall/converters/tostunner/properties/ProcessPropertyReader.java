@@ -86,6 +86,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
         return CustomElement.globalVariables.of(process).get();
     }
 
+    public String getMetaDataAttributes() {
+        return CustomElement.metaDataAttributes.of(process).get();
+    }
+
     public String getSlaDueDate() {
         return CustomElement.slaDueDate.of(process).get();
     }

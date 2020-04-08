@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Diagram
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessType;
@@ -170,6 +171,7 @@ public class ClientBPMNDocumentationServiceTest {
     public static final String ASSIGNEMNTS = "assignemnts";
     private static final String VARIABLES = "PV1:java.lang.String:false,PV2:java.lang.Boolean:false";
     private static final String GLOBAL_VARIABLES = "GL1:java.lang.String:false,GL2:java.lang.Boolean:false";
+    private static final String METADATA = "securityRolesß<![CDATA[employees,managers]]>Ø securityRoles2ß<![CDATA[admin,managers]]>";
     private static final String SUB_PROCESS_VARIABLES = "SUBPV1:java.lang.String:false,SUBPV2:java.lang.Boolean:false";
     private static final String ISASYNC_CAPTION = "ISASYNC_CAPTION";
     private static final String ON_EXIT_CAPTION = "ONEXIT_CAPTION";
@@ -258,6 +260,8 @@ public class ClientBPMNDocumentationServiceTest {
 
     private GlobalVariables globalVariables;
 
+    private MetaDataAttributes metaDataAttributes;
+
     @Mock
     private DefinitionAdapter<Object> definitionAdapter;
 
@@ -310,6 +314,7 @@ public class ClientBPMNDocumentationServiceTest {
         executable = new Executable(PROCESS_IS_EXECUTABLE);
         processId = new Id(PROCESS_UUID);
         globalVariables = new GlobalVariables(GLOBAL_VARIABLES);
+        metaDataAttributes = new MetaDataAttributes(METADATA);
         slaDueDate = new SLADueDate(SLA_DUE_DATE);
 
         ImportsValue importsValue = new ImportsValue();
@@ -339,7 +344,8 @@ public class ClientBPMNDocumentationServiceTest {
 
         //AdvancedData
         globalVariables = new GlobalVariables(GLOBAL_VARIABLES);
-        advancedData = new AdvancedData(globalVariables);
+        metaDataAttributes = new MetaDataAttributes(METADATA);
+        advancedData = new AdvancedData(globalVariables, metaDataAttributes);
 
         bpmnDiagram = new BPMNDiagramImpl(
                 diagramSet,
