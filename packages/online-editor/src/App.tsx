@@ -19,6 +19,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { Routes } from "./common/Routes";
+import { GithubService } from "./common/GithubService";
 import { HomePage } from "./home/HomePage";
 import { EditorPage } from "./editor/EditorPage";
 import { NoMatchPage } from "./NoMatchPage";
@@ -31,6 +32,7 @@ import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import "../static/resources/style.css";
 import { File } from "./common/File";
+import { DownloadHubModal } from "./home/DownloadHubModal";
 
 interface Props {
   iframeTemplateRelativePath: string;
@@ -38,6 +40,7 @@ interface Props {
   readonly: boolean;
   external: boolean;
   senderTabId?: string;
+  githubService: GithubService;
 }
 
 export function App(props: Props) {
@@ -79,7 +82,8 @@ export function App(props: Props) {
         file: file,
         readonly: props.readonly,
         external: props.external,
-        senderTabId: props.senderTabId
+        senderTabId: props.senderTabId,
+        githubService: props.githubService
       }}
     >
       <HashRouter>
@@ -89,6 +93,10 @@ export function App(props: Props) {
           </Route>
           <Route exact={true} path={routes.home.url({})}>
             <HomePage onFileOpened={onFileOpened} />
+          </Route>
+          <Route exact={true} path={routes.downloadHub.url({})}>
+            <HomePage onFileOpened={onFileOpened} />
+            <DownloadHubModal />
           </Route>
           <Route component={NoMatchPage} />
         </Switch>

@@ -1,0 +1,10 @@
+name: "JSON to Output"
+description: "Converts a JSON file into Outputs of this action"
+inputs:
+  path:
+    description: "The path of the JSON"
+    required: true
+    default: "env-to-json.json"
+runs:
+  using: "node12"
+  main: "index.js"

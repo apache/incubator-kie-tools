@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
@@ -47,6 +47,7 @@ import {
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { Link } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 
@@ -62,7 +63,9 @@ enum InputFileUrlState {
   INVALID_EXTENSION,
   NOT_FOUND_URL,
   CORS_NOT_AVAILABLE,
-  VALIDATING
+  VALIDATING,
+  INVALID_GIST,
+  INVALID_GIST_EXTENSION
 }
 
 enum UploadFileInputState {
@@ -75,8 +78,6 @@ enum UploadFileDndState {
   INVALID_EXTENSION
 }
 
-const githubService = new GithubService();
-
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
@@ -85,6 +86,7 @@ export function HomePage(props: Props) {
   const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
+  const [gistRawUrl, setGistRawUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
@@ -245,6 +247,14 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
+  useEffect(() => {
+    if (context.githubService.isGist(inputFileUrl)) {
+      const gistId = context.githubService.extractGistId(inputFileUrl);
+      context.githubService.getGistRawUrlFromId(gistId)
+        .then(rawUrlStr => setGistRawUrl(rawUrlStr));
+    }
+  }, [inputFileUrl]);
+
   const checkResponseFromFetch = useCallback(responseSucceed => {
     if (responseSucceed) {
       setInputFileUrlState(InputFileUrlState.VALID);
@@ -255,8 +265,8 @@ export function HomePage(props: Props) {
 
   const validateFileOnUrl = useCallback((fileUrl: string) => {
     setInputFileUrlState(InputFileUrlState.VALIDATING);
-    if (githubService.isGithub(fileUrl)) {
-      githubService
+    if (context.githubService.isGithub(fileUrl)) {
+      context.githubService
         .checkGithubFileExistence(fileUrl)
         .then(checkResponseFromFetch)
         .catch(err => setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL));
@@ -269,31 +279,47 @@ export function HomePage(props: Props) {
     }
   }, []);
 
-  const validateUrl = useCallback((fileUrl: string) => {
-    if (fileUrl.trim() === "") {
+  useEffect(() => {
+    if (inputFileUrl.trim() === "") {
       setInputFileUrlState(InputFileUrlState.INITIAL);
-      return false;
     }
+
+    if (context.githubService.isGist(inputFileUrl)) {
+      if (!gistRawUrl) {
+        setInputFileUrlState(InputFileUrlState.INVALID_GIST);
+      }
+
+      const gistExtension = extractFileExtension(new URL(gistRawUrl).pathname);
+      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+        setInputFileUrlState(InputFileUrlState.VALID);
+      } else {
+        setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
+      }
+    }
+
     let url: URL;
     try {
-      url = new URL(fileUrl);
+      url = new URL(inputFileUrl);
     } catch (e) {
       setInputFileUrlState(InputFileUrlState.INVALID_URL);
-      return;
     }
-    const fileExtension = extractFileExtension(url.pathname);
+
+    const fileExtension = extractFileExtension(new URL(inputFileUrl).pathname);
     if (!fileExtension) {
       setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
     } else if (!context.router.getLanguageData(fileExtension)) {
       setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
     } else {
-      validateFileOnUrl(fileUrl);
+      validateFileOnUrl(inputFileUrl);
     }
-  }, []);
+  }, [inputFileUrl])
+
+  // const inputFileUrlState = useMemo(() => {
+  //
+  // }, [inputFileUrl, gistRawUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
-    validateUrl(fileUrl);
   }, []);
 
   const validateUrlInputText = useMemo(
@@ -313,13 +339,13 @@ export function HomePage(props: Props) {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (validateUrlInputText) {
-      const fileUrl = new URL(inputFileUrl);
-      const fileExtension = extractFileExtension(fileUrl.pathname);
+    if (validateUrlInputText && inputFileUrlState !== InputFileUrlState.INITIAL) {
+      const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
+      const fileExtension = extractFileExtension(new URL(urlToLoad).pathname);
       // FIXME: KOGITO-1202
-      window.location.href = `?file=${inputFileUrl}#/editor/${fileExtension}`;
+      window.location.href = `?file=${urlToLoad}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, validateUrlInputText]);
+  }, [inputFileUrl, gistRawUrl, validateUrlInputText, inputFileUrlState]);
 
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
@@ -332,8 +358,12 @@ export function HomePage(props: Props) {
 
   const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
+      case InputFileUrlState.INVALID_GIST_EXTENSION:
+        return "File type on the provided gist is not supported";
       case InputFileUrlState.INVALID_EXTENSION:
         return "The file type of this URL is not supported.";
+      case InputFileUrlState.INVALID_GIST:
+        return "Enter a valid Gist URL";
       case InputFileUrlState.INVALID_URL:
         return 'This URL is not valid (don\'t forget "https://"!).';
       case InputFileUrlState.NO_FILE_URL:
@@ -362,14 +392,9 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-        Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
-      </a>
-    </DropdownItem>,
-    <DropdownItem key="vscode-extension-dropdown-link">
-      <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-        Get VSCode extension <ExternalLinkAltIcon className="pf-u-mx-sm" />
-      </a>
+      <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+        Get Business Modeler Hub Preview
+      </Link>
     </DropdownItem>
   ];
 
@@ -392,18 +417,10 @@ export function HomePage(props: Props) {
       <Toolbar>
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-              <Button variant="plain">
-                Get GitHub Chrome extension
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
-              </Button>
-            </a>
-            <a href={"https://github.com/kiegroup/kogito-tooling/releases"} target={"_blank"}>
-              <Button variant="plain">
-                Get VSCode extension
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
-              </Button>
-            </a>
+            <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+              Get Business Modeler Hub Preview
+              {/*<Button variant="plain">Get Business Modeler Hub Preview</Button>*/}
+            </Link>
           </ToolbarItem>
           <ToolbarItem className="pf-u-display-none-on-lg">
             <Dropdown
@@ -567,6 +584,7 @@ export function HomePage(props: Props) {
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
                     isValid={validateUrlInputText}
+                    autoComplete={"off"}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
                     type="url"

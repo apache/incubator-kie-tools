@@ -35,7 +35,13 @@ if (urlParams.has("ext")) {
 
 function openDefaultOnlineEditor() {
   ReactDOM.render(
-    <App iframeTemplateRelativePath={"envelope/index.html"} file={EMPTY_FILE} readonly={false} external={false} />,
+    <App
+      iframeTemplateRelativePath={"envelope/index.html"}
+      file={EMPTY_FILE}
+      readonly={false}
+      external={false}
+      githubService={githubService}
+    />,
     document.getElementById("app")!
   );
 }
@@ -50,6 +56,7 @@ function waitForEventWithFileData() {
         readonly={e.detail.readonly}
         external={true}
         senderTabId={e.detail.senderTabId}
+        githubService={githubService}
       />,
       document.getElementById("app")!
     );
@@ -88,7 +95,13 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
     getFileContents: () => getFileContent
   };
   ReactDOM.render(
-    <App iframeTemplateRelativePath={"envelope/index.html"} file={file} readonly={false} external={false} />,
+    <App
+      iframeTemplateRelativePath={"envelope/index.html"}
+      file={file}
+      readonly={false}
+      external={false}
+      githubService={githubService}
+    />,
     document.getElementById("app")!
   );
 }
