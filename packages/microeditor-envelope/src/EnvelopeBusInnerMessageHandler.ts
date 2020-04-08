@@ -35,8 +35,8 @@ export interface Impl {
   receive_contentRequest(): void;
   receive_resourceContentResponse(content: ResourceContent): void;
   receive_resourceContentList(list: ResourcesList): void;
-  receive_editorUndo(edits: KogitoEdit[]): void;
-  receive_editorRedo(edits: KogitoEdit[]): void;
+  receive_editorUndo(edits: ReadonlyArray<KogitoEdit>): void;
+  receive_editorRedo(edits: ReadonlyArray<KogitoEdit>): void;
   receive_previewRequest(): void;
 }
 
@@ -155,11 +155,11 @@ export class EnvelopeBusInnerMessageHandler {
         this.impl.receive_resourceContentList(resourcesList);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
-        const undoEdits = message.data as KogitoEdit[];
+        const undoEdits = message.data as ReadonlyArray<KogitoEdit>;
         this.impl.receive_editorUndo(undoEdits);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
-        const redoEdits = message.data as KogitoEdit[];
+        const redoEdits = message.data as ReadonlyArray<KogitoEdit>;
         this.impl.receive_editorRedo(redoEdits);
         break;
       case EnvelopeBusMessageType.REQUEST_PREVIEW:
