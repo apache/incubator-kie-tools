@@ -38,7 +38,12 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
             @Override
             public void generationComplete(final String code) {
-                result.setActualCode(code);
+                //check to remove extra carriage return \r character from string in windows environment
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    result.setActualCode(code.replaceAll("\\r", ""));
+                } else {
+                    result.setActualCode(code);
+                }
             }
         });
     }
