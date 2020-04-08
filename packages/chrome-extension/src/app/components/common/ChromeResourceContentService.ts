@@ -19,6 +19,7 @@ import {
   ResourceContentService,
   ResourcesList,
   ResourceContentOptions,
+  ResourceListOptions,
   ContentType
 } from "@kogito-tooling/core-api";
 import { fetchFile } from "../../github/api";
@@ -64,7 +65,7 @@ class ChromeResourceContentService implements ResourceContentService {
       });
   }
 
-  public list(pattern: string): Promise<ResourcesList> {
+  public list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     return this.octokit.git
       .getTree({
         headers: {

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-export * from "./ResourceContentService";
-export * from "./ResourceContent";
-export * from "./ResourcesList";
-export * from "./ContentType";
-export * from "./ResourceContentOptions";
-export * from "./ResourceContentRequest";
-export * from "./SearchType";
-export * from "./ResourceListOptions";
-export * from "./ResourceListRequest";
+module.exports = {
+  reporters: ["default"],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest"
+  }
+};
