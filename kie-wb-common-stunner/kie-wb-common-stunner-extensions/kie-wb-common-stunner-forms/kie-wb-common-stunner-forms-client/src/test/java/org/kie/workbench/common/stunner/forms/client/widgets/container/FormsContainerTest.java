@@ -38,6 +38,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -48,10 +50,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FormsContainerTest {
 
-    private static final String GRAPH_UID = "graphUid";
+    private static final String GRAPH_UUID = "graphUid";
 
-    private static final String FIRST_ELEMENT_UID = "first_uid";
-    private static final String SECOND_ELEMENT_UID = "second_uid";
+    private static final String FIRST_ELEMENT_UUID = "first_uid";
+    private static final String SECOND_ELEMENT_UUID = "second_uid";
 
     @Mock
     private Path path;
@@ -90,31 +92,31 @@ public class FormsContainerTest {
     public void testFirstRender() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
+        testRender(getNode(FIRST_ELEMENT_UUID), 1, 1, renderMode);
     }
 
     @Test
     public void testSecondRender() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
+        testRender(getNode(FIRST_ELEMENT_UUID), 1, 1, renderMode);
 
-        testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
+        testRender(getNode(SECOND_ELEMENT_UUID), 2, 1, renderMode);
     }
 
     @Test
     public void testRenderExistingNode() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        NodeImpl<Definition<?>> firstNode = getNode(FIRST_ELEMENT_UID);
+        NodeImpl<Definition<?>> firstNode = getNode(FIRST_ELEMENT_UUID);
 
         FormDisplayer firstDisplayer = testRender(firstNode, 1, 1, renderMode);
 
-        NodeImpl secondNode = getNode(SECOND_ELEMENT_UID);
+        NodeImpl secondNode = getNode(SECOND_ELEMENT_UUID);
 
         FormDisplayer secondDisplayer = testRender(secondNode, 2, 1, renderMode);
 
-        formsContainer.render(GRAPH_UID, firstNode.getUUID(), firstNode.getContent().getDefinition(), path, fieldChangeHandler, renderMode);
+        formsContainer.render(GRAPH_UUID, firstNode.getUUID(), firstNode.getContent().getDefinition(), path, fieldChangeHandler, renderMode);
 
         verify(displayersInstance, times(2)).get();
 
@@ -128,11 +130,11 @@ public class FormsContainerTest {
     public void testDestroyDiagramDisplayers() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        FormDisplayer firstDisplayer = testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
+        FormDisplayer firstDisplayer = testRender(getNode(FIRST_ELEMENT_UUID), 1, 1, renderMode);
 
-        FormDisplayer secondDisplayer = testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
+        FormDisplayer secondDisplayer = testRender(getNode(SECOND_ELEMENT_UUID), 2, 1, renderMode);
 
-        formsContainer.clearDiagramDisplayers(GRAPH_UID);
+        formsContainer.clearDiagramDisplayers(GRAPH_UUID);
 
         verify(firstDisplayer, times(3)).hide();
         verify(view, times(1)).removeDisplayer(firstDisplayer);
@@ -147,15 +149,15 @@ public class FormsContainerTest {
     public void testDestroyOneDisplayer() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        NodeImpl firstNode = getNode(FIRST_ELEMENT_UID);
+        NodeImpl firstNode = getNode(FIRST_ELEMENT_UUID);
 
         FormDisplayer firstDisplayer = testRender(firstNode, 1, 1, renderMode);
 
-        NodeImpl secondNode = getNode(SECOND_ELEMENT_UID);
+        NodeImpl secondNode = getNode(SECOND_ELEMENT_UUID);
 
         FormDisplayer secondDisplayer = testRender(secondNode, 2, 1, renderMode);
 
-        formsContainer.clearFormDisplayer(GRAPH_UID, FIRST_ELEMENT_UID);
+        formsContainer.clearFormDisplayer(GRAPH_UUID, FIRST_ELEMENT_UUID);
 
         verify(firstDisplayer, times(3)).hide();
         verify(view, times(1)).removeDisplayer(firstDisplayer);
@@ -165,7 +167,7 @@ public class FormsContainerTest {
         verify(view, never()).removeDisplayer(secondDisplayer);
         verify(displayersInstance, never()).destroy(secondDisplayer);
 
-        formsContainer.clearFormDisplayer(GRAPH_UID, SECOND_ELEMENT_UID);
+        formsContainer.clearFormDisplayer(GRAPH_UUID, SECOND_ELEMENT_UUID);
 
         verify(secondDisplayer, times(2)).hide();
         verify(view, times(1)).removeDisplayer(secondDisplayer);
@@ -176,9 +178,9 @@ public class FormsContainerTest {
     public void testDestroyAllDisplayers() {
         //arbitrary render mode
         RenderMode renderMode = RenderMode.EDIT_MODE;
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
+        testRender(getNode(FIRST_ELEMENT_UUID), 1, 1, renderMode);
 
-        testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
+        testRender(getNode(SECOND_ELEMENT_UUID), 2, 1, renderMode);
 
         formsContainer.destroyAll();
 
@@ -186,12 +188,48 @@ public class FormsContainerTest {
         verify(displayersInstance, times(1)).destroyAll();
     }
 
+    @Test
+    public void testflush() {
+        DynamicFormRenderer dynamicFormRenderer = mock(DynamicFormRenderer.class);
+
+        FormDisplayer formDisplayer = mock(FormDisplayer.class);
+        when(formDisplayer.getRenderer()).thenReturn(dynamicFormRenderer);
+
+        FormsContainer formsContainer = mock(FormsContainer.class);
+
+        when(formsContainer.getDisplayer(GRAPH_UUID, FIRST_ELEMENT_UUID)).thenReturn(formDisplayer);
+        doCallRealMethod().when(formsContainer).flush(GRAPH_UUID, FIRST_ELEMENT_UUID);
+
+        formsContainer.flush(GRAPH_UUID, FIRST_ELEMENT_UUID);
+        verify(dynamicFormRenderer, times(1)).flush();
+    }
+
+    @Test
+    public void testGetDisplayer() {
+        FormDisplayer formDisplayer1 = mock(FormDisplayer.class);
+        FormDisplayer formDisplayer2 = mock(FormDisplayer.class);
+
+        ManagedInstance managedInstance = mock(ManagedInstance.class);
+        when(managedInstance.get()).thenReturn(formDisplayer2);
+
+        FormsContainerView formsContainerView = mock(FormsContainerView.class);
+
+        FormsContainer formsContainer = new FormsContainer(formsContainerView, managedInstance, null);
+        formsContainer.formDisplayers.put(new FormDisplayerKey(GRAPH_UUID, FIRST_ELEMENT_UUID), formDisplayer1);
+
+        FormDisplayer result1 = formsContainer.getDisplayer(GRAPH_UUID, FIRST_ELEMENT_UUID);
+        FormDisplayer result2 = formsContainer.getDisplayer(GRAPH_UUID, SECOND_ELEMENT_UUID);
+
+        assertEquals(formDisplayer1, result1);
+        assertEquals(formDisplayer2, result2);
+    }
+
     private FormDisplayer testRender(NodeImpl<Definition<?>> node, int expectedDisplayers, int currentDisplayerRender, RenderMode renderMode) {
         //clear mocks
         reset(renderer);
         reset(formFieldChangedEvent);
 
-        formsContainer.render(GRAPH_UID, node.getUUID(), node.getContent().getDefinition(), path, fieldChangeHandler, renderMode);
+        formsContainer.render(GRAPH_UUID, node.getUUID(), node.getContent().getDefinition(), path, fieldChangeHandler, renderMode);
 
         verify(displayersInstance, times(expectedDisplayers)).get();
 

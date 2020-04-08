@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
@@ -43,8 +44,8 @@ public class FormsContainer implements IsElement {
     private static Logger LOGGER = Logger.getLogger(FormsContainer.class.getName());
 
     private final FormsContainerView view;
-    private final ManagedInstance<FormDisplayer> displayersInstance;
-    private final Map<FormDisplayerKey, FormDisplayer> formDisplayers;
+    protected final ManagedInstance<FormDisplayer> displayersInstance;
+    protected final Map<FormDisplayerKey, FormDisplayer> formDisplayers;
     private final Event<FormFieldChanged> formFieldChangedEvent;
 
     private FormDisplayer currentDisplayer;
@@ -81,8 +82,8 @@ public class FormsContainer implements IsElement {
         });
     }
 
-    private FormDisplayer getDisplayer(final String graphUuid,
-                                       final String elementUuid) {
+    protected FormDisplayer getDisplayer(final String graphUuid,
+                                         final String elementUuid) {
         FormDisplayerKey key = new FormDisplayerKey(graphUuid, elementUuid);
         FormDisplayer displayer = formDisplayers.get(key);
 
@@ -120,6 +121,12 @@ public class FormsContainer implements IsElement {
                 .filter(key -> key.getGraphUuid().equals(graphUuid) && key.getElementUid().equals(elementUid))
                 .findAny()
                 .ifPresent(this::clearDisplayer);
+    }
+
+    public void flush(String graphUUID, String elementUUID) {
+        FormDisplayer displayer = getDisplayer(graphUUID, elementUUID);
+        DynamicFormRenderer renderer = displayer.getRenderer();
+        renderer.flush();
     }
 
     private void clearDisplayer(final FormDisplayerKey key) {

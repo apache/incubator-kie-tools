@@ -90,6 +90,8 @@ public class FormPropertiesWidgetTest {
     @Mock
     private FormsContainer formsContainer;
     @Mock
+    private FormsFlushManager formsFlushManager;
+    @Mock
     private TranslationService translationService;
     @Mock
     private EditorSession session;
@@ -164,6 +166,7 @@ public class FormPropertiesWidgetTest {
                                                formsCanvasSessionHandler,
                                                propertiesOpenedEvent,
                                                formsContainer,
+                                               formsFlushManager,
                                                translationService) {
             @Override
             protected void log(final Level level, final String message) {
@@ -172,6 +175,12 @@ public class FormPropertiesWidgetTest {
         };
 
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
+    }
+
+    @Test
+    public void testInit() {
+        tested.init();
+        verify(formsFlushManager, times(1)).setCurrentContainer(formsContainer);
     }
 
     @Test
@@ -184,6 +193,7 @@ public class FormPropertiesWidgetTest {
         verify(formsCanvasSessionHandler).show(callback);
 
         verify(formsContainer, never()).render(anyString(), any(), any(), any(), any(), any());
+        verify(propertiesOpenedEvent, never()).fire(formPropertiesOpenedArgumentCaptor.capture());
     }
 
     /**
@@ -258,6 +268,7 @@ public class FormPropertiesWidgetTest {
                                                                             eq(fieldValue));
 
         verify(propertiesOpenedEvent).fire(formPropertiesOpenedArgumentCaptor.capture());
+
         final FormPropertiesOpened formPropertiesOpened = formPropertiesOpenedArgumentCaptor.getValue();
         assertThat(formPropertiesOpened.getUuid()).isEqualTo(DOMAIN_OBJECT_UUID);
         assertThat(formPropertiesOpened.getName()).isEqualTo(DOMAIN_OBJECT_TRANSLATION_KEY);
@@ -277,6 +288,7 @@ public class FormPropertiesWidgetTest {
         formRenderer.render(GRAPH_UUID, (Element) null, command);
 
         verify(formsContainer, never()).render(any(), any(), any(), any(), any(), any());
+        verify(propertiesOpenedEvent, never()).fire(formPropertiesOpenedArgumentCaptor.capture());
         verify(command, never()).execute();
     }
 
@@ -296,6 +308,12 @@ public class FormPropertiesWidgetTest {
         verify(formsCanvasSessionHandler, never()).executeUpdateProperty(any(), any(), any());
         // Verify it is only rendered once, since the same item was already rendered
         verify(formsContainer, atMost(1)).render(any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void testFireFormsPropertiesOpenedEvent() {
+        tested.fireFormsPropertiesOpenedEvent("", "");
+        verify(propertiesOpenedEvent, times(1)).fire(formPropertiesOpenedArgumentCaptor.capture());
     }
 
     @Test
@@ -359,5 +377,4 @@ public class FormPropertiesWidgetTest {
         formRenderer.render(GRAPH_UUID, edge, command);
         assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), false);
     }
-
 }

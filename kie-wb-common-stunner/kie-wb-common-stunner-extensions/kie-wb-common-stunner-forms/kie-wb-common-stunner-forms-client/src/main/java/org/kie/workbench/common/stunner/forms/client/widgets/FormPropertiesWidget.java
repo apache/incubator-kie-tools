@@ -60,10 +60,7 @@ public class FormPropertiesWidget implements IsElement,
     private final FormsCanvasSessionHandler formSessionHandler;
     private final FormsContainer formsContainer;
     private final TranslationService translationService;
-
-    protected FormPropertiesWidget() {
-        this(null, null, null, null, null, null);
-    }
+    private final FormsFlushManager formsFlushManager;
 
     @Inject
     public FormPropertiesWidget(final FormPropertiesWidgetView view,
@@ -71,6 +68,7 @@ public class FormPropertiesWidget implements IsElement,
                                 final FormsCanvasSessionHandler formSessionHandler,
                                 final Event<FormPropertiesOpened> propertiesOpenedEvent,
                                 final FormsContainer formsContainer,
+                                final FormsFlushManager formsFlushManager,
                                 final TranslationService translationService) {
         this.view = view;
         this.definitionUtils = definitionUtils;
@@ -78,12 +76,14 @@ public class FormPropertiesWidget implements IsElement,
         this.propertiesOpenedEvent = propertiesOpenedEvent;
         this.formsContainer = formsContainer;
         this.translationService = translationService;
+        this.formsFlushManager = formsFlushManager;
     }
 
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {
         log(Level.INFO, "FormPropertiesWidget instance build.");
+        formsFlushManager.setCurrentContainer(formsContainer);
         formSessionHandler.setRenderer(new FormsCanvasSessionHandler.FormRenderer() {
             @Override
             public void render(String graphUuid, Element element, Command callback) {
@@ -180,7 +180,7 @@ public class FormPropertiesWidget implements IsElement,
         if (isNode(element)) {
             computedPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
         } else {
-          return false;
+            return false;
         }
 
         return (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && computedPosition.equals(lastPosition));
@@ -200,7 +200,7 @@ public class FormPropertiesWidget implements IsElement,
                 return;
             }
 
-            final String uuid = element.getUUID();
+            final String elementUUID = element.getUUID();
             final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
             if (Objects.isNull(diagram)) {
                 return;
@@ -219,7 +219,7 @@ public class FormPropertiesWidget implements IsElement,
             final RenderMode renderMode = formSessionHandler.getSession() instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.READ_ONLY_MODE;
 
             formsContainer.render(graphUuid,
-                                  uuid,
+                                  elementUUID,
                                   definition,
                                   diagramPath,
                                   (fieldName, newValue) -> {
@@ -236,8 +236,8 @@ public class FormPropertiesWidget implements IsElement,
                                       }
                                   },
                                   renderMode);
-            final String name = definitionUtils.getName(definition);
-            propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
+            final String elementName = definitionUtils.getName(definition);
+            fireFormsPropertiesOpenedEvent(elementUUID, elementName);
             lastElement = element;
             if (isNode(element)) {
                 lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
@@ -282,8 +282,12 @@ public class FormPropertiesWidget implements IsElement,
                                   }
                               },
                               renderMode);
-        propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), domainObjectUUID, domainObjectName));
+        fireFormsPropertiesOpenedEvent(domainObjectUUID, domainObjectName);
         resetLastElementRenderedCache();
+    }
+
+    protected void fireFormsPropertiesOpenedEvent(String uuid, String name) {
+        propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
     }
 
     protected void log(final Level level, final String message) {
