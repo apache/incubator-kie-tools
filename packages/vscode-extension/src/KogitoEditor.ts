@@ -24,7 +24,8 @@ import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  Router
+  Router,
+  ResourceListRequest
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
@@ -96,8 +97,8 @@ export class KogitoEditor {
             .get(request.path, request.opts)
             .then(content => self.respond_resourceContent(content!));
         },
-        receive_resourceListRequest: (pattern: string) => {
-          this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
+        receive_resourceListRequest: (request: ResourceListRequest) => {
+          this.resourceContentService.list(request.pattern, request.opts).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
           /**/
