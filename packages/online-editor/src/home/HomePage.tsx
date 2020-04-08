@@ -558,6 +558,7 @@ export function HomePage(props: Props) {
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
+                  data-testid="url-form-input"
                   isValid={validateUrlInputText}
                   helperText={helperMessageForInputFileFromUrlState}
                   helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
@@ -569,6 +570,7 @@ export function HomePage(props: Props) {
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
                     type="url"
+                    data-testid="url-text-input"
                     id="url-text-input"
                     name="urlText"
                     aria-describedby="url-text-input-helper"
