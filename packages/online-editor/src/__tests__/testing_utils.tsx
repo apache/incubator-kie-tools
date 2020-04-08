@@ -21,6 +21,7 @@ import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOute
 import { EMPTY_FILE } from "../common/File";
 import { OnlineEditorRouter } from "../common/OnlineEditorRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import {GithubService} from "../common/GithubService";
 
 export function usingTestingGlobalContext(
   children: React.ReactElement,
@@ -40,6 +41,7 @@ export function usingTestingGlobalContext(
     readonly: false,
     external: false,
     senderTabId: undefined,
+    githubService: new GithubService(),
     ...ctx
   };
   return {

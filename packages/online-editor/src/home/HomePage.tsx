@@ -15,40 +15,39 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useMemo, useRef, useState, useEffect } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
 import {
+  Brand,
   Bullseye,
   Button,
-  Page,
-  PageSection,
-  Title,
-  Toolbar,
-  ToolbarItem,
-  PageHeader,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Gallery,
-  ToolbarGroup,
+  CardHeader,
   Dropdown,
-  DropdownToggle,
   DropdownItem,
-  Text,
-  TextVariants,
-  TextContent,
-  Brand,
-  TextInput,
+  DropdownToggle,
+  Form,
   FormGroup,
-  Form
+  Gallery,
+  Page,
+  PageHeader,
+  PageSection,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { Link } from "react-router-dom";
-import { GithubService } from "../common/GithubService";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 
 interface Props {
@@ -59,7 +58,6 @@ enum InputFileUrlState {
   VALID,
   INITIAL,
   INVALID_URL,
-  NO_FILE_URL,
   INVALID_EXTENSION,
   NOT_FOUND_URL,
   CORS_NOT_AVAILABLE,
@@ -247,54 +245,10 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
-  useEffect(() => {
-    if (context.githubService.isGist(inputFileUrl)) {
-      const gistId = context.githubService.extractGistId(inputFileUrl);
-      context.githubService.getGistRawUrlFromId(gistId)
-        .then(rawUrlStr => setGistRawUrl(rawUrlStr));
-    }
-  }, [inputFileUrl]);
-
-  const checkResponseFromFetch = useCallback(responseSucceed => {
-    if (responseSucceed) {
-      setInputFileUrlState(InputFileUrlState.VALID);
-    } else {
-      setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL);
-    }
-  }, []);
-
-  const validateFileOnUrl = useCallback((fileUrl: string) => {
-    setInputFileUrlState(InputFileUrlState.VALIDATING);
-    if (context.githubService.isGithub(fileUrl)) {
-      context.githubService
-        .checkGithubFileExistence(fileUrl)
-        .then(checkResponseFromFetch)
-        .catch(err => setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL));
-    } else {
-      fetch(fileUrl)
-        .then(({ ok }) => checkResponseFromFetch(ok))
-        .catch(err => {
-          setInputFileUrlState(InputFileUrlState.CORS_NOT_AVAILABLE);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
+  const validateUrl = useCallback(async (inputFileUrl: string) => {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState(InputFileUrlState.INITIAL);
-    }
-
-    if (context.githubService.isGist(inputFileUrl)) {
-      if (!gistRawUrl) {
-        setInputFileUrlState(InputFileUrlState.INVALID_GIST);
-      }
-
-      const gistExtension = extractFileExtension(new URL(gistRawUrl).pathname);
-      if (gistExtension && context.router.getLanguageData(gistExtension)) {
-        setInputFileUrlState(InputFileUrlState.VALID);
-      } else {
-        setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
-      }
+      return;
     }
 
     let url: URL;
@@ -302,21 +256,61 @@ export function HomePage(props: Props) {
       url = new URL(inputFileUrl);
     } catch (e) {
       setInputFileUrlState(InputFileUrlState.INVALID_URL);
+      return;
     }
 
-    const fileExtension = extractFileExtension(new URL(inputFileUrl).pathname);
-    if (!fileExtension) {
-      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-    } else if (!context.router.getLanguageData(fileExtension)) {
+    if (context.githubService.isGist(inputFileUrl)) {
+      const gistId = context.githubService.extractGistId(inputFileUrl);
+
+      let rawUrl: string;
+      try {
+        rawUrl = await context.githubService.getGistRawUrlFromId(gistId);
+        setGistRawUrl(rawUrl);
+      } catch (e) {
+        setInputFileUrlState(InputFileUrlState.INVALID_GIST);
+        return;
+      }
+
+      const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
+      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+        setInputFileUrlState(InputFileUrlState.VALID);
+        return;
+      }
+
+      setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
+      return;
+    }
+
+    const fileExtension = extractFileExtension(url.pathname);
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
       setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
-    } else {
-      validateFileOnUrl(inputFileUrl);
+      return;
     }
-  }, [inputFileUrl])
 
-  // const inputFileUrlState = useMemo(() => {
-  //
-  // }, [inputFileUrl, gistRawUrl]);
+    setInputFileUrlState(InputFileUrlState.VALIDATING);
+    if (context.githubService.isGithub(inputFileUrl)) {
+      if (await context.githubService.checkFileExistence(inputFileUrl)) {
+        setInputFileUrlState(InputFileUrlState.VALID);
+        return;
+      }
+
+      setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL);
+      return;
+    }
+
+    try {
+      if ((await fetch(inputFileUrl)).ok) {
+        setInputFileUrlState(InputFileUrlState.VALID);
+        return;
+      }
+    } catch (e) {
+      setInputFileUrlState(InputFileUrlState.CORS_NOT_AVAILABLE);
+    }
+  }, []);
+
+  useEffect(() => {
+    validateUrl(inputFileUrl);
+  }, [inputFileUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
@@ -330,7 +324,7 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const validateUrlInputButton = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+  const urlCanBeOpen = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
@@ -339,7 +333,7 @@ export function HomePage(props: Props) {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (validateUrlInputText && inputFileUrlState !== InputFileUrlState.INITIAL) {
+    if (urlCanBeOpen) {
       const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
       const fileExtension = extractFileExtension(new URL(urlToLoad).pathname);
       // FIXME: KOGITO-1202
@@ -361,13 +355,11 @@ export function HomePage(props: Props) {
       case InputFileUrlState.INVALID_GIST_EXTENSION:
         return "File type on the provided gist is not supported";
       case InputFileUrlState.INVALID_EXTENSION:
-        return "The file type of this URL is not supported.";
+        return "File type on the provided URL is not supported.";
       case InputFileUrlState.INVALID_GIST:
         return "Enter a valid Gist URL";
       case InputFileUrlState.INVALID_URL:
         return 'This URL is not valid (don\'t forget "https://"!).';
-      case InputFileUrlState.NO_FILE_URL:
-        return "This URL is not from a file.";
       case InputFileUrlState.NOT_FOUND_URL:
         return "This URL does not exist.";
       case InputFileUrlState.CORS_NOT_AVAILABLE:
@@ -597,7 +589,7 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!validateUrlInputButton}>
+              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!urlCanBeOpen}>
                 Open from source
               </Button>
             </CardFooter>

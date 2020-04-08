@@ -146,11 +146,13 @@ export class GithubService {
         console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
         return fetch(
           `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
-        ).then(res => (res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.")));
+        ).then(res => {
+          return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.");
+        });
       });
   }
 
-  public checkGithubFileExistence(fileUrl: string): Promise<boolean> {
+  public checkFileExistence(fileUrl: string): Thenable<boolean> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
 
     return this.octokitGet(fileInfo)
