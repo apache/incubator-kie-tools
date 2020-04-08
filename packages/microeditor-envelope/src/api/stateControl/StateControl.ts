@@ -34,13 +34,13 @@ export class StateControl {
   private undoCommand: () => void;
   private redoCommand: () => void;
 
-  public undo(edits?: KogitoEdit[]): void {
+  public undo(edits?: ReadonlyArray<KogitoEdit>): void {
     if (this.undoCommand) {
       this.undoCommand();
     }
   }
 
-  public redo(edits?: KogitoEdit[]): void {
+  public redo(edits?: ReadonlyArray<KogitoEdit>): void {
     if(this.redoCommand) {
       this.redoCommand();
     }
