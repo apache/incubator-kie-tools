@@ -20,12 +20,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.annotations.Customizable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.version.CurrentBranch;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -44,6 +46,10 @@ public class FileMenuBuilderImpl implements FileMenuBuilder {
 
     @Inject
     private Caller<CopyService> copyService;
+
+    @Inject
+    @Customizable
+    private CurrentBranch currentBranch;
 
     @Override
     public Menus build() {
@@ -88,7 +94,8 @@ public class FileMenuBuilderImpl implements FileMenuBuilder {
 
     @Override
     public FileMenuBuilder addRestoreVersion(final Path path) {
-        menuBuilder.addRestoreVersion(path);
+        menuBuilder.addRestoreVersion(path,
+                                      currentBranch);
         return this;
     }
 
