@@ -25,7 +25,8 @@ import {
   LanguageData,
   ResourceContent,
   ResourceContentOptions,
-  ResourcesList
+  ResourcesList,
+  ResourceListOptions
 } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -105,8 +106,8 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: path, opts: opts } });
   }
 
-  public request_resourceList(pattern: string) {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: pattern });
+  public request_resourceList(pattern: string, opts?: ResourceListOptions) {
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: pattern, opts: opts } });
   }
 
   public notify_newEdit(edit: KogitoEdit) {

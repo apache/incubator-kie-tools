@@ -15,11 +15,11 @@
   },
   "publisher": "kiegroup",
   "scripts": {
-    "build": "yarn run build:fast",
+    "build": "yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",
     "compile": "webpack",
     "watch": "webpack",
-    "test": "echo 'No tests to run.'",
+    "test": "jest",
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "jest-junit": {
