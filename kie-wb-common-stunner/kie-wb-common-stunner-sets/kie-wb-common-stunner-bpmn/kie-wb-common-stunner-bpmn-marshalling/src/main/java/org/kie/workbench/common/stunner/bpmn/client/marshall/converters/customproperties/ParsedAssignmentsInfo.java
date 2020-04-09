@@ -114,14 +114,10 @@ public class ParsedAssignmentsInfo {
             );
         }
 
-        if (split.length < 5) {
-            throw new IllegalArgumentException(encoded);
-        }
-
         boolean alternativeEncoding = false;
         String in = split[0];
         String out = split[2];
-        String assoc = split[4];
+        String assoc = split.length < 5 ? null : split[4];
 
         if (in.isEmpty() && out.isEmpty()) {
             if (!split[1].isEmpty() || !split[3].isEmpty()) {

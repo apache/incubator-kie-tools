@@ -18,12 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 
 import java.util.List;
 
-import org.eclipse.bpmn2.Assignment;
-import org.eclipse.bpmn2.DataInput;
-import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
-import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.impl.PropertyImpl;
 import org.junit.Before;
@@ -38,6 +34,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParsedAssignmentsInfoTest {
@@ -58,48 +55,6 @@ public class ParsedAssignmentsInfoTest {
         tested = ParsedAssignmentsInfo.of(assignmentsInfos);
         testedDuplicates = ParsedAssignmentsInfo.of(assignmentsInfosDuplicates);
         testedNoAssociation = ParsedAssignmentsInfo.of(assignmentNoAssociation);
-    }
-
-    // TODO: Kogito - @Test
-    public void testCreateInitializedInputVariables() {
-        final String DATA_INPUT_ID = "_Years-of-ServiceInputX";
-        final String DATA_INPUT_NAME = "Years of Service";
-        final String DATA_INPUT_ASSOCIATION_ID = "Years of Service";
-        final String DATA_INPUT_ASSOCIATION_VALUE = "<![CDATA[35]]>";
-        final String INIT_INPUT_VAR_ID = "Years-of-Service";
-        final String INIT_INPUT_VAR_TYPE = "Integer";
-
-        VariableScope variableScope = new FlatVariableScope();
-        List<InitializedVariable.InitializedInputVariable> initializedInputVariables =
-                tested.createInitializedInputVariables("", variableScope);
-
-        assertEquals(initializedInputVariables.size(), 1);
-
-        InitializedVariable.InitializedInputVariable initializedInputVariable =
-                initializedInputVariables.get(0);
-
-        DataInput dataInput = initializedInputVariable.getDataInput();
-
-        DataInputAssociation dataInputAssociation = initializedInputVariable.getDataInputAssociation();
-        DataInput target = (DataInput) dataInputAssociation.getTargetRef();
-
-        List<Assignment> assignments = dataInputAssociation.getAssignment();
-        Assignment assignment = assignments.get(0);
-        FormalExpression from = (FormalExpression) assignment.getFrom();
-
-        String dataInputID = dataInput.getId();
-        String dataInputName = dataInput.getName();
-        String dataInputAssociationID = target.getName();
-        String dataInputAssociationValue = from.getBody();
-        String initVarID = initializedInputVariable.getIdentifier();
-        String initVarType = initializedInputVariable.getType();
-
-        assertEquals(dataInputID, DATA_INPUT_ID);
-        assertEquals(dataInputName, DATA_INPUT_NAME);
-        assertEquals(dataInputAssociationID, DATA_INPUT_ASSOCIATION_ID);
-        assertEquals(dataInputAssociationValue, DATA_INPUT_ASSOCIATION_VALUE);
-        assertEquals(initVarID, INIT_INPUT_VAR_ID);
-        assertEquals(initVarType, INIT_INPUT_VAR_TYPE);
     }
 
     @Test
@@ -238,6 +193,15 @@ public class ParsedAssignmentsInfoTest {
         assertEquals(dataOutputAssocationValue2, DATA_OUTPUT_ASSOCIATION_VALUE_2);
         assertEquals(initVarID2, INIT_OUTPUT_VAR_ID);
         assertEquals(initVarType2, INIT_OUTPUT_VAR_TYPE);
+    }
+
+    @Test
+    public void fromStringWithNoDataOutput() {
+        ParsedAssignmentsInfo assignmentsInfo =
+                ParsedAssignmentsInfo.fromString("|IntermediateMessageEventCatchingOutputVar1:String||");
+        assertTrue(assignmentsInfo.getOutputs().getDeclarations().isEmpty());
+        assertTrue(assignmentsInfo.getAssociations().getInputs().isEmpty());
+        assertTrue(assignmentsInfo.getAssociations().getOutputs().isEmpty());
     }
 
     @Test

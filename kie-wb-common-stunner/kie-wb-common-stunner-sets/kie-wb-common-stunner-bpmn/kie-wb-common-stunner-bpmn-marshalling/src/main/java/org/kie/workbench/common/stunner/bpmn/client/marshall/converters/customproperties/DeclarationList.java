@@ -36,6 +36,9 @@ public class DeclarationList {
     }
 
     public static DeclarationList fromString(String encoded) {
+        if (null == encoded) {
+            return new DeclarationList();
+        }
         return new DeclarationList(
                 Arrays.stream(encoded.split(","))
                         .filter(s -> !s.isEmpty()) // "" makes no sense
