@@ -127,6 +127,22 @@ teardown() {
     [ "${lines[7]}" = "'./myapp.jar' -> '$KOGITO_HOME/bin/myapp.jar'" ]
 }
 
+@test "test runtime_assemble with binary builds native binary" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/
+    cp $BATS_TEST_DIRNAME/mocks/myapp-0.0.1-runner /tmp/src/myapp-0.0.1-runner
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+    [ "${lines[8]}" = "'./myapp-0.0.1-runner' -> '$KOGITO_HOME/bin/myapp-0.0.1-runner'" ]
+
+    # Only runner is located in bin directory
+    [ -f "$KOGITO_HOME/bin/myapp-0.0.1-runner" ]
+}
+
 @test "test runtime_assemble with binary builds entire target!" {
     mkdir -p ${KOGITO_HOME}/bin
     # emulating an upload
@@ -144,6 +160,100 @@ teardown() {
     [ "${lines[9]}" = "'./myapp.jar' -> '$KOGITO_HOME/bin/myapp.jar'" ]
 }
 
+# Check that the irrelevant binaries are excluded
+@test "test runtime_assemble with binary builds entire target SpringBoot build" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/target
+    touch /tmp/src/target/myapp-0.0.1.jar
+    touch /tmp/src/target/myapp-0.0.1.jar.original
+    touch /tmp/src/target/myapp-0.0.1-sources.jar
+    touch /tmp/src/target/myapp-0.0.1-tests.jar
+    touch /tmp/src/target/myapp-0.0.1-tests-sources.jar
+    mkdir -p /tmp/src/target/classes
+    mkdir -p /tmp/src/target/generated-sources
+    mkdir -p /tmp/src/target/maven-archiver
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+
+    # Target directory is removed from initial location
+    [ ! -d "/tmp/src/target" ]
+
+    # Only expected runnable is located in bin directory
+    [ -f "$KOGITO_HOME/bin/myapp-0.0.1.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1.jar.original" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-sources.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests-sources.jar" ]
+}
+
+# Check that the irrelevant binaries are excluded
+@test "test runtime_assemble with binary builds entire target Quarkus build" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/target
+    touch /tmp/src/target/myapp-0.0.1.jar
+    touch /tmp/src/target/myapp-0.0.1-runner.jar
+    touch /tmp/src/target/myapp-0.0.1-sources.jar
+    touch /tmp/src/target/myapp-0.0.1-tests.jar
+    touch /tmp/src/target/myapp-0.0.1-tests-sources.jar
+    mkdir -p /tmp/src/target/classes
+    mkdir -p /tmp/src/target/generated-sources
+    mkdir -p /tmp/src/target/lib
+    touch /tmp/src/target/lib/mydependency-0.0.1.jar
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+
+    # Target directory is removed from initial location
+    [ ! -d "/tmp/src/target" ]
+
+    # Only runner and dependency is located in bin directory
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1.jar" ]
+    [ -f "$KOGITO_HOME/bin/myapp-0.0.1-runner.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-sources.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests-sources.jar" ]
+    [ -f "$KOGITO_HOME/bin/lib/mydependency-0.0.1.jar" ]
+}
+
+# Check that the irrelevant binaries are excluded
+@test "test runtime_assemble with binary builds entire target Quarkus native build" {
+    mkdir -p ${KOGITO_HOME}/bin
+    # emulating an upload
+    mkdir -p /tmp/src/target
+    touch /tmp/src/target/myapp-0.0.1.jar
+    cp $BATS_TEST_DIRNAME/mocks/myapp-0.0.1-runner /tmp/src/target/myapp-0.0.1-runner
+    touch /tmp/src/target/myapp-0.0.1-runner.jar
+    touch /tmp/src/target/myapp-0.0.1-sources.jar
+    touch /tmp/src/target/myapp-0.0.1-tests.jar
+    touch /tmp/src/target/myapp-0.0.1-tests-sources.jar
+    mkdir -p /tmp/src/target/classes
+    mkdir -p /tmp/src/target/generated-sources
+    mkdir -p /tmp/src/target/lib
+    touch /tmp/src/target/lib/mydependency-0.0.1.jar
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+
+    # Target directory is removed from initial location
+    [ ! -d "/tmp/src/target" ]
+
+    # Only runner and dependency is located in bin directory
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-runner.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-sources.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/myapp-0.0.1-tests-sources.jar" ]
+    [ ! -f "$KOGITO_HOME/bin/lib/mydependency-0.0.1.jar" ]
+}
 
 @test "test handle_image_metadata_json no metadata" {
     mkdir -p /tmp/src/target
