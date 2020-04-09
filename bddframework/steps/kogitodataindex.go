@@ -29,5 +29,5 @@ func (data *Data) installKogitoDataIndexServiceWithReplicas(replicas int) error 
 }
 
 func (data *Data) kogitoDataIndexHasPodsRunningWithinMinutes(podNb, timeoutInMin int) error {
-	return framework.WaitForKogitoDataIndex(data.Namespace, podNb, timeoutInMin)
+	return framework.WaitForKogitoDataIndexService(data.Namespace, podNb, timeoutInMin)
 }

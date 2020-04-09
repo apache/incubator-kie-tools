@@ -30,5 +30,5 @@ func (data *Data) installKogitoManagementConsoleWithReplicas(replicas int) error
 }
 
 func (data *Data) kogitoManagementConsoleHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {
-	return framework.WaitForKogitoManagementConsole(data.Namespace, pods, timeoutInMin)
+	return framework.WaitForKogitoManagementConsoleService(data.Namespace, pods, timeoutInMin)
 }
