@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseForm } from '../src';
+import { BaseForm } from 'uniforms-patternfly';
 
 import createSchema from './_createSchema';
 import mount from './_mount';

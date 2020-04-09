@@ -1,5 +1,5 @@
 import React from 'react';
-import { AutoFields } from '../src';
+import { AutoFields } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AutoField, NestField } from '../src';
+import { AutoField, NestField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

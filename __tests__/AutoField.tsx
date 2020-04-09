@@ -9,7 +9,7 @@ import {
   RadioField,
   SelectField,
   TextField,
-} from '../src';
+} from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';
