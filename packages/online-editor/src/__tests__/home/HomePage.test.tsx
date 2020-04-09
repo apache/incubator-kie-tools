@@ -19,7 +19,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import { HomePage } from "../../home/HomePage";
 import { usingTestingGlobalContext } from "../testing_utils";
 import { File as UploadFile } from "../../common/File";
-import GithubService from "./GithubServiceExportDefault";
+import { GithubService } from "../../common/GithubService";
 
 const mockHistoryPush = jest.fn();
 
@@ -30,77 +30,179 @@ jest.mock("react-router", () => ({
   })
 }));
 
-jest.mock("./GithubServiceExportDefault");
+declare global {
+  namespace NodeJS {
+    interface Global {
+      fetch: Promise<Response>;
+    }
+  }
+}
 
 describe("HomePage", () => {
   describe("open from url", () => {
-    test("invalid url", () => {
-      const onFileOpened = (file: UploadFile) => true;
-      const { getByText, getByTestId } = render(
-        usingTestingGlobalContext(<HomePage onFileOpened={onFileOpened} />).wrapper
-      );
+    describe("invalid", () => {
+      test("should show an invalid url error", () => {
+        const { getByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+        );
 
-      const invalidUrls = [".", "something", "something.com"];
+        const invalidUrls = [".", "something", "something.com"];
 
-      invalidUrls.forEach(url => {
-        fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
-        expect(getByText(`This URL is not valid (don't forget "https://"!).`)).toBeTruthy();
+        invalidUrls.forEach(url => {
+          fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
+          expect(getByText(`This URL is not valid (don't forget "https://"!).`)).toBeTruthy();
+        });
+      });
+
+      test("should show an invalid extension error", async () => {
+        const { getByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+        );
+
+        const urlsInvalidFileExtension = [
+          "https://github.com/something.test",
+          "https://github.com/test/test/blob/test/README.md",
+          "https://dropbox.com/test.png"
+        ];
+
+        urlsInvalidFileExtension.forEach(url => {
+          fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
+          expect(getByText(`File type on the provided URL is not supported.`)).toBeTruthy();
+        });
+      });
+
+      test("should show a not found url - github", async () => {
+        const githubService = new GithubService();
+        jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(false));
+
+        const { findByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+        );
+
+        const urlsNotFound = [
+          "https://github.com/test/test/test.dmn",
+          "https://github.com/test/test/test.bpmn",
+          "https://github.com/test/test/test.bpmn2"
+        ];
+
+        for (const url of urlsNotFound) {
+          fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
+          expect(await findByText(`This URL does not exist.`)).toBeTruthy();
+        }
+      });
+
+      test("should show a not found url error - generic", async () => {
+        const originalFetch = window.fetch;
+        window.fetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: false }));
+
+        const { findByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+        );
+
+        const urlsNotFound = [
+          "https://dl.dropboxusercontent.com/s/teste/teste.dmn",
+          "https://dl.dropboxusercontent.com/s/teste/teste.bpmn",
+          "https://dl.dropboxusercontent.com/s/teste/teste.bpmn2"
+        ];
+
+        for (const url of urlsNotFound) {
+          fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
+          expect(await findByText(`This URL does not exist.`)).toBeTruthy();
+        }
+
+        window.fetch = originalFetch;
+      });
+
+      test("should show a can't open the file error", async () => {
+        const originalFetch = window.fetch;
+        window.fetch = jest.fn().mockImplementation(() => Promise.reject());
+
+        const { findByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+        );
+
+        const urlsNotFound = ["https://google.com/teste.dmn", "https://dropbox.com/teste.bpmn"];
+
+        for (const url of urlsNotFound) {
+          fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
+          expect(
+            await findByText(`This URL cannot be opened because it doesn't allow other websites to access it.`)
+          ).toBeTruthy();
+        }
+
+        window.fetch = originalFetch;
+      });
+
+      test("should show an invalid gist error", async () => {
+        const githubService = new GithubService();
+        jest
+          .spyOn(githubService, "getGistRawUrlFromId")
+          .mockImplementation((url: string) => Promise.reject());
+
+        const { findByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+        );
+
+        fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
+        expect(await findByText(`Enter a valid Gist URL.`)).toBeTruthy();
+      });
+
+      test("should show an invalid gist error", async () => {
+        const githubService = new GithubService();
+        jest
+          .spyOn(githubService, "getGistRawUrlFromId")
+          .mockImplementation((url: string) => Promise.resolve("https://gist.githubusercontent.com/test.png"));
+
+        const { findByText, getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+        );
+
+        fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
+        expect(await findByText(`File type on the provided gist is not supported.`)).toBeTruthy();
       });
     });
 
-    test("no file extension", async () => {
-      const onFileOpened = (file: UploadFile) => true;
-      const { getByText, getByTestId } = render(
-        usingTestingGlobalContext(<HomePage onFileOpened={onFileOpened} />).wrapper
-      );
+    describe("valid", () => {
+      test("should enable the open from source button - gist", async () => {
+        const githubService = new GithubService();
+        jest
+          .spyOn(githubService, "getGistRawUrlFromId")
+          .mockImplementation((url: string) => Promise.resolve("https://gist.githubusercontent.com/test.dmn"));
 
-      const urlsNoFile = ["https://github.com/something", "https://dropbox.com/teste"];
+        const { getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+        );
 
-      urlsNoFile.forEach(url => {
-        fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://github.com/something" } });
-        expect(getByText("This URL is not from a file.")).toBeTruthy();
-      });
-    });
-
-    test("invalid extension", async () => {
-      const onFileOpened = (file: UploadFile) => true;
-      const { getByText, getByTestId } = render(
-        usingTestingGlobalContext(<HomePage onFileOpened={onFileOpened} />).wrapper
-      );
-
-      const urlsInvalidFileExtension = [
-        "https://github.com/something.test",
-        "https://github.com/kiegroup/kogito-tooling/blob/master/README.md",
-        "https://dropbox.com/test.png"
-      ];
-
-      urlsInvalidFileExtension.forEach(url => {
-        fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
-        expect(getByText(`The file type of this URL is not supported.`)).toBeTruthy();
-      });
-    });
-
-    test("not found url", async () => {
-      const checkGithubFileExistence = jest.fn(() => {
-        return Promise.reject();
-      });
-      (GithubService as jest.Mock).mockImplementation(() => {
-        return {
-          isGithub: () => true,
-          checkGithubFileExistence
-        };
+        fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
+        await waitFor(() => expect(getByTestId("open-url-button")).not.toHaveAttribute("disable"));
       });
 
-      const onFileOpened = (file: UploadFile) => true;
-      const { getByText, getByTestId } = render(
-        usingTestingGlobalContext(<HomePage onFileOpened={onFileOpened} />).wrapper
-      );
+      test("should enable the open from source button - github", async () => {
+        const githubService = new GithubService();
+        jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(true));
 
-      const urlsNotFound = ["https://github.com/something.dmn"];
+        const { getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+        );
 
-      urlsNotFound.forEach(url => {
-        fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
-        waitFor(() => expect(getByText(`This URL does not exist.`)).toBeTruthy())
+        fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://github.com/test/test/test.dmn" } });
+        await waitFor(() => expect(getByTestId("open-url-button")).not.toHaveAttribute("disable"));
+      });
+
+      test("should enable the open from source button - generic", async () => {
+        const originalFetch = window.fetch;
+        window.fetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true }));
+
+        const { getByTestId } = render(
+          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+        );
+
+        fireEvent.change(getByTestId("url-text-input"), {
+          target: { value: "https://dl.dropboxusercontent.com/s/teste/teste.dmn" }
+        });
+        await waitFor(() => expect(getByTestId("open-url-button")).not.toHaveAttribute("disable"));
+
+        window.fetch = originalFetch;
       });
     });
   });

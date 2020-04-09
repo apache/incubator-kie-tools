@@ -21,11 +21,13 @@ import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOute
 import { EMPTY_FILE } from "../common/File";
 import { OnlineEditorRouter } from "../common/OnlineEditorRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import {GithubService} from "../common/GithubService";
+import { GithubService } from "../common/GithubService";
+import { Route, Switch } from "react-router";
+import { HashRouter } from "react-router-dom";
 
 export function usingTestingGlobalContext(
   children: React.ReactElement,
-  ctx?: Pick<GlobalContextType, keyof GlobalContextType>
+  ctx?: Partial<GlobalContextType>
 ) {
   const usedCtx = {
     router: new OnlineEditorRouter(
@@ -48,7 +50,13 @@ export function usingTestingGlobalContext(
     ctx: usedCtx,
     wrapper: (
       <GlobalContext.Provider key={""} value={usedCtx}>
-        {children}
+        <HashRouter>
+          <Switch>
+            <Route exact={true} path={usedCtx.routes.home.url({})}>
+              {children}
+            </Route>
+          </Switch>
+        </HashRouter>
       </GlobalContext.Provider>
     )
   };
