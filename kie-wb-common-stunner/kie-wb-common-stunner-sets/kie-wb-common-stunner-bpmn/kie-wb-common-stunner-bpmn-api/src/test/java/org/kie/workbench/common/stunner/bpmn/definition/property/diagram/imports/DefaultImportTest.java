@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport.DELIMITER;
 import static org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport.IDENTIFIER;
@@ -46,22 +47,22 @@ public class DefaultImportTest {
     public void testEquals() {
         DefaultImport tested1 = new DefaultImport();
         DefaultImport tested2 = new DefaultImport();
-        assertEquals(tested1, tested2);
+        assertNotEquals(tested1, tested2);
 
         DefaultImport tested3 = new DefaultImport(CLASS_NAME);
         DefaultImport tested4 = new DefaultImport(CLASS_NAME);
-        assertEquals(tested3, tested4);
+        assertNotEquals(tested3, tested4);
     }
 
     @Test
     public void testHashCode() {
         DefaultImport tested1 = new DefaultImport();
         DefaultImport tested2 = new DefaultImport();
-        assertEquals(tested1.hashCode(), tested2.hashCode());
+        assertNotEquals(tested1.hashCode(), tested2.hashCode());
 
         DefaultImport tested3 = new DefaultImport(CLASS_NAME);
         DefaultImport tested4 = new DefaultImport(CLASS_NAME);
-        assertEquals(tested3.hashCode(), tested4.hashCode());
+        assertNotEquals(tested3.hashCode(), tested4.hashCode());
     }
 
     @Test

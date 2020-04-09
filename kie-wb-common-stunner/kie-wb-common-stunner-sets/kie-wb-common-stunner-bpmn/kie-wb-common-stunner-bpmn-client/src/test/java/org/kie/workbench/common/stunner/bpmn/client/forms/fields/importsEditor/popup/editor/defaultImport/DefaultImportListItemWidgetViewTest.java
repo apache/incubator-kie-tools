@@ -174,8 +174,9 @@ public class DefaultImportListItemWidgetViewTest {
         defaultImport.setClassName("Boolean");
         tested.initListItem();
 
-        verify(defaultClassNames, times(3)).setValue("");
+        verify(defaultClassNames, times(2)).setValue("");
         verify(defaultClassNames, times(1)).setValue("Boolean");
+        verify(defaultClassNames, times(1)).setValue("randomValue");
         verify(classNamesComboBox, times(4)).setShowCustomValues(true);
         verify(classNamesComboBox, times(4)).setListBoxValues(any(ListBoxValues.class));
         verify(classNamesComboBox, times(4)).init(tested,

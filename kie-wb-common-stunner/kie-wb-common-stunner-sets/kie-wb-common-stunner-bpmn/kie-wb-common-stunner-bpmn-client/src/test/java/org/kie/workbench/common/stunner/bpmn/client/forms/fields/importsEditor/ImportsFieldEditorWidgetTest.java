@@ -155,10 +155,13 @@ public class ImportsFieldEditorWidgetTest {
 
         ImportsValue importsValue = createImportsValue(5, 5);
         ImportsValue result2 = tested.copyImportsValue(importsValue);
-        assertEquals(importsValue, result2);
+        assertEquals(importsValue.getDefaultImports().size(), result2.getDefaultImports().size());
+        assertEquals(importsValue.getWSDLImports().size(), result2.getWSDLImports().size());
 
         importsValue.setDefaultImports(new ArrayList<>());
-        assertNotEquals(importsValue, result2);
+        importsValue.setWSDLImports(new ArrayList<>());
+        assertNotEquals(importsValue.getDefaultImports().size(), result2.getDefaultImports().size());
+        assertNotEquals(importsValue.getWSDLImports().size(), result2.getWSDLImports().size());
     }
 
     @Test

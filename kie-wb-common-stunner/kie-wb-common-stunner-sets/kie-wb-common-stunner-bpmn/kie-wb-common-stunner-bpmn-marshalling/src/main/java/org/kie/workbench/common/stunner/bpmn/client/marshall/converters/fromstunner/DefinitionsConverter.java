@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstun
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.DefinitionsPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 
@@ -49,12 +53,16 @@ public class DefinitionsConverter {
 
         ProcessPropertyWriter pp =
                 processConverter.convertProcess();
+        Node<Definition<BPMNDiagram>, ?> node = converterFactory.context.firstNode();
+        BPMNDiagram definition = node.getContent().getDefinition();
+        BaseDiagramSet diagramSet = definition.getDiagramSet();
 
         p.setExporter("jBPM Process Modeler");
         p.setExporterVersion("2.0");
         p.setProcess(pp.getProcess());
         p.setDiagram(pp.getBpmnDiagram());
         p.setRelationship(pp.getRelationship());
+        p.setWSDLImports(diagramSet.getImports().getValue().getWSDLImports());
         p.addAllRootElements(pp.getItemDefinitions());
         p.addAllRootElements(pp.getRootElements());
         p.addAllRootElements(pp.getInterfaces());

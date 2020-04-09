@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,9 @@ public class ProcessPropertyReaderTest {
         List<DefaultImport> result = tested.getDefaultImports();
 
         assertEquals(QTY, result.size());
-        assertEquals(defaultImports, result);
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(CLASS_NAME + i, result.get(i).getClassName());
+        }
     }
 
     @Test
@@ -91,7 +93,6 @@ public class ProcessPropertyReaderTest {
                                            definitionResolver.getResolutionFactor());
         assertEquals(tested.getProcessType(), ProcessType.PRIVATE.getName());
 
-
         writer.setType(ProcessType.PUBLIC.getName());
         tested = new ProcessPropertyReader(writer.getProcess(),
                                            definitionResolver.getDiagram(),
@@ -105,6 +106,5 @@ public class ProcessPropertyReaderTest {
                                            definitionResolver.getShape(process.getId()),
                                            definitionResolver.getResolutionFactor());
         assertEquals(tested.getProcessType(), ProcessType.NONE.getName());
-
     }
 }

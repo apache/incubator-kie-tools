@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -94,22 +91,6 @@ public class WSDLImport {
 
     public void setNamespace(final String namespace) {
         this.namespace = namespace;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof WSDLImport) {
-            WSDLImport other = (WSDLImport) o;
-            return Objects.equals(location, other.location) &&
-                    Objects.equals(namespace, other.namespace);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(location),
-                                         Objects.hashCode(namespace));
     }
 
     @Override

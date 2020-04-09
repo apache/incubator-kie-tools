@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,7 @@ public class RootProcessConverter {
         p.setDescription(diagramSet.getProcessInstanceDescription().getValue());
         p.setExecutable(diagramSet.getExecutable().getValue());
         p.setSlaDueDate(diagramSet.getSlaDueDate());
+        p.setDefaultImports(diagramSet.getImports().getValue().getDefaultImports());
 
         BaseProcessData processData = definition.getProcessData();
         p.setProcessVariables(processData.getProcessVariables());

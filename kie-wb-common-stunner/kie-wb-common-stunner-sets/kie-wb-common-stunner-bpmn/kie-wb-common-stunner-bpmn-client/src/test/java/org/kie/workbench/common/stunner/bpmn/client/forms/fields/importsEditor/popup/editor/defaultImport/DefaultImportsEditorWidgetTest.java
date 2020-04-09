@@ -39,6 +39,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -133,10 +135,17 @@ public class DefaultImportsEditorWidgetTest {
     }
 
     @Test
+    public void getCustomDataType() {
+        final String testValue = "customValue";
+        String result = tested.getDataType(testValue);
+        assertEquals(testValue, result);
+    }
+
+    @Test
     public void createImport() {
-        DefaultImport expected = new DefaultImport();
         DefaultImport result = tested.createImport();
-        assertEquals(expected, result);
+        assertNotNull(result);
+        assertNull(result.getClassName());
     }
 
     @Test

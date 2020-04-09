@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,7 +179,11 @@ public class ProcessPropertyWriterTest {
 
         p.setDefaultImports(defaultImports);
 
-        assertEquals(defaultImports, CustomElement.defaultImports.of(p.getProcess()).get());
+        List<DefaultImport> result = CustomElement.defaultImports.of(p.getProcess()).get();
+        assertEquals(3, result.size());
+        assertEquals("className1", result.get(0).getClassName());
+        assertEquals("className2", result.get(1).getClassName());
+        assertEquals("className3", result.get(2).getClassName());
     }
 
     @Test

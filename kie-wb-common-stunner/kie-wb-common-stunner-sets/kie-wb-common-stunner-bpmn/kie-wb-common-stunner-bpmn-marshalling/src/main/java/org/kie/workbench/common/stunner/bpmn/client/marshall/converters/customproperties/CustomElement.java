@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customp
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.BooleanElement;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.DefaultImportsElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.ElementDefinition;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.GlobalVariablesElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.MetaDataAttributesElement;
@@ -48,6 +49,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
     public static final MetadataTypeDefinition<String> caseRole = new StringElement("customCaseRoles", "");
     public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
+    public static final DefaultImportsElement defaultImports = new DefaultImportsElement("defaultImports");
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
     public static final MetaDataAttributesElement metaDataAttributes = new MetaDataAttributesElement("customMetaDataAttributes");
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);

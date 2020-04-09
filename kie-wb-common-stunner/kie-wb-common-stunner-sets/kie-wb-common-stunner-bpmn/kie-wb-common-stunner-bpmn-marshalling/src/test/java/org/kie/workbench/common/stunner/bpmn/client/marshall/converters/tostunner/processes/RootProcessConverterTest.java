@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
+package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,20 +24,19 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.DefaultImportsElement;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.ElementDefinition;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.DefaultImportsElement;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements.ElementDefinition;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.ConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.DefinitionsPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.ProcessPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -49,8 +48,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -122,17 +121,6 @@ public class RootProcessConverterTest {
         DefaultImport defaultImport = defaultImports.get(0);
         assertNotNull(defaultImport);
         assertEquals(getClass().getName(), defaultImport.getClassName());
-    }
-
-    @Test
-    public void createAdvancedData() {
-        assertTrue(AdvancedData.class.isInstance(tested.createAdvancedData("id", "testßval")));
-    }
-
-    @Test
-    public void convertAdvancedData() {
-        tested.createAdvancedData("id", "testßval");
-        assertTrue(tested.convertProcess().isSuccess());
     }
 
     private DiagramSet createDiagramSet() {

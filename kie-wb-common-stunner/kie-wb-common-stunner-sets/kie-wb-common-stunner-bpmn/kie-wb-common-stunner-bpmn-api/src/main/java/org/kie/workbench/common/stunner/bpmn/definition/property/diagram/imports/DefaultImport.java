@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -26,8 +24,8 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Bindable
 public class DefaultImport {
 
-    protected static final String DELIMITER = "|";
-    protected static final String IDENTIFIER = "default";
+    public static final String DELIMITER = "|";
+    public static final String IDENTIFIER = "default";
 
     private String className;
 
@@ -77,20 +75,6 @@ public class DefaultImport {
 
     public void setClassName(final String className) {
         this.className = className;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof DefaultImport) {
-            DefaultImport other = (DefaultImport) o;
-            return Objects.equals(className, other.className);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(className);
     }
 
     @Override

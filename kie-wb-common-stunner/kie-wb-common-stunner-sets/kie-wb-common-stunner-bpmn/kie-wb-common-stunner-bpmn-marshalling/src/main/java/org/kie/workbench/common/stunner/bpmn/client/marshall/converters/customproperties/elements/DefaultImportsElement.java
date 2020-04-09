@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements;
+package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__IMPORT;
 
 public class DefaultImportsElement extends ElementDefinition<List<DefaultImport>> {
+
+    private static Logger LOGGER = Logger.getLogger(DefaultImportsElement.class.getName());
 
     public DefaultImportsElement(String name) {
         super(name, new ArrayList<>());
@@ -60,6 +63,23 @@ public class DefaultImportsElement extends ElementDefinition<List<DefaultImport>
         value.stream()
                 .map(DefaultImportsElement::extensionOf)
                 .forEach(getExtensionElements(element)::add);
+    }
+
+    @Override
+    protected void setStringValue(BaseElement element, String value) {
+        Stream.of(value.split(","))
+                .map(DefaultImportsElement::parseImport)
+                .map(DefaultImportsElement::extensionOf)
+                .forEach(getExtensionElements(element)::add);
+    }
+
+    static DefaultImport parseImport(String importValue) {
+        try {
+            return DefaultImport.fromString(importValue);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            return new DefaultImport();
+        }
     }
 
     public static FeatureMap.Entry extensionOf(DefaultImport defaultImport) {

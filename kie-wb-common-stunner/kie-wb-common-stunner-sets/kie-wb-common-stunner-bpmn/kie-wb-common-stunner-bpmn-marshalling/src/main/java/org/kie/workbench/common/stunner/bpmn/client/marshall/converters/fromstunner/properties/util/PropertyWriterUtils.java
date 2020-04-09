@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstu
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.BasePropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -119,5 +122,13 @@ public class PropertyWriterUtils {
         pt.setX((float) x);
         pt.setY((float) y);
         return pt;
+    }
+
+    public static Import toImport(WSDLImport wsdlImport) {
+        Import imp = Bpmn2Factory.eINSTANCE.createImport();
+        imp.setImportType("http://schemas.xmlsoap.org/wsdl/");
+        imp.setLocation(wsdlImport.getLocation());
+        imp.setNamespace(wsdlImport.getNamespace());
+        return imp;
     }
 }

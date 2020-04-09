@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class ProcessPropertyReader extends BasePropertyReader {
@@ -88,6 +90,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
 
     public String getMetaDataAttributes() {
         return CustomElement.metaDataAttributes.of(process).get();
+    }
+
+    public List<DefaultImport> getDefaultImports() {
+        return CustomElement.defaultImports.of(process).get();
     }
 
     public String getSlaDueDate() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,15 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.util.PropertyWriterUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 
 public class DefinitionsPropertyWriter {
 
@@ -72,6 +75,12 @@ public class DefinitionsPropertyWriter {
         relationship.getSources().add(definitions);
         relationship.getTargets().add(definitions);
         definitions.getRelationships().add(relationship);
+    }
+
+    public void setWSDLImports(List<WSDLImport> wsdlImports) {
+        wsdlImports.stream()
+                .map(PropertyWriterUtils::toImport)
+                .forEach(definitions.getImports()::add);
     }
 
     public void addAllRootElements(Collection<? extends RootElement> rootElements) {

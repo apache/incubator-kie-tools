@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ProcessType;
 import org.eclipse.bpmn2.di.BPMNEdge;
@@ -31,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -168,6 +172,22 @@ public class ProcessPropertyWriterTest {
         p.setSlaDueDate(slaDueDate);
         String slaDueDateString = CustomElement.slaDueDate.of(p.getProcess()).get();
         assertThat(slaDueDateString).isEqualTo("<![CDATA[12/25/1983]]>");
+    }
+
+    @Test
+    public void defaultImports() {
+        List<DefaultImport> defaultImports = new ArrayList<>();
+        defaultImports.add(new DefaultImport("className1"));
+        defaultImports.add(new DefaultImport("className2"));
+        defaultImports.add(new DefaultImport("className3"));
+
+        p.setDefaultImports(defaultImports);
+
+        List<DefaultImport> result = CustomElement.defaultImports.of(p.getProcess()).get();
+        assertEquals(3, result.size());
+        assertEquals("className1", result.get(0).getClassName());
+        assertEquals("className2", result.get(1).getClassName());
+        assertEquals("className3", result.get(2).getClassName());
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFac
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -83,9 +84,10 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
         Node<View<D>, Edge> diagramNode = createNode(id);
         D definition = diagramNode.getContent().getDefinition();
 
+        DefinitionsPropertyReader d = delegate.propertyReaderFactory.of(delegate.definitionResolver.getDefinitions());
         ProcessPropertyReader e = delegate.propertyReaderFactory.of(process);
 
-        definition.setDiagramSet(createDiagramSet(process, e));
+        definition.setDiagramSet(createDiagramSet(process, e, d));
 
         definition.setCaseManagementSet(new CaseManagementSet(new CaseIdPrefix(e.getCaseIdPrefix()),
                                                               new CaseRoles(e.getCaseRoles()),
@@ -105,7 +107,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
 
     protected abstract Node<View<D>, Edge> createNode(String id);
 
-    protected abstract S createDiagramSet(Process process, ProcessPropertyReader e);
+    protected abstract S createDiagramSet(Process process, ProcessPropertyReader e, DefinitionsPropertyReader d);
 
     protected abstract P createProcessData(String processVariables);
 

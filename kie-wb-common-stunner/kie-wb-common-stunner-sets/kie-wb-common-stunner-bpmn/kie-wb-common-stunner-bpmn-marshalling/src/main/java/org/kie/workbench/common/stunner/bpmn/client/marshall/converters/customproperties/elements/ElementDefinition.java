@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public abstract class ElementDefinition<T> {
 
     protected abstract void setStringValue(BaseElement element, String value);
 
-    protected FeatureMap getExtensionElements(BaseElement element) {
+    public static FeatureMap getExtensionElements(BaseElement element) {
         if (element.getExtensionValues() == null || element.getExtensionValues().isEmpty()) {
             ExtensionAttributeValue eav = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
             element.getExtensionValues().add(eav);

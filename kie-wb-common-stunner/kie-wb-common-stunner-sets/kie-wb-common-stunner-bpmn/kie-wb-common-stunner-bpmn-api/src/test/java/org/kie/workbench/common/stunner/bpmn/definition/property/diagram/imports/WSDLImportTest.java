@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport.DELIMITER;
 import static org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport.IDENTIFIER;
@@ -60,22 +61,22 @@ public class WSDLImportTest {
     public void testEquals() {
         WSDLImport tested1 = new WSDLImport();
         WSDLImport tested2 = new WSDLImport();
-        assertEquals(tested1, tested2);
+        assertNotEquals(tested1, tested2);
 
         WSDLImport tested3 = new WSDLImport(LOCATION, NAMESPACE);
         WSDLImport tested4 = new WSDLImport(LOCATION, NAMESPACE);
-        assertEquals(tested3, tested4);
+        assertNotEquals(tested3, tested4);
     }
 
     @Test
     public void testHashCode() {
         WSDLImport tested1 = new WSDLImport();
         WSDLImport tested2 = new WSDLImport();
-        assertEquals(tested1.hashCode(), tested2.hashCode());
+        assertNotEquals(tested1.hashCode(), tested2.hashCode());
 
         WSDLImport tested3 = new WSDLImport(LOCATION, NAMESPACE);
         WSDLImport tested4 = new WSDLImport(LOCATION, NAMESPACE);
-        assertEquals(tested3.hashCode(), tested4.hashCode());
+        assertNotEquals(tested3.hashCode(), tested4.hashCode());
     }
 
     @Test
