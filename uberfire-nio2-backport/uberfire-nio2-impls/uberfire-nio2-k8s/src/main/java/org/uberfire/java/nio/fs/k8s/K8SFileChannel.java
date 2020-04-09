@@ -29,33 +29,46 @@ import static org.uberfire.java.nio.fs.k8s.K8SFileSystemUtils.createOrReplacePar
 import static org.uberfire.java.nio.fs.k8s.K8SFileSystemUtils.getFsObjCM;
 
 public class K8SFileChannel extends SeekableInMemoryByteChannel {
-    private static final int CAPACITY = Integer.parseInt(System.getProperty(K8S_FS_MAX_CAPACITY_PROPERTY_NAME, 
-                                                                            String.valueOf(100 * 1024)));  
-    private final CloudClientFactory ccf;
-    private final Path file;
+
+    private static final int CAPACITY = Integer.parseInt(System.getProperty(K8S_FS_MAX_CAPACITY_PROPERTY_NAME,
+                                                                            String.valueOf(100 * 1024)));
+    protected CloudClientFactory ccf;
+    private Path file;
 
     public K8SFileChannel(Path file, CloudClientFactory ccf) {
         super(CAPACITY);
         this.file = file;
         this.ccf = ccf;
         // Constructor is not necessarily Thread-Safe as per JLS (Java Language Specification)
-        synchronized(this) {
-            this.contents = ccf.executeCloudFunction(client -> getFsObjCM(client, file), KubernetesClient.class)
-                               .filter(K8SFileSystemUtils::isFile)
-                               .map(K8SFileSystemUtils::getFsObjContentBytes)
-                               .orElse(new byte[0]);
+        synchronized (this) {
+            try {
+                this.contents = ccf.executeCloudFunction(client -> getFsObjCM(client, file), KubernetesClient.class)
+                                   .filter(K8SFileSystemUtils::isFile)
+                                   .map(K8SFileSystemUtils::getFsObjContentBytes)
+                                   .orElse(new byte[0]);
+            } catch (Exception e) {
+                this.ccf = null;
+                this.file = null;
+                super.close();
+                throw e;
+            }
         }
     }
 
     @Override
     public void close() {
-        ccf.executeCloudFunction(client -> createOrReplaceFSCM(client, 
-                                                               file,
-                                                               createOrReplaceParentDirFSCM(client, file, size(), false),
-                                                               Collections.singletonMap(CFG_MAP_FSOBJ_CONTENT_KEY, 
-                                                                                        super.toString()),
-                                                               false), 
-                                 KubernetesClient.class);
-        super.close();
+        try {
+            ccf.executeCloudFunction(client -> createOrReplaceFSCM(client,
+                                                                   file,
+                                                                   createOrReplaceParentDirFSCM(client, file, size(), false),
+                                                                   Collections.singletonMap(CFG_MAP_FSOBJ_CONTENT_KEY,
+                                                                                            super.toString()),
+                                                                   false),
+                                     KubernetesClient.class);
+        } finally {
+            this.ccf = null;
+            this.file = null;
+            super.close();
+        }
     }
 }
