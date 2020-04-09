@@ -20,7 +20,7 @@ Feature: Kogito-quarkus-ubi8 feature.
     And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 11
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples/drools-quarkus-example from target
+    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
       | variable            | value                     |
       | NATIVE              | false                     |
       | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
@@ -28,13 +28,15 @@ Feature: Kogito-quarkus-ubi8 feature.
       | property        | value                    |
       | port            | 8080                     |
       | path            | /hello                   |
+      | request_method  | POST                     | 
+      | content_type    | application/json         |
+      | request_body    | {"strings":["hello"]}    |
       | wait            | 80                       |
-      | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+      | expected_phrase | ["hello","world"]        |
+    And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist
 
-  
   Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples/drools-quarkus-example from target
+    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
       | variable            | value                     |
       | NATIVE              | false                     |
       | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
@@ -43,6 +45,9 @@ Feature: Kogito-quarkus-ubi8 feature.
       | property        | value                    |
       | port            | 8080                     |
       | path            | /hello                   |
+      | request_method  | POST                     | 
+      | content_type    | application/json         |
+      | request_body    | {"strings":["hello"]}    |
       | wait            | 80                       |
-      | expected_phrase | Mario is older than Mark |
-    And file /home/kogito/bin/drools-quarkus-example-8.0.0-SNAPSHOT-runner.jar should exist
+      | expected_phrase | ["hello","world"]        |
+    And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist

@@ -3,7 +3,7 @@
 Feature: kogito-springboot-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
     Then check that page is served
@@ -12,7 +12,7 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | path                 | /orders/1 |
       | wait                 | 80        |
       | expected_status_code | 204       |
-    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
@@ -20,31 +20,31 @@ Feature: kogito-springboot-ubi8-s2i image tests
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable            | value                           |
       | JAVA_OPTIONS        | -Ddebug=true                    |
-      | ARTIFACT_DIR        | jbpm-springboot-example/target   |
-      | MAVEN_ARGS_APPEND   | -pl jbpm-springboot-example -am  |
+      | ARTIFACT_DIR        | process-springboot-example/target   |
+      | MAVEN_ARGS_APPEND   | -pl process-springboot-example -am  |
     Then check that page is served
       | property             | value     |
       | port                 | 8080      |
       | path                 | /orders/1 |
       | wait                 | 80        |
       | expected_status_code | 204       |
-    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Scenario: Perform a incremental s2i build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using master
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example with env and incremental using master
     Then check that page is served
       | property             | value     |
       | port                 | 8080      |
       | path                 | /orders/1 |
       | wait                 | 80        |
       | expected_status_code | 204       |
-    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    And file /home/kogito/bin/process-springboot-example.jar should exist
 
   # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
   Scenario: Perform a second incremental s2i build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from jbpm-springboot-example with env and incremental using master
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example with env and incremental using master
     Then s2i build log should contain Expanding artifacts from incremental build...
     And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 

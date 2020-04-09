@@ -32,7 +32,7 @@ modules:
 
 
 ## s2i build . quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
-## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/drools-quarkus-example
+## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/rules-quarkus-helloworld
 run:
   workdir: "/home/kogito"
 

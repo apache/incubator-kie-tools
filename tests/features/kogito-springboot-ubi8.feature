@@ -21,7 +21,7 @@ Feature: springboot-quarkus-ubi8 feature.
 
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples/jbpm-springboot-example from target
+    Given s2i build /tmp/kogito-examples/process-springboot-example from target
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
     Then check that page is served
@@ -30,12 +30,12 @@ Feature: springboot-quarkus-ubi8 feature.
       | path                 | /orders/1 |
       | wait                 | 80        |
       | expected_status_code | 204       |
-    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Verify if the (forcing) binary build is finished as expected and if it is listening on the expected port
-    Given s2i build /tmp/kogito-examples/jbpm-springboot-example from target
+    Given s2i build /tmp/kogito-examples/process-springboot-example from target
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
       | BINARY_BUILD        | true         |
@@ -45,6 +45,6 @@ Feature: springboot-quarkus-ubi8 feature.
       | path                 | /orders/1 |
       | wait                 | 80        |
       | expected_status_code | 204       |
-    And file /home/kogito/bin/jbpm-springboot-example-8.0.0-SNAPSHOT.jar should exist
+    And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
