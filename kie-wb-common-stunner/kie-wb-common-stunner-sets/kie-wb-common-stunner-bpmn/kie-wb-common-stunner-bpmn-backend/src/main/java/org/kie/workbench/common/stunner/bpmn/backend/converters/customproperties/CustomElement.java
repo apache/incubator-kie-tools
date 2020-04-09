@@ -32,7 +32,20 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<Boolean> autoStart = new BooleanElement("customAutoStart", false);
     public static final MetadataTypeDefinition<Boolean> autoConnectionSource = new BooleanElement("isAutoConnection.source", false);
     public static final MetadataTypeDefinition<Boolean> autoConnectionTarget = new BooleanElement("isAutoConnection.target", false);
-    public static final MetadataTypeDefinition<Boolean> customKPI = new BooleanElement("customKPI", false);
+    public static final MetadataTypeDefinition<String> customTags = new StringElement("customTags", "[]") {
+        // Need to use an intermediary character since Variables depend on comma separators
+        @Override
+        public String getValue(BaseElement element) {
+            return getStringValue(element)
+                    .orElse(getDefaultValue()).replace(",", ";");
+        }
+
+        @Override
+        public void setValue(BaseElement element, String value) {
+            value = value.replace(";", ",");
+            setStringValue(element, value);
+        }
+    };
     public static final MetadataTypeDefinition<String> description = new StringElement("customDescription", "");
     public static final MetadataTypeDefinition<String> scope = new StringElement("customScope", "");
     public static final MetadataTypeDefinition<String> name = new StringElement("elementname", "") {

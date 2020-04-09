@@ -32,7 +32,7 @@ public interface VariableScope {
 
     Optional<Variable> lookup(String identifier);
 
-    Variable declare(String scopeId, String identifier, String type, String kpi);
+    Variable declare(String scopeId, String identifier, String type, String tags);
 
     Collection<Variable> getVariables(String scopeId);
 
@@ -42,7 +42,7 @@ public interface VariableScope {
         VariableDeclaration declaration;
         ItemDefinition typeDeclaration;
         Property typedIdentifier;
-        String kpi;
+        String tags;
 
         Variable(String parentScopeId, String identifier, String type) {
             this.parentScopeId = parentScopeId;
@@ -58,9 +58,9 @@ public interface VariableScope {
             this.typedIdentifier.setItemSubjectRef(typeDeclaration);
         }
 
-        Variable(String parentScopeId, String identifier, String type, String kpi) {
+        Variable(String parentScopeId, String identifier, String type, String tags) {
             this(parentScopeId, identifier, type);
-            this.kpi = kpi;
+            this.tags = tags;
         }
 
         public ItemDefinition getTypeDeclaration() {

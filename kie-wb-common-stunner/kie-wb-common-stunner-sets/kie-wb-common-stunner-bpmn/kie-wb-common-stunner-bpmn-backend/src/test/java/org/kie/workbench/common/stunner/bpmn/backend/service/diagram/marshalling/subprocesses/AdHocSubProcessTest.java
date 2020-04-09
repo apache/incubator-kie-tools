@@ -118,9 +118,9 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
         final String SUB_PROCESS_NAME_MVEL = "Ad-hoc sub-process03 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Ad-hoc sub-process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String:false,subVarCustom:CustomType:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String:[],subVarCustom:CustomType:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -242,9 +242,9 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
         final String SUB_PROCESS_NAME_MVEL = "Ad-hoc sub-process06 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Ad-hoc sub-process06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String:false,subVarCustom:CustomType:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String:[],subVarCustom:CustomType:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);

@@ -36,11 +36,11 @@ class ProcessVariableReader {
 
     private static String toProcessVariableString(Property p) {
         String processVariableName = getProcessVariableName(p);
-        boolean kpi = CustomElement.customKPI.of(p).get();
+        String tags = CustomElement.customTags.of(p).get();
 
         return Optional.ofNullable(p.getItemSubjectRef())
                 .map(ItemDefinition::getStructureRef)
-                .map(type -> processVariableName + ":" + type + ":" + kpi)
+                .map(type -> processVariableName + ":" + type + ":" + tags)
                 .orElse(processVariableName);
     }
 

@@ -169,10 +169,10 @@ public class ClientBPMNDocumentationServiceTest {
     public static final String ON_ENTRY_CAPTION = "ONENTRY_CAPTION";
     public static final String TEMPLATE = "documentationTemplate";
     public static final String ASSIGNEMNTS = "assignemnts";
-    private static final String VARIABLES = "PV1:java.lang.String:false,PV2:java.lang.Boolean:false";
-    private static final String GLOBAL_VARIABLES = "GL1:java.lang.String:false,GL2:java.lang.Boolean:false";
-    private static final String METADATA = "securityRolesß<![CDATA[employees,managers]]>Ø securityRoles2ß<![CDATA[admin,managers]]>";
-    private static final String SUB_PROCESS_VARIABLES = "SUBPV1:java.lang.String:false,SUBPV2:java.lang.Boolean:false";
+    private static final String METADATA = "securityRoles<![CDATA[employees,managers]]>securityRoles2<![CDATA[admin,managers]]>";
+    private static final String VARIABLES = "PV1:java.lang.String:[internal;input],PV2:java.lang.Boolean:[customTag;output]";
+    private static final String GLOBAL_VARIABLES = "GL1:java.lang.String:[],GL2:java.lang.Boolean:[]";
+    private static final String SUB_PROCESS_VARIABLES = "SUBPV1:java.lang.String:[internal],SUBPV2:java.lang.Boolean:[readonly;customTag]";
     private static final String ISASYNC_CAPTION = "ISASYNC_CAPTION";
     private static final String ON_EXIT_CAPTION = "ONEXIT_CAPTION";
     private static final String ICON_HTML = "icon image";
@@ -512,17 +512,17 @@ public class ClientBPMNDocumentationServiceTest {
         final ProcessOverview process = bpmnDocumentation.getProcess();
         final General general = process.getGeneral();
 
-        assertEquals(bpmnDocumentation.getModuleName(), PROCESS_PACKAGE);
-        assertEquals(general.getDescription(), PROCESS_DECRIPTION);
-        assertNotEquals(general.getDocumentation(), PROCESS_DOCUMENTATION);
+        assertEquals(PROCESS_PACKAGE, bpmnDocumentation.getModuleName());
+        assertEquals(PROCESS_DECRIPTION, general.getDescription());
+        assertNotEquals(PROCESS_DOCUMENTATION, general.getDocumentation());
         //testing spaces on the value
-        assertEquals(general.getDocumentation(), PROCESS_DOCUMENTATION.replaceAll("\n", "<br/>"));
-        assertEquals(general.getId(), PROCESS_UUID);
-        assertEquals(general.getIsAdhoc(), PROCESS_IS_ADHOC.toString());
-        assertEquals(general.getIsExecutable(), PROCESS_IS_EXECUTABLE.toString());
-        assertEquals(general.getName(), PROCESS_NAME);
-        assertEquals(general.getPkg(), PROCESS_PACKAGE);
-        assertEquals(general.getVersion(), PROCESS_VERSION);
+        assertEquals(PROCESS_DOCUMENTATION.replaceAll("\n", "<br/>"), general.getDocumentation());
+        assertEquals(PROCESS_UUID, general.getId());
+        assertEquals(PROCESS_IS_ADHOC.toString(), general.getIsAdhoc());
+        assertEquals(PROCESS_IS_EXECUTABLE.toString(), general.getIsExecutable());
+        assertEquals(PROCESS_NAME, general.getName());
+        assertEquals(PROCESS_PACKAGE, general.getPkg());
+        assertEquals(PROCESS_VERSION, general.getVersion());
 
         final org.kie.workbench.common.stunner.bpmn.documentation.model.general.Imports importsDoc = process.getImports();
         final org.kie.workbench.common.stunner.bpmn.documentation.model.general.Imports.DefaultImport[] defaultImportsDoc = importsDoc.getDefaultImports();
@@ -549,58 +549,58 @@ public class ClientBPMNDocumentationServiceTest {
         assertEquals(wsdlImportsDoc[3].getNamespace(), NAMESPACE + "4");
 
         final ProcessVariablesTotal dataTotal = process.getDataTotal();
-        assertEquals(dataTotal.getTotal(), 6, 0);
-        assertEquals(dataTotal.getTotalVariables(), 6, 0);
+        assertEquals(6, dataTotal.getTotal(), 0);
+        assertEquals(6, dataTotal.getTotalVariables(), 0);
 
         //assert sorting based on the variables names
         final ProcessVariablesTotal.VariableTriplets[] variables = dataTotal.getVariablesAsTriplets();
-        assertEquals(variables[0].name, "GL1");
-        assertEquals(variables[0].type, String.class.getName());
-        assertEquals(variables[0].kpi, "false");
+        assertEquals("GL1", variables[0].getName());
+        assertEquals(String.class.getName(), variables[0].getType());
+        assertEquals("[]", variables[0].getTags());
 
-        assertEquals(variables[1].name, "GL2");
-        assertEquals(variables[1].type, Boolean.class.getName());
-        assertEquals(variables[1].kpi, "false");
+        assertEquals("GL2", variables[1].getName());
+        assertEquals(Boolean.class.getName(), variables[1].getType());
+        assertEquals("[]", variables[1].getTags());
 
-        assertEquals(variables[2].name, "PV1");
-        assertEquals(variables[2].type, String.class.getName());
-        assertEquals(variables[2].kpi, "false");
+        assertEquals("PV1", variables[2].getName());
+        assertEquals(String.class.getName(), variables[2].getType());
+        assertEquals("[internal;input]", variables[2].getTags());
 
-        assertEquals(variables[3].name, "PV2");
-        assertEquals(variables[3].type, Boolean.class.getName());
-        assertEquals(variables[3].kpi, "false");
+        assertEquals("PV2", variables[3].getName());
+        assertEquals(Boolean.class.getName(), variables[3].getType());
+        assertEquals("[customTag;output]", variables[3].getTags());
 
-        assertEquals(variables[4].name, "SUBPV1");
-        assertEquals(variables[4].type, String.class.getName());
-        assertEquals(variables[4].kpi, "false");
+        assertEquals("SUBPV1", variables[4].getName());
+        assertEquals(String.class.getName(), variables[4].getType());
+        assertEquals("[internal]", variables[4].getTags());
 
-        assertEquals(variables[5].name, "SUBPV2");
-        assertEquals(variables[5].type, Boolean.class.getName());
-        assertEquals(variables[5].kpi, "false");
+        assertEquals("SUBPV2", variables[5].getName());
+        assertEquals(Boolean.class.getName(), variables[5].getType());
+        assertEquals("[readonly;customTag]", variables[5].getTags());
 
         final ElementTotal[] totals = bpmnDocumentation.getElementsDetails().getTotals();
-        assertEquals(totals.length, 2);
+        assertEquals(2, totals.length);
 
         //assert category order
         //usertask
         final ElementTotal activities = totals[0];
-        assertEquals(activities.getType(), BPMNCategories.ACTIVITIES);
-        assertEquals(activities.getTypeIcon(), ICON_HTML);
-        assertEquals(activities.getQuantity(), 1);
+        assertEquals(BPMNCategories.ACTIVITIES, activities.getType());
+        assertEquals(ICON_HTML, activities.getTypeIcon());
+        assertEquals(1, activities.getQuantity());
         //subprocess
         final ElementTotal subprocesses = totals[1];
-        assertEquals(subprocesses.getType(), BPMNCategories.SUB_PROCESSES);
-        assertEquals(subprocesses.getTypeIcon(), ICON_HTML);
-        assertEquals(subprocesses.getQuantity(), 1);
+        assertEquals(BPMNCategories.SUB_PROCESSES, subprocesses.getType());
+        assertEquals(ICON_HTML, subprocesses.getTypeIcon());
+        assertEquals(1, subprocesses.getQuantity());
 
         //assert elements order in the category
         //usertask
         final Element[] activitiesElements = activities.getElements();
         final Element task = activitiesElements[0];
-        assertEquals(task.getTitle(), TASK_NAME);
-        assertEquals(task.getType(), BPMNCategories.ACTIVITIES);
-        assertEquals(task.getIcon(), ICON_HTML);
-        assertEquals(task.getName(), TASK_NAME);
+        assertEquals(TASK_NAME, task.getTitle());
+        assertEquals(BPMNCategories.ACTIVITIES, task.getType());
+        assertEquals(ICON_HTML, task.getIcon());
+        assertEquals(TASK_NAME, task.getName());
         //assert usertask properties sorted by name
         final KeyValue[] taskProperties = task.getProperties();
         assertProperty(taskProperties[0], ASSIGNEMNTS, ASSIGNEMNTS_CAPTION,
@@ -619,10 +619,10 @@ public class ClientBPMNDocumentationServiceTest {
         //subprocess
         final Element[] subprocessesElements = subprocesses.getElements();
         final Element subprocess = subprocessesElements[0];
-        assertEquals(subprocess.getTitle(), SUB_PROCESS_NAME);
-        assertEquals(subprocess.getType(), BPMNCategories.SUB_PROCESSES);
-        assertEquals(subprocess.getIcon(), ICON_HTML);
-        assertEquals(subprocess.getName(), SUB_PROCESS_NAME);
+        assertEquals(SUB_PROCESS_NAME, subprocess.getTitle());
+        assertEquals(BPMNCategories.SUB_PROCESSES, subprocess.getType());
+        assertEquals(ICON_HTML, subprocess.getIcon());
+        assertEquals(SUB_PROCESS_NAME, subprocess.getName());
 
         //assert subprocess properties
         final KeyValue[] subprocessProperties = subprocess.getProperties();
@@ -645,7 +645,7 @@ public class ClientBPMNDocumentationServiceTest {
     @Test
     public void getDocumentationTemplate() {
         final HTMLDocumentationTemplate documentationTemplate = tested.getDocumentationTemplate();
-        assertEquals(documentationTemplate.getTemplate(), TEMPLATE);
+        assertEquals(TEMPLATE, documentationTemplate.getTemplate());
     }
 
     @Test
@@ -653,12 +653,12 @@ public class ClientBPMNDocumentationServiceTest {
         final HTMLDocumentationTemplate documentationTemplate = tested.getDocumentationTemplate();
         final BPMNDocumentation bpmnDocumentation = tested.processDocumentation(diagram);
         final DocumentationOutput documentationOutput = tested.buildDocumentation(documentationTemplate, bpmnDocumentation);
-        assertEquals(documentationOutput.getValue(), RENDERED_DOC);
+        assertEquals(RENDERED_DOC, documentationOutput.getValue());
     }
 
     @Test
     public void generate() {
         final DocumentationOutput documentationOutput = tested.generate(diagram);
-        assertEquals(documentationOutput.getValue(), RENDERED_DOC);
+        assertEquals(RENDERED_DOC, documentationOutput.getValue());
     }
 }

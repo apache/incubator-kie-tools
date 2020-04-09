@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
+import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -224,6 +226,15 @@ public class AssignmentTest extends AssignmentBaseTest {
         assertNotEquals(tested, b);
         tested.setExpression("#{expression}");
         assertEquals(tested, b);
+        v1 = new Variable("processVar", PROCESS, "String", null, null);
+        v2 = new Variable("processVar", PROCESS, "String", null, null);
+        assertEquals(v1, v2);
+        v2 = new Variable("processVar", PROCESS, "String", null, Arrays.asList("internal", "input"));
+        assertNotEquals(v1, v2);
+        v1 = new Variable("processVar", PROCESS, "String", null, Arrays.asList("internal", "input"));
+        assertEquals(v1, v2);
+        v2 = new Variable("processVar", PROCESS, "String", null, null);
+        assertNotEquals(v1, v2);
     }
 
     @Test

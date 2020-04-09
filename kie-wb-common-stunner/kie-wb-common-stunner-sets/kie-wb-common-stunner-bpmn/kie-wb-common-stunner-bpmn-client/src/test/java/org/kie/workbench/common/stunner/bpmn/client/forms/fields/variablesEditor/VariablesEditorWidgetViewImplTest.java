@@ -50,6 +50,7 @@ import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,7 +92,7 @@ public class VariablesEditorWidgetViewImplTest {
     private ListWidget<VariableRow, VariableListItemWidgetViewImpl> variableRows;
 
     @GwtMock
-    private TableCellElement kpith;
+    private TableCellElement tagsth;
 
     private VariablesEditorWidgetViewImpl view;
 
@@ -114,7 +115,7 @@ public class VariablesEditorWidgetViewImplTest {
         view.nameth = nameth;
         view.datatypeth = datatypeth;
         view.notification = notification;
-        view.kpith = kpith;
+
         doCallRealMethod().when(view).setVariableRows(any(List.class));
         doCallRealMethod().when(view).init(any(VariablesEditorWidgetView.Presenter.class));
         doCallRealMethod().when(view).handleAddVarButton(any(ClickEvent.class));
@@ -129,6 +130,13 @@ public class VariablesEditorWidgetViewImplTest {
         doCallRealMethod().when(view).setDataTypes(anyListOf(String.class),
                                                    anyListOf(String.class));
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
+        doCallRealMethod().when(view).checkTagsNotEnabled();
+
+        doCallRealMethod().when(view).setTagsth(any());
+        doCallRealMethod().when(view).setTagsDisabled(anyBoolean());
+
+        view.setTagsth(tagsth);
+
         rows = new ArrayList<VariableRow>();
         rows.add(new VariableRow(Variable.VariableType.PROCESS,
                                  "varName",
@@ -238,4 +246,16 @@ public class VariablesEditorWidgetViewImplTest {
                    times(1)).setReadOnly(false);
         }
     }
+
+    @Test
+    public void testCheckTagsNotEnabled() {
+        view.setTagsDisabled(false);
+        view.checkTagsNotEnabled();
+        verify(tagsth, never()).removeFromParent();
+
+        view.setTagsDisabled(true);
+        view.checkTagsNotEnabled();
+        verify(tagsth, times(1)).removeFromParent();
+    }
+
 }

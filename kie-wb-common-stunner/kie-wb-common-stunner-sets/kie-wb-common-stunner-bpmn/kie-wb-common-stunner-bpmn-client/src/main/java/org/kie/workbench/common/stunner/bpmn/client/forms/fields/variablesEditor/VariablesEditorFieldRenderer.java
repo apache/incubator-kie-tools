@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +28,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -57,15 +60,20 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     Map<String, String> mapDataTypeNamesToDisplayNames = null;
     Map<String, String> mapDataTypeDisplayNamesToNames = null;
     ListBoxValues dataTypeListBoxValues;
+
     private VariablesEditorWidgetView view;
     private Variable.VariableType variableType = Variable.VariableType.PROCESS;
     private List<String> dataTypes = new ArrayList<>();
     private Graph graph;
     private Path path;
 
+    private Button lastOverlayOpened = null;
+
     private Set<FindVariableUsagesFlag> findVariableUsagesFlags;
 
     private final ErrorPopupPresenter errorPopupPresenter;
+
+    private static Set<String> defaultTagsSet = new HashSet<>(Arrays.asList("internal", "required", "readonly", "input", "output", "business_relevant", "tracked"));
 
     @Inject
     public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor,
@@ -94,7 +102,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
         formGroup.render(view.asWidget(), field);
 
-        checkKPINotEnabled();
+        checkTagsNotEnabled();
 
         if (field != null && field.isCaseFileVariable()) {
             findVariableUsagesFlags = EnumSet.of(CASE_FILE_VARIABLE);
@@ -123,9 +131,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         newVariable.setVariableType(variableType);
         as.add(newVariable);
         VariableListItemWidgetView widget = view.getVariableWidget(view.getVariableRowsCount() - 1);
+
         widget.setDataTypes(dataTypeListBoxValues);
         widget.setParentWidget(this);
-        checkKPINotEnabled();
+        checkTagsNotEnabled();
     }
 
     @Override
@@ -197,6 +206,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
                                            mapDataTypeDisplayNamesToNames));
             }
         }
+
         return StringUtils.getStringForList(variables);
     }
 
@@ -259,10 +269,28 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         return path;
     }
 
-    private void checkKPINotEnabled() {
+    private void checkTagsNotEnabled() {
         if (this.field != null && !this.field.getId().equals("processVariables")) {
-            this.view.setKPINotEnabled();
+            this.view.setTagsNotEnabled();
         }
+    }
+
+    public void setLastOverlayOpened(final Button overlayCloseButton) {
+        this.lastOverlayOpened = overlayCloseButton;
+    }
+
+    public Button getLastOverlayOpened() {
+        return lastOverlayOpened;
+    }
+
+    public void closeLastOverlay() {
+        if (lastOverlayOpened != null) {
+            lastOverlayOpened.click();
+        }
+    }
+
+    public static Set<String> getDefaultTagsSet() {
+        return  defaultTagsSet;
     }
 
 }

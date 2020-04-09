@@ -112,9 +112,9 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
         final String SUB_PROCESS_NAME_MVEL = "Embedded process03 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Embedded process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVar03:String:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVar03:String:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -221,9 +221,9 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
         final String SUB_PROCESS_NAME_MVEL = "Embedded process06 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Embedded process06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVar06:String:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVar06:String:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);

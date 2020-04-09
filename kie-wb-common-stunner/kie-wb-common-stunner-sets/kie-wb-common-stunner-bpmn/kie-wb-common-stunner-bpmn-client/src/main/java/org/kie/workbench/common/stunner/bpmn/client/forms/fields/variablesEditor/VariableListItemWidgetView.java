@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
+import java.util.List;
+
 import org.jboss.errai.ui.client.widget.HasModel;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
@@ -25,6 +27,7 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
 
     String CUSTOM_PROMPT = "Custom" + ListBoxValues.EDIT_SUFFIX;
     String ENTER_TYPE_PROMPT = "Enter type" + ListBoxValues.EDIT_SUFFIX;
+    String ENTER_TAG_PROMPT = "Enter tag" + ListBoxValues.EDIT_SUFFIX;
 
     void init();
 
@@ -33,6 +36,8 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
     void notifyModelChanged();
 
     void setDataTypes(final ListBoxValues dataTypeListBoxValues);
+
+    void setTagTypes(List<String> tagTypes);
 
     VariableType getVariableType();
 
@@ -44,7 +49,11 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
 
     void setCustomDataType(final String customDataType);
 
+    void setCustomTags(final List<String> tags);
+
+    List<String> getCustomTags();
+
     void setReadOnly(final boolean readOnly);
 
-    void setKPINotEnabled();
+    void setTagsNotEnabled();
 }

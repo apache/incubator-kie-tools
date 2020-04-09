@@ -55,7 +55,9 @@ public class ProcessVariablesTotal {
     }
 
     @JsOverlay
-    public final KeyValue[] getVariables() { return variables; }
+    public final KeyValue[] getVariables() {
+        return variables;
+    }
 
     @JsOverlay
     public final VariableTriplets[] getVariablesAsTriplets() {
@@ -63,28 +65,44 @@ public class ProcessVariablesTotal {
         for (int i = 0; i < variables.length; i++) {
             final ProcessVariableSerializer.VariableInfo info = (ProcessVariableSerializer.VariableInfo) variables[i].getValue();
             triplets[i] = VariableTriplets.create(variables[i].getKey(),
-                                               info.type,
-                                               info.kpi == null || info.kpi.isEmpty() ? "false" : info.kpi);
+                                                  info.getType(),
+                                                  info.getTags());
         }
         return triplets;
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public static class VariableTriplets {
-        public Object name;
-        public Object type;
-        public Object kpi;
+
+        private Object name;
+        private Object type;
+        private Object tags;
 
         private VariableTriplets() {
         }
 
         @JsOverlay
-        public static final VariableTriplets create(final Object name, final Object type, final Object kpi) {
+        public static final VariableTriplets create(final Object name, final Object type, final Object tags) {
             final VariableTriplets instance = new VariableTriplets();
             instance.name = name;
             instance.type = type;
-            instance.kpi = kpi;
+            instance.tags = tags;
             return instance;
+        }
+
+        @JsOverlay
+        public final Object getName() {
+            return name;
+        }
+
+        @JsOverlay
+        public final Object getType() {
+            return type;
+        }
+
+        @JsOverlay
+        public final Object getTags() {
+            return tags;
         }
     }
 }

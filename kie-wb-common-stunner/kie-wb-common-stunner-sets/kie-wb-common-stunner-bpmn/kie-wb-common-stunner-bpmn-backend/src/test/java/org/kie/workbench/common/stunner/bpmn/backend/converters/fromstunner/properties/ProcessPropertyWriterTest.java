@@ -153,13 +153,24 @@ public class ProcessPropertyWriterTest {
 
     @Test
     public void processVariables() {
-        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
+        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean:input,GV2:Boolean:output;required,GV3:Integer:customTag;required");
         p.setProcessVariables(processVariables);
 
         final ProcessPropertyReader pp = new ProcessPropertyReader(
                 p.getProcess(), p.getBpmnDiagram(), p.getShape(), 1.0);
         String processVariablesString = pp.getProcessVariables();
-        assertThat(processVariablesString).isEqualTo("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
+        assertThat(processVariablesString).isEqualTo("GV1:Boolean:<![CDATA[input]]>,GV2:Boolean:<![CDATA[output;required]]>,GV3:Integer:<![CDATA[customTag;required]]>");
+    }
+
+    @Test
+    public void processVariablesNoTags() {
+        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean,GV2:Boolean,GV3:Integer");
+        p.setProcessVariables(processVariables);
+
+        final ProcessPropertyReader pp = new ProcessPropertyReader(
+                p.getProcess(), p.getBpmnDiagram(), p.getShape(), 1.0);
+        String processVariablesString = pp.getProcessVariables();
+        assertThat(processVariablesString).isEqualTo("GV1:Boolean:[],GV2:Boolean:[],GV3:Integer:[]");
     }
 
     @Test

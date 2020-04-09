@@ -120,9 +120,9 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
         final String SUB_PROCESS_NAME_MVEL = "Multiple Instance sub-process03 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Multiple Instance sub-process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVarCustom:any.Custom:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false,subVarString:String:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarCustom:any.Custom:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[],subVarString:String:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -254,9 +254,9 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
         final String SUB_PROCESS_NAME_MVEL = "Multiple Instance sub-process06 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_MVEL = "Multiple Instance sub-process06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:false";
-        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:false";
-        final String SUB_PROCESS_VARIABLES_MVEL = "subVarCustom:any.Custom:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false,subVarString:String:false";
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String:[]";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String:[]";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarCustom:any.Custom:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[],subVarString:String:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);

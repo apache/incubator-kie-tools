@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssignmentDataMarshallerTest extends AssignmentBaseTest {
@@ -314,6 +315,9 @@ public class AssignmentDataMarshallerTest extends AssignmentBaseTest {
         EJValue jsonObject = new JSONStreamDecoder(new ByteArrayInputStream(json.getBytes())).parse();
         AssignmentData demarshalled = marshaller.demarshall(jsonObject,
                                                             session);
+        assertNotNull(original);
+        assertNotNull(demarshalled);
+
         assertEquals(original,
                      demarshalled);
     }

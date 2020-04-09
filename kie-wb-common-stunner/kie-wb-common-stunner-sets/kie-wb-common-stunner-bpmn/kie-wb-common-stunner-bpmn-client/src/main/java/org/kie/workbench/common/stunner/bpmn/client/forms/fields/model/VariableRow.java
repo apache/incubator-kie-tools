@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -33,25 +35,16 @@ public class VariableRow {
 
     private String customDataType;
 
-    public boolean getKpi() {
-        return kpi;
-    }
-
-    public void setKpi(boolean kpi) {
-        this.kpi = kpi;
-    }
-
-    private boolean kpi;
+    private List<String> tags;
 
     // Field which is incremented for each row.
     // Required to implement equals function which needs a unique field
     private static long lastId = 0;
 
     public VariableRow() {
-        this(Variable.VariableType.PROCESS, null, null, null, false);
+        this(Variable.VariableType.PROCESS, null, null, null, new ArrayList<>());
         this.id = lastId++;
     }
-
 
     public VariableRow(final Variable.VariableType variableType,
                        final String name,
@@ -68,13 +61,13 @@ public class VariableRow {
                        final String name,
                        final String dataTypeDisplayName,
                        final String customDataType,
-                       final boolean isKPI) {
+                       final List<String> tags) {
         this.id = lastId++;
         this.variableType = variableType;
         this.name = name;
         this.dataTypeDisplayName = dataTypeDisplayName;
         this.customDataType = customDataType;
-        this.kpi = isKPI;
+        this.tags = tags;
     }
 
     public VariableRow(final Variable variable,
@@ -88,9 +81,16 @@ public class VariableRow {
             this.dataTypeDisplayName = variable.getDataType();
         }
         this.customDataType = variable.getCustomDataType();
-        this.kpi = variable.getKpi();
+        this.tags = variable.getTags();
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 
     public long getId() {
         return id;
@@ -154,6 +154,6 @@ public class VariableRow {
 
     @Override
     public String toString() {
-        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataTypeDisplayName=" + dataTypeDisplayName + ", customDataType=" + customDataType + ", kpi=" + kpi + "]";
+        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataTypeDisplayName=" + dataTypeDisplayName + ", customDataType=" + customDataType + ", tags=" + String.join(",", tags) + "]";
     }
 }

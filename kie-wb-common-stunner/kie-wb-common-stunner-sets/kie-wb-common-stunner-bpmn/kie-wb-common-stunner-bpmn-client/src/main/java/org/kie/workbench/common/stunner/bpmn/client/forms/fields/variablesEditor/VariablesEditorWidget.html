@@ -13,57 +13,58 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-</head>
-
-<body>
-
 <div id="widget" class="input-group" style="width:100%">
     <div>
-
-
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" data-field="table">
                         <thead>
                         <tr>
-                            <th data-field="nameth" style="width:46%">
+                            <th data-field="nameth" style="width:32%" data-i18n-key="Name">
                                 Name
                             </th>
-                            <th data-field="datatypeth" style="width:46%">
+                            <th data-field="datatypeth" style="width:43%" data-i18n-key="DataType">
                                 Data Type
                             </th>
-
-                            <th data-field="kpith" style="width:4%">
-                                KPI
+                            <th style="width:22%" data-field="tagsth" data-i18n-key="Tags">
+                               Tags<i class="fa fa-info-circle" title="Add Predefined or Custom Tags to Variables"/>
                             </th>
-
-                            <td style="width:4%">
+                            <th style="width:3%">
                                 <button type="button" class="center-block" data-field="addVarButton"></button>
-                            </td>
+                            </th>
                         </tr>
                         </thead>
                         <tbody id="variableRows">
                         <tr id="variableRow">
-                            <td style="width:46%">
+                            <td style="width:32%">
                                 <input type="text" class="form-control" data-field="name"/>
                             </td>
-                            <td style="width:46%">
+                            <td style="width:43%">
                                 <select data-field="dataType" class="form-control">
                                     <option value="Integer">Integer</option>
                                     <option value="String">String</option>
                                 </select>
                                 <input type="text" class="form-control" data-field="customDataType"/>
                             </td>
-
-                            <td style="width:4%" data-field="kpiTD">
-                                <input type="checkbox" style="margin-left:15px; margin-top:10px" data-field="kpi"/>
+                            <td style="width:22%" data-field="tagsTD">
+                                <div class="containerDiv" title="Tags">
+                                    <a class="tagAnchor tagsSVG" data-field="variable-tags-settings" data-dismiss="onblur" data-placement="bottom" data-toggle="popover" data-html="true" data-content="OverlayContent">
+                                        <span data-field="tagCount" title="These are the tags included " class="tagSpan"></span>
+                                    </a>
+                                </div>
+                                <div style="display:none;" data-field="tags-div" class="tagsDiv">
+                                    <button type="button" class="close" data-field="closeButton">x</button>
+                                    <h3 data-i18n-key="TagsX">Variable tags</h3>
+                                    <select data-field="defaultTagNames" class="form-control selectionWidget" style="width: 150px;"/>
+                                    <input class="form-control selectionWidget" data-field="customTagName" style="width: 150px;" type="text"/>
+                                    <span class="glyphicon glyphicon-ok check-mark acceptButton" title="Add Tag" data-field="acceptButton"></span>
+                                    <br><br><br>
+                                    <div data-field="tagsContainer">
+                                    </div>
+                                </div>
                             </td>
-
-                            <td style="width:4%">
+                            <td style="width:3%">
                                 <button type="button" class="center-block" data-field="deleteButton"></button>
                             </td>
                         </tr>
@@ -73,7 +74,4 @@
             </div>
         </div>
     </div>
-
 </div>
-</body>
-</html>

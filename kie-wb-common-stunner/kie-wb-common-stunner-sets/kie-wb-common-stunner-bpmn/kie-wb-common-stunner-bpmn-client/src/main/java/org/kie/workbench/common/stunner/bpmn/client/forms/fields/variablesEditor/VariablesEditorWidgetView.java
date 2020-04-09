@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEdito
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.uberfire.backend.vfs.Path;
@@ -49,6 +50,12 @@ public interface VariablesEditorWidgetView extends IsWidget {
         ListBoxValues.ValueTester dataTypesTester();
 
         Path getDiagramPath();
+
+        void setLastOverlayOpened(final Button overlayCloseButton);
+
+        void closeLastOverlay();
+
+        Button getLastOverlayOpened();
     }
 
     void init(final Presenter presenter);
@@ -77,5 +84,5 @@ public interface VariablesEditorWidgetView extends IsWidget {
 
     void setReadOnly(final boolean readOnly);
 
-    void setKPINotEnabled();
+    void setTagsNotEnabled();
 }

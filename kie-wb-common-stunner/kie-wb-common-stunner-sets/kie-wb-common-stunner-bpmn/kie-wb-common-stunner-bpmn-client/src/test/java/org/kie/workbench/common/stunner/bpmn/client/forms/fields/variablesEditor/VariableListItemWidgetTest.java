@@ -16,13 +16,22 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
-import elemental2.dom.HTMLInputElement;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLLabelElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -39,12 +48,12 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataType
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +61,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests the data get/set methods of VariableListItemWidget
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class VariableListItemWidgetTest {
 
     ValueListBox<String> dataType;
@@ -61,7 +70,19 @@ public class VariableListItemWidgetTest {
 
     ComboBox dataTypeComboBox;
 
-    HTMLInputElement kpi;
+    ComboBox tagNamesComboBox;
+
+    @GwtMock
+    ValueListBox<String> defaultTagNames;
+
+    @GwtMock
+    CustomDataTypeTextBox customTagName;
+
+    @GwtMock
+    HTMLLabelElement tagCount;
+
+    @GwtMock
+    HTMLAnchorElement variableTagsSettings;
 
     @GwtMock
     VariableNameTextBox name;
@@ -82,7 +103,11 @@ public class VariableListItemWidgetTest {
         dataType = mock(ValueListBox.class);
         customDataType = mock(CustomDataTypeTextBox.class);
         dataTypeComboBox = mock(ComboBox.class);
-        kpi = mock(HTMLInputElement.class);
+        tagNamesComboBox = mock(ComboBox.class);
+        customTagName = mock(CustomDataTypeTextBox.class);
+        variableTagsSettings = mock(HTMLAnchorElement.class);
+        defaultTagNames = mock(ValueListBox.class);
+        tagCount = mock(HTMLLabelElement.class);
         widget = GWT.create(VariableListItemWidgetViewImpl.class);
         VariableRow variableRow = new VariableRow();
         widget.dataType = dataType;
@@ -91,7 +116,11 @@ public class VariableListItemWidgetTest {
         widget.name = name;
         widget.deleteButton = deleteButton;
         widget.variableRow = variable;
-        widget.kpi = kpi;
+        widget.variableTagsSettings = variableTagsSettings;
+        widget.tagCount = tagCount;
+        widget.customTagName = customTagName;
+        widget.tagNamesComboBox = tagNamesComboBox;
+        widget.defaultTagNames = defaultTagNames;
         Mockito.doCallRealMethod().when(widget).setTextBoxModelValue(any(TextBox.class),
                                                                      anyString());
         Mockito.doCallRealMethod().when(widget).setListBoxModelValue(any(ValueListBox.class),
@@ -104,12 +133,27 @@ public class VariableListItemWidgetTest {
         Mockito.doCallRealMethod().when(widget).setDataTypes(any(ListBoxValues.class));
         Mockito.doCallRealMethod().when(widget).init();
         Mockito.doCallRealMethod().when(widget).setModel(any(VariableRow.class));
+        Mockito.doCallRealMethod().when(widget).setTagTypes(any(List.class));
+        Mockito.doCallRealMethod().when(widget).getCustomTags();
+        Mockito.doCallRealMethod().when(widget).renderTagElementsBadges();
+        Mockito.doCallRealMethod().when(widget).handleBadgeCloseEvent(anyString(), any(), any(), any());
+        Mockito.doCallRealMethod().when(widget).setParentWidget(any());
+        Mockito.doCallRealMethod().when(widget).setTagSet(any());
+
+        Mockito.doCallRealMethod().when(tagNamesComboBox).setListBoxValues(any());
+        Mockito.doCallRealMethod().when(tagNamesComboBox).addCustomValueToListBoxValues(anyString(), anyString());
+        Mockito.doCallRealMethod().when(tagNamesComboBox).getListBoxValues();
+
         when(widget.getModel()).thenReturn(variableRow);
     }
 
     @Test
     public void testInitWidget() {
+        VariablesEditorWidgetView.Presenter presenter = mock(VariablesEditorWidgetView.Presenter.class);
+        widget.setParentWidget(presenter);
+        widget.tagNamesList = new ArrayList<>();
         widget.init();
+
         verify(widget,
                times(1)).init();
         verify(dataTypeComboBox,
@@ -158,11 +202,27 @@ public class VariableListItemWidgetTest {
     }
 
     @Test
+    public void testSetTextBoxModelValueForCustomTags() {
+        widget.setTextBoxModelValue(customTagName,
+                                    "myCustomTag");
+        verify(widget,
+               never()).setCustomDataType(anyString());
+    }
+
+    @Test
     public void testSetListBoxModelValue() {
         widget.setListBoxModelValue(dataType,
                                     "Paper [org.stationery");
         verify(widget,
                times(1)).setDataTypeDisplayName("Paper [org.stationery");
+    }
+
+    @Test
+    public void testSetListBoxModelValueForCustomTags() {
+        widget.setListBoxModelValue(defaultTagNames,
+                                    "myCustomTag");
+        verify(widget,
+               never()).setDataTypeDisplayName(anyString());
     }
 
     @Test
@@ -214,20 +274,52 @@ public class VariableListItemWidgetTest {
     }
 
     @Test
-    public void testSetKPI() {
-        String sDataType = "Boolean";
-        widget.setListBoxModelValue(widget.dataType,
-                                    sDataType);
-        kpi.checked = true;
-        String returnedDataType1 = widget.getDataTypeDisplayName();
-        assertEquals(sDataType,
-                     returnedDataType1);
-        String returnedDataType2 = widget.getModelValue(widget.dataType);
-        assertEquals(sDataType,
-                     returnedDataType2);
-        boolean returnedDataType3 = widget.kpi.checked;
-        assertEquals(true,
-                     returnedDataType3);
+    public void testSetTags() {
+        List<String> tags = Arrays.asList("internal", "input", "customTag");
+        VariablesEditorWidgetView.Presenter presenter = mock(VariablesEditorWidgetView.Presenter.class);
+        widget.setParentWidget(presenter);
 
+        widget.setTagSet(new HashSet<>());
+        HTMLLabelElement tagLabel = mock(HTMLLabelElement.class);
+        HTMLAnchorElement tagCloseButton = mock(HTMLAnchorElement.class);
+
+        when(widget.getBadgeElement(anyString())).thenReturn(tagLabel);
+        when(widget.getBadgeCloseButton()).thenReturn(tagCloseButton);
+        HTMLDivElement tagsContainer = mock(HTMLDivElement.class);
+        widget.tagsContainer = tagsContainer;
+
+        widget.removeButtons = new HashMap<>();
+        widget.setTagTypes(tags);
+        verify(tagNamesComboBox, times(1)).addCustomValueToListBoxValues("customTag", "");
+    }
+
+    @Test
+    public void testHandleBadgeCloseEvent() {
+        VariablesEditorWidgetView.Presenter presenter = mock(VariablesEditorWidgetView.Presenter.class);
+        widget.setParentWidget(presenter);
+
+        HTMLLabelElement tagLabel = mock(HTMLLabelElement.class);
+        HTMLAnchorElement tagCloseButton = mock(HTMLAnchorElement.class);
+
+        elemental2.dom.Event ex = mock(elemental2.dom.Event.class);
+        ex.type = "SomeType";
+        widget.setTagSet(new HashSet<>());
+
+        widget.handleBadgeCloseEvent("internal", tagLabel, tagCloseButton, ex);
+
+        verify(tagLabel, times(1)).remove();
+        verify(tagCloseButton, times(1)).remove();
+        // Updated Model
+        verify(widget, times(1)).notifyModelChanged();
+
+        ex.type = "DoNotUpdateModel";
+        widget.setTagSet(new HashSet<>());
+
+        widget.handleBadgeCloseEvent("internal", tagLabel, tagCloseButton, ex);
+
+        verify(tagLabel, times(2)).remove();
+        verify(tagCloseButton, times(2)).remove();
+        // No New Calls to Updated Model
+        verify(widget, times(1)).notifyModelChanged();
     }
 }

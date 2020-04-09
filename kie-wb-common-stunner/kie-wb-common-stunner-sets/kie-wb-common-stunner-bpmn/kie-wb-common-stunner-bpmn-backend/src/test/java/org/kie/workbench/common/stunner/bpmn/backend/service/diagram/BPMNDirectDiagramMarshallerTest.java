@@ -520,7 +520,7 @@ public class BPMNDirectDiagramMarshallerTest {
         BPMNDiagramImpl bpmnDiagram = getBpmnDiagram(diagram);
         ProcessVariables variables = bpmnDiagram.getProcessData().getProcessVariables();
         assertEquals(variables.getValue(),
-                     "employee:java.lang.String:false,reason:java.lang.String:false,performance:java.lang.String:false");
+                     "employee:java.lang.String:[],reason:java.lang.String:[],performance:java.lang.String:[]");
 
         Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_luRBMdEjEeWXpsZ1tNStKQ");
         assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
@@ -530,7 +530,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
         variables = bpmnDiagram.getProcessData().getProcessVariables();
         assertEquals(variables.getValue(),
-                     "employee:java.lang.String:false,reason:java.lang.String:false,performance:java.lang.String:false");
+                     "employee:java.lang.String:[],reason:java.lang.String:[],performance:java.lang.String:[]");
     }
 
     @Test
@@ -1953,7 +1953,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("java",
                      executionSet.getOnExitAction().getValue().getValues().get(0).getLanguage());
 
-        assertEquals("subProcessVar1:String:false,subProcessVar2:String:false",
+        assertEquals("subProcessVar1:String:[],subProcessVar2:String:[]",
                      processData.getProcessVariables().getValue());
 
         assertTrue(executionSet.getIsAsync().getValue());
@@ -3588,7 +3588,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("java",
                      multipleInstanceSubprocess.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
         assertTrue(multipleInstanceSubprocess.getExecutionSet().getIsAsync().getValue());
-        assertEquals("mi-var1:String:false", multipleInstanceSubprocess.getProcessData().getProcessVariables().getValue());
+        assertEquals("mi-var1:String:[]", multipleInstanceSubprocess.getProcessData().getProcessVariables().getValue());
         assertEquals(Boolean.TRUE, multipleInstanceSubprocess.getExecutionSet().getIsAsync().getValue());
 
         final String SLA_DUE_DATE = "12/25/1983";
@@ -3607,7 +3607,7 @@ public class BPMNDirectDiagramMarshallerTest {
         EventSubprocess eventSubprocess = (EventSubprocess) eventSubprocessNode.getContent().getDefinition();
         assertTrue(eventSubprocess.getExecutionSet().getIsAsync().getValue());
         assertEquals(eventSubprocess.getProcessData().getProcessVariables().getValue(),
-                     "Var1:String:false");
+                     "Var1:String:[]");
 
         final String SLA_DUE_DATE = "12/25/1983";
         assertEquals(SLA_DUE_DATE, eventSubprocess.getExecutionSet().getSlaDueDate().getValue());

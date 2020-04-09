@@ -82,7 +82,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String SUB_PROCESS_VARIABLES = "subVarString:String:false,subVarCustom:Custom:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false";
+        final String SUB_PROCESS_VARIABLES = "subVarString:String:[],subVarCustom:Custom:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -142,7 +142,7 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process02 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String SUB_PROCESS_VARIABLES = "subVarString:String:false,subVarCustom:Custom:false,subVarBoolean:Boolean:false,subVarFloat:Float:false,subVarInteger:Integer:false,subVarObject:Object:false";
+        final String SUB_PROCESS_VARIABLES = "subVarString:String:[],subVarCustom:Custom:[],subVarBoolean:Boolean:[],subVarFloat:Float:[],subVarInteger:Integer:[],subVarObject:Object:[]";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);

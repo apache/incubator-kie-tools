@@ -16,20 +16,32 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
-import elemental2.dom.HTMLInputElement;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.ClientRect;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLLabelElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,13 +55,14 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTe
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -61,7 +74,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class VariableListItemWidgetViewImplTest {
 
     private static final String VARIABLE_NAME = "variableName";
@@ -81,7 +94,10 @@ public class VariableListItemWidgetViewImplTest {
     private Button deleteButton;
 
     @Mock
-    private HTMLInputElement kpi;
+    private CSSStyleDeclaration overlayDivCSS;
+
+    @Mock
+    private ComboBox tagNamesComboBox;
 
     private CustomDataTypeTextBox customDataType;
 
@@ -91,8 +107,19 @@ public class VariableListItemWidgetViewImplTest {
 
     private ComboBox processVarComboBox;
 
+    private HTMLAnchorElement variableTagsSettings;
+
+    private HTMLLabelElement tagCount;
+
+    private CustomDataTypeTextBox customTagName;
+
+    private ValueListBox<String> defaultTagNames;
+
     @GwtMock
     private KeyDownEvent keyDownEvent;
+
+    @GwtMock
+    private ClickEvent clickEvent;
 
     private Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
@@ -100,34 +127,47 @@ public class VariableListItemWidgetViewImplTest {
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
 
     @Captor
+    private ArgumentCaptor<ClickHandler> clickHandlerCaptor;
+
+    @Captor
     private ArgumentCaptor<ChangeHandler> changeHandlerCaptor;
 
     private VariableListItemWidgetViewImpl view;
 
     @Mock
-    private VariablesEditorWidgetView.Presenter parent;
+    private VariablesEditorFieldRenderer parent;
 
     @Mock
     private ErrorPopupPresenter errorPopupPresenter;
 
     @Before
     public void setUp() throws Exception {
+        parent = mock(VariablesEditorFieldRenderer.class);
         GwtMockito.initMocks(this);
         customDataType = mock(CustomDataTypeTextBox.class);
         dataType = mock(ValueListBox.class);
         dataTypeComboBox = mock(ComboBox.class);
         processVarComboBox = mock(ComboBox.class);
+        variableTagsSettings = mock(HTMLAnchorElement.class);
+        tagCount = mock(HTMLLabelElement.class);
+        customTagName = mock(CustomDataTypeTextBox.class);
+        defaultTagNames = mock(ValueListBox.class);
+        tagNamesComboBox = mock(ComboBox.class);
         view = mock(VariableListItemWidgetViewImpl.class);
         view.variableRow = variableRow;
         view.name = name;
         view.deleteButton = deleteButton;
-        kpi = mock(HTMLInputElement.class);
-        view.kpi = kpi;
+        view.tagNamesComboBox = tagNamesComboBox;
         view.customDataType = customDataType;
         view.dataType = dataType;
         view.dataTypeComboBox = dataTypeComboBox;
         view.notification = notification;
         view.errorPopupPresenter = errorPopupPresenter;
+        view.variableTagsSettings = variableTagsSettings;
+        view.tagCount = tagCount;
+        view.customTagName = customTagName;
+        view.defaultTagNames = defaultTagNames;
+        view.tagNamesList = new ArrayList<>();
         doCallRealMethod().when(view).init();
         doCallRealMethod().when(view).getCustomDataType();
         doCallRealMethod().when(view).setCustomDataType(anyString());
@@ -143,12 +183,21 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when(view).getVariableType();
         doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
         doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).handleCloseButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).handleAcceptButton(any(ClickEvent.class));
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         doCallRealMethod().when(view).notifyModelChanged();
-        doCallRealMethod().when(view).setKPINotEnabled();
+        doCallRealMethod().when(view).setTagsNotEnabled();
+        doCallRealMethod().when(view).openOverlayActions();
+        doCallRealMethod().when(view).setTagSet(any());
+        doCallRealMethod().when(view).getTagSet();
+
+        doCallRealMethod().when(parent).getLastOverlayOpened();
+        doCallRealMethod().when(parent).setLastOverlayOpened(any());
 
         VariableRow row = new VariableRow();
         doReturn(row).when(variableRow).getModel();
+        view.setParentWidget(parent);
     }
 
     @Test
@@ -177,8 +226,8 @@ public class VariableListItemWidgetViewImplTest {
         row.setCustomDataType(null);
         row.setDataTypeDisplayName(DATA_TYPE_NAME);
         row.setVariableType(Variable.VariableType.PROCESS);
-        row.setKpi(true);
-        kpi.click();
+        row.setTags(Arrays.asList("internal"));
+        tagNamesComboBox.setTextBoxValue("internal");
         doReturn(row).when(variableRow).getModel();
         view.setModel(row);
         verify(variableRow,
@@ -189,8 +238,8 @@ public class VariableListItemWidgetViewImplTest {
                never()).setValue(DATA_TYPE_NAME);
         verify(dataType,
                times(1)).setValue(DATA_TYPE_NAME);
-        verify(kpi,
-               times(1)).click();
+        verify(tagNamesComboBox,
+               times(1)).setTextBoxValue("internal");
     }
 
     @Test
@@ -238,6 +287,91 @@ public class VariableListItemWidgetViewImplTest {
         handler.onKeyDown(keyDownEvent);
         verify(keyDownEvent,
                never()).preventDefault();
+    }
+
+    @Test
+    public void testTagTypeHandlerSpace() {
+        view.init();
+        verify(customTagName,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
+        KeyDownHandler handler = keyDownHandlerCaptor.getValue();
+        doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               times(1)).preventDefault();
+    }
+
+    @Test
+    public void testTagTypeHandlerAlphabetical() {
+        view.init();
+        verify(customTagName,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
+        KeyDownHandler handler = keyDownHandlerCaptor.getValue();
+        doReturn(Integer.valueOf('a')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               never()).preventDefault();
+    }
+
+    @Test
+    public void testTagAnchorClick() {
+        view.init();
+        view.isOpen = true;
+        view.openOverlayActions();
+        // Verify it is now closed
+        assertEquals(false, view.isOpen);
+
+        view.isOpen = false;
+        Button lastOverlay = mock(Button.class);
+        parent.setLastOverlayOpened(lastOverlay);
+        final HTMLDivElement overlayDiv = mock(HTMLDivElement.class);
+        final Element lastNode = mock(Element.class);
+
+        final ClientRect rect = mock(ClientRect.class);
+        rect.left = 100;
+        rect.top = 100;
+
+        final ClientRect rect2 = mock(ClientRect.class);
+        rect2.left = 150;
+        rect2.top = 150;
+
+        when(view.getNextElementSibling()).thenReturn(overlayDiv);
+        when(view.getLastElementChild(overlayDiv)).thenReturn(lastNode);
+
+        when(overlayDiv.getBoundingClientRect()).thenReturn(rect);
+        when(tagCount.getBoundingClientRect()).thenReturn(rect2);
+
+        overlayDiv.style = new elemental2.dom.CSSStyleDeclaration();
+        overlayDiv.style.left = "100px";
+
+        final HTMLDivElement tagsDiv = mock(HTMLDivElement.class);
+
+        tagsDiv.style = new elemental2.dom.CSSStyleDeclaration();
+        view.tagsDiv = tagsDiv;
+
+        final Button closeButton = mock(Button.class);
+        view.closeButton = closeButton;
+        view.openOverlayActions();
+
+        // verify last overlay was closed
+        assertEquals(true, view.isOpen);
+        assertEquals(parent.getLastOverlayOpened(), closeButton);
+        // since first time call, top position must be null
+        assertEquals(null, view.overlayTopPosition);
+
+        view.openOverlayActions();
+        // lass overlay should be now closed
+        verify(parent, times(1)).closeLastOverlay();
+        assertEquals(false, view.isOpen);
+        // since closed lastOverlay opened must be null since it does not to be closed by other overlays being opened
+        assertEquals(null, parent.getLastOverlayOpened());
+
+        view.overlayTopPosition = "100px";
+        view.openOverlayActions();
+        // since opened, lastOverlay must be the close button
+        assertEquals(closeButton, parent.getLastOverlayOpened());
+        // verify the same top position remains
+        assertEquals("100px", view.overlayTopPosition);
     }
 
     @Test
@@ -296,6 +430,77 @@ public class VariableListItemWidgetViewImplTest {
     }
 
     @Test
+    public void testHandleCloseButton() {
+        view.handleCloseButton(null);
+        verify(variableTagsSettings).click();
+    }
+
+    @Test
+    public void testHandleAcceptButton() {
+        view.setParentWidget(parent);
+
+        view.setTagSet(new HashSet<>());
+        view.getTagSet().add("myCustomTag");
+        when(tagNamesComboBox.getValue()).thenReturn("myCustomTag");
+        view.handleAcceptButton(null);
+
+        // since same tags, not call to render badges should happen
+        verify(view, never()).renderTagElementsBadges();
+        assertTrue(view.getTagSet().contains("myCustomTag"));
+
+        // test no empty tags can be added
+        when(tagNamesComboBox.getValue()).thenReturn("");
+        view.handleAcceptButton(null);
+        verify(view, never()).renderTagElementsBadges();
+
+        assertFalse(view.getTagSet().contains(""));
+
+        // since empty no call to render badges
+        verify(view, never()).renderTagElementsBadges();
+
+        when(tagNamesComboBox.getValue()).thenReturn("myCustomTag");
+        view.getTagSet().clear();
+        view.getTagSet().addAll(Arrays.asList("internal", "outer", "tracked"));
+        view.removeButtons = new HashMap<>();
+        view.handleAcceptButton(null);
+        verify(view, times(1)).renderTagElementsBadges();
+        assertTrue(view.getTagSet().contains("myCustomTag"));
+
+        // test badges editing
+        when(view.getPreviousCustomValue()).thenReturn("myCustom");
+
+        view.getTagSet().clear();
+        view.getTagSet().addAll(Arrays.asList("internal", "outer", "tracked"));
+
+        view.handleAcceptButton(null);
+        verify(view, times(2)).renderTagElementsBadges();
+        assertTrue(view.getTagSet().contains("myCustomTag"));
+        assertFalse(view.getTagSet().contains("myCustom"));
+
+        // test editing and same value as last
+        view.getTagSet().clear();
+        view.getTagSet().addAll(Arrays.asList("internal", "outer", "tracked"));
+
+        when(view.getPreviousCustomValue()).thenReturn("myCustomTag");
+
+        view.handleAcceptButton(null);
+        verify(view, times(3)).renderTagElementsBadges();
+        assertTrue(view.getTagSet().contains("myCustomTag"));
+
+        // test not included in default tag set
+        when(tagNamesComboBox.getValue()).thenReturn("input");
+
+        view.getTagSet().clear();
+        view.getTagSet().addAll(Arrays.asList("output"));
+
+        when(view.getPreviousCustomValue()).thenReturn("myCustomTagX");
+
+        view.handleAcceptButton(null);
+        verify(view, times(4)).renderTagElementsBadges();
+        assertTrue(view.getTagSet().contains("output"));
+    }
+
+    @Test
     public void testSetReadOnlyTrue() {
         view.setReadOnly(true);
         verify(deleteButton,
@@ -316,5 +521,4 @@ public class VariableListItemWidgetViewImplTest {
         verify(name,
                times(1)).setEnabled(true);
     }
-
 }

@@ -151,7 +151,7 @@ public class SubProcessConverterTest {
         AdHocSubprocess definition = new AdHocSubprocess();
         String adHocOrdering = "Parallel";
         boolean adHocAutostart = true;
-        String processVariables = "processVar1:Object,processVar2:Integer";
+        String processVariables = "processVar1:Object:myTag,processVar2:Integer";
         definition.getGeneral().getName().setValue(NAME);
         definition.getGeneral().getDocumentation().setValue(DOCUMENTATION);
         definition.getProcessData().getProcessVariables().setValue(processVariables);
