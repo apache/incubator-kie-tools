@@ -16,7 +16,6 @@ package framework
 
 import (
 	"os"
-	"os/exec"
 
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
@@ -39,20 +38,12 @@ func CheckCliBinaryExist() (bool, error) {
 
 // ExecuteCliCommand executes a kogito cli command for a given namespace
 func ExecuteCliCommand(namespace string, args ...string) (string, error) {
-	GetLogger(namespace).Infof("Execute CLI %v", args)
 	path, err := config.GetOperatorCliPath()
 	if err != nil {
 		return "", err
 	}
-	out, err := exec.Command(path, args...).Output()
 
-	if err != nil {
-		GetLogger(namespace).Errorf("error output command: %s", string(out[:]))
-	} else {
-		GetLogger(namespace).Debugf("output command: %s", string(out[:]))
-	}
-
-	return string(out[:]), err
+	return ExecuteCommand(path, args...)
 }
 
 // ExecuteCliCommandInNamespace executes a kogito cli command in a specific namespace
