@@ -55,15 +55,15 @@ interface Props {
 }
 
 enum InputFileUrlState {
-  VALID,
   INITIAL,
   INVALID_URL,
   INVALID_EXTENSION,
   NOT_FOUND_URL,
   CORS_NOT_AVAILABLE,
-  VALIDATING,
   INVALID_GIST,
-  INVALID_GIST_EXTENSION
+  INVALID_GIST_EXTENSION,
+  VALIDATING,
+  VALID
 }
 
 enum UploadFileInputState {
@@ -84,8 +84,10 @@ export function HomePage(props: Props) {
   const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
-  const [gistRawUrl, setGistRawUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
+  const [inputFileUrlState, setInputFileUrlState] = useState({
+    urlValidation: InputFileUrlState.INITIAL,
+    urlToOpen: ""
+  });
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
@@ -247,7 +249,10 @@ export function HomePage(props: Props) {
 
   const validateUrl = useCallback(async (inputFileUrl: string) => {
     if (inputFileUrl.trim() === "") {
-      setInputFileUrlState(InputFileUrlState.INITIAL);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.INITIAL,
+        urlToOpen: ""
+      });
       return;
     }
 
@@ -255,7 +260,10 @@ export function HomePage(props: Props) {
     try {
       url = new URL(inputFileUrl);
     } catch (e) {
-      setInputFileUrlState(InputFileUrlState.INVALID_URL);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.INVALID_URL,
+        urlToOpen: ""
+      });
       return;
     }
 
@@ -265,46 +273,77 @@ export function HomePage(props: Props) {
       let rawUrl: string;
       try {
         rawUrl = await context.githubService.getGistRawUrlFromId(gistId);
-        setGistRawUrl(rawUrl);
       } catch (e) {
-        setInputFileUrlState(InputFileUrlState.INVALID_GIST);
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_GIST,
+          urlToOpen: ""
+        });
         return;
       }
 
       const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
       if (gistExtension && context.router.getLanguageData(gistExtension)) {
-        setInputFileUrlState(InputFileUrlState.VALID);
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.VALID,
+          urlToOpen: rawUrl
+        });
         return;
       }
 
-      setInputFileUrlState(InputFileUrlState.INVALID_GIST_EXTENSION);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
+        urlToOpen: ""
+      });
       return;
     }
 
     const fileExtension = extractFileExtension(url.pathname);
     if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
-      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.INVALID_EXTENSION,
+        urlToOpen: ""
+      });
       return;
     }
 
-    setInputFileUrlState(InputFileUrlState.VALIDATING);
+    setInputFileUrlState({
+      urlValidation: InputFileUrlState.VALIDATING,
+      urlToOpen: ""
+    });
     if (context.githubService.isGithub(inputFileUrl)) {
       if (await context.githubService.checkFileExistence(inputFileUrl)) {
-        setInputFileUrlState(InputFileUrlState.VALID);
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.VALID,
+          urlToOpen: inputFileUrl
+        });
         return;
       }
 
-      setInputFileUrlState(InputFileUrlState.NOT_FOUND_URL);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.NOT_FOUND_URL,
+        urlToOpen: ""
+      });
       return;
     }
 
     try {
       if ((await fetch(inputFileUrl)).ok) {
-        setInputFileUrlState(InputFileUrlState.VALID);
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.VALID,
+          urlToOpen: inputFileUrl
+        });
         return;
       }
+
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.NOT_FOUND_URL,
+        urlToOpen: ""
+      });
     } catch (e) {
-      setInputFileUrlState(InputFileUrlState.CORS_NOT_AVAILABLE);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
+        urlToOpen: ""
+      });
     }
   }, []);
 
@@ -316,33 +355,35 @@ export function HomePage(props: Props) {
     setInputFileUrl(fileUrl);
   }, []);
 
-  const validateUrlInputText = useMemo(
+  const isUrlInputTextValid = useMemo(
     () =>
-      inputFileUrlState === InputFileUrlState.VALID ||
-      inputFileUrlState === InputFileUrlState.INITIAL ||
-      inputFileUrlState === InputFileUrlState.VALIDATING,
+      inputFileUrlState.urlValidation === InputFileUrlState.VALID ||
+      inputFileUrlState.urlValidation === InputFileUrlState.INITIAL ||
+      inputFileUrlState.urlValidation === InputFileUrlState.VALIDATING,
     [inputFileUrlState]
   );
 
-  const urlCanBeOpen = useMemo(() => inputFileUrlState === InputFileUrlState.VALID, [inputFileUrlState]);
+  const urlCanBeOpen = useMemo(() => inputFileUrlState.urlValidation === InputFileUrlState.VALID, [inputFileUrlState]);
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
-      setInputFileUrlState(InputFileUrlState.INITIAL);
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.INITIAL,
+        urlToOpen: ""
+      });
     }
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
     if (urlCanBeOpen) {
-      const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
-      const fileExtension = extractFileExtension(new URL(urlToLoad).pathname);
+      const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
       // FIXME: KOGITO-1202
-      window.location.href = `?file=${urlToLoad}#/editor/${fileExtension}`;
+      window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, gistRawUrl, validateUrlInputText, inputFileUrlState]);
+  }, [inputFileUrl, inputFileUrlState, urlCanBeOpen, inputFileUrlState]);
 
   const helperMessageForInputFileFromUrlState = useMemo(() => {
-    switch (inputFileUrlState) {
+    switch (inputFileUrlState.urlValidation) {
       case InputFileUrlState.VALIDATING:
         return <AnimatedTripleDotLabel label={"Validating URL"} />;
       default:
@@ -351,13 +392,13 @@ export function HomePage(props: Props) {
   }, [inputFileUrlState]);
 
   const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
-    switch (inputFileUrlState) {
+    switch (inputFileUrlState.urlValidation) {
       case InputFileUrlState.INVALID_GIST_EXTENSION:
-        return "File type on the provided gist is not supported";
+        return "File type on the provided gist is not supported.";
       case InputFileUrlState.INVALID_EXTENSION:
         return "File type on the provided URL is not supported.";
       case InputFileUrlState.INVALID_GIST:
-        return "Enter a valid Gist URL";
+        return "Enter a valid Gist URL.";
       case InputFileUrlState.INVALID_URL:
         return 'This URL is not valid (don\'t forget "https://"!).';
       case InputFileUrlState.NOT_FOUND_URL:
@@ -563,19 +604,19 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
             <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!validateUrlInputText} spellCheck={false}>
+              <Form onSubmit={externalFileFormSubmit} disabled={!isUrlInputTextValid} spellCheck={false}>
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
                   data-testid="url-form-input"
-                  isValid={validateUrlInputText}
+                  isValid={isUrlInputTextValid}
                   helperText={helperMessageForInputFileFromUrlState}
                   helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
-                    isValid={validateUrlInputText}
+                    isValid={isUrlInputTextValid}
                     autoComplete={"off"}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
@@ -589,7 +630,12 @@ export function HomePage(props: Props) {
               </Form>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={openFileFromUrl} isDisabled={!urlCanBeOpen}>
+              <Button
+                variant="secondary"
+                onClick={openFileFromUrl}
+                isDisabled={!urlCanBeOpen}
+                data-testid="open-url-button"
+              >
                 Open from source
               </Button>
             </CardFooter>
