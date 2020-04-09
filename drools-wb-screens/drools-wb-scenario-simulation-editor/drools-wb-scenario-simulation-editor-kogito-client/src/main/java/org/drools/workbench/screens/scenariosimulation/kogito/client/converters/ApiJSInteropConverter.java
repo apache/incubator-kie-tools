@@ -208,6 +208,8 @@ public class ApiJSInteropConverter {
         toReturn.setFactAlias(source.getFactAlias());
         JSIFactIdentifierType jsiFactIdentifierType = Js.uncheckedCast(getFactIdentifier(source.getFactIdentifier()));
         toReturn.setFactIdentifier(jsiFactIdentifierType);
+        toReturn.setFactMappingValueType(source.getFactMappingValueType().toString());
+        toReturn.setColumnWidth(source.getColumnWidth());
         List<String> genericTypes = source.getGenericTypes();
         if (genericTypes != null) {
             JSIGenericTypes toSet = new JSIGenericTypes();

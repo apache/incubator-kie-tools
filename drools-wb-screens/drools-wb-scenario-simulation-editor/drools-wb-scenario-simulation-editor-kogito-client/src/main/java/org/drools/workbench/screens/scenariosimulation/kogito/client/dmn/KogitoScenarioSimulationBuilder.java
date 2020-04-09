@@ -139,11 +139,13 @@ public class KogitoScenarioSimulationBuilder {
         return jsiName;
     }
 
-    private Simulation createRULESimulation() {
+    protected Simulation createRULESimulation() {
         Simulation toReturn = new Simulation();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
-        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        FactMapping indexFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
+        indexFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.INDEX.getName()));
+        FactMapping descriptionFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        descriptionFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.DESCRIPTION.getName()));
         ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, ScenarioWithIndex::new);
 
         // Add GIVEN Fact
@@ -238,6 +240,7 @@ public class KogitoScenarioSimulationBuilder {
                         FactMapping.getInstancePlaceHolder(placeholderId),
                         FactIdentifier.EMPTY,
                         expressionIdentifier);
+        factMapping.setColumnWidth(getColumnWidth(expressionIdentifier.getName()));
         factMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(placeholderId));
         scesimDataWithIndex.getScesimData().addMappingValue(FactIdentifier.EMPTY, expressionIdentifier, null);
     }
@@ -299,17 +302,19 @@ public class KogitoScenarioSimulationBuilder {
         return dmn12 -> {
             final JSITDefinitions jsitDefinitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
             final FactModelTuple factModelTuple = dmnTypeService.getFactModelTuple(jsitDefinitions);
-            toPopulate.setSimulation(getDMNSimulation(factModelTuple));
+            toPopulate.setSimulation(createDMNSimulation(factModelTuple));
             toPopulate.setSettings(createDMNSettings(jsitDefinitions.getName(), jsitDefinitions.getNamespace(), dmnFilePath));
             convertScenarioSimulationModel(toPopulate, callback);
         };
     }
 
-    private Simulation getDMNSimulation(final FactModelTuple factModelTuple) {
+    protected Simulation createDMNSimulation(final FactModelTuple factModelTuple) {
         Simulation toReturn = new Simulation();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
-        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        FactMapping indexFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
+        indexFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.INDEX.getName()));
+        FactMapping descriptionFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        descriptionFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.DESCRIPTION.getName()));
         ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, ScenarioWithIndex::new);
 
         AtomicInteger id = new AtomicInteger(1);
@@ -329,6 +334,29 @@ public class KogitoScenarioSimulationBuilder {
 
         addEmptyColumnsIfNeeded(toReturn, scenarioWithIndex);
         return toReturn;
+    }
+
+    /**
+     * It defines the column width of a new column, based on its
+     * <code>FactMapping.expressionIdentifier.getName()</code> field
+     * @param expressionIdentifierName
+     * @return
+     */
+    protected static double getColumnWidth(String expressionIdentifierName) {
+        ExpressionIdentifier.NAME expressionName;
+        try {
+            expressionName = ExpressionIdentifier.NAME.valueOf(expressionIdentifierName);
+        } catch (IllegalArgumentException e) {
+            expressionName = ExpressionIdentifier.NAME.Other;
+        }
+        switch (expressionName) {
+            case Index:
+                return 70;
+            case Description:
+                return 300;
+            default:
+                return 114;
+        }
     }
 
     private void addFactMapping(final FactMappingExtractor factMappingExtractor,
@@ -427,6 +455,7 @@ public class KogitoScenarioSimulationBuilder {
                                                          localPreviousStep);
             factMapping.setExpressionAlias(expressionAlias);
             factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(VALUE));
+            factMapping.setColumnWidth(getColumnWidth(factIdentifier.getName()));
 
             previousSteps.forEach(step -> factMapping.addExpressionElement(step, factType));
 
