@@ -35,7 +35,11 @@ export function FileTreeWithExternalLink() {
   const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
   useEffect(() => {
-    setLinksToFiles(filterLinks(dependencies.treeView.linksToFiles(), router));
+    const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+    if (newLinks.length === 0) {
+      return;
+    }
+    setLinksToFiles(newLinks);
   }, []);
 
   useEffect(() => {
@@ -45,8 +49,13 @@ export function FileTreeWithExternalLink() {
         return;
       }
 
+      const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+      if (newLinks.length === 0) {
+        return;
+      }
+
       logger.log("Found new links...");
-      setLinksToFiles(filterLinks(dependencies.treeView.linksToFiles(), router));
+      setLinksToFiles(newLinks);
     });
 
     observer.observe(dependencies.treeView.repositoryContainer()!, {
@@ -76,7 +85,10 @@ export function FileTreeWithExternalLink() {
 }
 
 function filterLinks(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
-  return links.filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any));
+  return links.filter(fileLink =>
+    router.getLanguageData(extractOpenFileExtension(fileLink.href) as any)
+    && !document.getElementById(externalLinkId(fileLink))
+  );
 }
 
 function externalLinkId(fileLink: HTMLAnchorElement): string {
