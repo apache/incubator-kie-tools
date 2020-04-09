@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+target/
+out/
+.idea
+**/.DS_Store
+*.log
+packages/kie-bc-editors-unpacked/dmn
+packages/kie-bc-editors-unpacked/bpmn
+.vscode/

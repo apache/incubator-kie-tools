@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: "**"
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # This bash script will set an output for this step. It can be used with steps.version.outputs.version
+      - name: Output version
+        id: version
+        run: echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+        shell: bash
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.0
+
+      - name: Setup Yarn
+        run: npm install -g yarn@1.19.0
+
+      - name: Start Xvfb
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: "Build and pack"
+        run: yarn bootstrap && yarn release-vscode:all
+        env:
+          DISPLAY: ":99.0"
+
+      - name: Upload BPMN Editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-bpmn-editor
+          path: packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload DMN Editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-dmn-editor
+          path: packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Kogito Bundle
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-kogito-bundle
+          path: packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Red Hat Business Automation Bundle
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-red-hat-business-automation-bundle
+          path: packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ steps.version.outputs.version }}.vsix

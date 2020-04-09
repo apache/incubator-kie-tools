@@ -1,0 +1,13 @@
+{
+  "name": "kie-bc-editors-unpacked",
+  "version": "0.3.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tooling-store.git"
+  },
+  "scripts": {
+    "release": "rm -rf bpmn/* dmn/* && mvn clean package -B && echo "
+  }
+}
