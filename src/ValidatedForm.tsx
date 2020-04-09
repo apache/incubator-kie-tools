@@ -7,7 +7,7 @@ function Validated(parent: any): any {
     static Validated = Validated;
   }
 
-  return new _();
+  return _;
 }
 
 export default Validated(BaseForm);
