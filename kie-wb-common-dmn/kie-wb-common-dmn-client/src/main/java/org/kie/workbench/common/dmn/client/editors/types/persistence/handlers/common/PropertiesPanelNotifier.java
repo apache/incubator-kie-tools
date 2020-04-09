@@ -125,9 +125,10 @@ public class PropertiesPanelNotifier {
     void notifyOutdatedElement(final Node node,
                                final HasTypeRef elementTypeRef) {
 
-        final QName typeRef = elementTypeRef.getTypeRef();
+        final Optional<QName> typeRef = Optional.ofNullable(elementTypeRef.getTypeRef());
+        final boolean isOutdated = typeRef.map(type -> Objects.equals(type.getLocalPart(), oldLocalPart)).orElse(false);
 
-        if (Objects.equals(typeRef.getLocalPart(), oldLocalPart)) {
+        if (isOutdated) {
             elementTypeRef.setTypeRef(newQName);
             refreshFormProperties(node);
         }

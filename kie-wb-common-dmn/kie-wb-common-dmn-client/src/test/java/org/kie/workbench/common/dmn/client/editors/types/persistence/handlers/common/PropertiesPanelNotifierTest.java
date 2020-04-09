@@ -202,6 +202,25 @@ public class PropertiesPanelNotifierTest {
     }
 
     @Test
+    public void testNotifyOutdatedNodeWhenNodeDoesNotHaveTypeRef() {
+
+        final Node node = mock(Node.class);
+        final HasTypeRef elementTypeRef = mock(HasTypeRef.class);
+        final QName newQName = mock(QName.class);
+        final String oldLocalPart = "tPerson";
+
+        when(elementTypeRef.getTypeRef()).thenReturn(null);
+        doNothing().when(notifier).refreshFormProperties(any());
+
+        notifier.withOldLocalPart(oldLocalPart)
+                .withNewQName(newQName)
+                .notifyOutdatedElement(node, elementTypeRef);
+
+        verify(elementTypeRef, never()).setTypeRef(any());
+        verify(notifier, never()).refreshFormProperties(any());
+    }
+
+    @Test
     public void testNotifyOutdatedNodeWhenNodeIsNotOutdated() {
 
         final Node node = mock(Node.class);
