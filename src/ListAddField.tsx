@@ -2,8 +2,7 @@ import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { Button, ButtonProps } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-
-import { useField, filterDOMProps, joinName } from './uniforms';
+import { useField, filterDOMProps, joinName } from 'uniforms';
 
 export type ListAddFieldProps<T> = {
   initialCount?: number;

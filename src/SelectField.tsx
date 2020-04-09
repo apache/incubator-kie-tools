@@ -9,8 +9,8 @@ import {
   SelectOption,
   SelectVariant,
 } from '@patternfly/react-core';
+import { connectField, filterDOMProps } from 'uniforms';
 
-import { connectField, filterDOMProps } from './uniforms';
 import wrapField from './wrapField';
 
 const xor = (item, array) => {
@@ -37,6 +37,7 @@ function RenderCheckboxes(props: CheckboxesProps) {
   const Group = props.fieldType === Array ? Checkbox : Radio;
   
   return (
+    // @ts-ignore
     <div {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
       {props.allowedValues!.map((item: any, index: number) => {
