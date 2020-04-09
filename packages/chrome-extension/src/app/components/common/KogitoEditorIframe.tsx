@@ -22,7 +22,7 @@ import { runScriptOnPage } from "../../utils";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useGitHubApi } from "../common/GitHubContext";
-import { EditorContent, KogitoEdit, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -104,13 +104,13 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         receive_readResourceContentError(errorMessage: string) {
           console.debug(`Error message retrieving a resource content ${errorMessage}`);
         },
-        receive_resourceListRequest(pattern: string) {
-          resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
+        receive_resourceListRequest(resourceListRequest: ResourceListRequest) {
+          resourceContentService.list(resourceListRequest.pattern, resourceListRequest.opts).then(list => self.respond_resourceList(list));
         },
-        notify_editorUndo: (edits: KogitoEdit[]) => {
+        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
           console.debug("Notify Undo");
         },
-        notify_editorRedo: (edits: KogitoEdit[]) => {
+        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
           console.debug("Notify Redo");
         },
         receive_newEdit(edit: KogitoEdit): void {

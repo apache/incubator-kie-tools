@@ -48,3 +48,31 @@ describe("githubService::retrieveFileInfo", () => {
     expect(fileInfo.path).toEqual("the_file.bpmn");
   });
 });
+
+describe("githubService::isGist", () => {
+  test("should be true", () => {
+    [
+      "https://gist.github.com/user/gist_id",
+      "http://gist.github.com/user/gist_id",
+      "http://www.gist.github.com/user/gist_id",
+      "https://www.gist.github.com/user/gist_id",
+      "www.gist.github.com/user/gist_id",
+      "gist.github.com/user/gist_id"
+    ].forEach(url => expect(githubService.isGist(url)).toBeTruthy());
+  });
+
+  test("should be false", () => {
+    [
+      "https://gist.gathub.com/user/gist_id",
+      "http://gist.redhat.com/user/gist_id"
+    ].forEach(url => expect(githubService.isGist(url)).toBeFalsy());
+  });
+});
+
+describe("githubService::extractGistId", () => {
+  test("check gist id", () => {
+    const fileUrl = "https://gist.github.com/user/gist_id";
+    const gistId = githubService.extractGistId(fileUrl);
+    expect(gistId).toEqual("gist_id");
+  });
+});

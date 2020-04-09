@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { EMPTY_FILE, File as UploadFile } from "../common/File";
@@ -58,7 +58,9 @@ enum InputFileUrlState {
   INITIAL,
   INVALID_URL,
   NO_FILE_URL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
+  INVALID_GIST,
+  INVALID_GIST_EXTENSION
 }
 
 enum UploadFileInputState {
@@ -68,7 +70,8 @@ enum UploadFileInputState {
 
 enum UploadFileDndState {
   INITIAL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
+  HOVER
 }
 
 export function HomePage(props: Props) {
@@ -76,23 +79,21 @@ export function HomePage(props: Props) {
   const history = useHistory();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
-  const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
+  const [gistRawUrl, setGistRawUrl] = useState("");
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
   const uploadDndOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadDndRef.current!.className = "hover";
-    setUploadFileDndState(UploadFileDndState.INITIAL);
+    setUploadFileDndState(UploadFileDndState.HOVER);
     e.stopPropagation();
     e.preventDefault();
     return false;
   }, []);
 
   const uploadDndOnDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    uploadDndRef.current!.className = "";
+    setUploadFileDndState(UploadFileDndState.INITIAL);
     e.stopPropagation();
     e.preventDefault();
     return false;
@@ -125,7 +126,7 @@ export function HomePage(props: Props) {
 
   const uploadDndOnDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      uploadDndRef.current!.className = "";
+      setUploadFileDndState(UploadFileDndState.INITIAL);
       e.stopPropagation();
       e.preventDefault();
 
@@ -154,6 +155,8 @@ export function HomePage(props: Props) {
     switch (uploadFileDndState) {
       case UploadFileDndState.INVALID_EXTENSION:
         return "invalid";
+      case UploadFileDndState.HOVER:
+        return "hover";
       default:
         return "";
     }
@@ -168,21 +171,31 @@ export function HomePage(props: Props) {
     }
   }, []);
 
-  const uploadFileFromInput = useCallback(() => {
-    setUploadFileInputState(UploadFileInputState.INITIAL);
-    if (uploadInputRef.current!.files) {
-      const file = uploadInputRef.current!.files![0];
-      onFileUploadFromInput(file);
-    }
-  }, [onFileUploadFromInput]);
+  const uploadFileFromInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const onDndInvalidFileExtensionAnimationEnd = useCallback(() => {
+      if (uploadInputRef.current!.files) {
+        const file = uploadInputRef.current!.files![0];
+        onFileUploadFromInput(file);
+      }
+      e.target.value = "";
+    },
+    [onFileUploadFromInput]
+  );
+
+  const onDndInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setUploadFileDndState(UploadFileDndState.INITIAL);
-  }, [uploadFileDndState]);
+  }, []);
 
-  const onInputInvalidFileExtensionAnimationEnd = useCallback(() => {
+  const onInputInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setUploadFileInputState(UploadFileInputState.INITIAL);
-  }, [uploadFileInputState]);
+  }, []);
 
   const messageForUploadFileFromInputState = useMemo(() => {
     switch (uploadFileInputState) {
@@ -239,27 +252,52 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
-  const validateUrl = useCallback((fileUrl: string) => {
+  useEffect(() => {
+    if (context.githubService.isGist(inputFileUrl)) {
+      const gistId = context.githubService.extractGistId(inputFileUrl);
+      context.githubService.getGistRawUrlFromId(gistId)
+        .then(rawUrlStr => setGistRawUrl(rawUrlStr));
+    }
+  }, [inputFileUrl]);
+
+  const inputFileUrlState = useMemo(() => {
+    if (inputFileUrl.trim() === "") {
+      return InputFileUrlState.INITIAL;
+    }
+
+    if (context.githubService.isGist(inputFileUrl)) {
+      if (!gistRawUrl) {
+        return InputFileUrlState.INVALID_GIST;
+      }
+
+      const gistExtension = extractFileExtension(new URL(gistRawUrl).pathname);
+      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+        return InputFileUrlState.VALID;
+      } else {
+        return InputFileUrlState.INVALID_GIST_EXTENSION;
+      }
+    }
+
     let url: URL;
     try {
-      url = new URL(fileUrl);
+      url = new URL(inputFileUrl);
     } catch (e) {
-      setInputFileUrlState(InputFileUrlState.INVALID_URL);
-      return;
+      return InputFileUrlState.INVALID_URL;
     }
+
     const fileExtension = extractFileExtension(url.pathname);
     if (!fileExtension) {
-      setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
+      return InputFileUrlState.NO_FILE_URL;
     } else if (!context.router.getLanguageData(fileExtension)) {
-      setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
+      return InputFileUrlState.INVALID_EXTENSION;
     } else {
-      setInputFileUrlState(InputFileUrlState.VALID);
+      return InputFileUrlState.VALID;
     }
-  }, []);
+  }, [inputFileUrl, gistRawUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
-    validateUrl(fileUrl);
+    setGistRawUrl("");
   }, []);
 
   const validatedInputUrl = useMemo(
@@ -267,27 +305,25 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const onInputFileFromUrlBlur = useCallback(() => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState(InputFileUrlState.INITIAL);
-    }
-  }, [inputFileUrl]);
-
   const openFileFromUrl = useCallback(() => {
     if (validatedInputUrl && inputFileUrlState !== InputFileUrlState.INITIAL) {
-      const fileUrl = new URL(inputFileUrl);
-      const fileExtension = extractFileExtension(fileUrl.pathname);
+      const urlToLoad = context.githubService.isGist(inputFileUrl) ? gistRawUrl : inputFileUrl;
+      const fileExtension = extractFileExtension(new URL(urlToLoad).pathname);
       // FIXME: KOGITO-1202
-      window.location.href = `?file=${inputFileUrl}#/editor/${fileExtension}`;
+      window.location.href = `?file=${urlToLoad}#/editor/${fileExtension}`;
     }
-  }, [inputFileUrl, validatedInputUrl]);
+  }, [inputFileUrl, gistRawUrl, validatedInputUrl, inputFileUrlState]);
 
   const messageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INITIAL:
         return "http://";
+      case InputFileUrlState.INVALID_GIST_EXTENSION:
+        return "File type on the provided gist is not supported";
       case InputFileUrlState.INVALID_EXTENSION:
         return "File type is not supported";
+      case InputFileUrlState.INVALID_GIST:
+        return "Enter a valid Gist URL";
       case InputFileUrlState.INVALID_URL:
         return "Enter a valid URL";
       case InputFileUrlState.NO_FILE_URL:
@@ -454,7 +490,6 @@ export function HomePage(props: Props) {
             <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
               {/* Upload Drag Target */}
               <div
-                ref={uploadDndRef}
                 onDragOver={uploadDndOnDragOver}
                 onDragLeave={uploadDndOnDragLeave}
                 onDrop={uploadDndOnDrop}
@@ -501,7 +536,7 @@ export function HomePage(props: Props) {
                 >
                   <TextInput
                     isRequired={true}
-                    onBlur={onInputFileFromUrlBlur}
+                    autoComplete={"off"}
                     isValid={validatedInputUrl}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}
