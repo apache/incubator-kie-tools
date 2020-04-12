@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
+
+import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
 
 /**
  * Custom BPMN factory instance for Diagrams on the Project context.
@@ -78,7 +80,7 @@ public class BPMNProjectDiagramFactoryImpl
         final String id = diagramSet.getId().getValue();
         if (id == null || id.isEmpty()) {
             final String projectName = null != metadata.getModuleName() ? metadata.getModuleName() + "." : "";
-            diagramSet.getId().setValue(projectName + name);
+            diagramSet.getId().setValue(createValidId(projectName) + createValidId(name));
         }
         final String p = diagramSet.getPackageProperty().getValue();
         if (p == null || p.isEmpty()) {

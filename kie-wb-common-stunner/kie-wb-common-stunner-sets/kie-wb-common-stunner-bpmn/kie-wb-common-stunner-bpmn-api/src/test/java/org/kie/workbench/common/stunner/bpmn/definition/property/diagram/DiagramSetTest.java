@@ -39,7 +39,7 @@ public class DiagramSetTest {
 
     private static final String NAME_VALID = "My New Name";
     private static final String NAME_INVALID = "";
-    private static final String ID_VALID = "My New Id";
+    private static final String ID_VALID = "My_New_Id";
     private static final String ID_INVALID = "";
     private static final String PACKAGE_VALID = "My New Package";
     private static final String PACKAGE_INVALID = "";

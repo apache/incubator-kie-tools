@@ -45,6 +45,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
+
 public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramImpl, DiagramSet, ProcessData, AdvancedData> {
 
     public RootProcessConverter(TypedFactoryManager typedFactoryManager,
@@ -61,9 +63,9 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
 
     @Override
     protected DiagramSet createDiagramSet(Process process, ProcessPropertyReader p, DefinitionsPropertyReader d) {
-        return new DiagramSet(new Name(process.getName()),
+        return new DiagramSet(new Name(revertIllegalCharsAttribute(process.getName())),
                               new Documentation(p.getDocumentation()),
-                              new Id(process.getId()),
+                              new Id(revertIllegalCharsAttribute(process.getId())),
                               new Package(p.getPackage()),
                               new ProcessType(p.getProcessType()),
                               new Version(p.getVersion()),

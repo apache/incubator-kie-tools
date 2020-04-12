@@ -76,6 +76,59 @@ public class StringUtils {
     }
 
     /**
+     * Replacing unsafe characters by HTML escaping.
+     * <p>
+     * IMPORTANT NOTE
+     * Url encoding is not supported on the Engine side so this method should be used for attribute values.
+     * @param value a string to escape illegal characters on the client side
+     * @return an escaped string
+     */
+    public static String replaceIllegalCharsAttribute(final String value) {
+        if (isEmpty(value)) {
+            return value;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            final char c = value.charAt(i);
+            switch (c) {
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                case '"':
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returning unsafe characters by HTML escaping to the string.
+     * @param value string encoded by {@link StringUtils#replaceIllegalCharsAttribute}
+     * @return a decoded string
+     */
+    public static String revertIllegalCharsAttribute(final String value) {
+        if (isEmpty(value)) {
+            return value;
+        }
+
+        return value.replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&")
+                .replace("&quot;", "\"");
+    }
+
+    /**
      * Removes double-quotes from around a string
      * @param str
      * @return

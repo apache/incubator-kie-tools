@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.menus.BPMNStandaloneEditorMenuSessionItems;
 import org.kie.workbench.common.stunner.kogito.client.perspectives.AuthoringPerspective;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -92,9 +92,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     private final DiagramEditorPropertiesDock diagramPropertiesDock;
     private final LayoutHelper layoutHelper;
     private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
-    protected final KogitoClientDiagramService diagramServices;
+    protected final AbstractKogitoClientDiagramService diagramServices;
     protected final FormsFlushManager formsFlushManager;
-
     private final CanvasFileExport canvasFileExport;
     private final Promises promises;
 
@@ -120,7 +119,7 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final DiagramEditorPropertiesDock diagramPropertiesDock,
                              final LayoutHelper layoutHelper,
                              final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
-                             final KogitoClientDiagramService diagramServices,
+                             final AbstractKogitoClientDiagramService diagramServices,
                              final FormsFlushManager formsFlushManager,
                              final CanvasFileExport canvasFileExport,
                              final Promises promises) {
@@ -290,7 +289,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         Promise<Void> promise =
                 promises.create((success, failure) -> {
                     superOnClose();
-                    diagramServices.transform(value,
+                    diagramServices.transform(path,
+                                              value,
                                               new ServiceCallback<Diagram>() {
 
                                                   @Override

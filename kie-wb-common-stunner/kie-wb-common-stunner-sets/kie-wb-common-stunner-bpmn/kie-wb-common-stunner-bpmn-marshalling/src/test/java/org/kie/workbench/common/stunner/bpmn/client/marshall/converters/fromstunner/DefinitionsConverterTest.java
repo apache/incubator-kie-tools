@@ -17,7 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner;
 
 import org.eclipse.bpmn2.Definitions;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
@@ -37,10 +41,27 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DefinitionsConverterTest {
+
+    @Mock
+    private URL url;
+
+    private Answer<String> returnArgument = invocation -> (String) invocation.getArguments()[0];
+
+    @Before
+    public void setUp() {
+        StringUtils.setURL(url);
+        when(url.encode(anyString())).then(returnArgument);
+    }
 
     @Test
     public void JBPM_7526_shouldSetExporter() {

@@ -46,14 +46,14 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 
-@ApplicationScoped
-public class BPMNClientDiagramService implements KogitoClientDiagramService {
+import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
 
-    static final String DEFAULT_PROCESS_ID = "default";
+@ApplicationScoped
+public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService {
 
     private final DefinitionManager definitionManager;
     private final BPMNClientMarshalling marshalling;
@@ -88,14 +88,14 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
     @Override
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(DEFAULT_PROCESS_ID, xml, callback);
+        doTransform(DEFAULT_DIAGRAM_ID, xml, callback);
     }
 
     @Override
     public void transform(final String fileName,
                           final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(fileName, xml, callback);
+        doTransform(createDiagramTitleFromFilePath(fileName), xml, callback);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
                                 final String xml) {
 
         if (Objects.isNull(xml) || xml.isEmpty()) {
-            return createNewDiagram();
+            return createNewDiagram(fileName);
         }
         return parse(fileName, xml);
     }
@@ -136,8 +136,20 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
         return marshalling.marshall(convert(diagram));
     }
 
-    private Diagram createNewDiagram() {
-        final String title = DEFAULT_PROCESS_ID;
+    private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String name) {
+        final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
+
+        if (diagramSet.getName().getValue().isEmpty()) {
+            diagramSet.getName().setValue(name);
+        }
+
+        if (diagramSet.getId().getValue().isEmpty()) {
+            diagramSet.getId().setValue(createValidId(name));
+        }
+    }
+
+    private Diagram createNewDiagram(String fileName) {
+        final String title = createDiagramTitleFromFilePath(fileName);
         final String defSetId = BPMNClientMarshalling.getDefinitionSetId();
         final Metadata metadata = createMetadata();
         metadata.setTitle(title);
@@ -157,15 +169,7 @@ public class BPMNClientDiagramService implements KogitoClientDiagramService {
             throw new RuntimeException("No BPMN Diagram can be found.");
         }
 
-        final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
-
-        if (diagramSet.getName().getValue().isEmpty()) {
-            diagramSet.getName().setValue(fileName);
-        }
-
-        if (diagramSet.getId().getValue().isEmpty()) {
-            diagramSet.getId().setValue(fileName);
-        }
+        updateDiagramSet(diagramNode, fileName);
 
         final String title = diagramNode.getContent().getDefinition().getDiagramSet().getName().getValue();
         metadata.setTitle(title);

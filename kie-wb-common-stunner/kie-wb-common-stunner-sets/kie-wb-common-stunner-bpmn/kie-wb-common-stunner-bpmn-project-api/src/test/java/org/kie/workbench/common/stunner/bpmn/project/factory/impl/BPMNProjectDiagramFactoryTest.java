@@ -52,6 +52,7 @@ import static org.mockito.Mockito.when;
 public class BPMNProjectDiagramFactoryTest {
 
     private static final String NAME = "name1";
+    private static final String MODULE = "module";
     private static final String DIAGRAM_NODE_UUID = "dnuuid";
     private static final org.guvnor.common.services.project.model.Package PKG =
             new org.guvnor.common.services.project.model.Package(mock(Path.class),
@@ -105,6 +106,7 @@ public class BPMNProjectDiagramFactoryTest {
         when(diagramSet.getId()).thenReturn(id);
         when(diagramSet.getPackageProperty()).thenReturn(packageProperty);
         when(diagramSet.getName()).thenReturn(name);
+        when(metadata.getModuleName()).thenReturn(MODULE);
 
         tested = new BPMNProjectDiagramFactoryImpl();
     }
@@ -131,7 +133,7 @@ public class BPMNProjectDiagramFactoryTest {
 
         assertNotNull(pdiagram);
         assertEquals(graph, pdiagram.getGraph());
-        assertEquals(NAME, id.getValue());
+        assertEquals(MODULE + "." + NAME, id.getValue());
         assertEquals(NAME, name.getValue());
         assertEquals(Package.DEFAULT_PACKAGE, packageProperty.getValue());
         verify(metadata, times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));

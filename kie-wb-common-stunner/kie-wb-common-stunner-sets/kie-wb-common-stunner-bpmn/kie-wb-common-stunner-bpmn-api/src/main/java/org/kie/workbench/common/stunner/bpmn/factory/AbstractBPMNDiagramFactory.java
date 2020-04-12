@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
+import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
+
 public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends Diagram<Graph, M>>
         extends BindableDiagramFactory<M, D> {
 
@@ -48,14 +50,15 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
     public D build(final String name,
                    final M metadata,
                    final Graph<DefinitionSet, ?> graph) {
-        final D diagram = doBuild(name,
+        String validName = name;
+        final D diagram = doBuild(validName,
                                   metadata,
                                   graph);
         final Node<Definition<BPMNDiagram>, ?> diagramNode = diagramProvider.apply(graph);
         if (null == diagramNode) {
             throw new IllegalStateException("A BPMN Diagram is expected to be present on BPMN Diagram graphs.");
         }
-        updateProperties(name,
+        updateProperties(validName,
                          diagramNode,
                          metadata);
         return diagram;
@@ -73,7 +76,7 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
         diagramSet
                 .map(BaseDiagramSet::getId)
                 .filter(id -> Objects.isNull(id.getValue()))
-                .ifPresent(id -> id.setValue(metadata.getTitle()));
+                .ifPresent(id -> id.setValue(createValidId(metadata.getTitle())));
 
         diagramSet
                 .map(BaseDiagramSet::getName)

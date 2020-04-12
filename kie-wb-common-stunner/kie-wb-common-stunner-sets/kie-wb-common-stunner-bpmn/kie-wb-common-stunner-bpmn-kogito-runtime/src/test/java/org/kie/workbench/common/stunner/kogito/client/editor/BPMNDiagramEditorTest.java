@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.menus.BPMNStandaloneEditorMenuSessionItems;
 import org.kie.workbench.common.stunner.kogito.client.perspectives.AuthoringPerspective;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -127,7 +127,7 @@ public class BPMNDiagramEditorTest {
     private OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
 
     @Mock
-    private KogitoClientDiagramService diagramServices;
+    private AbstractKogitoClientDiagramService diagramServices;
 
     @Mock
     private CanvasFileExport canvasFileExport;

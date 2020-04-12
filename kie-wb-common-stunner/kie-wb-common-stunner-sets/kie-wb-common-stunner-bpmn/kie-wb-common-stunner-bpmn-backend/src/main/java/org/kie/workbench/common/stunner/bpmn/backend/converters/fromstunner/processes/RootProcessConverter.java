@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.replaceIllegalCharsAttribute;
 
 public class RootProcessConverter {
 
@@ -65,9 +66,9 @@ public class RootProcessConverter {
 
         BaseDiagramSet diagramSet = definition.getDiagramSet();
 
-        p.setName(diagramSet.getName().getValue());
+        p.setName(replaceIllegalCharsAttribute(diagramSet.getName().getValue()));
         p.setDocumentation(diagramSet.getDocumentation().getValue());
-        p.setId(diagramSet.getId().getValue());
+        p.setId(replaceIllegalCharsAttribute(diagramSet.getId().getValue()));
         p.setPackage(diagramSet.getPackageProperty().getValue());
         p.setType(diagramSet.getProcessType().getValue());
         p.setVersion(diagramSet.getVersion().getValue());

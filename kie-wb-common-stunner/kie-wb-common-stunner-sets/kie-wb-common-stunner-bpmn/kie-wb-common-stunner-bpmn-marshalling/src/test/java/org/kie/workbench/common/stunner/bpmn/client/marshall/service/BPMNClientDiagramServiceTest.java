@@ -271,7 +271,7 @@ public class BPMNClientDiagramServiceTest {
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
-        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
 
                          new ServiceCallback<Diagram>() {
 
@@ -286,8 +286,8 @@ public class BPMNClientDiagramServiceTest {
                              }
                          });
 
-        assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getName().getValue());
-        assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
     }
 
     @Test
@@ -299,7 +299,7 @@ public class BPMNClientDiagramServiceTest {
         diagramSet.getName().setValue("somePreviousName");
         diagramSet.getId().setValue("somePreviousId");
 
-        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
 
                          new ServiceCallback<Diagram>() {
 
@@ -324,7 +324,7 @@ public class BPMNClientDiagramServiceTest {
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
-        tested.transform(BPMNClientDiagramService.DEFAULT_PROCESS_ID, xml,
+        tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
 
                          new ServiceCallback<Diagram>() {
 
@@ -339,8 +339,8 @@ public class BPMNClientDiagramServiceTest {
                              }
                          });
 
-        assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getName().getValue());
-        assertEquals(BPMNClientDiagramService.DEFAULT_PROCESS_ID, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
     }
 
     @Test
@@ -366,5 +366,82 @@ public class BPMNClientDiagramServiceTest {
         assertNotNull(diagram);
         assertEquals(result, diagram);
         assertEquals(SHAPE_SET_ID, diagram.getMetadata().getShapeSetId());
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsEmpty() {
+        final String actual = tested.createDiagramTitleFromFilePath("");
+
+        assertEquals("default", actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsFileName() {
+        final String fileName = "file.dmn";
+        final String expected = "file";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsWindowsPath() {
+        final String fileName = "C:\\my path\\folder\\file.dmn";
+        final String expected = "file";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsUnixPath() {
+        final String fileName = "/users/user/file.dmn";
+        final String expected = "file";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsWindowsPathMoreWords() {
+        final String fileName = "C:\\my path\\folder\\file a.dmn";
+        final String expected = "file a";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsUnixPathMoreWords() {
+        final String fileName = "/users/user/file a.dmn";
+        final String expected = "file a";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenMoreDotsContained() {
+        final String fileName = "/users/user/file.template.dmn";
+        final String expected = "file.template";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDiagramTitleWhenIsNotFileNameOrEmpty() {
+        final String fileName = "Something";
+        final String expected = "Something";
+
+        final String actual = tested.createDiagramTitleFromFilePath(fileName);
+
+        assertEquals(expected, actual);
     }
 }

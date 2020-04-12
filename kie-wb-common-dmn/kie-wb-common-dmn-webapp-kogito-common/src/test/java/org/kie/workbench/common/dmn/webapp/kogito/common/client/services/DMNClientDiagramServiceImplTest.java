@@ -23,9 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -68,84 +66,5 @@ public class DMNClientDiagramServiceImplTest {
 
         verify(service, never()).doNewDiagram(title, callback);
         verify(service).doTransformation(xml, callback);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsEmpty() {
-        final String expected = "some uuid";
-        doReturn(expected).when(service).generateDiagramTitle();
-        final String actual = service.getDiagramTitle("");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsFileName() {
-        final String fileName = "file.dmn";
-        final String expected = "file";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsWindowsPath() {
-        final String fileName = "C:\\my path\\folder\\file.dmn";
-        final String expected = "file";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsUnixPath() {
-        final String fileName = "/users/user/file.dmn";
-        final String expected = "file";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsWindowsPathMoreWords() {
-        final String fileName = "C:\\my path\\folder\\file a.dmn";
-        final String expected = "file a";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsUnixPathMoreWords() {
-        final String fileName = "/users/user/file a.dmn";
-        final String expected = "file a";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenMoreDotsContained() {
-        final String fileName = "/users/user/file.template.dmn";
-        final String expected = "file.template";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetDiagramTitleWhenIsNotFileNameOrEmpty() {
-        final String fileName = "Something";
-        final String expected = "Something";
-
-        final String actual = service.getDiagramTitle(fileName);
-
-        assertEquals(expected, actual);
     }
 }

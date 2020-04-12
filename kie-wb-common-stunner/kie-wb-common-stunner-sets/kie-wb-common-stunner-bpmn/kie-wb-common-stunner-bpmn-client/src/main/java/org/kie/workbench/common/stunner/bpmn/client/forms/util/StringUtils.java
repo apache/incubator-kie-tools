@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,9 @@ public class StringUtils {
     public static final RegExp EXPRESSION = RegExp.compile(Patterns.EXPRESSION);
 
     private static URL url = new URL();
+
+    private StringUtils() {
+    }
 
     /**
      * Creates a string for a list by concatenating each object's String separated by commas
@@ -70,29 +73,70 @@ public class StringUtils {
     }
 
     /**
-     * URLEncode a string
-     *
+     * Encode a url parameters see {@link URL#encodeQueryString(String)}
+     * <p>
+     * IMPORTANT NOTE
+     * Url encoding is not supported on the Engine side use this method for the internal communication
+     * or to UI/Marshaller communications only.
+     * For storing data in XML use {@link org.kie.workbench.common.stunner.core.util.StringUtils#replaceIllegalCharsAttribute}
      * @param s
      * @return
      */
     public static String urlEncode(String s) {
-        if (s == null || s.isEmpty()) {
+        if (isEmpty(s)) {
             return s;
         }
         return url.encodeQueryString(s);
     }
 
     /**
-     * URLDecode a string
+     * Decode a url parameters see {@link URL#decodeQueryString(String)}
      *
      * @param s
      * @return
      */
     public static String urlDecode(String s) {
-        if (s == null || s.isEmpty()) {
+        if (isEmpty(s)) {
             return s;
         }
         return url.decodeQueryString(s);
+    }
+
+    /**
+     * Equivalent of {@link java.net.URLEncoder#encode(String, String)} in UTF-8 encoding on server side
+     * <p>
+     * IMPORTANT NOTE
+     * Url encoding is not supported on the jBPM Engine side use this method for the internal communication
+     * or to UI/Marshaller communications only.
+     * For storing data in XML use {@link org.kie.workbench.common.stunner.core.util.StringUtils#replaceIllegalCharsAttribute}
+     * @param s a string to encode on the client side
+     * @return an encoded string
+     */
+    public static String encode(String s) {
+        if (isEmpty(s)) {
+            return s;
+        }
+        return url.encode(s);
+    }
+
+    /**
+     * Equivalent of {@link java.net.URLDecoder#decode(String, String)} in UTF-8 decoding on server side
+     * @param s a string to decode on the client side
+     * @return a decoded string
+     */
+    public static String decode(String s) {
+        if (isEmpty(s)) {
+            return s;
+        }
+        return url.decode(s);
+    }
+
+    public static boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
+    public static boolean nonEmpty(String value) {
+        return !isEmpty(value);
     }
 
     /**
@@ -107,14 +151,6 @@ public class StringUtils {
         formattedDataType.append(dataType.substring(i + 1));
         formattedDataType.append(" [").append(dataType, 0, i).append("]");
         return formattedDataType.toString();
-    }
-
-    public static boolean isEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
-
-    public static boolean nonEmpty(String s) {
-        return !isEmpty(s);
     }
 
     /**
