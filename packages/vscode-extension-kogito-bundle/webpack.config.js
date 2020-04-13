@@ -15,7 +15,6 @@
  */
 
 const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const commonConfig = {
   mode: "development",
@@ -49,7 +48,11 @@ const commonConfig = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve("./node_modules"),
+      path.resolve("./src")
+    ]
   }
 };
 
@@ -61,18 +64,5 @@ module.exports = [
       "extension/extension": "./src/extension/extension.ts"
     },
     plugins: []
-  },
-  {
-    ...commonConfig,
-    target: "web",
-    entry: {
-      "webview/index": "./src/webview/index.ts"
-    },
-    plugins: [
-      new CopyWebpackPlugin([
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "webview/editors/bpmn" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" }
-      ])
-    ]
   }
 ];

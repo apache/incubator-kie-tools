@@ -14,12 +14,6 @@
     "compile": "yarn build-ext",
     "watch": "yarn build-ext"
   },
-  "dependencies": {
-    "kie-bc-editors-unpacked": "0.3.0",
-    "@kogito-tooling/kie-bc-editors": "0.4.0",
-    "@kogito-tooling/microeditor-envelope": "0.4.0",
-    "@kogito-tooling/vscode-extension": "0.4.0"
-  },
   "displayName": "Red Hat Business Automation Bundle",
   "enableProposedApi": true,
   "publisher": "kiegroup",
@@ -31,50 +25,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditors"
-  ],
-  "contributes": {
-    "customEditors": [
-      {
-        "viewType": "kieKogitoWebviewEditors",
-        "displayName": "Red Hat Business Automation Bundle Editors",
-        "selector": [
-          {
-            "filenamePattern": "*.{dmn,bpmn,bpmn2}"
-          }
-        ]
-      }
-    ],
-    "commands": [
-      {
-        "command": "extension.kogito.getPreviewSvg",
-        "title": "Get Editor Preview SVG"
-      }
-    ],
-    "languages": [
-      {
-        "id": "bpmn",
-        "extensions": [
-          ".bpmn",
-          ".bpmn2"
-        ],
-        "aliases": [
-          "bpmn",
-          "bpmn2",
-          "Business Process Model and Notation"
-        ]
-      },
-      {
-        "id": "dmn",
-        "extensions": [
-          ".dmn"
-        ],
-        "aliases": [
-          "dmn",
-          "Decision Model and Notation"
-        ]
-      }
-    ]
-  }
+  "activationEvents": [],
+  "extensionDependencies": [
+    "kiegroup.vscode-extension-bpmn-editor",
+    "kiegroup.vscode-extension-dmn-editor"
+  ]
 }

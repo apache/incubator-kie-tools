@@ -17,7 +17,7 @@
 import * as vscode from "vscode";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
-import { VsCodeKogitoRouter } from "./VsCodeKogitoRouter";
+import { DefaultVsCodeRouter } from "@kogito-tooling/vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -26,7 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.vscode-extension-bpmn-editor",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    router: new VsCodeKogitoRouter(
+    // viewType: "kieKogitoWebviewEditorsBpmn",
+    // getPreviewCommandId: "extension.kogito.getPreviewSvgBpmn",
+    router: new DefaultVsCodeRouter(
       context,
       new GwtEditorRoutes({
         bpmnPath: "dist/webview/editors/bpmn",

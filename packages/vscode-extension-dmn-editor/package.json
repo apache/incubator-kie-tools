@@ -49,7 +49,7 @@
     "commands": [
       {
         "command": "extension.kogito.getPreviewSvg",
-        "title": "Get Editor Preview SVG"
+        "title": "Get DMN Editor Preview SVG"
       }
     ],
     "languages": [
