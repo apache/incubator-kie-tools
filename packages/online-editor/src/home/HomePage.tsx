@@ -76,6 +76,11 @@ enum UploadFileDndState {
   INVALID_EXTENSION
 }
 
+interface InputFileUrlStateType {
+  urlValidation: InputFileUrlState;
+  urlToOpen: string | undefined
+}
+
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
@@ -84,9 +89,9 @@ export function HomePage(props: Props) {
   const uploadDndRef = useRef<HTMLDivElement>(null);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState({
+  const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
     urlValidation: InputFileUrlState.INITIAL,
-    urlToOpen: ""
+    urlToOpen: undefined
   });
   const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
   const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
@@ -251,7 +256,7 @@ export function HomePage(props: Props) {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
       return;
     }
@@ -262,7 +267,7 @@ export function HomePage(props: Props) {
     } catch (e) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_URL,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
       return;
     }
@@ -270,7 +275,7 @@ export function HomePage(props: Props) {
     if (context.githubService.isGist(inputFileUrl)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.VALIDATING,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
 
       const gistId = context.githubService.extractGistId(inputFileUrl);
@@ -281,7 +286,7 @@ export function HomePage(props: Props) {
       } catch (e) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.INVALID_GIST,
-          urlToOpen: ""
+          urlToOpen: undefined
         });
         return;
       }
@@ -297,7 +302,7 @@ export function HomePage(props: Props) {
 
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
       return;
     }
@@ -306,14 +311,14 @@ export function HomePage(props: Props) {
     if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
       return;
     }
 
     setInputFileUrlState({
       urlValidation: InputFileUrlState.VALIDATING,
-      urlToOpen: ""
+      urlToOpen: undefined
     });
     if (context.githubService.isGithub(inputFileUrl)) {
       if (await context.githubService.checkFileExistence(inputFileUrl)) {
@@ -326,7 +331,7 @@ export function HomePage(props: Props) {
 
       setInputFileUrlState({
         urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
       return;
     }
@@ -342,12 +347,12 @@ export function HomePage(props: Props) {
 
       setInputFileUrlState({
         urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
     } catch (e) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
     }
   }, [inputFileUrl]);
@@ -374,13 +379,13 @@ export function HomePage(props: Props) {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: ""
+        urlToOpen: undefined
       });
     }
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (urlCanBeOpen) {
+    if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
       const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
       // FIXME: KOGITO-1202
       window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
