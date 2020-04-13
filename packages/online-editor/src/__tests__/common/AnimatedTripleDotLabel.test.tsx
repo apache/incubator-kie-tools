@@ -15,16 +15,23 @@
  */
 
 import * as React from "react";
-import { render, waitFor, queryByText } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 
 describe("AnimatedTripleDotLabel", () => {
   test("should be valid", async () => {
     const label = "label";
-    const validLabels = ["label", "label.", "label..", "label...", "label"];
-    const { getByText } = render(<AnimatedTripleDotLabel label={label} interval={50} />);
-    for (const validLabel of validLabels) {
-      await waitFor(() => expect(getByText(validLabel)).toBeInTheDocument(), { interval: 20, timeout: 500 });
+    const validLabels = [
+      ["label", ""],
+      ["label", "."],
+      ["label", ".."],
+      ["label", "..."],
+      ["label", ""],
+    ];
+    const { getByText, getByTestId } = render(<AnimatedTripleDotLabel label={label} interval={50} />);
+    for (const [validLabel, dots] of validLabels) {
+      expect(getByText(validLabel)).toBeInTheDocument();
+      await waitFor(() => expect(getByTestId("animated-triple-dot-label")).toHaveTextContent(dots), { interval: 20, timeout: 500 });
     }
   });
 });

@@ -39,5 +39,10 @@ export function AnimatedTripleDotLabel({ label, interval = 1000 }: Props) {
     };
   }, [dots]);
 
-  return <span>{label + dots}</span>;
+  return (
+    <p>
+      {label}
+      <span data-testid="animated-triple-dot-label">{dots}</span>
+    </p>
+  );
 }
