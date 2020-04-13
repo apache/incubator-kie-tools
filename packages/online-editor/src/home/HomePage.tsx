@@ -268,6 +268,11 @@ export function HomePage(props: Props) {
     }
 
     if (context.githubService.isGist(inputFileUrl)) {
+      setInputFileUrlState({
+        urlValidation: InputFileUrlState.VALIDATING,
+        urlToOpen: ""
+      });
+
       const gistId = context.githubService.extractGistId(inputFileUrl);
 
       let rawUrl: string;
