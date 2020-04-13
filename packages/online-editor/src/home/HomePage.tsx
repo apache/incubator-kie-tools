@@ -247,7 +247,7 @@ export function HomePage(props: Props) {
     trySample("dmn");
   }, [trySample]);
 
-  const validateUrl = useCallback(async (inputFileUrl: string) => {
+  const validateUrl = useCallback(async () => {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INITIAL,
@@ -350,10 +350,10 @@ export function HomePage(props: Props) {
         urlToOpen: ""
       });
     }
-  }, []);
+  }, [inputFileUrl]);
 
   useEffect(() => {
-    validateUrl(inputFileUrl);
+    validateUrl();
   }, [inputFileUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
