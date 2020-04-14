@@ -11,14 +11,12 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "paths": {
-      "uniforms": ["uniforms"],
-      "uniforms/*": ["uniforms/*"],
-      "uniforms-patternfly/*": ["*"],
+      "uniforms": ["/node_modules/uniforms/es5"],
     },
     "strict": true
   },
   "exclude": [
-    "node_modules",
+    // "node_modules",
     "dist",
     "example",
     "examples",

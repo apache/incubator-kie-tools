@@ -55,9 +55,10 @@
     "react-test-renderer": "16.13.1",
     "rimraf": "2.6.3",
     "simpl-schema": "^1.5.7",
+    "ts-jest": "^25.3.1",
     "ts-node": "^8.8.1",
-    "tslib": "^1.10.0",
-    "typescript": "3.7.2",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3",
     "uniforms": "v3.0.0-alpha.2",
     "uniforms-bridge-simple-schema-2": "v3.0.0-alpha.2"
   },
