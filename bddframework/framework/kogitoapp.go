@@ -184,6 +184,9 @@ func GetKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 				GitSource:      v1alpha1.GitSource{},
 				MavenMirrorURL: config.GetMavenMirrorURL(),
 			},
+			Service: v1alpha1.KogitoAppServiceObject{
+				Labels: map[string]string{},
+			},
 		},
 	}
 

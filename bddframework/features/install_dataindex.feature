@@ -24,7 +24,10 @@ Feature: Kogito Data Index
   @persistence
   Scenario Outline: Process instance events are stored in Data Index
     Given Install Kogito Data Index with 1 replicas
-    And Deploy quarkus example service "process-quarkus-example" with native <native> and persistence and events
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | config | native      | <native> |
+      | config | persistence | enabled  |
+      | config | events      | enabled  |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 

@@ -6,9 +6,8 @@ Feature: Deploy quarkus service
 
   Scenario Outline: Deploy drools-quarkus-example service without persistence
     Given Kogito Operator is deployed
-    
-    When Deploy quarkus example service "ruleunit-quarkus-example" with native <native>
-
+    When Deploy quarkus example service "ruleunit-quarkus-example" with configuration:
+      | config | native | <native> |
     Then Kogito application "ruleunit-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP POST request on service "ruleunit-quarkus-example" is successful within 2 minutes with path "find-approved" and body:
        """json
@@ -57,7 +56,9 @@ Feature: Deploy quarkus service
   @persistence
   Scenario Outline: Deploy process-quarkus-example service with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy quarkus example service "process-quarkus-example" with native <native> and persistence
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | config | native      | <native> |
+      | config | persistence | enabled  |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
     And HTTP POST request on service "process-quarkus-example" with path "orders" and body:
@@ -94,7 +95,8 @@ Feature: Deploy quarkus service
   Scenario Outline: Deploy process-timer-quarkus service with Jobs service
     Given Kogito Operator is deployed
     And Install Kogito Jobs Service with 1 replicas
-    And Deploy quarkus example service "process-timer-quarkus" with native <native>
+    And Deploy quarkus example service "process-timer-quarkus" with configuration:
+      | config | native | <native> |
     And Kogito application "process-timer-quarkus" has 1 pods running within <minutes> minutes
 
     When HTTP POST request on service "process-timer-quarkus" is successful within 2 minutes with path "timer" and body:

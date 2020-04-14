@@ -15,8 +15,8 @@
 package steps
 
 import (
+	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/gherkin"
@@ -24,28 +24,21 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/rdumont/assistdog"
-	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 const (
-	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
+	MavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
+	JavaOptionsEnvVar     = "JAVA_OPTIONS"
 )
 
 var assist = assistdog.NewDefault()
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled)$`, data.deployQuarkusExampleServiceWithNative)
-	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and labels$`, data.deployQuarkusExampleServiceWithNativeAndLabels)
-	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and persistence$`, data.deployQuarkusExampleServiceWithNativeAndPersistence)
-	s.Step(`^Deploy quarkus example service "([^"]*)" with native (enabled|disabled) and persistence and events$`, data.deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents)
-	s.Step(`^Deploy quarkus example service "([^"]*)" with build resources:$`, data.deployQuarkusExampleServiceWithBuildResources)
-	s.Step(`^Deploy spring boot example service "([^"]*)"$`, data.deploySpringBootExampleService)
-	s.Step(`^Deploy spring boot example service "([^"]*)" with persistence$`, data.deploySpringBootExampleServiceWithPersistence)
+	s.Step(`^Deploy quarkus example service "([^"]*)" with configuration:$`, data.deployQuarkusExampleServiceWithConfiguration)
+	s.Step(`^Deploy spring boot example service "([^"]*)" with configuration:$`, data.deploySpringBootExampleServiceWithConfiguration)
 	s.Step(`^Create service "([^"]*)"$`, data.createService)
-	s.Step(`^Create service "([^"]*)" with runtime resources:$`, data.createServiceWithRuntimeResources)
+	s.Step(`^Create service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
 	s.Step(`^Deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// DeploymentConfig steps
@@ -60,82 +53,43 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 }
 
 // Deploy service steps
-func (data *Data) deployQuarkusExampleServiceWithNative(contextDir, native string) error {
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, framework.MustParseEnabledDisabled(native), false, false)
-	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
-}
-
-func (data *Data) deployQuarkusExampleServiceWithNativeAndLabels(contextDir, native string, dt *gherkin.DataTable) error {
-	labels, err := assist.ParseMap(dt)
+func (data *Data) deployQuarkusExampleServiceWithConfiguration(contextDir string, table *gherkin.DataTable) error {
+	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
 	if err != nil {
 		return err
 	}
 
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, framework.MustParseEnabledDisabled(native), false, false)
-	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
-	kogitoApp.Spec.Service.Labels = labels
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
-}
-
-func (data *Data) deployQuarkusExampleServiceWithNativeAndPersistence(contextDir, native string) error {
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, framework.MustParseEnabledDisabled(native), true, false)
 	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
 
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
-func (data *Data) deployQuarkusExampleServiceWithNativeAndPersistenceAndEvents(contextDir, native string) error {
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, framework.MustParseEnabledDisabled(native), true, true)
-	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
-}
-
-func (data *Data) deployQuarkusExampleServiceWithBuildResources(contextDir string, dt *gherkin.DataTable) error {
-	resources, err := assist.ParseMap(dt)
+func (data *Data) deploySpringBootExampleServiceWithConfiguration(contextDir string, table *gherkin.DataTable) error {
+	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
 	if err != nil {
 		return err
 	}
+	if kogitoApp.Spec.Build.Native {
+		return fmt.Errorf("Spring Boot does not support native build")
+	}
 
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, false, false, false)
-	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
-	kogitoApp.Spec.Build.Resources = framework.ToResourceRequirements(resources["requests"], resources["limits"])
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
-}
-
-func (data *Data) deploySpringBootExampleService(contextDir string) error {
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, false, false, false)
-	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
-}
-
-func (data *Data) deploySpringBootExampleServiceWithPersistence(contextDir string) error {
-	kogitoApp := getKogitoAppExamplesStub(data.Namespace, contextDir, false, true, false)
 	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
 
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
 func (data *Data) createService(serviceName string) error {
-	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
-	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+	return data.createServiceWithConfiguration(serviceName, &gherkin.DataTable{})
 }
 
-func (data *Data) createServiceWithRuntimeResources(serviceName string, dt *gherkin.DataTable) error {
-	resources, err := assist.ParseMap(dt)
-	if err != nil {
+func (data *Data) createServiceWithConfiguration(serviceName string, table *gherkin.DataTable) error {
+	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
+	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return err
 	}
 
-	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
 	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
-	kogitoApp.Spec.Resources = framework.ToResourceRequirements(resources["requests"], resources["limits"])
+
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
@@ -149,13 +103,13 @@ func (data *Data) kogitoApplicationHasPodsRunningWithinMinutes(dcName string, po
 }
 
 func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *gherkin.DataTable) error {
-	resources, err := assist.ParseMap(dt)
+	_, requirements, err := parseResourceRequirementsTable(dt)
+
 	if err != nil {
 		return err
 	}
 
-	requirements := framework.ToResourceRequirements(resources["requests"], resources["limits"])
-	return framework.WaitForPodsToHaveResources(data.Namespace, dcName, requirements, timeoutInMin)
+	return framework.WaitForPodsToHaveResources(data.Namespace, dcName, *requirements, timeoutInMin)
 }
 
 // Scale steps
@@ -175,7 +129,7 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 // Misc methods
 
 // getKogitoAppExampleStub Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
-func getKogitoAppExamplesStub(namespace, contextDir string, native, persistence, events bool) *v1alpha1.KogitoApp {
+func getKogitoAppExamplesStub(namespace, contextDir string, table *gherkin.DataTable) (*v1alpha1.KogitoApp, error) {
 	kogitoApp := framework.GetKogitoAppStub(namespace, filepath.Base(contextDir))
 
 	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
@@ -185,31 +139,9 @@ func getKogitoAppExamplesStub(namespace, contextDir string, native, persistence,
 		kogitoApp.Spec.Build.GitSource.Reference = ref
 	}
 
-	var profiles []string
-	if persistence {
-		profiles = append(profiles, "persistence")
-		kogitoApp.Spec.EnablePersistence = true
-	}
-	if events {
-		profiles = append(profiles, "events")
-		kogitoApp.Spec.EnableEvents = true
-		kogitoApp.Spec.KogitoServiceSpec.AddEnvironmentVariable("MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
-		kogitoApp.Spec.KogitoServiceSpec.AddEnvironmentVariable("MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
+	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
+		return nil, err
 	}
 
-	if len(profiles) > 0 {
-		kogitoApp.Spec.Build.AddEnvironmentVariable(mavenArgsAppendEnvVar, "-P"+strings.Join(profiles, ","))
-	}
-
-	if native {
-		kogitoApp.Spec.Build.Native = native
-		// Make sure that enough memory is allocated for builder pod in case of native build
-		kogitoApp.Spec.Build.Resources = corev1.ResourceRequirements{
-			Requests: corev1.ResourceList{
-				v1.ResourceName("memory"): resource.MustParse("4Gi"),
-			},
-		}
-	}
-
-	return kogitoApp
+	return kogitoApp, nil
 }

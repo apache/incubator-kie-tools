@@ -12,7 +12,9 @@ Feature: Kogito Service Performance
   @quarkus
   Scenario Outline: Quarkus Kogito Service Performance without persistence
     Given Kogito Operator is deployed
-    And Deploy quarkus example service "process-quarkus-example" with native <native>
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | config      | native       | <native> |
+      | runtime-env | JAVA_OPTIONS | -Xmx8G   |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
@@ -53,7 +55,10 @@ Feature: Kogito Service Performance
   @persistence
   Scenario Outline: Quarkus Kogito Service Performance with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy quarkus example service "process-quarkus-example" with native <native> and persistence
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | config      | native       | <native> |
+      | config      | persistence  | enabled  |
+      | runtime-env | JAVA_OPTIONS | -Xmx8G   |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
@@ -93,7 +98,8 @@ Feature: Kogito Service Performance
   @springboot
   Scenario Outline: Spring Boot Kogito Service Performance without persistence
     Given Kogito Operator is deployed
-    And Deploy spring boot example service "process-springboot-example"
+    And Deploy spring boot example service "process-springboot-example" with configuration:
+      | runtime-env | JAVA_OPTIONS | -Xmx8G |
     And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
 
@@ -125,7 +131,9 @@ Feature: Kogito Service Performance
   @persistence
   Scenario Outline: Spring Boot Kogito Service Performance with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy spring boot example service "process-springboot-example" with persistence
+    And Deploy spring boot example service "process-springboot-example" with configuration:
+      | config      | persistence  | enabled |
+      | runtime-env | JAVA_OPTIONS | -Xmx8G  |
     And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
     And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
 

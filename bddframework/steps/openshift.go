@@ -46,11 +46,11 @@ func (data *Data) buildConfigIsCreatedAfterMinutes(buildConfigName string, timeo
 }
 
 func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *gherkin.DataTable) error {
-	resources, err := assist.ParseMap(dt)
+	requirements, _, err := parseResourceRequirementsTable(dt)
+
 	if err != nil {
 		return err
 	}
 
-	requirements := framework.ToResourceRequirements(resources["requests"], resources["limits"])
-	return framework.WaitForBuildConfigToHaveResources(data.Namespace, buildConfigName, requirements, timeoutInMin)
+	return framework.WaitForBuildConfigToHaveResources(data.Namespace, buildConfigName, *requirements, timeoutInMin)
 }

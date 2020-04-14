@@ -7,18 +7,21 @@ Feature: Discovery with onboarding
   Scenario Outline: Deploy onboarding example
     Given Kogito Operator is deployed
     
-    When Deploy quarkus example service "onboarding-example/hr" with native <native> and labels 
-      | department/first          | process |
-      | id                        | process |
-      | employee-validation/first | process |
+    When Deploy quarkus example service "onboarding-example/hr" with configuration:
+      | config | native                    | <native> |
+      | label  | department/first          | process  |
+      | label  | id                        | process  |
+      | label  | employee-validation/first | process  |
 
-    And Deploy quarkus example service "onboarding-example/payroll" with native <native> and labels
-      | taxes/rate         | process |
-      | vacations/days     | process |
-      | payments/date      | process |
+    And Deploy quarkus example service "onboarding-example/payroll" with configuration:
+      | config | native         | <native> |
+      | label  | taxes/rate     | process  |
+      | label  | vacations/days | process  |
+      | label  | payments/date  | process  |
 
-    And Deploy quarkus example service "onboarding-example/onboarding" with native <native> and labels
-      | onboarding         | process |
+    And Deploy quarkus example service "onboarding-example/onboarding" with configuration:
+      | config | native     | <native> |
+      | label  | onboarding | process  |
 
     And Kogito application "hr" has 1 pods running within <minutes> minutes
     And Kogito application "payroll" has 1 pods running within <minutes> minutes
