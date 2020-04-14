@@ -45,8 +45,6 @@ Feature: Kogito Data Index
       | native   | minutes |
       | disabled | 10      |
 
-    # Disabled because of https://issues.redhat.com/browse/KOGITO-1405
-    @disabled
     @native
     Examples: Native
       | native  | minutes |
