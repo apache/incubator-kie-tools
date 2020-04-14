@@ -1,4 +1,4 @@
-import * as unstyled from '../src';
+import * as unstyled from 'uniforms-patternfly';
 
 it('exports everything', () => {
   expect(unstyled).toEqual({

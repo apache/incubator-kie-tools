@@ -1,7 +1,7 @@
-import React, { Ref, FormEvent } from 'react';
+import React, { Ref } from 'react';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
+import { connectField, filterDOMProps } from 'uniforms';
 
-import { connectField, filterDOMProps } from './uniforms';
 import wrapField from './wrapField';
 
 export type TextFieldProps = {

@@ -1,11 +1,12 @@
-import { QuickForm } from './uniforms';
+import { QuickForm } from 'uniforms';
+
 import AutoField from './AutoField';
 import BaseForm from './BaseForm';
 import ErrorsField from './ErrorsField';
 import SubmitField from './SubmitField';
 
-const Quick = (parent: any): any =>
-  class extends QuickForm.Quick(parent) {
+function Quick(parent: any): any {
+  class _ extends QuickForm.Quick(parent) {
     static Quick = Quick;
 
     getAutoField() {
@@ -19,6 +20,9 @@ const Quick = (parent: any): any =>
     getSubmitField() {
       return SubmitField;
     }
-  };
+  }
+
+  return _;
+}
 
 export default Quick(BaseForm);

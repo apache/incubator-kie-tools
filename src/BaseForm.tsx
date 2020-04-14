@@ -1,9 +1,8 @@
 import React from 'react';
 import { Form } from '@patternfly/react-core';
+import { BaseForm, context } from 'uniforms';
 
-import { BaseForm, context } from './uniforms';
-
-const Patternfly = (parent: any): any => {
+function Patternfly(parent: any): any {
   class _ extends parent {
     static Patternfly = Patternfly;
 
@@ -16,9 +15,9 @@ const Patternfly = (parent: any): any => {
         </context.Provider>
       );
     }
-    
   }
+
   return _;
-};
+}
 
 export default Patternfly(BaseForm);

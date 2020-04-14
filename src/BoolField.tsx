@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, CheckboxProps } from '@patternfly/react-core';
+import { connectField, filterDOMProps } from 'uniforms';
 
-import { connectField, filterDOMProps } from './uniforms';
 import wrapField from './wrapField';
 
 export type BoolFieldProps = {

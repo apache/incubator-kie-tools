@@ -1,7 +1,7 @@
 import React from 'react';
 import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
+import { connectField, filterDOMProps } from 'uniforms';
 
-import { connectField, filterDOMProps } from './uniforms';
 export type RadioFieldProps = {
   transform?: (string?: string) => string;
   allowedValues: string[];

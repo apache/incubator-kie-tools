@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListAddField, ListDelField, ListField, ListItemField } from '../src';
+import { ListAddField, ListDelField, ListField, ListItemField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

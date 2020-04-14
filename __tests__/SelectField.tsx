@@ -1,7 +1,7 @@
 import React from 'react';
 import { Select, Radio } from '@patternfly/react-core';
 import { act } from '@testing-library/react';
-import { SelectField } from '../src';
+import { SelectField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

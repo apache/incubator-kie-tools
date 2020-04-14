@@ -1,6 +1,6 @@
 import React, { Children, ReactNode } from 'react';
+import { joinName } from 'uniforms';
 
-import { joinName } from './uniforms';
 import AutoField from './AutoField';
 
 export type ListItemFieldProps = {

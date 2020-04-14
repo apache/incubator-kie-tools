@@ -1,7 +1,6 @@
 import React, { HTMLProps } from 'react';
-import { Label } from '@patternfly/react-core';
+import { connectField, joinName, injectName, filterDOMProps } from 'uniforms';
 
-import { connectField, joinName, injectName, filterDOMProps } from './uniforms';
 import AutoField from './AutoField';
 
 export type NestFieldProps = {

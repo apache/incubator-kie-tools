@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps } from '@patternfly/react-core';
-
-import { useForm, filterDOMProps } from './uniforms';
+import { useForm, filterDOMProps } from 'uniforms';
 
 export type SubmitFieldProps = {
   inputRef: undefined;
@@ -18,6 +17,7 @@ function SubmitField({
   const { error, state } = useForm();
 
   return (
+    // @ts-ignore
     <div {...filterDOMProps(props)}>
       <Button
         isDisabled={

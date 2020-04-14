@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField } from '../src';
+import { TextField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

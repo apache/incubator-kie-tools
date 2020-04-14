@@ -1,6 +1,6 @@
 import { ComponentType, createElement } from 'react';
+import { useForm } from 'uniforms';
 
-import { useForm } from './uniforms';
 import AutoField from './AutoField';
 
 export type AutoFieldsProps = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DateField } from '../src';
+import { DateField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';

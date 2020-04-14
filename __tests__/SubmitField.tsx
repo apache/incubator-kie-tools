@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@patternfly/react-core';
 
-import { SubmitField } from '../src';
+import { SubmitField } from 'uniforms-patternfly';
 import createContext from './_createContext';
 import mount from './_mount';
 
