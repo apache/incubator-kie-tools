@@ -182,17 +182,18 @@ export class Menu {
     ] as MenuItemConstructorOptions[]
   };
 
-  private readonly devMenu = {
-    label: "Development Menu",
+  private readonly toolsMenu = {
+    label: "Help",
     submenu: [
       {
-        label: "Show Developer Tools",
+        label: "Developer Tools",
+        accelerator: "Alt+Shift+CmdOrCtrl+I",
         click: () => {
           this.window.webContents.openDevTools();
         }
       },
       {
-        label: "Clear User Data",
+        label: "Clear recent files",
         click: () => {
           this.userData.clear();
         }
@@ -278,15 +279,12 @@ export class Menu {
   public setup() {
     const template: Array<MenuItemConstructorOptions | MenuItem> = [
       process.platform === "darwin" ? this.macOSFileMenu : this.fileMenu,
-      this.editMenu
+      this.editMenu,
+      this.toolsMenu
     ];
 
     if (process.platform === "darwin") {
       template.unshift(this.macOSAppMenu);
-    }
-
-    if (!app.isPackaged) {
-      template.push(this.devMenu);
     }
 
     this.menu = ElectronMenu.buildFromTemplate(template);
