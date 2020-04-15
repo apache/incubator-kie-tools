@@ -21,10 +21,6 @@ const envelope = require("../microeditor-envelope/webpackUtils");
 const commonConfig = {
   mode: "development",
   devtool: "inline-source-map",
-  entry: {
-    index: "./src/index.tsx",
-    "envelope/index": "./src/envelope/index.ts"
-  },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js"
@@ -32,18 +28,6 @@ const commonConfig = {
   externals: {
     electron: "commonjs electron"
   },
-  plugins: [
-    new CopyPlugin([
-      { from: "./static/samples", to: "./samples" },
-      { from: "./static/resources", to: "./resources" },
-      { from: "./static/envelope", to: "./envelope" },
-      { from: "./static/images", to: "./images" },
-      { from: "./static/index.html", to: "./index.html" },
-      { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
-      { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" },
-      { from: "./build", to: "./build" }
-    ])
-  ],
   module: {
     rules: [
       {
@@ -88,6 +72,7 @@ module.exports = [
     entry: {
       index: "./src/electron/index.ts"
     },
+    plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {
       __dirname: false,
       __filename: false
@@ -101,6 +86,16 @@ module.exports = [
       "envelope/index": "./src/envelope/index.ts"
     },
     module: { rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders] },
-    plugins: [new CopyPlugin([{ from: "static/index.html" }, { from: "static/envelope/index.html" }])]
+    plugins: [
+      new CopyPlugin([
+        { from: "./static/envelope", to: "./envelope" },
+        { from: "./static/samples", to: "./samples" },
+        { from: "./static/resources", to: "./resources" },
+        { from: "./static/images", to: "./images" },
+        { from: "./static/index.html", to: "./index.html" },
+        { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
+        { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" }
+      ])
+    ]
   }
 ];
