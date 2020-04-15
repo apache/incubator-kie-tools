@@ -10,6 +10,7 @@
     "@patternfly/react-core": "^3.153.3",
     "@patternfly/react-icons": "^3.15.15",
     "ajv": "6.10.2",
+    "react": "^16.13.1",
     "react-dom": "16.9.0",
     "react-scripts": "3.1.1",
     "simpl-schema": "^1.5.7",
@@ -18,13 +19,10 @@
     "uniforms-bridge-json-schema": "v3.0.0-alpha.2",
     "uniforms-bridge-simple-schema": "v3.0.0-alpha.2",
     "uniforms-bridge-simple-schema-2": "v3.0.0-alpha.2",
-    "uniforms-patternfly": "^0.0.6"
+    "uniforms-patternfly": "^0.0.7"
   },
   "devDependencies": {
     "parcel-bundler": "1.12.4",
     "tslib": "^1.11.1"
-  },
-  "resolutions": {
-    "react": "./node_modules/uniforms-patternfly/node_modules/react"
   }
 }
