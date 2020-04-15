@@ -188,7 +188,7 @@ function createWindow() {
   // DESKTOP
   ipcMain.on("desktop__launch", (e: IpcMainEvent) => {
     executeCommand({
-      linux: `chmod -R u+x ${getApplicationPath("")} && "${getApplicationPath(
+      linux: `chmod -R u+x "${getApplicationPath("")}" && "${getApplicationPath(
         "lib/Business Modeler Preview-linux-x64/Business Modeler Preview"
       )}"`,
       macOS: `open "${getApplicationPath("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}"`,
