@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 cat <<EOF
-This is the quay.io/kiegroup/kogito-springboot-ubi8 S2I image:
+This is the quay.io/kiegroup/kogito-springboot-ubi8 Runtime image:
 To use it, install S2I: https://github.com/openshift/source-to-image
 
 Sample invocation:

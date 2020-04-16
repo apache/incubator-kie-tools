@@ -12,6 +12,9 @@ labels:
   value: "builder,kogito,quarkus"
 
 envs:
+- name: "SCRIPT_DEBUG"
+  example: "true"
+  description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
 - name: NATIVE
   example: false
   description: If set to false, perform a non native build.

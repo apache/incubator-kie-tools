@@ -13,6 +13,14 @@ labels:
 - name: "io.openshift.expose-services"
   value: "8080:http"
 
+envs:
+  - name: "SCRIPT_DEBUG"
+    example: "true"
+    description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
+  - name: "KOGITO_DATAINDEX_HTTP_URL"
+    example: "http://data-index.service:8080"
+    description: "Data Index service address, defaults tohttp://localhost:8180."
+
 ports:
 - value: 8080
 

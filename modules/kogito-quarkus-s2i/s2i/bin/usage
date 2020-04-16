@@ -7,17 +7,25 @@ such as processes, rules, decisions.
 
 To use it, install S2I: https://github.com/openshift/source-to-image
 
-This image is intended to build application binaries only that are later on transfered to runtime image.
+This image is intended only to build application binaries that will be copied to runtime image when the build is finished.
 
+
+S2I command syntax:
 
 s2i build -c <source code path/URL> quay.io/kiegroup/kogito-quarkus-ubi8-s2i <application image> --runtime-image <image name>
 
+
 Sample invocation:
 
-s2i build -c /Development/project/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i <application image> --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8
+$ s2i build -c /Development/project/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i <application image> --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8
+
 
 For non native build, just set the NATIVE environment variable to false and use the quay.io/kiegroup/kogito-quarkus-jvm-ubi8
 image as runtime-image, in that way a *runner.jar will be produced and copied to the runtime image.
+
+Example:
+
+$ s2i build -c /Development/project/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i <application image> --runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8 --env NATIVE=false
 
 You can then run the resulting image via:
 docker run <application image>

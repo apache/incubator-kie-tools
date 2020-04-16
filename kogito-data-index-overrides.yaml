@@ -13,6 +13,17 @@ labels:
 - name: "io.openshift.expose-services"
   value: "8080:http"
 
+envs:
+  - name: "SCRIPT_DEBUG"
+    example: "true"
+    description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
+  - name: "KOGITO_DATA_INDEX_HTTP_PORT"
+    example: "9090"
+    description: "Defines which port the Data Index Container Image will listen on."
+  - name: "QUARKUS_INFINISPAN_CLIENT_SERVER_LIST"
+    example: "localhost:11222"
+    description: "Defines the Infinispan Server address, multiple values comma separated. If empty defaults to localhost:11222"
+
 ports:
 - value: 8080
 

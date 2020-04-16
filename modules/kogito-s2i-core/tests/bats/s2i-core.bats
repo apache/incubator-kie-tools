@@ -356,7 +356,7 @@ teardown() {
     [ "${lines[1]}" = "'target/app-runner' -> '$KOGITO_HOME/bin/app-runner'" ]
 }
 
-@test "build_kogito_app only checks if it will generated the project in case there's no pom.xml" {
+@test "build_kogito_app only checks if it will generate the project in case there's no pom.xml" {
     mkdir /tmp/src
 
     run build_kogito_app
