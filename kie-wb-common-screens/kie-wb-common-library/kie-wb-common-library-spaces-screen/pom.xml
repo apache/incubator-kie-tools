@@ -14,12 +14,6 @@
   <name>Kie Workbench - Common - Library - Spaces Screen</name>
   <description>Kie Workbench - Common - Library - Spaces Screen</description>
 
-  <properties>
-    <node.version>v11.6.0</node.version>
-    <yarn.version>v1.12.3</yarn.version>
-    <npm.version>6.9.0</npm.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -68,10 +62,6 @@
             <goals>
               <goal>install-node-and-yarn</goal>
             </goals>
-            <configuration>
-              <nodeVersion>${node.version}</nodeVersion>
-              <yarnVersion>${yarn.version}</yarnVersion>
-            </configuration>
           </execution>
           <execution>
             <id>install node and npm</id>
@@ -79,10 +69,6 @@
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
-            <configuration>
-              <nodeVersion>${node.version}</nodeVersion>
-              <npmVersion>${npm.version}</npmVersion>
-            </configuration>
           </execution>
           <execution>
             <id>npm install lock-treatment-tool and run-node</id>
