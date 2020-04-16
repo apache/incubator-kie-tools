@@ -5,6 +5,7 @@ On this directory you can find some python scripts used to help with some repeti
 Today we have these scripts:
 
 - [manage-kogito-version.py](manage-kogito-version.py)
+- [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
 
 
@@ -33,6 +34,30 @@ The command above will update all the needed files to the version 1.0.0. These c
  - image.yaml file descriptor
  - kogito-imagestream.yaml
  
+
+### Pushing Images to a local registry
+
+This script will help you while building images and test in a local OpenShift Cluster. It requires you to already have
+images built in your local registry with the tag following the patter: X.Z, e.g. 0.10:
+
+```text
+quay.io/kiegroup/kogito-jobs-service:0.10
+```
+
+The [Makefile](../Makefile) has an option to do it, it can be invoked as the following sample:
+
+```bash
+$ make push-local-registry REGISTRY=docker-registry-default.apps.test.cloud NS=test-1
+```
+
+Where **NS** stands for the namespace where the images will be available.
+
+To execute the script directly:
+
+```bash
+$ /bin/sh scripts/push-local-registry.sh my_registry_address 0.10 my_namespace
+```
+
 
 ### Pushing staging images.
 

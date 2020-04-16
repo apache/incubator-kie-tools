@@ -108,3 +108,13 @@ push-staging: build _push-staging
 _push-staging:
 	python3 scripts/push-staging.py
 
+# push to local registry, useful to push the built images to local registry
+# requires parameter: REGISTRY: my-custom-registry:[port]
+# requires pre built images, if no images, run make build first
+# the shortened version will be used so operator can fetch it from the local namespace.
+# use the NS env to set the current namespace, if no set openshift will be used
+# example:  make push-local-registry REGISTRY=docker-registry-default.apps.spolti.cloud NS=spolti-1
+.PHONY: push-local-registry
+push-local-registry:
+	/bin/sh scripts/push-local-registry.sh ${REGISTRY} ${SHORTENED_LATEST_VERSION} ${NS}
+
