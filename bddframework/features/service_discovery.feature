@@ -20,8 +20,11 @@ Feature: Discovery with onboarding
       | label  | payments/date  | process  |
 
     And Deploy quarkus example service "onboarding-example/onboarding" with configuration:
-      | config | native     | <native> |
-      | label  | onboarding | process  |
+      | config        | native     | <native>                |
+      | label         | onboarding | process                 |
+      | build-request | cpu        | <build-request-cpu>     |
+      | build-request | memory     | <build-request-memory>  |
+      | build-limit   | cpu        | <build-limit-cpu>       |
 
     And Kogito application "hr" has 1 pods running within <minutes> minutes
     And Kogito application "payroll" has 1 pods running within <minutes> minutes
@@ -46,12 +49,10 @@ Feature: Discovery with onboarding
       """
     
     Examples: Non Native
-      | native   | minutes |
-      | disabled | 10      |
+      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
+      | disabled | 10      | 1                 | 4               | 4Gi                  |
 
-    # disabled because of https://issues.redhat.com/browse/KOGITO-1357
-    @disabled
     @native
     Examples: Native
-      | native  | minutes |
-      | enabled | 20      |
+      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
+      | enabled  | 20      | 4                 | 8               | 10Gi                 |
