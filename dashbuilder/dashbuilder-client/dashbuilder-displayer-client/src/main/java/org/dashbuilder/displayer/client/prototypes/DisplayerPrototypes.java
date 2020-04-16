@@ -26,6 +26,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.MapColorScheme;
 
 import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.*;
 
@@ -267,6 +268,7 @@ public class DisplayerPrototypes {
                 .width(500).height(300)
                 .margins(10, 10, 10, 10)
                 .filterOn(false, true, true)
+                .colorScheme(MapColorScheme.GREEN)
                 .buildSettings());
 
         prototypeMap.put(DisplayerType.TABLE, DisplayerSettingsFactory

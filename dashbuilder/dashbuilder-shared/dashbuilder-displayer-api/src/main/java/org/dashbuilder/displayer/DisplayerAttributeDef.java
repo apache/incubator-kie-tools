@@ -92,6 +92,8 @@ public class DisplayerAttributeDef {
 
     public static final DisplayerAttributeDef HTML_TEMPLATE = new DisplayerAttributeDef("html", DisplayerAttributeGroupDef.HTML_GROUP);
     public static final DisplayerAttributeDef JS_TEMPLATE = new DisplayerAttributeDef("javascript", DisplayerAttributeGroupDef.HTML_GROUP);
+    
+    public static final DisplayerAttributeDef MAP_COLOR_SCHEME = new DisplayerAttributeDef("color_scheme", DisplayerAttributeGroupDef.MAP_GROUP);
 
     protected String id;
     protected DisplayerAttributeGroupDef parent;

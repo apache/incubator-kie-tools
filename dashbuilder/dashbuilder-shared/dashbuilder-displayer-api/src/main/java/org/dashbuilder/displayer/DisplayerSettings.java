@@ -34,12 +34,11 @@ public class DisplayerSettings {
     protected DataSet dataSet;
     protected DataSetLookup dataSetLookup;
     protected List<ColumnSettings> columnSettingsList = new ArrayList<ColumnSettings>();
-    protected Map<String,String> settings = new HashMap<String,String>(30);
+    protected Map<String, String> settings = new HashMap<String, String>(30);
 
-    public DisplayerSettings() {
-    }
+    public DisplayerSettings() {}
 
-    public DisplayerSettings( DisplayerType displayerType ) {
+    public DisplayerSettings(DisplayerType displayerType) {
         this();
         setType(displayerType);
     }
@@ -82,7 +81,7 @@ public class DisplayerSettings {
             if (columnSettingsList.size() != other.columnSettingsList.size()) {
                 return false;
             }
-            for (int i=0; i<columnSettingsList.size(); i++) {
+            for (int i = 0; i < columnSettingsList.size(); i++) {
                 if (!columnSettingsList.get(i).equals(other.columnSettingsList.get(i))) {
                     return false;
                 }
@@ -125,7 +124,8 @@ public class DisplayerSettings {
 
     public ColumnSettings getColumnSettings(String columnId) {
         for (ColumnSettings columnSettings : columnSettingsList) {
-            if (columnSettings.getColumnId().equals(columnId)) return columnSettings;
+            if (columnSettings.getColumnId().equals(columnId))
+                return columnSettings;
         }
         return null;
     }
@@ -137,43 +137,49 @@ public class DisplayerSettings {
 
     public void setColumnName(String columnId, String name) {
         ColumnSettings columnSettings = getColumnSettings(columnId);
-        if (columnSettings == null) columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
+        if (columnSettings == null)
+            columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
 
         columnSettings.setColumnName(name);
     }
 
     public void setColumnValueExpression(String columnId, String expression) {
         ColumnSettings columnSettings = getColumnSettings(columnId);
-        if (columnSettings == null) columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
+        if (columnSettings == null)
+            columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
 
         columnSettings.setValueExpression(expression);
     }
 
     public void setColumnValuePattern(String columnId, String pattern) {
         ColumnSettings columnSettings = getColumnSettings(columnId);
-        if (columnSettings == null) columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
+        if (columnSettings == null)
+            columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
 
         columnSettings.setValuePattern(pattern);
     }
 
     public void setColumnEmptyTemplate(String columnId, String template) {
         ColumnSettings columnSettings = getColumnSettings(columnId);
-        if (columnSettings == null) columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
+        if (columnSettings == null)
+            columnSettingsList.add(columnSettings = new ColumnSettings(columnId));
 
         columnSettings.setEmptyTemplate(template);
     }
 
-    private String getSettingPath( DisplayerAttributeDef displayerAttributeDef ) {
+    private String getSettingPath(DisplayerAttributeDef displayerAttributeDef) {
         return displayerAttributeDef.getFullId();
     }
 
     private int parseInt(String value, int defaultValue) {
-        if (value == null || value.trim().length() == 0) return defaultValue;
+        if (value == null || value.trim().length() == 0)
+            return defaultValue;
         return Integer.parseInt(value);
     }
 
     private long parseLong(String value, long defaultValue) {
-        if (value == null || value.trim().length() == 0) return defaultValue;
+        if (value == null || value.trim().length() == 0)
+            return defaultValue;
         return Long.parseLong(value);
     }
 
@@ -182,12 +188,14 @@ public class DisplayerSettings {
     }
 
     private boolean parseBoolean(String value, boolean defaultValue) {
-        if (value == null || value.trim().length() == 0) return defaultValue;
+        if (value == null || value.trim().length() == 0)
+            return defaultValue;
         return Boolean.parseBoolean(value);
     }
 
     private String parseString(String value) {
-        if (value == null || value.trim().length() == 0) return "";
+        if (value == null || value.trim().length() == 0)
+            return "";
         return value;
     }
 
@@ -195,7 +203,7 @@ public class DisplayerSettings {
         return UUID;
     }
 
-    public void setUUID( String UUID ) {
+    public void setUUID(String UUID) {
         this.UUID = UUID;
     }
 
@@ -203,7 +211,7 @@ public class DisplayerSettings {
         return dataSet;
     }
 
-    public void setDataSet( DataSet dataSet ) {
+    public void setDataSet(DataSet dataSet) {
         this.dataSet = dataSet;
     }
 
@@ -211,39 +219,39 @@ public class DisplayerSettings {
         return dataSetLookup;
     }
 
-    public void setDataSetLookup( DataSetLookup dataSetLookup ) {
+    public void setDataSetLookup(DataSetLookup dataSetLookup) {
         this.dataSetLookup = dataSetLookup;
     }
 
     // 'Generic' getter method
-    public String getDisplayerSetting( DisplayerAttributeDef displayerAttributeDef ) {
-        return settings.get( getSettingPath( displayerAttributeDef ) );
+    public String getDisplayerSetting(DisplayerAttributeDef displayerAttributeDef) {
+        return settings.get(getSettingPath(displayerAttributeDef));
     }
 
     // 'Generic' setter method
-    public void setDisplayerSetting( DisplayerAttributeDef displayerAttributeDef, String value ) {
+    public void setDisplayerSetting(DisplayerAttributeDef displayerAttributeDef, String value) {
         settings.put(getSettingPath(displayerAttributeDef), value);
     }
 
     // 'Generic' setter method
-    public void setDisplayerSetting( String displayerAttributeDef, String value ) {
-        settings.put( displayerAttributeDef, value );
+    public void setDisplayerSetting(String displayerAttributeDef, String value) {
+        settings.put(displayerAttributeDef, value);
     }
 
     // 'Generic' remove method
-    public void removeDisplayerSetting( DisplayerAttributeDef displayerAttributeDef ) {
+    public void removeDisplayerSetting(DisplayerAttributeDef displayerAttributeDef) {
         settings.remove(getSettingPath(displayerAttributeDef));
     }
 
     // 'Generic' remove method
-    public void removeDisplayerSetting( DisplayerAttributeGroupDef displayerAttributeGroup ) {
+    public void removeDisplayerSetting(DisplayerAttributeGroupDef displayerAttributeGroup) {
         for (DisplayerAttributeDef attributeDef : displayerAttributeGroup.getChildren()) {
             settings.remove(getSettingPath(attributeDef));
         }
     }
 
     // 'Generic' remove method
-    public void removeDisplayerSetting( String displayerAttributeDef ) {
+    public void removeDisplayerSetting(String displayerAttributeDef) {
         settings.remove(displayerAttributeDef);
     }
 
@@ -251,17 +259,17 @@ public class DisplayerSettings {
         return settings;
     }
 
-    public void setSettingsFlatMap( Map<String, String> settings ) {
+    public void setSettingsFlatMap(Map<String, String> settings) {
         this.settings = settings;
     }
 
     public DisplayerType getType() {
-        String strType = settings.get( getSettingPath( DisplayerAttributeDef.TYPE ) );
-        return DisplayerType.getByName( strType );
+        String strType = settings.get(getSettingPath(DisplayerAttributeDef.TYPE));
+        return DisplayerType.getByName(strType);
     }
 
-    public void setType( DisplayerType displayerType ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TYPE ), displayerType.toString() );
+    public void setType(DisplayerType displayerType) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TYPE), displayerType.toString());
     }
 
     public DisplayerSubType getSubtype() {
@@ -270,37 +278,38 @@ public class DisplayerSettings {
     }
 
     public void setSubtype(DisplayerSubType subtype) {
-        if (subtype != null) settings.put(getSettingPath(DisplayerAttributeDef.SUBTYPE), subtype.toString());
-        else settings.remove(getSettingPath(DisplayerAttributeDef.SUBTYPE));
+        if (subtype != null)
+            settings.put(getSettingPath(DisplayerAttributeDef.SUBTYPE), subtype.toString());
+        else
+            settings.remove(getSettingPath(DisplayerAttributeDef.SUBTYPE));
     }
 
     public String getRenderer() {
         return settings.get(getSettingPath(DisplayerAttributeDef.RENDERER));
     }
 
-    public void setRenderer( String renderer ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.RENDERER ), renderer );
+    public void setRenderer(String renderer) {
+        settings.put(getSettingPath(DisplayerAttributeDef.RENDERER), renderer);
     }
 
     public String getTitle() {
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.TITLE)));
     }
 
-    public void setTitle( String title ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TITLE ), title );
+    public void setTitle(String title) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TITLE), title);
     }
 
     public boolean isTitleVisible() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE)));
     }
 
-    public void setTitleVisible( boolean titleVisible ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TITLE_VISIBLE ), Boolean.toString( titleVisible ) );
+    public void setTitleVisible(boolean titleVisible) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE), Boolean.toString(titleVisible));
     }
 
     public boolean isCSVExportAllowed() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_CSV)))
-                || parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_CSV)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_CSV))) || parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_CSV)));
     }
 
     public void setCSVExportAllowed(boolean csvExportAllowed) {
@@ -308,8 +317,7 @@ public class DisplayerSettings {
     }
 
     public boolean isExcelExportAllowed() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_EXCEL)))
-        || parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_XLS)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_EXCEL))) || parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_XLS)));
     }
 
     public void setExcelExportAllowed(boolean excelExportAllowed) {
@@ -320,48 +328,48 @@ public class DisplayerSettings {
         return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.REFRESH_INTERVAL)), -1);
     }
 
-    public void setRefreshInterval( int refreshInSeconds ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.REFRESH_INTERVAL ), Integer.toString( refreshInSeconds ) );
+    public void setRefreshInterval(int refreshInSeconds) {
+        settings.put(getSettingPath(DisplayerAttributeDef.REFRESH_INTERVAL), Integer.toString(refreshInSeconds));
     }
 
     public boolean isRefreshStaleData() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.REFRESH_STALE_DATA)));
     }
 
-    public void setRefreshStaleData( boolean refresh) {
-        settings.put( getSettingPath( DisplayerAttributeDef.REFRESH_STALE_DATA ), Boolean.toString( refresh ) );
+    public void setRefreshStaleData(boolean refresh) {
+        settings.put(getSettingPath(DisplayerAttributeDef.REFRESH_STALE_DATA), Boolean.toString(refresh));
     }
 
     public boolean isFilterEnabled() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.FILTER_ENABLED ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_ENABLED)));
     }
 
-    public void setFilterEnabled( boolean filterEnabled ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.FILTER_ENABLED ), Boolean.toString( filterEnabled ) );
+    public void setFilterEnabled(boolean filterEnabled) {
+        settings.put(getSettingPath(DisplayerAttributeDef.FILTER_ENABLED), Boolean.toString(filterEnabled));
     }
 
     public boolean isFilterSelfApplyEnabled() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.FILTER_SELFAPPLY_ENABLED ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_SELFAPPLY_ENABLED)));
     }
 
-    public void setFilterSelfApplyEnabled( boolean filterSelfApplyEnabled ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.FILTER_SELFAPPLY_ENABLED ), Boolean.toString( filterSelfApplyEnabled ) );
+    public void setFilterSelfApplyEnabled(boolean filterSelfApplyEnabled) {
+        settings.put(getSettingPath(DisplayerAttributeDef.FILTER_SELFAPPLY_ENABLED), Boolean.toString(filterSelfApplyEnabled));
     }
 
     public boolean isFilterNotificationEnabled() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED)));
     }
 
-    public void setFilterNotificationEnabled( boolean filterNotificationEnabled ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED ), Boolean.toString( filterNotificationEnabled ) );
+    public void setFilterNotificationEnabled(boolean filterNotificationEnabled) {
+        settings.put(getSettingPath(DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED), Boolean.toString(filterNotificationEnabled));
     }
 
     public boolean isFilterListeningEnabled() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.FILTER_LISTENING_ENABLED ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_LISTENING_ENABLED)));
     }
 
-    public void setFilterListeningEnabled( boolean filterListeningEnabled ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.FILTER_LISTENING_ENABLED ), Boolean.toString( filterListeningEnabled ) );
+    public void setFilterListeningEnabled(boolean filterListeningEnabled) {
+        settings.put(getSettingPath(DisplayerAttributeDef.FILTER_LISTENING_ENABLED), Boolean.toString(filterListeningEnabled));
     }
 
     public int getSelectorWidth() {
@@ -377,7 +385,7 @@ public class DisplayerSettings {
     }
 
     public void setSelectorMultiple(boolean filterMultiple) {
-        settings.put(getSettingPath( DisplayerAttributeDef.SELECTOR_MULTIPLE), Boolean.toString(filterMultiple));
+        settings.put(getSettingPath(DisplayerAttributeDef.SELECTOR_MULTIPLE), Boolean.toString(filterMultiple));
     }
 
     public boolean isSelectorInputsEnabled() {
@@ -385,129 +393,130 @@ public class DisplayerSettings {
     }
 
     public void setSelectorInputsEnabled(boolean enabled) {
-        settings.put(getSettingPath( DisplayerAttributeDef.SELECTOR_SHOW_INPUTS), Boolean.toString(enabled));
+        settings.put(getSettingPath(DisplayerAttributeDef.SELECTOR_SHOW_INPUTS), Boolean.toString(enabled));
     }
 
     public int getChartWidth() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_WIDTH ) ), 500 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_WIDTH)), 500);
     }
 
-    public void setChartWidth( int chartWidth ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_WIDTH ), Integer.toString( chartWidth ) );
+    public void setChartWidth(int chartWidth) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_WIDTH), Integer.toString(chartWidth));
     }
 
     public String getChartBackgroundColor() {
-        return parseString(settings.get(getSettingPath( DisplayerAttributeDef.CHART_BGCOLOR)));
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.CHART_BGCOLOR)));
     }
 
     public void setChartBackgroundColor(String color) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_BGCOLOR ), color );
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_BGCOLOR), color);
     }
 
     public int getChartHeight() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_HEIGHT ) ), 300 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_HEIGHT)), 300);
     }
 
-    public void setChartHeight( int chartHeight ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_HEIGHT ), Integer.toString( chartHeight ) );
+    public void setChartHeight(int chartHeight) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_HEIGHT), Integer.toString(chartHeight));
     }
 
     public int getChartMarginTop() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_TOP ) ), 0 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_TOP)), 0);
     }
 
-    public void setChartMarginTop( int chartMarginTop ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_TOP ), Integer.toString( chartMarginTop ) );
+    public void setChartMarginTop(int chartMarginTop) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_TOP), Integer.toString(chartMarginTop));
     }
 
     public int getChartMarginBottom() {
         return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)), 0);
     }
 
-    public void setChartMarginBottom( int chartMarginBottom ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_BOTTOM ), Integer.toString( chartMarginBottom ) );
+    public void setChartMarginBottom(int chartMarginBottom) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_BOTTOM), Integer.toString(chartMarginBottom));
     }
 
     public int getChartMarginLeft() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_LEFT ) ), 0 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_LEFT)), 0);
     }
 
-    public void setChartMarginLeft( int chartMarginLeft ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_LEFT ), Integer.toString( chartMarginLeft ) );
+    public void setChartMarginLeft(int chartMarginLeft) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_LEFT), Integer.toString(chartMarginLeft));
     }
 
     public int getChartMarginRight() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_RIGHT ) ), 0 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_RIGHT)), 0);
     }
 
-    public void setChartMarginRight( int chartMarginRight ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MARGIN_RIGHT ), Integer.toString( chartMarginRight ) );
+    public void setChartMarginRight(int chartMarginRight) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MARGIN_RIGHT), Integer.toString(chartMarginRight));
     }
 
     public int getChartMaxWidth() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_MAX_WIDTH ) ), 600 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MAX_WIDTH)), 600);
     }
 
-    public void setChartMaxWidth( int chartWidth ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MAX_WIDTH ), Integer.toString( chartWidth ) );
+    public void setChartMaxWidth(int chartWidth) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MAX_WIDTH), Integer.toString(chartWidth));
     }
 
     public int getChartMaxHeight() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.CHART_MAX_HEIGHT ) ), 400 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.CHART_MAX_HEIGHT)), 400);
     }
 
-    public void setChartMaxHeight( int chartHeight ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_MAX_HEIGHT ), Integer.toString( chartHeight ) );
+    public void setChartMaxHeight(int chartHeight) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_MAX_HEIGHT), Integer.toString(chartHeight));
     }
 
     public void setResizable(boolean resizable) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_RESIZABLE ), Boolean.toString( resizable ) );
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_RESIZABLE), Boolean.toString(resizable));
     }
 
     public boolean isResizable() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.CHART_RESIZABLE ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_RESIZABLE)));
     }
 
     public boolean isChartShowLegend() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.CHART_SHOWLEGEND ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND)));
     }
 
-    public void setChartShowLegend( boolean chartShowLegend ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_SHOWLEGEND ), Boolean.toString( chartShowLegend ) );
+    public void setChartShowLegend(boolean chartShowLegend) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND), Boolean.toString(chartShowLegend));
     }
 
     public Position getChartLegendPosition() {
-        Position pos = Position.getByName( settings.get( getSettingPath( DisplayerAttributeDef.CHART_LEGENDPOSITION ) ) );
-        if (pos == null) return Position.RIGHT;
+        Position pos = Position.getByName(settings.get(getSettingPath(DisplayerAttributeDef.CHART_LEGENDPOSITION)));
+        if (pos == null)
+            return Position.RIGHT;
         return pos;
     }
 
-    public void setChartLegendPosition( Position chartLegendPosition ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_LEGENDPOSITION ), chartLegendPosition.toString() );
+    public void setChartLegendPosition(Position chartLegendPosition) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_LEGENDPOSITION), chartLegendPosition.toString());
     }
 
     public int getTablePageSize() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.TABLE_PAGESIZE ) ), 10 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.TABLE_PAGESIZE)), 10);
     }
 
-    public void setTablePageSize( int tablePageSize ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TABLE_PAGESIZE ), Integer.toString( tablePageSize ) );
+    public void setTablePageSize(int tablePageSize) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TABLE_PAGESIZE), Integer.toString(tablePageSize));
     }
 
     public int getTableWidth() {
-        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.TABLE_WIDTH ) ), 0 );
+        return parseInt(settings.get(getSettingPath(DisplayerAttributeDef.TABLE_WIDTH)), 0);
     }
 
-    public void setTableWidth( int tableWidth ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TABLE_WIDTH ), Integer.toString( tableWidth ) );
+    public void setTableWidth(int tableWidth) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TABLE_WIDTH), Integer.toString(tableWidth));
     }
 
     public boolean isTableSortEnabled() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.TABLE_SORTENABLED ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TABLE_SORTENABLED)));
     }
 
-    public void setTableSortEnabled( boolean tableSortEnabled ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TABLE_SORTENABLED ), Boolean.toString( tableSortEnabled ) );
+    public void setTableSortEnabled(boolean tableSortEnabled) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TABLE_SORTENABLED), Boolean.toString(tableSortEnabled));
     }
 
     public void setTableColumnPickerEnabled(boolean tableColumnPickerEnabled) {
@@ -518,18 +527,19 @@ public class DisplayerSettings {
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.TABLE_SORTCOLUMNID)));
     }
 
-    public void setTableDefaultSortColumnId( String tableDefaultSortColumnId ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TABLE_SORTCOLUMNID ), tableDefaultSortColumnId );
+    public void setTableDefaultSortColumnId(String tableDefaultSortColumnId) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TABLE_SORTCOLUMNID), tableDefaultSortColumnId);
     }
 
     public SortOrder getTableDefaultSortOrder() {
-        SortOrder order = SortOrder.getByName( settings.get( getSettingPath( DisplayerAttributeDef.TABLE_SORTORDER ) ) );
-        if (order == null) return SortOrder.ASCENDING;
+        SortOrder order = SortOrder.getByName(settings.get(getSettingPath(DisplayerAttributeDef.TABLE_SORTORDER)));
+        if (order == null)
+            return SortOrder.ASCENDING;
         return order;
     }
 
-    public void setTableDefaultSortOrder( SortOrder tableDefaultSortOrder ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.TABLE_SORTORDER ), tableDefaultSortOrder.toString() );
+    public void setTableDefaultSortOrder(SortOrder tableDefaultSortOrder) {
+        settings.put(getSettingPath(DisplayerAttributeDef.TABLE_SORTORDER), tableDefaultSortOrder.toString());
     }
 
     public boolean isTableColumnPickerEnabled() {
@@ -537,11 +547,11 @@ public class DisplayerSettings {
     }
 
     public boolean isXAxisShowLabels() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.XAXIS_SHOWLABELS ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS)));
     }
 
-    public void setXAxisShowLabels( boolean axisShowLabels ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.XAXIS_SHOWLABELS ), Boolean.toString( axisShowLabels ) );
+    public void setXAxisShowLabels(boolean axisShowLabels) {
+        settings.put(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS), Boolean.toString(axisShowLabels));
     }
 
     public int getXAxisLabelsAngle() {
@@ -553,98 +563,107 @@ public class DisplayerSettings {
     }
 
     public String getXAxisTitle() {
-        return parseString(settings.get( getSettingPath( DisplayerAttributeDef.XAXIS_TITLE ) ));
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_TITLE)));
     }
 
-    public void setXAxisTitle( String axisTitle ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.XAXIS_TITLE ), axisTitle );
+    public void setXAxisTitle(String axisTitle) {
+        settings.put(getSettingPath(DisplayerAttributeDef.XAXIS_TITLE), axisTitle);
     }
 
     public boolean isYAxisShowLabels() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.YAXIS_SHOWLABELS ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS)));
     }
 
-    public void setYAxisShowLabels( boolean axisShowLabels ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.YAXIS_SHOWLABELS ), Boolean.toString( axisShowLabels ) );
+    public void setYAxisShowLabels(boolean axisShowLabels) {
+        settings.put(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS), Boolean.toString(axisShowLabels));
     }
 
-//    public int getYAxisLabelsAngle() {
-//        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.YAXIS_LABELSANGLE ) ), 10 );
-//    }
-//
-//    public void setYAxisLabelsAngle( int axisLabelsAngle ) {
-//        settings.put( getSettingPath( DisplayerAttributeDef.YAXIS_LABELSANGLE ), Integer.toString( axisLabelsAngle ) );
-//    }
+    //    public int getYAxisLabelsAngle() {
+    //        return parseInt( settings.get( getSettingPath( DisplayerAttributeDef.YAXIS_LABELSANGLE ) ), 10 );
+    //    }
+    //
+    //    public void setYAxisLabelsAngle( int axisLabelsAngle ) {
+    //        settings.put( getSettingPath( DisplayerAttributeDef.YAXIS_LABELSANGLE ), Integer.toString( axisLabelsAngle ) );
+    //    }
 
     public String getYAxisTitle() {
-        return parseString(settings.get( getSettingPath( DisplayerAttributeDef.YAXIS_TITLE ) ));
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_TITLE)));
     }
 
-    public void setYAxisTitle( String axisTitle ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.YAXIS_TITLE ), axisTitle );
+    public void setYAxisTitle(String axisTitle) {
+        settings.put(getSettingPath(DisplayerAttributeDef.YAXIS_TITLE), axisTitle);
     }
 
     public long getMeterStart() {
-        return parseLong( settings.get( getSettingPath( DisplayerAttributeDef.METER_START ) ), 0 );
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.METER_START)), 0);
     }
 
-    public void setMeterStart( long meterStart ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.METER_START ), Long.toString( meterStart ) );
+    public void setMeterStart(long meterStart) {
+        settings.put(getSettingPath(DisplayerAttributeDef.METER_START), Long.toString(meterStart));
     }
 
     public long getMeterWarning() {
-        return parseLong( settings.get( getSettingPath( DisplayerAttributeDef.METER_WARNING ) ), 60 );
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.METER_WARNING)), 60);
     }
 
-    public void setMeterWarning( long meterWarning ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.METER_WARNING ), Long.toString( meterWarning ) );
+    public void setMeterWarning(long meterWarning) {
+        settings.put(getSettingPath(DisplayerAttributeDef.METER_WARNING), Long.toString(meterWarning));
     }
 
     public long getMeterCritical() {
-        return parseLong( settings.get( getSettingPath( DisplayerAttributeDef.METER_CRITICAL ) ), 90 );
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.METER_CRITICAL)), 90);
     }
 
-    public void setMeterCritical( long meterCritical ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.METER_CRITICAL ), Long.toString( meterCritical ) );
+    public void setMeterCritical(long meterCritical) {
+        settings.put(getSettingPath(DisplayerAttributeDef.METER_CRITICAL), Long.toString(meterCritical));
     }
 
     public long getMeterEnd() {
-        return parseLong( settings.get( getSettingPath( DisplayerAttributeDef.METER_END ) ), 100 );
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.METER_END)), 100);
     }
 
-    public void setMeterEnd( long meterEnd ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.METER_END ), Long.toString( meterEnd ) );
+    public void setMeterEnd(long meterEnd) {
+        settings.put(getSettingPath(DisplayerAttributeDef.METER_END), Long.toString(meterEnd));
     }
 
     public String getDonutHoleTitle() {
-        return settings.get( getSettingPath( DisplayerAttributeDef.DONUT_HOLE_TITLE ) );
+        return settings.get(getSettingPath(DisplayerAttributeDef.DONUT_HOLE_TITLE));
     }
 
-    public void setDonutHoleTitle( String holeTitle ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.DONUT_HOLE_TITLE ), holeTitle );
+    public void setDonutHoleTitle(String holeTitle) {
+        settings.put(getSettingPath(DisplayerAttributeDef.DONUT_HOLE_TITLE), holeTitle);
     }
 
     public boolean isChart3D() {
-        return parseBoolean( settings.get( getSettingPath( DisplayerAttributeDef.CHART_3D ) ) );
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_3D)));
     }
 
-    public void setChart3D( boolean barchartThreeDimension ) {
-        settings.put( getSettingPath( DisplayerAttributeDef.CHART_3D ), Boolean.toString( barchartThreeDimension ) );
+    public void setChart3D(boolean barchartThreeDimension) {
+        settings.put(getSettingPath(DisplayerAttributeDef.CHART_3D), Boolean.toString(barchartThreeDimension));
     }
 
     public void setHtmlTemplate(String htmlTemplate) {
-        settings.put( getSettingPath( DisplayerAttributeDef.HTML_TEMPLATE ), htmlTemplate );
+        settings.put(getSettingPath(DisplayerAttributeDef.HTML_TEMPLATE), htmlTemplate);
     }
 
     public void setJsTemplate(String jsTemplate) {
-        settings.put( getSettingPath( DisplayerAttributeDef.JS_TEMPLATE), jsTemplate );
+        settings.put(getSettingPath(DisplayerAttributeDef.JS_TEMPLATE), jsTemplate);
     }
 
     public String getHtmlTemplate() {
-        return parseString(settings.get( getSettingPath( DisplayerAttributeDef.HTML_TEMPLATE ) ));
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.HTML_TEMPLATE)));
     }
 
     public String getJsTemplate() {
-        return parseString(settings.get( getSettingPath( DisplayerAttributeDef.JS_TEMPLATE) ));
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.JS_TEMPLATE)));
+    }
+
+    public void setMapColorScheme(MapColorScheme colorScheme) {
+        settings.put(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME), colorScheme.toString());
+
+    }
+
+    public MapColorScheme getMapColorScheme() {
+        return MapColorScheme.from(settings.get(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME)));
     }
 }

@@ -44,6 +44,8 @@ public class DisplayerAttributeGroupDef extends DisplayerAttributeDef {
     public static final DisplayerAttributeGroupDef HTML_GROUP = new DisplayerAttributeGroupDef( "html" );
 
     public static final DisplayerAttributeGroupDef EXPORT_GROUP = new DisplayerAttributeGroupDef( "export" );
+    
+    public static final DisplayerAttributeGroupDef MAP_GROUP = new DisplayerAttributeGroupDef( "map" );
 
 
     // SUBGROUPS

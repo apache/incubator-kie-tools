@@ -19,11 +19,12 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.MapChartSettingsBuilder;
+import org.dashbuilder.displayer.MapColorScheme;
 
 public class MapChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<MapChartSettingsBuilderImpl> implements MapChartSettingsBuilder<MapChartSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.MAP );
+        return new DisplayerSettings(DisplayerType.MAP);
     }
 
     @Override
@@ -35,6 +36,12 @@ public class MapChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuild
     @Override
     public MapChartSettingsBuilderImpl subType_Marker_Map() {
         displayerSettings.setSubtype(DisplayerSubType.MAP_MARKERS);
+        return this;
+    }
+
+    @Override
+    public MapChartSettingsBuilderImpl colorScheme(MapColorScheme colorScheme) {
+        displayerSettings.setMapColorScheme(colorScheme);
         return this;
     }
 }

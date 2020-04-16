@@ -764,7 +764,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>dashbuilder.html</runTarget>
-          <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.debug.port=8787</extraJvmArgs>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
           <hostedWebapp>src/main/webapp</hostedWebapp>
@@ -858,7 +858,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/wildfly-${as.version}/standalone/deployments</outputDirectory>
+              <outputDirectory>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly.sdm}/standalone/deployments</outputDirectory>
               <resources>
                 <resource>
                   <directory>src/test/resources/datasources</directory>

@@ -39,4 +39,10 @@ public interface MapChartSettingsBuilder<T extends MapChartSettingsBuilder> exte
      */
     T subType_Marker_Map();
 
+    /**
+     * Set this map color scheme.
+     * @param colorScheme
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a Map chart data displayer.
+     */
+    T colorScheme(MapColorScheme colorScheme);
 }

@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.dashbuilder.displayer.MapColorScheme;
 import org.dashbuilder.renderer.c3.client.charts.map.D3MapConf;
 import org.dashbuilder.renderer.c3.client.charts.map.geojson.CountriesGeoJsonService;
 import org.dashbuilder.renderer.c3.client.jsbinding.d3.D3PathGenerator;
@@ -73,7 +74,7 @@ public class D3Map implements IsElement {
     private HTMLDivElement mapContainer;
 
     D3 d3 = D3.Builder.get();
-    String[] COLORS_SCHEME = d3.getSchemeGreens()[D3_COLOR_SCHEME_TOTAL];
+    private String[] colorsScheme;
 
     @PostConstruct
     public void init() {
@@ -92,13 +93,14 @@ public class D3Map implements IsElement {
         this.conf = conf;
         this.countriesGeoJsonService = conf.getCountriesGeoJsonService();
         this.data = conf.getData();
-        Element mapSVG = DomGlobal.document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        Selection d3Selection = d3.select(mapSVG);
-        D3PathGenerator pathGenerator = createPathGenerator();
-        IntSummaryStatistics statistics = data.values().stream()
-                                                                                .mapToInt(v -> v.intValue()).summaryStatistics();
-        Integer[] domain = new Integer[] { statistics.getMin(), statistics.getMax() };
-        colorScale = d3.scaleQuantize().domain(domain).range(COLORS_SCHEME);
+        this.colorsScheme = getScheme(conf.getColorScheme())[D3_COLOR_SCHEME_TOTAL];
+        final Element mapSVG = DomGlobal.document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        final Selection d3Selection = d3.select(mapSVG);
+        final D3PathGenerator pathGenerator = createPathGenerator();
+        final IntSummaryStatistics statistics = data.values().stream()
+                                                    .mapToInt(v -> v.intValue()).summaryStatistics();
+        Integer[] domain = new Integer[]{statistics.getMin(), statistics.getMax()};
+        colorScale = d3.scaleQuantize().domain(domain).range(colorsScheme);
 
         D3 map = createMap(d3Selection, pathGenerator);
 
@@ -112,57 +114,68 @@ public class D3Map implements IsElement {
         mapContainer.appendChild(mapSVG);
     }
 
+    private String[][] getScheme(MapColorScheme colorScheme) {
+        switch (colorScheme) {
+            case BLUE:
+                return d3.getSchemeBlues();
+            case GREEN:
+                return d3.getSchemeGreens();
+            case RED:
+                return d3.getSchemeReds();
+            default:
+                return d3.getSchemeGreens();
+        }
+    }
+
     private D3 createMap(Selection d3Selection, D3PathGenerator pathGenerator) {
         Feature[] countriesFeatures = countriesGeoJsonService.getCountries();
         return d3Selection.attr("width", width).attr("height", height)
-                                     .style("background", conf.getBackgroundColor())
-                                      .append("g").attr("class", "countries")
-                                                          .selectAll("path")
-                                                          .data(countriesFeatures)
-                                                          .enter().append("path")
-                                                          .attr("d", pathGenerator);
+                          .style("background", conf.getBackgroundColor())
+                          .append("g").attr("class", "countries")
+                          .selectAll("path")
+                          .data(countriesFeatures)
+                          .enter().append("path")
+                          .attr("d", pathGenerator);
     }
 
     private void createLegend(D3 d3Selection) {
         int titleSize = 5;
         int legendSquareSize = 12;
-        int legendSize = titleSize + (legendSquareSize * COLORS_SCHEME.length);
+        int legendSize = titleSize + (legendSquareSize * colorsScheme.length);
         AtomicInteger rectPos = new AtomicInteger();
         AtomicInteger textPos = new AtomicInteger(legendSquareSize);
         String translate = "translate(0, " + (height - legendSize - 2) + ")";
         D3 legendGroup = d3Selection.append("g").attr("transform", translate);
 
         legendGroup.append("text").attr("class", "map-legend-caption")
-                                                    .attr("x", 0).attr("y", titleSize * -1)
-                                                    .text(conf.getTitle());
+                   .attr("x", 0).attr("y", titleSize * -1)
+                   .text(conf.getTitle());
 
         D3 legendValuesGroup = legendGroup.append("g");
 
         legendValuesGroup.selectAll("rect")
-                                      .data(colorScale.range()).enter().append("rect")
-                                      .attr("height", legendSquareSize).attr("width", legendSquareSize)
-                                      .attr("y", (d, i, el) -> rectPos.getAndAdd(legendSquareSize))
-                                      .attr("fill", (d, i, el) -> d)
-                                      .append("svg:title")
-                                              .text((d, i, el) ->
-                                                  String.join(" - ", getFormattedBoundaryValues(d))
-                                        );
+                         .data(colorScale.range()).enter().append("rect")
+                         .attr("height", legendSquareSize).attr("width", legendSquareSize)
+                         .attr("y", (d, i, el) -> rectPos.getAndAdd(legendSquareSize))
+                         .attr("fill", (d, i, el) -> d)
+                         .append("svg:title")
+                         .text((d, i, el) -> String.join(" - ", getFormattedBoundaryValues(d)));
         legendValuesGroup.selectAll("text").data(colorScale.range()).enter().append("text")
-                .attr("class", "map-legend-val").attr("x", legendSquareSize + 2)
-                .attr("y", (d, i, el) -> textPos.getAndAdd(legendSquareSize)).text( (d, i, el) -> buildLegendValue(d, i));
+                         .attr("class", "map-legend-val").attr("x", legendSquareSize + 2)
+                         .attr("y", (d, i, el) -> textPos.getAndAdd(legendSquareSize)).text((d, i, el) -> buildLegendValue(d, i));
     }
 
     private void fillRegions(D3 map) {
         Feature[] countriesFeatures = countriesGeoJsonService.getCountries();
         map.style("fill", (d, i, el) -> {
-            Optional<Double> val = countriesGeoJsonService.valueByCountry(data, countriesFeatures[i]);
+            Optional<Double> val = countriesGeoJsonService.findValue(data, countriesFeatures[i]);
             d3.select(el[i]).attr("class", "fill-region");
             if (val.isPresent()) {
                 return colorScale.call(colorScale, val.get());
             }
             return null;
         }).on("mouseenter", (d, i, el) -> {
-            Optional<Double> val = countriesGeoJsonService.valueByCountry(data, countriesFeatures[i]);
+            Optional<Double> val = countriesGeoJsonService.findValue(data, countriesFeatures[i]);
             String countryName = countriesGeoJsonService.getCountryName(countriesFeatures[i]);
             mapTooltip.show(countryName, conf.getTitle(), val, conf.getFormatter());
             return null;
@@ -173,8 +186,8 @@ public class D3Map implements IsElement {
             mapTooltip.hide();
             return null;
         }).on("click", (d, i, el) -> {
-            countriesGeoJsonService.entryByCountry(data, countriesFeatures[i])
-                    .ifPresent(v -> conf.getPathClickHandler().accept(v.getKey()));
+            countriesGeoJsonService.findEntry(data, countriesFeatures[i])
+                                   .ifPresent(v -> conf.getPathClickHandler().accept(v.getKey()));
             return null;
         });
     }
@@ -185,51 +198,50 @@ public class D3Map implements IsElement {
             maxRadius = MIN_RADIUS + 1;
         }
         D3.Scale radiusScale = d3.scaleSqrt().domain(colorScale.domain())
-                .range(new Integer[] { MIN_RADIUS, maxRadius });
+                                 .range(new Integer[]{MIN_RADIUS, maxRadius});
         Object[] countriesNames = data.keySet().toArray();
         d3Selection.append("g").selectAll("circle").data(countriesNames).enter().append("circle")
-                .attr("class", "data-circle").style("fill", (d, i, el) -> {
-                    double val = data.get(d);
-                    return colorScale.call(colorScale, val);
-                }).attr("r", (d, i, el) -> {
-                    Optional<Feature> path = countriesGeoJsonService.countryByIdOrName((String) d);
-                    if (path.isPresent()) {
-                        double val = data.get(d);
-                        return radiusScale.call(radiusScale, val);
-                    }
-                    return 0;
-                }).attr("transform", (d, i, el) -> {
-                    String translate = "";
-                    Optional<Feature> path = countriesGeoJsonService.countryByIdOrName((String) d);
-                    if (path.isPresent()) {
-                        double[] center = pathGenerator.centroid(path.get());
-                        translate = "translate(" + center[0] + ", " + center[1] + ")";
-                    }
-                    return translate;
-                }).on("mouseenter", (d, i, el) -> {
-                    Optional<Double> valOp = Optional.ofNullable(data.get(d));
-                    mapTooltip.show((String) d, conf.getTitle(), valOp, conf.getFormatter());
-                    return null;
-                }).on("mousemove", (d, i, el) -> {
-                    mapTooltip.move();
-                    return null;
-                }).on("mouseleave", (d, i, el) -> {
-                    mapTooltip.hide();
-                    return null;
-                }).on("click", (d, i, el) -> {
-                    conf.getPathClickHandler().accept((String) d);
-                    return null;
-                });
+                   .attr("class", "data-circle").style("fill", (d, i, el) -> {
+                       double val = data.get(d);
+                       return colorScale.call(colorScale, val);
+                   }).attr("r", (d, i, el) -> {
+                       Optional<Feature> path = countriesGeoJsonService.findCountry((String) d);
+                       if (path.isPresent()) {
+                           double val = data.get(d);
+                           return radiusScale.call(radiusScale, val);
+                       }
+                       return 0;
+                   }).attr("transform", (d, i, el) -> {
+                       String translate = "";
+                       Optional<Feature> path = countriesGeoJsonService.findCountry((String) d);
+                       if (path.isPresent()) {
+                           double[] center = pathGenerator.centroid(path.get());
+                           translate = "translate(" + center[0] + ", " + center[1] + ")";
+                       }
+                       return translate;
+                   }).on("mouseenter", (d, i, el) -> {
+                       Optional<Double> valOp = Optional.ofNullable(data.get(d));
+                       mapTooltip.show((String) d, conf.getTitle(), valOp, conf.getFormatter());
+                       return null;
+                   }).on("mousemove", (d, i, el) -> {
+                       mapTooltip.move();
+                       return null;
+                   }).on("mouseleave", (d, i, el) -> {
+                       mapTooltip.hide();
+                       return null;
+                   }).on("click", (d, i, el) -> {
+                       conf.getPathClickHandler().accept((String) d);
+                       return null;
+                   });
     }
 
     private D3PathGenerator createPathGenerator() {
         double w = (double) width;
         double h = (double) height;
         D3Projection projection = D3Projection.Builder.get().geoNaturalEarth2().scale(w / 5.5d)
-                                                                                         .translate(new double[] { w / 2d, h / 2d });
-        D3PathGenerator pathGenerator = D3PathGenerator.Builder.get().geoPath()
-                                                                                                              .projection(projection);
-        return pathGenerator;
+                                                      .translate(new double[]{w / 2d, h / 2d});
+        return D3PathGenerator.Builder.get().geoPath()
+                                      .projection(projection);
     }
 
     private void addTooltipElement() {
@@ -239,17 +251,17 @@ public class D3Map implements IsElement {
             DomGlobal.document.body.appendChild(tooltipElement);
         }
     }
-    
+
     private String buildLegendValue(Object d, int index) {
         String[] values = getFormattedBoundaryValues(d);
         int totalLegendColors = colorScale.range().length;
         if (values[0].equals(values[1])) {
-           return values[0]; 
+            return values[0];
         } else if (index + 1 == totalLegendColors) {
             return "> " + values[0];
         }
         return "< " + values[1];
-    }    
+    }
 
     private String[] getFormattedBoundaryValues(Object color) {
         Object[] values = colorScale.invertExtent(color);
@@ -257,6 +269,6 @@ public class D3Map implements IsElement {
         String maxStr = String.valueOf(values[1]);
         double max = Double.parseDouble(maxStr);
         double min = Double.parseDouble(minStr);
-        return new String[] { conf.getFormatter().apply(min), conf.getFormatter().apply(max) };
+        return new String[]{conf.getFormatter().apply(min), conf.getFormatter().apply(max)};
     }
 }

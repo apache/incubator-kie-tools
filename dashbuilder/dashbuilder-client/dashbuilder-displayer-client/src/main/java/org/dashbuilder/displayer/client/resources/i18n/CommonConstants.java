@@ -270,4 +270,8 @@ public interface CommonConstants extends Messages {
     String displayerviewer_displayer_not_created();
 
     String chart_resizable();
+
+    String map_group();
+
+    String color_scheme();
 }

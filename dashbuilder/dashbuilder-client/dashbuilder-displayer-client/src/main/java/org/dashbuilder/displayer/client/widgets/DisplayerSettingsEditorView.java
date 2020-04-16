@@ -29,8 +29,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
+import org.dashbuilder.displayer.MapColorScheme;
 import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.displayer.client.resources.i18n.MapColorSchemeConstants;
 import org.dashbuilder.displayer.client.resources.i18n.PositionConstants;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
@@ -122,6 +124,8 @@ public class DisplayerSettingsEditorView extends Composite implements DisplayerS
         attrMapI18n.put(REFRESH_INTERVAL, CommonConstants.INSTANCE.refresh_interval());
         attrMapI18n.put(REFRESH_STALE_DATA, CommonConstants.INSTANCE.refresh_stale_data());
         attrMapI18n.put(COLUMNS_GROUP, CommonConstants.INSTANCE.common_columns());
+        attrMapI18n.put(MAP_GROUP, CommonConstants.INSTANCE.map_group());
+        attrMapI18n.put(MAP_COLOR_SCHEME, CommonConstants.INSTANCE.color_scheme());
 
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -259,6 +263,11 @@ public class DisplayerSettingsEditorView extends Composite implements DisplayerS
     public String getMeterValidationInvalidI18n() {
         return CommonConstants.INSTANCE.settings_validation_meter_invalid();
     }
+    
+    @Override
+    public String getMapColorSchemeI18n(MapColorScheme colorScheme) {
+        return MapColorSchemeConstants.INSTANCE.getString("COLOR_SCHEME_" + colorScheme.toString());
+    }
 
     /**
      * Capture & process the modification events sent by the property editor
@@ -271,4 +280,5 @@ public class DisplayerSettingsEditorView extends Composite implements DisplayerS
             presenter.onAttributeChanged(attrKey, attrValue);
         }
     }
+
 }

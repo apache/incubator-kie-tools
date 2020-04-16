@@ -70,6 +70,8 @@ public interface D3 {
     
     D3 data(Object data);
     
+    boolean geoContains(Object object, Double[] point);
+    
     Node node();
 
     @JsProperty
