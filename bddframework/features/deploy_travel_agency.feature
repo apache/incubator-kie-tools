@@ -6,15 +6,21 @@ Feature: Deploy Travel agency service and verify its functionality
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
-    And Deploy service from example file "travelapp-kogito-travel-agency.yaml"
-    And Deploy service from example file "travelapp-kogito-visas.yaml"
-    And Kogito application "kogito-travel-agency" has 1 pods running within 10 minutes
-    And HTTP GET request on service "kogito-travel-agency" with path "travels" is successful within 1 minutes
-    And Kogito application "kogito-visas" has 1 pods running within 10 minutes
-    And HTTP GET request on service "kogito-visas" with path "visaApplications" is successful within 1 minutes
+    And Deploy quarkus example service "kogito-travel-agency/travels" with configuration:
+      | config | native      | disabled |
+      | config | persistence | enabled  |
+      | config | events      | enabled  |
+    And Deploy quarkus example service "kogito-travel-agency/visas" with configuration:
+      | config | native      | disabled |
+      | config | persistence | enabled  |
+      | config | events      | enabled  |
+    And Kogito application "travels" has 1 pods running within 10 minutes
+    And HTTP GET request on service "travels" with path "travels" is successful within 1 minutes
+    And Kogito application "visas" has 1 pods running within 10 minutes
+    And HTTP GET request on service "visas" with path "visaApplications" is successful within 1 minutes
 
   Scenario: Travel application without required Visa
-    When Start "travels" process on service "kogito-travel-agency" with body:
+    When Start "travels" process on service "travels" with body:
       """json
 	{
 		"traveller" : {
@@ -37,17 +43,17 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
       """
-    And Service "kogito-travel-agency" contains 1 instance of process with name "travels"
-    And Service "kogito-travel-agency" contains 1 task of process with name "travels" and task name "ConfirmTravel"
-    And Complete "ConfirmTravel" task on service "kogito-travel-agency" and process with name "travels" with body:
+    And Service "travels" contains 1 instance of process with name "travels"
+    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel"
+    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" with body:
 	  """json
 	  {}
 	  """
 
-    Then Service "kogito-travel-agency" contains 0 instances of process with name "travels"
+    Then Service "travels" contains 0 instances of process with name "travels"
 
   Scenario: Travel application with required Visa
-    When Start "travels" process on service "kogito-travel-agency" with body:
+    When Start "travels" process on service "travels" with body:
       """json
 	{
 		"traveller" : {
@@ -70,9 +76,9 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
       """
-    And Service "kogito-travel-agency" contains 1 instance of process with name "travels"
-    And Service "kogito-travel-agency" contains 1 task of process with name "travels" and task name "VisaApplication"
-    And Complete "VisaApplication" task on service "kogito-travel-agency" and process with name "travels" with body:
+    And Service "travels" contains 1 instance of process with name "travels"
+    And Service "travels" contains 1 task of process with name "travels" and task name "VisaApplication"
+    And Complete "VisaApplication" task on service "travels" and process with name "travels" with body:
 	  """json
 	{
 		"visaApplication" : {
@@ -86,9 +92,9 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
 	  """
-	And Service "kogito-visas" contains 1 instance of process with name "visaApplications" within 1 minutes
-	And Service "kogito-visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
-	And Complete "ApplicationApproval" task on service "kogito-visas" and process with name "visaApplications" with body:
+	And Service "visas" contains 1 instance of process with name "visaApplications" within 1 minutes
+	And Service "visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
+	And Complete "ApplicationApproval" task on service "visas" and process with name "visaApplications" with body:
 	  """json
 	{
 		"application" : {
@@ -103,10 +109,10 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
 	  """
-    And Service "kogito-travel-agency" contains 1 task of process with name "travels" and task name "ConfirmTravel"
-    And Complete "ConfirmTravel" task on service "kogito-travel-agency" and process with name "travels" with body:
+    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel"
+    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" with body:
 	  """json
 	  {}
 	  """
 
-    Then Service "kogito-travel-agency" contains 0 instances of process with name "travels"
+    Then Service "travels" contains 0 instances of process with name "travels"
