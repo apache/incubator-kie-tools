@@ -190,10 +190,6 @@ func GetKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 		},
 	}
 
-	// Add namespace for service discovery
-	// Can be removed once https://issues.redhat.com/browse/KOGITO-675 is done
-	kogitoApp.Spec.KogitoServiceSpec.AddEnvironmentVariable("NAMESPACE", namespace)
-
 	setupBuildImageStreams(kogitoApp)
 
 	return kogitoApp
