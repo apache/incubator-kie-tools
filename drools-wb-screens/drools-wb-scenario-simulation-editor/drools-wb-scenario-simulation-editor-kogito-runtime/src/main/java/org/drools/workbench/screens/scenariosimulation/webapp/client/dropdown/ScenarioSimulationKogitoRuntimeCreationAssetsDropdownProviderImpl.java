@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.webapp.client.dropdown;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,7 +34,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 @Dependent
 public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {
 
-    protected static final String DMN_FILE_EXTENSION = "*.dmn";
+    protected static final String DMN_FILE_EXTENSION = "**/*.dmn";
 
     @Inject
     protected KogitoResourceContentService resourceContentService;
@@ -51,6 +52,7 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl i
         return response -> {
             List<KieAssetsDropdownItem> toAccept = response.stream()
                     .map(this::getKieAssetsDropdownItem)
+                    .sorted(Comparator.comparing(KieAssetsDropdownItem::getText, String.CASE_INSENSITIVE_ORDER))
                     .collect(Collectors.toList());
             assetListConsumer.accept(toAccept);
         };
@@ -63,7 +65,9 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl i
         };
     }
 
-    protected KieAssetsDropdownItem getKieAssetsDropdownItem(final String asset) {
-        return new KieAssetsDropdownItem(asset, "", asset, new HashMap<>());
+    protected KieAssetsDropdownItem getKieAssetsDropdownItem(final String fullPath) {
+        int idx = fullPath.replaceAll("\\\\", "/").lastIndexOf('/');
+        final String fileName = idx >= 0 ? fullPath.substring(idx + 1) : fullPath;
+        return new KieAssetsDropdownItem(fileName, fullPath, fullPath, new HashMap<>());
     }
 }

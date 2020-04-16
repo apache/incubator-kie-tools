@@ -16,8 +16,10 @@
 package org.drools.workbench.screens.scenariosimulation.webapp.client.dropdown;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -34,6 +36,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -77,21 +80,91 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplTe
     @Test
     public void getRemoteCallBack() {
         RemoteCallback<List<String>> remoteCallBack = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getRemoteCallback(assetConsumer);
-        remoteCallBack.callback(Arrays.asList("a", "b"));
+        remoteCallBack.callback(Arrays.asList("path/B", "a"));
         verify(assetConsumer, times(1)).accept(dropDownListCaptor.capture());
         assertTrue(dropDownListCaptor.getValue().size() == 2);
         assertEquals("a", dropDownListCaptor.getValue().get(0).getText());
-        assertEquals("", dropDownListCaptor.getValue().get(0).getSubText());
+        assertEquals("a", dropDownListCaptor.getValue().get(0).getSubText());
         assertEquals("a", dropDownListCaptor.getValue().get(0).getValue());
-        assertEquals("b", dropDownListCaptor.getValue().get(1).getText());
-        assertEquals("", dropDownListCaptor.getValue().get(1).getSubText());
-        assertEquals("b", dropDownListCaptor.getValue().get(1).getValue());
+        assertEquals("B", dropDownListCaptor.getValue().get(1).getText());
+        assertEquals("path/B", dropDownListCaptor.getValue().get(1).getSubText());
+        assertEquals("path/B", dropDownListCaptor.getValue().get(1).getValue());
     }
+
+    @Test
+    public void remoteCallBackSortedIgnoreCase(){
+        RemoteCallback<List<String>> remoteCallBack = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getRemoteCallback(assetConsumer);
+        List<String> dmnFiles = Arrays.asList("AS", "Ap");
+        remoteCallBack.callback(dmnFiles);
+        verify(assetConsumer, times(1)).accept(dropDownListCaptor.capture());
+        Collections.sort(dmnFiles, String::compareToIgnoreCase);
+        assertEquals(dmnFiles,
+                     dropDownListCaptor.getValue().stream().map(KieAssetsDropdownItem::getValue).collect(Collectors.toList()));
+    }
+
 
     @Test
     public void getErrorCallback() {
         ErrorCallback<Object> errorCallback = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getErrorCallback();
         assertFalse(errorCallback.error("message", new Throwable("ex")));
         verify(errorPopupPresenterMock, times(1)).showMessage(eq("message: ex"));
+    }
+
+    @Test
+    public void getKieAssetsDropdownItemFileWithoutPath() {
+        String fullPath = "filename.etc";
+        KieAssetsDropdownItem item = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getKieAssetsDropdownItem(fullPath);
+        assertNotNull(item);
+        assertEquals(fullPath, item.getValue());
+        assertEquals(fullPath, item.getSubText());
+        assertEquals(fullPath, item.getText());
+    }
+
+    @Test
+    public void getKieAssetsDropdownItemFileWithPath() {
+        String path = "path/";
+        String fileName = "filename.etc";
+        String fullPath = path + fileName;
+        KieAssetsDropdownItem item = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getKieAssetsDropdownItem(fullPath);
+        assertNotNull(item);
+        assertEquals(fullPath, item.getValue());
+        assertEquals(fullPath, item.getSubText());
+        assertEquals(fileName, item.getText());
+    }
+
+    @Test
+    public void getKieAssetsDropdownItemFileWithLongPath() {
+        String path = "long/path/";
+        String fileName = "filename.etc";
+        String fullPath = path + fileName;
+        KieAssetsDropdownItem item = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getKieAssetsDropdownItem(fullPath);
+        assertNotNull(item);
+        assertEquals(fullPath, item.getValue());
+        assertEquals(fullPath, item.getSubText());
+        assertEquals(fileName, item.getText());
+    }
+
+    @Test
+    public void getKieAssetsDropdownItemFileWithPathWindows() {
+        String path = "path\\";
+        String fileName = "filename.etc";
+        String fullPath = path + fileName;
+        KieAssetsDropdownItem item = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getKieAssetsDropdownItem(fullPath);
+        assertNotNull(item);
+        assertEquals(fullPath, item.getValue());
+        assertEquals(fullPath, item.getSubText());
+        assertEquals(fileName, item.getText());
+    }
+
+    @Test
+    public void getKieAssetsDropdownItemFileWithLongPathWindows() {
+        String path = "long\\pat\\";
+        String fileName = "filename.etc";
+        String fullPath = path + fileName;
+        KieAssetsDropdownItem item = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getKieAssetsDropdownItem(fullPath);
+        assertNotNull(item);
+        assertEquals(fullPath, item.getValue());
+        assertEquals(fullPath, item.getSubText());
+        assertEquals(fileName, item.getText());
     }
 }
