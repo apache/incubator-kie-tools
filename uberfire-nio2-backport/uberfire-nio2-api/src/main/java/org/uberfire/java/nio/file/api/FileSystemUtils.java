@@ -22,7 +22,7 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 public class FileSystemUtils {
 
-    public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.workbench.controller.openshift.enabled";
+    public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.server.controller.openshift.enabled";
     public static final String K8S_FS_SCHEME = "k8s";
 
     private static ThreadLocal<Properties> configProps = ThreadLocal.withInitial(System::getProperties);
