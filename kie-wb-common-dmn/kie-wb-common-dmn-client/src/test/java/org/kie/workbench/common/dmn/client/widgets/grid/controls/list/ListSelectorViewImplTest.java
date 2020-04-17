@@ -22,6 +22,10 @@ import java.util.function.Consumer;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.KeyboardEvent;
+import org.jboss.errai.common.client.dom.DOMTokenList;
+import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.EventListener;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -30,14 +34,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.views.pfly.selectpicker.JQuery;
-import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
 import org.uberfire.mvp.Command;
 
+import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
+import static java.util.Collections.singletonList;
+import static org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorViewImpl.OPEN;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -46,6 +49,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ListSelectorViewImplTest {
@@ -90,16 +94,16 @@ public class ListSelectorViewImplTest {
     private HTMLElement headerElement;
 
     @Mock
+    private HTMLElement viewElement;
+
+    @Mock
+    private DOMTokenList viewElementCSSClasses;
+
+    @Mock
+    private Consumer<CanBeClosedByKeyboard> canBeClosedByKeyboardConsumer;
+
+    @Mock
     private HasListSelectorControl.ListSelectorHeaderItem headerItem;
-
-    @Mock
-    private JQueryDropdownMenu jQueryDropdownMenu;
-
-    @Mock
-    private Consumer<CanBeClosedByKeyboard> closedByKeyboardConsumer;
-
-    @Captor
-    private ArgumentCaptor<JQuery.CallbackFunction> jQueryCallbackFunctionCaptor;
 
     private ListSelectorViewImpl view;
 
@@ -109,16 +113,18 @@ public class ListSelectorViewImplTest {
                                             listSelectorTextItemViews,
                                             listSelectorDividerItemViews,
                                             listSelectorHeaderItemViews));
-        view.init(presenter);
+
         doReturn(textItemView).when(listSelectorTextItemViews).get();
         doReturn(textElement).when(textItemView).getElement();
         doReturn(dividerItemView).when(listSelectorDividerItemViews).get();
         doReturn(dividerElement).when(dividerItemView).getElement();
         doReturn(headerItemView).when(listSelectorHeaderItemViews).get();
         doReturn(headerElement).when(headerItemView).getElement();
+        doReturn(viewElement).when(view).getElement();
 
-        doReturn(jQueryDropdownMenu).when(view).dropdown();
-        doReturn(jQueryDropdownMenu).when(view).dropdownTrigger();
+        view.init(presenter);
+
+        when(viewElement.getClassList()).thenReturn(viewElementCSSClasses);
 
         doAnswer(i -> {
             ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
@@ -163,59 +169,87 @@ public class ListSelectorViewImplTest {
 
     @Test
     public void testSetItemsUnknownImplementation() {
-        view.setItems(Arrays.asList(mock(HasListSelectorControl.ListSelectorItem.class)));
+        view.setItems(singletonList(mock(HasListSelectorControl.ListSelectorItem.class)));
 
         verify(itemsContainer, never()).appendChild(any());
     }
 
     @Test
-    public void testShowWhenNotShown() {
-        doReturn(true).when(view).isDropdownMenuHidden();
-
+    public void testShow() {
         view.show(Optional.empty());
 
-        verify(jQueryDropdownMenu).dropdown(eq(ListSelectorViewImpl.DROPDOWN_ACTION));
+        verify(viewElementCSSClasses).add(OPEN);
+        verify(viewElement).focus();
     }
 
     @Test
-    public void testShowWhenAlreadyShown() {
-        doReturn(false).when(view).isDropdownMenuHidden();
-
-        view.show(Optional.empty());
-
-        verify(jQueryDropdownMenu, never()).dropdown(anyString());
-    }
-
-    @Test
-    public void testShowWhenNotShownWithCanBeClosedByKeyboardHandler() {
-        doReturn(true).when(view).isDropdownMenuHidden();
-
-        view.setOnClosedByKeyboardCallback(closedByKeyboardConsumer);
-
-        view.show(Optional.empty());
-
-        verify(view).dropdownHiddenHandler(jQueryCallbackFunctionCaptor.capture());
-        final JQuery.CallbackFunction jQueryCallbackFunction = jQueryCallbackFunctionCaptor.getValue();
-        jQueryCallbackFunction.call(mock(JQueryEvent.class));
-
-        verify(closedByKeyboardConsumer).accept(view);
-    }
-
-    @Test
-    public void testHideWhenNotHidden() {
-        doReturn(false).when(view).isDropdownMenuHidden();
-
+    public void testHide() {
         view.hide();
 
-        verify(jQueryDropdownMenu).dropdown(eq(ListSelectorViewImpl.DROPDOWN_ACTION));
+        verify(viewElementCSSClasses).remove(OPEN);
     }
 
     @Test
-    public void testHideWhenAlreadyHidden() {
-        doReturn(true).when(view).isDropdownMenuHidden();
+    public void testRegisterOnCloseHandler() {
 
-        view.hide();
+        final EventListener<Event> onKeyDown = (e) -> {/* Nothing. */};
 
-        verify(jQueryDropdownMenu, never()).dropdown(anyString());
+        doReturn(onKeyDown).when(view).onKeyDown();
+
+        view.registerOnCloseHandler();
+
+        verify(viewElement).addEventListener(KEYDOWN, onKeyDown, false);
+    }
+
+    @Test
+    public void testOnKeyDownWhenEscapeIsPressedOnIEOrEdge() {
+
+        final Event event = mock(Event.class);
+        final KeyboardEvent keyboardEvent = mock(KeyboardEvent.class);
+
+        doReturn(keyboardEvent).when(view).asElemental2Event(event);
+        keyboardEvent.key = "Esc";
+
+        view.onKeyDown().call(event);
+
+        verify(view).hide();
+        verify(view).returnFocusToPanel();
+    }
+
+    @Test
+    public void testOnKeyDownWhenEscapeIsPressedOnOtherBrowser() {
+
+        final Event event = mock(Event.class);
+        final KeyboardEvent keyboardEvent = mock(KeyboardEvent.class);
+
+        doReturn(keyboardEvent).when(view).asElemental2Event(event);
+        keyboardEvent.key = "Escape";
+
+        view.onKeyDown().call(event);
+
+        verify(view).hide();
+        verify(view).returnFocusToPanel();
+    }
+
+    @Test
+    public void testOnKeyDownWhenEscapeIsNotPressed() {
+
+        final Event event = mock(Event.class);
+
+        doReturn(false).when(view).isEscape(event);
+
+        view.onKeyDown().call(event);
+
+        verify(view, never()).hide();
+        verify(view, never()).returnFocusToPanel();
+    }
+
+    @Test
+    public void testReturnFocusToPanel() {
+
+        view.setOnClosedByKeyboardCallback(canBeClosedByKeyboardConsumer);
+        view.returnFocusToPanel();
+
+        verify(canBeClosedByKeyboardConsumer).accept(view);
     }
 }
