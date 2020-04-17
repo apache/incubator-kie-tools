@@ -25,10 +25,11 @@ Included on this release:
 - [KOGITO-1529](https://issues.redhat.com/browse/KOGITO-1529) - BPMN Editor - Cannot save a process once a service tasks' attributes are not properly set
 - [KOGITO-1607](https://issues.redhat.com/browse/KOGITO-1607) - Mixed bpmn and bpmn2 files in kogito examples
 - [KOGITO-1615](https://issues.redhat.com/browse/KOGITO-1615) - Unable to open BPMN examples in kogito bpmn designer
-- [KOGITO-1692](https://issues.redhat.com/browse/KOGITO-1692) - New custom data type can not be added into onboarding-example
 - [KOGITO-1693](https://issues.redhat.com/browse/KOGITO-1693) - Deprecated Float constructor in onboarding-example
 - [KOGITO-1694](https://issues.redhat.com/browse/KOGITO-1694) - Inappropriate modules description - onboarding-example
 - [KOGITO-1696](https://issues.redhat.com/browse/KOGITO-1696) - Port conflicts in onboarding-example
  
  #### DMN Improvements/Bug Fixes
 - [KOGITO-1752](https://issues.redhat.com/browse/KOGITO-1752) - [DMN Designer] Data Types - Drag and Drop does work as expected on Kogito webapps
+- [KOGITO-1692](https://issues.redhat.com/browse/KOGITO-1692) - New custom data type can not be added into onboarding-example
+- [DROOLS-5243](https://issues.redhat.com/browse/DROOLS-5243) - [DMN Designer] Boxed Expressions - Decision Table - Users cannot insert output columns by using the header
