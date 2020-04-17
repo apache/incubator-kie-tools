@@ -8,7 +8,7 @@ Feature: Deploy spring boot service
   Scenario: Deploy process-springboot-example service without persistence
     Given Kogito Operator is deployed
 
-    When Deploy spring boot example service "process-springboot-example" with configuration:
+    When Deploy springboot example service "process-springboot-example" with configuration:
       | config | persistence | disabled |
     Then Kogito application "process-springboot-example" has 1 pods running within 10 minutes
     And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 2 minutes
@@ -18,7 +18,7 @@ Feature: Deploy spring boot service
   @persistence
   Scenario: Deploy process-springboot-example service with persistence
     Given Kogito Operator is deployed with Infinispan operator
-    And Deploy spring boot example service "process-springboot-example" with configuration:
+    And Deploy springboot example service "process-springboot-example" with configuration:
       | config | persistence | enabled |
     And Kogito application "process-springboot-example" has 1 pods running within 10 minutes
     And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
@@ -47,7 +47,7 @@ Feature: Deploy spring boot service
   Scenario: Deploy process-timer-springboot service with Jobs service
     Given Kogito Operator is deployed
     And Install Kogito Jobs Service with 1 replicas
-    And Deploy spring boot example service "process-timer-springboot" with configuration:
+    And Deploy springboot example service "process-timer-springboot" with configuration:
       | config | persistence | disabled |
     And Kogito application "process-timer-springboot" has 1 pods running within 10 minutes
 

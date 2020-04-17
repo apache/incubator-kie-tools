@@ -35,10 +35,9 @@ var assist = assistdog.NewDefault()
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy quarkus example service "([^"]*)" with configuration:$`, data.deployQuarkusExampleServiceWithConfiguration)
-	s.Step(`^Deploy spring boot example service "([^"]*)" with configuration:$`, data.deploySpringBootExampleServiceWithConfiguration)
-	s.Step(`^Create service "([^"]*)"$`, data.createService)
-	s.Step(`^Create service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
+	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployExampleServiceWithConfiguration)
+	s.Step(`^Create (quarkus|springboot) service "([^"]*)"$`, data.createService)
+	s.Step(`^Create (quarkus|springboot) service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
 	s.Step(`^Deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// DeploymentConfig steps
@@ -53,42 +52,33 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 }
 
 // Deploy service steps
-func (data *Data) deployQuarkusExampleServiceWithConfiguration(contextDir string, table *gherkin.DataTable) error {
+
+func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *gherkin.DataTable) error {
 	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
 	if err != nil {
 		return err
 	}
 
-	kogitoApp.Spec.Runtime = v1alpha1.QuarkusRuntimeType
+	kogitoApp.Spec.Runtime = v1alpha1.RuntimeType(runtimeType)
+
+	if kogitoApp.Spec.Runtime != v1alpha1.QuarkusRuntimeType && kogitoApp.Spec.Build.Native {
+		return fmt.Errorf(runtimeType + " does not support native build")
+	}
 
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
-func (data *Data) deploySpringBootExampleServiceWithConfiguration(contextDir string, table *gherkin.DataTable) error {
-	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
-	if err != nil {
-		return err
-	}
-	if kogitoApp.Spec.Build.Native {
-		return fmt.Errorf("Spring Boot does not support native build")
-	}
-
-	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
-
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+func (data *Data) createService(runtimeType, serviceName string) error {
+	return data.createServiceWithConfiguration(runtimeType, serviceName, &gherkin.DataTable{})
 }
 
-func (data *Data) createService(serviceName string) error {
-	return data.createServiceWithConfiguration(serviceName, &gherkin.DataTable{})
-}
-
-func (data *Data) createServiceWithConfiguration(serviceName string, table *gherkin.DataTable) error {
+func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *gherkin.DataTable) error {
 	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
 	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return err
 	}
 
-	kogitoApp.Spec.Runtime = v1alpha1.SpringbootRuntimeType
+	kogitoApp.Spec.Runtime = v1alpha1.RuntimeType(runtimeType)
 
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }

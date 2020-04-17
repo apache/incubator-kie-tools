@@ -76,7 +76,7 @@ Feature: Discovery with onboarding
       | label  | vacations/days | process  |
       | label  | payments/date  | process  |
 
-    And Deploy spring boot example service "onboarding-example/onboarding-springboot" with configuration:
+    And Deploy springboot example service "onboarding-example/onboarding-springboot" with configuration:
       | config | native     | disabled |
       | label  | onboarding | process  |
 

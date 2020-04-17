@@ -11,7 +11,7 @@ Feature: Deploy the service by configuring the resource requests and limits
     Given Clone Kogito examples into local directory
     And Local example service "ruleunit-quarkus-example" is built by Maven
 
-    When Create service "ruleunit-quarkus-example" with configuration:
+    When Create quarkus service "ruleunit-quarkus-example" with configuration:
       | runtime-request | cpu    | <runtime-cpu-request>    |
       | runtime-request | memory | <runtime-memory-request> |
       | runtime-limit   | cpu    | <runtime-cpu-limit>      |

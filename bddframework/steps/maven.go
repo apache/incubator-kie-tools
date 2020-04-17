@@ -22,11 +22,19 @@ import (
 // registerMavenSteps register all existing Maven steps
 func registerMavenSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Local example service "([^"]*)" is built by Maven$`, data.localServiceBuiltByMaven)
+	s.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)"$`, data.localServiceBuiltByMavenWithProfile)
 }
 
 // Build local service
 func (data *Data) localServiceBuiltByMaven(serviceName string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
 	_, err := framework.CreateCommand("mvn", "clean", "package").InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
+	return err
+}
+
+// Build local service
+func (data *Data) localServiceBuiltByMavenWithProfile(serviceName, profile string) error {
+	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
+	_, err := framework.CreateCommand("mvn", "clean", "package", "-P"+profile).InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
