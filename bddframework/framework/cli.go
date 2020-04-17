@@ -43,7 +43,7 @@ func ExecuteCliCommand(namespace string, args ...string) (string, error) {
 		return "", err
 	}
 
-	return ExecuteCommand(path, args...)
+	return CreateCommand(path, args...).WithLoggerContext(namespace).Execute()
 }
 
 // ExecuteCliCommandInNamespace executes a kogito cli command in a specific namespace

@@ -33,7 +33,7 @@ func registerOpenShiftSteps(s *godog.Suite, data *Data) {
 // Build steps
 func (data *Data) startBuildFromExampleServicePath(buildName, localExamplePath string) error {
 	examplesRepositoryPath := data.KogitoExamplesLocation
-	_, err := framework.ExecuteCommand("oc", "start-build", buildName, "--from-dir="+examplesRepositoryPath+"/"+localExamplePath, "-n", data.Namespace)
+	_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-dir="+examplesRepositoryPath+"/"+localExamplePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
 

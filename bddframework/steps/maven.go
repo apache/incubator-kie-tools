@@ -26,7 +26,7 @@ func registerMavenSteps(s *godog.Suite, data *Data) {
 
 // Build local service
 func (data *Data) localServiceBuiltByMaven(serviceName string) error {
-	examplesRepositoryPath := data.KogitoExamplesLocation
-	_, err := framework.ExecuteCommandInDirectory(examplesRepositoryPath+"/"+serviceName, "mvn", "clean", "package")
+	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
+	_, err := framework.CreateCommand("mvn", "clean", "package").InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
