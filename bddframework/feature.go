@@ -26,10 +26,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/gherkin-go/v11"
+	"github.com/cucumber/messages-go/v10"
 )
 
-func parseFeatures(filter string, paths []string) ([]*gherkin.Feature, error) {
+type feature struct {
+	document *messages.GherkinDocument
+	pickles  []*messages.Pickle
+}
+
+func parseFeatures(filter string, paths []string) ([]*feature, error) {
 	if len(paths) == 0 {
 		inf, err := os.Stat("features")
 		if err == nil && inf.IsDir() {
@@ -37,7 +43,7 @@ func parseFeatures(filter string, paths []string) ([]*gherkin.Feature, error) {
 		}
 	}
 
-	features := make(map[string]*gherkin.Feature)
+	features := make(map[string]*feature)
 	for _, path := range paths {
 		fts, err := parsePath(path)
 		switch {
@@ -50,17 +56,17 @@ func parseFeatures(filter string, paths []string) ([]*gherkin.Feature, error) {
 		}
 
 		for _, ft := range fts {
-			if _, duplicate := features[ft.Name]; duplicate {
+			if _, duplicate := features[ft.document.Feature.GetName()]; duplicate {
 				continue
 			}
-			features[ft.Name] = ft
+			features[ft.document.Feature.GetName()] = ft
 		}
 	}
 	return filterFeatures(filter, features), nil
 }
 
-func parsePath(path string) ([]*gherkin.Feature, error) {
-	var features []*gherkin.Feature
+func parsePath(path string) ([]*feature, error) {
+	var features []*feature
 
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -71,7 +77,8 @@ func parsePath(path string) ([]*gherkin.Feature, error) {
 		return parseFeatureDir(path)
 	}
 
-	ft, err := parseFeatureFile(path)
+	newIDFunc := (&messages.Incrementing{}).NewId
+	ft, err := parseFeatureFile(path, newIDFunc)
 	if err != nil {
 		return features, err
 	}
@@ -79,7 +86,7 @@ func parsePath(path string) ([]*gherkin.Feature, error) {
 	return append(features, ft), nil
 }
 
-func parseFeatureFile(path string) (*gherkin.Feature, error) {
+func parseFeatureFile(path string, newIDFunc func() string) (*feature, error) {
 	reader, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -87,15 +94,21 @@ func parseFeatureFile(path string) (*gherkin.Feature, error) {
 	defer reader.Close()
 
 	var buf bytes.Buffer
-	ft, err := gherkin.ParseFeature(io.TeeReader(reader, &buf))
+	ft, err := gherkin.ParseGherkinDocument(io.TeeReader(reader, &buf), newIDFunc)
 	if err != nil {
 		return nil, fmt.Errorf("%s - %v", path, err)
 	}
-	return ft, nil
+
+	pickles := gherkin.Pickles(*ft, path, newIDFunc)
+
+	return &feature{
+		document: ft,
+		pickles:  pickles,
+	}, nil
 }
 
-func parseFeatureDir(dir string) ([]*gherkin.Feature, error) {
-	var features []*gherkin.Feature
+func parseFeatureDir(dir string) ([]*feature, error) {
+	var features []*feature
 	return features, filepath.Walk(dir, func(p string, f os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -109,7 +122,7 @@ func parseFeatureDir(dir string) ([]*gherkin.Feature, error) {
 			return nil
 		}
 
-		feat, err := parseFeatureFile(p)
+		feat, err := parseFeatureFile(p, (&messages.Incrementing{}).NewId)
 		if err != nil {
 			return err
 		}
@@ -118,7 +131,7 @@ func parseFeatureDir(dir string) ([]*gherkin.Feature, error) {
 	})
 }
 
-func filterFeatures(tags string, collected map[string]*gherkin.Feature) (features []*gherkin.Feature) {
+func filterFeatures(tags string, collected map[string]*feature) (features []*feature) {
 	for _, ft := range collected {
 		applyTagFilter(tags, ft)
 		features = append(features, ft)
@@ -127,39 +140,22 @@ func filterFeatures(tags string, collected map[string]*gherkin.Feature) (feature
 	return features
 }
 
-func applyTagFilter(tags string, ft *gherkin.Feature) {
+func applyTagFilter(tags string, ft *feature) {
 	if len(tags) == 0 {
 		return
 	}
-	ft.ScenarioDefinitions = getMatchingScenarios(tags, ft)
-}
-
-func getMatchingScenarios(tags string, ft *gherkin.Feature) []interface{} {
-	var scenarios []interface{}
-	for _, scenario := range ft.ScenarioDefinitions {
-		switch t := scenario.(type) {
-		case *gherkin.ScenarioOutline:
-			var allExamples []*gherkin.Examples
-			for _, examples := range t.Examples {
-				if matchesTags(tags, allTags(ft, t, examples)) {
-					allExamples = append(allExamples, examples)
-				}
-			}
-			t.Examples = allExamples
-			if len(t.Examples) > 0 {
-				scenarios = append(scenarios, scenario)
-			}
-		case *gherkin.Scenario:
-			if matchesTags(tags, allTags(ft, t)) {
-				scenarios = append(scenarios, scenario)
-			}
+	var pickles []*messages.Pickle
+	for _, pickle := range ft.pickles {
+		if matchesTags(tags, pickle.Tags) {
+			pickles = append(pickles, pickle)
 		}
 	}
-	return scenarios
+
+	ft.pickles = pickles
 }
 
 // based on http://behat.readthedocs.org/en/v2.5/guides/6.cli.html#gherkin-filters
-func matchesTags(filter string, tags []string) (ok bool) {
+func matchesTags(filter string, tags []*messages.Pickle_PickleTag) (ok bool) {
 	ok = true
 	for _, andTags := range strings.Split(filter, "&&") {
 		var okComma bool
@@ -177,47 +173,13 @@ func matchesTags(filter string, tags []string) (ok bool) {
 	return
 }
 
-func hasTag(tags []string, tag string) bool {
+func hasTag(tags []*messages.Pickle_PickleTag, tag string) bool {
 	for _, t := range tags {
-		if t == tag {
+		tName := strings.Replace(t.Name, "@", "", -1)
+
+		if tName == tag {
 			return true
 		}
 	}
 	return false
-}
-
-func allTags(nodes ...interface{}) []string {
-	var tags, tmp []string
-	for _, node := range nodes {
-		var gr []*gherkin.Tag
-		switch t := node.(type) {
-		case *gherkin.Feature:
-			gr = t.Tags
-		case *gherkin.ScenarioOutline:
-			gr = t.Tags
-		case *gherkin.Scenario:
-			gr = t.Tags
-		case *gherkin.Examples:
-			gr = t.Tags
-		}
-
-		for _, gtag := range gr {
-			tag := strings.TrimSpace(gtag.Name)
-			if tag[0] == '@' {
-				tag = tag[1:]
-			}
-			copy(tmp, tags)
-			var found bool
-			for _, tg := range tmp {
-				if tg == tag {
-					found = true
-					break
-				}
-			}
-			if !found {
-				tags = append(tags, tag)
-			}
-		}
-	}
-	return tags
 }

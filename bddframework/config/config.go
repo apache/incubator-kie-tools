@@ -58,6 +58,7 @@ type TestConfig struct {
 
 	// dev options
 	showScenarios bool
+	showSteps     bool
 	dryRun        bool
 	keepNamespace bool
 	namespaceName string
@@ -118,7 +119,8 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.examplesRepositoryRef, prefix+"examples-ref", "", "Set the branch for the kogito-examples repository")
 
 	// dev options
-	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which should be executed.")
+	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which will be executed.")
+	set.BoolVar(&env.showSteps, prefix+"show-steps", false, "Show all scenarios and their steps which will be executed.")
 	set.BoolVar(&env.dryRun, prefix+"dry-run", false, "Dry Run the tests.")
 	set.BoolVar(&env.keepNamespace, prefix+"keep-namespace", false, "Do not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)")
 	set.StringVar(&env.namespaceName, developmentOptionsPrefix+"namespace-name", "", "Use the specified namespace for scenarios, don't generate random namespace.")
@@ -241,6 +243,11 @@ func GetExamplesRepositoryRef() string {
 // IsShowScenarios return whether we should display scenarios
 func IsShowScenarios() bool {
 	return env.showScenarios
+}
+
+// IsShowSteps return whether we should display scenarios's steps
+func IsShowSteps() bool {
+	return env.showSteps
 }
 
 // IsDryRun return whether we should do a dry run

@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -41,13 +41,13 @@ func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(servi
 	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "GET", routeURI, path, "", "", timeoutInMin)
 }
 
-func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *gherkin.DocString) error {
-	framework.GetLogger(data.Namespace).Infof("httpPostRequestOnServiceWithPathAndBody with service %s, path %s and %s bodyContent %s", serviceName, path, body.ContentType, body.Content)
+func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
+	framework.GetLogger(data.Namespace).Infof("httpPostRequestOnServiceWithPathAndBody with service %s, path %s and %s bodyContent %s", serviceName, path, body.GetMediaType(), body.GetContent)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
-	if success, err := framework.IsHTTPRequestSuccessful(data.Namespace, "POST", routeURI, path, body.ContentType, body.Content); err != nil {
+	if success, err := framework.IsHTTPRequestSuccessful(data.Namespace, "POST", routeURI, path, body.GetMediaType(), body.GetContent()); err != nil {
 		return err
 	} else if !success {
 		return fmt.Errorf("HTTP POST request to path %s was not successful", path)
@@ -55,13 +55,13 @@ func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path stri
 	return nil
 }
 
-func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *gherkin.DocString) error {
-	framework.GetLogger(data.Namespace).Infof("httpPostRequestOnServiceWithPathAndBody with service %s, path %s, %s bodyContent %s and timeout %d", serviceName, path, body.ContentType, body.Content, timeoutInMin)
+func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *messages.PickleStepArgument_PickleDocString) error {
+	framework.GetLogger(data.Namespace).Infof("httpPostRequestOnServiceWithPathAndBody with service %s, path %s, %s bodyContent %s and timeout %d", serviceName, path, body.GetMediaType(), body.GetContent(), timeoutInMin)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
-	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "POST", routeURI, path, body.ContentType, body.Content, timeoutInMin)
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, "POST", routeURI, path, body.GetMediaType(), body.GetContent(), timeoutInMin)
 }
 
 func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes(serviceName, path string, size, timeoutInMin int) error {
@@ -87,23 +87,23 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 		})
 }
 
-func (data *Data) httpPostRequestsUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *gherkin.DocString) error {
+func (data *Data) httpPostRequestsUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
 	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, false, serviceName, path, body)
 }
 
-func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *gherkin.DocString) error {
+func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
 	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, true, serviceName, path, body)
 }
 
-func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *gherkin.DocString) error {
-	framework.GetLogger(data.Namespace).Infof("httpPostRequestsUsingThreadsOnServiceWithPathAndBody with requests %d, threads %d, report %t, service %s, path %s and %s bodyContent %s", requestCount, threadCount, report, serviceName, path, body.ContentType, body.Content)
+func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *messages.PickleStepArgument_PickleDocString) error {
+	framework.GetLogger(data.Namespace).Infof("httpPostRequestsUsingThreadsOnServiceWithPathAndBody with requests %d, threads %d, report %t, service %s, path %s and %s bodyContent %s", requestCount, threadCount, report, serviceName, path, body.GetMediaType(), body.GetContent())
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 
 	startTime := time.Now()
-	results, err := framework.ExecuteHTTPRequestsInThreads(data.Namespace, "POST", requestCount, threadCount, routeURI, path, body.ContentType, body.Content)
+	results, err := framework.ExecuteHTTPRequestsInThreads(data.Namespace, "POST", requestCount, threadCount, routeURI, path, body.GetMediaType(), body.GetContent())
 	duration := time.Since(startTime)
 
 	if err != nil {

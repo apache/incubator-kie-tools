@@ -10,7 +10,7 @@ Feature: Kogito Service Performance
     Given Namespace is created
 
   @quarkus
-  Scenario Outline: Quarkus Kogito Service Performance without persistence
+  Scenario Outline: Quarkus Kogito Service Performance with requests <requests>, native <native> but without persistence
     Given Kogito Operator is deployed
     And Deploy quarkus example service "process-quarkus-example" with configuration:
       | config      | native       | <native> |
@@ -34,7 +34,7 @@ Feature: Kogito Service Performance
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
-    Examples: Non Native
+    Examples:
       | native   | minutes | requests |
       | disabled | 10      | 40000    |
       | disabled | 10      | 80000    |
@@ -42,7 +42,7 @@ Feature: Kogito Service Performance
 #      | disabled | 10      | 320000   |
 
     @native
-    Examples: Native
+    Examples:
       | native  | minutes | requests |
       | enabled | 20      | 40000    |
       | enabled | 20      | 80000    |
@@ -53,7 +53,7 @@ Feature: Kogito Service Performance
 
   @quarkus
   @persistence
-  Scenario Outline: Quarkus Kogito Service Performance with persistence
+  Scenario Outline: Quarkus Kogito Service Performance with requests <requests>, native <native> and persistence
     Given Kogito Operator is deployed with Infinispan operator
     And Deploy quarkus example service "process-quarkus-example" with configuration:
       | config      | native       | <native> |
@@ -78,7 +78,7 @@ Feature: Kogito Service Performance
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
-    Examples: Non Native
+    Examples:
       | native   | minutes | requests |
       | disabled | 10      | 40000    |
       | disabled | 10      | 80000    |
@@ -86,7 +86,7 @@ Feature: Kogito Service Performance
 #      | disabled | 10      | 320000   |
 
     @native
-    Examples: Native
+    Examples:
       | native  | minutes | requests |
       | enabled | 20      | 40000    |
       | enabled | 20      | 80000    |
@@ -96,7 +96,7 @@ Feature: Kogito Service Performance
 #####
 
   @springboot
-  Scenario Outline: Spring Boot Kogito Service Performance without persistence
+  Scenario Outline: Spring Boot Kogito Service Performance with requests <requests> but without persistence
     Given Kogito Operator is deployed
     And Deploy springboot example service "process-springboot-example" with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx8G |
@@ -129,7 +129,7 @@ Feature: Kogito Service Performance
 
   @springboot
   @persistence
-  Scenario Outline: Spring Boot Kogito Service Performance with persistence
+  Scenario Outline: Spring Boot Kogito Service Performance with requests <requests> and persistence
     Given Kogito Operator is deployed with Infinispan operator
     And Deploy springboot example service "process-springboot-example" with configuration:
       | config      | persistence  | enabled |

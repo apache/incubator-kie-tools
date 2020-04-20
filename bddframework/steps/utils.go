@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	v1 "k8s.io/api/core/v1"
@@ -26,23 +26,26 @@ import (
 )
 
 const (
+	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
+	javaOptionsEnvVar     = "JAVA_OPTIONS"
+
 	//DataTable first column
-	Config         = "config"
-	BuildEnv       = "build-env"
-	RuntimeEnv     = "runtime-env"
-	Label          = "label"
-	BuildRequest   = "build-request"
-	BuildLimit     = "build-limit"
-	RuntimeRequest = "runtime-request"
-	RuntimeLimit   = "runtime-limit"
+	configKey         = "config"
+	buildEnvKey       = "build-env"
+	runtimeEnvKey     = "runtime-env"
+	labelKey          = "label"
+	buildRequestKey   = "build-request"
+	buildLimitKey     = "build-limit"
+	runtimeRequestKey = "runtime-request"
+	runtimeLimitKey   = "runtime-limit"
 
 	//DataTable second column
-	Native      = "native"
-	Persistence = "persistence"
-	Events      = "events"
+	nativeKey      = "native"
+	persistenceKey = "persistence"
+	eventsKey      = "events"
 )
 
-func configureKogitoAppFromTable(table *gherkin.DataTable, kogitoApp *v1alpha1.KogitoApp) error {
+func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable, kogitoApp *v1alpha1.KogitoApp) error {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}
@@ -56,28 +59,28 @@ func configureKogitoAppFromTable(table *gherkin.DataTable, kogitoApp *v1alpha1.K
 	for _, row := range table.Rows {
 		firstColumn := getFirstColumn(row)
 		switch firstColumn {
-		case Config:
+		case configKey:
 			parseConfigRow(row, kogitoApp, &profiles)
 
-		case BuildEnv:
+		case buildEnvKey:
 			kogitoApp.Spec.Build.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
 
-		case RuntimeEnv:
+		case runtimeEnvKey:
 			kogitoApp.Spec.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
 
-		case Label:
+		case labelKey:
 			kogitoApp.Spec.Service.Labels[getSecondColumn(row)] = getThirdColumn(row)
 
-		case BuildRequest:
+		case buildRequestKey:
 			kogitoApp.Spec.Build.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
 
-		case BuildLimit:
+		case buildLimitKey:
 			kogitoApp.Spec.Build.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
 
-		case RuntimeRequest:
+		case runtimeRequestKey:
 			kogitoApp.Spec.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
 
-		case RuntimeLimit:
+		case runtimeLimitKey:
 			kogitoApp.Spec.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
 
 		default:
@@ -86,7 +89,7 @@ func configureKogitoAppFromTable(table *gherkin.DataTable, kogitoApp *v1alpha1.K
 	}
 
 	if len(profiles) > 0 {
-		kogitoApp.Spec.Build.AddEnvironmentVariable(MavenArgsAppendEnvVar, "-P" + strings.Join(profiles, ","))
+		kogitoApp.Spec.Build.AddEnvironmentVariable(mavenArgsAppendEnvVar, "-P"+strings.Join(profiles, ","))
 	}
 
 	addDefaultJavaOptionsIfNotProvided(kogitoApp)
@@ -94,11 +97,11 @@ func configureKogitoAppFromTable(table *gherkin.DataTable, kogitoApp *v1alpha1.K
 	return nil
 }
 
-func parseConfigRow(row *gherkin.TableRow, kogitoApp *v1alpha1.KogitoApp, profilesPtr *[]string) {
+func parseConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *v1alpha1.KogitoApp, profilesPtr *[]string) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
-	case Native:
+	case nativeKey:
 		native := framework.MustParseEnabledDisabled(getThirdColumn(row))
 		if native {
 			kogitoApp.Spec.Build.Native = native
@@ -106,14 +109,14 @@ func parseConfigRow(row *gherkin.TableRow, kogitoApp *v1alpha1.KogitoApp, profil
 			kogitoApp.Spec.Build.AddResourceRequest("memory", "4Gi")
 		}
 
-	case Persistence:
+	case persistenceKey:
 		persistence := framework.MustParseEnabledDisabled(getThirdColumn(row))
 		if persistence {
 			*profilesPtr = append(*profilesPtr, "persistence")
 			kogitoApp.Spec.EnablePersistence = true
 		}
 
-	case Events:
+	case eventsKey:
 		events := framework.MustParseEnabledDisabled(getThirdColumn(row))
 		if events {
 			*profilesPtr = append(*profilesPtr, "events")
@@ -127,47 +130,47 @@ func parseConfigRow(row *gherkin.TableRow, kogitoApp *v1alpha1.KogitoApp, profil
 func addDefaultJavaOptionsIfNotProvided(kogitoApp *v1alpha1.KogitoApp) {
 	javaOptionsProvided := false
 	for _, env := range kogitoApp.Spec.Envs {
-		if env.Name == JavaOptionsEnvVar {
+		if env.Name == javaOptionsEnvVar {
 			javaOptionsProvided = true
 		}
 	}
 
 	if !javaOptionsProvided {
-		kogitoApp.Spec.AddEnvironmentVariable(JavaOptionsEnvVar, "-Xmx2G")
+		kogitoApp.Spec.AddEnvironmentVariable(javaOptionsEnvVar, "-Xmx2G")
 	}
 }
 
-func getFirstColumn(row *gherkin.TableRow) string {
+func getFirstColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
 	return row.Cells[0].Value
 }
 
-func getSecondColumn(row *gherkin.TableRow) string {
+func getSecondColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
 	return row.Cells[1].Value
 }
 
-func getThirdColumn(row *gherkin.TableRow) string {
+func getThirdColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
 	return row.Cells[2].Value
 }
 
 // parseResourceRequirementsTable is useful for steps that check resource requirements, table is a subset of KogitoApp
 // configuration table
-func parseResourceRequirementsTable(table *gherkin.DataTable) (build, runtime *v1.ResourceRequirements, err error) {
+func parseResourceRequirementsTable(table *messages.PickleStepArgument_PickleTable) (build, runtime *v1.ResourceRequirements, err error) {
 	build = &v1.ResourceRequirements{Limits: v1.ResourceList{}, Requests: v1.ResourceList{}}
 	runtime = &v1.ResourceRequirements{Limits: v1.ResourceList{}, Requests: v1.ResourceList{}}
 
 	for _, row := range table.Rows {
 		firstColumn := getFirstColumn(row)
 		switch firstColumn {
-		case BuildRequest:
+		case buildRequestKey:
 			build.Requests[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
 
-		case BuildLimit:
+		case buildLimitKey:
 			build.Limits[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
 
-		case RuntimeRequest:
+		case runtimeRequestKey:
 			runtime.Requests[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
 
-		case RuntimeLimit:
+		case runtimeLimitKey:
 			runtime.Limits[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
 
 		default:

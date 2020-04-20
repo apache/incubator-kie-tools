@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -63,7 +63,7 @@ func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName s
 	return nil
 }
 
-func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName, processName string, body *gherkin.DocString) error {
+func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName, processName string, body *messages.PickleStepArgument_PickleDocString) error {
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName,
 		return fmt.Errorf("task with name %s not found", taskName)
 	}
 
-	err = framework.CompleteTask(data.Namespace, routeURI, processName, processInstanceID, taskName, taskID, body.ContentType, body.Content)
+	err = framework.CompleteTask(data.Namespace, routeURI, processName, processInstanceID, taskName, taskID, body.GetMediaType(), body.GetContent())
 	if err != nil {
 		return err
 	}

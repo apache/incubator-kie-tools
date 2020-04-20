@@ -4,7 +4,7 @@ Feature: Deploy quarkus service
   Background:
     Given Namespace is created
 
-  Scenario Outline: Deploy drools-quarkus-example service without persistence
+  Scenario Outline: Deploy drools-quarkus-example service without persistence and native <native>
     Given Kogito Operator is deployed
     When Deploy quarkus example service "ruleunit-quarkus-example" with configuration:
       | config | native | <native> |
@@ -42,19 +42,19 @@ Feature: Deploy quarkus service
       """
 
     @smoke  
-    Examples: Non Native
+    Examples:
       | native   | minutes |
       | disabled | 10      |
 
     @native
-    Examples: Native
+    Examples:
       | native  | minutes |
       | enabled | 20      |
 
 #####
 
   @persistence
-  Scenario Outline: Deploy process-quarkus-example service with persistence
+  Scenario Outline: Deploy process-quarkus-example service with persistence and native <native>
     Given Kogito Operator is deployed with Infinispan operator
     And Deploy quarkus example service "process-quarkus-example" with configuration:
       | config | native      | <native> |
@@ -78,12 +78,12 @@ Feature: Deploy quarkus service
     
     Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size 1 within 2 minutes
     
-    Examples: Non Native
+    Examples:
       | native   | minutes |
       | disabled | 10      |
 
     @native
-    Examples: Native
+    Examples:
       | native  | minutes |
       | enabled | 20      |
 
@@ -92,7 +92,7 @@ Feature: Deploy quarkus service
   # Disabled as long as https://issues.redhat.com/browse/KOGITO-1163 and https://issues.redhat.com/browse/KOGITO-1166 is not solved
   @disabled
   @jobsservice
-  Scenario Outline: Deploy process-timer-quarkus service with Jobs service
+  Scenario Outline: Deploy process-timer-quarkus service with Jobs service and native <native>
     Given Kogito Operator is deployed
     And Install Kogito Jobs Service with 1 replicas
     And Deploy quarkus example service "process-timer-quarkus" with configuration:
@@ -108,13 +108,13 @@ Feature: Deploy quarkus service
     Then Kogito application "process-timer-quarkus" log contains text "Before timer" within 1 minutes
     And Kogito application "process-timer-quarkus" log contains text "After timer" within 1 minutes
 
-    Examples: Non Native
+    Examples:
       | native   | minutes |
       | disabled | 10      |
 
     # Disabled as long as https://issues.redhat.com/browse/KOGITO-1179 is not solved
     @disabled
     @native
-    Examples: Native
+    Examples:
       | native  | minutes |
       | enabled | 20      |

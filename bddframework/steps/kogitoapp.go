@@ -19,19 +19,11 @@ import (
 	"path/filepath"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/rdumont/assistdog"
 )
-
-const (
-	MavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
-	JavaOptionsEnvVar     = "JAVA_OPTIONS"
-)
-
-var assist = assistdog.NewDefault()
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
@@ -53,7 +45,7 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 
 // Deploy service steps
 
-func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *gherkin.DataTable) error {
+func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) error {
 	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
 	if err != nil {
 		return err
@@ -69,10 +61,10 @@ func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir 
 }
 
 func (data *Data) createService(runtimeType, serviceName string) error {
-	return data.createServiceWithConfiguration(runtimeType, serviceName, &gherkin.DataTable{})
+	return data.createServiceWithConfiguration(runtimeType, serviceName, &messages.PickleStepArgument_PickleTable{})
 }
 
-func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *gherkin.DataTable) error {
+func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
 	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
 	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return err
@@ -92,7 +84,7 @@ func (data *Data) kogitoApplicationHasPodsRunningWithinMinutes(dcName string, po
 	return framework.WaitForDeploymentConfigRunning(data.Namespace, dcName, podNb, timeoutInMin)
 }
 
-func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *gherkin.DataTable) error {
+func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *messages.PickleStepArgument_PickleTable) error {
 	_, requirements, err := parseResourceRequirementsTable(dt)
 
 	if err != nil {
@@ -119,7 +111,7 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 // Misc methods
 
 // getKogitoAppExampleStub Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
-func getKogitoAppExamplesStub(namespace, contextDir string, table *gherkin.DataTable) (*v1alpha1.KogitoApp, error) {
+func getKogitoAppExamplesStub(namespace, contextDir string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoApp, error) {
 	kogitoApp := framework.GetKogitoAppStub(namespace, filepath.Base(contextDir))
 
 	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()

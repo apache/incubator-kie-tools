@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -27,14 +27,14 @@ func registerGraphQLSteps(s *godog.Suite, data *Data) {
 	s.Step(`^GraphQL request on Data Index service returns Jobs ID "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes)
 }
 
-func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *gherkin.DocString) error {
+func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *messages.PickleStepArgument_PickleDocString) error {
 	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 	var response interface{}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.Content, timeoutInMin, response, nil)
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.GetContent(), timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {

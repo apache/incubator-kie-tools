@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -45,7 +45,7 @@ func (data *Data) buildConfigIsCreatedAfterMinutes(buildConfigName string, timeo
 	return framework.WaitForBuildConfigCreated(data.Namespace, buildConfigName, timeoutInMin)
 }
 
-func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *gherkin.DataTable) error {
+func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *messages.PickleStepArgument_PickleTable) error {
 	requirements, _, err := parseResourceRequirementsTable(dt)
 
 	if err != nil {

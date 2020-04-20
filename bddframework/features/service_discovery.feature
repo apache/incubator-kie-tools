@@ -5,7 +5,7 @@ Feature: Discovery with onboarding
     Given Namespace is created
 
   @quarkus
-  Scenario Outline: Deploy Quarkus onboarding example
+  Scenario Outline: Deploy Quarkus onboarding example with native <native>
     Given Kogito Operator is deployed
     
     When Deploy quarkus example service "onboarding-example/hr" with configuration:
@@ -49,12 +49,12 @@ Feature: Discovery with onboarding
       }
       """
     
-    Examples: Non Native
+    Examples:
       | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
       | disabled | 10      | 1                 | 4               | 4Gi                  |
 
     @native
-    Examples: Native
+    Examples:
       | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
       | enabled  | 20      | 4                 | 8               | 10Gi                 |
 

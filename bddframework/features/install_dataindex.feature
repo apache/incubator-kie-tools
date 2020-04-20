@@ -22,7 +22,7 @@ Feature: Kogito Data Index
 
   @events
   @persistence
-  Scenario Outline: Process instance events are stored in Data Index
+  Scenario Outline: Process instance events are stored in Data Index with native <native>
     Given Install Kogito Data Index with 1 replicas
     And Deploy quarkus example service "process-quarkus-example" with configuration:
       | config | native      | <native> |
@@ -44,11 +44,11 @@ Feature: Kogito Data Index
 
     Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
 
-    Examples: Non native
+    Examples:
       | native   | minutes |
       | disabled | 10      |
 
     @native
-    Examples: Native
+    Examples:
       | native  | minutes |
       | enabled | 20      |

@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -28,13 +28,13 @@ func registerProcessSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.serviceContainsInstancesOfProcessWithinMinutes)
 }
 
-func (data *Data) startProcessOnService(processName, serviceName string, body *gherkin.DocString) error {
+func (data *Data) startProcessOnService(processName, serviceName string, body *messages.PickleStepArgument_PickleDocString) error {
 	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 
-	err = framework.StartProcess(data.Namespace, routeURI, processName, body.ContentType, body.Content)
+	err = framework.StartProcess(data.Namespace, routeURI, processName, body.GetMediaType(), body.GetContent())
 	if err != nil {
 		return err
 	}

@@ -25,7 +25,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cucumber/godog/gherkin"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -101,25 +100,6 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 			}
 		}
 	}
-}
-
-// GetScenarioName retrieves the name of the scenario
-func GetScenarioName(s interface{}) string {
-	if scenario, ok := s.(*gherkin.Scenario); ok {
-		return scenario.Name
-	}
-	return s.(*gherkin.ScenarioOutline).Name
-}
-
-func GetExamplesNames(outline *gherkin.ScenarioOutline) (names []string) {
-	for _ , examples := range outline.Examples {
-		examplesName := examples.Name
-		if len(examples.Name) == 0 {
-			examplesName = "Unnamed Examples"
-		}
-		names = append(names, examplesName)
-	}
-	return
 }
 
 // PrintDataMap prints a formatted dataMap using the given writer

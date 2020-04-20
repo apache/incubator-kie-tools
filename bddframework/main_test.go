@@ -25,7 +25,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
-	"github.com/cucumber/godog/gherkin"
+	"github.com/cucumber/messages-go/v10"
 
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -62,8 +62,8 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(fmt.Errorf("Error parsing features: %v", err))
 	}
-	if config.IsShowScenarios() {
-		showScenarios(features)
+	if config.IsShowScenarios() || config.IsShowSteps() {
+		showScenarios(features, config.IsShowSteps())
 	}
 
 	if !config.IsDryRun() {
@@ -142,11 +142,11 @@ func FeatureContext(s *godog.Suite) {
 	data.RegisterAllSteps(s)
 
 	// Scenario handlers
-	s.BeforeScenario(func(s interface{}) {
-		data.BeforeScenario(s)
+	s.BeforeScenario(func(pickle *messages.Pickle) {
+		data.BeforeScenario(pickle)
 	})
-	s.AfterScenario(func(s interface{}, err error) {
-		data.AfterScenario(s, err)
+	s.AfterScenario(func(pickle *messages.Pickle, err error) {
+		data.AfterScenario(pickle, err)
 
 		// Namespace should be deleted after all other operations have been done
 		if !config.IsKeepNamespace() {
@@ -155,10 +155,10 @@ func FeatureContext(s *godog.Suite) {
 	})
 
 	// Step handlers
-	s.BeforeStep(func(s *gherkin.Step) {
+	s.BeforeStep(func(s *messages.Pickle_PickleStep) {
 		framework.GetLogger(data.Namespace).Infof("Step %s", s.Text)
 	})
-	s.AfterStep(func(s *gherkin.Step, err error) {
+	s.AfterStep(func(s *messages.Pickle_PickleStep, err error) {
 		if err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in step '%s': %v", s.Text, err)
 		}
@@ -175,28 +175,38 @@ func deleteNamespaceIfExists(namespace string) {
 	})
 }
 
-func matchingFeature(tags string, features []*gherkin.Feature) bool {
+func matchingFeature(filterTags string, features []*feature) bool {
 	for _, ft := range features {
-		if len(getMatchingScenarios(tags, ft)) > 0 {
+		if matchesPickles(filterTags, ft.pickles) {
 			return true
 		}
 	}
 	return false
 }
 
-func showScenarios(features []*gherkin.Feature) {
+func matchesPickles(filterTags string, pickles []*messages.Pickle) bool {
+	for _, pickle := range pickles {
+		if matchesTags(filterTags, pickle.Tags) {
+			return true
+		}
+	}
+	return false
+}
+
+func showScenarios(features []*feature, showSteps bool) {
 	mainLogger := framework.GetMainLogger()
 	mainLogger.Info("------------------ SHOW SCENARIOS ------------------")
 	for _, ft := range features {
-		if len(ft.ScenarioDefinitions) > 0 {
-			mainLogger.Infof("Feature: %s", ft.Name)
-			for _, scenario := range ft.ScenarioDefinitions {
-				scenarioMessage := framework.GetScenarioName(scenario)
-
-				if scenarioOutline, ok := scenario.(*gherkin.ScenarioOutline); ok {
-					scenarioMessage += fmt.Sprintf(" (Examples: %s)", strings.Join(framework.GetExamplesNames(scenarioOutline), ", "))
+		// Placeholders in names are now replaced directly into names for each pickle
+		if len(ft.pickles) > 0 {
+			mainLogger.Infof("Feature: %s", ft.document.GetFeature().GetName())
+			for _, pickle := range ft.pickles {
+				mainLogger.Infof("    Scenario: %s", pickle.GetName())
+				if showSteps {
+					for _, step := range pickle.Steps {
+						mainLogger.Infof("        Step: %s", step.GetText())
+					}
 				}
-				mainLogger.Info(scenarioMessage)
 			}
 		}
 	}
