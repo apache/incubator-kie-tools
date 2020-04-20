@@ -42,7 +42,7 @@ function usage(){
   printf "\n--debug\n\tRun in debug mode."
   printf "\n--smoke\n\tFilter to run only the tests tagged with '@smoke'."
   printf "\n--performance\n\tFilter to run only the tests tagged with '@performance'. If not provided and the tag itself is not specified, these tests will be ignored."
-  printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timouts. Default value is 1."
+  printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timeouts. Default value is 1."
   printf "\n--local\n\tSpecify whether you run test in local."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
   printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
@@ -75,9 +75,10 @@ function usage(){
 
   # dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
-  printf "\n--dry_run\n\tExecute a dry run of the tests, disabled crds updates and display the scenarios which would be executed."
+  printf "\n--show_steps\n\tDisplay scenarios and their steps which will be executed."
+  printf "\n--dry_run\n\tExecute a dry run of the tests, disable crds updates and display the scenarios which would be executed."
   printf "\n--keep_namespace\n\tDo not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)."
-  printf "\n--disabled_crds_update\n\tDisabled the update of CRDs."
+  printf "\n--disabled_crds_update\n\tDisable the update of CRDs."
   printf "\n--namespace_name\n\tSpecify name of the namespace which will be used for scenario execution (intended for development purposes)."
   printf "\n"
 }
@@ -258,6 +259,10 @@ case $1 in
   # dev options
   --show_scenarios)
     addParam "--tests.show-scenarios"
+    shift
+  ;;
+  --show_steps)
+    addParam "--tests.show-steps"
     shift
   ;;
   --dry_run)
