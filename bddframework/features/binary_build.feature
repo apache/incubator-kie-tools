@@ -20,7 +20,6 @@ Feature: Use binary build to deploy the service
 
 #####
 
-  @smoke
   @quarkus
   Scenario Outline: Deploy process-quarkus-example using binary build
     Given Clone Kogito examples into local directory
