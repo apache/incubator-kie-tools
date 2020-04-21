@@ -32,7 +32,7 @@ func InstallServiceWithoutCliFlags(service v1alpha1.KogitoService, installerType
 
 // InstallService the Kogito Service component
 func InstallService(service v1alpha1.KogitoService, installerType InstallerType, cliName string, cliFlags []string) error {
-	GetLogger(service.GetNamespace()).Infof("%s install %s with %d replicas", service.GetName(), installerType, service.GetSpec().GetReplicas())
+	GetLogger(service.GetNamespace()).Infof("%s install %s with %d replicas", service.GetName(), installerType, *service.GetSpec().GetReplicas())
 	switch installerType {
 	case CLIInstallerType:
 		return cliInstall(service, cliName, cliFlags)
