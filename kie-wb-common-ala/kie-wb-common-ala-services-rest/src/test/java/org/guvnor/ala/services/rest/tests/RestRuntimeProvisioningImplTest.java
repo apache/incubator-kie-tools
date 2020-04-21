@@ -67,6 +67,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.commons.lifecycle.Disposable;
@@ -140,6 +141,7 @@ public class RestRuntimeProvisioningImplTest {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
     }
 
+    @Ignore("refer https://issues.redhat.com/browse/AF-2469")
     @Test
     public void testAPI() {
 
