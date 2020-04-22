@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Lists;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -119,8 +120,8 @@ public class FieldPageTest {
     private ArgumentCaptor<Consumer<String>> consumer;
 
     @InjectMocks
-    private FieldPage<ConditionColumnPlugin> page = spy(new FieldPage<ConditionColumnPlugin>(view,
-                                                                                             translationService));
+    private FieldPage<ConditionColumnPlugin> page = spy(new FieldPage<>(view,
+                                                                        translationService));
 
     @BeforeClass
     public static void setupPreferences() {
@@ -218,6 +219,8 @@ public class FieldPageTest {
                                                                            translationService));
 
         doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(plugin).constraintValue();
+        doReturn(editingCol).when(plugin).editingCol();
+        doReturn("modelField3").when(editingCol).getFactField();
 
         when(page.plugin()).thenReturn(plugin);
         when(pattern52.getFactType()).thenReturn("factType");
@@ -226,10 +229,10 @@ public class FieldPageTest {
         when(oracle.hasEnums("factType",
                              "modelField2")).thenReturn(true);
 
-        final List<String> expected = new ArrayList<String>() {{
-            add("modelField1");
-            add("modelField3");
-        }};
+        final List<String> expected = new Lists.Builder<String>()
+                .add("modelField1")
+                .add("modelField3")
+                .build();
 
         final List<String> result = new ArrayList<>();
 
@@ -242,12 +245,15 @@ public class FieldPageTest {
                            DataType.TYPE_OBJECT)
         };
 
-        final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
+        final Callback<ModelField[]> fieldsCallback = page.fieldsLoadedCallback(result::add);
 
         fieldsCallback.callback(modelFields);
 
         assertEquals(expected,
                      result);
+
+        verify(view).setupEmptyFieldList();
+        verify(view).selectField("modelField3");
     }
 
     @Test
@@ -256,15 +262,16 @@ public class FieldPageTest {
 
         when(pattern52.getFactType()).thenReturn("factType");
         when(plugin.patternWrapper()).thenReturn(pattern52);
+        when(plugin.getFactField()).thenReturn("modelField3");
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(oracle.hasEnums("factType",
                              "modelField2")).thenReturn(true);
 
-        final List<String> expected = new ArrayList<String>() {{
-            add("modelField1");
-            add("modelField2");
-            add("modelField3");
-        }};
+        final List<String> expected = new Lists.Builder<String>()
+                .add("modelField1")
+                .add("modelField2")
+                .add("modelField3")
+                .build();
 
         final List<String> result = new ArrayList<>();
 
@@ -277,12 +284,15 @@ public class FieldPageTest {
                            DataType.TYPE_OBJECT)
         };
 
-        final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
+        final Callback<ModelField[]> fieldsCallback = page.fieldsLoadedCallback(result::add);
 
         fieldsCallback.callback(modelFields);
 
         assertEquals(expected,
                      result);
+
+        verify(view).setupEmptyFieldList();
+        verify(view).selectField("modelField3");
     }
 
     @Test
@@ -291,15 +301,16 @@ public class FieldPageTest {
 
         when(pattern52.getFactType()).thenReturn("factType");
         when(plugin.patternWrapper()).thenReturn(pattern52);
+        when(plugin.getFactField()).thenReturn("modelField3");
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(oracle.hasEnums("factType",
                              "modelField2")).thenReturn(false);
 
-        final List<String> expected = new ArrayList<String>() {{
-            add("modelField1");
-            add("modelField2");
-            add("modelField3");
-        }};
+        final List<String> expected = new Lists.Builder<String>()
+                .add("modelField1")
+                .add("modelField2")
+                .add("modelField3")
+                .build();
 
         final List<String> result = new ArrayList<>();
 
@@ -312,12 +323,15 @@ public class FieldPageTest {
                            DataType.TYPE_OBJECT)
         };
 
-        final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
+        final Callback<ModelField[]> fieldsCallback = page.fieldsLoadedCallback(result::add);
 
         fieldsCallback.callback(modelFields);
 
         assertEquals(expected,
                      result);
+
+        verify(view).setupEmptyFieldList();
+        verify(view).selectField("modelField3");
     }
 
     @Test
@@ -428,8 +442,6 @@ public class FieldPageTest {
 
         verify(view).enableListFieldView();
         verify(view).addItem(factField, factField);
-        verify(view).setupEmptyFieldList();
-        verify(view).selectField(factField);
     }
 
     @Test
@@ -457,9 +469,7 @@ public class FieldPageTest {
         page.setupField();
 
         verify(view).enableListFieldView();
-        verify(view).setupEmptyFieldList();
         verify(page).forEachFactField(any(Consumer.class));
-        verify(view).selectField(factField);
         verify(view, never()).enablePredicateFieldView();
     }
 

@@ -120,11 +120,8 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
 
     private void setupListFieldView() {
         view.enableListFieldView();
-        view.setupEmptyFieldList();
 
         forEachFactField((field) -> view.addItem(field, field));
-
-        view.selectField(getFactField());
     }
 
     void setupPatternWarningMessages() {
@@ -137,13 +134,13 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         plugin().setFactField(selectedValue);
     }
 
-    void forEachFactField(Consumer<String> consumer) {
+    void forEachFactField(Consumer<String> loadedFieldConsumer) {
         if (hasEditingPattern()) {
             final AsyncPackageDataModelOracle oracle = presenter.getDataModelOracle();
 
             oracle.getFieldCompletions(factType(),
                                        getAccessor(),
-                                       fieldsCallback(consumer));
+                                       fieldsLoadedCallback(loadedFieldConsumer));
         }
     }
 
@@ -185,22 +182,26 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         return plugin().isBindable();
     }
 
-    Callback<ModelField[]> fieldsCallback(Consumer<String> consumer) {
+    Callback<ModelField[]> fieldsLoadedCallback(Consumer<String> loadedFieldConsumer) {
         final AsyncPackageDataModelOracle oracle = presenter.getDataModelOracle();
 
         return modelFields -> {
             final List<String> fieldNames = collectNames(modelFields);
+
+            view.setupEmptyFieldList();
 
             if (filterEnumFields()) {
                 fieldNames
                         .stream()
                         .filter(fieldName -> !oracle.hasEnums(factType(),
                                                               fieldName))
-                        .forEach(consumer);
+                        .forEach(loadedFieldConsumer);
             } else {
                 fieldNames
-                        .forEach(consumer);
+                        .forEach(loadedFieldConsumer);
             }
+
+            view.selectField(getFactField());
         };
     }
 
