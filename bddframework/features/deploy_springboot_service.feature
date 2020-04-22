@@ -59,3 +59,29 @@ Feature: Deploy spring boot service
     # Implement retrieving of job information from Jobs service once https://issues.redhat.com/browse/KOGITO-1163 is fixed
     Then Kogito application "process-timer-springboot" log contains text "Before timer" within 1 minutes
     And Kogito application "process-timer-springboot" log contains text "After timer" within 1 minutes
+
+#####
+
+  @events
+  @persistence
+  Scenario: Data Index retrieves Spring Boot process' events
+    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    And Install Kogito Data Index with 1 replicas
+    And Deploy spring boot example service "process-springboot-example" with configuration:
+      | config | persistence | enabled  |
+      | config | events      | enabled  |
+    And Kogito application "process-springboot-example" has 1 pods running within 10 minutes
+    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
+
+    When HTTP POST request on service "process-springboot-example" with path "orders" and body:
+      """json
+      {
+        "approver" : "john", 
+        "order" : {
+          "orderNumber" : "12345", 
+          "shipped" : false
+        }
+      }
+      """
+
+    Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
