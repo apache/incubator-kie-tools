@@ -15,6 +15,7 @@
  */
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import { KogitoEditor } from "./KogitoEditor";
 import { ResourceContentService, Router, KogitoEdit } from "@kogito-tooling/core-api";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
@@ -26,6 +27,7 @@ import * as nodePath from "path";
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
+  private readonly jobRegistry: KogitoEditorJobRegistry;
   private readonly webviewLocation: string;
   private readonly router: Router;
 
@@ -33,15 +35,22 @@ export class KogitoEditorFactory {
     context: vscode.ExtensionContext,
     router: Router,
     webviewLocation: string,
-    editorStore: KogitoEditorStore
+    editorStore: KogitoEditorStore,
+    jobRegistry: KogitoEditorJobRegistry
   ) {
     this.context = context;
     this.editorStore = editorStore;
+    this.jobRegistry = jobRegistry;
     this.router = router;
     this.webviewLocation = webviewLocation;
   }
 
-  public configureNew(uri: vscode.Uri, webviewPanel: vscode.WebviewPanel, signalEdit: (edit: KogitoEdit) => void) {
+  public configureNew(
+    uri: vscode.Uri,
+    initialBackup: vscode.Uri | undefined,
+    webviewPanel: vscode.WebviewPanel,
+    signalEdit: (edit: KogitoEdit) => void
+  ) {
     const path = uri.fsPath;
     if (path.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
@@ -59,12 +68,14 @@ export class KogitoEditorFactory {
 
     const editor = new KogitoEditor(
       workspacePath,
-      path,
+      uri,
+      initialBackup,
       webviewPanel,
       this.context,
       this.router,
       this.webviewLocation,
       this.editorStore,
+      this.jobRegistry,
       contentService,
       signalEdit
     );

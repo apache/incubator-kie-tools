@@ -15,21 +15,43 @@
  */
 
 import * as vscode from "vscode";
-import { CancellationToken, CustomDocument, Uri, WebviewPanel } from "vscode";
+import * as fs from "fs";
+import {
+  CancellationToken,
+  Uri,
+  WebviewPanel,
+  CustomDocumentOpenContext,
+  CustomDocumentEditEvent,
+  CustomDocumentBackupContext,
+  CustomDocumentBackup,
+  CustomEditorProvider,
+  EventEmitter
+} from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { KogitoEdit } from "@kogito-tooling/core-api";
 
-export class KogitoWebviewProvider implements vscode.CustomEditorProvider<KogitoEdit> {
-
+export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
   private readonly viewType: string;
-  private readonly editorFactory: KogitoEditorFactory;
-  public readonly editingDelegate: KogitoEditingDelegate;
 
-  public constructor(viewType: string, editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
+  private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
+  public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
+
+  private readonly editorFactory: KogitoEditorFactory;
+  private readonly editorStore: KogitoEditorStore;
+  private readonly context: vscode.ExtensionContext;
+
+  public constructor(
+    viewType: string,
+    editorFactory: KogitoEditorFactory,
+    editorStore: KogitoEditorStore,
+    context: vscode.ExtensionContext
+  ) {
     this.viewType = viewType;
     this.editorFactory = editorFactory;
-    this.editingDelegate = editingDelegate;
+    this.editorStore = editorStore;
+    this.context = context;
   }
 
   public register() {
@@ -40,32 +62,81 @@ export class KogitoWebviewProvider implements vscode.CustomEditorProvider<Kogito
     });
   }
 
-  public resolveCustomEditor(
-    document: CustomDocument<KogitoEdit>,
+  public async resolveCustomEditor(
+    document: KogitoEditableDocument,
     webviewPanel: WebviewPanel,
-    token: CancellationToken
-  ) {
-    this.editorFactory.configureNew(document.uri, webviewPanel, edit => {
-      this.editingDelegate.notifyEdit(document, edit);
+    cancellation: CancellationToken
+  ): Promise<void> {
+    this.editorFactory.configureNew(document.uri, document.initialBackup, webviewPanel, (edit: KogitoEdit) =>
+      document.notifyEdit(edit)
+    );
+  }
+
+  public async openCustomDocument(
+    uri: Uri,
+    openContext: CustomDocumentOpenContext,
+    cancellation: CancellationToken
+  ): Promise<KogitoEditableDocument> {
+    this.createStorageFolder();
+    const document = new KogitoEditableDocument(uri, this.resolveBackup(openContext.backupId), this.editorStore);
+    this.setupListeners(document);
+    return document;
+  }
+
+  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken): Promise<void> {
+    return document.save(document.uri, cancellation);
+  }
+
+  public async saveCustomDocumentAs(
+    document: KogitoEditableDocument,
+    destination: Uri,
+    cancellation: CancellationToken
+  ): Promise<void> {
+    return document.save(destination, cancellation);
+  }
+
+  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken): Promise<void> {
+    return document.revert(cancellation);
+  }
+
+  public backupCustomDocument(
+    document: KogitoEditableDocument,
+    context: CustomDocumentBackupContext,
+    cancellation: CancellationToken
+  ): Promise<CustomDocumentBackup> {
+    return document.backup(context.destination, cancellation);
+  }
+
+  private createStorageFolder() {
+    const storagePath = this.context.storagePath!;
+
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath);
+    }
+  }
+
+  private setupListeners(document: KogitoEditableDocument) {
+    const listeners: vscode.Disposable[] = [];
+
+    listeners.push(
+      document.onDidChange(e => {
+        this._onDidChangeCustomDocument.fire({
+          document,
+          ...e
+        });
+      })
+    );
+
+    document.onDidDispose(() => {
+      listeners.forEach(listener => listener.dispose());
     });
   }
 
-  public openCustomDocument(uri: Uri, token: CancellationToken) {
-    return new KogitoCustomDocument(uri);
-  }
-}
+  private resolveBackup(backupId: string | undefined): Uri | undefined {
+    if (!backupId || !fs.existsSync(backupId)) {
+      return undefined;
+    }
 
-class KogitoCustomDocument implements CustomDocument<KogitoEdit> {
-  public readonly savedEdits: ReadonlyArray<KogitoEdit>;
-  public readonly appliedEdits: ReadonlyArray<KogitoEdit>;
-  public readonly isClosed: boolean;
-  public readonly isDirty: boolean;
-  public readonly isUntitled: boolean;
-  public readonly onDidDispose: vscode.Event<void>;
-  public readonly version: number;
-  public readonly uri: Uri;
-
-  constructor(uri: Uri) {
-    this.uri = uri;
+    return Uri.file(backupId);
   }
 }

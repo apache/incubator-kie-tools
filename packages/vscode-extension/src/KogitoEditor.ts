@@ -19,6 +19,7 @@ import * as fs from "fs";
 import { parse } from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEditorJobRegistry, JobType } from "./KogitoEditorJobRegistry";
 import {
   EditorContent,
   KogitoEdit,
@@ -31,35 +32,46 @@ import {
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
 
-  private readonly path: string;
+  private readonly uri: vscode.Uri;
   private readonly relativePath: string;
   private readonly webviewLocation: string;
   private readonly context: vscode.ExtensionContext;
   private readonly router: Router;
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
+  private readonly jobRegistry: KogitoEditorJobRegistry;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
   private readonly resourceContentService: ResourceContentService;
   private readonly signalEdit: (edit: KogitoEdit) => void;
 
+  private readonly encoder = new TextEncoder();
+  private readonly decoder = new TextDecoder("utf-8");
+
+  get busId(): string {
+    return this.envelopeBusOuterMessageHandler.busId;
+  }
+
   public constructor(
     relativePath: string,
-    path: string,
+    uri: vscode.Uri,
+    initialBackup: vscode.Uri | undefined,
     panel: vscode.WebviewPanel,
     context: vscode.ExtensionContext,
     router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
+    jobRegistry: KogitoEditorJobRegistry,
     resourceContentService: ResourceContentService,
     signalEdit: (edit: KogitoEdit) => void
   ) {
     this.relativePath = relativePath;
-    this.path = path;
+    this.uri = uri;
     this.panel = panel;
     this.context = context;
     this.router = router;
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
+    this.jobRegistry = jobRegistry;
     this.resourceContentService = resourceContentService;
     this.signalEdit = signalEdit;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
@@ -73,17 +85,27 @@ export class KogitoEditor {
           self.request_initResponse("vscode");
         },
         receive_languageRequest: () => {
-          const pathFileExtension = this.path.split(".").pop()!;
+          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
           self.respond_languageRequest(this.router.getLanguageData(pathFileExtension));
         },
         receive_contentResponse: (content: EditorContent) => {
-          fs.writeFileSync(this.path, content.content);
-          vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+          const fileJob = this.jobRegistry.resolve(self.busId);
+          if (fileJob && !fileJob.cancellation.isCancellationRequested) {
+            vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
+              if (fileJob.type === JobType.SAVE) {
+                vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+              }
+              this.jobRegistry.execute(self.busId);
+            });
+          }
         },
         receive_contentRequest: () => {
-          self.respond_contentRequest({
-            content: fs.readFileSync(this.path).toString(),
-            path: this.relativePath
+          vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
+            initialBackup = undefined;
+            self.respond_contentRequest({
+              content: this.decoder.decode(contentArray),
+              path: this.relativePath
+            });
           });
         },
         receive_setContentError: (errorMessage: string) => {
@@ -103,18 +125,18 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
-          this.notify_editorUndo(edits);
+        notify_editorUndo: () => {
+          this.notify_editorUndo();
         },
-        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
-          this.notify_editorRedo(edits);
+        notify_editorRedo: () => {
+          this.notify_editorRedo();
         },
         receive_newEdit: (edit: KogitoEdit) => {
           this.notify_newEdit(edit);
         },
         receive_previewRequest: preview => {
           if (preview) {
-            const parsedPath = parse(this.path);
+            const parsedPath = parse(this.uri.fsPath);
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         }
@@ -132,16 +154,49 @@ export class KogitoEditor {
       : titleWithoutDirtyIndicator;
   }
 
-  public requestSave() {
+  public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
+    return this.requestSaveOnPath(destination, JobType.SAVE, cancellation);
+  }
+
+  public async requestBackup(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
+    return this.requestSaveOnPath(destination, JobType.BACKUP, cancellation);
+  }
+
+  public async deleteBackup(destination: vscode.Uri): Promise<void> {
+    await vscode.workspace.fs.delete(destination);
+  }
+
+  private async requestSaveOnPath(
+    destination: vscode.Uri,
+    type: JobType,
+    cancellation: vscode.CancellationToken
+  ): Promise<void> {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
+
+    return new Promise<void>(resolve =>
+      this.jobRegistry.register(this.busId, {
+        type: type,
+        target: destination,
+        consumer: resolve,
+        cancellation: cancellation
+      })
+    );
   }
 
-  public notify_editorUndo(edits: ReadonlyArray<KogitoEdit>) {
-    this.envelopeBusOuterMessageHandler.notify_editorUndo(edits);
+  public async notify_editorRevert(): Promise<void> {
+    const content = this.decoder.decode(await vscode.workspace.fs.readFile(this.uri));
+    this.envelopeBusOuterMessageHandler.respond_contentRequest({
+      content: content,
+      path: this.relativePath
+    });
   }
 
-  public notify_editorRedo(edits: ReadonlyArray<KogitoEdit>) {
-    this.envelopeBusOuterMessageHandler.notify_editorRedo(edits);
+  public async notify_editorUndo(): Promise<void> {
+    this.envelopeBusOuterMessageHandler.notify_editorUndo();
+  }
+
+  public async notify_editorRedo(): Promise<void> {
+    this.envelopeBusOuterMessageHandler.notify_editorRedo();
   }
 
   public notify_newEdit(edit: KogitoEdit) {
@@ -195,8 +250,8 @@ export class KogitoEditor {
     return this.router.getRelativePathTo(this.webviewLocation);
   }
 
-  public hasPath(path: string) {
-    return this.path === path;
+  public hasUri(uri: vscode.Uri) {
+    return this.uri === uri;
   }
 
   public isActive() {
