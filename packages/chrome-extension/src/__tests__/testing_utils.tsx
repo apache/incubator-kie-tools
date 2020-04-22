@@ -24,7 +24,7 @@ import { Dependencies } from "../app/Dependencies";
 
 export function usingTestingGlobalContext(
   children: React.ReactElement,
-  ctx?: Pick<GlobalContextType, keyof GlobalContextType>
+  ctx?: Partial<GlobalContextType>
 ) {
   const usedCtx = {
     id: "test-extension123",

@@ -220,7 +220,7 @@ describe("SingleEditorToolbar", () => {
     );
 
     fireEvent.click(component.getByTestId("copy-link-button"));
-    await waitForElementToBeRemoved(() => component.queryByTestId("link-copied-alert"));
+    await waitForElementToBeRemoved(() => component.queryByTestId("link-copied-alert"), { timeout: 10000 });
     expect(component.asFragment()).toMatchSnapshot();
   });
 });

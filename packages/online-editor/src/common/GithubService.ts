@@ -125,25 +125,44 @@ export class GithubService {
     };
   }
 
+  private octokitGet(fileInfo: FileInfo) {
+    return this.octokit.repos.getContents({
+      repo: fileInfo.repo,
+      owner: fileInfo.org,
+      ref: fileInfo.gitRef,
+      path: fileInfo.path,
+      headers: {
+        "If-None-Match": ""
+      }
+    });
+  }
+
   public fetchGithubFile(fileUrl: string): Promise<string> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
 
-    return this.octokit.repos
-      .getContents({
-        repo: fileInfo.repo,
-        owner: fileInfo.org,
-        ref: fileInfo.gitRef,
-        path: fileInfo.path,
-        headers: {
-          "If-None-Match": ""
-        }
-      })
+    return this.octokitGet(fileInfo)
       .then(res => atob((res.data as any).content))
       .catch(e => {
         console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
         return fetch(
           `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
-        ).then(res => (res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.")));
+        ).then(res => {
+          return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.");
+        });
+      });
+  }
+
+  public checkFileExistence(fileUrl: string): Thenable<boolean> {
+    const fileInfo = this.retrieveFileInfo(fileUrl);
+
+    return this.octokitGet(fileInfo)
+      .then(res => true)
+      .catch(octokitError => {
+        return fetch(
+          `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
+        )
+          .then(res => res.ok)
+          .catch(fetchError => false);
       });
   }
 
