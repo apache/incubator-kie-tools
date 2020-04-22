@@ -67,7 +67,7 @@ Feature: Deploy spring boot service
   Scenario: Data Index retrieves Spring Boot process' events
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
-    And Deploy spring boot example service "process-springboot-example" with configuration:
+    And Deploy springboot example service "process-springboot-example" with configuration:
       | config | persistence | enabled  |
       | config | events      | enabled  |
     And Kogito application "process-springboot-example" has 1 pods running within 10 minutes
