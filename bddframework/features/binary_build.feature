@@ -21,7 +21,7 @@ Feature: Use binary build to deploy the service
 #####
 
   @quarkus
-  Scenario Outline: Deploy process-quarkus-example using binary build
+  Scenario Outline: Deploy process-quarkus-example using binary build with native <native>
     Given Clone Kogito examples into local directory
     And Local example service "process-quarkus-example" is built by Maven using profile "<profile>"
 
@@ -36,4 +36,8 @@ Feature: Use binary build to deploy the service
   Examples:
       | profile | native   |
       | default | disabled |
+  
+  @native
+  Examples:
+      | profile | native   |
       | native  | enabled  |

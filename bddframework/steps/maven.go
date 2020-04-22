@@ -28,13 +28,13 @@ func registerMavenSteps(s *godog.Suite, data *Data) {
 // Build local service
 func (data *Data) localServiceBuiltByMaven(serviceName string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
-	_, err := framework.CreateCommand("mvn", "clean", "package").InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
+	_, err := framework.CreateCommand("mvn", "clean", "package", "-DskipTests").InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
 
 // Build local service
 func (data *Data) localServiceBuiltByMavenWithProfile(serviceName, profile string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
-	_, err := framework.CreateCommand("mvn", "clean", "package", "-P"+profile).InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
+	_, err := framework.CreateCommand("mvn", "clean", "package", "-DskipTests", "-P"+profile).InDirectory(serviceRepositoryPath).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
