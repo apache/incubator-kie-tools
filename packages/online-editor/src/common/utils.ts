@@ -15,11 +15,13 @@
  */
 
 export function extractFileExtension(fileName: string) {
-  return fileName
-    .split(".")
-    .pop()
-    ?.match(/[\w\d]+/)
-    ?.pop();
+  return fileName.match(/[\.]/)
+    ? fileName
+        .split(".")
+        ?.pop()
+        ?.match(/[\w\d]+/)
+        ?.pop()
+    : undefined;
 }
 
 export function removeFileExtension(fileName: string) {
