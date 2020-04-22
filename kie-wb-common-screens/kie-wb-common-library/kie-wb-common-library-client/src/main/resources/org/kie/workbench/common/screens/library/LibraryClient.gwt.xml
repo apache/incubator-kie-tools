@@ -7,8 +7,6 @@
 
   <inherits name="com.google.gwt.i18n.I18N"/>
 
-  <inherits name="org.uberfire.UberfireClientAll"/>
-
   <inherits name="org.kie.workbench.common.screens.library.LibraryAPI"/>
 
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>

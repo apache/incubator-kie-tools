@@ -26,9 +26,7 @@
   <inherits name="com.google.gwt.user.User"/>
 
   <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
-  <inherits name="org.kie.soup.project.datamodel.commons.ProjectDataModelCommons"/>
 
-  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
 
 </module>
