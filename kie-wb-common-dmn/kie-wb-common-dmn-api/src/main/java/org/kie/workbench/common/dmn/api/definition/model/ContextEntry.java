@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -36,6 +37,13 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
 
     private InformationItem variable;
     private Expression expression;
+
+    public ContextEntry copy() {
+        final ContextEntry clonedContextEntry = new ContextEntry();
+        clonedContextEntry.variable = Optional.ofNullable(variable).map(InformationItem::copy).orElse(null);
+        clonedContextEntry.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
+        return clonedContextEntry;
+    }
 
     @Override
     public InformationItem getVariable() {

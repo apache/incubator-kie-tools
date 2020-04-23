@@ -21,14 +21,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiteralExpressionTest {
 
+    private static final String LITERAL_ID = "LITERAL-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String TEXT = "TEXT";
+    private static final String EXPRESSION_LANGUAGE = "EXPRESSION-LANGUAGE";
     private LiteralExpression literalExpression;
 
     @Before
@@ -49,5 +61,27 @@ public class LiteralExpressionTest {
         assertEquals(literalExpression.getRequiredComponentWidthCount(),
                      literalExpression.getComponentWidths().size());
         literalExpression.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final LiteralExpression source = new LiteralExpression(
+                new Id(LITERAL_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                null,
+                new ExpressionLanguage(EXPRESSION_LANGUAGE)
+        );
+
+        final LiteralExpression target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(LITERAL_ID, target.getId());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertEquals(TEXT, target.getText().getValue());
+        assertNull(target.getImportedValues());
+        assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
     }
 }

@@ -34,6 +34,11 @@ public class ExpressionTest {
     public void setup() {
         this.expression = new Expression() {
             @Override
+            public Expression copy() {
+                return expression;
+            }
+
+            @Override
             public int getRequiredComponentWidthCount() {
                 return 1;
             }

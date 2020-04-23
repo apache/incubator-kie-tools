@@ -16,6 +16,9 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -49,6 +52,24 @@ public class List extends Expression {
               description,
               typeRef);
         this.expression = expression;
+    }
+
+    @Override
+    public List copy() {
+        final List clonedList = new List();
+        clonedList.description = description.copy();
+        clonedList.typeRef = typeRef.copy();
+        clonedList.componentWidths = new ArrayList<>(componentWidths);
+        clonedList.expression = expression.stream().map(expressionWrapperMappingFn(clonedList)).collect(Collectors.toList());
+        return clonedList;
+    }
+
+    private Function<HasExpression, HasExpression> expressionWrapperMappingFn(final List clonedList) {
+        return exp ->
+                HasExpression.wrap(
+                        clonedList,
+                        Optional.ofNullable(exp.getExpression()).map(Expression::copy).orElse(null)
+                );
     }
 
     public java.util.List<HasExpression> getExpression() {

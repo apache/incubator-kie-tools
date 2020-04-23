@@ -23,10 +23,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,6 +41,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class FunctionDefinitionTest {
 
+    private static final String FUNCTION_ID = "FUNCTION-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private FunctionDefinition functionDefinition;
 
     @Before
@@ -72,5 +79,22 @@ public class FunctionDefinitionTest {
         assertEquals(functionDefinition.getRequiredComponentWidthCount(),
                      functionDefinition.getComponentWidths().size());
         functionDefinition.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final FunctionDefinition source = new FunctionDefinition();
+        source.setId(new Id(FUNCTION_ID));
+        source.setDescription(new Description(DESCRIPTION));
+        source.setTypeRef(BuiltInType.BOOLEAN.asQName());
+        source.setKind(FunctionDefinition.Kind.JAVA);
+
+        final FunctionDefinition target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(FUNCTION_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertEquals(FunctionDefinition.Kind.JAVA, target.getKind());
     }
 }

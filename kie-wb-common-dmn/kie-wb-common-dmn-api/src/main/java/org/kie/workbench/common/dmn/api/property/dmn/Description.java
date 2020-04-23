@@ -43,6 +43,10 @@ public class Description implements DMNProperty {
         this.value = value;
     }
 
+    public Description copy() {
+        return new Description(value);
+    }
+
     public String getValue() {
         return value;
     }

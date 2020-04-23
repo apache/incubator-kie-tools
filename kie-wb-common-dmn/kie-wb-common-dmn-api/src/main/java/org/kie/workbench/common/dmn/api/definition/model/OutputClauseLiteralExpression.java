@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -103,6 +104,16 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
         this.typeRef = typeRef;
         this.text = text;
         this.importedValues = importedValues;
+    }
+
+    public OutputClauseLiteralExpression copy() {
+        return new OutputClauseLiteralExpression(
+                new Id(),
+                description.copy(),
+                typeRef.copy(),
+                text.copy(),
+                Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null)
+        );
     }
 
     @Override

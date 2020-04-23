@@ -53,6 +53,10 @@ public class NameHolder implements DMNProperty {
         this.value = value;
     }
 
+    public NameHolder copy() {
+        return new NameHolder(value.copy());
+    }
+
     public Name getValue() {
         return value;
     }

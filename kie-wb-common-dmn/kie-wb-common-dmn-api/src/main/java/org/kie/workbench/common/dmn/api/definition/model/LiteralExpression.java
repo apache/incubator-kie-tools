@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -89,6 +91,18 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
         this.text = text;
         this.importedValues = importedValues;
         this.expressionLanguage = expressionLanguage;
+    }
+
+    @Override
+    public LiteralExpression copy() {
+        final LiteralExpression clonedLiteralExpression = new LiteralExpression();
+        clonedLiteralExpression.description = description.copy();
+        clonedLiteralExpression.typeRef = typeRef.copy();
+        clonedLiteralExpression.componentWidths = new ArrayList<>(componentWidths);
+        clonedLiteralExpression.text = text.copy();
+        clonedLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
+        clonedLiteralExpression.expressionLanguage = expressionLanguage.copy();
+        return clonedLiteralExpression;
     }
 
     // -----------------------

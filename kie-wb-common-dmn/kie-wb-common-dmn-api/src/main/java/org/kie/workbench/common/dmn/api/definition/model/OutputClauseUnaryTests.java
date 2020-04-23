@@ -73,6 +73,14 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
         this.constraintType = constraintTypeField;
     }
 
+    public OutputClauseUnaryTests copy() {
+        return new OutputClauseUnaryTests(
+                new Id(),
+                text.copy(),
+                constraintType
+        );
+    }
+
     // -----------------------
     // DMN properties
     // -----------------------

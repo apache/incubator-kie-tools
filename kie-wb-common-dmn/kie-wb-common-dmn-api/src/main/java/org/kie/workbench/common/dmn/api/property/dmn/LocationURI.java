@@ -43,6 +43,10 @@ public class LocationURI implements DMNProperty {
         this.value = value;
     }
 
+    public LocationURI copy() {
+        return new LocationURI(value);
+    }
+
     public String getValue() {
         return value;
     }

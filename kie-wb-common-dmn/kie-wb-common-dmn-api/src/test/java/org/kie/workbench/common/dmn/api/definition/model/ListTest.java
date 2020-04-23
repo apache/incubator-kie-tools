@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -24,10 +25,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,6 +43,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ListTest {
 
+    private static final String LIST_ID = "LIST_ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private org.kie.workbench.common.dmn.api.definition.model.List list;
 
     @Before
@@ -67,5 +76,23 @@ public class ListTest {
         assertEquals(list.getRequiredComponentWidthCount(),
                      list.getComponentWidths().size());
         list.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final org.kie.workbench.common.dmn.api.definition.model.List source = new org.kie.workbench.common.dmn.api.definition.model.List(
+                new Id(LIST_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new ArrayList<>()
+        );
+
+        final org.kie.workbench.common.dmn.api.definition.model.List target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(LIST_ID, target.getId());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getExpression().isEmpty());
     }
 }

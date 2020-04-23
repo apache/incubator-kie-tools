@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
 
 @ApplicationScoped
-public class DeepCloneProcess extends AbstractCloneProcess {
+public class DeepCloneProcess extends AbstractCloneProcess implements IDeepCloneProcess {
 
     private final ClassUtils classUtils;
 

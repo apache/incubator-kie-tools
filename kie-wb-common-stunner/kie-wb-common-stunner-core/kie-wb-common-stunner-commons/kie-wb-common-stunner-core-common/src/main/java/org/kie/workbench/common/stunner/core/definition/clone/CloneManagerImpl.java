@@ -34,7 +34,7 @@ public class CloneManagerImpl implements CloneManager {
     }
 
     @Inject
-    public CloneManagerImpl(DeepCloneProcess deepCloneProcess, DefaultCloneProcess defaultCloneProcess, NoneCloneProcess noneCloneProcess) {
+    public CloneManagerImpl(IDeepCloneProcess deepCloneProcess, DefaultCloneProcess defaultCloneProcess, NoneCloneProcess noneCloneProcess) {
         this.cloneProcessMap = new Maps.Builder<ClonePolicy, CloneProcess>()
                 .put(ClonePolicy.ALL, deepCloneProcess)
                 .put(ClonePolicy.DEFAULT, defaultCloneProcess)

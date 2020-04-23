@@ -23,10 +23,15 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.NONE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InputClauseUnaryTestsTest {
+
+    private static final String TEXT = "TEXT";
+    private static final String UNARY_ID = "UNARY_ID";
 
     @Test
     public void testDefaultConstraintTypeProperty() {
@@ -88,5 +93,21 @@ public class InputClauseUnaryTestsTest {
                                                                             constraintType);
 
         assertEquals(constraintType, inputClause.getConstraintType());
+    }
+
+    @Test
+    public void testCopy() {
+        final InputClauseUnaryTests source = new InputClauseUnaryTests(
+                new Id(UNARY_ID),
+                new Text(TEXT),
+                ConstraintType.ENUMERATION
+        );
+
+        final InputClauseUnaryTests target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(UNARY_ID, target.getId());
+        assertEquals(TEXT, target.getText().getValue());
+        assertEquals(ConstraintType.ENUMERATION, target.getConstraintType());
     }
 }

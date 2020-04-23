@@ -75,4 +75,14 @@ public class NameHolderTest {
         assertNotEquals(holder1.hashCode(), holder3.hashCode());
         assertNotEquals(holder2.hashCode(), holder3.hashCode());
     }
+
+    @Test
+    public void testCopy() {
+        final NameHolder source = new NameHolder(new Name(NAME));
+
+        final NameHolder target = source.copy();
+
+        assertNotNull(target);
+        assertEquals(NAME, target.getValue().getValue());
+    }
 }

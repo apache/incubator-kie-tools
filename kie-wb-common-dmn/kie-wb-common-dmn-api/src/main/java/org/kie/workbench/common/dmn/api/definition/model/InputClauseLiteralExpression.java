@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -113,6 +114,16 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
         this.typeRefHolder = new QNameHolder(typeRef);
         this.text = text;
         this.importedValues = importedValues;
+    }
+
+    public InputClauseLiteralExpression copy() {
+        final InputClauseLiteralExpression clonedInputClauseLiteralExpression = new InputClauseLiteralExpression();
+        clonedInputClauseLiteralExpression.description = description.copy();
+        clonedInputClauseLiteralExpression.typeRef = typeRef.copy();
+        clonedInputClauseLiteralExpression.typeRefHolder = typeRefHolder.copy();
+        clonedInputClauseLiteralExpression.text = text.copy();
+        clonedInputClauseLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
+        return clonedInputClauseLiteralExpression;
     }
 
     @Override

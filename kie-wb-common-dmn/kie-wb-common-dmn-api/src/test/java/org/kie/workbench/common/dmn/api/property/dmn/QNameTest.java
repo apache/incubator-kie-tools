@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBas
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class QNameTest {
@@ -75,5 +76,17 @@ public class QNameTest {
         final QName qname = new QName(BuiltInType.STRING);
         assertEquals(qname.getLocalPart(), BuiltInType.STRING.getName());
         assertEquals(qname.getNamespaceURI(), QName.NULL_NS_URI);
+    }
+
+    @Test
+    public void testCopy() {
+        final QName source = new QName(NAMESPACE_URI, LOCAL_PART, PREFIX);
+
+        final QName target = source.copy();
+
+        assertNotNull(target);
+        assertEquals(NAMESPACE_URI, target.getNamespaceURI());
+        assertEquals(LOCAL_PART, target.getLocalPart());
+        assertEquals(PREFIX, target.getPrefix());
     }
 }

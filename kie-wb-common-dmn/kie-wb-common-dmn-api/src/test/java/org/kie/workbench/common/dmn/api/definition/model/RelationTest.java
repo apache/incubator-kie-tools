@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,10 +24,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -35,6 +42,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RelationTest {
 
+    private static final String RELATION_ID = "RELATION-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private Relation relation;
 
     @Before
@@ -74,5 +83,25 @@ public class RelationTest {
         assertEquals(relation.getRequiredComponentWidthCount(),
                      relation.getComponentWidths().size());
         relation.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final Relation source = new Relation(
+                new Id(RELATION_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
+
+        final Relation target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(RELATION_ID, target.getId());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getColumn().isEmpty());
+        assertTrue(target.getRow().isEmpty());
     }
 }

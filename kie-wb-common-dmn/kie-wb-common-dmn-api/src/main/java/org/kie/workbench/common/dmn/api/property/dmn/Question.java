@@ -43,6 +43,10 @@ public class Question implements DMNProperty {
         this.value = value;
     }
 
+    public Question copy() {
+        return new Question(value);
+    }
+
     public String getValue() {
         return value;
     }

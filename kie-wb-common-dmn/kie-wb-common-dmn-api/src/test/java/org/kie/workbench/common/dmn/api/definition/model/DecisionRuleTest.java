@@ -16,16 +16,22 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -34,6 +40,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DecisionRuleTest {
 
+    private static final String DECISION_RULE_ID = "DECISION_RULE_ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private DecisionRule decisionRule;
 
     @Before
@@ -56,5 +64,18 @@ public class DecisionRuleTest {
         final List<HasTypeRef> expectedHasTypeRefs = asList(literalExpression1, literalExpression2);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testCopy() {
+        final DecisionRule source = new DecisionRule(new Id(DECISION_RULE_ID), new Description(DESCRIPTION), new ArrayList<>(), new ArrayList<>());
+
+        final DecisionRule target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(DECISION_RULE_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertTrue(target.getInputEntry().isEmpty());
+        assertTrue(target.getOutputEntry().isEmpty());
     }
 }

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
@@ -52,6 +53,17 @@ public class Relation extends Expression {
               typeRef);
         this.column = column;
         this.row = row;
+    }
+
+    @Override
+    public Relation copy() {
+        final Relation clonedRelation = new Relation();
+        clonedRelation.description = description.copy();
+        clonedRelation.typeRef = typeRef.copy();
+        clonedRelation.componentWidths = new ArrayList<>(componentWidths);
+        clonedRelation.column = column.stream().map(InformationItem::copy).collect(Collectors.toList());
+        clonedRelation.row = row.stream().map(List::copy).collect(Collectors.toList());
+        return clonedRelation;
     }
 
     public java.util.List<InformationItem> getColumn() {

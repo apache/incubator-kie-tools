@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -22,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -82,6 +84,17 @@ public class ImportedValues extends Import implements DMNPropertySet,
               importType);
         this.importedElement = importedElement;
         this.expressionLanguage = expressionLanguage;
+    }
+
+    public ImportedValues copy() {
+        ImportedValues clonedImportedValues = new ImportedValues();
+        clonedImportedValues.id = new Id();
+        clonedImportedValues.namespace = namespace;
+        clonedImportedValues.locationURI = locationURI.copy();
+        clonedImportedValues.importType = importType;
+        clonedImportedValues.importedElement = importedElement;
+        clonedImportedValues.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);
+        return clonedImportedValues;
     }
 
     // -----------------------

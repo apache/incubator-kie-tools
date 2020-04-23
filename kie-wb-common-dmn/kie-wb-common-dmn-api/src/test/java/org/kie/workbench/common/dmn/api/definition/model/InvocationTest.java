@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,10 +24,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,6 +44,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class InvocationTest {
 
+    private static final String INVOCATION_ID = "INVOCATION-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private Invocation invocation;
 
     @Before
@@ -72,5 +82,25 @@ public class InvocationTest {
         assertEquals(invocation.getRequiredComponentWidthCount(),
                      invocation.getComponentWidths().size());
         invocation.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final Invocation source = new Invocation(
+                new Id(INVOCATION_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                null,
+                new ArrayList<>()
+        );
+
+        final Invocation target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(INVOCATION_ID, target.getId());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertNull(target.getExpression());
+        assertTrue(target.getBinding().isEmpty());
     }
 }

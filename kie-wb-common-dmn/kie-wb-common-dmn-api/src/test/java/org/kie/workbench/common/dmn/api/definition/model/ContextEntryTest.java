@@ -22,10 +22,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -34,6 +41,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ContextEntryTest {
 
+    private static final String ITEM_ID = "item-id";
+    private static final String DESCRIPTION = "description";
+    private static final String INFORMATION_ITEM_NAME = "item-name";
     private ContextEntry contextEntry;
 
     @Before
@@ -60,5 +70,22 @@ public class ContextEntryTest {
         final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testCopy() {
+        final ContextEntry source = new ContextEntry();
+        final InformationItem informationItem = new InformationItem(new Id(ITEM_ID), new Description(DESCRIPTION), new Name(INFORMATION_ITEM_NAME), BuiltInType.BOOLEAN.asQName());
+        source.setVariable(informationItem);
+
+        final ContextEntry target = source.copy();
+
+        assertNotNull(target);
+        assertNull(target.getExpression());
+        assertNotNull(target.getVariable());
+        assertNotEquals(ITEM_ID, target.getVariable().getId().getValue());
+        assertEquals(DESCRIPTION, target.getVariable().getDescription().getValue());
+        assertEquals(INFORMATION_ITEM_NAME, target.getVariable().getName().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getVariable().getTypeRef());
     }
 }

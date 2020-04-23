@@ -31,6 +31,12 @@ public class RuleAnnotationClause extends DMNElement implements HasName {
         this.name = new Name();
     }
 
+    public RuleAnnotationClause copy() {
+        final RuleAnnotationClause clonedRuleAnnotationClause = new RuleAnnotationClause();
+        clonedRuleAnnotationClause.name = name.copy();
+        return clonedRuleAnnotationClause;
+    }
+
     @Override
     public Name getName() {
         return this.name;

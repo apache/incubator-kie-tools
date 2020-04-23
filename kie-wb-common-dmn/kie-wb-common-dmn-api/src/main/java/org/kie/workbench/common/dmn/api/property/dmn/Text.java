@@ -42,6 +42,10 @@ public class Text implements DMNProperty {
         this.value = value;
     }
 
+    public Text copy() {
+        return new Text(value);
+    }
+
     public String getValue() {
         return value;
     }

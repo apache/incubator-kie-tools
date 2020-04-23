@@ -17,7 +17,10 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -56,6 +59,36 @@ public class FunctionDefinition extends Expression implements HasExpression {
               description,
               typeRef);
         this.expression = expression;
+    }
+
+    @Override
+    public FunctionDefinition copy() {
+        final FunctionDefinition clonedFunctionDefinition = new FunctionDefinition();
+        clonedFunctionDefinition.description = description.copy();
+        clonedFunctionDefinition.typeRef = typeRef.copy();
+        clonedFunctionDefinition.componentWidths = new ArrayList<>(componentWidths);
+        clonedFunctionDefinition.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
+        clonedFunctionDefinition.formalParameter = cloneFormalParameterList();
+        clonedFunctionDefinition.kind = kind;
+        clonedFunctionDefinition.getAdditionalAttributes().putAll(cloneAdditionalAttributes());
+        return clonedFunctionDefinition;
+    }
+
+    private List<InformationItem> cloneFormalParameterList() {
+        return getFormalParameter()
+                .stream()
+                .map(InformationItem::copy)
+                .collect(Collectors.toList());
+    }
+
+    private Map<QName, String> cloneAdditionalAttributes() {
+        return getAdditionalAttributes().keySet()
+                .stream()
+                .map(QName::copy)
+                .collect(Collectors.toMap(
+                        typeRef -> typeRef,
+                        typeRef -> getAdditionalAttributes().get(typeRef)
+                ));
     }
 
     // -----------------------

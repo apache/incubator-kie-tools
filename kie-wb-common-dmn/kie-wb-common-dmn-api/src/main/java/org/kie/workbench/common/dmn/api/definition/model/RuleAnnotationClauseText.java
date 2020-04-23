@@ -31,6 +31,12 @@ public class RuleAnnotationClauseText extends DMNElement implements HasText {
         this.text = new Text();
     }
 
+    public RuleAnnotationClauseText copy() {
+        final RuleAnnotationClauseText clonedRuleAnnotationClauseText = new RuleAnnotationClauseText();
+        clonedRuleAnnotationClauseText.text = text.copy();
+        return clonedRuleAnnotationClauseText;
+    }
+
     @Override
     public Text getText() {
         return text;

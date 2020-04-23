@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,10 +24,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator.SUM;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,6 +44,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class DecisionTableTest {
 
+    private static final String TABLE_ID = "TABLE-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String OUTPUT_LABEL = "OUTPUT-LABEL";
     private DecisionTable decisionTable;
 
     @Before
@@ -89,5 +100,33 @@ public class DecisionTableTest {
         assertEquals(decisionTable.getRequiredComponentWidthCount(),
                      decisionTable.getComponentWidths().size());
         decisionTable.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final DecisionTable source = new DecisionTable(new Id(TABLE_ID),
+                                                       new Description(DESCRIPTION),
+                                                       BuiltInType.BOOLEAN.asQName(),
+                                                       new ArrayList<>(),
+                                                       new ArrayList<>(),
+                                                       new ArrayList<>(),
+                                                       HitPolicy.UNIQUE,
+                                                       SUM,
+                                                       DecisionTableOrientation.RULE_AS_ROW,
+                                                       OUTPUT_LABEL);
+
+        final DecisionTable target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(TABLE_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getInput().isEmpty());
+        assertTrue(target.getOutput().isEmpty());
+        assertTrue(target.getRule().isEmpty());
+        assertEquals(HitPolicy.UNIQUE, target.getHitPolicy());
+        assertEquals(SUM, target.getAggregation());
+        assertEquals(DecisionTableOrientation.RULE_AS_ROW, target.getPreferredOrientation());
+        assertEquals(OUTPUT_LABEL, target.getOutputLabel());
     }
 }

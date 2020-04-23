@@ -21,12 +21,21 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class InputClauseLiteralExpressionTest {
 
+    private static final String CLAUSE_ID = "CLAUSE_ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String TEXT = "TEXT";
     private InputClauseLiteralExpression inputClauseLiteralExpression;
 
     @Before
@@ -40,5 +49,24 @@ public class InputClauseLiteralExpressionTest {
         final List<HasTypeRef> expectedHasTypeRefs = singletonList(inputClauseLiteralExpression);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testCopy() {
+        final InputClauseLiteralExpression source = new InputClauseLiteralExpression(
+                new Id(CLAUSE_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                new ImportedValues()
+        );
+
+        final InputClauseLiteralExpression target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(CLAUSE_ID, target.getId());
+        assertEquals(TEXT, target.getText().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
     }
 }

@@ -89,6 +89,14 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
         this.constraintTypeProperty = new ConstraintTypeProperty(constraintTypeString);
     }
 
+    public InputClauseUnaryTests copy() {
+        return new InputClauseUnaryTests(
+                new Id(),
+                text.copy(),
+                ConstraintType.fromString(constraintTypeProperty.getValue())
+        );
+    }
+
     // -----------------------
     // DMN properties
     // -----------------------

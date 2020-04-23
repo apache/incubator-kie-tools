@@ -63,6 +63,10 @@ public class QName implements DMNProperty {
         this.prefix = PortablePreconditions.checkNotNull("prefix", prefix);
     }
 
+    public QName copy() {
+        return new QName(namespaceURI, localPart, prefix);
+    }
+
     public String getNamespaceURI() {
         return namespaceURI;
     }

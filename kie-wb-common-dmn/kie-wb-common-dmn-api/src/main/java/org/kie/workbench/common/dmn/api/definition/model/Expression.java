@@ -45,6 +45,12 @@ public abstract class Expression extends DMNElement implements HasTypeRef,
         this.typeRef = typeRef;
     }
 
+    /**
+     * It represents a contract for all subclasses of {@link Expression}.
+     * Its purpose is to exploit polymorphism when we deeply copy the Expression boxed inside the {@link Decision}
+     */
+    public abstract Expression copy();
+
     // -----------------------
     // DMN properties
     // -----------------------

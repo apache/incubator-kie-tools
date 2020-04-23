@@ -34,6 +34,10 @@ public class Name implements DMNProperty {
         this.value = value;
     }
 
+    public Name copy() {
+        return new Name(value);
+    }
+
     public String getValue() {
         return value;
     }

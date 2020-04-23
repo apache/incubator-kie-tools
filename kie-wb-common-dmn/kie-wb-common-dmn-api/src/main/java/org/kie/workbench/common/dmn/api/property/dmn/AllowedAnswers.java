@@ -43,6 +43,10 @@ public class AllowedAnswers implements DMNProperty {
         this.value = value;
     }
 
+    public AllowedAnswers copy() {
+        return new AllowedAnswers(value);
+    }
+
     public String getValue() {
         return value;
     }

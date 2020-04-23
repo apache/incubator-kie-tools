@@ -17,6 +17,8 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
@@ -74,6 +76,26 @@ public class DecisionTable extends Expression {
         this.aggregation = aggregation;
         this.preferredOrientation = preferredOrientation;
         this.outputLabel = outputLabel;
+    }
+
+    @Override
+    public DecisionTable copy() {
+        final DecisionTable clonedDecisionTable = new DecisionTable();
+        clonedDecisionTable.description = description.copy();
+        clonedDecisionTable.typeRef = typeRef.copy();
+        clonedDecisionTable.componentWidths = new ArrayList<>(componentWidths);
+        clonedDecisionTable.input = input.stream().map(InputClause::copy).collect(Collectors.toList());
+        clonedDecisionTable.output = output.stream().map(OutputClause::copy).collect(Collectors.toList());
+        clonedDecisionTable.rule = rule.stream().map(DecisionRule::copy).collect(Collectors.toList());
+        clonedDecisionTable.annotations = Optional.ofNullable(annotations)
+                .map(annotationEntryList ->
+                             annotationEntryList.stream().map(RuleAnnotationClause::copy).collect(Collectors.toList()))
+                .orElse(null);
+        clonedDecisionTable.hitPolicy = hitPolicy;
+        clonedDecisionTable.aggregation = aggregation;
+        clonedDecisionTable.preferredOrientation = preferredOrientation;
+        clonedDecisionTable.outputLabel = outputLabel;
+        return clonedDecisionTable;
     }
 
     public List<RuleAnnotationClause> getAnnotations() {

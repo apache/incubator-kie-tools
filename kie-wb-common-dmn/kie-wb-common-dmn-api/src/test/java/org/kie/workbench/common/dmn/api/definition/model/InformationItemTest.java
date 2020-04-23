@@ -21,14 +21,23 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class InformationItemTest {
 
+    private static final String ITEM_ID = "ITEM_ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String INFORMATION_ITEM_NAME = "INFORMATION_ITEM_NAME";
     private InformationItem informationItem;
 
     @Before
@@ -67,5 +76,18 @@ public class InformationItemTest {
         final List<HasTypeRef> expectedHasTypeRefs = singletonList(informationItem);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testCopy() {
+        final InformationItem source = new InformationItem(new Id(ITEM_ID), new Description(DESCRIPTION), new Name(INFORMATION_ITEM_NAME), BuiltInType.BOOLEAN.asQName());
+
+        final InformationItem target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(ITEM_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(INFORMATION_ITEM_NAME, target.getName().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
     }
 }

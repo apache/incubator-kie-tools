@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -34,6 +35,13 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
 
     private InformationItem parameter;
     private Expression expression;
+
+    public Binding copy() {
+        final Binding bindingCloned = new Binding();
+        bindingCloned.parameter = parameter.copy();
+        bindingCloned.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
+        return bindingCloned;
+    }
 
     public InformationItem getParameter() {
         return parameter;

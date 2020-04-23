@@ -17,6 +17,8 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
@@ -46,6 +48,18 @@ public class Context extends Expression {
         super(id,
               description,
               typeRef);
+    }
+
+    @Override
+    public Context copy() {
+        final Context clonedContext = new Context();
+        clonedContext.description = description.copy();
+        clonedContext.typeRef = typeRef.copy();
+        clonedContext.componentWidths = new ArrayList<>(componentWidths);
+        clonedContext.contextEntry = Optional.ofNullable(contextEntry)
+                .map(contextEntryList -> contextEntryList.stream().map(ContextEntry::copy).collect(Collectors.toList()))
+                .orElse(null);
+        return clonedContext;
     }
 
     public List<ContextEntry> getContextEntry() {

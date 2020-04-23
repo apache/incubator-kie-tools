@@ -95,6 +95,17 @@ public class OutputClause extends DMNElement implements HasTypeRef,
         this.typeRef = typeRef;
     }
 
+    public OutputClause copy() {
+        return new OutputClause(
+                new Id(),
+                description.copy(),
+                outputValues.copy(),
+                defaultOutputEntry.copy(),
+                name,
+                typeRef.copy()
+        );
+    }
+
     @Override
     public List<HasTypeRef> getHasTypeRefs() {
 

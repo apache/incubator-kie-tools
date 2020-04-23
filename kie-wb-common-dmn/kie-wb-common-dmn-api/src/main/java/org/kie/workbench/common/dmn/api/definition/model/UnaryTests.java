@@ -86,6 +86,16 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
         this.constraintType = constraintType;
     }
 
+    public UnaryTests copy() {
+        return new UnaryTests(
+                new Id(),
+                description.copy(),
+                text.copy(),
+                expressionLanguage.copy(),
+                constraintType
+        );
+    }
+
     // -----------------------
     // Stunner core properties
     // -----------------------

@@ -48,6 +48,10 @@ public class QNameHolder implements DMNProperty {
         this.value = value;
     }
 
+    public QNameHolder copy() {
+        return new QNameHolder(value.copy());
+    }
+
     public PropertyType getType() {
         return type;
     }

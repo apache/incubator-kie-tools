@@ -17,6 +17,8 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -55,6 +57,17 @@ public class Invocation extends Expression implements HasExpression {
               typeRef);
         this.expression = expression;
         this.binding = binding;
+    }
+
+    @Override
+    public Invocation copy() {
+        final Invocation clonedInvocation = new Invocation();
+        clonedInvocation.description = description.copy();
+        clonedInvocation.typeRef = typeRef.copy();
+        clonedInvocation.componentWidths = new ArrayList<>(componentWidths);
+        clonedInvocation.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
+        clonedInvocation.binding = binding.stream().map(Binding::copy).collect(Collectors.toList());
+        return clonedInvocation;
     }
 
     @Override

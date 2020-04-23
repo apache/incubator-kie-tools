@@ -23,10 +23,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -35,6 +40,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ContextTest {
 
+    private static final String CONTEXT_ID = "CONTEXT-ID";
+    private static final String DESCRIPTION = "DESCRIPTION";
     private Context context;
 
     @Before
@@ -67,5 +74,17 @@ public class ContextTest {
         assertEquals(context.getRequiredComponentWidthCount(),
                      context.getComponentWidths().size());
         context.getComponentWidths().forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void testCopy() {
+        final Context source = new Context(new Id(CONTEXT_ID), new Description(DESCRIPTION), BuiltInType.BOOLEAN.asQName());
+
+        final Context target = source.copy();
+
+        assertNotNull(target);
+        assertNotEquals(CONTEXT_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
     }
 }

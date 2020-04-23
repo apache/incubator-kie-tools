@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.api.property.dmn;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ExpressionLanguageTest {
 
@@ -46,5 +47,15 @@ public class ExpressionLanguageTest {
         this.expressionLanguage.setValue(VALUE);
 
         assertEquals(VALUE, expressionLanguage.getValue());
+    }
+
+    @Test
+    public void testCopy() {
+        final ExpressionLanguage source = new ExpressionLanguage(VALUE);
+
+        final ExpressionLanguage target = source.copy();
+
+        assertNotNull(target);
+        assertEquals(VALUE, target.getValue());
     }
 }

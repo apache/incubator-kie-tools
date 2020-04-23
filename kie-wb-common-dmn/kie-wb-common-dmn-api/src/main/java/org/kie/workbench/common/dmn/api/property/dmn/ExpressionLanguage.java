@@ -43,6 +43,10 @@ public class ExpressionLanguage implements DMNProperty {
         this.value = value;
     }
 
+    public ExpressionLanguage copy() {
+        return new ExpressionLanguage(value);
+    }
+
     public String getValue() {
         return value;
     }
