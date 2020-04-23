@@ -52,7 +52,6 @@
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
     <version.org.kie.soup>${version.org.kie}</version.org.kie.soup>
-    <version.com.google.jsinterop.base>1.0.0-beta-1</version.com.google.jsinterop.base>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.Element;
 import elemental2.dom.ImageData;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub(Array.class)
+@WithClassesToStub(JsArray.class)
 public class C2SContext2DTest {
 
     private C2SContext2D c2SContext2D;
@@ -46,10 +46,10 @@ public class C2SContext2DTest {
     private Element element;
 
     @Mock
-    private Array groupStack;
+    private JsArray groupStack;
 
     @Mock
-    private Array stack;
+    private JsArray stack;
 
     @Mock
     private CanvasRenderingContext2D nativeContext;

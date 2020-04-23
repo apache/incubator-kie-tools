@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.dom.CanvasGradient;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLCanvasElement;
@@ -253,10 +253,10 @@ class C2S {
     public final native void __applyStyleState(Object styleState);
 
     @JsProperty
-    public Array __groupStack;
+    public JsArray __groupStack;
 
     @JsProperty
-    public Array __stack;
+    public JsArray __stack;
 
     @JsProperty
     public Element __currentElement;
