@@ -17,6 +17,7 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -49,6 +50,11 @@ public class JGitFileSystemProxy implements JGitFileSystem {
         this.fsName = fsName;
 
         this.cachedSupplier = cachedSupplier;
+    }
+
+    @Override
+    public void setPublicURI(Map<String, String> fullHostNames) {
+        cachedSupplier.get().setPublicURI(fullHostNames);
     }
 
     @Override

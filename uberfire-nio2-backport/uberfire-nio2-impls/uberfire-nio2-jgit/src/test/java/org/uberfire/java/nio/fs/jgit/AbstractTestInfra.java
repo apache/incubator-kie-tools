@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -78,6 +79,8 @@ public abstract class AbstractTestInfra {
             this.content = content;
         }
     }
+
+    private static final String PROTOCOL_SEPARATOR = "://";
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractTestInfra.class);
 
@@ -268,8 +271,9 @@ public abstract class AbstractTestInfra {
 
     /**
      * Creates mock hook in defined hooks directory.
+     *
      * @param hooksDirectory Directory in which mock hook is created.
-     * @param hookName Name of the created hook. This is the filename of created hook file.
+     * @param hookName       Name of the created hook. This is the filename of created hook file.
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
@@ -285,10 +289,11 @@ public abstract class AbstractTestInfra {
 
     /**
      * Tests if defined hook was executed or not.
-     * @param gitRepoName Name of test git repository that is created for committing changes.
+     *
+     * @param gitRepoName    Name of test git repository that is created for committing changes.
      * @param testedHookName Tested hook name. This hook is checked for its execution.
-     * @param wasExecuted Expected hook execution state. If true, test expects that defined hook is executed.
-     * If false, test expects that defined hook is not executed.
+     * @param wasExecuted    Expected hook execution state. If true, test expects that defined hook is executed.
+     *                       If false, test expects that defined hook is not executed.
      * @throws IOException
      */
     void testHook(final String gitRepoName,
@@ -354,5 +359,12 @@ public abstract class AbstractTestInfra {
                 .map(s -> prefix + s)
                 .reduce((s1, s2) -> s1 + "\n" + s2)
                 .orElse("");
+    }
+
+    protected static boolean checkProtocolPresent(String hostNames, String protocolName) {
+        final String[] uris = hostNames.toString().split("\\r?\\n");
+        return Arrays.stream(uris)
+                .map(uri -> uri.substring(0, uri.indexOf(PROTOCOL_SEPARATOR)))
+                .anyMatch(uri -> Objects.equals(uri, protocolName));
     }
 }
