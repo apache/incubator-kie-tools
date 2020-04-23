@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.BlurEvent;
-import elemental2.dom.Element.OnchangeCallbackFn;
+import elemental2.dom.Element.OnchangeFn;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLInputElement;
 import org.junit.Before;
@@ -97,7 +97,7 @@ public class DayTimeSelectorViewTest {
         doNothing().when(minutesInput).setAttribute("data-old", minutesInput.value);
         doNothing().when(secondsInput).setAttribute("data-old", secondsInput.value);
 
-        final OnchangeCallbackFn onChangeHandler = mock(OnchangeCallbackFn.class);
+        final OnchangeFn onChangeHandler = mock(OnchangeFn.class);
         doReturn(onChangeHandler).when(view).getOnChangeHandler();
         daysInput.onchange = null;
         hoursInput.onchange = null;

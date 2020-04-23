@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.documentation.common;
 
 import java.util.List;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -36,7 +36,7 @@ public class DMNDocumentationDRD {
 
     private String drdBoxedExpressionImage;
 
-    private Array<DMNDocumentationExternalLink> drdExternalLinks;
+    private JsArray<DMNDocumentationExternalLink> drdExternalLinks;
 
     private boolean hasExternalLinks;
 
@@ -85,7 +85,7 @@ public class DMNDocumentationDRD {
     }
 
     @JsOverlay
-    public final Array<DMNDocumentationExternalLink> getDrdExternalLinks() {
+    public final JsArray<DMNDocumentationExternalLink> getDrdExternalLinks() {
         return drdExternalLinks;
     }
 

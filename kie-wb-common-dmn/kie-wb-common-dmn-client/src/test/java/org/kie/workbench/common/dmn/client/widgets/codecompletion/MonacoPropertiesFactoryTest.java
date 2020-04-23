@@ -26,7 +26,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.core.RegExp;
+import elemental2.core.JsRegExp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -453,7 +453,7 @@ public class MonacoPropertiesFactoryTest {
 
         final String pattern = "pattern";
         final String name = "name";
-        final RegExp regExp = mock(RegExp.class);
+        final JsRegExp regExp = mock(JsRegExp.class);
         final JSONObject jsonRegExp = mock(JSONObject.class);
         final JSONString jsonName = mock(JSONString.class);
         final JSONArray expectedRow = mock(JSONArray.class);

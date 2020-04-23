@@ -23,7 +23,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import elemental2.core.RegExp;
+import elemental2.core.JsRegExp;
 import jsinterop.base.Js;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoLanguages.ProvideCompletionItemsFunction;
 
@@ -165,7 +165,7 @@ public class MonacoPropertiesFactory {
     }
 
     /*
-     * This methods returns a collection of IShortMonarchLanguageRule1[RegExp, IMonarchLanguageAction]
+     * This methods returns a collection of IShortMonarchLanguageRule1[JsRegExpt, IMonarchLanguageAction]
      * https://microsoft.github.io/monaco-editor/api/modules/monaco.languages.html#ishortmonarchlanguagerule1
      * Each item from the 'root' array represents a rule:
      * - 1st rule     - occurrences of booleans' are marked as "feel-boolean"
@@ -399,8 +399,8 @@ public class MonacoPropertiesFactory {
         return jsonObject.getJavaScriptObject();
     }
 
-    RegExp makeRegExp(final String pattern) {
-        return new RegExp(pattern);
+    JsRegExp makeRegExp(final String pattern) {
+        return new JsRegExp(pattern);
     }
 
     JSONArray makeJSONArray() {

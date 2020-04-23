@@ -37,7 +37,7 @@ public class HTMLDownloadHelper {
         document.body.appendChild(fileDownload);
         fileDownload.href = ENCODING + source;
         fileDownload.download = filename + FILE_EXTENSION;
-        fileDownload.click();
+        fileDownload.onclick = (e) -> null;
         document.body.removeChild(fileDownload);
     }
 }

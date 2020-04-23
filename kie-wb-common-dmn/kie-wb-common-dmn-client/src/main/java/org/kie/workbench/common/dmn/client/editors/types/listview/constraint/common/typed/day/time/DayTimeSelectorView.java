@@ -140,7 +140,7 @@ public class DayTimeSelectorView implements DayTimeSelector.View {
         daysInput.select();
     }
 
-    Element.OnchangeCallbackFn getOnChangeHandler() {
+    Element.OnchangeFn getOnChangeHandler() {
         return e -> {
             getOnValueChangedConsumer().ifPresent(consumer -> consumer.accept(e));
             return true;

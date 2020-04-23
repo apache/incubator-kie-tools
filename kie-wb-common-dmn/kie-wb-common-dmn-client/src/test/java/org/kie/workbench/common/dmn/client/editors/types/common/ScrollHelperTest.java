@@ -91,7 +91,7 @@ public class ScrollHelperTest {
     public void testAnimatedScrollToBottomWithOneArgument() {
 
         final Element element = mock(Element.class);
-        final double scrollHeight = 123;
+        final int scrollHeight = 123;
 
         element.scrollHeight = scrollHeight;
         doNothing().when(scrollHelper).animatedScrollToBottom(any(), anyDouble());

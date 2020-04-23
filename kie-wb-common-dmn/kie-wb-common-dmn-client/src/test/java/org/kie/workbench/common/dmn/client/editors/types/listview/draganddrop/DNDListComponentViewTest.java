@@ -909,15 +909,15 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final ClientRect rect = mock(ClientRect.class);
 
         event.x = 100;
-        clientRect.left = 25;
+        rect.left = 25;
         draggingElement.style = mock(CSSStyleDeclaration.class);
         dragArea.offsetWidth = 300;
 
         when(presenter.getIndentationSize()).thenReturn(50);
-        when(dragArea.getBoundingClientRect()).thenReturn(clientRect);
+        when(dragArea.getBoundingClientRect()).thenReturn(rect);
         doReturn(draggingElement).when(view).getDragging();
 
         view.updateDraggingElementX(event);
@@ -930,15 +930,15 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final ClientRect rect = mock(ClientRect.class);
 
         event.x = 1000;
-        clientRect.left = 25;
+        rect.left = 25;
         draggingElement.style = mock(CSSStyleDeclaration.class);
         dragArea.offsetWidth = 300;
 
         when(presenter.getIndentationSize()).thenReturn(50);
-        when(dragArea.getBoundingClientRect()).thenReturn(clientRect);
+        when(dragArea.getBoundingClientRect()).thenReturn(rect);
         doReturn(draggingElement).when(view).getDragging();
 
         view.updateDraggingElementX(event);
@@ -951,15 +951,15 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final ClientRect rect = mock(ClientRect.class);
 
         event.x = -1000;
-        clientRect.left = 25;
+        rect.left = 25;
         draggingElement.style = mock(CSSStyleDeclaration.class);
         dragArea.offsetWidth = 300;
 
         when(presenter.getIndentationSize()).thenReturn(50);
-        when(dragArea.getBoundingClientRect()).thenReturn(clientRect);
+        when(dragArea.getBoundingClientRect()).thenReturn(rect);
         doReturn(draggingElement).when(view).getDragging();
 
         view.updateDraggingElementX(event);
@@ -972,15 +972,15 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final ClientRect rect = mock(ClientRect.class);
 
         event.y = 100;
-        clientRect.top = 25;
+        rect.top = 25;
         draggingElement.style = mock(CSSStyleDeclaration.class);
         dragArea.offsetHeight = 300;
 
         when(presenter.getItemHeight()).thenReturn(50);
-        when(dragArea.getBoundingClientRect()).thenReturn(clientRect);
+        when(dragArea.getBoundingClientRect()).thenReturn(rect);
         doReturn(draggingElement).when(view).getDragging();
 
         final int actualYPosition = view.getNewDraggingYPosition(event);
@@ -994,15 +994,15 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final ClientRect rect = mock(ClientRect.class);
 
         event.y = 1000;
-        clientRect.top = 25;
+        rect.top = 25;
         draggingElement.style = mock(CSSStyleDeclaration.class);
         dragArea.offsetHeight = 300;
 
         when(presenter.getItemHeight()).thenReturn(50);
-        when(dragArea.getBoundingClientRect()).thenReturn(clientRect);
+        when(dragArea.getBoundingClientRect()).thenReturn(rect);
         doReturn(draggingElement).when(view).getDragging();
 
         final int actualYPosition = view.getNewDraggingYPosition(event);

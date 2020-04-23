@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.DataResource;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -49,9 +49,9 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     private String moduleName;
 
-    private Array<DMNDocumentationDataType> dataTypes;
+    private JsArray<DMNDocumentationDataType> dataTypes;
 
-    private Array<DMNDocumentationDRD> drds;
+    private JsArray<DMNDocumentationDRD> drds;
 
     private List<DMNDocumentationDataType> dataTypesList;
 
@@ -131,12 +131,12 @@ public class DMNDocumentation implements DiagramDocumentation {
     }
 
     @JsOverlay
-    public final Array<DMNDocumentationDataType> getDataTypes() {
+    public final JsArray<DMNDocumentationDataType> getDataTypes() {
         return dataTypes;
     }
 
     @JsOverlay
-    public final Array<DMNDocumentationDRD> getDrds() {
+    public final JsArray<DMNDocumentationDRD> getDrds() {
         return drds;
     }
 
@@ -172,8 +172,8 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     @JsOverlay
     @SuppressWarnings("unchecked")
-    static <T> Array<T> asJsArray(final List<T> javaList) {
-        final Array<T> jsArray = new Array<>();
+    static <T> JsArray<T> asJsArray(final List<T> javaList) {
+        final JsArray<T> jsArray = new JsArray<>();
         javaList.forEach(jsArray::push);
         return jsArray;
     }

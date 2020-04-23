@@ -422,7 +422,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                                   public void onError(final ClientRuntimeError error) {
                                                       AbstractDMNDiagramEditor.this.getEditor().onLoadError(error);
                                                       failure.onInvoke(error);
-
                                                   }
                                               });
                 });

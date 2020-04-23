@@ -46,7 +46,7 @@ public class TimePicker {
 
     private HTMLInputElement inputBind;
 
-    private Element.OnblurCallbackFn previousCallback;
+    private Element.OnblurFn previousCallback;
 
     private Consumer<Moment> onDateChanged;
 

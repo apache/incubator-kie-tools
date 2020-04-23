@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
-import elemental2.dom.Element.OnclickCallbackFn;
+import elemental2.dom.Element.OnclickFn;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
@@ -360,12 +360,12 @@ public class DataTypeListItemViewTest {
         final Element arrow = mock(Element.class);
         final Element addDataTypeRow = mock(Element.class);
         final Element removeButton = mock(Element.class);
-        final OnclickCallbackFn onEditAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onSaveAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onCloseAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onArrowClickAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onAddDataTypeRowAction = mock(OnclickCallbackFn.class);
-        final OnclickCallbackFn onRemoveButtonAction = mock(OnclickCallbackFn.class);
+        final OnclickFn onEditAction = mock(OnclickFn.class);
+        final OnclickFn onSaveAction = mock(OnclickFn.class);
+        final OnclickFn onCloseAction = mock(OnclickFn.class);
+        final OnclickFn onArrowClickAction = mock(OnclickFn.class);
+        final OnclickFn onAddDataTypeRowAction = mock(OnclickFn.class);
+        final OnclickFn onRemoveButtonAction = mock(OnclickFn.class);
 
         doReturn(editButton).when(view).getEditButton();
         doReturn(saveButton).when(view).getSaveButton();
@@ -400,7 +400,7 @@ public class DataTypeListItemViewTest {
     @Test
     public void testOnArrowClickEvent() {
 
-        final OnclickCallbackFn action = view.getOnArrowClickAction();
+        final OnclickFn action = view.getOnArrowClickAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
@@ -409,7 +409,7 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testOnAddDataTypeRowAction() {
-        final OnclickCallbackFn action = view.getOnAddDataTypeRowAction();
+        final OnclickFn action = view.getOnAddDataTypeRowAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
@@ -418,7 +418,7 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testOnRemoveButton() {
-        final OnclickCallbackFn action = view.getOnRemoveButtonAction();
+        final OnclickFn action = view.getOnRemoveButtonAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
@@ -427,7 +427,7 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testOnEditClick() {
-        final OnclickCallbackFn action = view.getOnEditAction();
+        final OnclickFn action = view.getOnEditAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
@@ -436,7 +436,7 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testOnSaveClick() {
-        final OnclickCallbackFn action = view.getOnSaveAction();
+        final OnclickFn action = view.getOnSaveAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
@@ -445,7 +445,7 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testOnCloseClick() {
-        final OnclickCallbackFn action = view.getOnCloseAction();
+        final OnclickFn action = view.getOnCloseAction();
 
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 

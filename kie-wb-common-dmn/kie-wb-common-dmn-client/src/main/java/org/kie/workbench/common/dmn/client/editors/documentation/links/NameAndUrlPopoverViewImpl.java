@@ -127,7 +127,7 @@ public class NameAndUrlPopoverViewImpl extends AbstractPopoverViewImpl implement
         attachmentNameInput.onkeyup = getOnKeyUpHandler();
     }
 
-    Element.OnkeyupCallbackFn getOnKeyUpHandler() {
+    Element.OnkeyupFn getOnKeyUpHandler() {
         return e -> {
             okButton.disabled = StringUtils.isEmpty(urlInput.value) || StringUtils.isEmpty(attachmentNameInput.value);
             return true;
