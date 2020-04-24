@@ -33,10 +33,19 @@ operator-sdk generate csv --csv-version "$new_version" --from-version "$old_vers
 
 # rewrite test default config, all other configuration into the file will be overridden
 test_config_file="test/.default_config"
-image_version=`echo "${new_version}" | awk -F. '{print \$1"."\$2}'`
+current_branch=`git branch --show-current`
+
+if [ "${current_branch}" = "master" ]; then
+    image_version="latest"
+    branch="${current_branch}"
+else
+    image_version=`echo "${new_version}" | awk -F. '{print \$1"."\$2}'`
+    branch="${image_version}.x"
+fi
+
 rm ${test_config_file}
 echo "tests.build-image-version=${image_version}" >> ${test_config_file}
 echo "tests.services-image-version=${image_version}" >> ${test_config_file}
-echo "tests.examples-ref=${image_version}.x" >> ${test_config_file}
+echo "tests.examples-ref=${branch}" >> ${test_config_file}
 
 echo "Version bumped from $old_version to $new_version"
