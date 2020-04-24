@@ -30,16 +30,20 @@ describe("FilesPage", () => {
     const openFile = jest.fn();
     const openFileByPath = jest.fn();
 
-    render(usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper);
+    const component = render(
+      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+    );
 
-    expect(document.body).toMatchSnapshot();
+    expect(component.asFragment()).toMatchSnapshot();
   });
 
   test("three recent files listed", () => {
     const openFile = jest.fn();
     const openFileByPath = jest.fn();
 
-    render(usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper);
+    const component = render(
+      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+    );
 
     act(() =>
       electron.ipcRenderer.send("returnLastOpenedFiles", {
@@ -50,14 +54,16 @@ describe("FilesPage", () => {
         ]
       })
     );
-    expect(document.body).toMatchSnapshot();
+    expect(component.asFragment()).toMatchSnapshot();
   });
 
   test("three recent files listed ordered alphabetically", () => {
     const openFile = jest.fn();
     const openFileByPath = jest.fn();
 
-    render(usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper);
+    const component = render(
+      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+    );
 
     act(() =>
       electron.ipcRenderer.send("returnLastOpenedFiles", {
@@ -69,7 +75,7 @@ describe("FilesPage", () => {
       })
     );
 
-    fireEvent.click(screen.getByTestId("orderAlphabeticallyButton"));
-    expect(document.body).toMatchSnapshot();
+    fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
+    expect(component.asFragment()).toMatchSnapshot();
   });
 });

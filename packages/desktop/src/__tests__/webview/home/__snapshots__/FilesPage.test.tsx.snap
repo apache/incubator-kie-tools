@@ -1,1013 +1,1007 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FilesPage empty page 1`] = `
-<body>
-  <div>
-    <section
-      class="pf-c-page__main-section"
+<DocumentFragment>
+  <section
+    class="pf-c-page__main-section"
+  >
+    <div
+      class="pf-c-content"
     >
-      <div
-        class="pf-c-content"
-      >
-        <h2
-          class="pf-c-title pf-m-2xl"
-        >
-          Create new file
-        </h2>
-      </div>
-      <div
-        class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
-      >
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card kogito--desktop__actions-card--wide"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl"
-            >
-              Open from source
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-c-content"
-            >
-              <p
-                class=""
-                data-pf-content="true"
-              >
-                Paste a URL to a source code link (GitHub, Dropbox, etc.)
-              </p>
-              <form
-                class="pf-c-form"
-                novalidate=""
-              >
-                <div
-                  class="pf-c-form__group"
-                >
-                  <label
-                    class="pf-c-form__label"
-                    for="url-text-input"
-                  >
-                    <span
-                      class="pf-c-form__label-text"
-                    >
-                      URL
-                    </span>
-                  </label>
-                  <input
-                    aria-describedby="url-text-input-helper"
-                    aria-invalid="false"
-                    class="pf-c-form-control"
-                    id="url-text-input"
-                    name="urlText"
-                    placeholder="URL"
-                    required=""
-                    type="url"
-                    value=""
-                  />
-                </div>
-              </form>
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <button
-              class="pf-c-button pf-m-secondary"
-              type="button"
-            >
-              Open from source
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-light"
-    >
-      <h3
+      <h2
         class="pf-c-title pf-m-2xl"
       >
-        Recent Files
-      </h3>
-      <div
-        class="pf-l-toolbar"
+        Create new file
+      </h2>
+    </div>
+    <div
+      class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
+    >
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-l-toolbar__group"
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card kogito--desktop__actions-card--wide"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+          >
+            Open from source
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
         >
           <div
-            class="pf-c-select"
-            style="width: 7em;"
+            class="pf-c-content"
           >
-            <button
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby=" pf-toggle-id-0"
-              class="pf-c-select__toggle"
-              id="pf-toggle-id-0"
-              type="button"
+            <p
+              class=""
+              data-pf-content="true"
+            >
+              Paste a URL to a source code link (GitHub, Dropbox, etc.)
+            </p>
+            <form
+              class="pf-c-form"
+              novalidate=""
             >
               <div
-                class="pf-c-select__toggle-wrapper"
+                class="pf-c-form__group"
               >
-                <span
-                  class="pf-c-select__toggle-text"
+                <label
+                  class="pf-c-form__label"
+                  for="url-text-input"
                 >
-                  All
-                </span>
-              </div>
-              <svg
-                aria-hidden="true"
-                class="pf-c-select__toggle-arrow"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 320 512"
-                width="1em"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                  transform=""
+                  <span
+                    class="pf-c-form__label-text"
+                  >
+                    URL
+                  </span>
+                </label>
+                <input
+                  aria-describedby="url-text-input-helper"
+                  aria-invalid="false"
+                  class="pf-c-form-control"
+                  id="url-text-input"
+                  name="urlText"
+                  placeholder="URL"
+                  required=""
+                  type="url"
+                  value=""
                 />
-              </svg>
-            </button>
+              </div>
+            </form>
           </div>
         </div>
         <div
-          class="pf-l-toolbar__group"
-        >
-          <div
-            class="pf-c-input-group"
-          >
-            <input
-              aria-invalid="false"
-              aria-label="search input example"
-              class="pf-c-form-control"
-              id="searchInput"
-              name="searchInput"
-              placeholder="Search"
-              type="search"
-              value=""
-            />
-          </div>
-        </div>
-        <div
-          class="pf-l-toolbar__item"
+          class="pf-c-card__footer"
         >
           <button
-            aria-label="sort file view"
-            class="pf-c-button pf-m-plain kogito--filter-btn"
-            data-testid="orderAlphabeticallyButton"
+            class="pf-c-button pf-m-secondary"
             type="button"
           >
+            Open from source
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-light"
+  >
+    <h3
+      class="pf-c-title pf-m-2xl"
+    >
+      Recent Files
+    </h3>
+    <div
+      class="pf-l-toolbar"
+    >
+      <div
+        class="pf-l-toolbar__group"
+      >
+        <div
+          class="pf-c-select"
+          style="width: 7em;"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-labelledby=" pf-toggle-id-0"
+            class="pf-c-select__toggle"
+            id="pf-toggle-id-0"
+            type="button"
+          >
+            <div
+              class="pf-c-select__toggle-wrapper"
+            >
+              <span
+                class="pf-c-select__toggle-text"
+              >
+                All
+              </span>
+            </div>
             <svg
               aria-hidden="true"
+              class="pf-c-select__toggle-arrow"
               fill="currentColor"
               height="1em"
               role="img"
               style="vertical-align: -0.125em;"
-              viewBox="0 0 448 512"
+              viewBox="0 0 320 512"
               width="1em"
             >
               <path
-                d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
                 transform=""
               />
             </svg>
           </button>
         </div>
       </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-fill"
-    >
       <div
-        class="pf-l-bullseye"
+        class="pf-l-toolbar__group"
       >
-        No files were opened yet.
+        <div
+          class="pf-c-input-group"
+        >
+          <input
+            aria-invalid="false"
+            aria-label="search input example"
+            class="pf-c-form-control"
+            id="searchInput"
+            name="searchInput"
+            placeholder="Search"
+            type="search"
+            value=""
+          />
+        </div>
       </div>
-    </section>
-  </div>
-</body>
+      <div
+        class="pf-l-toolbar__item"
+      >
+        <button
+          aria-label="sort file view"
+          class="pf-c-button pf-m-plain kogito--filter-btn"
+          data-testid="orderAlphabeticallyButton"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            style="vertical-align: -0.125em;"
+            viewBox="0 0 448 512"
+            width="1em"
+          >
+            <path
+              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+              transform=""
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-fill"
+  >
+    <div
+      class="pf-l-bullseye"
+    >
+      No files were opened yet.
+    </div>
+  </section>
+</DocumentFragment>
 `;
 
 exports[`FilesPage three recent files listed 1`] = `
-<body>
-  <div>
-    <section
-      class="pf-c-page__main-section"
+<DocumentFragment>
+  <section
+    class="pf-c-page__main-section"
+  >
+    <div
+      class="pf-c-content"
     >
-      <div
-        class="pf-c-content"
-      >
-        <h2
-          class="pf-c-title pf-m-2xl"
-        >
-          Create new file
-        </h2>
-      </div>
-      <div
-        class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
-      >
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card kogito--desktop__actions-card--wide"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl"
-            >
-              Open from source
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-c-content"
-            >
-              <p
-                class=""
-                data-pf-content="true"
-              >
-                Paste a URL to a source code link (GitHub, Dropbox, etc.)
-              </p>
-              <form
-                class="pf-c-form"
-                novalidate=""
-              >
-                <div
-                  class="pf-c-form__group"
-                >
-                  <label
-                    class="pf-c-form__label"
-                    for="url-text-input"
-                  >
-                    <span
-                      class="pf-c-form__label-text"
-                    >
-                      URL
-                    </span>
-                  </label>
-                  <input
-                    aria-describedby="url-text-input-helper"
-                    aria-invalid="false"
-                    class="pf-c-form-control"
-                    id="url-text-input"
-                    name="urlText"
-                    placeholder="URL"
-                    required=""
-                    type="url"
-                    value=""
-                  />
-                </div>
-              </form>
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <button
-              class="pf-c-button pf-m-secondary"
-              type="button"
-            >
-              Open from source
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-light"
-    >
-      <h3
+      <h2
         class="pf-c-title pf-m-2xl"
       >
-        Recent Files
-      </h3>
-      <div
-        class="pf-l-toolbar"
+        Create new file
+      </h2>
+    </div>
+    <div
+      class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
+    >
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-l-toolbar__group"
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card kogito--desktop__actions-card--wide"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+          >
+            Open from source
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
         >
           <div
-            class="pf-c-select"
-            style="width: 7em;"
+            class="pf-c-content"
           >
-            <button
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby=" pf-toggle-id-3"
-              class="pf-c-select__toggle"
-              id="pf-toggle-id-3"
-              type="button"
+            <p
+              class=""
+              data-pf-content="true"
+            >
+              Paste a URL to a source code link (GitHub, Dropbox, etc.)
+            </p>
+            <form
+              class="pf-c-form"
+              novalidate=""
             >
               <div
-                class="pf-c-select__toggle-wrapper"
+                class="pf-c-form__group"
               >
-                <span
-                  class="pf-c-select__toggle-text"
+                <label
+                  class="pf-c-form__label"
+                  for="url-text-input"
                 >
-                  All
-                </span>
-              </div>
-              <svg
-                aria-hidden="true"
-                class="pf-c-select__toggle-arrow"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 320 512"
-                width="1em"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                  transform=""
+                  <span
+                    class="pf-c-form__label-text"
+                  >
+                    URL
+                  </span>
+                </label>
+                <input
+                  aria-describedby="url-text-input-helper"
+                  aria-invalid="false"
+                  class="pf-c-form-control"
+                  id="url-text-input"
+                  name="urlText"
+                  placeholder="URL"
+                  required=""
+                  type="url"
+                  value=""
                 />
-              </svg>
-            </button>
+              </div>
+            </form>
           </div>
         </div>
         <div
-          class="pf-l-toolbar__group"
-        >
-          <div
-            class="pf-c-input-group"
-          >
-            <input
-              aria-invalid="false"
-              aria-label="search input example"
-              class="pf-c-form-control"
-              id="searchInput"
-              name="searchInput"
-              placeholder="Search"
-              type="search"
-              value=""
-            />
-          </div>
-        </div>
-        <div
-          class="pf-l-toolbar__item"
+          class="pf-c-card__footer"
         >
           <button
-            aria-label="sort file view"
-            class="pf-c-button pf-m-plain kogito--filter-btn"
-            data-testid="orderAlphabeticallyButton"
+            class="pf-c-button pf-m-secondary"
             type="button"
           >
+            Open from source
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-light"
+  >
+    <h3
+      class="pf-c-title pf-m-2xl"
+    >
+      Recent Files
+    </h3>
+    <div
+      class="pf-l-toolbar"
+    >
+      <div
+        class="pf-l-toolbar__group"
+      >
+        <div
+          class="pf-c-select"
+          style="width: 7em;"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-labelledby=" pf-toggle-id-3"
+            class="pf-c-select__toggle"
+            id="pf-toggle-id-3"
+            type="button"
+          >
+            <div
+              class="pf-c-select__toggle-wrapper"
+            >
+              <span
+                class="pf-c-select__toggle-text"
+              >
+                All
+              </span>
+            </div>
             <svg
               aria-hidden="true"
+              class="pf-c-select__toggle-arrow"
               fill="currentColor"
               height="1em"
               role="img"
               style="vertical-align: -0.125em;"
-              viewBox="0 0 448 512"
+              viewBox="0 0 320 512"
               width="1em"
             >
               <path
-                d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
                 transform=""
               />
             </svg>
           </button>
         </div>
       </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-fill"
-    >
       <div
-        class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
+        class="pf-l-toolbar__group"
       >
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
+        <div
+          class="pf-c-input-group"
         >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              b.dmn
-            </h3>
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
-        >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              a.dmn
-            </h3>
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
-        >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              c.dmn
-            </h3>
-          </div>
-        </article>
+          <input
+            aria-invalid="false"
+            aria-label="search input example"
+            class="pf-c-form-control"
+            id="searchInput"
+            name="searchInput"
+            placeholder="Search"
+            type="search"
+            value=""
+          />
+        </div>
       </div>
-    </section>
-  </div>
-</body>
+      <div
+        class="pf-l-toolbar__item"
+      >
+        <button
+          aria-label="sort file view"
+          class="pf-c-button pf-m-plain kogito--filter-btn"
+          data-testid="orderAlphabeticallyButton"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            style="vertical-align: -0.125em;"
+            viewBox="0 0 448 512"
+            width="1em"
+          >
+            <path
+              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+              transform=""
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-fill"
+  >
+    <div
+      class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
+    >
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            b.dmn
+          </h3>
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            a.dmn
+          </h3>
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            c.dmn
+          </h3>
+        </div>
+      </article>
+    </div>
+  </section>
+</DocumentFragment>
 `;
 
 exports[`FilesPage three recent files listed ordered alphabetically 1`] = `
-<body>
-  <div>
-    <section
-      class="pf-c-page__main-section"
+<DocumentFragment>
+  <section
+    class="pf-c-page__main-section"
+  >
+    <div
+      class="pf-c-content"
     >
-      <div
-        class="pf-c-content"
-      >
-        <h2
-          class="pf-c-title pf-m-2xl"
-        >
-          Create new file
-        </h2>
-      </div>
-      <div
-        class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
-      >
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Blank Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Workflow (.BPMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl pf-u-mb-md"
-            >
-              Sample Decision Model (.DMN)
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body kogito--desktop__actions-card-body"
-          >
-            <img
-              alt="file icon"
-              class="kogito--desktop__actions-img"
-              src="images/sample_file_icon_regular.svg"
-            />
-          </div>
-        </article>
-        <article
-          class="pf-c-card kogito--desktop__actions-card--wide"
-        >
-          <div
-            class="pf-c-card__header pf-c-title pf-m-md"
-          >
-            <h3
-              class="pf-c-title pf-m-xl"
-            >
-              Open from source
-            </h3>
-          </div>
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-c-content"
-            >
-              <p
-                class=""
-                data-pf-content="true"
-              >
-                Paste a URL to a source code link (GitHub, Dropbox, etc.)
-              </p>
-              <form
-                class="pf-c-form"
-                novalidate=""
-              >
-                <div
-                  class="pf-c-form__group"
-                >
-                  <label
-                    class="pf-c-form__label"
-                    for="url-text-input"
-                  >
-                    <span
-                      class="pf-c-form__label-text"
-                    >
-                      URL
-                    </span>
-                  </label>
-                  <input
-                    aria-describedby="url-text-input-helper"
-                    aria-invalid="false"
-                    class="pf-c-form-control"
-                    id="url-text-input"
-                    name="urlText"
-                    placeholder="URL"
-                    required=""
-                    type="url"
-                    value=""
-                  />
-                </div>
-              </form>
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <button
-              class="pf-c-button pf-m-secondary"
-              type="button"
-            >
-              Open from source
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-light"
-    >
-      <h3
+      <h2
         class="pf-c-title pf-m-2xl"
       >
-        Recent Files
-      </h3>
-      <div
-        class="pf-l-toolbar"
+        Create new file
+      </h2>
+    </div>
+    <div
+      class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
+    >
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-l-toolbar__group"
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Blank Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Workflow (.BPMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl pf-u-mb-md"
+          >
+            Sample Decision Model (.DMN)
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body kogito--desktop__actions-card-body"
+        >
+          <img
+            alt="file icon"
+            class="kogito--desktop__actions-img"
+            src="images/sample_file_icon_regular.svg"
+          />
+        </div>
+      </article>
+      <article
+        class="pf-c-card kogito--desktop__actions-card--wide"
+      >
+        <div
+          class="pf-c-card__header pf-c-title pf-m-md"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+          >
+            Open from source
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
         >
           <div
-            class="pf-c-select"
-            style="width: 7em;"
+            class="pf-c-content"
           >
-            <button
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby=" pf-toggle-id-8"
-              class="pf-c-select__toggle"
-              id="pf-toggle-id-8"
-              type="button"
+            <p
+              class=""
+              data-pf-content="true"
+            >
+              Paste a URL to a source code link (GitHub, Dropbox, etc.)
+            </p>
+            <form
+              class="pf-c-form"
+              novalidate=""
             >
               <div
-                class="pf-c-select__toggle-wrapper"
+                class="pf-c-form__group"
               >
-                <span
-                  class="pf-c-select__toggle-text"
+                <label
+                  class="pf-c-form__label"
+                  for="url-text-input"
                 >
-                  All
-                </span>
-              </div>
-              <svg
-                aria-hidden="true"
-                class="pf-c-select__toggle-arrow"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 320 512"
-                width="1em"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                  transform=""
+                  <span
+                    class="pf-c-form__label-text"
+                  >
+                    URL
+                  </span>
+                </label>
+                <input
+                  aria-describedby="url-text-input-helper"
+                  aria-invalid="false"
+                  class="pf-c-form-control"
+                  id="url-text-input"
+                  name="urlText"
+                  placeholder="URL"
+                  required=""
+                  type="url"
+                  value=""
                 />
-              </svg>
-            </button>
+              </div>
+            </form>
           </div>
         </div>
         <div
-          class="pf-l-toolbar__group"
-        >
-          <div
-            class="pf-c-input-group"
-          >
-            <input
-              aria-invalid="false"
-              aria-label="search input example"
-              class="pf-c-form-control"
-              id="searchInput"
-              name="searchInput"
-              placeholder="Search"
-              type="search"
-              value=""
-            />
-          </div>
-        </div>
-        <div
-          class="pf-l-toolbar__item"
+          class="pf-c-card__footer"
         >
           <button
-            aria-label="sort file view"
-            class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
-            data-testid="orderAlphabeticallyButton"
+            class="pf-c-button pf-m-secondary"
             type="button"
           >
+            Open from source
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-light"
+  >
+    <h3
+      class="pf-c-title pf-m-2xl"
+    >
+      Recent Files
+    </h3>
+    <div
+      class="pf-l-toolbar"
+    >
+      <div
+        class="pf-l-toolbar__group"
+      >
+        <div
+          class="pf-c-select"
+          style="width: 7em;"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-labelledby=" pf-toggle-id-8"
+            class="pf-c-select__toggle"
+            id="pf-toggle-id-8"
+            type="button"
+          >
+            <div
+              class="pf-c-select__toggle-wrapper"
+            >
+              <span
+                class="pf-c-select__toggle-text"
+              >
+                All
+              </span>
+            </div>
             <svg
               aria-hidden="true"
+              class="pf-c-select__toggle-arrow"
               fill="currentColor"
               height="1em"
               role="img"
               style="vertical-align: -0.125em;"
-              viewBox="0 0 448 512"
+              viewBox="0 0 320 512"
               width="1em"
             >
               <path
-                d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
                 transform=""
               />
             </svg>
           </button>
         </div>
       </div>
-    </section>
-    <section
-      class="pf-c-page__main-section pf-m-fill"
-    >
       <div
-        class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
+        class="pf-l-toolbar__group"
       >
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
+        <div
+          class="pf-c-input-group"
         >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              a.dmn
-            </h3>
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
-        >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              b.dmn
-            </h3>
-          </div>
-        </article>
-        <article
-          class="pf-c-card pf-m-compact kogito--desktop__files-card"
-          tabindex="0"
-        >
-          <div
-            class="pf-c-card__body"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito--desktop__file-img"
-                style="background-image: url(data:image/svg+xml,);"
-              />
-            </div>
-          </div>
-          <div
-            class="pf-c-card__footer"
-          >
-            <h3
-              class="pf-c-title kogito--desktop__filename"
-            >
-              c.dmn
-            </h3>
-          </div>
-        </article>
+          <input
+            aria-invalid="false"
+            aria-label="search input example"
+            class="pf-c-form-control"
+            id="searchInput"
+            name="searchInput"
+            placeholder="Search"
+            type="search"
+            value=""
+          />
+        </div>
       </div>
-    </section>
-  </div>
-</body>
+      <div
+        class="pf-l-toolbar__item"
+      >
+        <button
+          aria-label="sort file view"
+          class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
+          data-testid="orderAlphabeticallyButton"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            style="vertical-align: -0.125em;"
+            viewBox="0 0 448 512"
+            width="1em"
+          >
+            <path
+              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+              transform=""
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section pf-m-fill"
+  >
+    <div
+      class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
+    >
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            a.dmn
+          </h3>
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            b.dmn
+          </h3>
+        </div>
+      </article>
+      <article
+        class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
+      >
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="kogito--desktop__file-img"
+              style="background-image: url(data:image/svg+xml,);"
+            />
+          </div>
+        </div>
+        <div
+          class="pf-c-card__footer"
+        >
+          <h3
+            class="pf-c-title kogito--desktop__filename"
+          >
+            c.dmn
+          </h3>
+        </div>
+      </article>
+    </div>
+  </section>
+</DocumentFragment>
 `;
