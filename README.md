@@ -825,12 +825,21 @@ Before proceed please make sure you have checked the [requirements](#kogito-imag
 To build the images for local testing there is a [Makefile](./Makefile) which will do all the hard work for you.
 With this Makefile you can:
 
-- Build all images with only one command
+- Build and test all images with only one command:
      ```bash
      $ make
      ```
-     
-- Build images individually
+     If there's no need to run the tests just set the *ignore_test* env to true, e.g.:
+     ```bash
+     $ make ignore_test=true
+     ```
+
+- Test all images with only one command, no build triggered, set the *ignore_build* env to true, e.g.:
+     ```bash
+     $ make ignore_build=true
+     ```
+ 
+- Build images individually, by default it will build and test each image
      ```bash
      $ make kogito-quarkus-ubi8
      $ make kogito-quarkus-jvm-ubi8
@@ -841,6 +850,17 @@ With this Makefile you can:
      $ make kogito-jobs-service 
      $ make kogito-management-console
      ```
+  
+     We can ignore the build or the tests while interacting with a specific image as well, to build only:
+     ```bash
+     $ make ignore_test=true {image_name}
+
+     ```
+     
+     Or to test only:
+     ```bash
+     $ make ignore_build=true {image_name}
+     ```      
      
 - Build and Push the Images to quay or a repo for you preference, for this you need to edit the Makefile accordingly: 
       ```bash
@@ -857,6 +877,12 @@ With this Makefile you can:
       ```
       It uses the [push-staging.py](scripts/push-staging.py) script to handle the images.
 
+- Push images to a local registry for testing 
+      ```bash
+      $ make push-local-registry REGISTRY=docker-registry-default.apps.spolti.cloud NS=spolti-1
+      ```
+      It uses the [push-local-registry.sh](scripts/push-local-registry.sh) script properly tag the images and push to the
+      desired registry.
 
 #### Image Modules
 

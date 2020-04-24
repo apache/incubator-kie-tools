@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-springboot-ubi8
-
 Feature: springboot-quarkus-ubi8 feature.
 
   Scenario: verify if all labels are correctly set.
@@ -18,7 +17,6 @@ Feature: springboot-quarkus-ubi8 feature.
     Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
     And run sh -c 'echo $JAVA_VENDOR' in container and immediately check its output for openjdk
     And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 11
-
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port
     Given s2i build /tmp/kogito-examples/process-springboot-example from target

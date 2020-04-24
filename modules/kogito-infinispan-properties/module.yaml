@@ -5,7 +5,7 @@ version: "0.10.0-rc1"
 envs:
   - name: "INFINISPAN_USEAUTH"
     example: "false"
-    description: "Flag that signals to Infinispan Hotrod client to use authentication (Used to set the infinispan.client.hotrod.use_auth system property)"
+    description: "Flag that signals to Infinispan Hotrod client to use authentication (Used to set the infinispan.client.hotrod.use_auth system property). Defaults to false"
   - name: "INFINISPAN_USERNAME"
     example: "myUsername"
     description: "Username for the user credential used by the Hotrod client (Used to set the infinispan.client.hotrod.auth_username system property)"

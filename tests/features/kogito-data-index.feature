@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-data-index
-
 Feature: Kogito-data-index feature.
 
   Scenario: verify if all labels are correctly set.
@@ -69,3 +68,4 @@ Feature: Kogito-data-index feature.
       | INFINISPAN_USEAUTH              | true                   |
       | INFINISPAN_SASLMECHANISM        | PLAIN                  |
      Then container log should not contain Error: Could not find or load main class [ERROR]
+

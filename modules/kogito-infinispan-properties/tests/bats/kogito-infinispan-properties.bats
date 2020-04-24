@@ -15,13 +15,12 @@ function clear_vars() {
 
 @test "check if infinispan properties is blank" {
     clear_vars
-    local expected=""
+    local expected=" -Dquarkus.infinispan-client.use-auth=false"
     configure_infinispan_props
 
     echo "Result is ${INFINISPAN_PROPERTIES} and expected is ${expected}" >&2
     [ "${expected}" = "${INFINISPAN_PROPERTIES}" ]
 }
-
 
 @test "check if infinispan auth is false" {
     clear_vars
@@ -91,3 +90,4 @@ function clear_vars() {
     echo "Status: ${status}"
     [ "$status" -eq 1 ]
 }
+

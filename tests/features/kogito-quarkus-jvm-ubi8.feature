@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-quarkus-jvm-ubi8
-
 Feature: Kogito-quarkus-ubi8 feature.
 
   Scenario: verify if all labels are correctly set.

@@ -2,9 +2,11 @@
 # This script will be responsible to help to manage kogito images and modules version, it will update all needed files
 # Example of usage:
 #   # move the current version to the next one or rcX
-#   python manage-kogito-version --bump-to 0.99.0
+#   python scripts/manage-kogito-version.py --bump-to 0.99.0
 #
-#  The point of truth for vesion is the image.yaml.
+#   # to set a custom kogito-examples branch for the behave tests different than the defaults (sam than the version
+#   # or master for rc) use --branch-apps parameters, e.g.:
+#   python scripts/manage-kogito-version.py --bump-to 0.99.0 --apps-branch 0.10.x
 #
 # Dependencies:
 #  ruamel.yaml
@@ -41,10 +43,10 @@ BEHAVE_TESTS = {"kogito-quarkus-ubi8-s2i.feature", "kogito-springboot-ubi8-s2i.f
 
 
 def yaml_loader():
-    '''
+    """
     default yaml Loader
     :return: yaml object
-    '''
+    """
     yaml = YAML()
     yaml.preserve_quotes = True
     yaml.width = 1024
@@ -53,10 +55,10 @@ def yaml_loader():
 
 
 def update_image_version(target_version):
-    '''
+    """
     Update image.yaml version tag.
     :param target_version: version used to update the image.yaml file
-    '''
+    """
     print("Updating Image main file version from file {0} to version {1}".format(IMAGE, target_version))
     try:
         with open(IMAGE) as image:
@@ -74,17 +76,16 @@ def update_image_version(target_version):
 
 
 def update_image_stream(target_version):
-    '''
+    """
     Update the imagestream file, it will update the tag name, version and image tag.
     :param target_version: version used to update the imagestream file;
-    '''
+    """
     print("Updating ImageStream images version from file {0} to version {1}".format(IMAGE_STREAM, target_version))
     try:
         with open(IMAGE_STREAM) as imagestream:
             data = yaml_loader().load(imagestream)
             for item_index, item in enumerate(data['items'], start=0):
                 for tag_index, tag in enumerate(item['spec']['tags'], start=0):
-                    # print(tag)
                     data['items'][item_index]['spec']['tags'][tag_index]['name'] = target_version
                     data['items'][item_index]['spec']['tags'][tag_index]['annotations']['version'] = target_version
                     imageDict = str.split(data['items'][item_index]['spec']['tags'][tag_index]['from']['name'], ':')
@@ -100,10 +101,10 @@ def update_image_stream(target_version):
 
 
 def update_kogito_modules(target_version):
-    '''
+    """
     Update every module.yaml file listed on MODULES as well the envs listed on ENVS.
     :param target_version:  version used to update all needed module.yaml files
-    '''
+    """
     modules_dir = "modules"
     try:
 
@@ -126,29 +127,30 @@ def update_kogito_modules(target_version):
         raise
 
 
-def update_behave_tests(target_branch):
-    '''
+def update_behave_tests(tests_branch):
+    """
     will update the behave tests accordingly.
     If master, the app 8.0.0-SNAPSHOT otherwise use the same value for branch and version
-    :param target_branch:
-    '''
+    :param tests_branch:
+    """
     base_dir = 'tests/features'
-    artifact_version = target_branch
-    if 'master' in target_branch:
-        artifact_version = '8.0.0-SNAPSHOT'
+    # if 'master' in target_branch:
+    #     artifact_version = '8.0.0-SNAPSHOT'
 
-    # this pattern will look for any occurrencies of using master or using x.x.x
-    pattern_branch = re.compile(r'(using master)|(using \s*([\d.]+))')
-    quarkus_native_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner\s)|(\s*([\d.]+)-runner\s)')
-    quarkus_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner.jar)|(\s*([\d.]+)-runner.jar)')
-    spring_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT.jar)|(\s*([\d.]+).jar)')
+    # this pattern will look for any occurrences of using master or using x.x.x
+    pattern_branch = re.compile(r'(using master)|(using \s*([\d.]+.x))|(using \s*([\d.]+))')
+    # kogito examples does not have the version on built examples anymore, let's comment it out for now.
+    # quarkus_native_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner\s)|((\s*([\d.]+)-runner\s)|(\s*([\d.]+)-SNAPSHOT-runner\s))')
+    # quarkus_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner.jar)|((\s*([\d.]+)-runner.jar)|(\s*([\d.]+)-SNAPSHOT-runner.jar))')
+    # spring_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT.jar)|((\s*([\d.]+).jar)|(\s*([\d.]+)-SNAPSHOT.jar))')
     for feature in BEHAVE_TESTS:
         print("Updating feature {0}".format(feature))
         with open(os.path.join(base_dir, feature)) as fe:
-            updated_value = pattern_branch.sub('using ' + target_branch, fe.read())
-            updated_value = quarkus_native_pattern_app_version.sub(artifact_version + '-runner ', updated_value)
-            updated_value = quarkus_pattern_app_version.sub(artifact_version + '-runner.jar', updated_value)
-            updated_value = spring_pattern_app_version.sub(artifact_version + '.jar', updated_value)
+            updated_value = pattern_branch.sub('using ' + tests_branch, fe.read())
+            # kogito examples does not have the version on built examples anymore, let's comment it out for now.
+            # updated_value = quarkus_native_pattern_app_version.sub(tests_version + '-runner ', updated_value)
+            # updated_value = quarkus_pattern_app_version.sub(tests_version + '-runner.jar', updated_value)
+            # updated_value = spring_pattern_app_version.sub(tests_version + '.jar', updated_value)
 
         with open(os.path.join(base_dir, feature), 'w') as fe:
             fe.write(updated_value)
@@ -156,17 +158,20 @@ def update_behave_tests(target_branch):
 
 def update_test_apps_clone_repo(target_branch):
     file = 'tests/test-apps/clone-repo.sh'
+    print('Updating file {}'.format(file))
     if target_branch == 'master':
-        # os.system('sed -i \'s/^git fetch origin --tags/#git fetch origin --tags/\' ' + file)
         os.system('sed -i \'s/^git checkout.*/git checkout master/\' ' + file)
+    elif 'x' in target_branch:
+        os.system('sed -i \'s/^git checkout.*/git checkout -b ' + target_branch + '/\' ' + file)
     else:
-        # os.system('sed -i \'s/^#git fetch origin --tags/git fetch origin --tags/\' ' + file)
-        os.system('sed -i \'s/^git checkout.*/git checkout -b '+target_branch+' '+target_branch+'/\' ' + file)
+        os.system('sed -i \'s/^git checkout.*/git checkout -b ' + target_branch + ' ' + target_branch + '/\' ' + file)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kogito Version Manager')
     parser.add_argument('--bump-to', dest='bump_to', help='bump everything to the next version')
+    parser.add_argument('--apps-branch', dest='apps_branch',
+                        help='Update Behave tests to use the desired branch for kogito-examples')
 
     args = parser.parse_args()
 
@@ -176,15 +181,22 @@ if __name__ == "__main__":
         pattern = '\d.\d{1,2}.(\d$|\d-rc\d+$)'
         regex = re.compile(r'\d.\d{1,2}.(\d$|\d-rc\d+$)')
         valid = regex.match(args.bump_to)
+        tests_branch = ""
         if valid:
+            tests_branch = args.bump_to
+            if args.apps_branch is not None:
+                tests_branch = args.apps_branch
+            if 'rc' in args.bump_to:
+                tests_branch = 'master'
+
             print("Version will be updated to {0}".format(args.bump_to))
+            print("Version on behave tests examples will be updated to version {0} and branch {1}".format(args.bump_to,
+                                                                                                          tests_branch))
+            input("Is the information correct? If so press any key to continue...")
+
             update_image_version(args.bump_to)
             update_image_stream(args.bump_to)
             update_kogito_modules(args.bump_to)
-            tests_branch = args.bump_to
-            if 'rc' in args.bump_to:
-                # update the tests to use kogito examples from master branch and app versions to 8.0.0-SNAPSHOT,
-                tests_branch = 'master'
             update_behave_tests(tests_branch)
             update_test_apps_clone_repo(tests_branch)
         else:

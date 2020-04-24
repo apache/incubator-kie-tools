@@ -23,12 +23,11 @@ function configure_infinispan_props() {
         exit 1
     fi
 
-    if [ -z "${INFINISPAN_USERNAME}" ]; then
-        if [ ! -z "${INFINISPAN_USEAUTH}" ]; then
-            INFINISPAN_USEAUTH="false"
-        fi
+    # default to false if empty or any value different than true or false.
+    if  [ -z "${INFINISPAN_USEAUTH}" ] || [[ ! ${INFINISPAN_USEAUTH^^} =~ FALSE$|TRUE$ ]]; then
+        INFINISPAN_USEAUTH="false"
     fi
- 
+
     if [ ! -z "${INFINISPAN_USERNAME}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-username=${INFINISPAN_USERNAME}"); INFINISPAN_USEAUTH="true"; fi
     if [ ! -z "${INFINISPAN_PASSWORD}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.auth-password=${INFINISPAN_PASSWORD}"); fi
     if [ ! -z "${INFINISPAN_USEAUTH}" ]; then infinispan_props=$(echo "${infinispan_props} -Dquarkus.infinispan-client.use-auth=${INFINISPAN_USEAUTH}"); fi

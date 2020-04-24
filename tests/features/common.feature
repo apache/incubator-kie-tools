@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-springboot-ubi8-s2i @quay.io/kiegroup/kogito-springboot-ubi8 @quay.io/kiegroup/kogito-quarkus-ubi8-s2i @quay.io/kiegroup/kogito-quarkus-ubi8 @quay.io/kiegroup/kogito-quarkus-jvm-ubi8 @quay.io/kiegroup/kiegroup/kogito-data-index
-
 Feature: Common tests for Kogito images
 
   Scenario: Verify if Kogito user is correctly configured

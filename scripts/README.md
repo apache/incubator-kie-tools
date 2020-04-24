@@ -28,6 +28,14 @@ Its usage is pretty simple, only one parameter is accepted:
 $ python manage-kogito-version.py --bump-to 1.0.0  
 ```
 
+The script also allows you to set a custom branch for the kogito-examples repository on the behave tests. Useful for minor
+releases, e.g. 0.9.x branch.
+
+```bash
+$ python manage-kogito-version.py --bump-to 0.10.1-rc1 --apps-branch 0.10.x
+```
+
+
 The command above will update all the needed files to the version 1.0.0. These changes includes updates on
 
  - all cekit modules
