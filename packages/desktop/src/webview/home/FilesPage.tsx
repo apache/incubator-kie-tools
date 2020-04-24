@@ -49,7 +49,6 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   openFile: (file: File) => void;
@@ -128,17 +127,18 @@ export function FilesPage(props: Props) {
           ?.toUpperCase()
           .includes(searchFilter.toUpperCase())
       )
-      .filter(
-        file => {
-          const fileExtension = extractFileExtension(file.filePath)!;
-          return typeFilterSelect.value === "All" || fileExtension?.toLowerCase().includes(typeFilterSelect.value.toLowerCase());
-        }
-      );
+      .filter(file => {
+        const fileExtension = extractFileExtension(file.filePath)!;
+        return (
+          typeFilterSelect.value === "All" ||
+          fileExtension?.toLowerCase().includes(typeFilterSelect.value.toLowerCase())
+        );
+      });
 
     if (sortAlphaFilter) {
       return filteredFiles.sort((file1, file2) => {
-        const f1 = file1.filePath.toLowerCase();
-        const f2 = file2.filePath.toLowerCase();
+        const f1 = removeDirectories(file1.filePath)!.toLowerCase();
+        const f2 = removeDirectories(file2.filePath)!.toLowerCase();
 
         if (f1 < f2) {
           return -1;
@@ -244,7 +244,7 @@ export function FilesPage(props: Props) {
   useEffect(() => {
     electron.ipcRenderer.on(
       "returnLastOpenedFiles",
-      (event: IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
+      (event: electron.IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
         setLastOpenedFiles(data.lastOpenedFiles);
       }
     );
@@ -465,6 +465,7 @@ export function FilesPage(props: Props) {
               </ToolbarGroup>
               <ToolbarItem>
                 <Button
+                  data-testid="orderAlphabeticallyButton"
                   variant="plain"
                   aria-label="sort file view"
                   className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
