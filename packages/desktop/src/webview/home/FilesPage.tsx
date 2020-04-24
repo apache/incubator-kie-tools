@@ -71,7 +71,13 @@ enum ImportFileErrorType {
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
-const typeFilterOptions = [{ value: "All" }, { value: "BPMN" }, { value: "DMN" }];
+enum FileTypeFilter {
+  ALL = "All",
+  BPMN = "BPMN",
+  DMN = "DMN"
+}
+
+const typeFilterOptions = [{ value: FileTypeFilter.ALL }, { value: FileTypeFilter.BPMN }, { value: FileTypeFilter.DMN }];
 
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
@@ -84,7 +90,7 @@ export function FilesPage(props: Props) {
     description?: string;
   }>({ type: ImportFileErrorType.NONE });
 
-  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: "All" });
+  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: FileTypeFilter.ALL });
   const [searchFilter, setSearchFilter] = useState("");
   const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
 
@@ -130,7 +136,7 @@ export function FilesPage(props: Props) {
       .filter(file => {
         const fileExtension = extractFileExtension(file.filePath)!;
         return (
-          typeFilterSelect.value === "All" ||
+          typeFilterSelect.value === FileTypeFilter.ALL ||
           fileExtension?.toLowerCase().includes(typeFilterSelect.value.toLowerCase())
         );
       });
