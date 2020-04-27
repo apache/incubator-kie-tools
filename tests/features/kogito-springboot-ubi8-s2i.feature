@@ -1,7 +1,7 @@
 @quay.io/kiegroup/kogito-springboot-ubi8-s2i
 Feature: kogito-springboot-ubi8-s2i image tests
 
-  Scenario: Verify if the s2i build is finished as expected
+  Scenario: Verify if the s2i build is finished as expected with debug enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable     | value        |
       | JAVA_OPTIONS | -Ddebug=true |
@@ -12,10 +12,10 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | wait                 | 80        |
       | expected_status_code | 204       |
     And file /home/kogito/bin/process-springboot-example.jar should exist
-    And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
+    And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
-  Scenario: Verify if the s2i build is finished as expected with no runtime image
+  Scenario: Verify if the s2i build is finished as expected with no runtime image and debug enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
@@ -26,12 +26,11 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | wait                 | 80        |
       | expected_status_code | 204       |
     And file /home/kogito/bin/process-springboot-example.jar should exist
-    And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
+    And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port, test uses custom properties file to test the port configuration.
     Given s2i build /tmp/kogito-examples from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
-      | variable            | value        |
     Then check that page is served
       | property             | value     |
       | port                 | 8080      |
@@ -52,7 +51,7 @@ Feature: kogito-springboot-ubi8-s2i image tests
     And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for b19f6d73a0a1fea0bfbd8e2e30701d78
     And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 02b40df868ebda3acb3b318b6ebcc055
 
-  Scenario: Verify if the s2i build is finished as expected using multi-module build
+  Scenario: Verify if the s2i build is finished as expected using multi-module build with debug enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable          | value                              |
       | JAVA_OPTIONS      | -Ddebug=true                       |
@@ -65,7 +64,7 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | wait                 | 80        |
       | expected_status_code | 204       |
     And file /home/kogito/bin/process-springboot-example.jar should exist
-    And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
+    And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Scenario: Perform a incremental s2i build
