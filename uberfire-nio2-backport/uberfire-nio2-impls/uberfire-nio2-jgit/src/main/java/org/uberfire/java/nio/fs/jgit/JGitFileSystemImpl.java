@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -70,7 +69,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
                                                                                                  "version")));
     private final JGitFileSystemProvider provider;
     private final Git git;
-    private String toStringContent;
+    private final String toStringContent;
     private boolean isClosed = false;
     private final FileStore fileStore;
     private final String name;
@@ -107,7 +106,20 @@ public class JGitFileSystemImpl implements JGitFileSystem {
                                        credential);
         this.fsHooks = fsHooks;
         this.fileStore = new JGitFileStore(this.git.getRepository());
-        setPublicURI(fullHostNames);
+        if (fullHostNames != null && !fullHostNames.isEmpty()) {
+            final StringBuilder sb = new StringBuilder();
+            final Iterator<Map.Entry<String, String>> iterator = fullHostNames.entrySet().iterator();
+            while (iterator.hasNext()) {
+                final Map.Entry<String, String> entry = iterator.next();
+                sb.append(entry.getKey()).append("://").append(entry.getValue()).append("/").append(name);
+                if (iterator.hasNext()) {
+                    sb.append("\n");
+                }
+            }
+            toStringContent = sb.toString();
+        } else {
+            toStringContent = "git://" + name;
+        }
     }
 
     @Override
@@ -545,18 +557,6 @@ public class JGitFileSystemImpl implements JGitFileSystem {
             ctx.addParam(FileSystemHooksConstants.USER, user);
 
             JGitFSHooks.executeFSHooks(hook, FileSystemHooks.BranchAccessFilter, ctx);
-        }
-    }
-
-    @Override
-    public void setPublicURI(Map<String, String> fullHostNames) {
-        if (fullHostNames != null && !fullHostNames.isEmpty()) {
-            toStringContent = fullHostNames.entrySet()
-                    .stream()
-                    .map(e -> e.getKey() + "://" + e.getValue() + "/" + name)
-                    .collect(Collectors.joining("\n"));
-        } else {
-            toStringContent = "git://" + name;
         }
     }
 }

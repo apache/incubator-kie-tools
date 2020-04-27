@@ -24,22 +24,16 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JGitFileSystemsManagerTest {
@@ -160,45 +154,6 @@ public class JGitFileSystemsManagerTest {
         assertFalse(manager.containsRoot("fs1"));
     }
 
-    @Test
-    public void updateFSCacheEntryTest() {
-        final JGitFileSystemProvider fsProvider = mock(JGitFileSystemProvider.class);
-        JGitFileSystem fs = mock(JGitFileSystem.class);
-
-        when(fs.getName()).thenReturn("fs");
-
-        manager = createFSManager();
-
-        manager.newFileSystem(() -> new HashMap<>(),
-                              () -> git,
-                              () -> fs.getName(),
-                              () -> mock(CredentialsProvider.class),
-                              () -> mock(JGitFileSystemsEventsManager.class),
-                              () -> null);
-
-        assertTrue(manager.containsKey("fs"));
-        assertTrue(manager.containsRoot("fs"));
-
-        assertThat(manager.get("fs").toString()).isEqualTo("git://fs");
-
-        final JGitFileSystemImpl newFileSystem = new JGitFileSystemImpl(fsProvider,
-                                                                        new Maps.Builder<String, String>()
-                                                                                .put("ssh", "localhost")
-                                                                                .build(),
-                                                                        git,
-                                                                        manager.createLock(git),
-                                                                        fs.getName(),
-                                                                        mock(CredentialsProvider.class),
-                                                                        null,
-                                                                        null);
-
-        manager.updateFSCacheEntry("fs", newFileSystem);
-
-        assertThat(manager.get("fs").toString()).isEqualTo("ssh://localhost/fs");
-        assertTrue(manager.containsKey("fs"));
-        assertTrue(manager.containsRoot("fs"));
-    }
-
     private void checkParse(String fsKey,
                             List<String> expected) {
         List<String> actual = manager.parseFSRoots(fsKey);
@@ -214,7 +169,7 @@ public class JGitFileSystemsManagerTest {
 
     private JGitFileSystemsManager createFSManager() {
         return new JGitFileSystemsManager(mock(JGitFileSystemProvider.class),
-                                          config) {
+                                          config){
             @Override
             JGitFileSystemLock createLock(Git git) {
                 return mock(JGitFileSystemLock.class);

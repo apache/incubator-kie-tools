@@ -17,7 +17,6 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.ReceiveCommand;
@@ -93,7 +92,4 @@ public interface JGitFileSystem extends FileSystem,
 
     void filterBranchAccess(UploadPack uploadPack,
                             User user);
-
-    void setPublicURI(Map<String, String> fullHostNames);
-
 }

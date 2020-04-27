@@ -26,13 +26,14 @@ import java.util.stream.Collectors;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
-import org.uberfire.java.nio.file.extensions.FileSystemHooks;
+import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 
 import static org.eclipse.jgit.lib.Constants.DOT_GIT_EXT;
@@ -75,14 +76,6 @@ public class JGitFileSystemsManager {
         fsCache.addSupplier(fsName.get(),
                             fsSupplier);
         fileSystemsRoot.addAll(parseFSRoots(fsName.get()));
-    }
-
-    public void updateFSCacheEntry(String fsKey, JGitFileSystem jGitFileSystem) {
-        if (getFsCache().containsKey(fsKey)) {
-            this.remove(fsKey);
-            fsCache.addSupplier(fsKey, () -> jGitFileSystem);
-            fileSystemsRoot.addAll(parseFSRoots(fsKey));
-        }
     }
 
     List<String> parseFSRoots(String fsKey) {
