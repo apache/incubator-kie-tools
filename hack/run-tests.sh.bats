@@ -176,6 +176,18 @@
     [[ "${output}" != *"--tests.ci"* ]]
 }
 
+@test "invoke run-tests with cr_deployment_only" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --cr_deployment_only --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.cr-deployment-only" ]]
+}
+
+@test "invoke run-tests without cr_deployment_only" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.cr-deployment-only"* ]]
+}
+
 @test "invoke run-tests with load_default_config" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --load_default_config --dry_run
     [ "$status" -eq 0 ]
