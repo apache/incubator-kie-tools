@@ -264,7 +264,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
     protected void initTextBoxes() {
         subject.setMaxLength(100);
         periodBox.showLabel(false);
-        body.setMaxLength(500);
+        body.setMaxLength(65535);
         body.setHeight("70px");
 
         dateTimePicker.setValue(new Date());
