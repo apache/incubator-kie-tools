@@ -26,11 +26,14 @@ import (
 	"time"
 )
 
+// HTTPRequestResult represents the success or error of an HTTP request
 type HTTPRequestResult string
 
 const (
+	// HTTPRequestResultSuccess in case of success
 	HTTPRequestResultSuccess HTTPRequestResult = "success"
-	HTTPRequestResultError   HTTPRequestResult = "error"
+	// HTTPRequestResultError in case of error
+	HTTPRequestResultError HTTPRequestResult = "error"
 )
 
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
@@ -106,13 +109,13 @@ func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyC
 	return IsHTTPRequestSuccessfulC(&http.Client{}, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 }
 
-// IsHTTPRequestSuccessful makes and checks whether an http request is successful using a given client
+// IsHTTPRequestSuccessfulC makes and checks whether an http request is successful using a given client
 func IsHTTPRequestSuccessfulC(client *http.Client, namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
 	response, err := ExecuteHTTPRequestC(client, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
 	if err != nil {
 		return false, err
 	}
-	io.Copy(ioutil.Discard, response.Body)  // Just read the response to be able to close the connection properly
+	io.Copy(ioutil.Discard, response.Body) // Just read the response to be able to close the connection properly
 	defer response.Body.Close()
 	return checkHTTPResponseSuccessful(namespace, response), nil
 }
@@ -122,8 +125,8 @@ func IsHTTPRequestSuccessfulC(client *http.Client, namespace, httpMethod, uri, p
 // Returns error if the desired number of requests cannot be precisely divided to the threads.
 // Useful for performance testing.
 func ExecuteHTTPRequestsInThreads(namespace, httpMethod string, requestCount, threadCount int, routeURI, path, bodyFormat, bodyContent string) ([]HTTPRequestResult, error) {
-	if requestCount % threadCount != 0 {
-		return nil, fmt.Errorf("Cannot precisely divide %d requests to %d threads. Use different numbers.", requestCount, threadCount)
+	if requestCount%threadCount != 0 {
+		return nil, fmt.Errorf("Cannot precisely divide %d requests to %d threads. Use different numbers", requestCount, threadCount)
 	}
 	requestPerThread := requestCount / threadCount
 	results := make([]HTTPRequestResult, threadCount)
@@ -133,9 +136,9 @@ func ExecuteHTTPRequestsInThreads(namespace, httpMethod string, requestCount, th
 	GetLogger(namespace).Info("Starting request threads")
 	startTime := time.Now()
 
-	for threadId := 0; threadId < threadCount; threadId++ {
+	for threadID := 0; threadID < threadCount; threadID++ {
 		client := createCustomClient()
-		go runRequestRoutine(threadId, waitGroup, client, namespace, httpMethod, requestPerThread, routeURI, path, bodyFormat, bodyContent, results)
+		go runRequestRoutine(threadID, waitGroup, client, namespace, httpMethod, requestPerThread, routeURI, path, bodyFormat, bodyContent, results)
 	}
 
 	GetLogger(namespace).Info("Waiting for requests to finish")
@@ -156,22 +159,22 @@ func createCustomClient() *http.Client {
 	return client
 }
 
-func runRequestRoutine(threadId int, waitGroup *sync.WaitGroup, client *http.Client, namespace, httpMethod string, requestPerThread int, routeURI, path, bodyFormat, bodyContent string, results []HTTPRequestResult) {
+func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Client, namespace, httpMethod string, requestPerThread int, routeURI, path, bodyFormat, bodyContent string, results []HTTPRequestResult) {
 	defer waitGroup.Done()
-	GetLogger(namespace).Infof("Starting Go routine #%d", threadId)
+	GetLogger(namespace).Infof("Starting Go routine #%d", threadID)
 	for i := 0; i < requestPerThread; i++ {
 		if success, err := IsHTTPRequestSuccessfulC(client, namespace, httpMethod, routeURI, path, bodyFormat, bodyContent); err != nil {
-			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadId, err)
-			results[threadId] = HTTPRequestResultError
+			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadID, err)
+			results[threadID] = HTTPRequestResultError
 			return
 		} else if !success {
-			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadId, path)
-			results[threadId] = HTTPRequestResultError
+			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadID, path)
+			results[threadID] = HTTPRequestResultError
 			return
 		}
 	}
-	GetLogger(namespace).Infof("Go routine #%d finished", threadId)
-	results[threadId] = HTTPRequestResultSuccess
+	GetLogger(namespace).Infof("Go routine #%d finished", threadID)
+	results[threadID] = HTTPRequestResultSuccess
 }
 
 // checkHTTPResponseSuccessful checks the HTTP response is successful

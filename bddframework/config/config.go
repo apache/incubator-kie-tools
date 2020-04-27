@@ -16,8 +16,9 @@ package config
 
 import (
 	"flag"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"path/filepath"
+
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 
 	"github.com/kiegroup/kogito-cloud-operator/version"
 )
