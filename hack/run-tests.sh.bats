@@ -296,6 +296,42 @@
     [[ "${output}" != *"--tests.services-image-version"* ]]
 }
 
+@test "invoke run-tests with services_image_namespace" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.services-image-namespace=namespace" ]]
+}
+
+@test "invoke run-tests with services_image_namespace missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-namespace"* ]]
+}
+
+@test "invoke run-tests with services_image_namespace empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-namespace"* ]]
+}
+
+@test "invoke run-tests with services_image_registry" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_registry registry --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.services-image-registry=registry" ]]
+}
+
+@test "invoke run-tests with services_image_registry missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_registry --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-registry"* ]]
+}
+
+@test "invoke run-tests with services_image_registry empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_registry "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.services-image-registry"* ]]
+}
+
 @test "invoke run-tests with data_index_image_tag" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --data_index_image_tag tag --dry_run
     [ "$status" -eq 0 ]
@@ -386,6 +422,42 @@
     run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_version "" --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.build-image-version"* ]]
+}
+
+@test "invoke run-tests with build_image_namespace" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.build-image-namespace=namespace" ]]
+}
+
+@test "invoke run-tests with build_image_namespace missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-image-namespace"* ]]
+}
+
+@test "invoke run-tests with build_image_namespace empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-image-namespace"* ]]
+}
+
+@test "invoke run-tests with build_image_registry" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_registry registry --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.build-image-registry=registry" ]]
+}
+
+@test "invoke run-tests with build_image_registry missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_registry --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-image-registry"* ]]
+}
+
+@test "invoke run-tests with build_image_registry empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_registry "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-image-registry"* ]]
 }
 
 @test "invoke run-tests with build_s2i_image_tag" {
