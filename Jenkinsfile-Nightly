@@ -1,0 +1,105 @@
+//Checks master branch for updates every day
+//If found triggers the pipeline, 
+//The pipeline is set to run between 12:00AM - 3:00AM UTC
+
+pipeline{
+    agent { label 'jenkins-slave'}
+     triggers{
+        pollSCM(
+            scmpoll_spec: '@midnight', 
+            ignorePostCommitHooks: true
+        )
+    }
+    stages{
+        stage('Initialization'){
+            steps{
+                sh "docker rm -f \$(docker ps -a -q) || docker rmi -f \$(docker images -q) || date"
+            }
+        }
+        stage('Prepare offline kogito-examples'){
+            steps{
+                sh "make clone-repos"
+            }
+        }
+        stage('Build and test kogito-quarkus-ubi8 image'){
+            steps{
+                sh "make kogito-quarkus-ubi8"
+            }
+        }
+        stage('Build and test kogito-quarkus-jvm-ubi8 image'){
+            steps{
+                sh "make kogito-quarkus-jvm-ubi8"
+            }
+        }
+        stage('Build and test kogito-quarkus-ubi8-s2i image'){
+            steps{
+                sh "make kogito-quarkus-ubi8-s2i"
+            }
+        }
+        stage('Build and test kogito-springboot-ubi8 image'){
+            steps{
+                sh "make kogito-springboot-ubi8"
+            }
+        }
+        stage('Build and test kogito-springboot-ubi8-s2i image '){
+            steps{
+                sh "make kogito-springboot-ubi8-s2i"
+            }
+        }
+        stage('Build and test kogito-data-index image '){
+            steps{
+                sh "make kogito-data-index"
+            }
+        }
+        stage('Build and test kogito-jobs-service image '){
+            steps{
+                sh "make kogito-jobs-service"
+            }
+        }
+        stage('Build and test kogito-management-console image '){
+            steps{
+                sh "make kogito-management-console"
+            }
+        }
+        stage('Tagging'){
+            steps{
+                sh """
+                docker tag quay.io/kiegroup/kogito-quarkus-ubi8:latest                    quay.io/kiegroup/kogito-quarkus-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest                quay.io/kiegroup/kogito-quarkus-jvm-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest                quay.io/kiegroup/kogito-quarkus-ubi8-s2i-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-springboot-ubi8:latest                 quay.io/kiegroup/kogito-springboot-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest             quay.io/kiegroup/kogito-springboot-ubi8-s2i-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                docker tag quay.io/kiegroup/kogito-data-index:latest                      quay.io/kiegroup/kogito-data-index-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-jobs-service:latest                    quay.io/kiegroup/kogito-jobs-service-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        docker tag quay.io/kiegroup/kogito-management-console:latest              quay.io/kiegroup/kogito-management-console-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+	        """
+            }
+        }
+        stage('Pushing'){
+            steps{
+                withDockerRegistry([ credentialsId: "quay", url: "https://quay.io" ]){
+                    sh """
+                        docker push quay.io/kiegroup/kogito-quarkus-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-quarkus-jvm-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-quarkus-ubi8-s2i-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-springboot-ubi8-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-data-index-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-jobs-service-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                        docker push quay.io/kiegroup/kogito-management-console-nightly:\$(echo \${GIT_COMMIT} | cut -c1-7)
+                       """
+                }
+            }
+        }
+        stage('Finishing'){
+            steps{
+                sh "docker rmi -f \$(docker images -q) || date"
+            }
+        }
+    }
+    post{
+        always{
+            junit 'target/test/results/*.xml'
+        }
+    }
+}
