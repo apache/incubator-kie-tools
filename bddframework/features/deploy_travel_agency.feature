@@ -50,7 +50,7 @@ Feature: Deploy Travel agency service and verify its functionality
 	  {}
 	  """
 
-    Then Service "travels" contains 0 instances of process with name "travels"
+    Then Service "travels" with process name "travels" is available
 
   Scenario: Travel application with required Visa
     When Start "travels" process on service "travels" with body:
@@ -115,4 +115,4 @@ Feature: Deploy Travel agency service and verify its functionality
 	  {}
 	  """
 
-    Then Service "travels" contains 0 instances of process with name "travels"
+    Then Service "travels" with process name "travels" is available

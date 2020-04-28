@@ -31,7 +31,7 @@ Feature: Discovery with onboarding
     And Kogito application "payroll" has 1 pods running within <minutes> minutes
     And Kogito application "onboarding-quarkus" has 1 pods running within <minutes> minutes
 
-    Then HTTP POST request on service "onboarding-quarkus" is successful within 2 minutes with path "onboarding" and body:
+    Then Start "onboarding" process on service "onboarding-quarkus" within 2 minutes with body:
       """json
       { 
         "employee" : {
@@ -84,7 +84,7 @@ Feature: Discovery with onboarding
     And Kogito application "payroll" has 1 pods running within 10 minutes
     And Kogito application "onboarding-springboot" has 1 pods running within 10 minutes
 
-    Then HTTP POST request on service "onboarding-springboot" is successful within 2 minutes with path "onboarding" and body:
+    Then Start "onboarding" process on service "onboarding-springboot" within 2 minutes with body:
       """json
       { 
         "employee" : {

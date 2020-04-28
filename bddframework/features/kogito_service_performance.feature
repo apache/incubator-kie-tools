@@ -16,7 +16,7 @@ Feature: Kogito Service Performance
       | config      | native       | <native> |
       | runtime-env | JAVA_OPTIONS | -Xmx8G   |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
+    And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
 
     When <requests> HTTP POST requests with report using 100 threads on service "process-quarkus-example" with path "orders" and body:
       """json
@@ -29,8 +29,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then Service "process-quarkus-example" contains <requests> instances of process with name "orders" within 1 minutes
+    And Service "process-quarkus-example" contains <requests> instances of process with name "orderItems" within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
@@ -60,7 +60,7 @@ Feature: Kogito Service Performance
       | config      | persistence  | enabled  |
       | runtime-env | JAVA_OPTIONS | -Xmx8G   |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
+    And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
 
     When <requests> HTTP POST requests with report using 100 threads on service "process-quarkus-example" with path "orders" and body:
       """json
@@ -73,8 +73,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then Service "process-quarkus-example" contains <requests> instances of process with name "orders" within 1 minutes
+    And Service "process-quarkus-example" contains <requests> instances of process with name "orderItems" within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
 
@@ -101,7 +101,7 @@ Feature: Kogito Service Performance
     And Deploy springboot example service "process-springboot-example" with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx8G |
     And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
+    And Service "process-springboot-example" with process name "orders" is available within 3 minutes
 
     When <requests> HTTP POST requests with report using 100 threads on service "process-springboot-example" with path "orders" and body:
       """json
@@ -114,8 +114,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then Service "process-springboot-example" contains <requests> instances of process with name "orders" within 1 minutes
+    And Service "process-springboot-example" contains <requests> instances of process with name "orderItems" within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
     Examples:
@@ -135,7 +135,7 @@ Feature: Kogito Service Performance
       | config      | persistence  | enabled |
       | runtime-env | JAVA_OPTIONS | -Xmx8G  |
     And Kogito application "process-springboot-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
+    And Service "process-springboot-example" with process name "orders" is available within 3 minutes
 
     When <requests> HTTP POST requests with report using 100 threads on service "process-springboot-example" with path "orders" and body:
       """json
@@ -148,8 +148,8 @@ Feature: Kogito Service Performance
       }
       """
 
-    Then HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size <requests> within 1 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orderItems" should return an array of size <requests> within 1 minutes
+    Then Service "process-springboot-example" contains <requests> instances of process with name "orders" within 1 minutes
+    And Service "process-springboot-example" contains <requests> instances of process with name "orderItems" within 1 minutes
     #And All human tasks on path "orderItems" with path task name "Verify_order" are successfully "completed" with timing "true"
 
     Examples:

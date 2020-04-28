@@ -11,7 +11,7 @@ Feature: Deploy spring boot service
     When Deploy springboot example service "process-springboot-example" with configuration:
       | config | persistence | disabled |
     Then Kogito application "process-springboot-example" has 1 pods running within 10 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 2 minutes
+    And Service "process-springboot-example" with process name "orders" is available within 2 minutes
 
 #####
 
@@ -21,8 +21,7 @@ Feature: Deploy spring boot service
     And Deploy springboot example service "process-springboot-example" with configuration:
       | config | persistence | enabled |
     And Kogito application "process-springboot-example" has 1 pods running within 10 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
-    And HTTP POST request on service "process-springboot-example" with path "orders" and body:
+    And Start "orders" process on service "process-springboot-example" within 3 minutes with body:
       """json
       {
         "approver" : "john", 
@@ -32,12 +31,12 @@ Feature: Deploy spring boot service
         }
       }
       """
-    And HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size 1 within 1 minutes
+    And Service "process-springboot-example" contains 1 instance of process with name "orders"
     
     When Scale Kogito application "process-springboot-example" to 0 pods within 2 minutes
     And Scale Kogito application "process-springboot-example" to 1 pods within 2 minutes
     
-    Then HTTP GET request on service "process-springboot-example" with path "orders" should return an array of size 1 within 2 minutes
+    Then Service "process-springboot-example" contains 1 instance of process with name "orders" within 2 minutes
 
 #####
 
@@ -51,7 +50,7 @@ Feature: Deploy spring boot service
       | config | persistence | disabled |
     And Kogito application "process-timer-springboot" has 1 pods running within 10 minutes
 
-    When HTTP POST request on service "process-timer-springboot" is successful within 2 minutes with path "timer" and body:
+    When Start "timer" process on service "process-timer-springboot" within 2 minutes with body:
       """json
       { }
       """
@@ -71,9 +70,8 @@ Feature: Deploy spring boot service
       | config | persistence | enabled  |
       | config | events      | enabled  |
     And Kogito application "process-springboot-example" has 1 pods running within 10 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 3 minutes
 
-    When HTTP POST request on service "process-springboot-example" with path "orders" and body:
+    When Start "orders" process on service "process-springboot-example" within 3 minutes with body:
       """json
       {
         "approver" : "john", 

@@ -24,6 +24,9 @@ import (
 
 func registerProcessSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Start "([^"]*)" process on service "([^"]*)" with body:$`, data.startProcessOnService)
+	s.Step(`^Start "([^"]*)" process on service "([^"]*)" within (\d+) minutes with body:$`, data.startProcessOnServiceWithinMinutes)
+	s.Step(`^Service "([^"]*)" with process name "([^"]*)" is available$`, data.serviceWithProcessNameIsAvailable)
+	s.Step(`^Service "([^"]*)" with process name "([^"]*)" is available within (\d+) minutes$`, data.serviceWithProcessNameIsAvailableWithinMinutes)
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)"$`, data.serviceContainsInstancesOfProcess)
 	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.serviceContainsInstancesOfProcessWithinMinutes)
 }
@@ -39,6 +42,54 @@ func (data *Data) startProcessOnService(processName, serviceName string, body *m
 		return err
 	}
 	return nil
+}
+
+func (data *Data) startProcessOnServiceWithinMinutes(processName, serviceName string, timeoutInMin int, body *messages.PickleStepArgument_PickleDocString) error {
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Service %s is not available yet", serviceName), timeoutInMin,
+		func() (bool, error) {
+			err = framework.StartProcess(data.Namespace, routeURI, processName, body.GetMediaType(), body.GetContent())
+			if err != nil {
+				return false, err
+			}
+
+			return true, nil
+		})
+}
+
+func (data *Data) serviceWithProcessNameIsAvailable(serviceName, processName string) error {
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	_, err = framework.GetProcessInstances(data.Namespace, routeURI, processName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (data *Data) serviceWithProcessNameIsAvailableWithinMinutes(serviceName, processName string, timeoutInMin int) error {
+	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Process %s is not available yet", processName), timeoutInMin,
+		func() (bool, error) {
+			_, err = framework.GetProcessInstances(data.Namespace, routeURI, processName)
+			if err != nil {
+				return false, err
+			}
+
+			return true, nil
+		})
 }
 
 func (data *Data) serviceContainsInstancesOfProcess(serviceName string, processInstances int, processName string) error {

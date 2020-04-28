@@ -60,8 +60,7 @@ Feature: Deploy quarkus service
       | config | native      | <native> |
       | config | persistence | enabled  |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
-    And HTTP POST request on service "process-quarkus-example" with path "orders" and body:
+    And Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
       """json
       {
         "approver" : "john", 
@@ -71,12 +70,12 @@ Feature: Deploy quarkus service
         }
       }
       """
-    And HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size 1 within 1 minutes
+    And Service "process-quarkus-example" contains 1 instances of process with name "orders"
     
     When Scale Kogito application "process-quarkus-example" to 0 pods within 2 minutes
     And Scale Kogito application "process-quarkus-example" to 1 pods within 2 minutes
     
-    Then HTTP GET request on service "process-quarkus-example" with path "orders" should return an array of size 1 within 2 minutes
+    Then Service "process-quarkus-example" contains 1 instances of process with name "orders" within 2 minutes
     
     Examples:
       | native   | minutes |
@@ -99,7 +98,7 @@ Feature: Deploy quarkus service
       | config | native | <native> |
     And Kogito application "process-timer-quarkus" has 1 pods running within <minutes> minutes
 
-    When HTTP POST request on service "process-timer-quarkus" is successful within 2 minutes with path "timer" and body:
+    When Start "timer" process on service "process-timer-quarkus" within 2 minutes with body:
       """json
       { }
       """
@@ -131,9 +130,8 @@ Feature: Deploy quarkus service
       | config | persistence | enabled  |
       | config | events      | enabled  |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 3 minutes
 
-    When HTTP POST request on service "process-quarkus-example" with path "orders" and body:
+    When Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
       """json
       {
         "approver" : "john", 

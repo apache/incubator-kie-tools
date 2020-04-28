@@ -16,7 +16,7 @@ Feature: Use binary build to deploy the service
     And Start build with name "process-springboot-example-binary" from local example service path "process-springboot-example/target"
 
     Then Kogito application "process-springboot-example" has 1 pods running within 5 minutes
-    And HTTP GET request on service "process-springboot-example" with path "orders" is successful within 2 minutes
+    And Service "process-springboot-example" with process name "orders" is available within 2 minutes
 
 #####
 
@@ -31,7 +31,7 @@ Feature: Use binary build to deploy the service
     And Start build with name "process-quarkus-example-binary" from local example service path "process-quarkus-example/target"
 
     Then Kogito application "process-quarkus-example" has 1 pods running within 5 minutes
-    And HTTP GET request on service "process-quarkus-example" with path "orders" is successful within 2 minutes
+    And Service "process-quarkus-example" with process name "orders" is available within 2 minutes
 
   Examples:
       | profile | native   |
