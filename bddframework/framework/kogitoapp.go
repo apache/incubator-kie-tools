@@ -26,6 +26,9 @@ import (
 	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -129,7 +132,7 @@ func cliDeployService(namespace string, kogitoApp *v1alpha1.KogitoApp) error {
 }
 
 // DeployServiceFromExampleFile deploy service from example YAML file (example is located in deploy/examples folder)
-func DeployServiceFromExampleFile(namespace, exampleFile string) error {
+func DeployServiceFromExampleFile(namespace, runtimeType, exampleFile string) error {
 	box := packr.New("examples", boxExamplesPath)
 	yamlContent, err := box.FindString(exampleFile)
 	if err != nil {
@@ -137,7 +140,7 @@ func DeployServiceFromExampleFile(namespace, exampleFile string) error {
 	}
 
 	// Create basic KogitoApp stub
-	kogitoApp := GetKogitoAppStub(namespace, "name-should-be overwritten-from-yaml")
+	kogitoApp := GetKogitoAppStub(namespace, runtimeType, "name-should-be overwritten-from-yaml")
 
 	// Apply content from yaml file
 	if err := yaml.NewYAMLOrJSONDecoder(strings.NewReader(yamlContent), len([]byte(yamlContent))).Decode(kogitoApp); err != nil {
@@ -169,7 +172,7 @@ func SetKogitoAppReplicas(namespace, name string, nbPods int) error {
 }
 
 // GetKogitoAppStub Get basic KogitoApp stub with all needed fields initialized
-func GetKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
+func GetKogitoAppStub(namespace, runtimeType, appName string) *v1alpha1.KogitoApp {
 	kogitoApp := &v1alpha1.KogitoApp{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      appName,
@@ -187,6 +190,7 @@ func GetKogitoAppStub(namespace, appName string) *v1alpha1.KogitoApp {
 			Service: v1alpha1.KogitoAppServiceObject{
 				Labels: map[string]string{},
 			},
+			Runtime: v1alpha1.RuntimeType(runtimeType),
 		},
 	}
 
@@ -209,8 +213,65 @@ func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 	// If "KOGITO_BUILD_IMAGE_STREAM_TAG" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage
-	kogitoApp.Spec.Build.ImageS2ITag = config.GetBuildS2IImageStreamTag()
-	kogitoApp.Spec.Build.ImageRuntimeTag = config.GetBuildRuntimeImageStreamTag()
+	kogitoApp.Spec.Build.ImageS2ITag = getBuildS2IImageStreamTag(kogitoApp)
+	kogitoApp.Spec.Build.ImageRuntimeTag = getBuildRuntimeImageStreamTag(kogitoApp)
+
 	// If "KOGITO_BUILD_IMAGE_VERSION" is defined, it's taken into account, otherwise set the current version
 	kogitoApp.Spec.Build.ImageVersion = config.GetBuildImageVersion()
+}
+
+func getBuildRuntimeImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
+	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
+		return config.GetBuildRuntimeImageStreamTag()
+	}
+
+	if isBuildImageRegistryOrNamespaceSet() {
+		buildType := resource.BuildTypeRuntime
+		if kogitoApp.Spec.Runtime == v1alpha1.QuarkusRuntimeType && !kogitoApp.Spec.Build.Native {
+			buildType = resource.BuildTypeRuntimeJvm
+		}
+
+		return getBuildImage(resource.BuildImageStreams[buildType][kogitoApp.Spec.Runtime])
+	}
+
+	return ""
+}
+
+func getBuildS2IImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
+	if len(config.GetBuildS2IImageStreamTag()) > 0 {
+		return config.GetBuildS2IImageStreamTag()
+	}
+
+	if isBuildImageRegistryOrNamespaceSet() {
+		return getBuildImage(resource.BuildImageStreams[resource.BuildTypeS2I][kogitoApp.Spec.Runtime])
+	}
+
+	return ""
+}
+
+func isBuildImageRegistryOrNamespaceSet() bool {
+	return len(config.GetBuildImageRegistry()) > 0 || len(config.GetBuildImageNamespace()) > 0
+}
+
+func getBuildImage(imageName string) string {
+	image := v1alpha1.Image{
+		Domain:    config.GetBuildImageRegistry(),
+		Namespace: config.GetBuildImageNamespace(),
+		Name:      imageName,
+		Tag:       config.GetBuildImageVersion(),
+	}
+
+	if len(image.Domain) == 0 {
+		image.Domain = infrastructure.DefaultImageRegistry
+	}
+
+	if len(image.Namespace) == 0 {
+		image.Namespace = infrastructure.DefaultImageNamespace
+	}
+
+	if len(image.Tag) == 0 {
+		image.Tag = infrastructure.GetRuntimeImageVersion()
+	}
+
+	return framework.ConvertImageToImageTag(image)
 }

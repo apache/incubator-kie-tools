@@ -18,8 +18,6 @@ import (
 	"flag"
 	"path/filepath"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
-
 	"github.com/kiegroup/kogito-cloud-operator/version"
 )
 
@@ -42,14 +40,18 @@ type TestConfig struct {
 	cliPath           string
 
 	// runtime
-	servicesImageVersion string
-	dataIndexImageTag    string
-	jobsServiceImageTag  string
-	mgmtConsoleImageTag  string
+	servicesImageVersion   string
+	servicesImageNamespace string
+	servicesImageRegistry  string
+	dataIndexImageTag      string
+	jobsServiceImageTag    string
+	mgmtConsoleImageTag    string
 
 	// build
 	mavenMirrorURL       string
 	buildImageVersion    string
+	buildImageNamespace  string
+	buildImageRegistry   string
 	buildS2iImageTag     string
 	buildRuntimeImageTag string
 
@@ -104,14 +106,18 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.cliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
 
 	// runtime
-	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", infrastructure.GetRuntimeImageVersion(), "Set the services (jobs-service, data-index) image version")
+	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", "", "Set the services (jobs-service, data-index) image version")
+	set.StringVar(&env.servicesImageNamespace, prefix+"services-image-namespace", "", "Set the services (jobs-service, data-index) image namespace")
+	set.StringVar(&env.servicesImageRegistry, prefix+"services-image-registry", "", "Set the services (jobs-service, data-index) image registry")
 	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.jobsServiceImageTag, prefix+"jobs-service-image-tag", "", "Set the Kogito Jobs Service image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.mgmtConsoleImageTag, prefix+"management-console-image-tag", "", "Set the Kogito Management Console image tag ('services-image-version' is ignored)")
 
 	// build
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
-	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", infrastructure.GetRuntimeImageVersion(), "Set the build image version")
+	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", "", "Set the build image version")
+	set.StringVar(&env.buildImageNamespace, prefix+"build-image-namespace", "", "Set the build image namespace")
+	set.StringVar(&env.buildImageRegistry, prefix+"build-image-registry", "", "Set the build image registry")
 	set.StringVar(&env.buildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.buildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
 
@@ -190,6 +196,16 @@ func GetServicesImageVersion() string {
 	return env.servicesImageVersion
 }
 
+// GetServicesImageRegistry return the registry for the services images
+func GetServicesImageRegistry() string {
+	return env.servicesImageRegistry
+}
+
+// GetServicesImageNamespace return the namespace for the services images
+func GetServicesImageNamespace() string {
+	return env.servicesImageNamespace
+}
+
 // GetDataIndexImageTag return the Kogito Data Index image tag
 func GetDataIndexImageTag() string {
 	return env.dataIndexImageTag
@@ -215,6 +231,16 @@ func GetMavenMirrorURL() string {
 // GetBuildImageVersion return the version for the build images
 func GetBuildImageVersion() string {
 	return env.buildImageVersion
+}
+
+// GetBuildImageNamespace return the namespace for the build images
+func GetBuildImageNamespace() string {
+	return env.buildImageNamespace
+}
+
+// GetBuildImageRegistry return the registry for the build images
+func GetBuildImageRegistry() string {
+	return env.buildImageRegistry
 }
 
 // GetBuildS2IImageStreamTag return the tag for the s2i build image

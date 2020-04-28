@@ -39,7 +39,7 @@ func newManagementConsoleResource(namespace string, replicas int) *v1alpha1.Kogi
 	return &v1alpha1.KogitoMgmtConsole{
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1alpha1.KogitoMgmtConsoleSpec{
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), infrastructure.DefaultMgmtConsoleImageNoVersion+infrastructure.GetRuntimeImageVersion()),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), infrastructure.DefaultMgmtConsoleImageName),
 		},
 		Status: v1alpha1.KogitoMgmtConsoleStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

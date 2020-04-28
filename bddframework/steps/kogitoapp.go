@@ -30,7 +30,7 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployExampleServiceWithConfiguration)
 	s.Step(`^Create (quarkus|springboot) service "([^"]*)"$`, data.createService)
 	s.Step(`^Create (quarkus|springboot) service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
-	s.Step(`^Deploy service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
+	s.Step(`^Deploy (quarkus|springboot) service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// DeploymentConfig steps
 	s.Step(`^Kogito application "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoApplicationHasPodsRunningWithinMinutes)
@@ -46,12 +46,10 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 // Deploy service steps
 
 func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) error {
-	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, contextDir, table)
+	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, runtimeType, contextDir, table)
 	if err != nil {
 		return err
 	}
-
-	kogitoApp.Spec.Runtime = v1alpha1.RuntimeType(runtimeType)
 
 	if kogitoApp.Spec.Runtime != v1alpha1.QuarkusRuntimeType && kogitoApp.Spec.Build.Native {
 		return fmt.Errorf(runtimeType + " does not support native build")
@@ -65,18 +63,16 @@ func (data *Data) createService(runtimeType, serviceName string) error {
 }
 
 func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
-	kogitoApp := framework.GetKogitoAppStub(data.Namespace, serviceName)
+	kogitoApp := framework.GetKogitoAppStub(data.Namespace, runtimeType, serviceName)
 	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return err
 	}
 
-	kogitoApp.Spec.Runtime = v1alpha1.RuntimeType(runtimeType)
-
 	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
 }
 
-func (data *Data) deployServiceFromExampleFile(exampleFile string) error {
-	return framework.DeployServiceFromExampleFile(data.Namespace, exampleFile)
+func (data *Data) deployServiceFromExampleFile(runtimeType, exampleFile string) error {
+	return framework.DeployServiceFromExampleFile(data.Namespace, runtimeType, exampleFile)
 }
 
 // DeploymentConfig steps
@@ -111,8 +107,8 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 // Misc methods
 
 // getKogitoAppExampleStub Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
-func getKogitoAppExamplesStub(namespace, contextDir string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoApp, error) {
-	kogitoApp := framework.GetKogitoAppStub(namespace, filepath.Base(contextDir))
+func getKogitoAppExamplesStub(namespace, runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoApp, error) {
+	kogitoApp := framework.GetKogitoAppStub(namespace, runtimeType, filepath.Base(contextDir))
 
 	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
 	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir

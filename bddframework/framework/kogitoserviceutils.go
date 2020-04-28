@@ -21,6 +21,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -67,10 +68,10 @@ func NewObjectMetadata(namespace string, name string) metav1.ObjectMeta {
 }
 
 // NewKogitoServiceSpec creates a new Kogito Service Spec object.
-func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImage string) v1alpha1.KogitoServiceSpec {
+func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName string) v1alpha1.KogitoServiceSpec {
 	return v1alpha1.KogitoServiceSpec{
 		Replicas: &replicas,
-		Image:    newImageOrDefault(fullImage, defaultImage),
+		Image:    newImageOrDefault(fullImage, defaultImageName),
 	}
 }
 
@@ -98,13 +99,31 @@ func GetCliFlags(persistence, events bool) []string {
 	return cliFlags
 }
 
-func newImageOrDefault(fullImage string, defaultImage string) v1alpha1.Image {
+func newImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image {
 	if len(fullImage) > 0 {
 		return framework.ConvertImageTagToImage(fullImage)
 	}
 
-	image := framework.ConvertImageTagToImage(defaultImage)
-	image.Tag = config.GetServicesImageVersion()
+	image := v1alpha1.Image{}
+	if len(config.GetServicesImageRegistry()) > 0 || len(config.GetServicesImageNamespace()) > 0 || len(config.GetServicesImageVersion()) > 0 {
+		image.Domain = config.GetServicesImageRegistry()
+		image.Namespace = config.GetServicesImageNamespace()
+		image.Name = defaultImageName
+		image.Tag = config.GetServicesImageVersion()
+
+		if len(image.Domain) == 0 {
+			image.Domain = infrastructure.DefaultImageRegistry
+		}
+
+		if len(image.Namespace) == 0 {
+			image.Namespace = infrastructure.DefaultImageNamespace
+		}
+
+		if len(image.Tag) == 0 {
+			image.Tag = infrastructure.GetRuntimeImageVersion()
+		}
+	}
+
 	return image
 }
 
@@ -122,7 +141,11 @@ func cliInstall(service v1alpha1.KogitoService, cliName string, cliFlags []strin
 		cmd = append(cmd, cliFlag)
 	}
 
-	cmd = append(cmd, "--image", framework.ConvertImageToImageTag(*service.GetSpec().GetImage()))
+	image := framework.ConvertImageToImageTag(*service.GetSpec().GetImage())
+	if len(image) > 0 {
+		cmd = append(cmd, "--image", image)
+	}
+
 	cmd = append(cmd, "--replicas", strconv.Itoa(int(*service.GetSpec().GetReplicas())))
 
 	_, err := ExecuteCliCommandInNamespace(service.GetNamespace(), cmd...)

@@ -40,7 +40,7 @@ func newKogitoDataIndexResource(namespace string, replicas int) *v1alpha1.Kogito
 	return &v1alpha1.KogitoDataIndex{
 		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
 		Spec: v1alpha1.KogitoDataIndexSpec{
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), infrastructure.DefaultDataIndexImageNoVersion+infrastructure.GetRuntimeImageVersion()),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), infrastructure.DefaultDataIndexImageName),
 		},
 		Status: v1alpha1.KogitoDataIndexStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

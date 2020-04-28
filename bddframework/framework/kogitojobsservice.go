@@ -85,7 +85,7 @@ func newKogitoJobsServiceResource(namespace string, replicas int) *v1alpha1.Kogi
 	return &v1alpha1.KogitoJobsService{
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
 		Spec: v1alpha1.KogitoJobsServiceSpec{
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), infrastructure.DefaultJobsServiceImageNoVersion+infrastructure.GetRuntimeImageVersion()),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), infrastructure.DefaultJobsServiceImageName),
 		},
 		Status: v1alpha1.KogitoJobsServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
