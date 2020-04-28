@@ -23,7 +23,7 @@ import (
 // InstallKogitoManagementConsole install the Kogito Management Console component
 func InstallKogitoManagementConsole(namespace string, installerType InstallerType, replicas int) error {
 	resource := newManagementConsoleResource(namespace, replicas)
-	return InstallServiceWithoutCliFlags(resource, installerType, "mgmt-console")
+	return InstallServiceWithoutCliFlags(&KogitoServiceHolder{KogitoService: resource}, installerType, "mgmt-console")
 }
 
 // WaitForKogitoManagementConsoleService wait for Kogito Management Console to be deployed

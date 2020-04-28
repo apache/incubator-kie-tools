@@ -26,19 +26,28 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
+type KogitoServiceHolder struct {
+	v1alpha1.KogitoService
+	Infinispan struct {
+		Username string
+		Password string
+	}
+}
+
 // InstallServiceWithoutCliFlags the Kogito Service component without any CLI flags.
-func InstallServiceWithoutCliFlags(service v1alpha1.KogitoService, installerType InstallerType, cliName string) error {
-	return InstallService(service, installerType, cliName, nil)
+func InstallServiceWithoutCliFlags(serviceHolder *KogitoServiceHolder, installerType InstallerType, cliName string) error {
+	return InstallService(serviceHolder, installerType, cliName, nil)
 }
 
 // InstallService the Kogito Service component
-func InstallService(service v1alpha1.KogitoService, installerType InstallerType, cliName string, cliFlags []string) error {
-	GetLogger(service.GetNamespace()).Infof("%s install %s with %d replicas", service.GetName(), installerType, *service.GetSpec().GetReplicas())
+func InstallService(serviceHolder *KogitoServiceHolder, installerType InstallerType, cliName string, cliFlags []string) error {
+	GetLogger(serviceHolder.GetNamespace()).Infof("%s install %s with %d replicas", serviceHolder.GetName(), installerType, *serviceHolder.GetSpec().GetReplicas())
 	switch installerType {
 	case CLIInstallerType:
-		return cliInstall(service, cliName, cliFlags)
+		return cliInstall(serviceHolder, cliName, cliFlags)
 	case CRInstallerType:
-		return crInstall(service)
+		return crInstall(serviceHolder)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
@@ -127,27 +136,52 @@ func newImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image
 	return image
 }
 
-func crInstall(service v1alpha1.KogitoService) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(service); err != nil {
+func crInstall(serviceHolder *KogitoServiceHolder) error {
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
 		return fmt.Errorf("Error creating service: %v", err)
 	}
 	return nil
 }
 
-func cliInstall(service v1alpha1.KogitoService, cliName string, cliFlags []string) error {
+func cliInstall(serviceHolder *KogitoServiceHolder, cliName string, cliFlags []string) error {
 	cmd := []string{"install", cliName}
 
 	for _, cliFlag := range cliFlags {
 		cmd = append(cmd, cliFlag)
 	}
 
-	image := framework.ConvertImageToImageTag(*service.GetSpec().GetImage())
+	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
 	if len(image) > 0 {
 		cmd = append(cmd, "--image", image)
 	}
 
-	cmd = append(cmd, "--replicas", strconv.Itoa(int(*service.GetSpec().GetReplicas())))
+	cmd = append(cmd, "--replicas", strconv.Itoa(int(*serviceHolder.GetSpec().GetReplicas())))
 
-	_, err := ExecuteCliCommandInNamespace(service.GetNamespace(), cmd...)
+	if infinispanAware, ok := serviceHolder.GetSpec().(v1alpha1.InfinispanAware); ok {
+		infinispanProperties := infinispanAware.GetInfinispanProperties()
+		if authRealm := infinispanProperties.AuthRealm; len(authRealm) > 0 {
+			cmd = append(cmd, "--infinispan-authrealm", authRealm)
+		}
+		if saslMechanism := infinispanProperties.SaslMechanism; len(saslMechanism) > 0 {
+			cmd = append(cmd, "--infinispan-sasl", string(saslMechanism))
+		}
+		if uri := infinispanProperties.URI; len(uri) > 0 {
+			cmd = append(cmd, "--infinispan-url", uri)
+		}
+
+		if username := serviceHolder.Infinispan.Username; len(username) > 0 {
+			cmd = append(cmd, "--infinispan-user", username)
+		}
+		if password := serviceHolder.Infinispan.Password; len(password) > 0 {
+			cmd = append(cmd, "--infinispan-password", password)
+		}
+	}
+
+	_, err := ExecuteCliCommandInNamespace(serviceHolder.GetNamespace(), cmd...)
 	return err
+}
+
+//IsInfinispanUsernameSpecified Returns true if Infinispan username is specified
+func (serviceHolder *KogitoServiceHolder) IsInfinispanUsernameSpecified() bool {
+	return len(serviceHolder.Infinispan.Username) > 0
 }

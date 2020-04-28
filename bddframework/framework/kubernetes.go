@@ -88,8 +88,8 @@ func OperateOnNamespaceIfExists(namespace string, operate func(namespace string)
 	return nil
 }
 
-// WaitForPods waits for pods with specific label to be available and running
-func WaitForPods(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
+// WaitForPodsWithLabel waits for pods with specific label to be available and running
+func WaitForPodsWithLabel(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), timeoutInMin,
 		func() (bool, error) {
 			pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
@@ -201,4 +201,20 @@ func IsCrdAvailable(crdName string) (bool, error) {
 		},
 	}
 	return kubernetes.ResourceC(kubeClient).Fetch(crdEntity)
+}
+
+// CreateSecret creates a new secret
+func CreateSecret(namespace, name string, secretContent map[string]string) error {
+	GetLogger(namespace).Infof("Create Secret %s", name)
+
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Type:       corev1.SecretTypeOpaque,
+		StringData: secretContent,
+	}
+
+	return kubernetes.ResourceC(kubeClient).Create(secret)
 }

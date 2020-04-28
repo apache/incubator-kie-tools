@@ -38,6 +38,7 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerGitSteps(s, data)
 	registerGraphQLSteps(s, data)
 	registerHTTPSteps(s, data)
+	registerInfinispanSteps(s, data)
 	registerKogitoAppSteps(s, data)
 	registerKogitoDataIndexServiceSteps(s, data)
 	registerKogitoInfraSteps(s, data)

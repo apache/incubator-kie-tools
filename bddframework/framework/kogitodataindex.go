@@ -21,10 +21,9 @@ import (
 )
 
 // InstallKogitoDataIndexService install the Kogito Data Index service
-func InstallKogitoDataIndexService(namespace string, installerType InstallerType, replicas int) error {
-	resource := newKogitoDataIndexResource(namespace, replicas)
+func InstallKogitoDataIndexService(namespace string, installerType InstallerType, dataIndex *KogitoServiceHolder) error {
 	// Persistence is already configured internally by the Data Index service, so we don't need to add any additional persistence step here.
-	return InstallServiceWithoutCliFlags(resource, installerType, "data-index")
+	return InstallServiceWithoutCliFlags(dataIndex, installerType, "data-index")
 }
 
 // WaitForKogitoDataIndexService wait for Kogito Data Index to be deployed
@@ -36,7 +35,8 @@ func getDataIndexServiceName() string {
 	return infrastructure.DefaultDataIndexName
 }
 
-func newKogitoDataIndexResource(namespace string, replicas int) *v1alpha1.KogitoDataIndex {
+// GetKogitoDataIndexResourceStub Get basic KogitoDataIndex stub with all needed fields initialized
+func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1alpha1.KogitoDataIndex {
 	return &v1alpha1.KogitoDataIndex{
 		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
 		Spec: v1alpha1.KogitoDataIndexSpec{

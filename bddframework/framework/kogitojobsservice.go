@@ -29,7 +29,7 @@ import (
 func InstallKogitoJobsService(namespace string, installerType InstallerType, replicas int, persistence, events bool) error {
 	resource := newKogitoJobsServiceResource(namespace, replicas)
 	setKogitoJobsServicePersistence(resource, persistence)
-	return InstallService(resource, installerType, "jobs-service", GetCliFlags(persistence, events))
+	return InstallService(&KogitoServiceHolder{KogitoService: resource}, installerType, "jobs-service", GetCliFlags(persistence, events))
 }
 
 // WaitForKogitoJobsService wait for Kogito Jobs Service to be deployed
