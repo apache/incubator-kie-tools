@@ -34,7 +34,7 @@
   <properties>
     <gwt.compiler.skip>false</gwt.compiler.skip>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly.sdm}</errai.jboss.home>
+    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
   </properties>
 
   <dependencies>
@@ -580,7 +580,7 @@
                 <artifactItem>
                   <groupId>org.jboss.errai</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.jboss.errai.wildfly.sdm}</version>
+                  <version>${version.org.jboss.errai.wildfly}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
