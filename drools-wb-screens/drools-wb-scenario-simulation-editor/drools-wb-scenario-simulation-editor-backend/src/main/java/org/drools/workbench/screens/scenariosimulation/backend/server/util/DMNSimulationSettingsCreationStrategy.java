@@ -190,11 +190,12 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
                 if (previousSteps.isEmpty()) {
                     previousSteps.add(factModelTree.getFactName());
                 }
-                previousSteps.add(entry.getKey());
+                ArrayList<String> currentSteps = new ArrayList<>(previousSteps);
+                currentSteps.add(entry.getKey());
 
                 if (!alreadyVisited.contains(nestedModelTree.getFactName())) {
                     alreadyVisited.add(factModelTree.getFactName());
-                    internalAddToScenario(factMappingExtractor, nestedModelTree, previousSteps, hiddenValues, alreadyVisited);
+                    internalAddToScenario(factMappingExtractor, nestedModelTree, currentSteps, hiddenValues, alreadyVisited);
                 }
             }
         }

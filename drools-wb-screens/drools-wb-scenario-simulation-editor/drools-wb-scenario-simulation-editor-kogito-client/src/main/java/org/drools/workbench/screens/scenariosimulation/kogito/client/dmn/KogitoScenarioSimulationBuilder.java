@@ -359,10 +359,10 @@ public class KogitoScenarioSimulationBuilder {
         }
     }
 
-    private void addFactMapping(final FactMappingExtractor factMappingExtractor,
-                                final FactModelTree factModelTree,
-                                final List<String> previousSteps,
-                                final Map<String, FactModelTree> hiddenValues) {
+    protected void addFactMapping(final FactMappingExtractor factMappingExtractor,
+                                  final FactModelTree factModelTree,
+                                  final List<String> previousSteps,
+                                  final Map<String, FactModelTree> hiddenValues) {
         internalAddToScenario(factMappingExtractor,
                               factModelTree,
                               previousSteps,
@@ -404,17 +404,19 @@ public class KogitoScenarioSimulationBuilder {
                 if (previousSteps.isEmpty()) {
                     previousSteps.add(factModelTree.getFactName());
                 }
-                previousSteps.add(entry.getKey());
+
+                ArrayList<String> currentSteps = new ArrayList<>(previousSteps);
+                currentSteps.add(entry.getKey());
 
                 if (!alreadyVisited.contains(nestedModelTree.getFactName())) {
                     alreadyVisited.add(factModelTree.getFactName());
-                    internalAddToScenario(factMappingExtractor, nestedModelTree, previousSteps, hiddenValues, alreadyVisited);
+                    internalAddToScenario(factMappingExtractor, nestedModelTree, currentSteps, hiddenValues, alreadyVisited);
                 }
             }
         }
     }
 
-    private static class FactMappingExtractor {
+    protected static class FactMappingExtractor {
 
         private final FactIdentifier factIdentifier;
         private final int row;

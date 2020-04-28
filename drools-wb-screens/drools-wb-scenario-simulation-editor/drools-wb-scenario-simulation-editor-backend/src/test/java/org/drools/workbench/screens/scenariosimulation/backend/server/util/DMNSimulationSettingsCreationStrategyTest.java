@@ -182,6 +182,56 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
     }
 
     @Test
+    public void addToScenarioMultipleNested() {
+        FactMapping factMappingMock = mock(FactMapping.class);
+        DMNSimulationSettingsCreationStrategy.FactMappingExtractor factMappingExtractorMock = mock(DMNSimulationSettingsCreationStrategy.FactMappingExtractor.class);
+        when(factMappingExtractorMock.getFactMapping(any(), anyString(), any(), anyString())).thenReturn(factMappingMock);
+
+        Map<String, FactModelTree> hiddenFacts = new HashMap<>();
+
+        FactModelTree factModelTree = new FactModelTree("myFact", "", new HashMap<>(), Collections.emptyMap());
+        factModelTree.addExpandableProperty("nestedProperty", "tNested");
+        factModelTree.addExpandableProperty("nestedProperty2", "tNested2");
+
+        FactModelTree nested1 = new FactModelTree("tNested1", "", new HashMap<>(), Collections.emptyMap());
+        FactModelTree nested2 = new FactModelTree("tNested2", "", new HashMap<>(), Collections.emptyMap());
+        String propertyType = String.class.getCanonicalName();
+        String propertyName = "stingProperty";
+        nested1.addSimpleProperty(propertyName, propertyType);
+        String propertyType2 = Boolean.class.getCanonicalName();
+        String propertyName2 = "booleanProperty";
+        nested2.addSimpleProperty(propertyName2, propertyType2);
+
+        hiddenFacts.put("tNested", nested1);
+        hiddenFacts.put("tNested2", nested2);
+
+        dmnSimulationCreationStrategy.addFactMapping(factMappingExtractorMock,
+                                                     factModelTree,
+                                                     new ArrayList<>(),
+                                                     hiddenFacts);
+
+        verify(factMappingExtractorMock, times(1))
+                .getFactMapping(
+                        eq(nested1),
+                        eq(propertyName),
+                        eq(Arrays.asList("myFact", "nestedProperty")),
+                        eq(propertyType));
+        verify(factMappingExtractorMock, times(1))
+                .getFactMapping(
+                        eq(nested2),
+                        eq(propertyName2),
+                        eq(Arrays.asList("myFact", "nestedProperty2")),
+                        eq(propertyType2));
+
+        verify(factMappingExtractorMock, times(2))
+                .getFactMapping(
+                        any(),
+                        any(),
+                        any(),
+                        any());
+    }
+
+    @Test
     public void addEmptyColumnIfNeeded() {
         Simulation simulation = new Simulation();
         ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, simulation.addData());
