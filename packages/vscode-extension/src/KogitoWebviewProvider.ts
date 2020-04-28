@@ -21,18 +21,19 @@ import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
 import { KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoWebviewProvider implements vscode.CustomEditorProvider<KogitoEdit> {
-  public static readonly viewType = "kieKogitoWebviewEditors";
 
+  private readonly viewType: string;
   private readonly editorFactory: KogitoEditorFactory;
   public readonly editingDelegate: KogitoEditingDelegate;
 
-  public constructor(editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
+  public constructor(viewType: string, editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
+    this.viewType = viewType;
     this.editorFactory = editorFactory;
     this.editingDelegate = editingDelegate;
   }
 
   public register() {
-    return vscode.window.registerCustomEditorProvider2(KogitoWebviewProvider.viewType, this, {
+    return vscode.window.registerCustomEditorProvider2(this.viewType, this, {
       webviewOptions: {
         retainContextWhenHidden: true
       }
