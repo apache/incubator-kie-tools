@@ -72,7 +72,7 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplTe
     @Test
     public void getItems() {
         scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getItems(assetConsumer);
-        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl.DMN_FILE_EXTENSION),
+        verify(kogitoResourceContentServiceMock, times(1)).getFilteredItems(eq(ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl.DMN_FILE_SEARCH_PATTERN),
                                                                                                  isA(RemoteCallback.class),
                                                                                                  isA(ErrorCallback.class));
     }
@@ -101,7 +101,6 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplTe
         assertEquals(dmnFiles,
                      dropDownListCaptor.getValue().stream().map(KieAssetsDropdownItem::getValue).collect(Collectors.toList()));
     }
-
 
     @Test
     public void getErrorCallback() {

@@ -19,8 +19,6 @@
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
     <gwt.helper.includes>Client,Marshaller,KogitoEditor,WebappBase</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
-    <!-- Excluding the entire webapp and workarounds folders from coverage statistics. -->
-    <sonar.coverage.exclusions>webapp/**/*, ,**/workarounds/**.java</sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
@@ -29,8 +27,6 @@
       <artifactId>log4j-over-slf4j</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!-- MANSTIS - EVERYTHING BELOW THIS HAS BEEN _SANITISED_! -->
 
     <!-- Errai -->
     <dependency>

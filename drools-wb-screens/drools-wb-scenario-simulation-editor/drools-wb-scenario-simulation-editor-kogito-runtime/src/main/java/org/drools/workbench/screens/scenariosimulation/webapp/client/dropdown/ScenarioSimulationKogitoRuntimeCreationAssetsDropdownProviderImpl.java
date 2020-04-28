@@ -34,7 +34,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 @Dependent
 public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {
 
-    protected static final String DMN_FILE_EXTENSION = "**/*.dmn";
+    protected static final String DMN_FILE_SEARCH_PATTERN = "src/**/*.dmn";
 
     @Inject
     protected KogitoResourceContentService resourceContentService;
@@ -43,7 +43,7 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl i
 
     @Override
     public void getItems(Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
-        resourceContentService.getFilteredItems(DMN_FILE_EXTENSION,
+        resourceContentService.getFilteredItems(DMN_FILE_SEARCH_PATTERN,
                                                 getRemoteCallback(assetListConsumer),
                                                 getErrorCallback());
     }
