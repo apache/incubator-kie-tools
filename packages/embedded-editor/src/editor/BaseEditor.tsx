@@ -110,7 +110,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
 
   return (
     <iframe
-      style={{ display: "flex" }}
+      style={{ width: "100%", height: "100%" }}
       ref={iframeRef}
       id={"kogito-iframe"}
       className="kogito--editor"

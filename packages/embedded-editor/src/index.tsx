@@ -22,24 +22,26 @@ import { EMPTY_FILE_DMN } from "./common/File";
 import { EmbeddedEditor, EmbeddedEditorRef } from "./EmbeddedEditor";
 import { EmbeddedViewer } from "./EmbeddedViewer";
 
-interface Props { }
-
-const App = (props: Props) => {
+const App = (props: {}) => {
 
   const editorRef = useRef<EmbeddedEditorRef>(null);
 
   return (
     <>
-      <p><h1>Viewer</h1></p>
-      <EmbeddedViewer file={EMPTY_FILE_DMN} />
+      <h1>Viewer</h1>
+      <div style={{ width: "1000px", height: "1000px" }}>
+        <EmbeddedViewer file={EMPTY_FILE_DMN} />
+      </div>
 
-      <p><h1>Editor</h1></p>
-      <button onClick={(e: React.MouseEvent) => editorRef.current?.requestContent()}>Get content</button>
-      <EmbeddedEditor
-        ref={editorRef}
-        file={EMPTY_FILE_DMN}
-        onContentResponse={(content: EditorContent) => window.alert(content.content)}
-      />
+      <h1>Editor</h1>
+      <div style={{ width: "1000px", height: "1000px" }}>
+        <button onClick={(e: React.MouseEvent) => editorRef.current?.requestContent()}>Get content</button>
+        <EmbeddedEditor
+          ref={editorRef}
+          file={EMPTY_FILE_DMN}
+          onContentResponse={(content: EditorContent) => window.alert(content.content)}
+        />
+      </div>
     </>
   );
 }

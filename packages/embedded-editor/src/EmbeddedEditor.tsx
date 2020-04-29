@@ -16,9 +16,6 @@
 
 import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly.css";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 import { EmbeddedEditorContext } from "./common/EmbeddedEditorContext";

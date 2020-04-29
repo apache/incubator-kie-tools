@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ module.exports = async (env, argv) => {
       new CopyPlugin([
         { from: "./static/envelope", to: "./envelope" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../kie-bc-editors-unpacked", to: "./gwt-editors" }
+        { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
+        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ],
     module: {
@@ -57,8 +58,7 @@ module.exports = async (env, argv) => {
           test: /\.jsx?$/,
           exclude: /node_modules/,
           use: ["babel-loader"]
-        },
-        ...envelope.patternflyLoaders
+        }
       ]
     },
     devServer: {
