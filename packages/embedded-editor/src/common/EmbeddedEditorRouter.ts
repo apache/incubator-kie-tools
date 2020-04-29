@@ -16,7 +16,7 @@
 
 import { Router, Routes } from "@kogito-tooling/core-api";
 
-export class OnlineEditorRouter extends Router {
+export class EmbeddedEditorRouter extends Router {
   constructor(...routesArray: Routes[]) {
     super(...routesArray);
   }

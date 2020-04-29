@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import { EditorContent, KogitoEdit, LanguageData, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common/File";
-import { GlobalContext } from "../common/GlobalContext";
+import { EmbeddedEditorContext } from "../common/EmbeddedEditorContext";
+import { EditorType, File } from "../common/File";
 
 interface Props {
   file: File;
-  onLanguageRequest: () => LanguageData;
   onContentResponse: (content: EditorContent) => void;
   onSetContentError: () => void;
   onDirtyIndicatorChange: (isDirty: boolean) => void;
@@ -40,9 +39,9 @@ export type EditorRef = {
 } | null;
 
 const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (props, forwardedRef) => {
-  const context = useContext(GlobalContext);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const editorType = useMemo(() => props.file.editorType, []);
+  const context: EmbeddedEditorContext = useContext(EmbeddedEditorContext);
+  const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const editorType: EditorType = useMemo(() => props.file.editorType, []);
 
   const envelopeBusOuterMessageHandler = useMemo(() => {
     return context.envelopeBusOuterMessageHandlerFactory.createNew(iframeRef, self => ({
@@ -50,7 +49,7 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         self.request_initResponse(window.location.origin);
       },
       receive_languageRequest() {
-        self.respond_languageRequest(props.onLanguageRequest());
+        self.respond_languageRequest(context.router.getLanguageData(props.file.editorType));
       },
       receive_contentResponse(content: EditorContent) {
         props.onContentResponse(content);
@@ -121,4 +120,4 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
   );
 };
 
-export const Editor = React.forwardRef(RefForwardingEditor);
+export const BaseEditor = React.forwardRef(RefForwardingEditor);

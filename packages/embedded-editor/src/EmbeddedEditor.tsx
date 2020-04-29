@@ -21,10 +21,10 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { EmbeddedEditorContext } from "./common/EmbeddedEditorContext";
+import { EmbeddedEditorRouter } from "./common/EmbeddedEditorRouter";
 import { File } from "./common/File";
-import { GlobalContext } from "./common/GlobalContext";
-import { OnlineEditorRouter } from "./common/OnlineEditorRouter";
-import { Editor, EditorRef } from "./editor/Editor";
+import { BaseEditor, EditorRef } from "./editor/BaseEditor";
 import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
 
 interface Props {
@@ -52,7 +52,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
   const onlineEditorRouter = useMemo(
     () =>
-      new OnlineEditorRouter(
+      new EmbeddedEditorRouter(
         new GwtEditorRoutes({
           bpmnPath: "gwt-editors/bpmn",
           dmnPath: "gwt-editors/dmn"
@@ -131,17 +131,16 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }), [editorRef]);
 
   return (
-    <GlobalContext.Provider
+    <EmbeddedEditorContext.Provider
       value={{
         router: onlineEditorRouter,
         envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
         iframeTemplateRelativePath: iframeTemplateRelativePath
       }}
     >
-      <Editor
+      <BaseEditor
         ref={editorRef}
         file={props.file}
-        onLanguageRequest={() => onlineEditorRouter.getLanguageData(props.file.editorType)!}
         onContentResponse={onContentResponse}
         onSetContentError={onSetContentError}
         onDirtyIndicatorChange={onDirtyIndicatorChange}
@@ -153,7 +152,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         onNewEdit={onNewEdit}
         onPreviewRequest={onPreviewRequest}
       />
-    </GlobalContext.Provider>
+    </EmbeddedEditorContext.Provider>
   );
 };
 

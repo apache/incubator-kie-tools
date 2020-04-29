@@ -21,10 +21,10 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
+import { EmbeddedEditorContext } from "./common/EmbeddedEditorContext";
+import { EmbeddedEditorRouter } from "./common/EmbeddedEditorRouter";
 import { File } from "./common/File";
-import { GlobalContext } from "./common/GlobalContext";
-import { OnlineEditorRouter } from "./common/OnlineEditorRouter";
-import { Editor } from "./editor/Editor";
+import { BaseEditor } from "./editor/BaseEditor";
 import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
 
 interface Props {
@@ -40,7 +40,7 @@ export const EmbeddedViewer = (props: Props) => {
   const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
   const onlineEditorRouter = useMemo(
     () =>
-      new OnlineEditorRouter(
+      new EmbeddedEditorRouter(
         new GwtEditorRoutes({
           bpmnPath: "gwt-editors/bpmn",
           dmnPath: "gwt-editors/dmn"
@@ -64,16 +64,15 @@ export const EmbeddedViewer = (props: Props) => {
   }, [props.onResourceListRequest]);
 
   return (
-    <GlobalContext.Provider
+    <EmbeddedEditorContext.Provider
       value={{
         router: onlineEditorRouter,
         envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
         iframeTemplateRelativePath: iframeTemplateRelativePath
       }}
     >
-      <Editor
+      <BaseEditor
         file={props.file}
-        onLanguageRequest={() => onlineEditorRouter.getLanguageData(props.file.editorType)!}
         onContentResponse={() => {/*NOP*/ }}
         onSetContentError={() => {/*NOP*/ }}
         onDirtyIndicatorChange={(isDirty: boolean) => {/*NOP*/ }}
@@ -85,6 +84,6 @@ export const EmbeddedViewer = (props: Props) => {
         onNewEdit={(edit: KogitoEdit) => {/*NOP*/ }}
         onPreviewRequest={(previewSvg: string) => {/*NOP*/ }}
       />
-    </GlobalContext.Provider>
+    </EmbeddedEditorContext.Provider>
   );
 };

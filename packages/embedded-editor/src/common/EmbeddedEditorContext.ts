@@ -18,10 +18,10 @@ import { Router } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
 
-export interface GlobalContextType {
+export interface EmbeddedEditorContext {
   router: Router;
   envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
   iframeTemplateRelativePath: string;
 }
 
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export const EmbeddedEditorContext = React.createContext<EmbeddedEditorContext>({} as any);
