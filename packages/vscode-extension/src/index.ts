@@ -34,20 +34,17 @@ export function startExtension(args: {
   webviewLocation: string;
   context: vscode.ExtensionContext;
   router: Router;
+  viewType: string;
+  getPreviewCommandId: string;
 }) {
   const editorStore = new KogitoEditorStore();
-  const editorFactory = new KogitoEditorFactory(
-    args.context,
-    args.router,
-    args.webviewLocation,
-    editorStore
-  );
+  const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore);
   const editingDelegate = new KogitoEditingDelegate(editorStore);
-  const webviewProvider = new KogitoWebviewProvider(editorFactory, editingDelegate);
+  const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editingDelegate);
 
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
-    vscode.commands.registerCommand("extension.kogito.getPreviewSvg", () => {
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => {
       editorStore.withActive(e => e.requestPreview());
     })
   );
