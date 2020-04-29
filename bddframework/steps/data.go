@@ -31,6 +31,7 @@ type Data struct {
 	StartTime              time.Time
 	KogitoExamplesLocation string
 	ScenarioName           string
+	ScenarioContext        map[string]string
 }
 
 // RegisterAllSteps register all steps available to the test suite
@@ -59,6 +60,7 @@ func (data *Data) BeforeScenario(pickle *messages.Pickle) {
 	data.Namespace = getNamespaceName()
 	data.KogitoExamplesLocation = createTemporaryFolder()
 	data.ScenarioName = pickle.GetName()
+	data.ScenarioContext = map[string]string{}
 
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", pickle.GetName()))
 	go framework.StartPodLogCollector(data.Namespace)
@@ -97,6 +99,16 @@ func (data *Data) AfterScenario(pickle *messages.Pickle, err error) {
 	handleScenarioResult(data, pickle, err)
 	logScenarioDuration(data)
 	deleteTemporaryExamplesFolder(data)
+}
+
+// ResolveWithScenarioContext replaces all the variables in the string with their values.
+func (data *Data) ResolveWithScenarioContext(str string) string {
+	result := str
+	for name, value := range data.ScenarioContext {
+		result = strings.ReplaceAll(result, "{"+name+"}", value)
+	}
+
+	return result
 }
 
 func logScenarioDuration(data *Data) {

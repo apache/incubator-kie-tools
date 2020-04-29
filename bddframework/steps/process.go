@@ -37,7 +37,8 @@ func (data *Data) startProcessOnService(processName, serviceName string, body *m
 		return err
 	}
 
-	err = framework.StartProcess(data.Namespace, routeURI, processName, body.GetMediaType(), body.GetContent())
+	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
+	err = framework.StartProcess(data.Namespace, routeURI, processName, body.GetMediaType(), bodyContent)
 	if err != nil {
 		return err
 	}

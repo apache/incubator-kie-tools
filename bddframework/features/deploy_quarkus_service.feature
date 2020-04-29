@@ -152,3 +152,40 @@ Feature: Deploy quarkus service
     Examples:
       | native  | minutes |
       | enabled | 20      |
+
+  @usertasks
+  Scenario Outline: Deploy process-quarkus-example service to complete user tasks and native <native>
+    Given Kogito Operator is deployed
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | config | native      | <native> |
+      | config | persistence | disabled |
+    And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
+
+    When Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john", 
+        "order" : {
+          "orderNumber" : "12345", 
+          "shipped" : false
+        }
+      }
+      """
+    Then Service "process-quarkus-example" contains 1 instances of process with name "orders"
+
+    When Complete "Verify order" task on service "process-quarkus-example" and process with name "orderItems" by user "john" with body:
+	  """json
+	  {}
+    """
+
+    Then Service "process-quarkus-example" contains 0 instances of process with name "orders"
+    And Service "process-quarkus-example" contains 0 instances of process with name "orderItems"
+
+    Examples:
+      | native   | minutes |
+      | disabled | 10      |
+
+    @native
+    Examples:
+      | native  | minutes |
+      | enabled | 20      |

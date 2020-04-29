@@ -14,14 +14,47 @@
 
 package framework
 
+import (
+	"fmt"
+	"strings"
+)
+
 // GetTasks retrieves tasks of specific process instance
 func GetTasks(namespace, routeURI, processName, processInstanceID string) (foundTasks map[string]string, err error) {
-	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, processName+"/"+processInstanceID+"/tasks", "", "", &foundTasks)
+	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID)
+	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, tasksEndpointPath, "", "", &foundTasks)
+	return
+}
+
+// GetTasksByUser retrieves tasks of specific process instance and user
+func GetTasksByUser(namespace, routeURI, processName, processInstanceID, user string) (foundTasks map[string]string, err error) {
+	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID) + "?user=" + user
+	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, tasksEndpointPath, "", "", &foundTasks)
 	return
 }
 
 // CompleteTask completes task
 func CompleteTask(namespace, routeURI, processName, processInstanceID, taskName, taskID, bodyFormat, bodyContent string) (err error) {
-	_, err = ExecuteHTTPRequest(namespace, "POST", routeURI, processName+"/"+processInstanceID+"/"+taskName+"/"+taskID, bodyFormat, bodyContent)
+	taskIDEndpointPath := getTaskIDEndpointPath(processName, processInstanceID, taskName, taskID)
+	return completeTask(namespace, routeURI, taskIDEndpointPath, bodyFormat, bodyContent)
+}
+
+// CompleteTaskByUser completes task by user
+func CompleteTaskByUser(namespace, routeURI, processName, processInstanceID, taskName, taskID, user, bodyFormat, bodyContent string) (err error) {
+	taskIDEndpointPath := getTaskIDEndpointPath(processName, processInstanceID, taskName, taskID) + "?user=" + user
+	return completeTask(namespace, routeURI, taskIDEndpointPath, bodyFormat, bodyContent)
+}
+
+func completeTask(namespace, routeURI, taskEndpointPath, bodyFormat, bodyContent string) (err error) {
+	_, err = ExecuteHTTPRequest(namespace, "POST", routeURI, taskEndpointPath, bodyFormat, bodyContent)
 	return
+}
+
+func getTasksEndpointPath(processName, processInstanceID string) string {
+	return fmt.Sprintf("%s/%s/tasks", processName, processInstanceID)
+}
+
+func getTaskIDEndpointPath(processName, processInstanceID, taskName, taskID string) string {
+	taskName = strings.ReplaceAll(taskName, " ", "_")
+	return fmt.Sprintf("%s/%s/%s/%s", processName, processInstanceID, taskName, taskID)
 }
