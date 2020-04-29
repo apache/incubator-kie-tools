@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kie</groupId>
 	<artifactId>lienzo-webapp</artifactId>
-	<version>7.29.0-SNAPSHOT</version>
+	<version>7.37.0-SNAPSHOT</version>
 	<name>[KIE] Lienzo - Showcase Webapp</name>
 	<description>[KIE] Lienzo - Showcase Webapp</description>
 	<packaging>war</packaging>
@@ -21,7 +21,7 @@
 		<com.google.elemental2.version>1.0.0-RC1</com.google.elemental2.version>
 		<com.google.gwt.version>2.8.2</com.google.gwt.version>
 		<junit.version>4.12</junit.version>
-		<org.kie.lienzo.version>7.29.0-SNAPSHOT</org.kie.lienzo.version>
+		<org.kie.lienzo.version>7.37.0-SNAPSHOT</org.kie.lienzo.version>
 	</properties>
 
 	<url>http://www.kiegroup.org</url>
