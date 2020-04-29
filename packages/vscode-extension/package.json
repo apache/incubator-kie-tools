@@ -2,7 +2,7 @@
   "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.2.12",
+  "version": "0.4.2",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,19 +15,19 @@
   },
   "publisher": "kiegroup",
   "scripts": {
-    "build": "yarn run build:fast",
+    "build": "yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",
     "compile": "webpack",
     "watch": "webpack",
-    "test": "echo 'No tests to run.'",
+    "test": "jest",
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "jest-junit": {
     "outputDirectory": "./target"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.12",
-    "@kogito-tooling/microeditor-envelope": "0.2.12",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.12"
+    "@kogito-tooling/core-api": "0.4.2",
+    "@kogito-tooling/microeditor-envelope": "0.4.2",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.4.2"
   }
 }

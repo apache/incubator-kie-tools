@@ -17,9 +17,10 @@
 import { ResourceContent } from "./ResourceContent";
 import { ResourcesList } from "./ResourcesList";
 import { ResourceContentOptions } from "./ResourceContentOptions";
+import { ResourceListOptions } from "./ResourceListOptions";
 
 export interface ResourceContentService {
   get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined>;
 
-  list(globPattern: string): Promise<ResourcesList>;
+  list(globPattern: string, opts?: ResourceListOptions): Promise<ResourcesList>;
 }

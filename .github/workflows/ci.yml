@@ -21,22 +21,8 @@ jobs:
         yarn: [1.19.0]
 
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Checkout upstream
-        uses: actions/checkout@v1
-        with:
-          ref: master
-
-      - name: Checkout to PRs base branch -> ${{ github.base_ref }} (PR only)
-        uses: actions/checkout@v1
-        if: github.base_ref
-        with:
-          ref: ${{ github.base_ref }}
-
-      - name: Merge PR branch with PRs base branch (PR only)
-        if: github.base_ref
-        run: git merge ${{ github.sha }}
+      - uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       # This bash script will set an output for this step. It can be used with steps.version.outputs.version
       - name: Output version
@@ -111,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: desktop-app-linux
-          path: "packages/desktop/out/Business Modeler Preview-linux-x64"
+          path: "packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz"
 
       - name: Upload Desktop App - macOS (macOS only)
         if: matrix.os == 'macos-latest'
@@ -132,7 +118,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: hub-app-linux
-          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64"
+          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz"
 
       - name: Upload Hub App - macOS (macOS only)
         if: matrix.os == 'macos-latest'

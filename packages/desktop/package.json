@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/desktop",
-  "version": "0.2.12",
+  "version": "0.4.2",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,16 +10,16 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.12",
-    "@kogito-tooling/kie-bc-editors": "0.2.12",
-    "@kogito-tooling/microeditor-envelope": "0.2.12",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.2.12",
+    "@kogito-tooling/core-api": "0.4.2",
+    "@kogito-tooling/kie-bc-editors": "0.4.2",
+    "@kogito-tooling/microeditor-envelope": "0.4.2",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.4.2",
     "@patternfly/patternfly": "2.40.2",
     "@patternfly/react-core": "3.90.0",
     "@patternfly/react-icons": "3.14.7",
+    "electron": "7.1.9",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1",
-    "electron": "7.1.9"
+    "react-router-dom": "5.1.1"
   },
   "scripts": {
     "start": "electron dist",
@@ -31,7 +31,7 @@
     "build:fast": "rm -rf dist && webpack --mode development",
     "clean:prod": "rm -rf out && mkdir out",
     "compile:prod": "yarn run build --mode production --devtool none",
-    "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-linux-x64/\"",
+    "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-linux-x64/ && (cd out && tar -pcvzf Business\\ Modeler\\ Preview-linux-x64.tar.gz Business\\ Modeler\\ Preview-linux-x64/)\"",
     "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-darwin-x64/ && (cd out && zip -ry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
     "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/README\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\" && copy README \\\"out\\Business Modeler Preview-win32-x64/\\\"\"",
     "package:prod": "run-script-os",

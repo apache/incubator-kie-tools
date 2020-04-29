@@ -16,6 +16,7 @@
 
 import * as vscode from "vscode";
 import * as fs from "fs";
+import { parse } from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
@@ -23,7 +24,8 @@ import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  Router
+  Router,
+  ResourceListRequest
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
@@ -95,16 +97,16 @@ export class KogitoEditor {
             .get(request.path, request.opts)
             .then(content => self.respond_resourceContent(content!));
         },
-        receive_resourceListRequest: (pattern: string) => {
-          this.resourceContentService.list(pattern).then(list => self.respond_resourceList(list));
+        receive_resourceListRequest: (request: ResourceListRequest) => {
+          this.resourceContentService.list(request.pattern, request.opts).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
           /**/
         },
-        notify_editorUndo: (edits: KogitoEdit[]) => {
+        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
           this.notify_editorUndo(edits);
         },
-        notify_editorRedo: (edits: KogitoEdit[]) => {
+        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
           this.notify_editorRedo(edits);
         },
         receive_newEdit: (edit: KogitoEdit) => {
@@ -112,7 +114,8 @@ export class KogitoEditor {
         },
         receive_previewRequest: preview => {
           if (preview) {
-            fs.writeFileSync(`${this.path}.svg`, preview);
+            const parsedPath = parse(this.path);
+            fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         }
       })
@@ -133,11 +136,11 @@ export class KogitoEditor {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
   }
 
-  public notify_editorUndo(edits: KogitoEdit[]) {
+  public notify_editorUndo(edits: ReadonlyArray<KogitoEdit>) {
     this.envelopeBusOuterMessageHandler.notify_editorUndo(edits);
   }
 
-  public notify_editorRedo(edits: KogitoEdit[]) {
+  public notify_editorRedo(edits: ReadonlyArray<KogitoEdit>) {
     this.envelopeBusOuterMessageHandler.notify_editorRedo(edits);
   }
 

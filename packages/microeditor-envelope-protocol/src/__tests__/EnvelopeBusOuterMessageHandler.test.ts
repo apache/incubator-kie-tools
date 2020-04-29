@@ -17,7 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
-import { EditorContent, KogitoEdit, ResourceContentRequest } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -58,16 +58,16 @@ beforeEach(() => {
       receive_readResourceContentError(errorMessage: string): void {
         receivedMessages.push("readResourceContentError_" + errorMessage);
       },
-      receive_resourceListRequest(pattern: string): void {
-        receivedMessages.push("resourceListRequest_" + pattern);
+      receive_resourceListRequest(resourceListRequest: ResourceListRequest): void {
+        receivedMessages.push("resourceListRequest_" + resourceListRequest);
       },
       receive_ready() {
         receivedMessages.push("ready");
       },
-      notify_editorUndo(edits: KogitoEdit[]) {
+      notify_editorUndo(edits: ReadonlyArray<KogitoEdit>) {
         receivedMessages.push("undo_" + edits.length);
       },
-      notify_editorRedo(edits: KogitoEdit[]) {
+      notify_editorRedo(edits: ReadonlyArray<KogitoEdit>) {
         receivedMessages.push("redo_" + edits.length);
       },
       receive_newEdit(edit: KogitoEdit) {

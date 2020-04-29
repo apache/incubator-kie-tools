@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions } from "@kogito-tooling/core-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
 
 /**
  * PUBLIC ENVELOPE API
@@ -22,5 +22,5 @@ import { ResourceContentOptions } from "@kogito-tooling/core-api";
 export interface ResourceContentApi {
   get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
 
-  list(pattern: string): Promise<string[]>;
+  list(pattern: string, opts?: ResourceListOptions): Promise<string[]>;
 }

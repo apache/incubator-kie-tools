@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { useMemo, useEffect, useState, useCallback } from "react";
 import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
@@ -30,52 +30,65 @@ interface ExternalLinkInfo {
 }
 
 export function FileTreeWithExternalLink() {
-  const { externalEditorManager, router, dependencies } = useGlobals();
+  const { externalEditorManager, router, dependencies, logger } = useGlobals();
 
-  const filteredLinks = useCallback(() => filterLinks(dependencies.treeView.linksToFiles(), router), []);
-  const [linksToFiles, setLinksToFiles] = useState(filteredLinks());
+  const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
-  useHtmlElementChangeListener(dependencies.treeView.repositoryContainer()!, () => {
-    const linksToAdd = filteredLinks();
-    if (linksToAdd.length > 0) {
-      setLinksToFiles(linksToAdd);
+  useEffect(() => {
+    const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+    if (newLinks.length === 0) {
+      return;
     }
-  });
+    setLinksToFiles(newLinks);
+  }, []);
 
-  const externalLinksInfo = useMemo(
-    () =>
-      filteredLinks().map(fileLink => ({
-        id: externalLinkId(fileLink),
-        container: fileLink.parentElement!.parentElement!,
-        url: createTargetUrl(fileLink.pathname, externalEditorManager)
-      })),
-    [linksToFiles]
-  );
+  useEffect(() => {
+    const observer = new MutationObserver(mutations => {
+      const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
+      if (addedNodes.length <= 0) {
+        return;
+      }
+
+      const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+      if (newLinks.length === 0) {
+        return;
+      }
+
+      logger.log("Found new links...");
+      setLinksToFiles(newLinks);
+    });
+
+    observer.observe(dependencies.treeView.repositoryContainer()!, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [links]);
 
   return (
     <>
-      {externalLinksInfo.map(linkInfo =>
-        ReactDOM.createPortal(<OpenExternalEditorButton id={linkInfo.id} href={linkInfo.url} />, linkInfo.container)
+      {links.map(link =>
+        ReactDOM.createPortal(
+          <OpenExternalEditorButton
+            id={externalLinkId(link)}
+            href={createTargetUrl(link.pathname, externalEditorManager)}
+          />,
+          link.parentElement!.parentElement!,
+          externalLinkId(link)
+        )
       )}
     </>
   );
 }
 
 function filterLinks(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
-  return links
-    .filter(fileLink => router.getLanguageData(extractOpenFileExtension(fileLink.href) as any))
-    .filter(fileLink => !document.getElementById(externalLinkId(fileLink)));
-}
-
-function useHtmlElementChangeListener(target: HTMLElement, action: () => void) {
-  useEffect(() => {
-    const elementObserver = new MutationObserver(e => action());
-    elementObserver.observe(target, {
-      childList: true,
-      subtree: true
-    });
-    return () => elementObserver.disconnect();
-  }, []);
+  return links.filter(fileLink =>
+    router.getLanguageData(extractOpenFileExtension(fileLink.href) as any)
+    && !document.getElementById(externalLinkId(fileLink))
+  );
 }
 
 function externalLinkId(fileLink: HTMLAnchorElement): string {

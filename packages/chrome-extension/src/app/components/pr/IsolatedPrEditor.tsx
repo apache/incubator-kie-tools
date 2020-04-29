@@ -64,8 +64,8 @@ export function IsolatedPrEditor(props: {
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
   const isolatedEditorRef = useRef<IsolatedEditorRef>(null);
-  const originalFilePath = getOriginalFilePath(props.unprocessedFilePath);
-  const modifiedFilePath = getModifiedFilePath(props.unprocessedFilePath);
+  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), []);
+  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), []);
 
   useIsolatedEditorTogglingEffect(
     textMode,
@@ -77,32 +77,30 @@ export function IsolatedPrEditor(props: {
     return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
   }, setFileStatusOnPr);
 
-  useEffectAfterFirstRender(() => {
-    getFileContents().then(c => {
-      if (isolatedEditorRef.current) {
-        isolatedEditorRef.current.setContent(c || "");
-      }
-    });
-  }, [showOriginal]);
-
   const closeDiagram = useCallback(() => {
     setTextMode(true);
     setEditorReady(false);
   }, []);
 
-  const filePath = showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED ? originalFilePath : modifiedFilePath;
+  const filePath = useMemo(
+    () => (showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED ? originalFilePath : modifiedFilePath),
+    [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath]
+  );
 
-  const getFileContents =
-    showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
+  const getFileContents = useMemo(() => {
+    return showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
       : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
+  }, [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath, githubApi.octokit]);
 
-  const shouldAddLinkToOriginalFile =
-    fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+  const shouldAddLinkToOriginalFile = useMemo(() => {
+    return fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+  }, [fileStatusOnPr]);
 
-  const openExternalEditor = () => {
+  const openExternalEditor = useCallback(() => {
     getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
-  };
+  }, [globals.externalEditorManager, filePath, getFileContents]);
+
   const repoInfo = useMemo(() => {
     return showOriginal
       ? {
@@ -117,13 +115,33 @@ export function IsolatedPrEditor(props: {
         };
   }, [showOriginal]);
 
+  const onEditorReady = useCallback(() => {
+    setEditorReady(true);
+  }, []);
+
+  useEffectAfterFirstRender(() => {
+    getFileContents().then(c => {
+      if (isolatedEditorRef.current) {
+        isolatedEditorRef.current.setContent(c || "");
+      }
+    });
+  }, [showOriginal, getFileContents]);
+
+  const toggleOriginal = useCallback(() => {
+    setShowOriginal(!showOriginal);
+  }, [showOriginal]);
+
+  const setDiagramMode = useCallback(() => {
+    setTextMode(false);
+  }, []);
+
   return (
     <IsolatedEditorContext.Provider
       value={{
         textMode: textMode,
         fullscreen: false,
         repoInfo: repoInfo,
-        onEditorReady: () => setEditorReady(true)
+        onEditorReady: onEditorReady
       }}
     >
       {shouldAddLinkToOriginalFile &&
@@ -155,9 +173,9 @@ export function IsolatedPrEditor(props: {
           fileStatusOnPr={fileStatusOnPr}
           textMode={textMode}
           originalDiagram={showOriginal}
-          toggleOriginal={() => setShowOriginal(prev => !prev)}
+          toggleOriginal={toggleOriginal}
           closeDiagram={closeDiagram}
-          onSeeAsDiagram={() => setTextMode(false)}
+          onSeeAsDiagram={setDiagramMode}
         />,
         toolbarContainer(
           globals.id,

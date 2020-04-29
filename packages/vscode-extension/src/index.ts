@@ -18,9 +18,8 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { Router } from "@kogito-tooling/core-api";
-import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
+import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
 
 /**
  * Starts a Kogito extension.
@@ -35,22 +34,17 @@ export function startExtension(args: {
   webviewLocation: string;
   context: vscode.ExtensionContext;
   router: Router;
+  viewType: string;
+  getPreviewCommandId: string;
 }) {
-  const resourceContentService = new VsCodeResourceContentService();
   const editorStore = new KogitoEditorStore();
-  const editorFactory = new KogitoEditorFactory(
-    args.context,
-    args.router,
-    args.webviewLocation,
-    editorStore,
-    resourceContentService
-  );
-  const editingCapabilityFactory = new KogitoEditingCapabilityFactory(editorStore);
-  const webviewProvider = new KogitoWebviewProvider(editorFactory, editingCapabilityFactory);
+  const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore);
+  const editingDelegate = new KogitoEditingDelegate(editorStore);
+  const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editingDelegate);
 
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
-    vscode.commands.registerCommand("extension.kogito.getPreviewSvg", () => {
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => {
       editorStore.withActive(e => e.requestPreview());
     })
   );

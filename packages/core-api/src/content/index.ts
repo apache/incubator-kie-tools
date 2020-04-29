@@ -20,3 +20,6 @@ export * from "./ResourcesList";
 export * from "./ContentType";
 export * from "./ResourceContentOptions";
 export * from "./ResourceContentRequest";
+export * from "./SearchType";
+export * from "./ResourceListOptions";
+export * from "./ResourceListRequest";

@@ -15,50 +15,57 @@
  */
 
 import * as vscode from "vscode";
-import { CustomDocument, WebviewPanel } from "vscode";
+import { CancellationToken, CustomDocument, Uri, WebviewPanel } from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditingCapability, KogitoEditingCapabilityFactory } from "./KogitoEditingCapabilityFactory";
+import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
 import { KogitoEdit } from "@kogito-tooling/core-api";
 
-export class KogitoWebviewProvider implements vscode.CustomEditorProvider {
-  public static readonly viewType = "kieKogitoWebviewEditors";
+export class KogitoWebviewProvider implements vscode.CustomEditorProvider<KogitoEdit> {
 
-  private readonly capabilites: Map<CustomDocument, KogitoEditingCapability> = new Map<CustomDocument, KogitoEditingCapability>();
-
+  private readonly viewType: string;
   private readonly editorFactory: KogitoEditorFactory;
-  public readonly editingCapabilityFactory: KogitoEditingCapabilityFactory;
+  public readonly editingDelegate: KogitoEditingDelegate;
 
-  public constructor(editorFactory: KogitoEditorFactory, editingCapabilityFactory: KogitoEditingCapabilityFactory) {
+  public constructor(viewType: string, editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
+    this.viewType = viewType;
     this.editorFactory = editorFactory;
-    this.editingCapabilityFactory = editingCapabilityFactory;
+    this.editingDelegate = editingDelegate;
   }
 
   public register() {
-    return vscode.window.registerCustomEditorProvider(KogitoWebviewProvider.viewType, this, {
-      retainContextWhenHidden: true
+    return vscode.window.registerCustomEditorProvider2(this.viewType, this, {
+      webviewOptions: {
+        retainContextWhenHidden: true
+      }
     });
   }
 
-  public async resolveCustomDocument(document: CustomDocument<unknown>) {
-    const capability = this.editingCapabilityFactory.createNew(document);
-    this.capabilites.set(document, capability);
-
-    document.onDidDispose(e => {
-      this.capabilites.delete(document);
+  public resolveCustomEditor(
+    document: CustomDocument<KogitoEdit>,
+    webviewPanel: WebviewPanel,
+    token: CancellationToken
+  ) {
+    this.editorFactory.configureNew(document.uri, webviewPanel, edit => {
+      this.editingDelegate.notifyEdit(document, edit);
     });
-
-    return { editing: capability };
   }
 
-  public async resolveCustomEditor(document: CustomDocument<unknown>, webview: WebviewPanel) {
-    this.editorFactory.configureNew(document.uri, webview, edit => this.signalEdit(document, edit));
+  public openCustomDocument(uri: Uri, token: CancellationToken) {
+    return new KogitoCustomDocument(uri);
   }
+}
 
-  private signalEdit(document: CustomDocument, edit: KogitoEdit) {
-    const capability = this.capabilites.get(document);
+class KogitoCustomDocument implements CustomDocument<KogitoEdit> {
+  public readonly savedEdits: ReadonlyArray<KogitoEdit>;
+  public readonly appliedEdits: ReadonlyArray<KogitoEdit>;
+  public readonly isClosed: boolean;
+  public readonly isDirty: boolean;
+  public readonly isUntitled: boolean;
+  public readonly onDidDispose: vscode.Event<void>;
+  public readonly version: number;
+  public readonly uri: Uri;
 
-    if(capability) {
-      capability.notifyEdit(edit);
-    }
+  constructor(uri: Uri) {
+    this.uri = uri;
   }
 }

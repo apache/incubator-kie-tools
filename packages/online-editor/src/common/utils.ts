@@ -15,11 +15,13 @@
  */
 
 export function extractFileExtension(fileName: string) {
-  return fileName
-    .split(".")
-    .pop()
-    ?.match(/[\w\d]+/)
-    ?.pop();
+  return fileName.match(/[\.]/)
+    ? fileName
+        .split(".")
+        ?.pop()
+        ?.match(/[\w\d]+/)
+        ?.pop()
+    : undefined;
 }
 
 export function removeFileExtension(fileName: string) {
@@ -34,4 +36,51 @@ export function removeFileExtension(fileName: string) {
 
 export function removeDirectories(filePath: string) {
   return filePath.split("/").pop();
+}
+
+// FIXME: remove duplications
+export enum OperatingSystem {
+  MACOS = "MACOS",
+  WINDOWS = "WINDOWS",
+  LINUX = "LINUX"
+}
+
+export function getOperatingSystem() {
+  if (navigator.appVersion.indexOf("Win") !== -1) {
+    return OperatingSystem.WINDOWS;
+  }
+
+  if (navigator.appVersion.indexOf("Mac") !== -1) {
+    return OperatingSystem.MACOS;
+  }
+
+  if (navigator.appVersion.indexOf("X11") !== -1) {
+    return OperatingSystem.LINUX;
+  }
+
+  if (navigator.appVersion.indexOf("Linux") !== -1) {
+    return OperatingSystem.LINUX;
+  }
+
+  return undefined;
+}
+
+export function getCookie(name: string) {
+  const value = "; " + document.cookie;
+  const parts = value.split("; " + name + "=");
+
+  if (parts.length === 2) {
+    return parts
+      .pop()!
+      .split(";")
+      .shift();
+  }
+}
+
+export function setCookie(name: string, value: string) {
+  const date = new Date();
+
+  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
+
+  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
