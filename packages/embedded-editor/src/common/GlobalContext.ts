@@ -17,14 +17,11 @@
 import { Router } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
-import { File } from "./File";
 
 export interface GlobalContextType {
   router: Router;
   envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
   iframeTemplateRelativePath: string;
-  file: File;
-  readonly: boolean;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);

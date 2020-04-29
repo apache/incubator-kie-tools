@@ -20,16 +20,19 @@ export interface File {
   fileName: string;
   editorType: EditorType;
   getFileContents: () => Promise<string | undefined>;
+  isReadOnly: boolean;
 }
 
 export const EMPTY_FILE_DMN = {
   fileName: "new-file",
   editorType: "dmn" as EditorType,
-  getFileContents: () => Promise.resolve("")
+  getFileContents: () => Promise.resolve(""),
+  isReadOnly: true
 };
 
 export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
   editorType: "bpmn" as EditorType,
-  getFileContents: () => Promise.resolve("")
+  getFileContents: () => Promise.resolve(""),
+  isReadOnly: true
 };

@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, LanguageData, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { File } from "../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 
 interface Props {
+  file: File;
+  onLanguageRequest: () => LanguageData;
   onContentResponse: (content: EditorContent) => void;
+  onSetContentError: () => void;
+  onDirtyIndicatorChange: (isDirty: boolean) => void;
+  onReady: () => void;
+  onResourceContentRequest: (request: ResourceContentRequest) => ResourceContent;
+  onResourceListRequest: (request: ResourceListRequest) => ResourcesList;
+  onEditorUndo: (edits: ReadonlyArray<KogitoEdit>) => void;
+  onEditorRedo: (edits: ReadonlyArray<KogitoEdit>) => void;
+  onNewEdit: (edit: KogitoEdit) => void;
+  onPreviewRequest: (previewSvg: string) => void;
 }
 
 export type EditorRef = {
@@ -30,7 +42,7 @@ export type EditorRef = {
 const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (props, forwardedRef) => {
   const context = useContext(GlobalContext);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const editorType = useMemo(() => context.file.editorType, []);
+  const editorType = useMemo(() => props.file.editorType, []);
 
   const envelopeBusOuterMessageHandler = useMemo(() => {
     return context.envelopeBusOuterMessageHandlerFactory.createNew(iframeRef, self => ({
@@ -38,48 +50,45 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         self.request_initResponse(window.location.origin);
       },
       receive_languageRequest() {
-        self.respond_languageRequest(context.router.getLanguageData(editorType)!);
+        self.respond_languageRequest(props.onLanguageRequest());
       },
       receive_contentResponse(content: EditorContent) {
         props.onContentResponse(content);
       },
       receive_contentRequest() {
-        context.file
+        props.file
           .getFileContents()
-          .then(c => self.respond_contentRequest({ content: c || "", path: context.file.fileName }));
+          .then(c => self.respond_contentRequest({ content: c || "", path: props.file.fileName }));
       },
       receive_setContentError() {
-        console.info("Set content error");
+        props.onSetContentError();
       },
       receive_dirtyIndicatorChange(isDirty: boolean) {
-        console.info(`Dirty indicator changed to ${isDirty}`);
+        props.onDirtyIndicatorChange(isDirty);
       },
       receive_ready() {
-        console.info(`Editor is ready`);
+        props.onReady();
       },
-      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
-        console.debug(`Resource Content Request`);
-        self.respond_resourceContent(new ResourceContent(resourceContentRequest.path, undefined));
+      receive_resourceContentRequest(request: ResourceContentRequest) {
+        self.respond_resourceContent(props.onResourceContentRequest(request));
       },
       receive_resourceListRequest(request: ResourceListRequest) {
-        console.debug(`Resource List Request`);
-        self.respond_resourceList(new ResourcesList(request.pattern, []));
+        self.respond_resourceList(props.onResourceListRequest(request));
       },
       notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
-        console.debug("Notify Undo");
+        props.onEditorUndo(edits);
       },
       notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
-        console.debug("Notify Redo");
+        props.onEditorRedo(edits);
       },
       receive_newEdit(edit: KogitoEdit) {
-        console.debug(`New Edit: ` + edit.id);
-        // TODO: implement new edit
+        props.onNewEdit(edit);
       },
       receive_previewRequest(previewSvg: string) {
-        console.debug("received preview");
+        props.onPreviewRequest(previewSvg);
       }
     }));
-  }, [editorType, context.file.getFileContents, props.onContentResponse]);
+  }, [editorType, props]);
 
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);

@@ -14,32 +14,37 @@
  * limitations under the License.
  */
 
+import { EditorContent } from "@kogito-tooling/core-api";
 import * as React from "react";
+import { useRef } from "react";
 import * as ReactDOM from "react-dom";
-import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN } from "./common/File";
-import { KogitoEditorWrapper, KogitoEditorWrapperRef } from "./KogitoEditorWrapper";
+import { EMPTY_FILE_DMN } from "./common/File";
+import { EmbeddedEditor, EmbeddedEditorRef } from "./EmbeddedEditor";
+import { EmbeddedViewer } from "./EmbeddedViewer";
 
-const wrapperRef = React.createRef<KogitoEditorWrapperRef>();
+interface Props { }
 
-const requestContent = () => {
-  wrapperRef.current?.requestContent;
-};
+const App = (props: Props) => {
 
-const onContentReceived = (content: string) => {
-  alert("Reporting externally: " + content);
-};
+  const editorRef = useRef<EmbeddedEditorRef>(null);
+
+  return (
+    <>
+      <p><h1>Viewer</h1></p>
+      <EmbeddedViewer file={EMPTY_FILE_DMN} />
+
+      <p><h1>Editor</h1></p>
+      <button onClick={(e: React.MouseEvent) => editorRef.current?.requestContent()}>Get content</button>
+      <EmbeddedEditor
+        ref={editorRef}
+        file={EMPTY_FILE_DMN}
+        onContentResponse={(content: EditorContent) => window.alert(content.content)}
+      />
+    </>
+  );
+}
 
 ReactDOM.render(
-  <>
-    <p>Hello from an embedded world</p>
-    <button onClick={requestContent}>Get content (external)</button>
-    <KogitoEditorWrapper
-      ref={wrapperRef}
-      file={EMPTY_FILE_DMN}
-      readonly={false}
-      external={false}
-      onContentReceived={onContentReceived}
-    />
-  </>,
+  <App />,
   document.getElementById("app")!
 );

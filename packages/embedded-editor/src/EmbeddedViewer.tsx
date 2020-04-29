@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-import { EditorContent } from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { File } from "./common/File";
 import { GlobalContext } from "./common/GlobalContext";
 import { OnlineEditorRouter } from "./common/OnlineEditorRouter";
-import { Editor, EditorRef } from "./editor/Editor";
+import { Editor } from "./editor/Editor";
 import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
 
 interface Props {
   file: File;
-  readonly: boolean;
-  external: boolean;
-  onContentReceived: (content: string) => void;
+  onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
+  onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
 }
 
 const iframeTemplateRelativePath: string = "envelope/index.html";
 
-export type KogitoEditorWrapperRef = {
-  requestContent(): void;
-} | null;
-
-const RefForwardingWrapper: React.RefForwardingComponent<KogitoEditorWrapperRef, Props> = (props: Props, forwardedRef) => {
+export const EmbeddedViewer = (props: Props) => {
 
   const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
   const onlineEditorRouter = useMemo(
@@ -54,44 +49,42 @@ const RefForwardingWrapper: React.RefForwardingComponent<KogitoEditorWrapperRef,
     []
   );
 
-  const editorRef = useRef<EditorRef>(null);
+  const onResourceContentRequest = useCallback((request: ResourceContentRequest) => {
+    if (props.onResourceContentRequest) {
+      return props.onResourceContentRequest(request);
+    }
+    return new ResourceContent(request.path, undefined);
+  }, [props.onResourceContentRequest]);
 
-  const requestContent = useCallback(() => {
-    console.log("content requested");
-    editorRef.current?.requestContent();
-  }, []);
-
-  const onContentResponse = useCallback(
-    (content: EditorContent) => {
-      props.onContentReceived(content.content);
-    }, []);
-
-  useImperativeHandle(
-    forwardedRef,
-    () => ({
-      requestContent: () => requestContent
-    }),
-    []
-  );
-
+  const onResourceListRequest = useCallback((request: ResourceListRequest) => {
+    if (props.onResourceListRequest) {
+      return props.onResourceListRequest(request);
+    }
+    return new ResourcesList(request.pattern, []);
+  }, [props.onResourceListRequest]);
 
   return (
     <GlobalContext.Provider
       value={{
         router: onlineEditorRouter,
         envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
-        iframeTemplateRelativePath: iframeTemplateRelativePath,
-        file: props.file,
-        readonly: props.readonly
+        iframeTemplateRelativePath: iframeTemplateRelativePath
       }}
     >
-      <button onClick={requestContent}>Get content (internal)</button>
       <Editor
-        ref={editorRef}
-        onContentResponse={onContentResponse}
+        file={props.file}
+        onLanguageRequest={() => onlineEditorRouter.getLanguageData(props.file.editorType)!}
+        onContentResponse={() => {/*NOP*/ }}
+        onSetContentError={() => {/*NOP*/ }}
+        onDirtyIndicatorChange={(isDirty: boolean) => {/*NOP*/ }}
+        onReady={() => {/*NOP*/ }}
+        onResourceContentRequest={onResourceContentRequest}
+        onResourceListRequest={onResourceListRequest}
+        onEditorUndo={(edits: ReadonlyArray<KogitoEdit>) => {/*NOP*/ }}
+        onEditorRedo={(edits: ReadonlyArray<KogitoEdit>) => {/*NOP*/ }}
+        onNewEdit={(edit: KogitoEdit) => {/*NOP*/ }}
+        onPreviewRequest={(previewSvg: string) => {/*NOP*/ }}
       />
     </GlobalContext.Provider>
   );
 };
-
-export const KogitoEditorWrapper = React.forwardRef(RefForwardingWrapper);
