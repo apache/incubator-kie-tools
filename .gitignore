@@ -1,0 +1,21 @@
+# Original (gradle)
+
+/bin
+/build
+/.gradle
+
+# Maven
+
+/target
+/local
+/jsZipCache/
+
+# Netbeans and IntelliJ files
+/nbproject
+*.ipr
+*.iws
+*.iml
+.idea
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
