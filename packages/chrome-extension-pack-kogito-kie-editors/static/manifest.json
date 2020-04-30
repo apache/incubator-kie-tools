@@ -1,8 +1,8 @@
 {
-  "name": "BPMN and DMN Editors :: GitHub Extension",
+  "name": "Kie Group GitHub Chrome Extension",
   "version": "0.4.2",
   "manifest_version": 2,
-  "description": "KIE Group :: GitHub Extension",
+  "description": "Visualize and edit BPMN or DMN files on GitHub",
   "content_scripts": [
     {
       "run_at": "document_idle",
