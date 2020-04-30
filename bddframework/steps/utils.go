@@ -121,8 +121,6 @@ func parseConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow,
 		if events {
 			*profilesPtr = append(*profilesPtr, "events")
 			kogitoApp.Spec.EnableEvents = true
-			kogitoApp.Spec.KogitoServiceSpec.AddEnvironmentVariable("MP_MESSAGING_OUTGOING_KOGITO_PROCESSINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
-			kogitoApp.Spec.KogitoServiceSpec.AddEnvironmentVariable("MP_MESSAGING_OUTGOING_KOGITO_USERTASKINSTANCES_EVENTS_BOOTSTRAP_SERVERS", "")
 		}
 	}
 }
