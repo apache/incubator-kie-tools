@@ -14,41 +14,16 @@
  * limitations under the License.
  */
 
+import { EditorType, File as UploadFile, newFile, isKnownEditorType } from "@kogito-tooling/embedded-editor";
+import { Brand, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Gallery, Page, PageHeader, PageSection, Text, TextContent, TextInput, TextVariants, Title, Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
+import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { GlobalContext } from "../common/GlobalContext";
-import { EMPTY_FILE, File as UploadFile } from "../common/File";
-import {
-  Brand,
-  Bullseye,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  Form,
-  FormGroup,
-  Gallery,
-  Page,
-  PageHeader,
-  PageSection,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants,
-  Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
-} from "@patternfly/react-core";
-import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
+import { GlobalContext } from "../common/GlobalContext";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -113,6 +88,8 @@ export function HomePage(props: Props) {
   const openFile = useCallback(
     (file: File) => {
       props.onFileOpened({
+        isReadOnly: false,
+        editorType: extractFileExtension(file.name) as EditorType,
         fileName: removeFileExtension(file.name),
         getFileContents: () =>
           new Promise<string | undefined>(resolve => {
@@ -128,7 +105,7 @@ export function HomePage(props: Props) {
 
   const onFileUploadFromDnd = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !isKnownEditorType(fileExtension)) {
       setUploadFileDndState(UploadFileDndState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -175,7 +152,7 @@ export function HomePage(props: Props) {
 
   const onFileUploadFromInput = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !isKnownEditorType(fileExtension)) {
       setUploadFileInputState(UploadFileInputState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -228,7 +205,7 @@ export function HomePage(props: Props) {
 
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
-      props.onFileOpened(EMPTY_FILE);
+      props.onFileOpened(newFile(fileExtension as EditorType));
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
     [context, history]
@@ -247,6 +224,8 @@ export function HomePage(props: Props) {
       const fileName = "sample";
       const filePath = `samples/${fileName}.${fileExtension}`;
       props.onFileOpened({
+        isReadOnly: false,
+        editorType: fileExtension as EditorType,
         fileName: fileName,
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
@@ -303,7 +282,7 @@ export function HomePage(props: Props) {
       }
 
       const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+      if (gistExtension && isKnownEditorType(gistExtension)) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl
@@ -319,7 +298,7 @@ export function HomePage(props: Props) {
     }
 
     const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !isKnownEditorType(fileExtension)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
         urlToOpen: undefined

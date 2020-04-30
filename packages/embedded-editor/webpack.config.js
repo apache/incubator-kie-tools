@@ -15,8 +15,8 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../microeditor-envelope/webpackUtils");
 
 module.exports = async (env, argv) => {
 
@@ -24,18 +24,18 @@ module.exports = async (env, argv) => {
     mode: "development",
     devtool: "inline-source-map",
     entry: {
-      index: "./src/index.tsx",
-      "envelope/index": "./src/envelope/index.ts"
+      index: "./src/index.ts"
     },
     output: {
       path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
+      filename: "[name].js",
+      libraryTarget: "umd",
+      globalObject: "this"
     },
-    externals: {},
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     plugins: [
       new CopyPlugin([
         { from: "./static/envelope", to: "./envelope" },
-        { from: "./static/index.html", to: "./index.html" },
         { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
         { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])

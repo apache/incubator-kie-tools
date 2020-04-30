@@ -20,14 +20,14 @@ const envelope = require("../patternfly-base/webpackUtils");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
-      .execSync("git rev-list --tags --max-count=1")
-      .toString()
-      .trim();
+    .execSync("git rev-list --tags --max-count=1")
+    .toString()
+    .trim();
 
   return require("child_process")
-      .execSync("git describe --tags " + tagName)
-      .toString()
-      .trim();
+    .execSync("git describe --tags " + tagName)
+    .toString()
+    .trim();
 }
 
 function getDownloadHubArgs(argv) {
@@ -60,7 +60,7 @@ module.exports = async (env, argv) => {
     devtool: "inline-source-map",
     entry: {
       index: "./src/index.tsx",
-      "envelope/index": "./src/envelope/index.ts"
+      "envelope/envelope": "./src/envelope/envelope.ts"
     },
     output: {
       path: path.resolve(__dirname, "./dist"),
@@ -70,12 +70,12 @@ module.exports = async (env, argv) => {
     plugins: [
       new CopyPlugin([
         { from: "./static/resources", to: "./resources" },
-        { from: "./static/envelope", to: "./envelope" },
         { from: "./static/images", to: "./images" },
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../kie-bc-editors-unpacked", to: "./gwt-editors" }
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors", to: "./gwt-editors" }
       ])
     ],
     module: {

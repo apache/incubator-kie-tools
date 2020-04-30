@@ -17,8 +17,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { EMPTY_FILE } from "./common/File";
-import { removeDirectories, removeFileExtension } from "./common/utils";
+import { EMPTY_FILE_DMN, EditorType } from "@kogito-tooling/embedded-editor";
+import { removeDirectories, removeFileExtension, extractFileExtension } from "./common/utils";
 import { GithubService } from "./common/GithubService";
 import { Alert, AlertVariant, AlertActionLink } from "@patternfly/react-core";
 
@@ -36,8 +36,7 @@ if (urlParams.has("ext")) {
 function openDefaultOnlineEditor() {
   ReactDOM.render(
     <App
-      iframeTemplateRelativePath={"envelope/index.html"}
-      file={EMPTY_FILE}
+      file={EMPTY_FILE_DMN}
       readonly={false}
       external={false}
       githubService={githubService}
@@ -48,10 +47,14 @@ function openDefaultOnlineEditor() {
 
 function waitForEventWithFileData() {
   window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
-    const file = { fileName: e.detail.fileName, getFileContents: () => Promise.resolve(e.detail.fileContent) };
+    const file = {
+      isReadOnly: false,
+      editorType: extractFileExtension(e.detail.fileName) as EditorType,
+      fileName: e.detail.fileName,
+      getFileContents: () => Promise.resolve(e.detail.fileContent),
+    };
     ReactDOM.render(
       <App
-        iframeTemplateRelativePath={"envelope/index.html"}
         file={file}
         readonly={e.detail.readonly}
         external={true}
@@ -91,12 +94,13 @@ function openFileByUrl() {
 
 function openFile(filePath: string, getFileContent: Promise<string>) {
   const file = {
+    isReadOnly: false,
+    editorType: extractFileExtension(removeDirectories(filePath)!)! as EditorType,
     fileName: removeFileExtension(removeDirectories(filePath)!)!,
     getFileContents: () => getFileContent
   };
   ReactDOM.render(
     <App
-      iframeTemplateRelativePath={"envelope/index.html"}
       file={file}
       readonly={false}
       external={false}

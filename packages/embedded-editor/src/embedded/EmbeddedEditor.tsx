@@ -16,13 +16,11 @@
 
 import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
-import { EmbeddedEditorContext } from "./common/EmbeddedEditorContext";
-import { EmbeddedEditorRouter } from "./common/EmbeddedEditorRouter";
-import { File } from "./common/File";
-import { BaseEditor, EditorRef } from "./editor/BaseEditor";
-import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { File } from "../common/File";
+import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
 interface Props {
   file: File;
@@ -35,28 +33,26 @@ interface Props {
   onEditorUndo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onEditorRedo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onNewEdit?: (edit: KogitoEdit) => void;
-  onPreviewRequest?: (previewSvg: string) => void;
+  onPreviewResponse?: (previewSvg: string) => void;
 }
-
-const iframeTemplateRelativePath: string = "envelope/index.html";
 
 export type EmbeddedEditorRef = {
   requestContent(): void;
+  requestPreview(): void;
 } | null;
 
 const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (props: Props, forwardedRef) => {
-  const editorRef = useRef<EditorRef>(null);
-  const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
-  const onlineEditorRouter = useMemo(
-    () =>
-      new EmbeddedEditorRouter(
-        new GwtEditorRoutes({
+  const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const router = useMemo(() =>
+    new EmbeddedEditorRouter(
+      new GwtEditorRoutes(
+        {
           bpmnPath: "gwt-editors/bpmn",
-          dmnPath: "gwt-editors/dmn"
-        })
-      ),
-    []
-  );
+          dmnPath: "gwt-editors/dmn",
+          scesimPath: "gwt-editors/scesim"
+        }
+      )
+    ), []);
 
   //Property functions default handling
   const onContentResponse = useCallback((content: EditorContent) => {
@@ -116,40 +112,97 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [props.onNewEdit]);
 
   const onPreviewRequest = useCallback((previewSvg: string) => {
-    if (props.onPreviewRequest) {
-      props.onPreviewRequest(previewSvg);
+    if (props.onPreviewResponse) {
+      props.onPreviewResponse(previewSvg);
     }
-  }, [props.onPreviewRequest]);
+  }, [props.onPreviewResponse]);
 
+  //Setup envelope bus communication
+  const envelopeBusOuterMessageHandler = useMemo(() => {
+    return new EnvelopeBusOuterMessageHandler(
+      {
+        postMessage: msg => {
+          if (iframeRef.current && iframeRef.current.contentWindow) {
+            iframeRef.current.contentWindow.postMessage(msg, "*");
+          }
+        }
+      },
+      self => ({
+        pollInit() {
+          self.request_initResponse(window.location.origin);
+        },
+        receive_languageRequest() {
+          self.respond_languageRequest(router.getLanguageData(props.file.editorType));
+        },
+        receive_contentResponse(content: EditorContent) {
+          onContentResponse(content);
+        },
+        receive_contentRequest() {
+          props.file
+            .getFileContents()
+            .then(c => self.respond_contentRequest({ content: c || "", path: props.file.fileName }));
+        },
+        receive_setContentError() {
+          onSetContentError();
+        },
+        receive_dirtyIndicatorChange(isDirty: boolean) {
+          onDirtyIndicatorChange(isDirty);
+        },
+        receive_ready() {
+          onReady();
+        },
+        receive_resourceContentRequest(request: ResourceContentRequest) {
+          self.respond_resourceContent(onResourceContentRequest(request));
+        },
+        receive_resourceListRequest(request: ResourceListRequest) {
+          self.respond_resourceList(onResourceListRequest(request));
+        },
+        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
+          onEditorUndo(edits);
+        },
+        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
+          onEditorRedo(edits);
+        },
+        receive_newEdit(edit: KogitoEdit) {
+          onNewEdit(edit);
+        },
+        receive_previewRequest(previewSvg: string) {
+          onPreviewRequest(previewSvg);
+        }
+      }));
+  }, [props]);
+
+  //Attach/detach bus when component attaches/detaches from DOM
+  useEffect(() => {
+    const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
+    window.addEventListener("message", listener, false);
+    envelopeBusOuterMessageHandler.startInitPolling();
+
+    return () => {
+      envelopeBusOuterMessageHandler.stopInitPolling();
+      window.removeEventListener("message", listener);
+    };
+  }, [envelopeBusOuterMessageHandler]);
+
+  //Forward reference methods
   useImperativeHandle(
     forwardedRef,
     () => ({
-      requestContent: () => editorRef.current?.requestContent()
-    }), [editorRef]);
+      requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
+      requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse()
+    }),
+    [envelopeBusOuterMessageHandler]
+  );
 
   return (
-    <EmbeddedEditorContext.Provider
-      value={{
-        router: onlineEditorRouter,
-        envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
-        iframeTemplateRelativePath: iframeTemplateRelativePath
-      }}
-    >
-      <BaseEditor
-        ref={editorRef}
-        file={props.file}
-        onContentResponse={onContentResponse}
-        onSetContentError={onSetContentError}
-        onDirtyIndicatorChange={onDirtyIndicatorChange}
-        onReady={onReady}
-        onResourceContentRequest={onResourceContentRequest}
-        onResourceListRequest={onResourceListRequest}
-        onEditorUndo={onEditorUndo}
-        onEditorRedo={onEditorRedo}
-        onNewEdit={onNewEdit}
-        onPreviewRequest={onPreviewRequest}
-      />
-    </EmbeddedEditorContext.Provider>
+    <div className="kogito--editor--container">
+      <iframe
+        ref={iframeRef}
+        id={"kogito-iframe"}
+        src={"envelope/envelope.html"}
+        title="Kogito editor">
+      </iframe>
+    </div>
   );
 };
 

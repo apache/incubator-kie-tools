@@ -119,11 +119,6 @@
   }
 }
 
-.kogito--editor {
-  width: 100%;
-  height: 100%;
-}
-
 .kogito--editor__toolbar-section {
   --pf-c-page__main-nav--PaddingBottom: var(--pf-global--spacer--sm);
   border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
@@ -197,6 +192,7 @@
   justify-content: center;
 }
 
+<<<<<<< HEAD
 .kogito--editor__toolbar-title {
   display: inline;
   border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
@@ -216,3 +212,19 @@
 .kogito--editor__toolbar-toggle-icon-button {
   --pf-c-dropdown__toggle--FontSize: var(--pf-global--icon--FontSize--md);
 }
+=======
+.kogito--editor--container {
+  display: flex; 
+  width: 100%; 
+  height: 100%; 
+  flex-direction: column; 
+  overflow: hidden;
+}
+
+.kogito--editor--container iframe {
+  flex-grow: 1; 
+  border: none; 
+  margin: 0; 
+  padding: 0;
+}
+>>>>>>> Refactor for re-use in online-editor

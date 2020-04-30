@@ -36,3 +36,25 @@ export const EMPTY_FILE_BPMN = {
   getFileContents: () => Promise.resolve(""),
   isReadOnly: true
 };
+
+export function newFile(editorType: EditorType): File {
+  return {
+    fileName: "new-file",
+    editorType: editorType,
+    getFileContents: () => Promise.resolve(""),
+    isReadOnly: false
+  };
+}
+
+export function isKnownEditorType(fileExtension: string): boolean {
+  if (fileExtension === undefined || fileExtension === null) {
+    return false;
+  }
+  if (fileExtension === "dmn") {
+    return true;
+  }
+  if (fileExtension === "bpmn") {
+    return true;
+  }
+  return false;
+}

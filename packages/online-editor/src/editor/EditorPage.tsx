@@ -19,7 +19,6 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { useHistory } from "react-router-dom";
 import { EditorToolbar } from "./EditorToolbar";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
-import { Editor, EditorRef } from "./Editor";
 import { GlobalContext } from "../common/GlobalContext";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import "@patternfly/patternfly/patternfly.css";
@@ -27,6 +26,7 @@ import { useLocation } from "react-router";
 import { EditorContent } from "@kogito-tooling/core-api";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { GithubTokenModal } from '../common/GithubTokenModal';
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor"
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -50,7 +50,7 @@ export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
   const location = useLocation();
   const history = useHistory();
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<EmbeddedEditorRef>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
@@ -252,9 +252,9 @@ export function EditorPage(props: Props) {
             onContinue={continueExport} />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Editor
+        <EmbeddedEditor
           ref={editorRef}
-          fullscreen={fullscreen}
+          file={context.file}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
         />
