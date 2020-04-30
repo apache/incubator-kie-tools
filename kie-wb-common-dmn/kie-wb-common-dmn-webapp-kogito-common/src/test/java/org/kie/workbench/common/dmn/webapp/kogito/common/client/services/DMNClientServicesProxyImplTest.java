@@ -118,11 +118,12 @@ public class DMNClientServicesProxyImplTest {
 
     @Test
     public void testIsValidVariableName() {
-        final ServiceCallback<Boolean> callback = newServiceCallback(actual -> assertThat(actual).isTrue());
+        final ServiceCallback<Boolean> trueCallback = newServiceCallback(actual -> assertThat(actual).isTrue());
+        final ServiceCallback<Boolean> falseCallback = newServiceCallback(actual -> assertThat(actual).isFalse());
 
-        service.isValidVariableName("", callback);
-        service.isValidVariableName("anything", callback);
-        service.isValidVariableName("   bad value  ", callback);
+        service.isValidVariableName("", falseCallback);
+        service.isValidVariableName("anything", trueCallback);
+        service.isValidVariableName("   accepted in business central  ", trueCallback);
     }
 
     @Test

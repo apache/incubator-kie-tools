@@ -86,7 +86,7 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     @Override
     public void isValidVariableName(final String source,
                                     final ServiceCallback<Boolean> callback) {
-        callback.onSuccess(true);
+        callback.onSuccess(FEELSyntaxLightValidator.isVariableNameValid(source));
     }
 
     @Override
