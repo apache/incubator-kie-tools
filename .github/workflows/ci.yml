@@ -9,10 +9,8 @@ on:
     branches: "**"
 
 jobs:
-
   build:
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: true
       matrix:
