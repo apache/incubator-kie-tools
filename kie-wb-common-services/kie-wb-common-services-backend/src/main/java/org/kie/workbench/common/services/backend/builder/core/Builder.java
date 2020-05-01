@@ -317,8 +317,15 @@ public class Builder implements Serializable {
     }
 
     public IncrementalBuildResults addResource(final Path resource) {
-        return addResource(resource,
-                           ioService.newInputStream(resource));
+        IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
+        // This validation prevents faulty update resource operation that may come during save and rename operation
+        // For more information see https://github.com/kiegroup/kie-wb-common/pull/3277
+        if (ioService.exists(resource)) {
+            results = addResource(resource,
+                                  ioService.newInputStream(resource));
+        }
+
+        return results;
     }
 
     private IncrementalBuildResults addResource(final Path resource,

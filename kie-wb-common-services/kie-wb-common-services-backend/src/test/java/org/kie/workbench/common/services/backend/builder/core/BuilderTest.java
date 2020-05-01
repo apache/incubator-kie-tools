@@ -30,6 +30,7 @@ import com.google.common.io.Resources;
 import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -55,6 +56,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -78,6 +80,9 @@ public class BuilderTest
     @Mock
     private PackageNameSearchProvider packageNameSearchProvider;
 
+    @Mock
+    private Path noFilePath;
+
     private IOService ioService;
     private KieModuleService moduleService;
     private ProjectImportsService importsService;
@@ -99,6 +104,8 @@ public class BuilderTest
         dependenciesClassLoaderCache = getReference(LRUModuleDependenciesClassLoaderCache.class);
         pomModelCache = getReference(LRUPomModelCache.class);
         validator = getReference(DefaultGenericKieValidator.class);
+        when(noFilePath.toURI()).thenReturn("default://pathToNoFile");
+        when(noFilePath.getFileName()).thenReturn("NoFile");
     }
 
     @After
@@ -409,6 +416,33 @@ public class BuilderTest
         assertEquals(1,
                      errorMessages.size());
         assertTrue(errorMessages.get(0).getText().contains("Error compiling FEEL expression"));
+    }
+
+    @Test
+    public void testIncrementalBuildWithNoFile() throws Exception {
+        final LRUPomModelCache pomModelCache = getReference(LRUPomModelCache.class);
+
+        final URL url = this.getClass().getResource("/BuildHelperTest");
+        final SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        final org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
+
+        final Module module = moduleService.resolveModule(Paths.convert(path));
+
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
+
+        IncrementalBuildResults buildResults = builder.addResource(Paths.convert(noFilePath));
+
+        List<BuildMessage> addedMessages = buildResults.getAddedMessages();
+        assertEquals(0,
+                     addedMessages.size());
     }
 
     private PackageNameWhiteListService getPackageNameWhiteListService() {
