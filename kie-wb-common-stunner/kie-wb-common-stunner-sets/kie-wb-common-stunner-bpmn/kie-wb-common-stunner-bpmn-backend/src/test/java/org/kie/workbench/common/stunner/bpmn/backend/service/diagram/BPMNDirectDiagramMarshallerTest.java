@@ -1853,7 +1853,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("my subprocess",
                      generalSet.getName().getValue());
-        assertEquals("my-called-element",
+        assertEquals("my-called-element\" <&> \"",
                      executionSet.getCalledElement().getValue());
         assertEquals(false,
                      executionSet.getIndependent().getValue());
@@ -2928,7 +2928,7 @@ public class BPMNDirectDiagramMarshallerTest {
                       3,
                       2);
 
-        assertTrue(result.contains("<bpmn2:callActivity id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB\" drools:independent=\"false\" drools:waitForCompletion=\"true\" name=\"my subprocess\" calledElement=\"my-called-element\">"));
+        assertTrue(result.contains("<bpmn2:callActivity id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB\" drools:independent=\"false\" drools:waitForCompletion=\"true\" name=\"my subprocess\" calledElement=\"my-called-element&quot; &lt;&amp;&gt; &quot;\">"));
 
         assertTrue(result.contains("<bpmn2:dataInput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputXItem\" name=\"input1\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX\" drools:dtype=\"Float\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputXItem\" name=\"output2\"/>"));

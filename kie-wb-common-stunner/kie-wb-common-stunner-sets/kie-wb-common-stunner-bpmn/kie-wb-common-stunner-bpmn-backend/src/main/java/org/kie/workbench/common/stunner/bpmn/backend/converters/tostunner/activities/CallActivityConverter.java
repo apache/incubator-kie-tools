@@ -43,6 +43,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
+
 public class CallActivityConverter extends BaseCallActivityConverter<ReusableSubprocess, ReusableSubprocessTaskExecutionSet> {
 
     public CallActivityConverter(TypedFactoryManager factoryManager,
@@ -58,7 +60,7 @@ public class CallActivityConverter extends BaseCallActivityConverter<ReusableSub
     @Override
     protected ReusableSubprocessTaskExecutionSet createReusableSubprocessTaskExecutionSet(CallActivity activity,
                                                                                           CallActivityPropertyReader p) {
-        return new ReusableSubprocessTaskExecutionSet(new CalledElement(activity.getCalledElement()),
+        return new ReusableSubprocessTaskExecutionSet(new CalledElement(revertIllegalCharsAttribute(activity.getCalledElement())),
                                                       new IsCase(p.isCase()),
                                                       new Independent(p.isIndependent()),
                                                       new AbortParent(p.isAbortParent()),

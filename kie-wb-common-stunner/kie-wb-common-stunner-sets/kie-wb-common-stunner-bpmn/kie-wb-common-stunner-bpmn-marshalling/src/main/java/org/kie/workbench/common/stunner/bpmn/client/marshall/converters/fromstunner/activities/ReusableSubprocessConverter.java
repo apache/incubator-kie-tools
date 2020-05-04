@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.replaceIllegalCharsAttribute;
 
 public class ReusableSubprocessConverter {
 
@@ -51,7 +52,7 @@ public class ReusableSubprocessConverter {
         BaseReusableSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
-        p.setCalledElement(executionSet.getCalledElement().getValue());
+        p.setCalledElement(replaceIllegalCharsAttribute(executionSet.getCalledElement().getValue()));
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setIndependent(executionSet.getIndependent().getValue());
         if (Boolean.FALSE.equals(executionSet.getIndependent().getValue())) {

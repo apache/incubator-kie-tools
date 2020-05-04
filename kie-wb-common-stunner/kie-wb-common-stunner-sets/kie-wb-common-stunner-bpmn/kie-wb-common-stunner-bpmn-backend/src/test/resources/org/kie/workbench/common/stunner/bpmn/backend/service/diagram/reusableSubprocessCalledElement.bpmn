@@ -14,7 +14,7 @@
     <bpmn2:endEvent id="_8B7A5BE1-CA89-4F00-B57D-10CFE84FEB1E">
       <bpmn2:incoming>_7E18FB7B-605E-4DBC-895A-D8709E26F681</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:callActivity id="_FC6D8570-8C67-40C2-8B7B-953DE15765FB" drools:independent="false" drools:waitForCompletion="true" name="my subprocess" calledElement="my-called-element">
+    <bpmn2:callActivity id="_FC6D8570-8C67-40C2-8B7B-953DE15765FB" drools:independent="false" drools:waitForCompletion="true" name="my subprocess" calledElement="my-called-element&quot; &lt;&amp;&gt; &quot;">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue>
