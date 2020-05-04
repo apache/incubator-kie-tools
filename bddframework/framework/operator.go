@@ -25,6 +25,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/operator"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
@@ -45,6 +46,8 @@ type dependentOperator struct {
 }
 
 var (
+	kogitoOperatorPullImageSecretPrefix = operator.Name + "-dockercfg"
+
 	// KogitoOperatorCommunityDependencies contains list of community operators to be used together with Kogito operator
 	KogitoOperatorCommunityDependencies = map[string]dependentOperator{
 		"Infinispan": {
@@ -80,7 +83,8 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 
 	// Wait for docker pulling secret available for kogito-operator serviceaccount
 	// This is needed if images are stored into local Openshift registry
-	err := WaitFor(namespace, "docker pulling secret", GetOpenshiftDurationFromTimeInMin(2), func() (bool, error) {
+	// Note that this is specific to Openshift
+	err := WaitFor(namespace, "image pulling secret", GetOpenshiftDurationFromTimeInMin(2), func() (bool, error) {
 		// unfortunately the SecretList is buggy, so we have to fetch it manually: https://github.com/kubernetes-sigs/controller-runtime/issues/362
 		// so use direct command to look for specific secret
 		output, err := CreateCommand("oc", "get", "secrets", "-o", "name", "-n", namespace).WithLoggerContext(namespace).Execute()
@@ -89,7 +93,7 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 			return false, err
 		}
 		GetLogger(namespace).Info(output)
-		return strings.Contains(output, "secret/kogito-operator-dockercfg"), nil
+		return strings.Contains(output, "secret/"+kogitoOperatorPullImageSecretPrefix), nil
 	})
 	if err != nil {
 		return err
@@ -120,7 +124,33 @@ func IsKogitoOperatorRunning(namespace string) (bool, error) {
 func WaitForKogitoOperatorRunning(namespace string) error {
 	return WaitForOnOpenshift(namespace, "Kogito operator running", kogitoOperatorTimeoutInMin,
 		func() (bool, error) {
-			return IsKogitoOperatorRunning(namespace)
+			running, err := IsKogitoOperatorRunning(namespace)
+			if err != nil {
+				return false, err
+			}
+
+			// If not running, make sure the image pull secret is present in pod
+			// If not present, delete the pod to allow its reconstruction with correct pull secret
+			// Note that this is specific to Openshift
+			if !running {
+				podList, err := GetPodsWithLabels(namespace, map[string]string{"name": operator.Name})
+				if err != nil {
+					GetLogger(namespace).Errorf("Error while trying to retrieve Kogito Operator pods: %v", err)
+					return false, nil
+				}
+				for _, pod := range podList.Items {
+					if !CheckPodHasImagePullSecretWithPrefix(&pod, kogitoOperatorPullImageSecretPrefix) {
+						// Delete pod as it has been misconfigured (missing pull secret)
+						GetLogger(namespace).Info("Kogito Operator pod does not have the image pull secret needed. Deleting it to renew it.")
+						err := kubernetes.ResourceC(kubeClient).Delete(&pod)
+						if err != nil {
+							GetLogger(namespace).Errorf("Error while trying to delete Kogito Operator pod: %v", err)
+							return false, nil
+						}
+					}
+				}
+			}
+			return running, nil
 		})
 }
 

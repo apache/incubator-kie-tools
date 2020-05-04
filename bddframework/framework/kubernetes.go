@@ -218,3 +218,13 @@ func CreateSecret(namespace, name string, secretContent map[string]string) error
 
 	return kubernetes.ResourceC(kubeClient).Create(secret)
 }
+
+// CheckPodHasImagePullSecretWithPrefix checks that a pod has an image pull secret starting with the given prefix
+func CheckPodHasImagePullSecretWithPrefix(pod *corev1.Pod, imagePullSecretPrefix string) bool {
+	for _, secretRef := range pod.Spec.ImagePullSecrets {
+		if strings.HasPrefix(secretRef.Name, imagePullSecretPrefix) {
+			return true
+		}
+	}
+	return false
+}
