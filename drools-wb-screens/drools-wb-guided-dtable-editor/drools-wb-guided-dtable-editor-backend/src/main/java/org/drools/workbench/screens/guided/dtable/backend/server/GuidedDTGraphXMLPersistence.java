@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

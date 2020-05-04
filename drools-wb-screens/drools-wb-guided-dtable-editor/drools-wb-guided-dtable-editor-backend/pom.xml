@@ -131,7 +131,11 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-xstream</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
