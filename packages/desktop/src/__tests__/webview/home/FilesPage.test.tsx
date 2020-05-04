@@ -57,7 +57,7 @@ describe("FilesPage", () => {
     expect(component.asFragment()).toMatchSnapshot();
   });
 
-  test("three recent files listed ordered alphabetically", () => {
+  test("three recent files in different directories listed ordered alphabetically", () => {
     const openFile = jest.fn();
     const openFileByPath = jest.fn();
 
@@ -75,11 +75,36 @@ describe("FilesPage", () => {
       })
     );
 
+    // alphabetical order
     fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
     expect(component.asFragment()).toMatchSnapshot();
   });
 
-  test("three recent files listed ordered alphabetically reverse", () => {
+  test("three recent files in the same directory listed ordered alphabetically", () => {
+    const openFile = jest.fn();
+    const openFileByPath = jest.fn();
+
+    const component = render(
+      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+    );
+
+    act(() =>
+      electron.ipcRenderer.send("returnLastOpenedFiles", {
+        lastOpenedFiles: [
+          { filePath: "/a/a.dmn", preview: "" },
+          { filePath: "/a/b.dmn", preview: "" },
+          { filePath: "/a/b.bpmn", preview: "" },
+          { filePath: "/a/c.bpmn", preview: "" }
+        ]
+      })
+    );
+
+    // alphabetical order
+    fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
+    expect(component.asFragment()).toMatchSnapshot();
+  });
+
+  test("three recent files listed ordered by access time", () => {
     const openFile = jest.fn();
     const openFileByPath = jest.fn();
 
@@ -97,9 +122,9 @@ describe("FilesPage", () => {
       })
     );
 
-    // standard order
+    // alphabetical order
     fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
-    // reversed order
+    // access time order
     fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
     expect(component.asFragment()).toMatchSnapshot();
   });
