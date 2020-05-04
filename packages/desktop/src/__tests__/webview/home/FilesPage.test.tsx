@@ -78,4 +78,29 @@ describe("FilesPage", () => {
     fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
     expect(component.asFragment()).toMatchSnapshot();
   });
+
+  test("three recent files listed ordered alphabetically reverse", () => {
+    const openFile = jest.fn();
+    const openFileByPath = jest.fn();
+
+    const component = render(
+      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+    );
+
+    act(() =>
+      electron.ipcRenderer.send("returnLastOpenedFiles", {
+        lastOpenedFiles: [
+          { filePath: "/a/b.dmn", preview: "" },
+          { filePath: "/b/a.dmn", preview: "" },
+          { filePath: "/c/c.dmn", preview: "" }
+        ]
+      })
+    );
+
+    // standard order
+    fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
+    // reversed order
+    fireEvent.click(component.getByTestId("orderAlphabeticallyButton"));
+    expect(component.asFragment()).toMatchSnapshot();
+  });
 });
