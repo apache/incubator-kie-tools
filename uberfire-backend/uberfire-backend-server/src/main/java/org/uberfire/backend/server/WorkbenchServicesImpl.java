@@ -25,7 +25,7 @@ import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;

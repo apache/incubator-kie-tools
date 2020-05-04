@@ -20,7 +20,7 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.SecureConfigItem;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 
 /**
  * Marshall a ConfigGroup to and from XML

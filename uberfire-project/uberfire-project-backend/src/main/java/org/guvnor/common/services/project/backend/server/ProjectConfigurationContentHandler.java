@@ -19,7 +19,7 @@ import javax.enterprise.context.Dependent;
 
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 
 @Dependent

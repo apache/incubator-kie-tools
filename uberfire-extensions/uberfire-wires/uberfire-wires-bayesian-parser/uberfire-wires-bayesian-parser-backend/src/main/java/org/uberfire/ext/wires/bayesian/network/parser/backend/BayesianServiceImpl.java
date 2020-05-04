@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.ext.wires.bayesian.network.parser.client.builder.BayesianBuilder;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Bif;

@@ -16,7 +16,7 @@
 package org.uberfire.ext.wires.bpmn.backend;
 
 import com.thoughtworks.xstream.XStream;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 
 public class BpmnPersistence {
