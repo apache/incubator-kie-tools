@@ -19,7 +19,7 @@ package org.kie.workbench.common.services.backend.kmodule;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.kie.workbench.common.services.backend.kmodule.converters.ClockTypeConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.FileLoggerConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KBaseConverter;

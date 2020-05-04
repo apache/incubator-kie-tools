@@ -32,7 +32,7 @@ import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
