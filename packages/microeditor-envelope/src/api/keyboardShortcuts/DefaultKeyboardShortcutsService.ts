@@ -93,8 +93,8 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public registerKeyDownThenUp(
     combination: string,
     label: string,
-    onKeyDown: () => Thenable<void>,
-    onKeyUp: () => Thenable<void>,
+    onKeyDown: (target: EventTarget | null) => Thenable<void>,
+    onKeyUp: (target: EventTarget | null) => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -111,12 +111,12 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
         if (e.type === "keydown") {
           if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
             console.debug(`Fired (down) [${combination}]!`);
-            onKeyDown();
+            onKeyDown(e.target);
           }
         } else if (e.type === "keyup") {
           if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
             console.debug(`Fired (up) [${combination}]!`);
-            onKeyUp();
+            onKeyUp(e.target);
           }
         }
 
@@ -136,7 +136,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public registerKeyPress(
     combination: string,
     label: string,
-    onKeyPress: () => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Thenable<void>,
     opts?: KeyBindingServiceOpts
   ) {
     console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -151,7 +151,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
         if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
           console.debug(`Fired (press) [${combination}]!`);
-          onKeyPress();
+          onKeyPress(e.target);
         }
 
         return true;
@@ -164,12 +164,16 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     return this.eventIdentifiers++;
   }
 
-  public registerKeyPressOnce(combination: string, onKeyPress: () => Thenable<void>, opts?: KeyBindingServiceOpts) {
+  public registerKeyPressOnce(
+    combination: string,
+    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    opts?: KeyBindingServiceOpts
+  ) {
     const id = this.registerKeyPress(
       combination,
       "",
-      async () => {
-        onKeyPress();
+      async target => {
+        onKeyPress(target);
         this.deregister(id);
       },
       opts ? { ...opts!, hidden: true } : opts
