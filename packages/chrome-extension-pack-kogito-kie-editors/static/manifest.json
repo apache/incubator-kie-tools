@@ -1,5 +1,5 @@
 {
-  "name": "Kie Group GitHub Chrome Extension",
+  "name": "KIE Group GitHub Chrome Extension",
   "version": "0.4.2",
   "manifest_version": 2,
   "description": "Visualize and edit BPMN or DMN files on GitHub",
