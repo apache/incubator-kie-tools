@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DomGlobal;

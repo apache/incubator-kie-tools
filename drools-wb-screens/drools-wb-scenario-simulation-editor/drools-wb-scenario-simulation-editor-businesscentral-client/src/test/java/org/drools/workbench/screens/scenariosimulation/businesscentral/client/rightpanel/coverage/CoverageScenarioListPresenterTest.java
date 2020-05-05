@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,8 @@ import elemental2.dom.HTMLUListElement;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.workbench.screens.scenariosimulation.businesscentral.client.editor.ScenarioSimulationBusinessCentralViewsProvider;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class CoverageScenarioListPresenterTest {
 
     @Mock
-    private ViewsProvider viewsProviderMock;
+    private ScenarioSimulationBusinessCentralViewsProvider viewsProviderMock;
 
     @Mock
     private CoverageScenarioListView coverageScenarioListViewMock;

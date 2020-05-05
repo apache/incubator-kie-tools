@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,7 @@ import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,9 +39,14 @@ import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
-import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
@@ -165,6 +171,32 @@ public class CoverageReportPresenterTest {
         verify(presenterSpy, times(1)).populateList(eq(outputCounterLocal));
         verify(presenterSpy, times(1)).populateScenarioList(eq(scenarioCounterLocal), eq(Type.DMN));
         verify(coverageReportViewMock, times(1)).show();
+        verify(coverageReportViewMock, never()).setEmptyStatusText(anyString());
+        verify(coverageReportViewMock, never()).hide();
+    }
+
+    @Test
+    public void setSimulationRunMetadataNoRuleOrDecisionDMN() {
+        simulationRunMetadataLocal = new SimulationRunMetadata(0, executedLocal, outputCounterLocal, scenarioCounterLocal, auditLog);
+        presenterSpy.setSimulationRunMetadata(simulationRunMetadataLocal, Type.DMN);
+        verify(coverageReportViewMock, times(1)).setEmptyStatusText(eq(ScenarioSimulationEditorConstants.INSTANCE.noDecisionsAvailable()));
+        verify(coverageReportViewMock, times(1)).hide();
+        verify(presenterSpy, never()).populateSummary(anyInt(), anyInt(), anyDouble());
+        verify(presenterSpy, never()).populateList(any());
+        verify(presenterSpy, never()).populateScenarioList(any(), any());
+        verify(coverageReportViewMock, never()).show();
+    }
+
+    @Test
+    public void setSimulationRunMetadataNoRuleOrDecisionRULE() {
+        simulationRunMetadataLocal = new SimulationRunMetadata(0, executedLocal, outputCounterLocal, scenarioCounterLocal, auditLog);
+        presenterSpy.setSimulationRunMetadata(simulationRunMetadataLocal, Type.RULE);
+        verify(coverageReportViewMock, times(1)).setEmptyStatusText(eq(ScenarioSimulationEditorConstants.INSTANCE.noRulesAvailable()));
+        verify(coverageReportViewMock, times(1)).hide();
+        verify(presenterSpy, never()).populateSummary(anyInt(), anyInt(), anyDouble());
+        verify(presenterSpy, never()).populateList(any());
+        verify(presenterSpy, never()).populateScenarioList(any(), any());
+        verify(coverageReportViewMock, never()).show();
     }
 
     @Test
@@ -217,11 +249,11 @@ public class CoverageReportPresenterTest {
         List<Map<String, Integer>> resultCounters = resultCounterCaptor.getAllValues();
         assertEquals(scenarioCounterLocal.size(), resultCounters.size());
         assertTrue(resultCounters.get(0).keySet().contains("d1"));
-        assertEquals(1, resultCounters.get(0).get("d1"));
+        assertEquals(1, (int) resultCounters.get(0).get("d1"));
         assertTrue(resultCounters.get(0).keySet().contains("d2"));
-        assertEquals(1, resultCounters.get(0).get("d2"));
+        assertEquals(1, (int) resultCounters.get(0).get("d2"));
         assertTrue(resultCounters.get(1).keySet().contains("d2"));
-        assertEquals(1, resultCounters.get(1).get("d2"));
+        assertEquals(1, (int) resultCounters.get(1).get("d2"));
     }
 
     @Test
@@ -247,7 +279,22 @@ public class CoverageReportPresenterTest {
     @Test
     public void onDownloadButtonClicked_NoCommandAssigned() {
         presenterSpy.downloadReportCommand = null;
+        presenterSpy.onDownloadReportButtonClicked();
         verify(downloadReportCommandMock, never()).execute();
+    }
+
+    @Test
+    public void setDownloadReportCommand() {
+        presenterSpy.setDownloadReportCommand(downloadReportCommandMock);
+        assertSame(presenterSpy.downloadReportCommand, downloadReportCommandMock);
+        assertFalse(downloadReportButtonMock.disabled);
+    }
+
+    @Test
+    public void setDownloadReportCommandNull() {
+        presenterSpy.setDownloadReportCommand(null);
+        assertNull(presenterSpy.downloadReportCommand);
+        assertTrue(downloadReportButtonMock.disabled);
     }
 
     @Test

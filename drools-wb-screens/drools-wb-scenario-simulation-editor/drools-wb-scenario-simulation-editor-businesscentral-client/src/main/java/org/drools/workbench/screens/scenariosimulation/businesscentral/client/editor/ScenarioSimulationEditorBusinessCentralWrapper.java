@@ -34,12 +34,18 @@ import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.workbench.screens.scenariosimulation.businesscentral.client.editor.strategies.BusinessCentralDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.businesscentral.client.editor.strategies.BusinessCentralDMODataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.businesscentral.client.handlers.ScenarioSimulationBusinessCentralDocksHandler;
+import org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage.CoverageReportPresenter;
+import org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage.CoverageReportView;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorWrapper;
+import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
@@ -103,6 +109,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     private Caller<DMNTypeService> dmnTypeService;
     private Caller<ImportExportService> importExportService;
     private Caller<RunnerReportService> runnerReportService;
+    private ScenarioSimulationBusinessCentralDocksHandler scenarioSimulationBusinessCentralDocksHandler;
+    protected SimulationRunResult lastRunResult;
 
     public ScenarioSimulationEditorBusinessCentralWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -116,7 +124,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
                                                           final PlaceManager placeManager,
                                                           final Caller<DMNTypeService> dmnTypeService,
                                                           final Caller<ImportExportService> importExportService,
-                                                          final Caller<RunnerReportService> runnerReportService) {
+                                                          final Caller<RunnerReportService> runnerReportService,
+                                                          final ScenarioSimulationBusinessCentralDocksHandler scenarioSimulationBusinessCentralDocksHandler) {
         super(scenarioSimulationEditorPresenter.getView());
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.dmnTypeService = dmnTypeService;
@@ -127,15 +136,15 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
         this.type = scenarioSimulationEditorPresenter.getType();
+        this.scenarioSimulationBusinessCentralDocksHandler = scenarioSimulationBusinessCentralDocksHandler;
     }
 
     @OnStartup
     public void onStartup(final ObservablePath path,
                           final PlaceRequest place) {
-        super.init(path,
-                   place,
-                   type);
-        scenarioSimulationEditorPresenter.init(this, (ObservablePath) place.getPath());
+        super.init(path, place, type);
+        scenarioSimulationEditorPresenter.setWrapper(this);
+        scenarioSimulationEditorPresenter.setPath(path);
     }
 
     @OnClose
@@ -181,6 +190,13 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER);
         scenarioSimulationEditorPresenter.showDocks(placeManager.getStatus(placeRequest));
         registerTestToolsCallback();
+        /* Managing TestRunner Report */
+        wrappedRegisterDock(ScenarioSimulationBusinessCentralDocksHandler.TEST_RUNNER_REPORTING_PANEL,
+                            scenarioSimulationBusinessCentralDocksHandler.getTestRunnerReportingPanelWidget());
+        /* It Loads last run info, it exits */
+        if (lastRunResult != null) {
+            scenarioSimulationBusinessCentralDocksHandler.updateTestRunnerReportingPanelResult(lastRunResult.getTestResultMessage());
+        }
     }
 
     @Override
@@ -246,6 +262,12 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
                 callback,
                 scenarioSimulationEditorPresenter.getValidationFailedCallback())
                 .validate(simulation, settings, versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    public void onRefreshedModelContent(SimulationRunResult testResult) {
+        this.lastRunResult = testResult;
+        scenarioSimulationBusinessCentralDocksHandler.updateTestRunnerReportingPanelResult(testResult.getTestResultMessage());
     }
 
     /**
@@ -314,16 +336,34 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         }
     }
 
+    @Override
+    public AbstractScenarioSimulationDocksHandler getScenarioSimulationDocksHandler() {
+        return scenarioSimulationBusinessCentralDocksHandler;
+    }
+
+    @Override
+    public ScenarioSimulationEditorPresenter getScenarioSimulationEditorPresenter() {
+        return scenarioSimulationEditorPresenter;
+    }
+
+    @Override
+    public void populateDocks(String identifier) {
+        if (CoverageReportPresenter.IDENTIFIER.equals(identifier)) {
+            scenarioSimulationBusinessCentralDocksHandler.getCoverageReportPresenter().ifPresent(presenter -> {
+                setCoverageReport(presenter);
+                presenter.setCurrentPath(scenarioSimulationEditorPresenter.getPath());
+            });
+        } else {
+            ScenarioSimulationEditorWrapper.super.populateDocks(identifier);
+        }
+    }
+
     protected void registerTestToolsCallback() {
         placeManager.registerOnOpenCallback(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER), scenarioSimulationEditorPresenter.getPopulateTestToolsCommand());
     }
 
     protected void unRegisterTestToolsCallback() {
         placeManager.getOnOpenCallbacks(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER)).remove(scenarioSimulationEditorPresenter.getPopulateTestToolsCommand());
-    }
-
-    protected void setSaveEnabled(boolean toSet) {
-        scenarioSimulationEditorPresenter.setSaveEnabled(toSet);
     }
 
     /**
@@ -333,9 +373,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     protected Promise<Void> makeMenuBar() {
         scenarioSimulationEditorPresenter.makeMenuBar(fileMenuBuilder);
         if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
-            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().orElseThrow(IllegalStateException::new);
             return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
-                if (canUpdateProject) {
+                if (Boolean.TRUE.equals(canUpdateProject)) {
                     addSave(fileMenuBuilder);
                     addCopy(fileMenuBuilder);
                     addRename(fileMenuBuilder);
@@ -343,7 +383,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
                 }
                 addDownloadMenuItem(fileMenuBuilder);
                 addCommonActions(fileMenuBuilder);
-                setSaveEnabled(canUpdateProject);
                 return promises.resolve();
             });
         }
@@ -447,5 +486,14 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
         return this::getModelSuccessCallbackMethod;
+    }
+
+    protected void setCoverageReport(CoverageReportView.Presenter presenter) {
+        ScenarioSimulationModel.Type modelType = scenarioSimulationEditorPresenter.getDataManagementStrategy() instanceof AbstractDMODataManagementStrategy ? ScenarioSimulationModel.Type.RULE : ScenarioSimulationModel.Type.DMN;
+        SimulationRunMetadata simulationRunMetadata = lastRunResult != null ? lastRunResult.getSimulationRunMetadata() : null;
+        presenter.populateCoverageReport(modelType, simulationRunMetadata);
+        if (simulationRunMetadata != null && simulationRunMetadata.getAuditLog() != null) {
+            presenter.setDownloadReportCommand(() -> onDownloadReportToCsv(scenarioSimulationEditorPresenter.getExportCallBack(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(scenarioSimulationEditorPresenter.getView()), simulationRunMetadata.getAuditLog()));
+        }
     }
 }

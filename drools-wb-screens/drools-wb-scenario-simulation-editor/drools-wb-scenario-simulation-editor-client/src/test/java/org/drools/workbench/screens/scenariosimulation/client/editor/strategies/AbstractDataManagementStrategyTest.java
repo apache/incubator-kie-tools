@@ -36,7 +36,6 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-import org.jgroups.util.Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -101,7 +100,7 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
             Map<String, String> simpleProperties = retrieved.getSimpleProperties();
             assertNotNull(simpleProperties);
             assertEquals(1, simpleProperties.size());
-            Util.assertTrue(simpleProperties.containsKey(TestProperties.LOWER_CASE_VALUE));
+            assertTrue(simpleProperties.containsKey(TestProperties.LOWER_CASE_VALUE));
             String simplePropertyValue = simpleProperties.get(TestProperties.LOWER_CASE_VALUE);
             assertNotNull(simplePropertyValue);
             assertEquals(fullName, simplePropertyValue);

@@ -28,11 +28,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
@@ -129,16 +124,9 @@
 
     <dependency>
       <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-dataset-api</artifactId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-displayer-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-displayer-client</artifactId>
-    </dependency>
+
 
     <!--Wires Grids dependencies-->
     <dependency>

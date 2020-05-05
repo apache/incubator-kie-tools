@@ -390,16 +390,6 @@
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-dataset-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-dataset-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-message-console-api</artifactId>
     </dependency>
@@ -488,48 +478,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-widgets</artifactId>
-    </dependency>
-    <!-- NEEDED BY org.dashbuilder.renderer.service.RendererSettingsService:RPC -->
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-services</artifactId>
-    </dependency>
-    <!-- END NEEDED -->
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-validations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-navigation-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-layout-editor-backend</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-renderer-default</artifactId>
-    </dependency>
 
     <!-- Add for enforcer -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-displayer-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-displayer-client</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -703,21 +656,12 @@
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
 
-            <compileSourcesArtifact>org.kie.soup:kie-soup-dataset-api</compileSourcesArtifact>
-
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-command-api</compileSourcesArtifact>
             <!-- drools-wb -->
             <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.soup:kie-soup-json</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-common-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-services-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.soup:kie-soup-dataset-shared</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-client</compileSourcesArtifact>
             <!-- DMN Marshaller -->
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
           </compileSourcesArtifacts>

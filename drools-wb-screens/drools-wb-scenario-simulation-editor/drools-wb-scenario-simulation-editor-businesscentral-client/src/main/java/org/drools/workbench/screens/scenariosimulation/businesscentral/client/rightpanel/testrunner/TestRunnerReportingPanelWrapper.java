@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.testrunner;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,31 +22,27 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestRunnerReportingPanelWrapper;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
 
 @Dependent
-public class TestRunnerReportingPanelWrapperImpl implements TestRunnerReportingPanelWrapper {
+public class TestRunnerReportingPanelWrapper {
 
-    protected final TestRunnerReportingPanel testRunnerReportingPanel;
+    private final TestRunnerReportingPanel testRunnerReportingPanel;
 
     @Inject
-    public TestRunnerReportingPanelWrapperImpl(TestRunnerReportingPanel testRunnerReportingPanel) {
+    public TestRunnerReportingPanelWrapper(TestRunnerReportingPanel testRunnerReportingPanel) {
         this.testRunnerReportingPanel = testRunnerReportingPanel;
     }
 
-    @Override
     public void reset() {
         testRunnerReportingPanel.reset();
     }
 
-    @Override
     public void onTestRun(TestResultMessage testResultMessage) {
         testRunnerReportingPanel.onTestRun(testResultMessage);
     }
 
-    @Override
     public IsWidget asWidget() {
         /* Here, a FlowPanel is added to align the padding with other DocksPanels */
         FlowPanel flowPanel = GWT.create(FlowPanel.class);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage;
 
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
@@ -22,6 +22,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLUListElement;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SubDockView;
 import org.uberfire.mvp.Command;
 
 public interface CoverageReportView

@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.test.TestResultMessage;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.coverage;
 
-/**
- * <b>Wrapper</b> to be used to avoid importing <b>workbench</b> package inside the client <b>core</b> method
- */
-public interface TestRunnerReportingPanelWrapper {
+import elemental2.dom.HTMLElement;
 
-    void reset();
+public interface CoverageElementView {
 
-    void onTestRun(TestResultMessage testResultMessage);
+    HTMLElement getDescription();
 
-    IsWidget asWidget();
+    HTMLElement getNumberOfTime();
+
+    interface Presenter {
+
+        void initElementList(HTMLElement elementList);
+
+        void addElementView(String description, String value);
+    }
+
+    void setDescriptionValue(String description);
+
+    void setElementValue(String numberOfTime);
 }

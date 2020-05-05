@@ -46,6 +46,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSim
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorWrapper;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
@@ -54,6 +55,7 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoS
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoAsyncPackageDataModelOracle;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMODataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.handlers.ScenarioSimulationKogitoDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioSimulationKogitoCreationPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.gwtbootstrap3.client.ui.TabListItem;
@@ -86,7 +88,8 @@ import static org.drools.workbench.screens.scenariosimulation.kogito.client.conv
  * Wrapper to be used inside Kogito
  */
 @Dependent
-public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContainerPresenter<ScenarioSimulationModel> implements ScenarioSimulationEditorWrapper {
+public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContainerPresenter<ScenarioSimulationModel>
+        implements ScenarioSimulationEditorWrapper {
 
     protected static final String DEFAULT_PACKAGE = "com";
     protected static final String NEW_FILE_NAME = "new-file.scesim";
@@ -103,6 +106,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected TranslationService translationService;
     protected ScenarioSimulationKogitoCreationPopupPresenter scenarioSimulationKogitoCreationPopupPresenter;
     protected KogitoScenarioSimulationBuilder scenarioSimulationBuilder;
+    protected ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandler;
 
     public ScenarioSimulationEditorKogitoWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -120,7 +124,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             final KogitoAsyncPackageDataModelOracle kogitoOracle,
             final TranslationService translationService,
             final ScenarioSimulationKogitoCreationPopupPresenter scenarioSimulationKogitoCreationPopupPresenter,
-            final KogitoScenarioSimulationBuilder scenarioSimulationBuilder) {
+            final KogitoScenarioSimulationBuilder scenarioSimulationBuilder,
+            final ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandler) {
         super(scenarioSimulationEditorPresenter.getView(), placeManager, multiPageEditorContainerView);
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.fileMenuBuilder = fileMenuBuilder;
@@ -131,6 +136,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         this.translationService = translationService;
         this.scenarioSimulationBuilder = scenarioSimulationBuilder;
         this.scenarioSimulationKogitoCreationPopupPresenter = scenarioSimulationKogitoCreationPopupPresenter;
+        this.scenarioSimulationKogitoDocksHandler = scenarioSimulationKogitoDocksHandler;
     }
 
     @Override
@@ -212,6 +218,11 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         //
     }
 
+    @Override
+    public void onRefreshedModelContent(SimulationRunResult testResultMessage) {
+        /* No actions required after data refresh in Kogito */
+    }
+
     /**
      * This method is called when the main grid tab (Model) is focused
      */
@@ -262,6 +273,16 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     @Override
+    public AbstractScenarioSimulationDocksHandler getScenarioSimulationDocksHandler() {
+        return scenarioSimulationKogitoDocksHandler;
+    }
+
+    @Override
+    public ScenarioSimulationEditorPresenter getScenarioSimulationEditorPresenter() {
+        return scenarioSimulationEditorPresenter;
+    }
+
+    @Override
     public void resetContentHash() {
         //
     }
@@ -272,13 +293,14 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         authoringWorkbenchDocks.setup("AuthoringPerspective", place);
         SCESIMMainJs.initializeJsInteropConstructors(SCESIMMainJs.getConstructorsMap());
         MainJs.initializeJsInteropConstructors(MainJs.getConstructorsMap());
+        scenarioSimulationEditorPresenter.setWrapper(this);
     }
 
     public void gotoPath(Path path) {
         resetEditorPages();
         kogitoOracle.init(path);
         currentPath = path;
-        scenarioSimulationEditorPresenter.init(this, new ObservablePathImpl().wrap(path));
+        scenarioSimulationEditorPresenter.setPath(new ObservablePathImpl().wrap(path));
     }
 
     public Path getCurrentPath() {
