@@ -1,6 +1,6 @@
 {
-  "name": "@kogito-tooling/base",
-  "version": "0.4.2",
+  "name": "@kogito-tooling/patternfly-base",
+  "version": "0.4.3",
   "description": "",
   "license": "Apache-2.0",
   "files": [

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@kogito-tooling/desktop": "0.4.3",
+    "@kogito-tooling/patternfly-base": "0.4.3",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "chrome-extension-pack-kogito-kie-editors": "0.4.3",

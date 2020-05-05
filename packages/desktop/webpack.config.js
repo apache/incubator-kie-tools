@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../base/webpackUtils");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
