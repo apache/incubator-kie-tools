@@ -49,9 +49,21 @@ public class JGitFileSystemsCache {
 
         fileSystemsSuppliers.putIfAbsent(fsKey,
                                          createFSSupplier);
-
         createMemoizedSupplier(fsKey,
                                createFSSupplier);
+    }
+
+    public void replaceSupplier(String fsKey,
+                                Supplier<JGitFileSystem> fsSupplier) {
+        PortablePreconditions.checkNotNull("fsKey",
+                                           fsKey);
+        PortablePreconditions.checkNotNull("fsSupplier",
+                                           fsSupplier);
+
+        fileSystemsSuppliers.replace(fsKey,
+                                     fsSupplier);
+        memoizedSuppliers.replace(fsKey,
+                                  fsSupplier);
     }
 
     public void remove(String fsName) {

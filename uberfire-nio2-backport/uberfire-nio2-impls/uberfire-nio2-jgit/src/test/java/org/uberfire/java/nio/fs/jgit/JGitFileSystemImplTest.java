@@ -26,12 +26,15 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.soup.commons.util.Maps;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -515,5 +518,34 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
         lockSpy.unlock();
         verify(lockSpy,
                times(1)).physicalUnLockOnFS();
+    }
+
+    @Test
+    public void testSetPublicURI() throws IOException, GitAPIException {
+
+        final JGitFileSystemProvider fsProvider = mock(JGitFileSystemProvider.class);
+
+        final Git git = setupGit();
+
+        final JGitFileSystemImpl fileSystem = new JGitFileSystemImpl(fsProvider,
+                                                                     new Maps.Builder<String, String>()
+                                                                             .put("ssh", "localhost:8080/git")
+                                                                             .build(),
+                                                                     git,
+                                                                     createFSLock(git),
+                                                                     "my-repo",
+                                                                     CredentialsProvider.getDefault(),
+                                                                     null,
+                                                                     null);
+
+        assertTrue(checkProtocolPresent(fileSystem.toString(), "ssh"));
+        assertFalse(checkProtocolPresent(fileSystem.toString(), "http"));
+
+        fileSystem.setPublicURI(new Maps.Builder<String, String>()
+                                        .put("http", "localhost:8080/git")
+                                        .put("ssh", "localhost:8080/git")
+                                        .build());
+        assertTrue(checkProtocolPresent(fileSystem.toString(), "ssh"));
+        assertTrue(checkProtocolPresent(fileSystem.toString(), "http"));
     }
 }

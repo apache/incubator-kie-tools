@@ -83,6 +83,41 @@ public class JGitFileSystemsCacheTest extends AbstractTestInfra {
     }
 
     @Test
+    public void addAndReplaceTest() {
+        when(config.getJgitFileSystemsInstancesCache()).thenReturn(2);
+        cache = new JGitFileSystemsCache(config);
+
+        JGitFileSystem fs1 = mock(JGitFileSystem.class);
+        Supplier<JGitFileSystem> fs1Supplier = () -> fs1;
+        cache.addSupplier("fs1",
+                          fs1Supplier);
+
+        assertFalse(cache.fileSystemsSuppliers.isEmpty());
+        assertFalse(cache.memoizedSuppliers.isEmpty());
+
+        JGitFileSystemProxy fs1Proxy = (JGitFileSystemProxy) cache.get("fs1");
+        assertEquals(fs1,
+                     fs1Proxy.getRealJGitFileSystem());
+
+        JGitFileSystem fs2 = mock(JGitFileSystem.class);
+        Supplier<JGitFileSystem> fs2Supplier = () -> fs2;
+        cache.replaceSupplier("fs1",
+                              fs2Supplier);
+
+        JGitFileSystemProxy fs2Proxy = (JGitFileSystemProxy) cache.get("fs1");
+
+        assertEquals(fs2,
+                     fs2Proxy.getRealJGitFileSystem());
+
+        assertTrue(cache.containsKey("fs1"));
+
+        cache.clear();
+
+        assertTrue(cache.fileSystemsSuppliers.isEmpty());
+        assertTrue(cache.memoizedSuppliers.isEmpty());
+    }
+
+    @Test
     public void addMoreFSThanCacheSupports() {
         when(config.getJgitFileSystemsInstancesCache()).thenReturn(2);
         cache = new JGitFileSystemsCache(config);

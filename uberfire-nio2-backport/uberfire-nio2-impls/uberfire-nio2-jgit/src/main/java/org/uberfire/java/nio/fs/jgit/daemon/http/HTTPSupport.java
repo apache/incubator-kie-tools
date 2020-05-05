@@ -35,6 +35,7 @@ public class HTTPSupport implements ServletContextListener {
                 fsProvider.addHostName("https",
                                        fsProvider.getConfig().getHttpsHostName() + ":" + fsProvider.getConfig().getHttpsPort() + servletContext.getContextPath() + "/" + GIT_PATH);
             }
+            fsProvider.updateCacheWithHostNames();
             final GitServlet gitServlet = new GitServlet();
             gitServlet.setRepositoryResolver(fsProvider.getRepositoryResolver());
             gitServlet.setAsIsFileService(null);
