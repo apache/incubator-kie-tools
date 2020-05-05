@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList, ChannelType } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -24,6 +24,7 @@ import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 interface Props {
   file: File;
   router: EmbeddedEditorRouter;
+  channelType: ChannelType;
   onContentResponse?: (content: EditorContent) => void;
   onSetContentError?: () => void;
   onDirtyIndicatorChange?: (isDirty: boolean) => void;
@@ -34,6 +35,7 @@ interface Props {
   onEditorRedo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onNewEdit?: (edit: KogitoEdit) => void;
   onPreviewResponse?: (previewSvg: string) => void;
+  envelopeURI?: string;
 }
 
 export type EmbeddedEditorRef = {
@@ -106,6 +108,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       props.onPreviewResponse(previewSvg);
     }
   }, [props.onPreviewResponse]);
+
+  const envelopeURI = props.envelopeURI ? props.envelopeURI : "envelope/envelope.html";
 
   //Setup envelope bus communication
   const envelopeBusOuterMessageHandler = useMemo(() => {
@@ -189,8 +193,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       <iframe
         ref={iframeRef}
         id={"kogito-iframe"}
-        src={"envelope/envelope.html"}
+        src={envelopeURI}
         title="Kogito editor">
+        <div id="kogito--editor--channel--type">{props.channelType}</div>
       </iframe>
     </div>
   );

@@ -18,11 +18,43 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = async (env, argv) => {
+const commonConfig = {
+  mode: "development",
+  devtool: "inline-source-map",
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        include: path.resolve(__dirname, "src"),
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: path.resolve("./tsconfig.json")
+            }
+          }
+        ]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
+      }
+    ]
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve("./node_modules"),
+      path.resolve("./src")
+    ]
+  }
+};
 
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
+module.exports = [
+  {
+    ...commonConfig,
     entry: {
       index: "./src/index.ts"
     },
@@ -40,40 +72,30 @@ module.exports = async (env, argv) => {
         { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          include: path.resolve(__dirname, "src"),
-          use: [
-            {
-              loader: "ts-loader",
-              options: {
-                configFile: path.resolve("./tsconfig.json")
-              }
-            }
-          ]
-        },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: ["babel-loader"]
-        }
-      ]
-    },
     devServer: {
       historyApiFallback: {
         disableDotRule: true
       },
       disableHostCheck: true,
       watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      contentBase: [
+        path.join(__dirname, "./dist"),
+        path.join(__dirname, "./static")
+      ],
       compress: true,
       port: 9001
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
     }
-  };
-};
+  },
+  {
+    ...commonConfig,
+    mode: "development",
+    devtool: "inline-source-map",
+    entry: {
+      "envelope/envelope": "./src/envelope/envelope.ts"
+    },
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js"
+    },
+  }
+];

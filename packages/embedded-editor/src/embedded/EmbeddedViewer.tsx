@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import { ChannelType, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useCallback } from "react";
 import { File } from "../common/File";
@@ -24,6 +24,7 @@ import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 interface Props {
   file: File;
   router: EmbeddedEditorRouter;
+  channelType: ChannelType;
   onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
   onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
 }
@@ -48,6 +49,7 @@ export const EmbeddedViewer = (props: Props) => {
     <EmbeddedEditor
       file={props.file}
       router={props.router}
+      channelType={props.channelType}
       onContentResponse={() => {/*NOP*/ }}
       onSetContentError={() => {/*NOP*/ }}
       onDirtyIndicatorChange={(isDirty: boolean) => {/*NOP*/ }}

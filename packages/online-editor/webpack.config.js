@@ -59,8 +59,7 @@ module.exports = async (env, argv) => {
     mode: "development",
     devtool: "inline-source-map",
     entry: {
-      index: "./src/index.tsx",
-      "envelope/envelope": "./src/envelope/envelope.ts"
+      index: "./src/index.tsx"
     },
     output: {
       path: path.resolve(__dirname, "./dist"),
@@ -126,7 +125,10 @@ module.exports = async (env, argv) => {
       },
       disableHostCheck: true,
       watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      contentBase: [
+        path.join(__dirname, "./dist"),
+        path.join(__dirname, "./static")
+      ],
       compress: true,
       port: 9001
     },

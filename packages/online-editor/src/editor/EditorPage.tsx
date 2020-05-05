@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContent } from "@kogito-tooling/core-api";
+import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
 import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
@@ -256,6 +256,7 @@ export function EditorPage(props: Props) {
           ref={editorRef}
           file={context.file}
           router={context.router}
+          channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
         />
