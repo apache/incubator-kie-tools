@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorType, File as UploadFile, newFile, isKnownEditorType } from "@kogito-tooling/embedded-editor";
+import { EditorType, File as UploadFile, newFile } from "@kogito-tooling/embedded-editor";
 import { Brand, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Gallery, Page, PageHeader, PageSection, Text, TextContent, TextInput, TextVariants, Title, Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -105,7 +105,7 @@ export function HomePage(props: Props) {
 
   const onFileUploadFromDnd = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !isKnownEditorType(fileExtension)) {
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
       setUploadFileDndState(UploadFileDndState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -152,7 +152,7 @@ export function HomePage(props: Props) {
 
   const onFileUploadFromInput = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !isKnownEditorType(fileExtension)) {
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
       setUploadFileInputState(UploadFileInputState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -282,7 +282,7 @@ export function HomePage(props: Props) {
       }
 
       const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && isKnownEditorType(gistExtension)) {
+      if (gistExtension && context.router.getLanguageData(gistExtension)) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl
@@ -298,7 +298,7 @@ export function HomePage(props: Props) {
     }
 
     const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !isKnownEditorType(fileExtension)) {
+    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
         urlToOpen: undefined

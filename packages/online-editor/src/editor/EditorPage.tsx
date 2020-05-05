@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
+import { EditorContent } from "@kogito-tooling/core-api";
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import "@patternfly/patternfly/patternfly.css";
+import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { EditorToolbar } from "./EditorToolbar";
-import { FullScreenToolbar } from "./EditorFullScreenToolbar";
-import { GlobalContext } from "../common/GlobalContext";
-import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
-import "@patternfly/patternfly/patternfly.css";
 import { useLocation } from "react-router";
-import { EditorContent } from "@kogito-tooling/core-api";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { useHistory } from "react-router-dom";
 import { GithubTokenModal } from '../common/GithubTokenModal';
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor"
+import { GlobalContext } from "../common/GlobalContext";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { FullScreenToolbar } from "./EditorFullScreenToolbar";
+import { EditorToolbar } from "./EditorToolbar";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -255,6 +255,7 @@ export function EditorPage(props: Props) {
         <EmbeddedEditor
           ref={editorRef}
           file={context.file}
+          router={context.router}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
         />

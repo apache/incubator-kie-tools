@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { File } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
 
 export interface GlobalContextType {
-  routes: Routes;
   file: File;
+  routes: Routes;
+  router: EmbeddedEditorRouter;
   readonly: boolean;
   external: boolean;
   senderTabId?: string;

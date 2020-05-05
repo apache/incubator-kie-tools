@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { EditorType, File } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -43,6 +44,15 @@ interface Props {
 export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
+  const router: EmbeddedEditorRouter = useMemo(() =>
+    new EmbeddedEditorRouter(
+      new GwtEditorRoutes(
+        {
+          bpmnPath: "gwt-editors/bpmn",
+          dmnPath: "gwt-editors/dmn"
+        }
+      )
+    ), []);
 
   const onFileOpened = useCallback(fileOpened => {
     setFile(fileOpened);
@@ -63,8 +73,9 @@ export function App(props: Props) {
   return (
     <GlobalContext.Provider
       value={{
-        routes: routes,
         file: file,
+        routes: routes,
+        router: router,
         readonly: props.readonly,
         external: props.external,
         senderTabId: props.senderTabId,

@@ -15,7 +15,6 @@
  */
 
 import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -24,6 +23,7 @@ import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
 interface Props {
   file: File;
+  router: EmbeddedEditorRouter;
   onContentResponse?: (content: EditorContent) => void;
   onSetContentError?: () => void;
   onDirtyIndicatorChange?: (isDirty: boolean) => void;
@@ -43,16 +43,6 @@ export type EmbeddedEditorRef = {
 
 const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (props: Props, forwardedRef) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
-  const router = useMemo(() =>
-    new EmbeddedEditorRouter(
-      new GwtEditorRoutes(
-        {
-          bpmnPath: "gwt-editors/bpmn",
-          dmnPath: "gwt-editors/dmn",
-          scesimPath: "gwt-editors/scesim"
-        }
-      )
-    ), []);
 
   //Property functions default handling
   const onContentResponse = useCallback((content: EditorContent) => {
@@ -132,7 +122,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           self.request_initResponse(window.location.origin);
         },
         receive_languageRequest() {
-          self.respond_languageRequest(router.getLanguageData(props.file.editorType));
+          self.respond_languageRequest(props.router.getLanguageData(props.file.editorType));
         },
         receive_contentResponse(content: EditorContent) {
           onContentResponse(content);

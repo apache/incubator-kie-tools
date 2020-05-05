@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
@@ -27,8 +27,9 @@ export function usingTestingGlobalContext(
   ctx?: Partial<GlobalContextType>
 ) {
   const usedCtx = {
-    routes: new Routes(),
     file: EMPTY_FILE_DMN,
+    routes: new Routes(),
+    router: new EmbeddedEditorRouter(),
     readonly: false,
     external: false,
     senderTabId: undefined,

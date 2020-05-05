@@ -45,16 +45,3 @@ export function newFile(editorType: EditorType): File {
     isReadOnly: false
   };
 }
-
-export function isKnownEditorType(fileExtension: string): boolean {
-  if (fileExtension === undefined || fileExtension === null) {
-    return false;
-  }
-  if (fileExtension === "dmn") {
-    return true;
-  }
-  if (fileExtension === "bpmn") {
-    return true;
-  }
-  return false;
-}

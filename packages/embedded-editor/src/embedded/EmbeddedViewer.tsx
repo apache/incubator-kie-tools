@@ -19,9 +19,11 @@ import * as React from "react";
 import { useCallback } from "react";
 import { File } from "../common/File";
 import { EmbeddedEditor } from "./EmbeddedEditor";
+import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
 interface Props {
   file: File;
+  router: EmbeddedEditorRouter;
   onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
   onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
 }
@@ -45,6 +47,7 @@ export const EmbeddedViewer = (props: Props) => {
   return (
     <EmbeddedEditor
       file={props.file}
+      router={props.router}
       onContentResponse={() => {/*NOP*/ }}
       onSetContentError={() => {/*NOP*/ }}
       onDirtyIndicatorChange={(isDirty: boolean) => {/*NOP*/ }}

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { EditorType, File, EMPTY_FILE_DMN, EMPTY_FILE_BPMN, newFile, isKnownEditorType } from "./File";
+export { EditorType, File, EMPTY_FILE_DMN, EMPTY_FILE_BPMN, newFile } from "./File";
