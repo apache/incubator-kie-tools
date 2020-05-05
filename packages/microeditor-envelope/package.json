@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.4.3",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.4.3",
-    "@patternfly/patternfly": "2.40.2"
+    "@kogito-tooling/microeditor-envelope-protocol": "0.4.3"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
