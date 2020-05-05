@@ -90,14 +90,15 @@ export class KogitoEditor {
         },
         receive_contentResponse: (content: EditorContent) => {
           const fileJob = this.jobRegistry.resolve(self.busId);
-          if (fileJob && !fileJob.cancellation.isCancellationRequested) {
-            vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
-              if (fileJob.type === JobType.SAVE) {
-                vscode.window.setStatusBarMessage("Saved successfully!", 3000);
-              }
-              this.jobRegistry.execute(self.busId);
-            });
+          if (!fileJob || fileJob.cancellation.isCancellationRequested) {
+            return;
           }
+          vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
+            if (fileJob.type === JobType.SAVE) {
+              vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+            }
+            this.jobRegistry.execute(self.busId);
+          });
         },
         receive_contentRequest: () => {
           vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {

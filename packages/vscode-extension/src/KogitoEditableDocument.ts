@@ -49,7 +49,11 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   public async backup(destination: Uri, cancellation: CancellationToken): Promise<CustomDocumentBackup> {
-    const editor = this.editorStore.get(this.uri)!;
+    const editor = this.editorStore.get(this.uri);
+
+    if (!editor){
+      throw new Error(`Cannot proceed with backup. Editor is null for path ${this.uri.fsPath}.`);
+    }
 
     return editor.requestBackup(destination, cancellation).then(() => {
       return {
