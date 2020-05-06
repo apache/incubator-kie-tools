@@ -15,13 +15,11 @@
  */
 package com.ait.lienzo.client.widget.panel.scrollbars;
 
-import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.widget.panel.mediators.RestrictedMousePanMediator;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
@@ -34,8 +32,6 @@ public class ScrollablePanelHandler
     static final int DEFAULT_INTERNAL_SCROLL_HEIGHT = 1;
 
     static final int DEFAULT_INTERNAL_SCROLL_WIDTH  = 1;
-
-    private RestrictedMousePanMediator mousePanMediator;
 
     public ScrollablePanelHandler(final ScrollablePanel panel)
     {
@@ -54,7 +50,6 @@ public class ScrollablePanelHandler
     {
         setupLienzoScrollStyle();
         setupScrollBarSynchronization();
-        setupMouseDragSynchronization();
         setupContextSwitcher();
     }
 
@@ -117,34 +112,6 @@ public class ScrollablePanelHandler
         getPanel().register(
                 getPanel().addScrollHandler(onScroll()));
         synchronizeScrollSize();
-    }
-
-    void setupMouseDragSynchronization()
-    {
-        if (null != getViewport())
-        {
-            mousePanMediator = makeRestrictedMousePanMediator();
-            getViewport().getMediators().push(mousePanMediator);
-
-            getPanel().register(
-                    getViewport()
-                            .addViewportTransformChangedHandler(new ViewportScaleChangeHandler(ScrollablePanelHandler.this,
-                                                                                               getViewport().getTransform()))
-                               );
-        }
-    }
-
-    RestrictedMousePanMediator makeRestrictedMousePanMediator()
-    {
-        return new RestrictedMousePanMediator(panel)
-        {
-            @Override
-            protected void onMouseMove(final NodeMouseMoveEvent event)
-            {
-                refreshScrollPosition();
-            }
-
-        };
     }
 
     ScrollHandler onScroll()
@@ -248,11 +215,6 @@ public class ScrollablePanelHandler
 
         getViewport().setTransform(newTransform);
         getLayer().batch();
-    }
-
-    RestrictedMousePanMediator getMousePanMediator()
-    {
-        return mousePanMediator;
     }
 
     AbsolutePanel getScrollPanel()
