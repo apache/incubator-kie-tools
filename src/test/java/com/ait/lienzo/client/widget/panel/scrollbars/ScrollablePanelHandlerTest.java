@@ -19,12 +19,10 @@ package com.ait.lienzo.client.widget.panel.scrollbars;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
-import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
-import com.ait.lienzo.client.widget.panel.mediators.RestrictedMousePanMediator;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
@@ -40,13 +38,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScrollablePanelHandlerTest {
@@ -88,14 +91,12 @@ public class ScrollablePanelHandlerTest {
     public void testInit() {
 
         doNothing().when(tested).setupScrollBarSynchronization();
-        doNothing().when(tested).setupMouseDragSynchronization();
         doNothing().when(tested).setupContextSwitcher();
         doReturn(mock(ScrollUI.class)).when(tested).scrollUI();
 
         tested.init();
 
         verify(tested).setupScrollBarSynchronization();
-        verify(tested).setupMouseDragSynchronization();
         verify(tested).setupContextSwitcher();
     }
 
@@ -220,20 +221,6 @@ public class ScrollablePanelHandlerTest {
     }
 
     @Test
-    public void testSetupMouseDragSynchronization() {
-
-        final RestrictedMousePanMediator mediator = mock(RestrictedMousePanMediator.class);
-        final Mediators mediators = mock(Mediators.class);
-
-        doReturn(mediator).when(tested).makeRestrictedMousePanMediator();
-        doReturn(mediators).when(viewport).getMediators();
-
-        tested.setupMouseDragSynchronization();
-
-        verify(mediators).push(mediator);
-    }
-
-    @Test
     public void testRefreshScrollPosition() {
 
         final ScrollPosition scrollPosition = mock(ScrollPosition.class);
@@ -302,41 +289,6 @@ public class ScrollablePanelHandlerTest {
 
         verify(scrollBars).setHorizontalScrollPosition(xPercentage);
         verify(scrollBars).setVerticalScrollPosition(yPercentage);
-    }
-
-    @Test
-    public void testMakeRestrictedMousePanMediator() {
-
-        final Viewport viewport = viewportMock();
-        final Layer layer = mock(Layer.class);
-        final RestrictedMousePanMediator restrictedMousePanMediator = spy(tested.makeRestrictedMousePanMediator());
-
-        doNothing().when(tested).refreshScrollPosition();
-        doReturn(viewport).when(restrictedMousePanMediator).getViewport();
-        doReturn(layer).when(tested).getLayer();
-        doReturn(viewport).when(layer).getViewport();
-
-        restrictedMousePanMediator.handleEvent(mouseDownEventMock());
-        restrictedMousePanMediator.handleEvent(mouseMoveEventMock());
-
-        verify(tested).refreshScrollPosition();
-    }
-
-    @Test
-    public void testGetMousePanMediator() {
-
-        final RestrictedMousePanMediator expectedMediator = mock(RestrictedMousePanMediator.class);
-        final Mediators mediators = mock(Mediators.class);
-
-        doReturn(mediators).when(viewport).getMediators();
-        doReturn(expectedMediator).when(tested).makeRestrictedMousePanMediator();
-
-        tested.setupMouseDragSynchronization();
-
-        final RestrictedMousePanMediator actualMediator = tested.getMousePanMediator();
-
-        assertEquals(expectedMediator,
-                     actualMediator);
     }
 
     @Test
