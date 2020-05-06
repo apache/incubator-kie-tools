@@ -1,4 +1,4 @@
-name: Publish Chrome Extension on the Chrome Store
+name: Publish Chrome Extension to the Chrome Web Store
 
 on:
   release:
