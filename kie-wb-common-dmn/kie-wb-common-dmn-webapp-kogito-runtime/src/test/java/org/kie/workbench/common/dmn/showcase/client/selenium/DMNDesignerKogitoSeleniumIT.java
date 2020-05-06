@@ -239,9 +239,6 @@ public class DMNDesignerKogitoSeleniumIT {
                 .areIdentical();
     }
 
-    /**
-     * Reproducer for DROOLS-4424
-     */
     @Test
     public void testCopyAndPaste() throws Exception {
         final String source = loadResource("business-knowledge-model.xml");
@@ -250,6 +247,7 @@ public class DMNDesignerKogitoSeleniumIT {
         expandDecisionNavigatorDock();
 
         final String nodeName = "BusinessKnowledgeModel-1";
+        final String copiedNodeName = "BusinessKnowledgeModel-2";
         waitOperation()
                 .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
                 .until(element(NODE, nodeName))
@@ -269,7 +267,12 @@ public class DMNDesignerKogitoSeleniumIT {
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .valueByXPath("count(//dmn:businessKnowledgeModel[@name='" + nodeName + "'])")
-                .isEqualTo(2);
+                .isEqualTo(1);
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .valueByXPath("count(//dmn:businessKnowledgeModel[@name='" + copiedNodeName + "'])")
+                .isEqualTo(1);
     }
 
     @Test

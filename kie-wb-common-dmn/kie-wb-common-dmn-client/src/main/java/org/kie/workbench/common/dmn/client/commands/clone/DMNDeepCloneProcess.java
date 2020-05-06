@@ -16,12 +16,17 @@
 package org.kie.workbench.common.dmn.client.commands.clone;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
@@ -29,12 +34,21 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.NameHolder;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.clone.DeepCloneProcess;
 import org.kie.workbench.common.stunner.core.definition.clone.IDeepCloneProcess;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
 
 /**
@@ -44,8 +58,13 @@ import org.kie.workbench.common.stunner.core.util.ClassUtils;
 @Alternative
 public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneProcess {
 
+    private static final RegExp NAME_SUFFIX_REGEX = RegExp.compile("[?!-]\\d+$");
+    private static final String HYPHEN = "-";
+    private final SessionManager sessionManager;
+
     protected DMNDeepCloneProcess() {
         this(null,
+             null,
              null,
              null);
     }
@@ -53,14 +72,18 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
     @Inject
     public DMNDeepCloneProcess(final FactoryManager factoryManager,
                                final AdapterManager adapterManager,
-                               final ClassUtils classUtils) {
+                               final ClassUtils classUtils,
+                               final SessionManager sessionManager) {
         super(factoryManager, adapterManager, classUtils);
+        this.sessionManager = sessionManager;
     }
 
     /**
      * <p>It defines additive fields, specific to DMN domain, to be included in the target</p>
      * <p>Then, the "classic" clone operation, defined in {@link DeepCloneProcess} will be executed</p>
      * <p>Note that {@link DeepCloneProcess} is already taking care of aspects related to look&feel, such as background color, font, etc.</p>
+     * <p>Every time we copy a node, in order to respect the name uniqueness logic, a new node will be created with a suffix {@code -X},
+     * where {@code X} it is an incremental numeric value</p>
      *
      * @param source node to be cloned
      * @param target destination of the cloning operation
@@ -69,8 +92,15 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
     @Override
     public <S, T> T clone(final S source,
                           final T target) {
+
+        super.clone(source, target);
+
         if (source instanceof DRGElement) {
             cloneDRGElementBasicInfo((DRGElement) source, (DRGElement) target);
+        }
+
+        if (source instanceof HasText) {
+            cloneTextElementBasicInfo((HasText) source, (HasText) target);
         }
 
         if (source instanceof HasVariable) {
@@ -87,13 +117,72 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
             cloneBusinessKnowledgeModel((BusinessKnowledgeModel) source, (BusinessKnowledgeModel) target);
         }
 
-        return super.clone(source, target);
+        return target;
     }
 
     private void cloneDRGElementBasicInfo(final DRGElement source, final DRGElement target) {
-        target.setName(source.getName().copy());
-        target.setNameHolder(source.getNameHolder().copy());
+        final String uniqueNodeName = composeUniqueNodeName(source.getName().getValue());
+        target.setId(new Id());
+        target.setNameHolder(new NameHolder(new Name(uniqueNodeName)));
+        target.setDescription(source.getDescription().copy());
+        target.setParent(source.getParent());
         target.getLinksHolder().getValue().getLinks().addAll(cloneExternalLinkList(source));
+    }
+
+    private void cloneTextElementBasicInfo(final HasText source, final HasText target) {
+        final String uniqueNodeName = composeUniqueNodeName(source.getText().getValue());
+        target.setText(new Text(uniqueNodeName));
+    }
+
+    protected String composeUniqueNodeName(final String name) {
+        final String originalName = Optional.ofNullable(name).orElse("");
+
+        final MatchResult nameSuffixMatcher = NAME_SUFFIX_REGEX.exec(originalName);
+        if (nameSuffixMatcher != null) {
+            return buildNameWithIncrementedSuffixIndex(originalName, nameSuffixMatcher);
+        }
+
+        return joinPrefixWithIndexedSuffix(originalName);
+    }
+
+    private String buildNameWithIncrementedSuffixIndex(final String nameValue, final MatchResult matchResult) {
+        final String suffix = matchResult.getGroup(0);
+        final String prefix = Optional.ofNullable(nameValue.split(suffix)[0]).orElse("");
+        return joinPrefixWithIndexedSuffix(prefix);
+    }
+
+    private String joinPrefixWithIndexedSuffix(final String originalName) {
+        final String originalNameWithHyphen = originalName + HYPHEN;
+        return originalNameWithHyphen + getMaxUnusedIndexByNamePrefix(originalNameWithHyphen);
+    }
+
+    private int getMaxUnusedIndexByNamePrefix(final String namePrefix) {
+        final List<String> nodeNameList = StreamSupport.stream(getGraphNodes().spliterator(), true)
+                .map(this::nodeNamesMapper)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return DefaultValueUtilities.getMaxUnusedIndex(nodeNameList, namePrefix);
+    }
+
+    private Iterable<Node<View, Edge>> getGraphNodes() {
+        return sessionManager
+                .getCurrentSession()
+                .getCanvasHandler()
+                .getDiagram()
+                .getGraph()
+                .nodes();
+    }
+
+    private String nodeNamesMapper(final Node<View, Edge> node) {
+        if (node.getContent().getDefinition() instanceof NamedElement) {
+            final NamedElement namedElement = (NamedElement) node.getContent().getDefinition();
+            return namedElement.getName().getValue();
+        }
+        if (node.getContent().getDefinition() instanceof HasText) {
+            final HasText textWrapper = (HasText) node.getContent().getDefinition();
+            return textWrapper.getText().getValue();
+        }
+        return null;
     }
 
     private void cloneTypeRefInfo(final IsInformationItem srcInformationItem, final IsInformationItem targetInformationItem) {
@@ -114,18 +203,12 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
     }
 
     private void cloneDecision(final Decision source, final Decision target) {
-        target.setId(new Id());
-        target.setDescription(source.getDescription().copy());
-        target.setName(source.getName().copy());
         target.setQuestion(source.getQuestion().copy());
         target.setAllowedAnswers(source.getAllowedAnswers().copy());
         target.setExpression(Optional.ofNullable(source.getExpression()).map(Expression::copy).orElse(null));
     }
 
     private void cloneBusinessKnowledgeModel(final BusinessKnowledgeModel source, final BusinessKnowledgeModel target) {
-        target.setId(new Id());
-        target.setDescription(source.getDescription().copy());
-        target.setName(source.getName().copy());
         target.setEncapsulatedLogic(source.getEncapsulatedLogic().copy());
     }
 }

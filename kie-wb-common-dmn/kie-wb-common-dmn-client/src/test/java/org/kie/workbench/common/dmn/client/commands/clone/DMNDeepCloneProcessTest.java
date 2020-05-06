@@ -17,10 +17,14 @@
 package org.kie.workbench.common.dmn.client.commands.clone;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
@@ -30,6 +34,8 @@ import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
@@ -43,34 +49,92 @@ import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.definition.clone.AbstractCloneProcessTest;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition.Kind.JAVA;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
-    public static final String SOURCE_ID = "source-id";
-    public static final String INPUT_DATA_NAME = "input-data";
-    public static final String FIRST_URL = "firstURL";
-    public static final String SECOND_URL = "secondURL";
-    public static final String DECISION_SERVICE_NAME = "decision-service";
-    public static final String KNOWLEDGE_SOURCE_NAME = "knowledge-source";
-    public static final String FUNCTION_ID = "function-id";
-    public static final String CONTEXT_ID = "context-id";
-    public static final String BKM_SOURCE_NAME = "bkm-source";
-    public static final String DECISION_SOURCE_NAME = "decision-source";
-    public static final String QUESTION = "question?";
-    public static final String ANSWER = "answer";
+    private static final String SOURCE_ID = "source-id";
+    private static final String INPUT_DATA_NAME = "input-data";
+    private static final String FIRST_URL = "firstURL";
+    private static final String SECOND_URL = "secondURL";
+    private static final String DECISION_SERVICE_NAME = "decision-service";
+    private static final String KNOWLEDGE_SOURCE_NAME = "knowledge-source";
+    private static final String FUNCTION_ID = "function-id";
+    private static final String CONTEXT_ID = "context-id";
+    private static final String BKM_SOURCE_NAME = "bkm-source";
+    private static final String DECISION_SOURCE_NAME = "decision-source";
+    private static final String QUESTION = "question?";
+    private static final String ANSWER = "answer";
+    private static final String TEXT_DATA = "text-data";
+    private static final String FIRST_INDEX_IN_SUFFIX = "-1";
+    private static final String SECOND_INDEX_IN_SUFFIX = "-2";
+    private static final String THIRD_INDEX_IN_SUFFIX = "-3";
+    private static final String FORTH_INDEX_IN_SUFFIX = "-4";
     private DMNDeepCloneProcess dmnDeepCloneProcess;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private ClientSession currentSession;
+
+    @Mock
+    private CanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private Node nodeWithName, nodeWithText, nodeWithNone;
+
+    @Mock
+    private View namedElementContent, textElementContent, noneContent;
+
+    @Mock
+    private NamedElement namedElementDefinition;
+
+    @Mock
+    private HasText hasTextDefinition;
+
+    @Mock
+    private Name name;
+
+    @Mock
+    private Text text;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        dmnDeepCloneProcess = new DMNDeepCloneProcess(factoryManager, adapterManager, new ClassUtils());
+
+        when(sessionManager.getCurrentSession()).thenReturn(currentSession);
+        when(currentSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(Collections.emptyList());
+
+        dmnDeepCloneProcess = new DMNDeepCloneProcess(factoryManager, adapterManager, new ClassUtils(), sessionManager);
     }
 
     @Test
@@ -82,7 +146,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
-        assertThat(cloned.getName().getValue()).isEqualTo(INPUT_DATA_NAME);
+        assertThat(cloned.getName().getValue()).isEqualTo(INPUT_DATA_NAME + FIRST_INDEX_IN_SUFFIX);
         assertThat(cloned.getVariable().getTypeRef()).isEqualTo(BuiltInType.STRING.asQName());
         assertThat(cloned.getLinksHolder().getValue().getLinks())
                 .hasSize(2)
@@ -102,6 +166,29 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
     }
 
     @Test
+    public void testCloneWhenSourceIsTextAnnotation() {
+        final TextAnnotation source = buildTextAnnotation();
+
+        final TextAnnotation cloned = dmnDeepCloneProcess.clone(source, new TextAnnotation());
+
+        assertThat(cloned).isNotNull();
+        assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
+        assertThat(cloned.getText().getValue()).isEqualTo(TEXT_DATA + FIRST_INDEX_IN_SUFFIX);
+    }
+
+    private TextAnnotation buildTextAnnotation() {
+        return new TextAnnotation(
+                new Id(SOURCE_ID),
+                new Description(),
+                new Text(TEXT_DATA),
+                new TextFormat(),
+                new BackgroundSet(),
+                new FontSet(),
+                new GeneralRectangleDimensionsSet()
+        );
+    }
+
+    @Test
     public void testCloneWhenSourceIsDecisionService() {
         final DecisionService source = buildDecisionService();
 
@@ -109,7 +196,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
-        assertThat(cloned.getName().getValue()).isEqualTo(DECISION_SERVICE_NAME);
+        assertThat(cloned.getName().getValue()).isEqualTo(DECISION_SERVICE_NAME + FIRST_INDEX_IN_SUFFIX);
         assertThat(cloned.getVariable().getTypeRef()).isEqualTo(BuiltInType.BOOLEAN.asQName());
     }
 
@@ -139,7 +226,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
-        assertThat(cloned.getName().getValue()).isEqualTo(KNOWLEDGE_SOURCE_NAME);
+        assertThat(cloned.getName().getValue()).isEqualTo(KNOWLEDGE_SOURCE_NAME + FIRST_INDEX_IN_SUFFIX);
         assertThat(cloned.getLinksHolder().getValue().getLinks())
                 .hasSize(2)
                 .extracting(DMNExternalLink::getUrl).contains(FIRST_URL, SECOND_URL);
@@ -167,7 +254,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
-        assertThat(cloned.getName().getValue()).isEqualTo(BKM_SOURCE_NAME);
+        assertThat(cloned.getName().getValue()).isEqualTo(BKM_SOURCE_NAME + FIRST_INDEX_IN_SUFFIX);
         assertThat(cloned.getLinksHolder().getValue().getLinks())
                 .hasSize(2)
                 .extracting(DMNExternalLink::getUrl).contains(FIRST_URL, SECOND_URL);
@@ -190,7 +277,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);
-        assertThat(cloned.getName().getValue()).isEqualTo(DECISION_SOURCE_NAME);
+        assertThat(cloned.getName().getValue()).isEqualTo(DECISION_SOURCE_NAME + FIRST_INDEX_IN_SUFFIX);
         assertThat(cloned.getLinksHolder().getValue().getLinks())
                 .hasSize(2)
                 .extracting(DMNExternalLink::getUrl).contains(FIRST_URL, SECOND_URL);
@@ -260,5 +347,71 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                                          .getLinks()
                                          .add(new DMNExternalLink(link, "description"))
                 );
+    }
+
+    @Test
+    public void testComposingUniqueNodeName() {
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(INPUT_DATA_NAME))
+                .isEqualTo(INPUT_DATA_NAME + FIRST_INDEX_IN_SUFFIX);
+    }
+
+    @Test
+    public void testComposingUniqueNodeNameWhenItAlreadyContainsIndexedSuffix() {
+        mockSingleNodeInTheGraph();
+
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(INPUT_DATA_NAME + FIRST_INDEX_IN_SUFFIX))
+                .isEqualTo(INPUT_DATA_NAME + SECOND_INDEX_IN_SUFFIX);
+    }
+
+    private void mockSingleNodeInTheGraph() {
+        when(graph.nodes()).thenReturn(Collections.singletonList(nodeWithName));
+
+        when(nodeWithName.getContent()).thenReturn(namedElementContent);
+        when(namedElementContent.getDefinition()).thenReturn(namedElementDefinition);
+        when(namedElementDefinition.getName()).thenReturn(name);
+        when(name.getValue()).thenReturn(INPUT_DATA_NAME + FIRST_INDEX_IN_SUFFIX);
+    }
+
+    @Test
+    public void testComposingUniqueNodeNameWhenItContainsNotIndexedSuffix() {
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(INPUT_DATA_NAME + "-A3"))
+                .isEqualTo(INPUT_DATA_NAME + "-A3" + FIRST_INDEX_IN_SUFFIX);
+    }
+
+    @Test
+    public void testComposingUniqueNodeNameWhenNextIndexInSequenceAlreadyPresent() {
+        mockMultipleNodesInTheGraph();
+
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(INPUT_DATA_NAME + FIRST_INDEX_IN_SUFFIX))
+                .isEqualTo(INPUT_DATA_NAME + FORTH_INDEX_IN_SUFFIX);
+    }
+
+    private void mockMultipleNodesInTheGraph() {
+        when(graph.nodes()).thenReturn(Arrays.asList(nodeWithName, nodeWithText, nodeWithNone));
+
+        when(nodeWithName.getContent()).thenReturn(namedElementContent);
+        when(namedElementContent.getDefinition()).thenReturn(namedElementDefinition);
+        when(namedElementDefinition.getName()).thenReturn(name);
+        when(name.getValue()).thenReturn(INPUT_DATA_NAME + SECOND_INDEX_IN_SUFFIX);
+
+        when(nodeWithText.getContent()).thenReturn(textElementContent);
+        when(textElementContent.getDefinition()).thenReturn(hasTextDefinition);
+        when(hasTextDefinition.getText()).thenReturn(text);
+        when(text.getValue()).thenReturn(INPUT_DATA_NAME + THIRD_INDEX_IN_SUFFIX);
+
+        when(nodeWithNone.getContent()).thenReturn(noneContent);
+        when(noneContent.getDefinition()).thenReturn(new Object());
+    }
+
+    @Test
+    public void testComposingUniqueNodeNameWhenItIsEmpty() {
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(""))
+                .isEqualTo(FIRST_INDEX_IN_SUFFIX);
+    }
+
+    @Test
+    public void testComposingUniqueNodeNameWhenItIsNull() {
+        assertThat(dmnDeepCloneProcess.composeUniqueNodeName(null))
+                .isEqualTo(FIRST_INDEX_IN_SUFFIX);
     }
 }
