@@ -82,19 +82,17 @@ module.exports = [
     ...commonConfig,
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.tsx",
-      "envelope/index": "./src/envelope/index.ts"
+      "webview/index": "./src/webview/index.tsx"
     },
     module: { rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders] },
     plugins: [
       new CopyPlugin([
-        { from: "./static/envelope", to: "./envelope" },
         { from: "./static/samples", to: "./samples" },
         { from: "./static/resources", to: "./resources" },
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "./editors/bpmn" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "./editors/dmn" }
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors", to: "./gwt-editors" }
       ])
     ]
   }

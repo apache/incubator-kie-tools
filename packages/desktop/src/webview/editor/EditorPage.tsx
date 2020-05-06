@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { EditorToolbar } from "./EditorToolbar";
-import { Editor, EditorRef } from "./Editor";
-import { GlobalContext } from "../common/GlobalContext";
-import { Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, File as EmbeddedFile } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
+import * as React from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { File, FileSaveActions } from "../../common/File";
+import { GlobalContext } from "../common/GlobalContext";
+import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
@@ -54,7 +54,7 @@ let previewRequestAction = PreviewRequestActionType.NONE;
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<EmbeddedEditorRef>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
 
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
@@ -86,16 +86,16 @@ export function EditorPage(props: Props) {
   const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
 
   const onContentResponse = useCallback(
-    (content: string) => {
+    (content: EditorContent) => {
       if (contentRequestAction === ContentRequestActionType.SAVE) {
         contentRequestData.file = {
           filePath: context.file!.filePath,
           fileType: context.file!.fileType,
-          fileContent: content
+          fileContent: content.content
         };
         electron.ipcRenderer.send("saveFile", contentRequestData);
       } else if (contentRequestAction === ContentRequestActionType.COPY && copyContentTextArea.current) {
-        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.value = content.content;
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
           setCopySuccessAlertVisible(true);
@@ -226,6 +226,13 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
+  const file: EmbeddedFile = {
+    fileName: context.file?.filePath || "",
+    editorType: context.file?.fileType as EditorType,
+    getFileContents: () => Promise.resolve(context.file?.fileContent || ""),
+    isReadOnly: false
+  };
+
   return (
     <Page className={"kogito--editor-page"}>
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
@@ -262,9 +269,11 @@ export function EditorPage(props: Props) {
                 />
               </div>
             )}
-            <Editor
+            <EmbeddedEditor
               ref={editorRef}
-              editorType={props.editorType}
+              file={file}
+              router={context.router}
+              channelType={ChannelType.DESKTOP}
               onContentResponse={onContentResponse}
               onPreviewResponse={onPreviewResponse}
               onReady={requestThumbnailPreview}

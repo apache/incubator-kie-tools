@@ -20,16 +20,15 @@ import { HomePage } from "./home/HomePage";
 import { EditorPage } from "./editor/EditorPage";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import { GlobalContext } from "./common/GlobalContext";
-import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import "../../static/resources/style.css";
-import { File, FileSaveActions } from "../common/File";
-import { DesktopRouter } from "./common/DesktopRouter";
+import { File } from "../common/File";
 import * as electron from "electron";
 import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 
 interface Props {
   file?: File;
@@ -48,15 +47,13 @@ export function App(props: Props) {
 
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
-  const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
-
   const desktopRouter = useMemo(
     () =>
-      new DesktopRouter(
+      new EmbeddedEditorRouter(
         new GwtEditorRoutes({
-          bpmnPath: "editors/bpmn",
-          dmnPath: "editors/dmn",
-          scesimPath: "editors/scesim"
+          bpmnPath: "gwt-editors/bpmn",
+          dmnPath: "gwt-editors/dmn",
+          scesimPath: "gwt-editors/scesim"
         })
       ),
     []
@@ -161,10 +158,8 @@ export function App(props: Props) {
   return (
     <GlobalContext.Provider
       value={{
-        router: desktopRouter,
-        envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
-        iframeTemplateRelativePath: "envelope/index.html",
-        file: file
+        file: file,
+        router: desktopRouter
       }}
     >
       {invalidFileTypeErrorVisible && (

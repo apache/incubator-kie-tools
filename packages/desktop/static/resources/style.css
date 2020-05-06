@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-.kogito--editor {
-  width: 100%;
-  height: 100%;
-}
-
 .kogito--editor-landing {
   /* this adjusts the max specifically for our logo */
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
@@ -129,4 +124,19 @@
   .kogito--editor__toolbar .pf-c-page__header-nav {
     margin-right: 14em;
   }
+}
+
+.kogito--editor--container {
+  display: flex; 
+  width: 100%; 
+  height: 100%; 
+  flex-direction: column; 
+  overflow: hidden;
+}
+
+.kogito--editor--container iframe {
+  flex-grow: 1; 
+  border: none; 
+  margin: 0; 
+  padding: 0;
 }
