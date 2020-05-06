@@ -34,6 +34,9 @@ var (
 	mux        = &sync.Mutex{}
 )
 
+// podErrorReasons contains all the reasons to state a pod in error.
+var podErrorReasons = [1]string{"ErrImagePull"}
+
 // InitKubeClient initializes the Kubernetes Client
 func InitKubeClient() error {
 	mux.Lock()
@@ -98,7 +101,7 @@ func WaitForPodsWithLabel(namespace, labelName, labelValue string, numberOfPods,
 			}
 
 			return CheckPodsAreRunning(pods), nil
-		})
+		}, CheckPodsWithLabelInError(namespace, labelName, labelValue))
 }
 
 // GetPods retrieves all pods in namespace
@@ -175,7 +178,7 @@ func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeout
 
 			// Container name is equal to deployment config name
 			return checkAllPodsContainingTextInLog(namespace, pods, dcName, logText)
-		})
+		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
 
 func checkAllPodsContainingTextInLog(namespace string, pods *corev1.PodList, containerName, text string) (bool, error) {
@@ -227,4 +230,55 @@ func CheckPodHasImagePullSecretWithPrefix(pod *corev1.Pod, imagePullSecretPrefix
 		}
 	}
 	return false
+}
+
+// CheckPodsByDeploymentConfigInError returns a function that checks the pods error state.
+func CheckPodsByDeploymentConfigInError(namespace string, dcName string) func() (bool, error) {
+	return func() (bool, error) {
+		pods, err := GetPodsByDeploymentConfig(namespace, dcName)
+		if err != nil {
+			return true, err
+
+		}
+		return checkPodsInError(pods)
+	}
+}
+
+// CheckPodsWithLabelInError returns a function that checks the pods error state.
+func CheckPodsWithLabelInError(namespace, labelName, labelValue string) func() (bool, error) {
+	return func() (bool, error) {
+		pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
+		if err != nil {
+			return true, err
+
+		}
+		return checkPodsInError(pods)
+	}
+}
+
+func checkPodsInError(pods *corev1.PodList) (bool, error) {
+	for _, pod := range pods.Items {
+		if hasErrors, err := isPodInError(&pod); hasErrors {
+			return true, err
+		}
+	}
+
+	return false, nil
+}
+
+func isPodInError(pod *corev1.Pod) (bool, error) {
+	if IsPodRunning(pod) {
+		return false, nil
+	}
+
+	for _, status := range pod.Status.ContainerStatuses {
+		for _, reason := range podErrorReasons {
+			if status.State.Waiting.Reason == reason {
+				return true, fmt.Errorf("Error in pod, reason: %s", reason)
+			}
+		}
+
+	}
+
+	return false, nil
 }

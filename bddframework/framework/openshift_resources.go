@@ -29,7 +29,7 @@ func WaitForPodsToHaveResources(namespace, dcName string, expected v1.ResourceRe
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment config '%s' to have resources", dcName), timeoutInMin,
 		func() (bool, error) {
 			return checkResourcesInPods(namespace, dcName, expected)
-		})
+		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
 
 // WaitForBuildConfigToHaveResources waits for build config to have the expected resources

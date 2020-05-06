@@ -88,7 +88,7 @@ func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeout
 				GetLogger(namespace).Debugf("Deployment config has %d available replicas\n", dc.Status.AvailableReplicas)
 				return dc.Status.AvailableReplicas == int32(podNb), nil
 			}
-		})
+		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
 
 // GetDeploymentConfig retrieves a deployment config
@@ -183,9 +183,9 @@ func WaitAndRetrieveRouteURI(namespace, serviceName string) (string, error) {
 	return routeURI, nil
 }
 
-// WaitForOnOpenshift is a specific method
-func WaitForOnOpenshift(namespace, display string, timeoutInMin int, condition func() (bool, error)) error {
-	return WaitFor(namespace, display, GetOpenshiftDurationFromTimeInMin(timeoutInMin), condition)
+// WaitForOnOpenshift waits for a specification condition
+func WaitForOnOpenshift(namespace, display string, timeoutInMin int, condition func() (bool, error), errorConditions ...func() (bool, error)) error {
+	return WaitFor(namespace, display, GetOpenshiftDurationFromTimeInMin(timeoutInMin), condition, errorConditions...)
 }
 
 // GetOpenshiftDurationFromTimeInMin will calculate the time depending on the configured cluster load factor

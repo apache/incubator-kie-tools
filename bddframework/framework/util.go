@@ -77,8 +77,8 @@ func ReadFromURI(uri string) (string, error) {
 	return string(data), nil
 }
 
-// WaitFor waits for a specific condition to be met
-func WaitFor(namespace, display string, timeout time.Duration, condition func() (bool, error)) error {
+// WaitFor waits for a specification condition to be met or until one error condition is met
+func WaitFor(namespace, display string, timeout time.Duration, condition func() (bool, error), errorConditions ...func() (bool, error)) error {
 	GetLogger(namespace).Infof("Wait %s for %s", timeout.String(), display)
 
 	timeoutChan := time.After(timeout)
@@ -94,9 +94,17 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 			if err != nil {
 				GetLogger(namespace).Warnf("Problem in condition execution, waiting for %s => %v", display, err)
 			}
+
 			if running {
 				GetLogger(namespace).Infof("'%s' is successful", display)
 				return nil
+			}
+
+			for _, errorCondition := range errorConditions {
+				if hasErrors, err := errorCondition(); hasErrors {
+					GetLogger(namespace).Errorf("Problem in condition execution, error for %s => %v", display, err)
+					return err
+				}
 			}
 		}
 	}

@@ -84,7 +84,7 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 	// Wait for docker pulling secret available for kogito-operator serviceaccount
 	// This is needed if images are stored into local Openshift registry
 	// Note that this is specific to Openshift
-	err := WaitFor(namespace, "image pulling secret", GetOpenshiftDurationFromTimeInMin(2), func() (bool, error) {
+	err := WaitForOnOpenshift(namespace, "image pulling secret", 2, func() (bool, error) {
 		// unfortunately the SecretList is buggy, so we have to fetch it manually: https://github.com/kubernetes-sigs/controller-runtime/issues/362
 		// so use direct command to look for specific secret
 		output, err := CreateCommand("oc", "get", "secrets", "-o", "name", "-n", namespace).WithLoggerContext(namespace).Execute()
@@ -95,6 +95,7 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 		GetLogger(namespace).Info(output)
 		return strings.Contains(output, "secret/"+kogitoOperatorPullImageSecretPrefix), nil
 	})
+
 	if err != nil {
 		return err
 	}
@@ -117,6 +118,7 @@ func IsKogitoOperatorRunning(namespace string) (bool, error) {
 		}
 		return false, err
 	}
+
 	return exists, nil
 }
 
