@@ -95,6 +95,7 @@ export const EmbeddedViewer = (props: Props) => {
       onResourceListRequest={onResourceListRequest}
       onEditorUndo={noop}
       onEditorRedo={noop}
+      onOpenFile={noop}
       onNewEdit={noop}
       onPreviewResponse={noop}
       envelopeUri={props.envelopeUri}

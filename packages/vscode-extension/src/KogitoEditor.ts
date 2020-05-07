@@ -16,7 +16,7 @@
 
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { parse } from "path";
+import * as __path from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorJobRegistry, JobType } from "./KogitoEditorJobRegistry";
@@ -136,9 +136,12 @@ export class KogitoEditor {
         receive_newEdit: (edit: KogitoEdit) => {
           this.notify_newEdit(edit);
         },
+        receive_openFile: (path: string) => {
+          this.notify_openFile(path);
+        },
         receive_previewRequest: preview => {
           if (preview) {
-            const parsedPath = parse(this.uri.fsPath);
+            const parsedPath = __path.parse(this.uri.fsPath);
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         }
@@ -207,6 +210,14 @@ export class KogitoEditor {
 
   public notify_newEdit(edit: KogitoEdit) {
     this.signalEdit(edit);
+  }
+
+  public notify_openFile(filePath: string) {
+    const resolvedPath = __path.isAbsolute(filePath) ? filePath : __path.join(__path.dirname(this.uri.fsPath), filePath);
+    if (!fs.existsSync(resolvedPath)) {
+      throw new Error(`Cannot open file at: ${resolvedPath}.`);
+    }
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(resolvedPath));
   }
 
   public requestPreview() {
