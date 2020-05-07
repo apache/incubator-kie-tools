@@ -193,6 +193,7 @@ span.kie-list-view-pf-main-info__text {
     text-overflow: clip;
     white-space: normal;
     text-align: inherit;
+    word-wrap: break-word;
 }
 
 .collection-editor-expression_textarea {
