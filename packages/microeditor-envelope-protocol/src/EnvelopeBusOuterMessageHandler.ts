@@ -38,8 +38,8 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_resourceListRequest(request: ResourceListRequest): void;
   receive_previewRequest(previewSvg: string): void;
   receive_ready(): void;
-  notify_editorUndo(edits: ReadonlyArray<KogitoEdit>): void;
-  notify_editorRedo(edits: ReadonlyArray<KogitoEdit>): void;
+  notify_editorUndo(): void;
+  notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
 }
 
@@ -95,12 +95,12 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
   }
 
-  public notify_editorUndo(edits: ReadonlyArray<KogitoEdit>) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: edits });
+  public notify_editorUndo() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: undefined });
   }
 
-  public notify_editorRedo(edits: ReadonlyArray<KogitoEdit>) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: edits });
+  public notify_editorRedo() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
   }
 
   public request_initResponse(origin: string) {

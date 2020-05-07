@@ -15,6 +15,7 @@
  */
 
 import { KogitoEditor } from "./KogitoEditor";
+import { Uri } from "vscode";
 
 export class KogitoEditorStore {
   public activeEditor?: KogitoEditor;
@@ -47,6 +48,20 @@ export class KogitoEditorStore {
     }
   }
 
+  public async withActiveAsync(consumer: (activeEditor: KogitoEditor) => Promise<void>): Promise<void> {
+    if (this.activeEditor) {
+      return consumer(this.activeEditor);
+    }
+  }
+
+  public async withUriAsync(uri: Uri, consumer: (editor: KogitoEditor) => Promise<void>): Promise<void> {
+    const editor = this.get(uri);
+
+    if (editor) {
+      return consumer(editor);
+    }
+  }
+
   public close(editor: KogitoEditor) {
     this.openEditors.delete(editor);
 
@@ -55,11 +70,11 @@ export class KogitoEditorStore {
     }
   }
 
-  public get(path: string) {
+  public get(uri: Uri) {
     let found: KogitoEditor | undefined;
 
     this.openEditors.forEach(editor => {
-      if (editor.hasPath(path)) {
+      if (editor.hasUri(uri)) {
         found = editor;
       }
     });

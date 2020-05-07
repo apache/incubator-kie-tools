@@ -78,10 +78,10 @@ const RefForwardingEditor: React.RefForwardingComponent<EditorRef, Props> = (pro
         console.debug(`Resource List Request`);
         self.respond_resourceList(new ResourcesList(request.pattern, []));
       },
-      notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
+      notify_editorUndo: () => {
         console.debug("Notify Undo");
       },
-      notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
+      notify_editorRedo: () => {
         console.debug("Notify Redo");
       },
       receive_newEdit(edit: KogitoEdit) {
