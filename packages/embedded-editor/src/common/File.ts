@@ -26,21 +26,21 @@ export const EMPTY_FILE_DMN = {
   fileName: "new-file",
   editorType: EditorType.DMN,
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: true
+  isReadOnly: false
 };
 
 export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
   editorType: EditorType.BPMN,
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: true
+  isReadOnly: false
 };
 
 export const EMPTY_FILE_SCESIM = {
   fileName: "new-file",
   editorType: EditorType.SCESIM,
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: true
+  isReadOnly: false
 };
 
 export function newFile(editorType: EditorType): File {
