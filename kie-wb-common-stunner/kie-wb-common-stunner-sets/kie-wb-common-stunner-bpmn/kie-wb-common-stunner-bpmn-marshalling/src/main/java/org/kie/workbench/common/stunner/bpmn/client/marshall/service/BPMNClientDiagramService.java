@@ -55,6 +55,9 @@ import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
 @ApplicationScoped
 public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService {
 
+    static final String DEFAULT_PACKAGE = "default";
+    static final String NO_DIAGRAM_MESSAGE = "No BPMN Diagram can be found.";
+
     private final DefinitionManager definitionManager;
     private final BPMNClientMarshalling marshalling;
     private final FactoryManager factoryManager;
@@ -139,12 +142,19 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String name) {
         final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
 
-        if (diagramSet.getName().getValue().isEmpty()) {
+        if (diagramSet.getPackageProperty().getValue() == null ||
+                diagramSet.getName().getValue().isEmpty()) {
             diagramSet.getName().setValue(name);
         }
 
-        if (diagramSet.getId().getValue().isEmpty()) {
+        if (diagramSet.getPackageProperty().getValue() == null ||
+                diagramSet.getId().getValue().isEmpty()) {
             diagramSet.getId().setValue(createValidId(name));
+        }
+
+        if (diagramSet.getPackageProperty().getValue() == null ||
+                diagramSet.getPackageProperty().getValue().isEmpty()) {
+            diagramSet.getPackageProperty().setValue(DEFAULT_PACKAGE);
         }
     }
 
@@ -156,6 +166,10 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         final Diagram diagram = factoryManager.newDiagram(title,
                                                           defSetId,
                                                           metadata);
+
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) diagram.getGraph(), BPMNDiagramImpl.class);
+
+        updateDiagramSet(diagramNode, fileName);
         updateClientMetadata(diagram);
         return diagram;
     }
@@ -166,7 +180,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         final Graph<DefinitionSet, ?> graph = marshalling.unmarshall(metadata, raw);
         final Node<Definition<BPMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, BPMNDiagramImpl.class);
         if (null == diagramNode) {
-            throw new RuntimeException("No BPMN Diagram can be found.");
+            throw new NullPointerException(NO_DIAGRAM_MESSAGE);
         }
 
         updateDiagramSet(diagramNode, fileName);

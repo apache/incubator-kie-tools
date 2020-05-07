@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManageme
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
@@ -76,6 +75,7 @@ import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -150,14 +150,8 @@ public class BPMNClientDiagramServiceTest {
 
     private Executable executable;
 
-    private ProcessData processData;
-
-    private AdvancedData advancedData;
-
     @Mock
     private Imports imports;
-
-    private GlobalVariables globalVariables;
 
     @Mock
     private SLADueDate slaDueDate;
@@ -165,8 +159,6 @@ public class BPMNClientDiagramServiceTest {
     private DiagramSet diagramSet;
 
     private ProcessType processType;
-
-    private BPMNDiagramImpl bpmnDiagram;
 
     private List<Node> nodes;
 
@@ -185,12 +177,11 @@ public class BPMNClientDiagramServiceTest {
         processName = new Name("");
         processId = new Id("");
         processDocumentation = new Documentation("someDocumentation");
-        packageProperty = new Package("some.package");
+        packageProperty = new Package();
         version = new Version("1.0");
         adHoc = new AdHoc(false);
         processInstanceDescription = new ProcessInstanceDescription("description");
         executable = new Executable(false);
-        globalVariables = new GlobalVariables("GL1:java.lang.String:[],GL2:java.lang.Boolean:[]");
         slaDueDate = new SLADueDate("");
         processType = new ProcessType();
 
@@ -206,14 +197,14 @@ public class BPMNClientDiagramServiceTest {
                                     executable,
                                     slaDueDate);
 
-        bpmnDiagram = new BPMNDiagramImpl(
+        BPMNDiagramImpl bpmnDiagram = new BPMNDiagramImpl(
                 diagramSet,
-                processData,
+                new ProcessData(),
                 new CaseManagementSet(),
                 new BackgroundSet(),
                 new FontSet(),
                 new RectangleDimensionsSet(),
-                advancedData
+                new AdvancedData()
         );
 
         nodes = Arrays.asList(createNode(bpmnDiagram));
@@ -241,7 +232,7 @@ public class BPMNClientDiagramServiceTest {
     }
 
     @Test
-    public void testNameAndIdAsFileName() throws IOException {
+    public void testNameIdFileName() throws IOException {
 
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
@@ -266,11 +257,16 @@ public class BPMNClientDiagramServiceTest {
     }
 
     @Test
-    public void testNameAndIdAsDefaultIfEmpty() {
+    public void testNameIdPackageAsDefaultIfNull() {
 
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
+
+        diagramSet.getName().setValue(null);
+        diagramSet.getId().setValue(null);
+        diagramSet.getPackageProperty().setValue(null);
+
         tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
 
                          new ServiceCallback<Diagram>() {
@@ -288,16 +284,49 @@ public class BPMNClientDiagramServiceTest {
 
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_PACKAGE, diagramSet.getPackageProperty().getValue());
     }
 
     @Test
-    public void testNameAndIdAsDefaultIfNotEmpty() {
+    public void testNameIdPackageAsDefaultIfEmpty() {
+
+        when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
+        when(marshalling.unmarshall(any(), any())).thenReturn(graph);
+        when(graph.nodes()).thenReturn(nodes);
+
+        diagramSet.getName().setValue("");
+        diagramSet.getId().setValue("");
+        diagramSet.getPackageProperty().setValue("");
+
+        tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
+
+                         new ServiceCallback<Diagram>() {
+
+                             @Override
+                             public void onSuccess(Diagram item) {
+
+                             }
+
+                             @Override
+                             public void onError(ClientRuntimeError error) {
+
+                             }
+                         });
+
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_PACKAGE, diagramSet.getPackageProperty().getValue());
+    }
+
+    @Test
+    public void testNameIdPackageAsDefaultIfNotEmpty() {
 
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
         when(graph.nodes()).thenReturn(nodes);
         diagramSet.getName().setValue("somePreviousName");
         diagramSet.getId().setValue("somePreviousId");
+        diagramSet.getPackageProperty().setValue("somePreviousPackage");
 
         tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml,
 
@@ -316,10 +345,11 @@ public class BPMNClientDiagramServiceTest {
 
         assertEquals("somePreviousName", diagramSet.getName().getValue());
         assertEquals("somePreviousId", diagramSet.getId().getValue());
+        assertEquals("somePreviousPackage", diagramSet.getPackageProperty().getValue());
     }
 
     @Test
-    public void testNameAndIdDefaultOnNewDiagram() {
+    public void testNameIdPackageDefaultOnNewDiagram() {
 
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(marshalling.unmarshall(any(), any())).thenReturn(graph);
@@ -341,6 +371,7 @@ public class BPMNClientDiagramServiceTest {
 
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_PACKAGE, diagramSet.getId().getValue());
     }
 
     @Test
@@ -352,10 +383,11 @@ public class BPMNClientDiagramServiceTest {
 
         MetadataImpl metadata = new MetadataImpl();
         metadata.setDefinitionSetId(DEF_SET_ID);
-        Diagram result = new DiagramImpl("result", metadata);
+        Diagram result = new DiagramImpl("result", graph, metadata);
+
         when(factoryManager.newDiagram(anyString(), eq(DEF_SET_ID), any()))
                 .thenReturn(result);
-
+        when(graph.nodes()).thenReturn(nodes);
         tested.transform(xml, callback);
 
         verify(callback, never()).onError(any());
@@ -366,6 +398,21 @@ public class BPMNClientDiagramServiceTest {
         assertNotNull(diagram);
         assertEquals(result, diagram);
         assertEquals(SHAPE_SET_ID, diagram.getMetadata().getShapeSetId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTransformNoDiagram() {
+
+        ServiceCallback<Diagram> callback = mock(ServiceCallback.class);
+
+        tested.transform(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, xml, callback);
+
+        ArgumentCaptor<ClientRuntimeError> errorArgumentCaptor = ArgumentCaptor.forClass(ClientRuntimeError.class);
+        verify(callback, times(1)).onError(errorArgumentCaptor.capture());
+        ClientRuntimeError error = errorArgumentCaptor.getValue();
+
+        assertTrue(error.getMessage().endsWith(BPMNClientDiagramService.NO_DIAGRAM_MESSAGE));
     }
 
     @Test
