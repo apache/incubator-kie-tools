@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
+import { EditorType, EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import "@patternfly/patternfly/patternfly-addons.css";
+import "@patternfly/patternfly/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly.css";
+import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
+import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { HomePage } from "./home/HomePage";
-import { EditorPage } from "./editor/EditorPage";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { GlobalContext } from "./common/GlobalContext";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
 import "../../static/resources/style.css";
 import { File } from "../common/File";
-import * as electron from "electron";
-import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
+import { GlobalContext } from "./common/GlobalContext";
+import { EditorPage } from "./editor/EditorPage";
+import { HomePage } from "./home/HomePage";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 
 interface Props {
   file?: File;
@@ -51,9 +51,9 @@ export function App(props: Props) {
     () =>
       new EmbeddedEditorRouter(
         new GwtEditorRoutes({
-          bpmnPath: "gwt-editors/bpmn",
-          dmnPath: "gwt-editors/dmn",
-          scesimPath: "gwt-editors/scesim"
+          dmnPath: "gwt-editors/" + EditorType.DMN,
+          bpmnPath: "gwt-editors/" + EditorType.BPMN,
+          scesimPath: "gwt-editors/" + EditorType.SCESIM
         })
       ),
     []

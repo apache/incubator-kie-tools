@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export type EditorType = "dmn" | "bpmn";
+import { EditorType } from "./EditorTypes";
 
 export interface File {
   fileName: string;
@@ -25,14 +24,21 @@ export interface File {
 
 export const EMPTY_FILE_DMN = {
   fileName: "new-file",
-  editorType: "dmn" as EditorType,
+  editorType: EditorType.DMN,
   getFileContents: () => Promise.resolve(""),
   isReadOnly: true
 };
 
 export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
-  editorType: "bpmn" as EditorType,
+  editorType: EditorType.BPMN,
+  getFileContents: () => Promise.resolve(""),
+  isReadOnly: true
+};
+
+export const EMPTY_FILE_SCESIM = {
+  fileName: "new-file",
+  editorType: EditorType.SCESIM,
   getFileContents: () => Promise.resolve(""),
   isReadOnly: true
 };

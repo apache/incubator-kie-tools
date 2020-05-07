@@ -227,9 +227,9 @@ export function EditorPage(props: Props) {
   }, []);
 
   const file: EmbeddedFile = {
-    fileName: context.file?.filePath || "",
+    fileName: context.file?.filePath ?? "",
     editorType: context.file?.fileType as EditorType,
-    getFileContents: () => Promise.resolve(context.file?.fileContent || ""),
+    getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
     isReadOnly: false
   };
 

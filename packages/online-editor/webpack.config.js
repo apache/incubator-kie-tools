@@ -74,7 +74,8 @@ module.exports = async (env, argv) => {
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
         { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors", to: "./gwt-editors" }
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/dmn", to: "./gwt-editors/dmn" },
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ],
     module: {

@@ -11,9 +11,6 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.4.3",
-    "@kogito-tooling/kie-bc-editors": "0.4.3",
-    "@kogito-tooling/microeditor-envelope": "0.4.3",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.4.3",
     "@kogito-tooling/embedded-editor": "0.4.3",
     "@kogito-tooling/patternfly-base": "0.4.3",
     "@patternfly/patternfly": "2.40.2",

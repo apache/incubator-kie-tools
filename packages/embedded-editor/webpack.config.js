@@ -69,7 +69,8 @@ module.exports = [
       new CopyPlugin([
         { from: "./static/envelope", to: "./envelope" },
         { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
+        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" },
+        { from: "../kie-bc-editors-unpacked/scesim", to: "./gwt-editors/scesim" }
       ])
     ],
     devServer: {

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList, ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType, EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common/File";
+import "./AugmentedIFrame";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
 interface Props {
@@ -35,7 +36,7 @@ interface Props {
   onEditorRedo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onNewEdit?: (edit: KogitoEdit) => void;
   onPreviewResponse?: (previewSvg: string) => void;
-  envelopeURI?: string;
+  envelopeUri?: string;
 }
 
 export type EmbeddedEditorRef = {
@@ -109,7 +110,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }
   }, [props.onPreviewResponse]);
 
-  const envelopeURI = props.envelopeURI ? props.envelopeURI : "envelope/envelope.html";
+  const envelopeUri = props.envelopeUri ?? "envelope/envelope.html";
 
   //Setup envelope bus communication
   const envelopeBusOuterMessageHandler = useMemo(() => {
@@ -134,7 +135,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_contentRequest() {
           props.file
             .getFileContents()
-            .then(c => self.respond_contentRequest({ content: c || "", path: props.file.fileName }));
+            .then(c => self.respond_contentRequest({ content: c ?? "", path: props.file.fileName }));
         },
         receive_setContentError() {
           onSetContentError();
@@ -193,10 +194,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       <iframe
         ref={iframeRef}
         id={"kogito-iframe"}
-        src={envelopeURI}
-        title="Kogito editor">
-        <div id="kogito--editor--channel--type">{props.channelType}</div>
-      </iframe>
+        src={envelopeUri}
+        title="Kogito editor"
+        dataenvelopechannel={props.channelType} />
     </div>
   );
 };

@@ -212,11 +212,11 @@ export function HomePage(props: Props) {
   );
 
   const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile("bpmn");
+    createEmptyFile(EditorType.BPMN);
   }, [createEmptyFile]);
 
   const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile("dmn");
+    createEmptyFile(EditorType.DMN);
   }, [createEmptyFile]);
 
   const trySample = useCallback(
@@ -235,11 +235,11 @@ export function HomePage(props: Props) {
   );
 
   const tryBpmnSample = useCallback(() => {
-    trySample("bpmn");
+    trySample(EditorType.BPMN);
   }, [trySample]);
 
   const tryDmnSample = useCallback(() => {
-    trySample("dmn");
+    trySample(EditorType.DMN);
   }, [trySample]);
 
   const validateUrl = useCallback(async () => {

@@ -27,6 +27,7 @@ interface Props {
   channelType: ChannelType;
   onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
   onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
+  envelopeUri?: string;
 }
 
 export const EmbeddedViewer = (props: Props) => {
@@ -60,6 +61,7 @@ export const EmbeddedViewer = (props: Props) => {
       onEditorRedo={(edits: ReadonlyArray<KogitoEdit>) => {/*NOP*/ }}
       onNewEdit={(edit: KogitoEdit) => {/*NOP*/ }}
       onPreviewResponse={(previewSvg: string) => {/*NOP*/ }}
+      envelopeUri={props.envelopeUri}
     />
   );
 };

@@ -92,7 +92,8 @@ module.exports = [
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors", to: "./gwt-editors" }
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/dmn", to: "./gwt-editors/dmn" },
+        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ]
   }
