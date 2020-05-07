@@ -15,9 +15,9 @@
  */
 
 import { ChannelType, EditorContent, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, File } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
-import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "./GlobalContext";
@@ -46,12 +46,14 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   }, [repoInfo]);
 
   //Wrap file content into object for EmbeddedEditor
-  const file: File = {
-    fileName: props.contentPath,
-    editorType: props.openFileExtension as EditorType,
-    getFileContents: props.getFileContents,
-    isReadOnly: props.readonly
-  }
+  const file = useMemo(() => {
+    return {
+      fileName: props.contentPath,
+      editorType: props.openFileExtension as EditorType,
+      getFileContents: props.getFileContents,
+      isReadOnly: props.readonly
+    }
+  }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
   useEffect(() => {
     if (textMode) {
@@ -78,7 +80,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   }, [textMode]);
 
   //When requests for the EmbeddedEditor content completes update CodeMirror's value
-  const onContentResponse = (editorContent: EditorContent) => {
+  const onContentResponse = useCallback((editorContent: EditorContent) => {
     if (props.readonly) {
       return;
     }
@@ -89,7 +91,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     runScriptOnPage(
       `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
     );
-  };
+  }, [props.readonly]);
 
   //Forward reference methods to set content programmatically vs property
   useImperativeHandle(

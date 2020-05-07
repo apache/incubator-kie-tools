@@ -16,10 +16,10 @@
 
 import { ChannelType, EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import * as CSS from 'csstype';
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common/File";
-import "./AugmentedIFrame";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
 interface Props {
@@ -45,6 +45,18 @@ export type EmbeddedEditorRef = {
   setContent(content: string): void;
 } | null;
 
+const containerStyles: CSS.Properties = {
+  display: "flex",
+  flex: 1,
+  flexDirection: "column",
+  width: "100%",
+  height: "100%",
+  border: "none",
+  margin: 0,
+  padding: 0,
+  overflow: "hidden"
+};
+
 const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (props: Props, forwardedRef) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
 
@@ -59,7 +71,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     if (props.onSetContentError) {
       props.onSetContentError();
     }
-  }, [props.onContentResponse]);
+  }, [props.onSetContentError]);
 
   const onDirtyIndicatorChange = useCallback((isDirty: boolean) => {
     if (props.onDirtyIndicatorChange) {
@@ -111,7 +123,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }
   }, [props.onPreviewResponse]);
 
-  const envelopeUri = props.envelopeUri ?? "envelope/envelope.html";
+  const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
 
   //Setup envelope bus communication
   const envelopeBusOuterMessageHandler = useMemo(() => {
@@ -166,7 +178,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onPreviewRequest(previewSvg);
         }
       }));
-  }, [props]);
+  }, [props.router, props.file.editorType, props.file.fileName]);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
@@ -201,14 +213,13 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   );
 
   return (
-    <div className="kogito--editor--container">
-      <iframe
-        ref={iframeRef}
-        id={"kogito-iframe"}
-        src={envelopeUri}
-        title="Kogito editor"
-        dataenvelopechannel={props.channelType} />
-    </div>
+    <iframe
+      ref={iframeRef}
+      id={"kogito-iframe"}
+      src={envelopeUri}
+      title="Kogito editor"
+      style={containerStyles}
+      data-envelope-channel={props.channelType} />
   );
 };
 

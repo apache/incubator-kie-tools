@@ -32,6 +32,8 @@ interface Props {
 
 export const EmbeddedViewer = (props: Props) => {
 
+  const noop = useCallback((...args: any) => { /*NO OP*/ }, []);
+
   const onResourceContentRequest = useCallback((request: ResourceContentRequest) => {
     if (props.onResourceContentRequest) {
       return props.onResourceContentRequest(request);
@@ -51,16 +53,16 @@ export const EmbeddedViewer = (props: Props) => {
       file={props.file}
       router={props.router}
       channelType={props.channelType}
-      onContentResponse={() => {/*NOP*/ }}
-      onSetContentError={() => {/*NOP*/ }}
-      onDirtyIndicatorChange={(isDirty: boolean) => {/*NOP*/ }}
-      onReady={() => {/*NOP*/ }}
+      onContentResponse={noop}
+      onSetContentError={noop}
+      onDirtyIndicatorChange={noop}
+      onReady={noop}
       onResourceContentRequest={onResourceContentRequest}
       onResourceListRequest={onResourceListRequest}
-      onEditorUndo={(edits: ReadonlyArray<KogitoEdit>) => {/*NOP*/ }}
-      onEditorRedo={(edits: ReadonlyArray<KogitoEdit>) => {/*NOP*/ }}
-      onNewEdit={(edit: KogitoEdit) => {/*NOP*/ }}
-      onPreviewResponse={(previewSvg: string) => {/*NOP*/ }}
+      onEditorUndo={noop}
+      onEditorRedo={noop}
+      onNewEdit={noop}
+      onPreviewResponse={noop}
       envelopeUri={props.envelopeUri}
     />
   );

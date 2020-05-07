@@ -95,8 +95,8 @@ function openFileByUrl() {
 function openFile(filePath: string, getFileContent: Promise<string>) {
   const file = {
     isReadOnly: false,
-    editorType: extractFileExtension(removeDirectories(filePath)!)! as EditorType,
-    fileName: removeFileExtension(removeDirectories(filePath)!)!,
+    editorType: extractFileExtension(removeDirectories(filePath) ?? "") as EditorType,
+    fileName: removeFileExtension(removeDirectories(filePath) ?? ""),
     getFileContents: () => getFileContent
   };
   ReactDOM.render(

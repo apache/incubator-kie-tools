@@ -15,12 +15,12 @@
  */
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, File as EmbeddedFile } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
@@ -226,12 +226,14 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
-  const file: EmbeddedFile = {
-    fileName: context.file?.filePath ?? "",
-    editorType: context.file?.fileType as EditorType,
-    getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
-    isReadOnly: false
-  };
+  const file = useMemo(() => {
+    return {
+      fileName: context.file?.filePath ?? "",
+      editorType: context.file?.fileType as EditorType,
+      getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
+      isReadOnly: false
+    }
+  }, [context.file?.filePath, context.file?.fileType, context.file?.fileContent]);
 
   return (
     <Page className={"kogito--editor-page"}>

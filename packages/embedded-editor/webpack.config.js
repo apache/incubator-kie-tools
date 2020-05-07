@@ -72,20 +72,7 @@ module.exports = [
         { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" },
         { from: "../kie-bc-editors-unpacked/scesim", to: "./gwt-editors/scesim" }
       ])
-    ],
-    devServer: {
-      historyApiFallback: {
-        disableDotRule: true
-      },
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [
-        path.join(__dirname, "./dist"),
-        path.join(__dirname, "./static")
-      ],
-      compress: true,
-      port: 9001
-    }
+    ]
   },
   {
     ...commonConfig,

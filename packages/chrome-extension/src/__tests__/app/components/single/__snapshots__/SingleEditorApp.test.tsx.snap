@@ -18,16 +18,13 @@ exports[`SingleEditorApp go fullscreen 1`] = `
     <div
       class="kogito-iframe fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div />
@@ -90,16 +87,13 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
     <div
       class="kogito-iframe not-fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div
@@ -163,16 +157,13 @@ exports[`SingleEditorApp not readonly 1`] = `
     <div
       class="kogito-iframe not-fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div
@@ -233,16 +224,13 @@ exports[`SingleEditorApp open external editor 1`] = `
     <div
       class="kogito-iframe not-fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div
@@ -303,16 +291,13 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
     <div
       class="kogito-iframe not-fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div
@@ -373,16 +358,13 @@ exports[`SingleEditorApp readonly 1`] = `
     <div
       class="kogito-iframe not-fullscreen"
     >
-      <div
-        class="kogito--editor--container"
-      >
-        <iframe
-          dataenvelopechannel="GITHUB"
-          id="kogito-iframe"
-          src="chrome-testing://https://my-url.com/"
-          title="Kogito editor"
-        />
-      </div>
+      <iframe
+        data-envelope-channel="GITHUB"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
     </div>
   </div>
   <div
