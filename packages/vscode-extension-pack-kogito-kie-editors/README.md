@@ -16,6 +16,7 @@ New features
 ---
 
 VS Code
+
 - [KOGITO-1863](https://issues.redhat.com/browse/KOGITO-1863) - Adapt to new VSCode API 1.45.0
 - [KOGITO-1837](https://issues.redhat.com/browse/KOGITO-1837) - Expose viewType and getPreviewCommandId on vscode-extension index.ts
 - [KOGITO-1970](https://issues.redhat.com/browse/KOGITO-1970) - Implement Undo/Redo
@@ -25,6 +26,7 @@ VS Code
 - [KOGITO-1974](https://issues.redhat.com/browse/KOGITO-1974) - Implement Backup
 
 Editor
+
 - [KOGITO-777](https://issues.redhat.com/browse/KOGITO-777) - Include SCESIM editor in Kogito Tools
 - [KOGITO-1609](https://issues.redhat.com/browse/KOGITO-1609) - [SCESIM Editor] Remove Test Report & Coverage Report docks in Kogito
 - [KOGITO-1650](https://issues.redhat.com/browse/KOGITO-1650) - Show warning if user creates SCESIM using malformed DMN
@@ -37,10 +39,12 @@ Fixed issues
 ---
  
 VS Code
+
 - [KOGITO-1801](https://issues.redhat.com/browse/KOGITO-1801) - Dirty state of editor on consequent save operation
 - [KOGITO-1835](https://issues.redhat.com/browse/KOGITO-1835) - State Control API stop working on VSCode 1.44.x
 
 Editors
+
 - [KOGITO-1566](https://issues.redhat.com/browse/KOGITO-1566) - [SCESIM Editor] DMN Type with nested objects doesn’t works correctly
 - [KOGITO-1658](https://issues.redhat.com/browse/KOGITO-1658) - Broken layout of BPMN processes from examples repository
 - [KOGITO-1684](https://issues.redhat.com/browse/KOGITO-1684) - Deleted file with unsaved changes is not closed
