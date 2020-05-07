@@ -25,8 +25,8 @@ interface Props {
   file: File;
   router: EmbeddedEditorRouter;
   channelType: ChannelType;
-  onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
-  onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
+  onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
+  onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
   envelopeUri?: string;
 }
 
@@ -36,14 +36,14 @@ export const EmbeddedViewer = (props: Props) => {
     if (props.onResourceContentRequest) {
       return props.onResourceContentRequest(request);
     }
-    return new ResourceContent(request.path, undefined);
+    return Promise.resolve(new ResourceContent(request.path, undefined));
   }, [props.onResourceContentRequest]);
 
   const onResourceListRequest = useCallback((request: ResourceListRequest) => {
     if (props.onResourceListRequest) {
       return props.onResourceListRequest(request);
     }
-    return new ResourcesList(request.pattern, []);
+    return Promise.resolve(new ResourcesList(request.pattern, []));
   }, [props.onResourceListRequest]);
 
   return (

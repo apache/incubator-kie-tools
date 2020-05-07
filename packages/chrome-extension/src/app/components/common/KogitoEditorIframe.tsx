@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { ChannelType, EditorContent, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { IsolatedEditorContext } from "./IsolatedEditorContext";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { runScriptOnPage } from "../../utils";
-import { useGlobals } from "./GlobalContext";
-import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useGitHubApi } from "../common/GitHubContext";
-import { EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import { useGlobals } from "./GlobalContext";
+import { IsolatedEditorContext } from "./IsolatedEditorContext";
+import { IsolatedEditorRef } from "./IsolatedEditorRef";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -34,98 +34,28 @@ interface Props {
   readonly: boolean;
 }
 
-const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
-  props,
-  forwardedRef
-) => {
+const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
   const githubApi = useGitHubApi();
-  const ref = useRef<HTMLIFrameElement>(null);
-  const { router, editorIndexPath, resourceContentServiceFactory, logger } = useGlobals();
+  const editorRef = useRef<EmbeddedEditorRef>(null);
+  const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
 
+  //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
   }, [repoInfo]);
 
-  const envelopeBusOuterMessageHandler = useMemo(() => {
-    return new EnvelopeBusOuterMessageHandler(
-      {
-        postMessage: msg => {
-          if (ref.current && ref.current.contentWindow) {
-            ref.current.contentWindow.postMessage(msg, "*");
-          }
-        }
-      },
-      self => ({
-        pollInit() {
-          self.request_initResponse(window.location.origin);
-        },
-        receive_languageRequest() {
-          self.respond_languageRequest(router.getLanguageData(props.openFileExtension));
-        },
-        receive_contentResponse(editorContent: EditorContent) {
-          if (props.readonly) {
-            return;
-          }
-
-          //keep line breaks
-          const content = editorContent.content.split("\n").join("\\n");
-
-          runScriptOnPage(
-            `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
-          );
-        },
-        receive_contentRequest() {
-          props.getFileContents().then(c => {
-            self.respond_contentRequest({
-              content: c || "",
-              path: props.contentPath || ""
-            });
-          });
-        },
-        receive_setContentError() {
-          //TODO: Display a nice message with explanation why "setContent" failed
-          logger.log("Set content error");
-        },
-        receive_dirtyIndicatorChange(isDirty: boolean) {
-          //TODO: Perhaps show window.alert to warn that the changes were not saved?
-          logger.log(`Dirty indicator changed to ${isDirty}`);
-        },
-        receive_ready() {
-          logger.log(`Editor is ready`);
-          onEditorReady?.();
-        },
-        receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest) {
-          console.debug(`Trying to read content from ${resourceContentRequest.path}`);
-          resourceContentService.get(resourceContentRequest.path, resourceContentRequest.opts).then(r => {
-            self.respond_resourceContent(r!);
-          });
-        },
-        receive_readResourceContentError(errorMessage: string) {
-          console.debug(`Error message retrieving a resource content ${errorMessage}`);
-        },
-        receive_resourceListRequest(resourceListRequest: ResourceListRequest) {
-          resourceContentService.list(resourceListRequest.pattern, resourceListRequest.opts).then(list => self.respond_resourceList(list));
-        },
-        notify_editorUndo: () => {
-          console.debug("Notify Undo");
-        },
-        notify_editorRedo: () => {
-          console.debug("Notify Redo");
-        },
-        receive_newEdit(edit: KogitoEdit): void {
-          console.debug("New Edit: " + edit.id);
-        },
-        receive_previewRequest(previewSvg: string) {
-          console.debug("received preview: " + previewSvg);
-        }
-      })
-    );
-  }, [router, resourceContentService]);
+  //Wrap file content into object for EmbeddedEditor
+  const file: File = {
+    fileName: props.contentPath,
+    editorType: props.openFileExtension as EditorType,
+    getFileContents: props.getFileContents,
+    isReadOnly: props.readonly
+  }
 
   useEffect(() => {
     if (textMode) {
-      envelopeBusOuterMessageHandler.request_contentResponse();
+      editorRef.current?.requestContent();
       return;
     }
 
@@ -136,38 +66,42 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => envelopeBusOuterMessageHandler.respond_contentRequest({ content: c || "" }))
+      .then(c => editorRef.current?.setContent(c ?? ""))
       .then(() => {
         task = window.setInterval(
-          () => envelopeBusOuterMessageHandler.request_contentResponse(),
+          () => editorRef.current?.requestContent(),
           GITHUB_EDITOR_SYNC_POLLING_INTERVAL
         );
       });
 
     return () => clearInterval(task);
-  }, [textMode, envelopeBusOuterMessageHandler]);
+  }, [textMode]);
 
-  useEffect(() => {
-    const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
-    window.addEventListener("message", listener, false);
-    envelopeBusOuterMessageHandler.startInitPolling();
+  //When requests for the EmbeddedEditor content completes update CodeMirror's value
+  const onContentResponse = (editorContent: EditorContent) => {
+    if (props.readonly) {
+      return;
+    }
 
-    return () => {
-      envelopeBusOuterMessageHandler.stopInitPolling();
-      window.removeEventListener("message", listener);
-    };
-  }, [envelopeBusOuterMessageHandler]);
+    //keep line breaks
+    const content = editorContent.content.split("\n").join("\\n");
 
+    runScriptOnPage(
+      `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
+    );
+  };
+
+  //Forward reference methods to set content programmatically vs property
   useImperativeHandle(
     forwardedRef,
     () => {
-      if (!ref.current) {
+      if (!editorRef.current) {
         return null;
       }
 
       return {
         setContent: (content: string) => {
-          envelopeBusOuterMessageHandler.respond_contentRequest({ content: content });
+          editorRef.current?.setContent(content);
           return Promise.resolve();
         }
       };
@@ -176,11 +110,21 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   );
 
   return (
-    <iframe
-      ref={ref}
-      className={`kogito-iframe ${fullscreen ? "fullscreen" : "not-fullscreen"}`}
-      src={router.getRelativePathTo(editorIndexPath)}
-    />
+    <>
+      <div className={`kogito-iframe ${fullscreen ? "fullscreen" : "not-fullscreen"}`}>
+        <EmbeddedEditor
+          ref={editorRef}
+          file={file}
+          router={router}
+          channelType={ChannelType.GITHUB}
+          onReady={onEditorReady}
+          onContentResponse={onContentResponse}
+          onResourceContentRequest={(request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts)}
+          onResourceListRequest={(request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts)}
+          envelopeUri={router.getRelativePathTo(editorIndexPath)}
+        />
+      </div>
+    </>
   );
 };
 

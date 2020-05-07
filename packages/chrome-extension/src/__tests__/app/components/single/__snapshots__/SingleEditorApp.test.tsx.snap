@@ -15,10 +15,20 @@ exports[`SingleEditorApp go fullscreen 1`] = `
         Exit full screen
       </a>
     </div>
-    <iframe
+    <div
       class="kogito-iframe fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div />
   <div />
@@ -77,10 +87,20 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
     </div>
   </div>
   <div>
-    <iframe
+    <div
       class="kogito-iframe not-fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="hidden"
@@ -140,10 +160,20 @@ exports[`SingleEditorApp not readonly 1`] = `
     </h4>
   </div>
   <div>
-    <iframe
+    <div
       class="kogito-iframe not-fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="hidden"
@@ -200,10 +230,20 @@ exports[`SingleEditorApp open external editor 1`] = `
     </div>
   </div>
   <div>
-    <iframe
+    <div
       class="kogito-iframe not-fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="hidden"
@@ -260,10 +300,20 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
     </div>
   </div>
   <div>
-    <iframe
+    <div
       class="kogito-iframe not-fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="hidden"
@@ -320,10 +370,20 @@ exports[`SingleEditorApp readonly 1`] = `
     </div>
   </div>
   <div>
-    <iframe
+    <div
       class="kogito-iframe not-fullscreen"
-      src="chrome-testing://https://my-url.com/"
-    />
+    >
+      <div
+        class="kogito--editor--container"
+      >
+        <iframe
+          dataenvelopechannel="GITHUB"
+          id="kogito-iframe"
+          src="chrome-testing://https://my-url.com/"
+          title="Kogito editor"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="hidden"

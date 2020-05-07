@@ -199,3 +199,18 @@ b.icon.cross:before {
   content: "❌";
   font-size: 0.6em;
 }
+
+.kogito--editor--container {
+  display: flex; 
+  width: 100%; 
+  height: 100%; 
+  flex-direction: column; 
+  overflow: hidden;
+}
+
+.kogito--editor--container iframe {
+  flex-grow: 1; 
+  border: none; 
+  margin: 0; 
+  padding: 0;
+}

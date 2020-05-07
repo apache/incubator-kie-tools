@@ -30,8 +30,8 @@ interface Props {
   onSetContentError?: () => void;
   onDirtyIndicatorChange?: (isDirty: boolean) => void;
   onReady?: () => void;
-  onResourceContentRequest?: (request: ResourceContentRequest) => ResourceContent;
-  onResourceListRequest?: (request: ResourceListRequest) => ResourcesList;
+  onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
+  onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
   onEditorUndo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onEditorRedo?: (edits: ReadonlyArray<KogitoEdit>) => void;
   onNewEdit?: (edit: KogitoEdit) => void;
@@ -42,6 +42,7 @@ interface Props {
 export type EmbeddedEditorRef = {
   requestContent(): void;
   requestPreview(): void;
+  setContent(content: string): void;
 } | null;
 
 const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (props: Props, forwardedRef) => {
@@ -76,14 +77,14 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     if (props.onResourceContentRequest) {
       return props.onResourceContentRequest(request);
     }
-    return new ResourceContent(request.path, undefined);
+    return Promise.resolve(new ResourceContent(request.path, undefined));
   }, [props.onResourceContentRequest]);
 
   const onResourceListRequest = useCallback((request: ResourceListRequest) => {
     if (props.onResourceListRequest) {
       return props.onResourceListRequest(request);
     }
-    return new ResourcesList(request.pattern, []);
+    return Promise.resolve(new ResourcesList(request.pattern, []));
   }, [props.onResourceListRequest]);
 
   const onEditorUndo = useCallback((edits: ReadonlyArray<KogitoEdit>) => {
@@ -147,10 +148,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onReady();
         },
         receive_resourceContentRequest(request: ResourceContentRequest) {
-          self.respond_resourceContent(onResourceContentRequest(request));
+          onResourceContentRequest(request).then(r => self.respond_resourceContent(r!));
         },
         receive_resourceListRequest(request: ResourceListRequest) {
-          self.respond_resourceList(onResourceListRequest(request));
+          onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
           onEditorUndo(edits);
@@ -182,10 +183,20 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   //Forward reference methods
   useImperativeHandle(
     forwardedRef,
-    () => ({
-      requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
-      requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse()
-    }),
+    () => {
+      if (!iframeRef.current) {
+        return null;
+      }
+
+      return {
+        requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
+        requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse(),
+        setContent: (content: string) => {
+          envelopeBusOuterMessageHandler.respond_contentRequest({ content: content });
+          return Promise.resolve();
+        }
+      }
+    },
     [envelopeBusOuterMessageHandler]
   );
 
