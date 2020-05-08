@@ -346,7 +346,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
 
         public WildflyUsersPropertiesFileLoader(final String path,
                                                 final String relativeTo) {
-            super(path, relativeTo);
+            super(null, path, relativeTo);
             this.lineWriterPredicate = new PropertiesLineWriterPredicate(WildflyUsersPropertiesFileLoader.this::cleanKey,
                                                                          true);
         }

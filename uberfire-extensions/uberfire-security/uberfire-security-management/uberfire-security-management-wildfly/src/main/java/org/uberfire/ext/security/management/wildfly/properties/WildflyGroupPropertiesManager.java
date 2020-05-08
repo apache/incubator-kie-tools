@@ -419,7 +419,7 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
         public WildflyGroupsPropertiesFileLoader(final String path,
                                                  final String relativeTo) {
-            super(path, relativeTo);
+            super(null, path, relativeTo);
             this.lineWriterPredicate = new PropertiesLineWriterPredicate(WildflyGroupsPropertiesFileLoader.this::cleanKey,
                                                                          false);
         }
