@@ -66,9 +66,6 @@ public class PackageNameWhiteListLoaderTest {
                                                           Paths.class,
                                                           cc );
 
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-
         tempFiles = new TempFiles();
         final File tempFile = tempFiles.createTempFile( "white-list" );
 

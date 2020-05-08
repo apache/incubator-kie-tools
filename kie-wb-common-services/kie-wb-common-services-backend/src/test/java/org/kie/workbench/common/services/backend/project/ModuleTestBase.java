@@ -32,9 +32,4 @@ abstract public class ModuleTestBase {
     @Inject
     BeanManager beanManager;
 
-    @Before
-    public void setUp() {
-        // Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
 }

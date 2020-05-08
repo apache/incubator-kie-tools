@@ -74,9 +74,6 @@ public class KieServiceTest {
 
         fileSystemProvider = new SimpleFileSystemProvider();
 
-        //Ensure URLs use the default:// scheme
-        fileSystemProvider.forceAsDefault();
-
         mainFilePath = fileSystemProvider.getPath(this.getClass().getResource("mymodel.model").toURI());
         dotFilePath = fileSystemProvider.getPath(this.getClass().getResource(".mymodel.model").toURI());
         orphanDotFilePath = fileSystemProvider.getPath(this.getClass().getResource(".mymodel").toURI());

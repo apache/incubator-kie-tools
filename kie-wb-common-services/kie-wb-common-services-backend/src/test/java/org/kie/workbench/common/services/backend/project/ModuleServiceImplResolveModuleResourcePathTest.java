@@ -51,7 +51,6 @@ public class ModuleServiceImplResolveModuleResourcePathTest
 
     @Before
     public void setUp() {
-        super.setUp();
         final Bean moduleServiceBean = (Bean) beanManager.getBeans(KieModuleService.class).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext(moduleServiceBean);
         moduleService = (KieModuleService) beanManager.getReference(moduleServiceBean,

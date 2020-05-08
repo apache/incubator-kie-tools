@@ -83,9 +83,6 @@ public class ProjectImportsServiceImplTest extends WeldModuleTestBase {
                                                        Paths.class,
                                                        cc);
 
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-
         final URL packageUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/package-names-white-list");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final ProjectConfigurationContentHandler contentHandler = new ProjectConfigurationContentHandler();

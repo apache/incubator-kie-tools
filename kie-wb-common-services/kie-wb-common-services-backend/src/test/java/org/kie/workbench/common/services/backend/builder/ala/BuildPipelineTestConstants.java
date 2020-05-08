@@ -23,7 +23,7 @@ import org.uberfire.java.nio.file.Paths;
 
 public interface BuildPipelineTestConstants {
 
-    String ROOT_PATH_URI = "default:///TestRepo/testProject";
+    String ROOT_PATH_URI = "file:///TestRepo/testProject";
 
     Path ROOT_PATH = Paths.get( URI.create( ROOT_PATH_URI ) );
 

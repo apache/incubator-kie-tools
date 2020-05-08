@@ -104,9 +104,6 @@ public class ModuleSaverTest
                                                  Paths.class,
                                                  cc);
 
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-
         final Event<NewModuleEvent> newModuleEvent = mock(Event.class);
 
         when(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).thenAnswer(new Answer<Object>() {

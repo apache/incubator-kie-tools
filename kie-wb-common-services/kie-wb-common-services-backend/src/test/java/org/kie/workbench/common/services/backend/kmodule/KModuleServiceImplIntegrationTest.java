@@ -41,12 +41,6 @@ public class KModuleServiceImplIntegrationTest {
     @Inject
     private KModuleService kModuleService;
 
-    @Before
-    public void setUp() throws Exception {
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
-
     @Test
     public void testIsKModuleFileWithKModuleFile() throws Exception {
         final URL testUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/src/main/resources/META-INF/kmodule.xml");

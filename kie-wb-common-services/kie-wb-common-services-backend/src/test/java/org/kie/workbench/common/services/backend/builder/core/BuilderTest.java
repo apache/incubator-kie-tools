@@ -104,7 +104,7 @@ public class BuilderTest
         dependenciesClassLoaderCache = getReference(LRUModuleDependenciesClassLoaderCache.class);
         pomModelCache = getReference(LRUPomModelCache.class);
         validator = getReference(DefaultGenericKieValidator.class);
-        when(noFilePath.toURI()).thenReturn("default://pathToNoFile");
+        when(noFilePath.toURI()).thenReturn("file://pathToNoFile");
         when(noFilePath.getFileName()).thenReturn("NoFile");
     }
 
