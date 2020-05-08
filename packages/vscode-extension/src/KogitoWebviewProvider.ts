@@ -108,9 +108,9 @@ export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditabl
   }
 
   private createStorageFolder() {
-    const storagePath = this.context.storagePath!;
+    const storagePath = this.context.storagePath ?? this.context.globalStoragePath;
 
-    if (!fs.existsSync(storagePath)) {
+    if (storagePath && !fs.existsSync(storagePath)) {
       fs.mkdirSync(storagePath);
     }
   }
