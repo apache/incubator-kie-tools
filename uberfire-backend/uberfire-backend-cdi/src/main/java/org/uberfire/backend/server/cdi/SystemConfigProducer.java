@@ -18,6 +18,7 @@ package org.uberfire.backend.server.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.net.URI;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -58,8 +59,8 @@ import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.FileStore;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.LockableFileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -68,8 +69,8 @@ import org.uberfire.java.nio.file.PatternSyntaxException;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 public class SystemConfigProducer implements Extension {
 
@@ -79,6 +80,7 @@ public class SystemConfigProducer implements Extension {
 
     private static final String START_METHOD = System.getProperty("org.uberfire.start.method",
                                                                   "cdi");
+    protected static final String SYSTEM = "system";
 
     private final List<OrderedBean> startupEagerBeans = new LinkedList<>();
     private final List<OrderedBean> startupBootstrapBeans = new LinkedList<>();
@@ -262,7 +264,6 @@ public class SystemConfigProducer implements Extension {
                                          "perspectives"));
     }
 
-
     void buildDatasetsFS(final AfterBeanDiscovery abd,
                          final BeanManager bm) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
@@ -296,7 +297,7 @@ public class SystemConfigProducer implements Extension {
                                          SpacesAPI.DEFAULT_SPACE,
                                          "configIO",
                                          "systemFS",
-                                         "system"));
+                                         SYSTEM));
     }
 
     Bean<FileSystem> createFileSystemBean(final BeanManager bm,
@@ -376,12 +377,11 @@ public class SystemConfigProducer implements Extension {
                 URI uri = resolveFSURI(spaces, space, fsName);
                 try {
                     fs = ioService.newFileSystem(
-                        uri,
-                        new HashMap<String, Object>() {{
-                            put("init", Boolean.TRUE);
-                            put("internal", Boolean.TRUE);
-                        }});
-
+                            uri,
+                            new HashMap<String, Object>() {{
+                                put("init", Boolean.TRUE);
+                                put("internal", Boolean.TRUE);
+                            }});
                 } catch (FileSystemAlreadyExistsException e) {
                     fs = ioService.getFileSystem(uri);
                 }
@@ -407,9 +407,10 @@ public class SystemConfigProducer implements Extension {
     }
 
     URI resolveFSURI(SpacesAPI spaces, Space space, String fsName) {
-        return spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
-                                                          space,
-                                                          fsName);
+
+        return spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
+                                           space,
+                                           fsName);
     }
 
     SpacesAPI getSpaces(BeanManager bm) {

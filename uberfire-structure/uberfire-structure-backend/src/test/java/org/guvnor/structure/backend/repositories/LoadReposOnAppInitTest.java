@@ -26,8 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,8 +55,12 @@ public class LoadReposOnAppInitTest {
     @Test
     public void testLoadRepositories() {
 
-        final LoadReposOnAppInit loadReposOnAppInit = new LoadReposOnAppInit(configuredRepositories,
-                                                                             organizationalUnitService);
+        final LoadReposOnAppInit loadReposOnAppInit = spy(new LoadReposOnAppInit(configuredRepositories,
+                                                                                 organizationalUnitService));
+
+        doReturn(true).when(loadReposOnAppInit).isGitDefaultFileSystem();
+
+        loadReposOnAppInit.execute();
 
         verify(configuredRepositories, times(1)).getAllConfiguredRepositories(any());
     }

@@ -239,7 +239,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
                         final String... more)
             throws InvalidPathException {
         checkClosed();
-        if (first == null || first.trim().isEmpty()) {
+        if (first == null || first.trim().isEmpty() || first.trim().equals("/")) {
             return new JGitFSPath(this);
         }
 

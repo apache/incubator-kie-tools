@@ -19,6 +19,7 @@ package org.uberfire.backend.server;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,6 +39,7 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 /**
  * Observes the creation and deletion of locks and notifies all connected
@@ -66,14 +68,17 @@ public class LockClientNotifier {
 
     @PostConstruct
     private void init() {
-        ws = fs.newWatchService();
-        executorService.submit(new Runnable() {
 
-            @Override
-            public void run() {
-                observeAndNotifyClients();
-            }
-        });
+        if (FileSystemUtils.isGitDefaultFileSystem()) {
+            ws = fs.newWatchService();
+            executorService.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    observeAndNotifyClients();
+                }
+            });
+        }
     }
 
     @PreDestroy

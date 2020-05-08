@@ -139,7 +139,7 @@ public class ExperimentalEditorServiceImpl implements ExperimentalEditorService 
     }
 
     protected void initializeFileSystem() {
-        final URI fileSystemURI = spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT, SpacesAPI.DEFAULT_SPACE, "experimental");
+        final URI fileSystemURI = spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT, SpacesAPI.DEFAULT_SPACE, "experimental");
 
         try {
             Map<String, Object> options = new HashMap<>();

@@ -350,7 +350,7 @@ public class DataTransferServicesTest {
 
     private String getExpectedExportFileSystemPath() {
         return new StringBuilder()
-            .append("git://")
+            .append("default://")
             .append(systemFS.getName())
             .append(getExpectedExportFilePath())
             .toString();
@@ -360,8 +360,6 @@ public class DataTransferServicesTest {
         URL url = DataTransferServicesTest.class.getResource(path);
 
         String sourceLocation = new StringBuilder()
-            .append(SpacesAPI.Scheme.FILE)
-            .append("://")
             .append(url.toString())
             .toString();
 

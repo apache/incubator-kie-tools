@@ -32,6 +32,7 @@ import org.guvnor.structure.repositories.RepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
@@ -67,13 +68,19 @@ public class SpaceConfigCleanUp {
 
     private void executeCleanUp() {
         try {
-            orgUnitService.getAllOrganizationalUnits()
-                    .stream()
-                    .map(OrganizationalUnit::getName)
-                    .forEach(this::cleanUpSpaceConfigStorage);
+            if (this.isGitDefaultFileSystem()) {
+                orgUnitService.getAllOrganizationalUnits()
+                        .stream()
+                        .map(OrganizationalUnit::getName)
+                        .forEach(this::cleanUpSpaceConfigStorage);
+            }
         } catch (Exception e) {
             LOGGER.error("Error when executing clean up.", e);
         }
+    }
+
+    protected boolean isGitDefaultFileSystem() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 
     private void cleanUpSpaceConfigStorage(final String spaceName) {

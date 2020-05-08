@@ -93,7 +93,7 @@ public class DataTransferView implements DataTransferScreen.View, IsElement {
             @Override
             public String getUploadFileUrl() {
                 String path = new StringBuilder()
-                    .append(SpacesAPI.Scheme.GIT)
+                    .append(SpacesAPI.Scheme.DEFAULT)
                     .append("://")
                     .append("system/system")
                     .append("/")

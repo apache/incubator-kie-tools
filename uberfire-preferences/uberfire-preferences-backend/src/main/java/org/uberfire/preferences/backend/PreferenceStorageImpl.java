@@ -94,7 +94,7 @@ public class PreferenceStorageImpl implements PreferenceStorage {
 
     @PostConstruct
     public void init() {
-        objectStorage.init(spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
+        objectStorage.init(spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
                                                        SpacesAPI.DEFAULT_SPACE,
                                                        "preferences"));
     }

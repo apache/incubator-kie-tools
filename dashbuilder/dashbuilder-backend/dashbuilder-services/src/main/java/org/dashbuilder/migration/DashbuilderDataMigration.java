@@ -16,11 +16,11 @@
 
 package org.dashbuilder.migration;
 
+import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.io.File;
-import java.net.URI;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -32,18 +32,17 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileVisitResult;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.mvp.Command;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -52,6 +51,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 @Startup
 public class DashbuilderDataMigration {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DashbuilderDataMigration.class);
 
     private IOService ioService;
@@ -81,11 +81,11 @@ public class DashbuilderDataMigration {
 
     @PostConstruct
     private void init() {
-        runWithLock(() -> {
-            migrateDatasets();
-            migratePerspectives();
-            migrateNavigation();
-        });
+            runWithLock(() -> {
+                migrateDatasets();
+                migratePerspectives();
+                migrateNavigation();
+            });
     }
 
     private void migrateDatasets() {
@@ -98,9 +98,9 @@ public class DashbuilderDataMigration {
         FileSystem fs;
 
         URI uri = new SpacesAPIImpl().resolveFileSystemURI(
-            SpacesAPI.Scheme.GIT,
-            space,
-            name);
+                SpacesAPI.Scheme.DEFAULT,
+                space,
+                name);
 
         HashMap<String, Object> env = new HashMap<>();
         env.put("init", Boolean.TRUE);
@@ -108,7 +108,6 @@ public class DashbuilderDataMigration {
 
         try {
             fs = ioService.newFileSystem(uri, env);
-
         } catch (FileSystemAlreadyExistsException e) {
             fs = ioService.getFileSystem(uri);
         }
@@ -122,10 +121,9 @@ public class DashbuilderDataMigration {
             try {
                 Path fsPath = fs.getPath("");
                 Files.delete(fsPath);
-
             } catch (Exception e) {
-                 LOGGER.error("Failed to remove the datasets git repository.");
-                 LOGGER.debug("Error during dashbuilder migration", e);
+                LOGGER.error("Failed to remove the datasets git repository.");
+                LOGGER.debug("Error during dashbuilder migration", e);
             }
         }
     }
@@ -185,11 +183,9 @@ public class DashbuilderDataMigration {
 
                 if (!predicate.test(path)) {
                     LOGGER.debug("skip file " + path.toString());
-
                 } else if (ioService.exists(targetPath)) {
                     LOGGER.debug("file " + path.toString() + " already exists on target");
                     Files.delete(path);
-
                 } else {
                     LOGGER.debug("moving file " + path.toString());
                     Files.copy(path, targetPath);
@@ -204,7 +200,6 @@ public class DashbuilderDataMigration {
     private Path getRoot(FileSystem fileSystem) {
         try {
             return fileSystem.getRootDirectories().iterator().next();
-
         } catch (Exception e) {
             LOGGER.debug("could not get filesystem root", e);
             return null;
@@ -219,22 +214,19 @@ public class DashbuilderDataMigration {
         int lastAccessThreshold = 1;
 
         // get .niogit/dashbuilder path
-        File dir = ((JGitPathImpl) navigationFS.getPath("/"))
-            .getFileSystem()
-            .getGit()
-            .getRepository()
-            .getDirectory()
-            .getParentFile();
+        File dir = navigationFS.getPath("/")
+                .toFile()
+                .getParentFile();
 
         File marker = new File(dir, markerName);
 
         FileSystemLock lock = FileSystemLockManager
-            .getInstance()
-            .getFileSystemLock(
-                dir,
-                lockName,
-                lastAccessTimeUnit,
-                lastAccessThreshold);
+                .getInstance()
+                .getFileSystemLock(
+                        dir,
+                        lockName,
+                        lastAccessTimeUnit,
+                        lastAccessThreshold);
 
         try {
             lock.lock();
@@ -243,10 +235,8 @@ public class DashbuilderDataMigration {
                 marker.createNewFile();
                 command.execute();
             }
-
         } catch (java.io.IOException e) {
             LOGGER.error(e.getMessage(), e);
-
         } finally {
             lock.unlock();
         }

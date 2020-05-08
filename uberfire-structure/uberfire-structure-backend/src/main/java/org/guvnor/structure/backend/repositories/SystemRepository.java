@@ -65,7 +65,7 @@ public class SystemRepository extends GitRepository {
     @Override
     public String getUri() {
         String alias = SpacesAPI.sanitizeFileSystemName(getAlias());
-        return SpacesAPI.resolveFileSystemPath(getScheme(),
+        return SpacesAPI.resolveFileSystemPath(SpacesAPI.Scheme.DEFAULT,
                                                getSpace(),
                                                alias).toString();
     }

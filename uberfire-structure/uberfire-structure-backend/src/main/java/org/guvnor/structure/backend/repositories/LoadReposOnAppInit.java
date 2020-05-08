@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 /**
  * This will boot internal FS infra for all repos making them available to ssh, http and git protocol
@@ -29,12 +30,28 @@ import org.uberfire.commons.services.cdi.Startup;
 @Startup
 public class LoadReposOnAppInit {
 
+    private ConfiguredRepositories configuredRepositories;
+    private OrganizationalUnitService organizationalUnitService;
+
     public LoadReposOnAppInit() {
     }
 
     @Inject
     public LoadReposOnAppInit(final ConfiguredRepositories configuredRepositories,
                               final OrganizationalUnitService organizationalUnitService) {
-        organizationalUnitService.getAllOrganizationalUnits().forEach(ou -> configuredRepositories.getAllConfiguredRepositories(ou.getSpace()));
+
+        this.configuredRepositories = configuredRepositories;
+        this.organizationalUnitService = organizationalUnitService;
+        this.execute();
+    }
+
+    protected void execute() {
+        if (this.isGitDefaultFileSystem()) {
+            organizationalUnitService.getAllOrganizationalUnits().forEach(ou -> configuredRepositories.getAllConfiguredRepositories(ou.getSpace()));
+        }
+    }
+
+    protected boolean isGitDefaultFileSystem() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 }

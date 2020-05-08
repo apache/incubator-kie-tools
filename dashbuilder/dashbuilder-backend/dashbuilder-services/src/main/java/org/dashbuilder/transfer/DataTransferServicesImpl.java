@@ -133,7 +133,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
         moveZipToFileSystem(zipLocation, systemFS);
 
         return new StringBuilder()
-            .append(SpacesAPI.Scheme.GIT)
+            .append(SpacesAPI.Scheme.DEFAULT)
             .append("://")
             .append(systemFS.getName())
             .append(File.separator)
@@ -150,7 +150,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
         Path root = Paths.get(
             URI.create(
                 new StringBuilder()
-                    .append(SpacesAPI.Scheme.GIT)
+                    .append(SpacesAPI.Scheme.DEFAULT)
                     .append("://")
                     .append(systemFS.getName())
                     .append(File.separator)
@@ -188,8 +188,14 @@ public class DataTransferServicesImpl implements DataTransferServices {
     }
 
     private List<String> importFiles(Path path) throws Exception  {
+
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        if (tmpDir.lastIndexOf('/') == tmpDir.length() - 1) {
+            tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
+        }
+
         String tempPath = new StringBuilder()
-            .append(System.getProperty("java.io.tmpdir"))
+            .append(tmpDir)
             .append(File.separator)
             .append(FILE_PATH)
             .append(File.separator)
@@ -213,7 +219,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
                 URI uri = URI.create(
                     new StringBuilder()
-                        .append(SpacesAPI.Scheme.GIT)
+                        .append(SpacesAPI.Scheme.DEFAULT)
                         .append("://")
                         .append(fileSystem.getName())
                         .toString());
@@ -309,7 +315,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
         Path target = Paths.get(
             URI.create(
                 new StringBuilder()
-                    .append(SpacesAPI.Scheme.GIT)
+                    .append(SpacesAPI.Scheme.DEFAULT)
                     .append("://")
                     .append(fileSystem.getName())
                     .append(File.separator)

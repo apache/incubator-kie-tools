@@ -137,7 +137,7 @@ public class ExperimentalFeaturesStorageImpl implements ExperimentalFeaturesStor
     }
 
     protected void initializeFileSystem() {
-        final URI fileSystemURI = spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT, SpacesAPI.DEFAULT_SPACE, "preferences");
+        final URI fileSystemURI = spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT, SpacesAPI.DEFAULT_SPACE, "preferences");
 
         try {
             Map<String, Object> options = new HashMap<>();

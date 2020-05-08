@@ -69,6 +69,8 @@ public class SpaceConfigCleanUpTest {
         spaceConfigCleanUp = spy(new SpaceConfigCleanUp(orgUnitService,
                                                         spaceConfigStorageRegistry));
 
+        doReturn(true).when(spaceConfigCleanUp).isGitDefaultFileSystem();
+
         doReturn(mock(FileSystemLock.class)).when(spaceConfigCleanUp).createLock(any(File.class));
     }
 

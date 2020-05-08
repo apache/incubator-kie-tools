@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
@@ -34,13 +35,17 @@ import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SystemConfigProducerTest {
@@ -72,9 +77,9 @@ public class SystemConfigProducerTest {
 
         SpacesAPI spacesAPI = mock(SpacesAPI.class);
 
-        producer.resolveFSURI(spacesAPI, SpacesAPI.DEFAULT_SPACE, "system");
+        producer.resolveFSURI(spacesAPI, SpacesAPI.DEFAULT_SPACE, SystemConfigProducer.SYSTEM);
 
-        verify(spacesAPI).resolveFileSystemURI(SpacesAPI.Scheme.GIT,SpacesAPI.DEFAULT_SPACE, "system" );
+        verify(spacesAPI).resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT, SpacesAPI.DEFAULT_SPACE, SystemConfigProducer.SYSTEM);
     }
 
     @Test
@@ -95,7 +100,7 @@ public class SystemConfigProducerTest {
                                                                   mock(Space.class),
                                                                   "configIO",
                                                                   "systemFS",
-                                                                  "system");
+                                                                  SystemConfigProducer.SYSTEM);
 
         assertNull(PriorityDisposableRegistry.get("systemFS"));
 
@@ -124,7 +129,7 @@ public class SystemConfigProducerTest {
                                                  any(),
                                                  eq("configIO"),
                                                  eq("systemFS"),
-                                                 eq("system"));
+                                                 eq(SystemConfigProducer.SYSTEM));
     }
 
     @Test

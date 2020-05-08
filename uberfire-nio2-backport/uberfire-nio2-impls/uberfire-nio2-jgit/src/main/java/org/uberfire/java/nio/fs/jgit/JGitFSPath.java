@@ -27,6 +27,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.LinkOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
@@ -51,7 +52,7 @@ public class JGitFSPath implements FSPath {
 
     @Override
     public Path getRoot() {
-        return null;
+        return Paths.get(fs.getGit().getRepository().getDirectory().toURI());
     }
 
     @Override
@@ -147,7 +148,7 @@ public class JGitFSPath implements FSPath {
 
     @Override
     public File toFile() throws UnsupportedOperationException {
-        return null;
+        return fs.getGit().getRepository().getDirectory();
     }
 
     @Override

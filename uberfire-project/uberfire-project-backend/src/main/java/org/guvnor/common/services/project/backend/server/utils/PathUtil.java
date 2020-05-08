@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 
 import org.guvnor.structure.backend.repositories.git.GitPathUtil;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
 /**
@@ -66,8 +67,8 @@ public class PathUtil {
      */
     public String getNiogitRepoPath(org.uberfire.java.nio.file.Path path) {
         try {
-            final JGitPathImpl gPath = (JGitPathImpl) path;
-            final File directory = gPath.getFileSystem().getGit().getRepository().getDirectory();
+            Path p = path.getFileSystem().getPath(path.toString());
+            final File directory = p.toFile();
             return directory.toURI().toString();
         } catch (ClassCastException cce) {
             throw new IllegalArgumentException("Cannot get .niogit directory for non-jgit path.", cce);

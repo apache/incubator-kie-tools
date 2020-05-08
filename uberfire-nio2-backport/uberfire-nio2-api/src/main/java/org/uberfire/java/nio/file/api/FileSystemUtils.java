@@ -24,10 +24,12 @@ public class FileSystemUtils {
 
     public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.server.controller.openshift.enabled";
     public static final String K8S_FS_SCHEME = "k8s";
+    private static final String GIT_FS_SCHEME = "git";
 
     private static ThreadLocal<Properties> configProps = ThreadLocal.withInitial(System::getProperties);
 
-    private FileSystemUtils() {}
+    private FileSystemUtils() {
+    }
 
     public static Properties getConfigProps() {
         return configProps.get();
@@ -35,6 +37,10 @@ public class FileSystemUtils {
 
     public static boolean isOpenShiftSupported() {
         return "true".equals(getConfigProps().getProperty(CFG_KIE_CONTROLLER_OCP_ENABLED, "false"));
+    }
+
+    public static boolean isGitDefaultFileSystem() {
+        return FileSystemProviders.getDefaultProvider().getScheme().equals(GIT_FS_SCHEME);
     }
 
     public static boolean isK8SFileSystemProviderAsDefault(FileSystemProvider provider) {
