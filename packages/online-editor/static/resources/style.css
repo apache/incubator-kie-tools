@@ -186,6 +186,15 @@
   padding: 1em;
 }
 
+.kogito--alert-container-unsaved {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1em;
+}
+
 /* TODO: Fix to only affect the correct header */
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
@@ -210,4 +219,8 @@
 
 .kogito--editor__toolbar-toggle-icon-button {
   --pf-c-dropdown__toggle--FontSize: var(--pf-global--icon--FontSize--md);
+}
+
+.kogito--editor__toolbar-edited {
+  color: var(--pf-global--Color--400);
 }

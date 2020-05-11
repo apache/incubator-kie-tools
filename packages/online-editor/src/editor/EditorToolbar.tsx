@@ -33,6 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
+import {StateControl, useStateControl} from "./StateControl";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -44,6 +45,9 @@ interface Props {
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
+  stateControl: StateControl;
+  // isDirty: boolean,
+  // setIsDirty: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function EditorToolbar(props: Props) {
@@ -53,6 +57,14 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
+  const isDirty = useStateControl("EditorToolbar", props.stateControl)
+
+  // useEffect(() => {
+  //   props.stateControl.subscribe("EditorToolbar", props.setIsDirty);
+  //   return () => {
+  //     props.stateControl.unsubscribe("EditorToolbar");
+  //   }
+  // }, []);
 
   const { isPageFullscreen } = props;
 
@@ -134,15 +146,18 @@ export function EditorToolbar(props: Props) {
   const filenameInput = (
     <>
       {!editingName && (
-        <Title
-          className={"kogito--editor__toolbar-title"}
-          headingLevel={"h3"}
-          size={"xl"}
-          onClick={editName}
-          title={"Rename"}
-        >
-          {context.file.fileName + "." + editorType}
-        </Title>
+        <div>
+          <Title
+            className={"kogito--editor__toolbar-title"}
+            headingLevel={"h3"}
+            size={"xl"}
+            onClick={editName}
+            title={"Rename"}
+          >
+            {context.file.fileName + "." + editorType}
+          </Title>
+          {isDirty && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+        </div>
       )}
       {editingName && (
         <div className={"kogito--editor__toolbar-name-container"}>
