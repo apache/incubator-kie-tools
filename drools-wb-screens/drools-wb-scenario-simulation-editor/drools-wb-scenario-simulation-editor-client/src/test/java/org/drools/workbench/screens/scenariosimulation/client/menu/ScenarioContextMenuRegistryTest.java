@@ -28,7 +28,6 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridCo
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderExpectedContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationGridHandlerTest;
 import org.junit.Before;
@@ -63,8 +62,6 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
     @Mock
     private GridContextMenu gridContextMenuMock;
     @Mock
-    private UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenuMock;
-    @Mock
     private ContextMenuEvent contextMenuEventMock;
     @Mock
     private NativeEvent contextNativeEventMock;
@@ -88,8 +85,7 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                                                                       headerExpectedContextMenuMock,
                                                                       givenContextMenuMock,
                                                                       expectedContextMenuMock,
-                                                                      gridContextMenuMock,
-                                                                      unmodifiableColumnGridContextMenuMock);
+                                                                      gridContextMenuMock);
     }
 
     @Test
@@ -164,26 +160,5 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                                          clickPointY,
                                          0);
         verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
-    }
-
-    @Test
-    public void testManageBodyRightClick_Unmodifiable() {
-        final int clickPointX = 5;
-        final int clickPointY = 11;
-        final double widgetHeight = 50.0;
-        final double rowHeight = widgetHeight - HEADER_HEIGHT;
-        doReturn(clickPointX).when(contextNativeEventMock).getClientX();
-        doReturn(clickPointY).when(contextNativeEventMock).getClientY();
-        doReturn(widgetHeight).when(scenarioGridMock).getHeight();
-        doReturn(1).when(scenarioGridModelMock).getRowCount();
-        final GridRow gridRowMock = mock(GridRow.class);
-        doReturn(gridRowMock).when(scenarioGridModelMock).getRow(0);
-        doReturn(rowHeight).when(gridRowMock).getHeight();
-        doReturn("").when(informationHeaderMetaDataMock).getColumnGroup();
-        assertThat(scenarioContextMenuRegistry.manageRightClick(scenarioGridMock, contextMenuEventMock))
-                .as("Click to row number/description body cell")
-                .isTrue();
-
-        verify(unmodifiableColumnGridContextMenuMock).show(GridWidget.SIMULATION, clickPointX, clickPointY, 0);
     }
 }

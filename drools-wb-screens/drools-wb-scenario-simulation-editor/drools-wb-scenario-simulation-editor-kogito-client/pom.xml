@@ -124,7 +124,24 @@
       <artifactId>xml-apis</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
     <!-- END TEST -->
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>
