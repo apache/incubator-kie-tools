@@ -121,7 +121,6 @@ Feature: Deploy quarkus service
 #####
 
   @events
-  @persistence
   Scenario Outline: Data Index retrieves Quarkus process' events with native <native>
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas

@@ -6,8 +6,6 @@ Feature: Deploy the service by configuring the resource requests and limits
     Given Namespace is created
     And Kogito Operator is deployed
 
-  @runtimerequests 
-  @runtimelimits
   Scenario Outline: Setting runtime resource resource requests cpu <runtime-cpu-request>, mem <runtime-memory-request> and limits cpu <runtime-cpu-limit>, mem <runtime-memory-limit >
     Given Clone Kogito examples into local directory
     And Local example service "ruleunit-quarkus-example" is built by Maven
@@ -32,8 +30,6 @@ Feature: Deploy the service by configuring the resource requests and limits
       | 500m                | 1Gi                    | 1000m             | 2Gi                  |
 
 
-  @buildresources 
-  @buildlimits 
   Scenario Outline: Setting build resource requests cpu <build-cpu-request>, mem <build-memory-request> and limits cpu <build-cpu-limit>, mem <build-memory-limit >
     When Deploy quarkus example service "ruleunit-quarkus-example" with configuration:
       | build-request | cpu    | <build-cpu-request>    |

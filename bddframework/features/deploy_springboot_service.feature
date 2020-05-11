@@ -62,7 +62,6 @@ Feature: Deploy spring boot service
 #####
 
   @events
-  @persistence
   Scenario: Data Index retrieves Spring Boot process' events
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
