@@ -79,8 +79,6 @@
     <version.org.jboss.jboss-dmr>1.4.1.Final</version.org.jboss.jboss-dmr>
     <version.org.jboss.jboss-msc>1.2.7.SP1</version.org.jboss.jboss-msc>
 
-    <version.org.wildfly.security>1.1.3.Final</version.org.wildfly.security>
-
     <version.org.apache.activemq.artemis>2.3.0</version.org.apache.activemq.artemis>
     <netty-transport-native-epoll-classifier>linux-x86_64</netty-transport-native-epoll-classifier>
     <netty-transport-native-kqueue-classifier>osx-x86_64</netty-transport-native-kqueue-classifier>
