@@ -32,8 +32,8 @@ interface Props {
   onReady?: () => void;
   onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
   onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
-  onEditorUndo?: (edits: ReadonlyArray<KogitoEdit>) => void;
-  onEditorRedo?: (edits: ReadonlyArray<KogitoEdit>) => void;
+  onEditorUndo?: () => void;
+  onEditorRedo?: () => void;
   onNewEdit?: (edit: KogitoEdit) => void;
   onPreviewResponse?: (previewSvg: string) => void;
   envelopeUri?: string;
@@ -99,15 +99,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     return Promise.resolve(new ResourcesList(request.pattern, []));
   }, [props.onResourceListRequest]);
 
-  const onEditorUndo = useCallback((edits: ReadonlyArray<KogitoEdit>) => {
+  const onEditorUndo = useCallback(() => {
     if (props.onEditorUndo) {
-      props.onEditorUndo(edits);
+      props.onEditorUndo();
     }
   }, [props.onEditorUndo]);
 
-  const onEditorRedo = useCallback((edits: ReadonlyArray<KogitoEdit>) => {
+  const onEditorRedo = useCallback(() => {
     if (props.onEditorRedo) {
-      props.onEditorRedo(edits);
+      props.onEditorRedo();
     }
   }, [props.onEditorRedo]);
 
@@ -165,11 +165,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_resourceListRequest(request: ResourceListRequest) {
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
-        notify_editorUndo: (edits: ReadonlyArray<KogitoEdit>) => {
-          onEditorUndo(edits);
+        notify_editorUndo: () => {
+          onEditorUndo();
         },
-        notify_editorRedo: (edits: ReadonlyArray<KogitoEdit>) => {
-          onEditorRedo(edits);
+        notify_editorRedo: () => {
+          onEditorRedo();
         },
         receive_newEdit(edit: KogitoEdit) {
           onNewEdit(edit);
