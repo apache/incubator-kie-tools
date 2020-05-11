@@ -39,7 +39,7 @@ jest.mock("../../backend/Menu", () => {
 });
 
 describe("saveFile ipc event", () => {
-  test("SAVE_AS", () => {
+  test("check dialog for save file as operation", () => {
     const window = new electron.BrowserWindow();
     const userData = new DesktopUserData();
     const menu = new Menu(window, userData);
