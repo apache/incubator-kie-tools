@@ -24,7 +24,6 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
-import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.uberfire.backend.vfs.Path;
@@ -45,8 +44,6 @@ public class DMNIncludedNodeFactory {
                                      final IncludedModel includeModel) {
 
         final String modelName = includeModel.getModelName();
-
-        drgElement.setId(new Id(modelName + ":" + drgElement.getId().getValue()));
         drgElement.setName(new Name(modelName + "." + drgElement.getName().getValue()));
         drgElement.setAllowOnlyVisualChange(true);
 

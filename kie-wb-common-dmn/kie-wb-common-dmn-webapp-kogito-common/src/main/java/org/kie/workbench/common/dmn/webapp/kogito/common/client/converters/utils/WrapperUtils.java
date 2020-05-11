@@ -15,7 +15,9 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.utils;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -25,8 +27,10 @@ import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
@@ -154,9 +158,10 @@ public class WrapperUtils {
         return toReturn;
     }
 
-    public static JSIDMNShape getWrappedJSIDMNShape(final View<? extends DMNElement> v,
+    public static JSIDMNShape getWrappedJSIDMNShape(final Definitions definitionsStunnerPojo,
+                                                    final View<? extends DMNElement> v,
                                                     final String namespaceURI) {
-        JSIDMNShape unwrappedJSIDMNShape = stunnerToDDExt(v, namespaceURI);
+        JSIDMNShape unwrappedJSIDMNShape = stunnerToDDExt(definitionsStunnerPojo, v, namespaceURI);
         JSIDMNShape toReturn = Js.uncheckedCast(JsUtils.getWrappedElement(unwrappedJSIDMNShape));
         JSIName jsiName = JSIDMNShape.getJSIName();
         updateJSIName(jsiName, "dmndi", "DMNShape");
@@ -198,13 +203,12 @@ public class WrapperUtils {
         toUpdate.setString(string);
     }
 
-    private static JSIDMNShape stunnerToDDExt(final View<? extends DMNElement> v,
+    private static JSIDMNShape stunnerToDDExt(final Definitions definitionsStunnerPojo,
+                                              final View<? extends DMNElement> v,
                                               final String namespaceURI) {
         final JSIDMNShape result = new JSIDMNShape();
         result.setId("dmnshape-" + v.getDefinition().getId().getValue());
-        result.setDmnElementRef(new QName(namespaceURI,
-                                          v.getDefinition().getId().getValue(),
-                                          XMLConstants.DEFAULT_NS_PREFIX));
+        result.setDmnElementRef(getDmnElementRef(definitionsStunnerPojo, v, namespaceURI));
         final JSIBounds bounds = new JSIBounds();
         result.setBounds(bounds);
         bounds.setX(xOfBound(upperLeftBound(v)));
@@ -258,6 +262,54 @@ public class WrapperUtils {
         result.setStyle(getWrappedJSIDMNStyle(style));
 
         return result;
+    }
+
+    static QName getDmnElementRef(final Definitions definitions,
+                                  final View<? extends DMNElement> v,
+                                  final String namespaceURI) {
+
+        final DMNElement dmnElement = v.getDefinition();
+        final String dmnElementId = dmnElement.getId().getValue();
+
+        return getImportPrefix(definitions, dmnElement)
+                .map(prefix -> new QName(namespaceURI, prefix + ":" + dmnElementId, XMLConstants.DEFAULT_NS_PREFIX))
+                .orElse(new QName(namespaceURI, dmnElementId, XMLConstants.DEFAULT_NS_PREFIX));
+    }
+
+    private static Optional<String> getImportPrefix(final Definitions definitions,
+                                                    final DMNElement dmnElement) {
+
+        if (!(dmnElement instanceof NamedElement)) {
+            return Optional.empty();
+        }
+
+        final NamedElement namedElement = (NamedElement) dmnElement;
+        final Optional<String> name = Optional.ofNullable(namedElement.getName().getValue());
+
+        return definitions
+                .getImport()
+                .stream()
+                .filter(anImport -> {
+                    final String importName = anImport.getName().getValue();
+                    return name.map(n -> n.startsWith(importName + ".")).orElse(false);
+                })
+                .map(anImport -> {
+                    final String importNamespace = anImport.getNamespace();
+                    return getNsContextsByNamespace(definitions, importNamespace);
+                })
+                .findFirst();
+    }
+
+    private static String getNsContextsByNamespace(final Definitions definitions,
+                                                   final String namespace) {
+        return definitions
+                .getNsContext()
+                .entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), namespace))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse("");
     }
 
     private static void applyFontStyle(final FontSet fontSet,

@@ -51,7 +51,7 @@ public class DMNIncludedNodeFactoryTest {
         final String drgElementName = "Can Drive?";
         final String expectedFileName = "file.dmn";
         final String expectedModelName = "model";
-        final String expectedImportedElementId = "model:0000-1111-3333-4444";
+        final String expectedImportedElementId = "0000-1111-3333-4444";
         final String expectedImportedElementName = "model.Can Drive?";
         final String expectedImportedItemDefinitionName = "model.tCustomBoolean";
         final DRGElement importedElementId = makeDecision(drgElementId, drgElementName, "tCustomBoolean");

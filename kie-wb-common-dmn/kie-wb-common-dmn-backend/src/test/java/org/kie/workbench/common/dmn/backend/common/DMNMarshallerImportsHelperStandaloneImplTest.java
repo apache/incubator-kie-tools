@@ -72,7 +72,7 @@ import static org.mockito.Mockito.when;
 import static org.uberfire.backend.vfs.PathFactory.PathImpl;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DMNMarshallerImplImportsHelperTest {
+public class DMNMarshallerImportsHelperStandaloneImplTest {
 
     @Mock
     private DMNPathsHelperImpl pathsHelper;
@@ -297,19 +297,19 @@ public class DMNMarshallerImplImportsHelperTest {
         assertEquals(3, elements.size());
 
         final TDecision element1 = (TDecision) elements.get(0);
-        assertEquals("model:0000-1111", element1.getId());
+        assertEquals("0000-1111", element1.getId());
         assertEquals("model.Decision", element1.getName());
         assertEquals("model.tUUID", element1.getVariable().getTypeRef().getLocalPart());
         assertEquals(namespace, getNamespace(element1));
 
         final TInputData element2 = (TInputData) elements.get(1);
-        assertEquals("model:2222-3333", element2.getId());
+        assertEquals("2222-3333", element2.getId());
         assertEquals("model.Input Data", element2.getName());
         assertEquals("model.tAge", element2.getVariable().getTypeRef().getLocalPart());
         assertEquals(namespace, getNamespace(element2));
 
         final TDecisionService element3 = (TDecisionService) elements.get(2);
-        assertEquals("model:4444-5555", element3.getId());
+        assertEquals("4444-5555", element3.getId());
         assertEquals("model.Decision Service", element3.getName());
         assertEquals(builtInTypeNumber, element3.getVariable().getTypeRef().getLocalPart());
         assertEquals(namespace, getNamespace(element3));

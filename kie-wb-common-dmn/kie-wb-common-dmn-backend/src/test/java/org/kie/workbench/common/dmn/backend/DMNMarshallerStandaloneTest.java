@@ -119,6 +119,7 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactoryImpl;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandalone;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
@@ -155,6 +156,8 @@ import org.uberfire.commons.uuid.UUID;
 import org.xml.sax.InputSource;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -164,12 +167,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.backend.DMNMarshallerStandalone.getDmnElementRef;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -1728,7 +1730,6 @@ public class DMNMarshallerStandaloneTest {
         final DMNMarshallerStandalone marshaller = spy(getDMNMarshaller());
         final List<org.kie.dmn.model.api.DRGElement> importedDRGElements = mock(List.class);
         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = mock(Map.class);
-        final org.kie.dmn.model.api.Definitions dmnXml = mock(org.kie.dmn.model.api.Definitions.class);
 
         final org.kie.dmn.model.api.DRGElement ref1 = mock(org.kie.dmn.model.api.DRGElement.class);
         final org.kie.dmn.model.api.DRGElement ref2 = mock(org.kie.dmn.model.api.DRGElement.class);
@@ -1748,12 +1749,11 @@ public class DMNMarshallerStandaloneTest {
 
         when(dmnMarshallerImportsHelper.getImportedDRGElements(importDefinitions)).thenReturn(importedDRGElements);
 
-        doNothing().when(marshaller).updateIDsWithAlias(any(), any());
         doReturn(Optional.of(ref1)).when(marshaller).getReference(importedDRGElements, "REF1");
         doReturn(Optional.of(ref2)).when(marshaller).getReference(importedDRGElements, "REF2");
         doReturn(Optional.of(ref3)).when(marshaller).getReference(importedDRGElements, "REF3");
 
-        final List<DRGElement> actual = marshaller.getImportedDrgElementsByShape(dmnShapes, importDefinitions, dmnXml);
+        final List<DRGElement> actual = marshaller.getImportedDrgElementsByShape(dmnShapes, importDefinitions);
 
         assertEquals(ref1, actual.get(0));
         assertEquals(ref2, actual.get(1));
@@ -1871,53 +1871,6 @@ public class DMNMarshallerStandaloneTest {
         assertTrue(actual);
     }
 
-    @Test
-    public void testUpdateIDsWithAlias() {
-
-        final DMNMarshallerStandalone marshaller = getDMNMarshaller();
-        final HashMap<String, String> indexByUri = new HashMap<>();
-        final String namespace1 = "https://kiegroup.org/dmn/_red";
-        final String namespace2 = "https://kiegroup.org/dmn/_blue";
-        final String namespace3 = "https://kiegroup.org/dmn/_yellow";
-        final String missingNamespace = "missing_namespace";
-
-        final String someWrongAlias = "some wrong alias";
-
-        final String include1 = "include1";
-        final String include2 = "include2";
-        final String include3 = "include3";
-
-        final String id1 = "id1";
-        final String id2 = "id2";
-        final String id3 = "id3";
-        final String id4 = "id4";
-
-        indexByUri.put(namespace1, include1);
-        indexByUri.put(namespace2, include2);
-        indexByUri.put(namespace3, include3);
-
-        final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = new ArrayList<>();
-        final DRGElement element1 = createDRGElementWithNamespaceAndId(namespace1, someWrongAlias + ":" + id1);
-        importedDrgElements.add(element1);
-
-        final DRGElement element2 = createDRGElementWithNamespaceAndId(namespace2, someWrongAlias + ":" + id2);
-        importedDrgElements.add(element2);
-
-        final DRGElement element3 = createDRGElementWithNamespaceAndId(namespace3, someWrongAlias + ":" + id3);
-        importedDrgElements.add(element3);
-
-        final DRGElement element4 = createDRGElementWithNamespaceAndId(missingNamespace, id4);
-        importedDrgElements.add(element4);
-
-        marshaller.updateIDsWithAlias(indexByUri, importedDrgElements);
-
-        verify(element1).setId(include1 + ":" + id1);
-        verify(element2).setId(include2 + ":" + id2);
-        verify(element3).setId(include3 + ":" + id3);
-
-        verify(element4, never()).setId(any());
-    }
-
     private org.kie.dmn.model.api.DRGElement createDRGElementWithNamespaceAndId(final String namespace,
                                                                                 final String id) {
 
@@ -1930,36 +1883,6 @@ public class DMNMarshallerStandaloneTest {
         when(drgElement.getId()).thenReturn(id);
 
         return drgElement;
-    }
-
-    @Test
-    public void testChangeAliasForImportedElement() {
-
-        final DMNMarshallerStandalone marshaller = getDMNMarshaller();
-        final org.kie.dmn.model.api.DRGElement drgElement = mock(org.kie.dmn.model.api.DRGElement.class);
-        final String alias = "include1";
-        final String id = "_01234567";
-
-        when(drgElement.getId()).thenReturn("some another alias:" + id);
-
-        marshaller.changeAlias(alias, drgElement);
-
-        verify(drgElement).setId(alias + ":" + id);
-    }
-
-    @Test
-    public void testChangeAliasForLocalElement() {
-
-        final DMNMarshallerStandalone marshaller = getDMNMarshaller();
-        final org.kie.dmn.model.api.DRGElement drgElement = mock(org.kie.dmn.model.api.DRGElement.class);
-        final String alias = "include1";
-        final String id = "_01234567";
-
-        when(drgElement.getId()).thenReturn(id);
-
-        marshaller.changeAlias(alias, drgElement);
-
-        verify(drgElement, never()).setId(any());
     }
 
     @Test
@@ -2176,6 +2099,130 @@ public class DMNMarshallerStandaloneTest {
 
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/imports.dmn"),
                                                this::checkImports);
+    }
+
+    @Test
+    public void testGetDmnElementRefWithNamespace() {
+
+        final Decision drgElement = mock(Decision.class);
+        final View<? extends DMNElement> view = new ViewImpl<>(drgElement, null);
+
+        final Name drgElementName = mock(Name.class);
+        final Name importName = mock(Name.class);
+        final Id id = mock(Id.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Import anImport = mock(org.kie.workbench.common.dmn.api.definition.model.Import.class);
+        final List<org.kie.workbench.common.dmn.api.definition.model.Import> imports = singletonList(anImport);
+        final String includedModelName = "includedModel";
+        final String namespaceName = "include1";
+        final String importNamespace = "://namespace";
+        final Map<String, String> nsContext = new HashMap<>();
+
+        when(importName.getValue()).thenReturn(includedModelName);
+
+        when(anImport.getName()).thenReturn(importName);
+        when(anImport.getNamespace()).thenReturn(importNamespace);
+
+        when(id.getValue()).thenReturn("0000-1111-2222");
+        when(drgElementName.getValue()).thenReturn(includedModelName + ".Decision");
+        when(drgElement.getId()).thenReturn(id);
+        when(drgElement.getName()).thenReturn(drgElementName);
+        when(drgElement.getParent()).thenReturn(definitions);
+
+        nsContext.put(namespaceName, importNamespace);
+        when(definitions.getImport()).thenReturn(imports);
+        when(definitions.getNsContext()).thenReturn(nsContext);
+
+        final String actual = getDmnElementRef(definitions, view).getLocalPart();
+        final String expected = "include1:0000-1111-2222";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDmnElementRefWithNamespaceWhenImportHasAnOddName() {
+
+        final Decision drgElement = mock(Decision.class);
+        final View<? extends DMNElement> view = new ViewImpl<>(drgElement, null);
+
+        final Name drgElementName = mock(Name.class);
+        final Name importName = mock(Name.class);
+        final Id id = mock(Id.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Import anImport = mock(org.kie.workbench.common.dmn.api.definition.model.Import.class);
+        final List<org.kie.workbench.common.dmn.api.definition.model.Import> imports = singletonList(anImport);
+        final String includedModelName = "d.i.v.i.";
+        final String namespaceName = "include1";
+        final String importNamespace = "://namespace";
+        final Map<String, String> nsContext = new HashMap<>();
+
+        when(importName.getValue()).thenReturn(includedModelName);
+
+        when(anImport.getName()).thenReturn(importName);
+        when(anImport.getNamespace()).thenReturn(importNamespace);
+
+        when(id.getValue()).thenReturn("0000-1111-2222");
+        when(drgElementName.getValue()).thenReturn(includedModelName + ".Decision");
+        when(drgElement.getId()).thenReturn(id);
+        when(drgElement.getName()).thenReturn(drgElementName);
+        when(drgElement.getParent()).thenReturn(definitions);
+
+        nsContext.put(namespaceName, importNamespace);
+        when(definitions.getImport()).thenReturn(imports);
+        when(definitions.getNsContext()).thenReturn(nsContext);
+
+        final String actual = getDmnElementRef(definitions, view).getLocalPart();
+        final String expected = "include1:0000-1111-2222";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDmnElementRefWithFakeNamespace() {
+
+        final Decision drgElement = mock(Decision.class);
+        final View<? extends DMNElement> view = new ViewImpl<>(drgElement, null);
+
+        final Name drgElementName = mock(Name.class);
+        final Id id = mock(Id.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+
+        when(id.getValue()).thenReturn("0000-1111-2222");
+        when(drgElementName.getValue()).thenReturn("fakeNamespace.Decision");
+        when(drgElement.getId()).thenReturn(id);
+        when(drgElement.getName()).thenReturn(drgElementName);
+        when(drgElement.getParent()).thenReturn(definitions);
+
+        when(definitions.getImport()).thenReturn(emptyList());
+
+        final String actual = getDmnElementRef(definitions, view).getLocalPart();
+        final String expected = "0000-1111-2222";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetDmnElementRefWithoutNamespace() {
+
+        final Decision drgElement = mock(Decision.class);
+        final View<? extends DMNElement> view = new ViewImpl<>(drgElement, null);
+
+        final Name drgElementName = mock(Name.class);
+        final Id id = mock(Id.class);
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+
+        when(id.getValue()).thenReturn("0000-1111-2222");
+        when(drgElementName.getValue()).thenReturn("Decision");
+        when(drgElement.getId()).thenReturn(id);
+        when(drgElement.getName()).thenReturn(drgElementName);
+        when(drgElement.getParent()).thenReturn(definitions);
+
+        when(definitions.getImport()).thenReturn(emptyList());
+
+        final String actual = getDmnElementRef(definitions, view).getLocalPart();
+        final String expected = "0000-1111-2222";
+
+        assertEquals(expected, actual);
     }
 
     @SuppressWarnings("unchecked")

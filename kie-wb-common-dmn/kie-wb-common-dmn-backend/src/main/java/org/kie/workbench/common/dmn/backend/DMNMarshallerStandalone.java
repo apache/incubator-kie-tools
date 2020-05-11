@@ -68,6 +68,7 @@ import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
@@ -81,7 +82,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandalone;
-import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperStandaloneImpl;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.AssociationConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.BusinessKnowledgeModelConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
@@ -116,7 +116,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static java.util.Collections.emptyList;
@@ -214,7 +213,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
         // Map external DRGElements
         final List<DMNShape> dmnShapes = dmnDDDiagram.map(this::getUniqueDMNShapes).orElse(emptyList());
-        final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = getImportedDrgElementsByShape(dmnShapes, importDefinitions, dmnXml);
+        final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = getImportedDrgElementsByShape(dmnShapes, importDefinitions);
 
         // Group DRGElements
         final List<org.kie.dmn.model.api.DRGElement> drgElements = new ArrayList<>();
@@ -434,40 +433,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
             return;
         }
 
-        drgElements.removeIf(element -> dmnShapes.stream().noneMatch(s -> Objects.equals(s.getDmnElementRef().getLocalPart(), element.getId())));
-    }
-
-    void updateIDsWithAlias(final HashMap<String, String> indexByUri,
-                            final List<org.kie.dmn.model.api.DRGElement> importedDrgElements) {
-
-        if (importedDrgElements.isEmpty()) {
-            return;
-        }
-
-        final QName namespace = DMNMarshallerImportsHelperStandaloneImpl.NAMESPACE;
-
-        for (org.kie.dmn.model.api.DRGElement element : importedDrgElements) {
-            final String namespaceAttribute = element.getAdditionalAttributes().getOrDefault(namespace, "");
-            if (!StringUtils.isEmpty(namespaceAttribute) && indexByUri.containsKey(namespaceAttribute)) {
-                final String alias = indexByUri.get(namespaceAttribute);
-                changeAlias(alias, element);
-            }
-        }
-    }
-
-    HashMap<String, String> getIndexByUri(final org.kie.dmn.model.api.Definitions dmnXml) {
-
-        final HashMap<String, String> indexByUri = new HashMap<>();
-        dmnXml.getNsContext().entrySet().forEach(e -> indexByUri.put(e.getValue(), e.getKey()));
-        return indexByUri;
-    }
-
-    void changeAlias(final String alias,
-                     final org.kie.dmn.model.api.DRGElement drgElement) {
-        if (drgElement.getId().contains(":")) {
-            final String id = drgElement.getId().split(":")[1];
-            drgElement.setId(alias + ":" + id);
-        }
+        drgElements.removeIf(element -> dmnShapes.stream().noneMatch(s -> s.getDmnElementRef().getLocalPart().endsWith(element.getId())));
     }
 
     private Node getRequiredNode(final Map<String, Entry<org.kie.dmn.model.api.DRGElement, Node>> elems,
@@ -488,14 +454,9 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
     }
 
     List<org.kie.dmn.model.api.DRGElement> getImportedDrgElementsByShape(final List<DMNShape> dmnShapes,
-                                                                         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions,
-                                                                         final org.kie.dmn.model.api.Definitions dmnXml) {
+                                                                         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
 
         final List<org.kie.dmn.model.api.DRGElement> importedDRGElements = dmnMarshallerImportsHelper.getImportedDRGElements(importDefinitions);
-
-        // Update IDs with the alias used in this file for the respective imports
-        final HashMap<String, String> indexByUri = getIndexByUri(dmnXml);
-        updateIDsWithAlias(indexByUri, importedDRGElements);
 
         return dmnShapes
                 .stream()
@@ -510,7 +471,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     Optional<org.kie.dmn.model.api.DRGElement> getReference(final List<org.kie.dmn.model.api.DRGElement> importedDRGElements,
                                                             final String dmnElementRef) {
-        return importedDRGElements.stream().filter(drgElement -> dmnElementRef.equals(drgElement.getId())).findFirst();
+        return importedDRGElements.stream().filter(drgElement -> dmnElementRef.endsWith(drgElement.getId())).findFirst();
     }
 
     String getDmnElementRef(final DMNShape dmnShape) {
@@ -818,13 +779,13 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                                   stunnerToDMN(node,
                                                componentWidthsConsumer));
                     }
-                    dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt((View<? extends DMNElement>) view));
+                    dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt(definitionsStunnerPojo, (View<? extends DMNElement>) view));
                 } else if (view.getDefinition() instanceof TextAnnotation) {
                     final TextAnnotation textAnnotation = (TextAnnotation) view.getDefinition();
                     textAnnotations.put(textAnnotation.getId().getValue(),
                                         textAnnotationConverter.dmnFromNode((Node<View<TextAnnotation>, ?>) node,
                                                                             componentWidthsConsumer));
-                    dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt((View<? extends DMNElement>) view));
+                    dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt(definitionsStunnerPojo, (View<? extends DMNElement>) view));
 
                     final List<org.kie.dmn.model.api.Association> associations = AssociationConverter.dmnFromWB((Node<View<TextAnnotation>, ?>) node);
                     definitions.getArtifact().addAll(associations);
@@ -1017,7 +978,7 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                                  final BackgroundSet bgset,
                                  final Consumer<FontSet> fontSetSetter,
                                  final DoubleConsumer decisionServiceDividerLineYSetter) {
-        final Optional<DMNShape> drgShapeOpt = drgShapeStream.filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id.getValue())).findFirst();
+        final Optional<DMNShape> drgShapeOpt = drgShapeStream.filter(shape -> shape.getDmnElementRef().getLocalPart().endsWith(id.getValue())).findFirst();
         if (!drgShapeOpt.isPresent()) {
             return;
         }
@@ -1075,10 +1036,12 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
     }
 
     @SuppressWarnings("unchecked")
-    private static DMNShape stunnerToDDExt(final View<? extends DMNElement> v) {
+    private static DMNShape stunnerToDDExt(final Definitions definitions,
+                                           final View<? extends DMNElement> v) {
+
         final DMNShape result = new org.kie.dmn.model.v1_2.dmndi.DMNShape();
         result.setId("dmnshape-" + v.getDefinition().getId().getValue());
-        result.setDmnElementRef(new QName(v.getDefinition().getId().getValue()));
+        result.setDmnElementRef(getDmnElementRef(definitions, v));
         final Bounds bounds = new org.kie.dmn.model.v1_2.dmndi.Bounds();
         result.setBounds(bounds);
         bounds.setX(xOfBound(upperLeftBound(v)));
@@ -1128,6 +1091,53 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
             result.setDMNDecisionServiceDividerLine(dl);
         }
         return result;
+    }
+
+    static QName getDmnElementRef(final Definitions definitions,
+                                  final View<? extends DMNElement> v) {
+
+        final DMNElement dmnElement = v.getDefinition();
+        final String dmnElementId = dmnElement.getId().getValue();
+
+        return getImportPrefix(definitions, dmnElement)
+                .map(prefix -> new QName(prefix + ":" + dmnElementId))
+                .orElse(new QName(dmnElementId));
+    }
+
+    private static Optional<String> getImportPrefix(final Definitions definitions,
+                                                    final DMNElement dmnElement) {
+
+        if (!(dmnElement instanceof NamedElement)) {
+            return Optional.empty();
+        }
+
+        final NamedElement namedElement = (NamedElement) dmnElement;
+        final Optional<String> name = Optional.ofNullable(namedElement.getName().getValue());
+
+        return definitions
+                .getImport()
+                .stream()
+                .filter(anImport -> {
+                    final String importName = anImport.getName().getValue();
+                    return name.map(n -> n.startsWith(importName + ".")).orElse(false);
+                })
+                .map(anImport -> {
+                    final String importNamespace = anImport.getNamespace();
+                    return getNsContextsByNamespace(definitions, importNamespace);
+                })
+                .findFirst();
+    }
+
+    private static String getNsContextsByNamespace(final Definitions definitions,
+                                                   final String namespace) {
+        return definitions
+                .getNsContext()
+                .entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), namespace))
+                .map(Entry::getKey)
+                .findFirst()
+                .orElse("");
     }
 
     private static void applyFontStyle(final FontSet fontSet,

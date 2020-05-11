@@ -16,37 +16,53 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model;
 
-import java.util.Map;
+import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 
 public class HrefBuilder {
 
     public static String getHref(final DRGElement drgElement) {
-        if (!drgElement.getId().getValue().contains(":")) {
-            return "#" + drgElement.getId().getValue();
-        }
 
-        // If it have ":" it is an imported element
-        final DMNModelInstrumentedBase parent = drgElement.getParent();
-        final Definitions definitions;
-        if (parent instanceof DMNDiagram) {
-            final DMNDiagram diagram = (DMNDiagram) parent;
-            definitions = diagram.getDefinitions();
-        } else {
-            definitions = (Definitions) parent;
-        }
+        final String drgElementId = drgElement.getId().getValue();
 
-        final String[] split = drgElement.getId().getValue().split(":");
-        final String namespace = getNamespaceForImport(split[0], definitions.getNsContext());
-        return namespace + "#" + split[1];
+        return getNamespace(drgElement)
+                .map(namespace -> namespace + "#" + drgElementId)
+                .orElse("#" + drgElementId);
     }
 
-    static String getNamespaceForImport(final String importName,
-                                        final Map<String, String> nsContext) {
-        return nsContext.get(importName);
+    private static Optional<String> getNamespace(final DRGElement drgElement) {
+        final Optional<String> name = Optional.ofNullable(drgElement.getName().getValue());
+        return getDefinitions(drgElement)
+                .map(definitions -> definitions
+                        .getImport()
+                        .stream()
+                        .filter(anImport -> {
+                            final String importName = anImport.getName().getValue();
+                            return name.map(n -> n.startsWith(importName + ".")).orElse(false);
+                        })
+                        .findFirst()
+                        .map(Import::getNamespace)
+                        .orElse(null));
+    }
+
+    private static Optional<Definitions> getDefinitions(final DRGElement drgElement) {
+
+        final DMNModelInstrumentedBase parent = drgElement.getParent();
+
+        if (parent instanceof DMNDiagram) {
+            final DMNDiagram diagram = (DMNDiagram) parent;
+            return Optional.ofNullable(diagram.getDefinitions());
+        }
+
+        if (parent instanceof Definitions) {
+            return Optional.of((Definitions) parent);
+        }
+
+        return Optional.empty();
     }
 }

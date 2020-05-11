@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.docks.navigator.included.components;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
@@ -34,11 +32,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
-import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.client.DMNShapeSet;
-import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.NamespaceHandler;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -87,8 +82,6 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
     private final ClientTranslationService clientTranslationService;
 
-    private final DMNGraphUtils dmnGraphUtils;
-
     @Inject
     public DecisionComponentsItemView(final HTMLImageElement icon,
                                       final @Named("h5") HTMLHeadingElement name,
@@ -99,8 +92,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
                                       final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent,
                                       final HTMLDivElement decisionComponentItem,
                                       final Event<NotificationEvent> notificationEvent,
-                                      final ClientTranslationService clientTranslationService,
-                                      final DMNGraphUtils dmnGraphUtils) {
+                                      final ClientTranslationService clientTranslationService) {
         this.icon = icon;
         this.name = name;
         this.file = file;
@@ -111,7 +103,6 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
         this.decisionComponentItem = decisionComponentItem;
         this.notificationEvent = notificationEvent;
         this.clientTranslationService = clientTranslationService;
-        this.dmnGraphUtils = dmnGraphUtils;
     }
 
     @Override
@@ -148,24 +139,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
     Callback makeDragProxyCallbackImpl(final DRGElement drgElement,
                                        final ShapeFactory factory) {
-
-        final Map<String, String> nsContext = getNsContext();
-
-        final String alias = NamespaceHandler.addIncludedNamespace(nsContext, drgElement.getDefaultNamespace());
-
-        final String currentId = drgElement.getId().getValue();
-        final String id = currentId.split(":")[1];
-        drgElement.getId().setValue(alias + ":" + id);
-
         return new DragProxyCallbackImpl(drgElement, factory, sessionManager, notificationEvent, clientTranslationService);
-    }
-
-    Map<String, String> getNsContext() {
-
-        final Optional<Diagram> diagram = Optional.of(dmnGraphUtils.getDiagram());
-        return diagram.map(dmnGraphUtils::getDefinitions)
-                .map(DMNModelInstrumentedBase::getNsContext)
-                .orElseThrow(UnsupportedOperationException::new);
     }
 
     Graph<?, Node> getGraph() {
@@ -226,24 +200,17 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
         private boolean isDuplicatedNode(final DRGElement drgElement) {
 
-            final Optional<Map.Entry<String, String>> existingAlias = NamespaceHandler.getAlias(getNsContext(), drgElement.getDefaultNamespace());
+            final String id = drgElement.getId().getValue();
+            final Graph<?, Node> graph = getGraph();
 
-            if (existingAlias.isPresent()) {
-
-                final String alias = existingAlias.get().getKey();
-                final String id = alias + ":" + drgElement.getId().getValue().split(":")[1];
-                final Graph<?, Node> graph = getGraph();
-
-                return StreamSupport
-                        .stream(graph.nodes().spliterator(), false)
-                        .filter(node -> node.getContent() instanceof View)
-                        .map(node -> (View) node.getContent())
-                        .filter(view -> view.getDefinition() instanceof DMNElement)
-                        .map(Definition::getDefinition)
-                        .anyMatch(d -> ((DMNElement) d).getId().getValue().equals(id));
-            }
-
-            return false;
+            return StreamSupport
+                    .stream(graph.nodes().spliterator(), false)
+                    .filter(node -> node.getContent() instanceof View)
+                    .map(node -> (View) node.getContent())
+                    .filter(view -> view.getDefinition() instanceof DMNElement)
+                    .map(Definition::getDefinition)
+                    .filter(d -> ((DMNElement) d).getId().getValue().equals(id))
+                    .count() >= 1;
         }
 
         private void fireDuplicatedNodeWarningMessage() {
