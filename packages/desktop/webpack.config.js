@@ -70,7 +70,7 @@ module.exports = [
     ...commonConfig,
     target: "electron-main",
     entry: {
-      index: "./src/electron/index.ts"
+      index: "./src/backend/index.ts"
     },
     plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {

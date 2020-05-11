@@ -42,6 +42,7 @@ export class FileOperations {
 
       dialog
         .showSaveDialog(this.window, {
+          defaultPath: "model." + data.file.fileType,
           title: "Save file",
           filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
         })
