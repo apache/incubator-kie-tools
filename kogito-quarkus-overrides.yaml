@@ -31,6 +31,7 @@ modules:
   install:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.logging
   - name: org.kie.kogito.graalvm.installer
     version: "19.3.1-java-11"
   - name: org.kie.kogito.s2i.core

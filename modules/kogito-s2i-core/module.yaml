@@ -29,7 +29,6 @@ envs:
 modules:
   install:
     - name: org.kie.kogito.persistence
-    - name: org.kie.kogito.logging
 
 run:
   cmd:

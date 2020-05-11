@@ -13,6 +13,8 @@ source $BATS_TEST_DIRNAME/../../added/s2i-core
 setup() {
     export HOME=$KOGITO_HOME
     mkdir -p target
+    function log_error() { echo "${1}"; }
+    function log_info() { echo "${1}"; }
 }
 
 teardown() {

@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+export KOGITO_HOME=/tmp/kogito
+mkdir -p ${KOGITO_HOME}/launch
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
+
 # imports
 source $BATS_TEST_DIRNAME/../../added/memory-limit.sh
 
@@ -24,17 +28,19 @@ source $BATS_TEST_DIRNAME/../../added/memory-limit.sh
 @test "test a small memory limit value" {
     export LIMIT_MEMORY="1073741600"
     local expected="Provided memory (1073741600) limit is too small"
-    local result=$(configure)
+    run configure
+    local result="${lines[1]}"
     echo "Expected: ${expected}"
-    echo "Result: ${result}"
-    [[ ${result} == *"${expected}"* ]]
+    echo "Result is ${result}"
+    [[ "${result}" == *"${expected}"* ]]
 }
 
 @test "test a invalid memory limit value" {
+    function log_warning() { echo "WARN ${1}"; }
     export LIMIT_MEMORY="1024m"
-    local expected="Provided memory (1024m) limit is not valid, native build will use all available memory"
-    local result=$(configure)
+    local expected="WARN Provided memory (1024m) limit is not valid, native build will use all available memory"
+    run configure
     echo "Expected: ${expected}"
-    echo "Result: ${result}"
-    [ "${expected}" = "${result}" ]
+    echo "Result: ${output}"
+    [ "${expected}" = "${output}" ]
 }

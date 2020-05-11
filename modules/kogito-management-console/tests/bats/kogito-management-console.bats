@@ -3,6 +3,7 @@
 export KOGITO_HOME=/tmp/kogito
 export HOME=$KOGITO_HOME
 mkdir -p ${KOGITO_HOME}/launch
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
 
 # imports
 load $BATS_TEST_DIRNAME/../../added/launch/kogito-management-console.sh

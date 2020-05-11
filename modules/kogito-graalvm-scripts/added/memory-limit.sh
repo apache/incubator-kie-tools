@@ -11,6 +11,9 @@
 # configure the GraalVM build memory usage limit based on the LIMIT_MEMORY env
 # its value must be in binary bytes.
 
+#import
+source ${KOGITO_HOME}/launch/logging.sh
+
 function configure() {
     # does not accepts
     if [[  "${LIMIT_MEMORY}" =~ ^[-+]?[0-9]+{9}$ ]]; then
@@ -18,7 +21,7 @@ function configure() {
         local limit=1073741824
         # only 80% of the actual limit will be used for the JVM
         local jvm_limit_memory=$(($LIMIT_MEMORY*80/100))
-        echo "Limit memory for this container is set to ${LIMIT_MEMORY}. Allocated memory for JVM will be set to ${jvm_limit_memory}."
+        log_info "Limit memory for this container is set to ${LIMIT_MEMORY}. Allocated memory for JVM will be set to ${jvm_limit_memory}."
         if [ "${jvm_limit_memory}" -lt "${limit}" ]; then
             limit=$(echo "scale=1; ${limit} / (80/100)" | bc -l)
             printf "Provided memory (${LIMIT_MEMORY}) limit is too small (should be greater then %.0f bytes), native build will use all available memory.\n" $limit
@@ -26,7 +29,7 @@ function configure() {
             export KOGITO_OPTS="${KOGITO_OPTS} -Dnative-image.xmx=${jvm_limit_memory}"
         fi
     else
-        echo "Provided memory (${LIMIT_MEMORY}) limit is not valid, native build will use all available memory"
+        log_warning "Provided memory (${LIMIT_MEMORY}) limit is not valid, native build will use all available memory"
     fi
 }
 

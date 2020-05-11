@@ -1,6 +1,9 @@
 #!/usr/bin/env bats
 
 export TEST=true
+export KOGITO_HOME=/tmp/kogito
+mkdir -p ${KOGITO_HOME}/launch
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
 
 # import
 load $BATS_TEST_DIRNAME/../../added/kogito-infinispan-properties.sh

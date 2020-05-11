@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+#import
+source ${KOGITO_HOME}/launch/logging.sh
+
 function prepareEnv() {
     # keep it on alphabetical order
     unset INFINISPAN_AUTHREALM
@@ -19,7 +22,7 @@ function configure_infinispan_props() {
     local infinispan_props=""
 
     if [[ "${INFINISPAN_USEAUTH}" == "true" ]] && [[ -z "${INFINISPAN_USERNAME}"  || -z "${INFINISPAN_PASSWORD}" ]]; then
-        echo "[ERROR] Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
+        log_error "Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
         exit 1
     fi
 

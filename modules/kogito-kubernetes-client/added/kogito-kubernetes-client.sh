@@ -34,7 +34,7 @@ function list_or_get_k8s_resource() {
             -H "Authorization: Bearer $token" \
             -H 'Accept: application/json' \
             ${KUBERNETES_SERVICE_PROTOCOL:-https}://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/${api}/v1/namespaces/${namespace}/${resource}?labelSelector=${labels}\&fieldSelector=${fields})
-        echo ${response}
+        log_info ${response}
     else
         log_info "--> [k8s-client] Not running on Kubernetes, skipping..."
     fi

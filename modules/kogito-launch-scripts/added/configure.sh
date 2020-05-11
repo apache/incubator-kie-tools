@@ -46,6 +46,9 @@
 # type entries, which should only be processed once.
 #
 
+#import
+source ${KOGITO_HOME}/launch/logging.sh
+
 # clear functions from any previous module
 function prepareModule() {
   unset -f preConfigure
@@ -96,7 +99,7 @@ function processEnvFiles() {
               executeModules configureEnv
               executeModules postConfigureEnv
             else
-              echo "Warning - Could not process environment for $prop_file.  File does not exist."
+              log_warning "Could not process environment for $prop_file.  File does not exist."
             fi
           )
         done

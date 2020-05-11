@@ -4,10 +4,15 @@ export KOGITO_HOME=/tmp/kogito
 export HOME=$KOGITO_HOME
 mkdir -p ${KOGITO_HOME}/launch
 cp $BATS_TEST_DIRNAME/../../../kogito-infinispan-properties/added/kogito-infinispan-properties.sh ${KOGITO_HOME}/launch/
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
 
 # imports
 load ${KOGITO_HOME}/launch/kogito-infinispan-properties.sh
 load $BATS_TEST_DIRNAME/../../added/launch/kogito-data-index.sh
+
+function setup(){
+  function log_error() { echo "ERROR ${1}"; }
+}
 
 teardown() {
     rm -rf ${KOGITO_HOME}
@@ -94,7 +99,7 @@ function clear_vars() {
 
     run configure_infinispan_props
 
-    expected="[ERROR] Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
+    expected="ERROR Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
     echo "Result is ${output} and expected is ${expected}"
     echo "Expected status is 1, outcome status is ${status}"
     [ "$status" -eq 1 ]

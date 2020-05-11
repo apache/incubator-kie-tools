@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+#import
+source ${KOGITO_HOME}/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
     SHOW_JVM_SETTINGS="-XshowSettings:properties"
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
-    echo "JVM settings debug is enabled."
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "JVM settings debug is enabled."
 fi
 
 

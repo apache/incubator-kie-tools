@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # imports
+source ${KOGITO_HOME}/launch/logging.sh
 source $KOGITO_HOME/launch/kogito-persistence.sh
 
 S2I_DESTINATION_DIR="${S2I_DESTINATION_DIR:-/tmp}"
@@ -19,7 +20,7 @@ fi
 
 function manage_incremental_build() {
     if [ -d /tmp/artifacts ]; then
-        echo "Expanding artifacts from incremental build..."
+        log_info "Expanding artifacts from incremental build..."
         ( cd /tmp/artifacts && tar cf - . ) | ( cd ${HOME} && tar xvf - )
         rm -rf /tmp/artifacts
     fi
@@ -28,19 +29,19 @@ function manage_incremental_build() {
 
 function assemble_runtime() {
     if [ -d "$KOGITO_HOME/bin" ]; then
-        echo "---> Application binaries found and ready to use"
+        log_info "---> Application binaries found and ready to use"
 
-        echo "---> [s2i-core] Adding custom labels..."
+        log_info "---> [s2i-core] Adding custom labels..."
         if [ -e "${KOGITO_HOME}/bin/image_metadata.json" ]; then
             mkdir -pv /tmp/.s2i
             mkdir -pv /tmp/src/.s2i/
             cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
             cp -v $KOGITO_HOME/bin/image_metadata.json /tmp/src/.s2i/image_metadata.json
         else
-            echo "-----> Failed to copy metadata file, $KOGITO_HOME/bin/image_metadata.json does not exist"
+            log_info "-----> Failed to copy metadata file, $KOGITO_HOME/bin/image_metadata.json does not exist"
         fi
     else
-        echo "---> Application binaries NOT found, failing build..."
+        log_error "---> Application binaries NOT found, failing build..."
         exit 1
     fi
     # handle persistence files
@@ -50,30 +51,30 @@ function assemble_runtime() {
 
 # copy already built artifacts to the runtime image.
 function runtime_assemble() {
-    echo "-----> [s2i-core] Running runtime assemble script"
+    log_info "-----> [s2i-core] Running runtime assemble script"
     cd ${S2I_DESTINATION_DIR}/src
     if [ "${BINARY_BUILD^^}" == "TRUE" ] || ls | grep -E '*.jar|classes|maven*|*-runner|target' 1> /dev/null 2>&1; then
-        echo "-----> Binary build enabled, artifacts were uploaded directly to the image build"
+        log_info "-----> Binary build enabled, artifacts were uploaded directly to the image build"
         if ls target 1> /dev/null 2>&1; then
-            echo "-----> Entire target dir uploaded"
+            log_info "-----> Entire target dir uploaded"
             cd "target"    
         fi
 
         local result=$(file -b --mime-type *-runner | grep x-executable)
         if [ "$result" == "application/x-executable" ]; then
-            echo "-----> Found binary file, native build."
+            log_info "-----> Found binary file, native build."
             NATIVE="TRUE"
         else
             if ls | grep -E '*-runner.jar' 1> /dev/null 2>&1;then
-                echo "-----> Found jar file, not native build."
+                log_info "-----> Found jar file, not native build."
                 NATIVE="FALSE"
             fi
         fi
-        echo "-----> Cleaning up unneeded jar files"
+        log_info "-----> Cleaning up unneeded jar files"
         rm -rfv *-tests.jar
         rm -rfv *-sources.jar
 
-        echo "-----> Copying uploaded files to ${KOGITO_HOME}"
+        log_info "-----> Copying uploaded files to ${KOGITO_HOME}"
         artifactDir="."
         ARTIFACT_DIR=$artifactDir
         handle_image_metadata_json
@@ -83,13 +84,13 @@ function runtime_assemble() {
         cp -Rv --parents ./* ${KOGITO_HOME}/
     fi
     assemble_runtime
-    echo "-----> Cleaning up s2i directory"
+    log_info "-----> Cleaning up s2i directory"
     rm -rfv ${S2I_DESTINATION_DIR}/src/*
 }
 
 
 function handle_image_metadata_json() {
-    echo "---> [s2i-core] Copy image metadata file..."
+    log_info "---> [s2i-core] Copy image metadata file..."
     if [ -e "/tmp/src/${artifactDir}/image_metadata.json" ]; then
         mkdir /tmp/.s2i
         mkdir -p /tmp/src/.s2i/
@@ -97,7 +98,7 @@ function handle_image_metadata_json() {
         cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/src/.s2i
         cp -v /tmp/src/$artifactDir/image_metadata.json $KOGITO_HOME/bin
     else
-        echo "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."
+        log_info "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."
     fi
 }
 
@@ -116,14 +117,14 @@ function build_kogito_app() {
 
     if [ -f "pom.xml" ]; then
 
-        echo "---> Building application from source..."
+        log_info "---> Building application from source..."
         $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
             -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
             -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 
     else
 
-        echo "---> Generating project structure..."
+        log_info "---> Generating project structure..."
 
         $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
         -DarchetypeVersion=$KOGITO_VERSION -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
@@ -132,9 +133,9 @@ function build_kogito_app() {
         for item in *
         do
             if [ -d "${item}" ] && [ "${item}" == "project" ]; then
-                echo "--> Skipping generated project ..."
+                log_info "--> Skipping generated project ..."
             else
-                echo "--> Coping resource "${item}""
+                log_info "--> Coping resource "${item}""
                 cp -Rv "${item}" project/src/main/resources
             fi
         done
@@ -147,7 +148,7 @@ function build_kogito_app() {
             -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
     fi
 
-    echo "---> Build finished, installing application from path $(pwd)"
+    log_info "---> Build finished, installing application from path $(pwd)"
 }
 
 function copy_kogito_app() {
@@ -155,23 +156,23 @@ function copy_kogito_app() {
     if [ "${NATIVE^^}" == "FALSE" ]; then
         # handle quarkus java build
         if ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
-            echo "---> Installing jar file"
+            log_info "---> Installing jar file"
             cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
             if [ -d "${artifactDir}/lib" ]; then
-                echo "---> Copying application libraries"
+                log_info "---> Copying application libraries"
                 cp -r $artifactDir/lib/ $KOGITO_HOME/bin
             fi
         fi
 
     elif ls $artifactDir/*-runner 1> /dev/null 2>&1; then
         # quarkus native builds
-        echo "---> Installing application binaries"
+        log_info "---> Installing application binaries"
         cp -v $artifactDir/*-runner $KOGITO_HOME/bin/
         chmod +x $KOGITO_HOME/bin/*-runner
 
     else
         # handle normal java builds
-        echo "---> Installing application binaries"
+        log_info "---> Installing application binaries"
         cp -v $artifactDir/*.jar $KOGITO_HOME/bin
     fi
 }

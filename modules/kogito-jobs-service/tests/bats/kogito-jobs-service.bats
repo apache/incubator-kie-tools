@@ -4,7 +4,7 @@ export KOGITO_HOME=/tmp/kogito
 export HOME=$KOGITO_HOME
 mkdir -p ${KOGITO_HOME}/launch
 cp $BATS_TEST_DIRNAME/../../../kogito-infinispan-properties/added/kogito-infinispan-properties.sh ${KOGITO_HOME}/launch/
-
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
 
 # imports
 load $BATS_TEST_DIRNAME/../../added/launch/kogito-jobs-service.sh
@@ -80,4 +80,11 @@ teardown() {
 
     echo "Result is ${result} and expected is ${expected}"
     [ "${result}" = "${expected}" ]
+}
+
+@test "enable event without set kafka bootstrap server" {
+    export ENABLE_EVENTS="true"
+    run configure_jobs_service
+    echo "status is ${status}"
+    [ "$status" -eq 1 ]
 }
