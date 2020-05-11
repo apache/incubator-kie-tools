@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/core-api",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
