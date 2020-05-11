@@ -56,4 +56,4 @@ jobs:
 
       - name: Check Publish
         run: |
-          [[ "${{ steps.update_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.update_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]]
+          [ "${{ steps.publish_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
