@@ -25,16 +25,22 @@ export const editors = {
   bpmn: {
     id: "BPMNDiagramEditor",
     name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
+  },
+  scesim: {
+    id: "ScenarioSimulationEditor",
+    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
   }
 };
 
 export class GwtEditorRoutes implements Routes {
   private readonly bpmnPath: string;
   private readonly dmnPath: string;
+  private readonly scesimPath: string;
 
-  constructor(args: { bpmnPath: string; dmnPath: string }) {
+  constructor(args: { bpmnPath: string; dmnPath: string; scesimPath: string }) {
     this.bpmnPath = args.bpmnPath;
     this.dmnPath = args.dmnPath;
+    this.scesimPath = args.scesimPath;
   }
 
   public getRoutes(router: Router) {
@@ -85,11 +91,38 @@ export class GwtEditorRoutes implements Routes {
         }
       ]
     };
+    const scesimLanguageData: GwtLanguageData = {
+      type: "gwt",
+      editorId: editors.scesim.id,
+      gwtModuleName: editors.scesim.name,
+      resources: [
+        {
+          type: "css",
+          paths: [router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/css/patternfly.min.css`)]
+        },
+        {
+          type: "js",
+          paths: [
+            router.getRelativePathTo(`${this.scesimPath}/model/Jsonix-all.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DC.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DI.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DMNDI12.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/DMN12.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/KIE.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/MainJs.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/SCESIM.js`),
+            router.getRelativePathTo(`${this.scesimPath}/model/SCESIMMainJs.js`),
+            router.getRelativePathTo(`${this.scesimPath}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`)
+          ]
+        }
+      ]
+    };
 
     return new Map<string, GwtLanguageData>([
       ["dmn", dmnLanguageData],
       ["bpmn", bpmnLanguageData],
-      ["bpmn2", bpmnLanguageData]
+      ["bpmn2", bpmnLanguageData],
+      ["scesim", scesimLanguageData]
     ]);
   }
 }

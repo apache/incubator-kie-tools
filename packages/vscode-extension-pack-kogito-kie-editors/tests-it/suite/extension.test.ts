@@ -99,4 +99,13 @@ suite("vscode extension :: integration tests", () => {
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
   });
+
+  test("open scesim editor", async () => {
+      const scesimFile = `${testWorkspace}/demo.scesim`;
+      await openForTheFirstTime(scesimFile);
+      await delay(1000);
+
+      assert.strictEqual(vscode.window.activeTextEditor, undefined);
+      assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
+    });
 });

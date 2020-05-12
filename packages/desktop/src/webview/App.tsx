@@ -55,7 +55,8 @@ export function App(props: Props) {
       new DesktopRouter(
         new GwtEditorRoutes({
           bpmnPath: "editors/bpmn",
-          dmnPath: "editors/dmn"
+          dmnPath: "editors/dmn",
+          scesimPath: "editors/scesim"
         })
       ),
     []

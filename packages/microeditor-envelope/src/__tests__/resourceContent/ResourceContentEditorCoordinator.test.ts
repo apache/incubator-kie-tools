@@ -43,10 +43,10 @@ const handler = new EnvelopeBusInnerMessageHandler(
     receive_resourceContentList: (resourcesList: ResourcesList) => {
       // do nothing
     },
-    receive_editorUndo(edits: KogitoEdit[]) {
+    receive_editorUndo() {
       // do nothing
     },
-    receive_editorRedo(edits: KogitoEdit[]) {
+    receive_editorRedo() {
       // do nothing
     },
     receive_previewRequest() {

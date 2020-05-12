@@ -64,11 +64,11 @@ beforeEach(() => {
       receive_ready() {
         receivedMessages.push("ready");
       },
-      notify_editorUndo(edits: ReadonlyArray<KogitoEdit>) {
-        receivedMessages.push("undo_" + edits.length);
+      notify_editorUndo() {
+        receivedMessages.push("undo");
       },
-      notify_editorRedo(edits: ReadonlyArray<KogitoEdit>) {
-        receivedMessages.push("redo_" + edits.length);
+      notify_editorRedo() {
+        receivedMessages.push("redo");
       },
       receive_newEdit(edit: KogitoEdit) {
         receivedMessages.push("receiveNewEdit_" + edit.id);
