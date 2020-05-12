@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedViewer EmbeddedViewer::defaults 1`] = `
+<body>
+  <div>
+    <iframe
+      data-envelope-channel="ONLINE"
+      id="kogito-iframe"
+      src="envelope/envelope.html"
+      style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+      title="Kogito editor"
+    />
+  </div>
+</body>
+`;
