@@ -36,9 +36,9 @@ describe("EmbeddedEditor",
         const channelType: ChannelType = ChannelType.ONLINE;
         const editorRef: RefObject<EmbeddedEditorRef> = {
             current: {
-                requestContent: () => { },
-                requestPreview: () => { },
-                setContent: (content: string) => { }
+                requestContent: () => "",
+                requestPreview: () => "",
+                setContent: (content: string) => null
             }
         };
 

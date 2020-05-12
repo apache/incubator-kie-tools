@@ -25,7 +25,7 @@ describe("EmbeddedEditorRouter",
             {
                 type: EditorType.DMN
             });
-        const routes: Routes = { getRoutes: (router: Router) => languages };
+        const routes: Routes = { getRoutes: (r: Router) => languages };
 
         const router: EmbeddedEditorRouter = new EmbeddedEditorRouter(routes);
 

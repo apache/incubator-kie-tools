@@ -16,7 +16,7 @@
 import { ChannelType } from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 
-var channelType: ChannelType = ChannelType.DESKTOP;
+let channelType: ChannelType = ChannelType.DESKTOP;
 
 jest.mock("@kogito-tooling/microeditor-envelope");
 const mockMicroEditorEnvelope = MicroEditorEnvelope as jest.Mocked<typeof MicroEditorEnvelope>;
@@ -35,7 +35,7 @@ Object.defineProperty(global, "frameElement",
     });
 
 //Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup. 
-const module = require("../../envelope/envelope");
+import module = require("../../envelope/envelope");
 
 describe("MicroEditorEnvelope.init",
     () => {

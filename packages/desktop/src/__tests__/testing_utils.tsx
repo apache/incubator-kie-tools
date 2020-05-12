@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { DesktopRouter } from "../webview/common/DesktopRouter";
-import { EnvelopeBusOuterMessageHandlerFactory } from "../webview/editor/EnvelopeBusOuterMessageHandlerFactory";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
-    router: new DesktopRouter(
-      new GwtEditorRoutes({
-        bpmnPath: "editors/bpmn",
-        dmnPath: "editors/dmn",
-        scesimPath: "editors/scesim"
-      })
-    ),
-    envelopeBusOuterMessageHandlerFactory: new EnvelopeBusOuterMessageHandlerFactory(),
-    iframeTemplateRelativePath: "envelope/index.html",
+    router: new EmbeddedEditorRouter(),
     file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" }
   };
   return {
