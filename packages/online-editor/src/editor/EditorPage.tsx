@@ -25,7 +25,7 @@ import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
-import {StateControl, useStateControl} from "./StateControl";
+import { useEditorDirtyState } from "./StateControl";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -46,7 +46,6 @@ const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 let action = ActionType.NONE;
 
 export function EditorPage(props: Props) {
-  const stateControl = new StateControl();
   const context = useContext(GlobalContext);
   const location = useLocation();
   const editorRef = useRef<EmbeddedEditorRef>(null);
@@ -57,7 +56,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useStateControl(stateControl);
+  const isDirty = useEditorDirtyState(context.stateControl);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -73,11 +72,11 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestDownload = useCallback(() => {
-    stateControl.setSavedEvent(stateControl.getCurrentEvent());
+    context.stateControl.setSavedEvent();
     setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
-  }, [stateControl.getCurrentEvent()]);
+  }, [context.stateControl.getCurrentEvent]);
 
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;
@@ -204,15 +203,15 @@ export function EditorPage(props: Props) {
     }
   }, [fileNameWithExtension]);
 
-  const undoEdit = useCallback(() => {
-    stateControl.undoEdit();
-    editorRef.current!.notifyUndo();
-  }, []);
-
-  const redoEdit = useCallback(() => {
-    stateControl.redoEdit();
-    editorRef.current!.notifyRedo();
-  }, []);
+  // const undoEdit = useCallback(() => {
+  //   props.stateControl.undoEdit();
+  //   editorRef.current!.notifyUndo();
+  // }, []);
+  //
+  // const redoEdit = useCallback(() => {
+  //   props.stateControl.redoEdit();
+  //   editorRef.current!.notifyRedo();
+  // }, []);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -249,8 +248,6 @@ export function EditorPage(props: Props) {
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
           onExportGist={requestExportGist}
-          stateControl={stateControl}
-          isDirty={isDirty}
         />
       }
     >
@@ -282,8 +279,6 @@ export function EditorPage(props: Props) {
             onContinue={continueExport}
           />
         )}
-        <Button onClick={undoEdit}>Undo</Button>
-        <Button onClick={redoEdit}>Redo</Button>
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <EmbeddedEditor
           ref={editorRef}
@@ -292,7 +287,6 @@ export function EditorPage(props: Props) {
           channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
-          stateControl={stateControl}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

@@ -33,7 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import {StateControl, useStateControl} from "./StateControl";
+import { useEditorDirtyState } from "./StateControl";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -45,8 +45,6 @@ interface Props {
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
-  stateControl: StateControl;
-  isDirty: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -56,12 +54,11 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-
-  const { isPageFullscreen } = props;
+  const isEdited = useEditorDirtyState(context.stateControl);
 
   const logoProps = useMemo(() => {
-    return { href: window.location.href.split("?")[0].split("#")[0] };
-  }, []);
+    return { onClick: props.onClose };
+  }, [props.onClose]);
 
   const editorType = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
@@ -147,7 +144,7 @@ export function EditorToolbar(props: Props) {
           >
             {context.file.fileName + "." + editorType}
           </Title>
-          {props.isDirty && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+          {isEdited && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
         </div>
       )}
       {editingName && (
@@ -250,7 +247,7 @@ export function EditorToolbar(props: Props) {
     </Toolbar>
   );
 
-  return !isPageFullscreen ? (
+  return !props.isPageFullscreen ? (
     <PageHeader
       logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
       logoProps={logoProps}

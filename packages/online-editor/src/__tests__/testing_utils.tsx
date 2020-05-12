@@ -22,11 +22,9 @@ import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
+import { StateControl } from "../editor/StateControl";
 
-export function usingTestingGlobalContext(
-  children: React.ReactElement,
-  ctx?: Partial<GlobalContextType>
-) {
+export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
     file: EMPTY_FILE_DMN,
     routes: new Routes(),
@@ -41,6 +39,7 @@ export function usingTestingGlobalContext(
     external: false,
     senderTabId: undefined,
     githubService: new GithubService(),
+    stateControl: new StateControl(),
     ...ctx
   };
   return {

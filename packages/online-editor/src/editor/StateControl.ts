@@ -18,13 +18,13 @@ import { useEffect, useState } from "react";
 
 type Event = undefined | string;
 
-export function useStateControl(stateControl: StateControl) {
+export function useEditorDirtyState(stateControl: StateControl) {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    stateControl.subscribe(setIsDirty);
+    const callback = stateControl.subscribe(setIsDirty);
     return () => {
-      stateControl.unsubscribe();
+      stateControl.unsubscribe(callback);
     };
   }, []);
 
@@ -32,20 +32,31 @@ export function useStateControl(stateControl: StateControl) {
 }
 
 export class StateControl {
-  private events: string[];
+  private eventStack: string[];
   private currentEvent: Event;
   private savedEvent: Event;
-  public registeredCallbacks: undefined | ((isDirty: boolean) => void);
+  public registeredCallbacks: Array<(isDirty: boolean) => void>;
 
   constructor() {
-    this.events = [];
+    this.eventStack = [];
+    this.registeredCallbacks = [];
   }
 
-  public setSavedEvent(event: Event) {
-    this.savedEvent = event;
-    if (this.registeredCallbacks) {
-      this.registeredCallbacks(this.isDirty());
+  public subscribe(callback: (isDirty: boolean) => void) {
+    this.registeredCallbacks.push(callback);
+    return callback;
+  }
+
+  public unsubscribe(callback: (isDirty: boolean) => void) {
+    const index = this.registeredCallbacks.indexOf(callback);
+    if (index > -1) {
+      this.registeredCallbacks.splice(index, 1);
     }
+  }
+
+  public setSavedEvent() {
+    this.savedEvent = this.currentEvent;
+    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
   }
 
   public getCurrentEvent() {
@@ -54,29 +65,15 @@ export class StateControl {
 
   public setCurrentEvent(event: Event) {
     this.currentEvent = event;
-    if (this.registeredCallbacks) {
-      this.registeredCallbacks(this.isDirty());
-    }
+    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
   }
 
-  public subscribe(callback: (isDirty: boolean) => void) {
-    this.registeredCallbacks = callback;
+  public getEventStack() {
+    return this.eventStack;
   }
 
-  public unsubscribe() {
-    this.registeredCallbacks = undefined;
-  }
-
-  public getEvents() {
-    return this.events;
-  }
-
-  public setEvents(events: string[]) {
-    this.events = events;
-  }
-
-  public eraseRedoEvents() {
-    return this.events.slice(0, this.events.indexOf(this.currentEvent!) + 1);
+  public setEventStack(events: string[]) {
+    this.eventStack = events;
   }
 
   public isDirty() {
@@ -84,20 +81,31 @@ export class StateControl {
   }
 
   public undoEdit() {
-    const indexOfCurrentEvent = this.events.indexOf(this.currentEvent!);
+    const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
 
     let eventUndone: Event;
-    if (this.events[indexOfCurrentEvent - 1]) {
-      eventUndone = this.events[indexOfCurrentEvent - 1];
+    if (this.eventStack[indexOfCurrentEvent - 1]) {
+      eventUndone = this.eventStack[indexOfCurrentEvent - 1];
     }
     this.setCurrentEvent(eventUndone);
   }
 
   public redoEdit() {
-    const indexOfCurrentEvent = this.events.indexOf(this.currentEvent!);
-    if (this.events[indexOfCurrentEvent + 1]) {
-      const eventRedone = this.events[indexOfCurrentEvent + 1];
+    const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
+    if (this.eventStack[indexOfCurrentEvent + 1]) {
+      const eventRedone = this.eventStack[indexOfCurrentEvent + 1];
       this.setCurrentEvent(eventRedone);
     }
+  }
+
+  public eraseRedoEvents() {
+    return this.eventStack.slice(0, this.eventStack.indexOf(this.currentEvent!) + 1);
+  }
+
+  public updateEventStack(event: string) {
+    console.log(event)
+    const updatedEvents = this.eraseRedoEvents().concat(event);
+    this.setEventStack(updatedEvents);
+    this.setCurrentEvent(event);
   }
 }
