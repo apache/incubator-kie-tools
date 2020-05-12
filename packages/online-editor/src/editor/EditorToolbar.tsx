@@ -46,8 +46,7 @@ interface Props {
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
   stateControl: StateControl;
-  // isDirty: boolean,
-  // setIsDirty: React.Dispatch<React.SetStateAction<boolean>>
+  isDirty: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -57,14 +56,6 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-  const isDirty = useStateControl("EditorToolbar", props.stateControl)
-
-  // useEffect(() => {
-  //   props.stateControl.subscribe("EditorToolbar", props.setIsDirty);
-  //   return () => {
-  //     props.stateControl.unsubscribe("EditorToolbar");
-  //   }
-  // }, []);
 
   const { isPageFullscreen } = props;
 
@@ -156,7 +147,7 @@ export function EditorToolbar(props: Props) {
           >
             {context.file.fileName + "." + editorType}
           </Title>
-          {isDirty && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+          {props.isDirty && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
         </div>
       )}
       {editingName && (

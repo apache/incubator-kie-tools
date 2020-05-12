@@ -18,13 +18,13 @@ import { useEffect, useState } from "react";
 
 type Event = undefined | string;
 
-export function useStateControl(name: string, stateControl: StateControl) {
+export function useStateControl(stateControl: StateControl) {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    stateControl.subscribe(name, setIsDirty);
+    stateControl.subscribe(setIsDirty);
     return () => {
-      stateControl.unsubscribe(name);
+      stateControl.unsubscribe();
     };
   }, []);
 
@@ -35,16 +35,17 @@ export class StateControl {
   private events: string[];
   private currentEvent: Event;
   private savedEvent: Event;
-  public registeredCallbacks: Map<string, (isDirty: boolean) => void>;
+  public registeredCallbacks: undefined | ((isDirty: boolean) => void);
 
   constructor() {
     this.events = [];
-    this.registeredCallbacks = new Map();
   }
 
   public setSavedEvent(event: Event) {
     this.savedEvent = event;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    if (this.registeredCallbacks) {
+      this.registeredCallbacks(this.isDirty());
+    }
   }
 
   public getCurrentEvent() {
@@ -53,15 +54,17 @@ export class StateControl {
 
   public setCurrentEvent(event: Event) {
     this.currentEvent = event;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    if (this.registeredCallbacks) {
+      this.registeredCallbacks(this.isDirty());
+    }
   }
 
-  public subscribe(name: string, callback: (isDirty: boolean) => void) {
-    this.registeredCallbacks.set(name, callback);
+  public subscribe(callback: (isDirty: boolean) => void) {
+    this.registeredCallbacks = callback;
   }
 
-  public unsubscribe(name: string) {
-    this.registeredCallbacks.delete(name);
+  public unsubscribe() {
+    this.registeredCallbacks = undefined;
   }
 
   public getEvents() {

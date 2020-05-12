@@ -57,7 +57,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useStateControl("EditorPage", stateControl);
+  const isDirty = useStateControl(stateControl);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -250,6 +250,7 @@ export function EditorPage(props: Props) {
           onPreview={requestPreview}
           onExportGist={requestExportGist}
           stateControl={stateControl}
+          isDirty={isDirty}
         />
       }
     >
