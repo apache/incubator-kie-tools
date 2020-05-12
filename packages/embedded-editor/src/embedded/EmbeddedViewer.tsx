@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import { ChannelType, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useCallback } from "react";
 import { File } from "../common/File";

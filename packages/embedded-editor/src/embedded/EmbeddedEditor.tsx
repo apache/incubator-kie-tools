@@ -15,19 +15,19 @@
  */
 
 import { ChannelType, EditorContent, KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as CSS from 'csstype';
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common/File";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
+import { newEnvelopeBusOuterMessageHandler } from "./EnvelopeBusOuterMessageHandlerFactory";
 
-interface Props {
+export interface Props {
   file: File;
   router: EmbeddedEditorRouter;
   channelType: ChannelType;
   onContentResponse?: (content: EditorContent) => void;
-  onSetContentError?: () => void;
+  onSetContentError?: (errorMessage: string) => void;
   onDirtyIndicatorChange?: (isDirty: boolean) => void;
   onReady?: () => void;
   onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
@@ -67,9 +67,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }
   }, [props.onContentResponse]);
 
-  const onSetContentError = useCallback(() => {
+  const onSetContentError = useCallback((errorMessage: string) => {
     if (props.onSetContentError) {
-      props.onSetContentError();
+      props.onSetContentError(errorMessage);
     }
   }, [props.onSetContentError]);
 
@@ -126,59 +126,26 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
 
   //Setup envelope bus communication
-  const envelopeBusOuterMessageHandler = useMemo(() => {
-    return new EnvelopeBusOuterMessageHandler(
-      {
-        postMessage: msg => {
-          if (iframeRef.current && iframeRef.current.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(msg, "*");
-          }
-        }
-      },
-      self => ({
-        pollInit() {
-          self.request_initResponse(window.location.origin);
-        },
-        receive_languageRequest() {
-          self.respond_languageRequest(props.router.getLanguageData(props.file.editorType));
-        },
-        receive_contentResponse(content: EditorContent) {
-          onContentResponse(content);
-        },
-        receive_contentRequest() {
-          props.file
-            .getFileContents()
-            .then(c => self.respond_contentRequest({ content: c ?? "", path: props.file.fileName }));
-        },
-        receive_setContentError() {
-          onSetContentError();
-        },
-        receive_dirtyIndicatorChange(isDirty: boolean) {
-          onDirtyIndicatorChange(isDirty);
-        },
-        receive_ready() {
-          onReady();
-        },
-        receive_resourceContentRequest(request: ResourceContentRequest) {
-          onResourceContentRequest(request).then(r => self.respond_resourceContent(r!));
-        },
-        receive_resourceListRequest(request: ResourceListRequest) {
-          onResourceListRequest(request).then(r => self.respond_resourceList(r!));
-        },
-        notify_editorUndo: () => {
-          onEditorUndo();
-        },
-        notify_editorRedo: () => {
-          onEditorRedo();
-        },
-        receive_newEdit(edit: KogitoEdit) {
-          onNewEdit(edit);
-        },
-        receive_previewRequest(previewSvg: string) {
-          onPreviewRequest(previewSvg);
-        }
-      }));
-  }, [props.router, props.file.editorType, props.file.fileName]);
+  const envelopeBusOuterMessageHandler = useMemo(
+    () => {
+      return newEnvelopeBusOuterMessageHandler(props,
+        iframeRef,
+        onContentResponse,
+        onSetContentError,
+        onDirtyIndicatorChange,
+        onReady,
+        onResourceContentRequest,
+        onResourceListRequest,
+        onEditorUndo,
+        onEditorRedo,
+        onNewEdit,
+        onPreviewRequest)
+    },
+    [props.router, props.file.editorType, props.file.fileName,
+    props.onContentResponse, props.onSetContentError, props.onDirtyIndicatorChange,
+    props.onReady, props.onResourceContentRequest, props.onResourceListRequest, props.onEditorUndo,
+    props.onEditorRedo, props.onNewEdit, props.onPreviewResponse]
+  );
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
