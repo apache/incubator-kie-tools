@@ -32,12 +32,12 @@
     "Other"
   ],
   "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditors"
+    "onCustomEditor:kieKogitoWebviewEditorsDmn"
   ],
   "contributes": {
     "customEditors": [
       {
-        "viewType": "kieKogitoWebviewEditors",
+        "viewType": "kieKogitoWebviewEditorsDmn",
         "displayName": "DMN Editor",
         "selector": [
           {
@@ -48,7 +48,7 @@
     ],
     "commands": [
       {
-        "command": "extension.kogito.getPreviewSvg",
+        "command": "extension.kogito.getPreviewSvgDmn",
         "title": "Get DMN Editor Preview SVG"
       }
     ],

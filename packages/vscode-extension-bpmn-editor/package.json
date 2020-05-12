@@ -32,12 +32,12 @@
     "Other"
   ],
   "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditors"
+    "onCustomEditor:kieKogitoWebviewEditorsBpmn"
   ],
   "contributes": {
     "customEditors": [
       {
-        "viewType": "kieKogitoWebviewEditors",
+        "viewType": "kieKogitoWebviewEditorsBpmn",
         "displayName": "BPMN Editor",
         "selector": [
           {
@@ -48,7 +48,7 @@
     ],
     "commands": [
       {
-        "command": "extension.kogito.getPreviewSvg",
+        "command": "extension.kogito.getPreviewSvgBpmn",
         "title": "Get BPMN Editor Preview SVG"
       }
     ],
