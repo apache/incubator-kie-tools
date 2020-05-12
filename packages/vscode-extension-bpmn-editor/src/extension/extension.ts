@@ -26,13 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.vscode-extension-bpmn-editor",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    // viewType: "kieKogitoWebviewEditorsBpmn",
-    // getPreviewCommandId: "extension.kogito.getPreviewSvgBpmn",
+    viewType: "kieKogitoWebviewEditorsBpmn",
+    getPreviewCommandId: "extension.kogito.getPreviewSvgBpmn",
     router: new DefaultVsCodeRouter(
       context,
       new GwtEditorRoutes({
         bpmnPath: "dist/webview/editors/bpmn",
-        dmnPath: ""
+        dmnPath: "",
+        scesimPath: ""
       })
     )
   });

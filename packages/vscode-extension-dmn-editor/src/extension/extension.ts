@@ -26,13 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.vscode-extension-dmn-editor",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    // viewType: "kieKogitoWebviewEditorsDmn",
-    // getPreviewCommandId: "extension.kogito.getPreviewSvgDmn",
+    viewType: "kieKogitoWebviewEditorsDmn",
+    getPreviewCommandId: "extension.kogito.getPreviewSvgDmn",
     router: new DefaultVsCodeRouter(
       context,
       new GwtEditorRoutes({
         bpmnPath: "",
-        dmnPath: "dist/webview/editors/dmn"
+        dmnPath: "dist/webview/editors/dmn",
+        scesimPath: "dist/webview/editors/scesim"
       })
     )
   });
