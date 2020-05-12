@@ -40,7 +40,7 @@ MicroEditorEnvelope.init({
 <<<<<<< HEAD
 =======
 
-function getChannelType(): ChannelType {
+export function getChannelType(): ChannelType {
   return frameElement.attributes.getNamedItem("data-envelope-channel")?.value as ChannelType;
 }
 >>>>>>> Updates following peer review.
