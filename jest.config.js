@@ -3,6 +3,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^uniforms$': '<rootDir>/node_modules/uniforms/src',
+    '^uniforms/es5$': '<rootDir>/node_modules/uniforms/src',
     '^uniforms-bridge-simple-schema-2$': '<rootDir>/node_modules/uniforms-bridge-simple-schema-2/src',
     '^uniforms-patternfly$': '<rootDir>/src',
   },
