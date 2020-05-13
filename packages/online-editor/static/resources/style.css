@@ -152,21 +152,22 @@
   display: inline-block;
   visibility: hidden;
   white-space: pre;
-  padding: 0.17em 0.3em;
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
+  padding: var(--pf-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-name-container input {
   border: var(--pf-global--BorderWidth--md) solid var(--pf-global--active-color--100);
   border-radius: var(--pf-global--BorderRadius--sm);
-  padding: 0.25em 0 0px 0.25em;
+  padding: var(--pf-global--spacer--xs);
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
+  height: 100%;
   overflow: hidden;
-  height: 1.9em;
 }
 
 .kogito--full-screen__toolbar {
@@ -199,10 +200,11 @@
 .kogito--editor__toolbar-title {
   display: inline;
   border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
+  padding: var(--pf-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-title:hover {
   border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  padding: 0.17em 0.3em;
   border-radius: var(--pf-global--BorderRadius--sm);
+  padding: var(--pf-global--spacer--xs);
 }
