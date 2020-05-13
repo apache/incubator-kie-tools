@@ -7,7 +7,7 @@ Today we have these scripts:
 - [manage-kogito-version.py](manage-kogito-version.py)
 - [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
-
+- [update-artifacts.py](update-artifacts.py)
 
 ### Managing Kogito images version
 
@@ -85,3 +85,34 @@ This script is called as the last step of the `make push-staging` command define
 It will look for the current RC images available on [quay.io](https://quay.io/organization/kiegroup) to increase the rc tag 
 accordingly then push the new tag so it can be tested by others. 
 
+#### Updating Kogito Images service artifacts.
+
+The update-artifacts script will help in fetching the URL of latest artifacts from the repo
+and update them in the `module.yaml` files of the kogito services
+
+#### Script dependencies
+
+The `update-artifacts.py` has some dependencies that needs to be manually installed:
+
+```bash
+$ pip install -U ruamel.yaml
+$ pip install -U elementpath
+```
+It's usage is pretty simple as well:
+
+```bash
+$ python update-artifacts.py
+```
+
+This script also accepts `--snapshot-version` as argument in specifying the current version of artifacts which need to be fetched
+
+```bash
+$ python update-artifacts.py --snapshot-version='8.0.0-SNAPSHOT'
+```
+if no argument is given, it takes the default value of `8.0.0-SNAPSHOT`
+
+The command will update the needed files with latest snapshot URL:
+
+ - kogito-data-index/module.yaml
+ - kogito-jobs-service/module.yaml
+ - kogito-management-console/module.yaml

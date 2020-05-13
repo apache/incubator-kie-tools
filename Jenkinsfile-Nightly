@@ -16,6 +16,11 @@ pipeline{
                 sh "docker rm -f \$(docker ps -a -q) || docker rmi -f \$(docker images -q) || date"
             }
         }
+        stage('Update Artifacts'){
+            steps{
+                sh "python3 scripts/update-artifacts.py"
+            }
+        }
         stage('Prepare offline kogito-examples'){
             steps{
                 sh "make clone-repos"
