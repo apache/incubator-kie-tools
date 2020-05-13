@@ -28,10 +28,10 @@ import { GlobalContext } from "./common/GlobalContext";
 import { Routes } from "./common/Routes";
 import { extractFileExtension } from "./common/utils";
 import { EditorPage } from "./editor/EditorPage";
-import { StateControl } from "./editor/StateControl";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
+import { StateControl } from "@kogito-tooling/editor-state-control-manager";
 import "../static/resources/style.css";
 
 interface Props {

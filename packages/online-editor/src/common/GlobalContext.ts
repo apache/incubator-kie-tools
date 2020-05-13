@@ -18,7 +18,7 @@ import { EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
-import { StateControl } from "../editor/StateControl";
+import { StateControl } from "@kogito-tooling/editor-state-control-manager";
 
 export interface GlobalContextType {
   file: File;

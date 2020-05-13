@@ -25,7 +25,7 @@ import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
-import { useEditorDirtyState } from "./StateControl";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -76,7 +76,7 @@ export function EditorPage(props: Props) {
     setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
-  }, [context.stateControl.getCurrentEvent]);
+  }, [context.stateControl.setSavedEvent]);
 
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;
@@ -202,16 +202,6 @@ export function EditorPage(props: Props) {
       downloadPreviewRef.current.download = `${fileName}-svg.svg`;
     }
   }, [fileNameWithExtension]);
-
-  // const undoEdit = useCallback(() => {
-  //   props.stateControl.undoEdit();
-  //   editorRef.current!.notifyUndo();
-  // }, []);
-  //
-  // const redoEdit = useCallback(() => {
-  //   props.stateControl.redoEdit();
-  //   editorRef.current!.notifyRedo();
-  // }, []);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);

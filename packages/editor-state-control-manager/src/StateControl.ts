@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from "react";
-
 type Event = undefined | string;
-
-export function useEditorDirtyState(stateControl: StateControl) {
-  const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    const callback = stateControl.subscribe(setIsDirty);
-    return () => {
-      stateControl.unsubscribe(callback);
-    };
-  }, []);
-
-  return isDirty;
-}
 
 export class StateControl {
   private eventStack: string[];
@@ -72,10 +57,6 @@ export class StateControl {
     return this.eventStack;
   }
 
-  public setEventStack(events: string[]) {
-    this.eventStack = events;
-  }
-
   public isDirty() {
     return this.currentEvent !== this.savedEvent;
   }
@@ -103,9 +84,8 @@ export class StateControl {
   }
 
   public updateEventStack(event: string) {
-    console.log(event)
-    const updatedEvents = this.eraseRedoEvents().concat(event);
-    this.setEventStack(updatedEvents);
+    this.eventStack = this.eraseRedoEvents().concat(event);
+    console.log(this.eventStack)
     this.setCurrentEvent(event);
   }
 }
