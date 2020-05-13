@@ -100,6 +100,12 @@ public class CheatSheetViewImpl
     @DataField("dmnCheatSheetParagraph5")
     protected ParagraphElement dmnCheatSheetParagraph5 = Document.get().createPElement();
 
+    @DataField("dmnCheatSheetParagraph6")
+    protected ParagraphElement dmnCheatSheetParagraph6 = Document.get().createPElement();
+
+    @DataField("dmnCheatSheetParagraph7")
+    protected ParagraphElement dmnCheatSheetParagraph7 = Document.get().createPElement();
+
     @DataField("dmnCheatSheetParagraphBackground")
     protected ParagraphElement dmnCheatSheetParagraphBackground = Document.get().createPElement();
 
@@ -124,8 +130,11 @@ public class CheatSheetViewImpl
     @DataField("dmnCheatSheetList7")
     protected LIElement dmnCheatSheetList7 = Document.get().createLIElement();
 
-    @DataField("dmnCheatSheetParagraph6")
-    protected ParagraphElement dmnCheatSheetParagraph6 = Document.get().createPElement();
+    @DataField("dmnCheatSheetList8")
+    protected LIElement dmnCheatSheetList8 = Document.get().createLIElement();
+
+    @DataField("dmnCheatSheetList9")
+    protected LIElement dmnCheatSheetList9 = Document.get().createLIElement();
 
     @Override
     public void init(Presenter presenter) {
@@ -186,16 +195,21 @@ public class CheatSheetViewImpl
                 + ScenarioSimulationEditorConstants.INSTANCE.and() + " " + "<tt>null</tt>)");
         dmnCheatSheetList3.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet11() + "</i>" + " "
                                                 + ScenarioSimulationEditorConstants.INSTANCE.and() + " " + "<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet12() + "</i>"
-                                                + ScenarioSimulationEditorConstants.INSTANCE.forExample() + " " + "<tt>date(\"2019-05-13\")</tt>" + " " + ScenarioSimulationEditorConstants.INSTANCE.or() + " "
-                                                + "<tt>time(\"14:10:00+02:00\")</tt>");
-        dmnCheatSheetList4.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet13() + "</i>");
-        dmnCheatSheetList5.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet14() + "</i>" + ScenarioSimulationEditorConstants.INSTANCE.forExample() +
+                                                + ScenarioSimulationEditorConstants.INSTANCE.forExample() + " " + "<tt>date(\"2019-05-13\")<sup>*</sup></tt>" + " " + ScenarioSimulationEditorConstants.INSTANCE.or() + " "
+                                                + "<tt>time(\"14:10:00+02:00\")<sup>*</sup></tt>");
+        dmnCheatSheetList4.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet19() + "</i>" + ScenarioSimulationEditorConstants.INSTANCE.forExample() +
+                                                " " + "<tt>duration(\"P1DT23H12M30S\")<sup>*</sup></tt>");
+        dmnCheatSheetList5.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet20() + "</i>" + ScenarioSimulationEditorConstants.INSTANCE.forExample() +
+                                                " " + "<tt>duration(\"P3Y5M\")<sup>*</sup></tt>");
+        dmnCheatSheetList6.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet13() + "</i>");
+        dmnCheatSheetList7.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet14() + "</i>" + ScenarioSimulationEditorConstants.INSTANCE.forExample() +
                                                 " " + "<tt>{x : 5, even : false, type : \"integer number\"}</tt>");
-        dmnCheatSheetList6.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet15() + "</i>"
+        dmnCheatSheetList8.setInnerHTML("<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet15() + "</i>"
                                                 + " " + ScenarioSimulationEditorConstants.INSTANCE.and() + " " + "<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet16() + "</i>"
                                                 + ScenarioSimulationEditorConstants.INSTANCE.forExample() + " " + "<tt>[1 .. 10]</tt> or <tt>[2, 3, 4, 5]</tt>");
-        dmnCheatSheetList7.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet18());
+        dmnCheatSheetList9.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet18());
         dmnCheatSheetParagraph6.setInnerHTML(ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet17());
+        dmnCheatSheetParagraph7.setInnerHTML("<i><sup>*</sup> " + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet21() + "</i>");
     }
 
     @Override
