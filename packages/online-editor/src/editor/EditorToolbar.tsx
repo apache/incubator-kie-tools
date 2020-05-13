@@ -217,13 +217,13 @@ export function EditorToolbar(props: Props) {
 
         <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
           <Button variant={"plain"} onClick={props.onFullScreen} aria-label={"Full screen"}>
-            <ExpandIcon height={16} width={16} />
+            <ExpandIcon className={"kogito--editor__toolbar-icon-button"}/>
           </Button>
         </ToolbarItem>
         {!context.external && (
           <ToolbarItem>
             <Button variant={"plain"} onClick={props.onClose} aria-label={"Close"}>
-              <CloseIcon height={16} width={16} />
+              <CloseIcon className={"kogito--editor__toolbar-icon-button"}/>
             </Button>
           </ToolbarItem>
         )}

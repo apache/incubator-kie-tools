@@ -208,3 +208,7 @@
   border-radius: var(--pf-global--BorderRadius--sm);
   padding: var(--pf-global--spacer--xs);
 }
+
+.kogito--editor__toolbar-icon-button {
+  --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
+}
