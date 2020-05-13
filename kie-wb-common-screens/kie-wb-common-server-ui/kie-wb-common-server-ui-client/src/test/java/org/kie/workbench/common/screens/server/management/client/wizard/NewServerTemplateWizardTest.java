@@ -19,12 +19,15 @@ package org.kie.workbench.common.screens.server.management.client.wizard;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.model.KieServerMode;
+import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateListRefresh;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
@@ -32,6 +35,7 @@ import org.kie.workbench.common.screens.server.management.client.wizard.config.p
 import org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.template.NewTemplatePresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -41,8 +45,15 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewServerTemplateWizardTest {
@@ -159,6 +170,10 @@ public class NewServerTemplateWizardTest {
 
     @Test
     public void testComplete() {
+        ServerTemplate serverTemplate = new ServerTemplate("template-name", "template-name");
+        serverTemplate.setMode(KieServerMode.DEVELOPMENT);
+        serverTemplate.setCapabilities(singletonList(Capability.PROCESS.toString()));
+
         when( newTemplatePresenter.isProcessCapabilityChecked() ).thenReturn( true );
         when( newContainerFormPresenter.isEmpty() ).thenReturn( true );
         when( newContainerFormPresenter.isEmpty() ).thenReturn( true );
@@ -168,9 +183,14 @@ public class NewServerTemplateWizardTest {
 
         newServerTemplateWizard.complete();
 
+        ArgumentCaptor<ServerTemplate> serverTemplateCapture = ArgumentCaptor.forClass(ServerTemplate.class);
+        verify(specManagementService).saveServerTemplate(serverTemplateCapture.capture());
+        assertEquals(KieServerMode.DEVELOPMENT, serverTemplateCapture.getValue().getMode());
+
         verify( notification ).fire( new NotificationEvent( successMessage, NotificationEvent.NotificationType.SUCCESS ) );
         verifyClear();
         verify( serverTemplateListRefreshEvent ).fire( new ServerTemplateListRefresh( "template-name" ) );
+
 
         doThrow( new RuntimeException() ).when( specManagementService ).saveServerTemplate( any( ServerTemplate.class ) );
         final String errorMessage = "ERROR";

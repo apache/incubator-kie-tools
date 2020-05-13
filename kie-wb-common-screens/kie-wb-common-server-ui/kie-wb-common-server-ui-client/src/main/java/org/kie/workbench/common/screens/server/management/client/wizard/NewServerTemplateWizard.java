@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieScannerStatus;
+import org.kie.server.api.model.KieServerMode;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
@@ -186,10 +188,13 @@ public class NewServerTemplateWizard extends AbstractMultiPageWizard {
             containersSpec.add( newContainerFormPresenter.buildContainerSpec( newTemplatePresenter.getTemplateName(), capabilityContainerConfig ) );
         }
 
-        return new ServerTemplate( newTemplatePresenter.getTemplateName(),
+        ServerTemplate serverTemplate = new ServerTemplate(newTemplatePresenter.getTemplateName(),
                                    newTemplatePresenter.getTemplateName(),
                                    capabilities,
                                    capabilityConfig,
                                    containersSpec );
+
+        serverTemplate.setMode(KieServerMode.DEVELOPMENT);
+        return serverTemplate;
     }
 }
