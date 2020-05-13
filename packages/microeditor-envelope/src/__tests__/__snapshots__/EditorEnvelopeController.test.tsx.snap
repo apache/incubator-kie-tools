@@ -114,6 +114,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   >
     <div
       className="kogito-tooling--keyboard-shortcuts-icon"
+      data-testid="keyboard-shortcuts-help-overlay-icon"
       onClick={[Function]}
     >
       <KeyboardIcon
@@ -147,6 +148,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       actions={Array []}
       ariaDescribedById=""
       className=""
+      data-testid="keyboard-shortcuts-help-overlay"
       hideTitle={false}
       isLarge={false}
       isOpen={false}
@@ -163,6 +165,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
           actions={Array []}
           ariaDescribedById=""
           className=""
+          data-testid="keyboard-shortcuts-help-overlay"
           hideTitle={false}
           id="pf-modal-0"
           isLarge={false}

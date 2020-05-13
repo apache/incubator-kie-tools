@@ -80,11 +80,15 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
 
   return (
     <>
-      <div onClick={() => setShowing(!showing)} className={"kogito-tooling--keyboard-shortcuts-icon"}>
+      <div
+        onClick={() => setShowing(!showing)}
+        className={"kogito-tooling--keyboard-shortcuts-icon"}
+        data-testid={"keyboard-shortcuts-help-overlay-icon"}
+      >
         <KeyboardIcon />
       </div>
 
-      <Modal title={"Keyboard shortcuts"} isOpen={showing} width={"60%"} onClose={toggle}>
+      <Modal title={"Keyboard shortcuts"} isOpen={showing} width={"60%"} onClose={toggle} data-testid={"keyboard-shortcuts-help-overlay"}>
         <TextContent>
           <TextList component={TextListVariants.dl}>
             {Array.from(keyBindings.keys()).map(category => (
