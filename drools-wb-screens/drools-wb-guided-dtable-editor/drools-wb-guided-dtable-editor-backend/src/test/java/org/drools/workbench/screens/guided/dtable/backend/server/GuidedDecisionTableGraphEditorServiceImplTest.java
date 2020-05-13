@@ -150,7 +150,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
 
         when(moduleService.resolvePackage(any(Path.class))).thenReturn(pkg);
         when(pkg.getPackageMainResourcesPath()).thenReturn(PathFactory.newPath("project",
-                                                                               "default://project/src/main/resources"));
+                                                                               "file://project/src/main/resources"));
 
         resolvedPaths.clear();
         when(ioService.newDirectoryStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(new MockDirectoryStream(resolvedPaths));
@@ -163,7 +163,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
         final GuidedDecisionTableEditorGraphModel content = new GuidedDecisionTableEditorGraphModel();
         final String comment = "comment";
 
-        when(context.toURI()).thenReturn("default://project/src/main/resources/mypackage");
+        when(context.toURI()).thenReturn("file://project/src/main/resources/mypackage");
 
         final Path p = service.create(context,
                                       fileName,
@@ -181,7 +181,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     @Test
     public void checkLoad() {
         final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
+        when(path.toURI()).thenReturn("file://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
 
         when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("");
 
@@ -196,7 +196,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     public void checkConstructContent() {
         final Path path = mock(Path.class);
         final Overview overview = mock(Overview.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
+        when(path.toURI()).thenReturn("file://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
 
         final GuidedDecisionTableEditorGraphContent content = service.constructContent(path,
                                                                                        overview);
@@ -216,7 +216,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
         final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel();
         final Metadata metadata = mock(Metadata.class);
         final String comment = "comment";
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
+        when(path.toURI()).thenReturn("file://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix());
 
         service.save(path,
                      model,
@@ -297,12 +297,12 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     @Test
     public void testListDecisionTablesInPackage() {
         final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/dtable1.gdst");
+        when(path.toURI()).thenReturn("file://project/src/main/resources/dtable1.gdst");
 
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/dtable1.gdst"));
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/dtable2.gdst"));
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/dtable3.gdst"));
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/pupa.smurf"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable1.gdst"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable2.gdst"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable3.gdst"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/pupa.smurf"));
 
         final List<Path> paths = service.listDecisionTablesInPackage(path);
 
@@ -320,10 +320,10 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     @Test
     public void testListDecisionTablesInPackageExcludesDotFiles() {
         final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/dtable1.gdst");
+        when(path.toURI()).thenReturn("file://project/src/main/resources/dtable1.gdst");
 
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/dtable1.gdst"));
-        resolvedPaths.add(makeNioPath("default://project/src/main/resources/.dtable1.gdst"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable1.gdst"));
+        resolvedPaths.add(makeNioPath("file://project/src/main/resources/.dtable1.gdst"));
 
         final List<Path> paths = service.listDecisionTablesInPackage(path);
 

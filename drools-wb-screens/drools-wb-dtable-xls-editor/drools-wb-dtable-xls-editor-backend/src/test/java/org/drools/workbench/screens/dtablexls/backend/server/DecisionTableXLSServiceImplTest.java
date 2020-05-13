@@ -117,7 +117,7 @@ public class DecisionTableXLSServiceImplTest {
         when( authenticationService.getUser() ).thenReturn( user );
         when( user.getIdentifier() ).thenReturn( "user" );
 
-        when( path.toURI() ).thenReturn( "default://p0/src/main/resources/dtable.xls" );
+        when( path.toURI() ).thenReturn( "file://p0/src/main/resources/dtable.xls" );
         when( inputstream.read( anyObject() ) ).thenReturn( -1 );
         when( ioService.newOutputStream( any( org.uberfire.java.nio.file.Path.class ),
                                          commentedOptionArgumentCaptor.capture() ) ).thenReturn( outputStream );

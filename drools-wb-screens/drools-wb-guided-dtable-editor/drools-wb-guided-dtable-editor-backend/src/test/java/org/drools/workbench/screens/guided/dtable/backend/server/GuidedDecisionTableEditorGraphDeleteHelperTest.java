@@ -122,7 +122,7 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
     @Test
     public void checkRemoveReferencesNoFiles() {
         when( path.getFileName() ).thenReturn( "dtable.gdst" );
-        when( path.toURI() ).thenReturn( "default://test/dtable.gdst" );
+        when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( path );
 
@@ -135,12 +135,12 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
     public void checkRemoveReferencesWithDecisionTableGraphs() throws URISyntaxException {
         final org.uberfire.java.nio.file.Path dtGraphPath = mock( org.uberfire.java.nio.file.Path.class );
         when( dtGraphPath.getFileName() ).thenReturn( mock( org.uberfire.java.nio.file.Path.class ) );
-        when( dtGraphPath.toUri() ).thenReturn( new URI( "default://test/dtable-set." + dtableGraphType.getSuffix() ) );
+        when( dtGraphPath.toUri() ).thenReturn( new URI( "file://test/dtable-set." + dtableGraphType.getSuffix() ) );
         when( dtGraphPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtGraphPath );
 
         when( path.getFileName() ).thenReturn( "dtable.gdst" );
-        when( path.toURI() ).thenReturn( "default://test/dtable.gdst" );
+        when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel();
         model.getEntries().add( new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry( path,
@@ -175,12 +175,12 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
     public void checkRemoveReferencesWithoutDecisionTableGraphs() throws URISyntaxException {
         final org.uberfire.java.nio.file.Path dtPath = mock( org.uberfire.java.nio.file.Path.class );
         when( dtPath.getFileName() ).thenReturn( mock( org.uberfire.java.nio.file.Path.class ) );
-        when( dtPath.toUri() ).thenReturn( new URI( "default://test/dtable." + dtableType.getSuffix() ) );
+        when( dtPath.toUri() ).thenReturn( new URI( "file://test/dtable." + dtableType.getSuffix() ) );
         when( dtPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtPath );
 
         when( path.getFileName() ).thenReturn( "dtable.gdst" );
-        when( path.toURI() ).thenReturn( "default://test/dtable.gdst" );
+        when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( path );
 

@@ -118,7 +118,7 @@ public class GuidedRuleEditorServiceImplTest {
                 .addExtension(DSLActionSentence.INSTANCE, Collections.singletonList(dslSentence))
                 .addExtension(DSLConditionSentence.INSTANCE, Collections.singletonList(dslSentence))
                 .build();
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/rule.rdrl");
+        when(path.toURI()).thenReturn("file://project/src/main/resources/mypackage/rule.rdrl");
         when(dataModelService.getDataModel(any())).thenReturn(oracle);
 
         final GuidedEditorContent content = service.constructContent(path,

@@ -183,7 +183,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                                                            guidedDTableType,
                                                                            drlType,
                                                                            globalsType));
-        when(path.toURI()).thenReturn("default://src/main/resources/p0/source.xls");
+        when(path.toURI()).thenReturn("file://src/main/resources/p0/source.xls");
         when(path.getFileName()).thenReturn("source.xls");
         when(dataModelService.getDataModel(eq(path))).thenReturn(dmo);
 
@@ -192,7 +192,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
         when(moduleService.resolveModule(any(Path.class))).thenReturn(module);
         when(module.getImportsPath()).thenReturn(expectedProjectImportsPath);
-        when(expectedProjectImportsPath.toURI()).thenReturn("default://project.imports");
+        when(expectedProjectImportsPath.toURI()).thenReturn("file://project.imports");
     }
 
     @Test

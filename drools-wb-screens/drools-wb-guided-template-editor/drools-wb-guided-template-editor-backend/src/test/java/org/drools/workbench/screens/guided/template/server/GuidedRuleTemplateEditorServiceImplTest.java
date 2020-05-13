@@ -93,7 +93,7 @@ public class GuidedRuleTemplateEditorServiceImplTest {
         final Path path = mock(Path.class);
         final Overview overview = mock(Overview.class);
         final PackageDataModelOracle oracle = mock(PackageDataModelOracle.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/rule.template");
+        when(path.toURI()).thenReturn("file://project/src/main/resources/mypackage/rule.template");
         when(dataModelService.getDataModel(any())).thenReturn(oracle);
         when(oracle.getPackageGlobals()).thenReturn(new HashMap<String, String>() {{
             put("number",

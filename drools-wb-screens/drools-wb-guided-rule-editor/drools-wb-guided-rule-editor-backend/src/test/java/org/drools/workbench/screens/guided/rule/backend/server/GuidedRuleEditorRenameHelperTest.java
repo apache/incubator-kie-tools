@@ -94,8 +94,8 @@ public class GuidedRuleEditorRenameHelperTest {
     public void testRDRLFile() {
         final Path pathSource = mock(Path.class);
         final Path pathDestination = mock(Path.class);
-        when(pathSource.toURI()).thenReturn("default://p0/src/main/resources/MyFile.rdrl");
-        when(pathDestination.toURI()).thenReturn("default://p0/src/main/resources/MyNewFile.rdrl");
+        when(pathSource.toURI()).thenReturn("file://p0/src/main/resources/MyFile.rdrl");
+        when(pathDestination.toURI()).thenReturn("file://p0/src/main/resources/MyNewFile.rdrl");
         when(pathDestination.getFileName()).thenReturn("MyNewFile.rdrl");
         when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn(drl);
 
@@ -117,8 +117,8 @@ public class GuidedRuleEditorRenameHelperTest {
     public void testRDSLRFile() {
         final Path pathSource = mock(Path.class);
         final Path pathDestination = mock(Path.class);
-        when(pathSource.toURI()).thenReturn("default://p0/src/main/resources/MyFile.rdslr");
-        when(pathDestination.toURI()).thenReturn("default://p0/src/main/resources/MyNewFile.rdslr");
+        when(pathSource.toURI()).thenReturn("file://p0/src/main/resources/MyFile.rdslr");
+        when(pathDestination.toURI()).thenReturn("file://p0/src/main/resources/MyNewFile.rdslr");
         when(pathDestination.getFileName()).thenReturn("MyNewFile.rdslr");
         when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn(dslr);
 
