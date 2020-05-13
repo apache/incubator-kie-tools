@@ -16,17 +16,32 @@
 
 package org.uberfire.ext.widgets.core.client.wizards;
 
-import com.google.gwtmockito.GwtMock;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.NavPills;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WizardViewImplTest {
+
+    @Mock
+    NavPills sideBar;
 
     @Mock
     WizardPopupFooter footer;
@@ -34,15 +49,25 @@ public class WizardViewImplTest {
     @Mock
     AbstractWizard presenter;
 
-    @GwtMock
+    @Mock
+    SyncBeanManager iocBeanManager;
+
+    List<WizardPageTitle> pageTitleWidgets = new ArrayList<>();
+
+    @Mock
     WizardViewImpl view;
 
     @Before
     public void init() {
+        view.sideBar = sideBar;
         view.footer = footer;
+        view.iocBeanManager = iocBeanManager;
+        view.pageTitleWidgets = pageTitleWidgets;
 
         doCallRealMethod().when(view).setCompletionStatus(anyBoolean());
         doCallRealMethod().when(view).onUnload();
+        doCallRealMethod().when(view).setPageTitles(anyList());
+        doCallRealMethod().when(view).hide();
     }
 
     @Test
@@ -69,5 +94,27 @@ public class WizardViewImplTest {
 
         verify(presenter).close();
         verify(view).parentOnUnload();
+    }
+
+    @Test
+    public void testHide() {
+        final WizardPage firstWizardPageMock = mock(WizardPage.class);
+        final WizardPage secondWizardPageMock = mock(WizardPage.class);
+
+        final WizardPageTitle firstTitleMock = mock(WizardPageTitle.class);
+        final WizardPageTitle secondTitleMock = mock(WizardPageTitle.class);
+
+        doReturn(firstTitleMock).when(view).makeWizardPageTitle(firstWizardPageMock);
+        doReturn(secondTitleMock).when(view).makeWizardPageTitle(secondWizardPageMock);
+
+        view.setPageTitles(Arrays.asList(firstWizardPageMock, secondWizardPageMock));
+
+        assertEquals(2, pageTitleWidgets.size());
+
+        view.hide();
+
+        verify(iocBeanManager).destroyBean(firstTitleMock);
+        verify(iocBeanManager).destroyBean(secondTitleMock);
+        assertEquals(0, pageTitleWidgets.size());
     }
 }

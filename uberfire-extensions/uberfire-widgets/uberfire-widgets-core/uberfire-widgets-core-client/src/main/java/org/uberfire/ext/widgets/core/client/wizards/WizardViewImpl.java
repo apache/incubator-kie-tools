@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.core.client.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -50,8 +51,8 @@ public class WizardViewImpl extends BaseModal
 
     protected WizardPopupFooter footer;
     @Inject
-    private SyncBeanManager iocBeanManager;
-    private List<WizardPageTitle> pageTitleWidgets = new ArrayList<WizardPageTitle>();
+    protected SyncBeanManager iocBeanManager;
+    protected List<WizardPageTitle> pageTitleWidgets = new ArrayList<>();
     private int pageNumber;
     private int pageNumberTotal;
     private AbstractWizard presenter;
@@ -138,7 +139,7 @@ public class WizardViewImpl extends BaseModal
         pageTitleWidgets.clear();
     }
 
-    private WizardPageTitle makeWizardPageTitle(final WizardPage page) {
+    protected WizardPageTitle makeWizardPageTitle(final WizardPage page) {
         final SyncBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean(WizardPageTitle.class);
         final WizardPageTitle bean = beanDefinition.getInstance();
         bean.setContent(page);
@@ -193,6 +194,12 @@ public class WizardViewImpl extends BaseModal
     @Override
     public void show() {
         super.show();
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        releaseWizardPageTitles();
     }
 
     interface WizardActivityViewImplBinder
