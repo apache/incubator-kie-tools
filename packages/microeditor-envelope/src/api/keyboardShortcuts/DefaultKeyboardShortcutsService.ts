@@ -114,7 +114,10 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
             onKeyDown(e.target);
           }
         } else if (e.type === "keyup") {
-          if (setsEqual(this.combinationKeySet(combination), new Set([MODIFIER_KEY_NAMES.get(e.code)]))) {
+          if (
+            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(e.code) ?? "") ||
+            this.combinationKeySet(combination).has(e.code)
+          ) {
             console.debug(`Fired (up) [${combination}]!`);
             onKeyUp(e.target);
           }

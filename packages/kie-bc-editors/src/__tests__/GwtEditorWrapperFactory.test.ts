@@ -18,10 +18,6 @@ import { GwtAppFormerApi } from "../GwtAppFormerApi";
 import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 
-const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
-};
-
 const gwtAppFormerApi: GwtAppFormerApi = {
   onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
