@@ -8,6 +8,7 @@ Today we have these scripts:
 - [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
 - [update-artifacts.py](update-artifacts.py)
+- [common.py](common.py)
 
 ### Managing Kogito images version
 
@@ -21,7 +22,7 @@ The `manage-kogito-version.py` has one dependency that needs to be manually inst
 ```bash
 $ pip install -U ruamel.yaml
 ```
-
+This script has a dependency on `common.py`.
 Its usage is pretty simple, only one parameter is accepted:
 
 ```bash
@@ -72,12 +73,20 @@ $ /bin/sh scripts/push-local-registry.sh my_registry_address 0.10 my_namespace
 Staging images are the release candidates which are pushed mainly after big changes that has direct impact on how
 the images will behave and also when new functionality is added.
 
+The script updates the version on:
+
+ - all cekit modules
+ - image.yaml file descriptor
+ - kogito-imagestream.yaml
+ 
+
 #### Script dependencies
 
-The `push-stating.py` has a few dependencies that probably needs to be manually installed:
+The `push-staging.py` has a few dependencies that probably needs to be manually installed:
 
 ```bash
 $ pip install -U docker yaml
+$ pip install -U ruamel.yaml
 ```
 
 This script is called as the last step of the `make push-staging` command defined on the [Makefile](../Makefile).
@@ -116,3 +125,5 @@ The command will update the needed files with latest snapshot URL:
  - kogito-data-index/module.yaml
  - kogito-jobs-service/module.yaml
  - kogito-management-console/module.yaml
+### Common script
+The `common.py` script defines some common functions for the scripts.

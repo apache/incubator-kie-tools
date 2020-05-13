@@ -6,11 +6,14 @@
 # export QUAY_TOKEN=XXXXX
 # this token can be retrieved from https://quay.io/repository/kiegroup
 #
+import sys
+sys.dont_write_bytecode = True
 
 import docker
 import os
 import requests
 import yaml
+import common
 
 # All Kogito images
 IMAGES = ["kogito-quarkus-ubi8", "kogito-quarkus-jvm-ubi8", "kogito-quarkus-ubi8-s2i",
@@ -40,7 +43,7 @@ def fetch_tag(image):
     :param image: image to be verified
     :return: the next rc tag
     '''
-    version = CURRENT_IMAGE_VERSION
+    version = find_current_rc_version()
     while True:
         url = 'https://quay.io/api/v1/repository/kiegroup/{}/tag/{}/images'.format(image, version)
         print("Defining latest rc tag for image %s with url %s" % (image, url))
@@ -53,7 +56,7 @@ def fetch_tag(image):
             # increase number
             current_number = version[-1]
             print("Image found, current rc tag number is %s, increasing..." % current_number)
-            version = str.replace(version, current_number, str(int(current_number) + 1))
+            version = get_next_rc_version(version)
 
 
 def tag_and_push_images():
@@ -112,20 +115,30 @@ def find_current_rc_version():
     If the current version already includes the rc tag, keep it, otherwise add it -rc1 tag.
     :return: the current image tag version
     '''
-    global CURRENT_IMAGE_VERSION
     version = get_current_version()
     if '-rc' in version:
         CURRENT_IMAGE_VERSION = version
     else:
         CURRENT_IMAGE_VERSION = version+'-rc1'
-    print("Current initial version is %s" % CURRENT_IMAGE_VERSION)
+    return CURRENT_IMAGE_VERSION
 
+def get_next_rc_version(current_rc_version):
+    '''
+    After finding the current rc tag of the image, adds one to it
+    e.g: 0.10.0-rc1 will returned as 0.10.0-rc2
+    :param current_rc_version: takes the current rc version of the image as input
+    :return: returns the next rc version of the image
+    '''    
+    return (current_rc_version.split("rc")[0] + "rc" + str(int(current_rc_version.split("rc")[1]) + 1 ))
 
 if __name__ == "__main__":
     if 'QUAY_TOKEN' not in  os.environ:
         print("Env QUAY_TOKEN not found, aborting...")
         os._exit(1)
-    find_current_rc_version()
+    version = get_next_rc_version(find_current_rc_version())
+    common.update_image_version(version)
+    common.update_image_stream(version)
+    common.update_kogito_modules(version)
+
     find_next_tag()
     tag_and_push_images()
-
