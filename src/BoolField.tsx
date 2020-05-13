@@ -1,8 +1,6 @@
 import React from 'react';
-import { Checkbox, CheckboxProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms';
-
-import wrapField from './wrapField';
+import { Checkbox, CheckboxProps, Switch } from '@patternfly/react-core';
+import { connectField, filterDOMProps } from 'uniforms/es5';
 
 export type BoolFieldProps = {
   appearance?: 'checkbox' | 'switch';
@@ -21,19 +19,27 @@ const Bool = ({
   name,
   onChange,
   value,
+  toggle,
   ...props
-}) => (
-  <div {...filterDOMProps(props)}>
-    <Checkbox
-      isChecked={!!value}
-      isDisabled={disabled}
-      id={id}
-      name={name}
-      onChange={() => disabled || onChange(!value)}
-      ref={inputRef}
-      label={label}
-    />
-  </div>
-);
+}) => {
+  const Component = (props.appearance === 'switch') ? Switch : Checkbox;
+  return (
+    <div {...filterDOMProps(props)}>
+      <Component
+        isChecked={!!value}
+        isDisabled={disabled}
+        id={id}
+        name={name}
+        onChange={() => disabled || onChange(!value)}
+        ref={inputRef}
+        label={label}
+      />
+    </div>
+  );
+};
+
+Bool.defaultProps = {
+  appearance: 'checkbox'
+};
 
 export default connectField(Bool);
