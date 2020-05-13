@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --incremental",
-    "clean": "rimraf dist coverage && tsc",
+    "clean": "rimraf dist coverage tsconfig.tsbuildinfo && tsc",
     "coverage": "jest --coverage",
     "lint": "eslint --ext js,ts,tsx src",
     "reset": "rimraf dist node_modules",

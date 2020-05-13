@@ -10,13 +10,14 @@
     "jsx": "react",
     "moduleResolution": "node",
     "noImplicitAny": false,
+    // "allowJs": true,
     "paths": {
       "uniforms": ["/node_modules/uniforms/es5"],
     },
     "strict": true
   },
   "exclude": [
-    // "node_modules",
+    "node_modules",
     "dist",
     "example",
     "examples",
