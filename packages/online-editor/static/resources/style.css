@@ -212,3 +212,7 @@
 .kogito--editor__toolbar-icon-button {
   --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
 }
+
+.kogito--editor__toolbar-toggle-icon-button {
+  --pf-c-dropdown__toggle--FontSize: var(--pf-global--icon--FontSize--md);
+}

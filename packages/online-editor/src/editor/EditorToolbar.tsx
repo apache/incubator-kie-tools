@@ -184,6 +184,7 @@ export function EditorToolbar(props: Props) {
             toggle={
               <DropdownToggle
                 id={"toggle-id-lg"}
+                className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
                 iconComponent={CaretDownIcon}
               >
@@ -203,6 +204,7 @@ export function EditorToolbar(props: Props) {
             onSelect={() => setKebabOpen(false)}
             toggle={
               <DropdownToggle
+                className={"kogito--editor__toolbar-toggle-icon-button"}
                 id={"toggle-id-sm"}
                 onToggle={isOpen => setKebabOpen(isOpen)}
                 iconComponent={EllipsisVIcon}
@@ -216,14 +218,24 @@ export function EditorToolbar(props: Props) {
         </ToolbarItem>
 
         <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
-          <Button variant={"plain"} onClick={props.onFullScreen} aria-label={"Full screen"}>
-            <ExpandIcon className={"kogito--editor__toolbar-icon-button"}/>
+          <Button
+            className={"kogito--editor__toolbar-icon-button"}
+            variant={"plain"}
+            onClick={props.onFullScreen}
+            aria-label={"Full screen"}
+          >
+            <ExpandIcon />
           </Button>
         </ToolbarItem>
         {!context.external && (
           <ToolbarItem>
-            <Button variant={"plain"} onClick={props.onClose} aria-label={"Close"}>
-              <CloseIcon className={"kogito--editor__toolbar-icon-button"}/>
+            <Button
+              className={"kogito--editor__toolbar-icon-button"}
+              variant={"plain"}
+              onClick={props.onClose}
+              aria-label={"Close"}
+            >
+              <CloseIcon />
             </Button>
           </ToolbarItem>
         )}
