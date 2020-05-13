@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps } from '@patternfly/react-core';
-import { useForm, filterDOMProps } from 'uniforms';
+import { useForm, filterDOMProps } from 'uniforms/es5';
 
 export type SubmitFieldProps = {
   inputRef: undefined;

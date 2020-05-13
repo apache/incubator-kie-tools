@@ -1,6 +1,6 @@
 import React, { Ref } from 'react';
 import { TextArea, TextAreaProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms';
+import { connectField, filterDOMProps } from 'uniforms/es5';
 
 export type LongTextFieldProps = {
   onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;

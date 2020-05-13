@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import { ComponentType, createElement } from 'react';
-import { useField } from 'uniforms';
+import { useField } from 'uniforms/es5';
 
 import BoolField from './BoolField';
 import DateField from './DateField';

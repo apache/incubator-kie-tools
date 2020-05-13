@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from '@patternfly/react-core';
-import { BaseForm, context } from 'uniforms';
+import { BaseForm, context } from 'uniforms/es5';
 
 function Patternfly(parent: any): any {
   class _ extends parent {
