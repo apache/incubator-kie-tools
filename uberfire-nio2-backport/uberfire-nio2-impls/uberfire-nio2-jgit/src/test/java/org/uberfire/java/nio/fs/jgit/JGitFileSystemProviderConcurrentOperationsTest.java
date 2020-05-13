@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,10 @@ public class JGitFileSystemProviderConcurrentOperationsTest extends AbstractTest
 
     private Logger logger = LoggerFactory.getLogger(JGitFileSystemProviderConcurrentOperationsTest.class);
 
+    /**
+     * Ignored due to https://issues.redhat.com/browse/AF-2470
+     */
+    @Ignore
     @Test
     public void testConcurrentGitCreation() {
 
