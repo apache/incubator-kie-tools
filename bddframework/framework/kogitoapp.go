@@ -36,6 +36,15 @@ const (
 	boxExamplesPath = "../../deploy/examples"
 )
 
+// KogitoAppHolder Helper structure holding information which are not available in KogitoApp
+type KogitoAppHolder struct {
+	* v1alpha1.KogitoApp
+	Infinispan struct {
+		Username string
+		Password string
+	}
+}
+
 // DeployService deploy a Kogito service
 func DeployService(namespace string, installerType InstallerType, kogitoApp *v1alpha1.KogitoApp) error {
 	GetLogger(namespace).Infof("%s deploy %s example %s with name %s, native %v, persistence %v, events %v and labels %v", installerType, kogitoApp.Spec.Runtime, kogitoApp.Spec.Build.GitSource.ContextDir, kogitoApp.Name, kogitoApp.Spec.Build.Native, kogitoApp.Spec.EnablePersistence, kogitoApp.Spec.EnableEvents, kogitoApp.Spec.Service.Labels)
@@ -274,4 +283,9 @@ func getBuildImage(imageName string) string {
 	}
 
 	return framework.ConvertImageToImageTag(image)
+}
+
+// IsInfinispanUsernameSpecified Returns true if Infinispan username is specified
+func (serviceHolder *KogitoAppHolder) IsInfinispanUsernameSpecified() bool {
+	return len(serviceHolder.Infinispan.Username) > 0
 }

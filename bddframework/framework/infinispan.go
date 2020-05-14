@@ -21,6 +21,7 @@ import (
 
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	infinispaninfra "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/infinispan"
 )
@@ -46,6 +47,49 @@ func CreateInfinispanSecret(namespace, name string, credentialsMap map[string]st
 	}
 
 	return CreateSecret(namespace, name, map[string]string{infinispaninfra.IdentityFileName: credentialsFileData})
+}
+
+// WaitForInfinispanPodsToBeRunningWithConfig waits for an Infinispan pod to be running with the expected configuration
+func WaitForInfinispanPodsToBeRunningWithConfig(namespace string, expectedConfig infinispan.InfinispanContainerSpec, numberOfPods, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Infinispan pod to be running with expected configuration: %+v", expectedConfig), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsWithLabels(namespace, map[string]string{"app": "infinispan-pod"})
+			if err != nil || len(pods.Items) != numberOfPods {
+				return false, err
+			}
+
+			for _, pod := range pods.Items {
+				// First check that the pod is really running
+				if !IsPodStatusConditionReady(&pod) {
+					return false, nil
+				}
+				if !checkContainersResources(pod.Spec.Containers, getResourceRequirements(expectedConfig.CPU, expectedConfig.Memory)) {
+					return false, nil
+				}
+				if !checkPodContainerHasEnvVariableWithValue(&pod, "infinispan", "EXTRA_JAVA_OPTIONS", expectedConfig.ExtraJvmOpts) {
+					return false, nil
+				}
+			}
+
+			return true, nil
+		})
+
+}
+
+// GetInfinispanStub returns the preconfigured Infinispan stub with set namespace, name and secretName
+func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispan {
+	return &infinispan.Infinispan{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      name,
+		},
+		Spec: infinispan.InfinispanSpec{
+			Replicas: 1,
+			Security: infinispan.InfinispanSecurity{
+				EndpointSecretName: secretName,
+			},
+		},
+	}
 }
 
 func convertInfinispanCredentialsToYaml(credentialsMap map[string]string) (string, error) {

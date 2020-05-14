@@ -17,12 +17,70 @@ package steps
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+)
+
+/*
+	DataTable for KogitoApp:
+	| config          | native      | true/false                |
+	| config          | persistence | true/false                |
+	| config          | events      | true/false                |
+	| build-env       | varName     | varValue                  |
+	| runtime-env     | varName     | varValue                  |
+	| label           | labelKey 	| labelValue                |
+	| build-request   | cpu/memory  | value                     |
+	| build-limit     | cpu/memory  | value                     |
+	| runtime-request | cpu/memory  | value                     |
+	| runtime-limit   | cpu/memory  | value                     |
+	| infinispan      | username    | developer                 |
+	| infinispan      | password    | mypass                    |
+	| infinispan      | uri         | external-infinispan:11222 |
+*/
+
+const (
+	mavenArgsAppendEnvVar = "MAVEN_ARGS_APPEND"
+	javaOptionsEnvVar     = "JAVA_OPTIONS"
+
+	// DataTable first column
+	kogitoAppConfigKey         = "config"
+	kogitoAppBuildEnvKey       = "build-env"
+	kogitoAppRuntimeEnvKey     = "runtime-env"
+	kogitoAppLabelKey          = "label"
+	kogitoAppBuildRequestKey   = "build-request"
+	kogitoAppBuildLimitKey     = "build-limit"
+	kogitoAppRuntimeRequestKey = "runtime-request"
+	kogitoAppRuntimeLimitKey   = "runtime-limit"
+	kogitoAppInfinispanKey     = "infinispan"
+
+	// DataTable Config second column
+	kogitoAppNativeKey             = "native"
+	kogitoAppPersistenceKey        = "persistence"
+	kogitoAppEventsKey             = "events"
+
+	// DataTable Infinispan second column
+	kogitoAppInfinispanUsernameKey = "username"
+	kogitoAppInfinispanPasswordKey = "password"
+	kogitoAppURIKey                = "uri"
+
+	// Infinispan environment variables
+	// Quarkus
+	quarkusEnvVarInfinispanServerList    = "QUARKUS_INFINISPAN_CLIENT_SERVER_LIST"
+	quarkusEnvVarInfinispanUseAuth       = "QUARKUS_INFINISPAN_CLIENT_USE_AUTH"
+	quarkusEnvVarInfinispanUser          = "QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME"
+	quarkusEnvVarInfinispanPassword      = "QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD"
+	quarkusEnvVarInfinispanSaslMechanism = "QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM"
+	// Spring Boot
+	springBootEnvVarInfinispanServerList    = "INFINISPAN_REMOTE_SERVER_LIST"
+	springBootEnvVarInfinispanUseAuth       = "INFINISPAN_REMOTE_USE_AUTH"
+	springBootEnvVarInfinispanUser          = "INFINISPAN_REMOTE_AUTH_USERNAME"
+	springBootEnvVarInfinispanPassword      = "INFINISPAN_REMOTE_AUTH_PASSWORD"
+	springBootEnvVarInfinispanSaslMechanism = "INFINISPAN_REMOTE_SASL_MECHANISM"
 )
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
@@ -46,16 +104,26 @@ func registerKogitoAppSteps(s *godog.Suite, data *Data) {
 // Deploy service steps
 
 func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) error {
-	kogitoApp, err := getKogitoAppExamplesStub(data.Namespace, runtimeType, contextDir, table)
+	kogitoAppHolder, err := getKogitoAppHolder(data.Namespace, runtimeType, filepath.Base(contextDir), table)
 	if err != nil {
 		return err
 	}
 
-	if kogitoApp.Spec.Runtime != v1alpha1.QuarkusRuntimeType && kogitoApp.Spec.Build.Native {
-		return fmt.Errorf(runtimeType + " does not support native build")
+	kogitoAppHolder.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
+	kogitoAppHolder.Spec.Build.GitSource.ContextDir = contextDir
+
+	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
+		kogitoAppHolder.Spec.Build.GitSource.Reference = ref
 	}
 
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+	if kogitoAppHolder.IsInfinispanUsernameSpecified() {
+		// Can be implemented when https://issues.redhat.com/browse/KOGITO-2119 is resolved
+		// If Infinispan authentication is set, a secret holding Infinispan credentials needs to be created and KogitoApp env variables set
+		//framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: kogitoAppHolder.Infinispan.Username, passwordSecretKey: kogitoAppHolder.Infinispan.Password})
+		addInfinispanEnvVars(kogitoAppHolder)
+	}
+
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoAppHolder.KogitoApp)
 }
 
 func (data *Data) createService(runtimeType, serviceName string) error {
@@ -63,12 +131,19 @@ func (data *Data) createService(runtimeType, serviceName string) error {
 }
 
 func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
-	kogitoApp := framework.GetKogitoAppStub(data.Namespace, runtimeType, serviceName)
-	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
+	kogitoAppHolder, err := getKogitoAppHolder(data.Namespace, runtimeType, serviceName, table)
+	if err != nil {
 		return err
 	}
 
-	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoApp)
+	if kogitoAppHolder.IsInfinispanUsernameSpecified() {
+		// Can be implemented when https://issues.redhat.com/browse/KOGITO-2119 is resolved
+		// If Infinispan authentication is set, a secret holding Infinispan credentials needs to be created and KogitoApp env variables set
+		//framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: kogitoAppHolder.Infinispan.Username, passwordSecretKey: kogitoAppHolder.Infinispan.Password})
+		addInfinispanEnvVars(kogitoAppHolder)
+	}
+
+	return framework.DeployService(data.Namespace, framework.GetDefaultInstallerType(), kogitoAppHolder.KogitoApp)
 }
 
 func (data *Data) deployServiceFromExampleFile(runtimeType, exampleFile string) error {
@@ -106,20 +181,156 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 
 // Misc methods
 
-// getKogitoAppExampleStub Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
-func getKogitoAppExamplesStub(namespace, runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoApp, error) {
-	kogitoApp := framework.GetKogitoAppStub(namespace, runtimeType, filepath.Base(contextDir))
-
-	kogitoApp.Spec.Build.GitSource.URI = config.GetExamplesRepositoryURI()
-	kogitoApp.Spec.Build.GitSource.ContextDir = contextDir
-
-	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
-		kogitoApp.Spec.Build.GitSource.Reference = ref
+// getKogitoAppHolder Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
+func getKogitoAppHolder(namespace, runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) (*framework.KogitoAppHolder, error) {
+	kogitoApp := &framework.KogitoAppHolder{
+		KogitoApp: framework.GetKogitoAppStub(namespace, runtimeType, serviceName),
 	}
 
 	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return nil, err
 	}
 
+	if kogitoApp.Spec.Runtime != v1alpha1.QuarkusRuntimeType && kogitoApp.Spec.Build.Native {
+		return nil, fmt.Errorf(runtimeType + " does not support native build")
+	}
+
 	return kogitoApp, nil
+}
+
+func addInfinispanEnvVars(kogitoApp *framework.KogitoAppHolder) {
+	if kogitoApp.Spec.Runtime == v1alpha1.QuarkusRuntimeType {
+		kogitoApp.Spec.AddEnvironmentVariable(quarkusEnvVarInfinispanUseAuth, "true")
+		kogitoApp.Spec.AddEnvironmentVariable(quarkusEnvVarInfinispanUser, kogitoApp.Infinispan.Username)
+		kogitoApp.Spec.AddEnvironmentVariable(quarkusEnvVarInfinispanPassword, kogitoApp.Infinispan.Password)
+		// Can be implemented when https://issues.redhat.com/browse/KOGITO-2119 is resolved
+		//kogitoApp.Spec.AddEnvironmentVariableFromSecret(quarkusEnvVarInfinispanUser, kogitoExternalInfinispanSecret, usernameSecretKey)
+		//kogitoApp.Spec.AddEnvironmentVariableFromSecret(quarkusEnvVarInfinispanPassword, kogitoExternalInfinispanSecret, passwordSecretKey)
+		kogitoApp.Spec.AddEnvironmentVariable(quarkusEnvVarInfinispanSaslMechanism, string(v1alpha1.SASLPlain))
+	} else {
+		kogitoApp.Spec.AddEnvironmentVariable(springBootEnvVarInfinispanUseAuth, "true")
+		kogitoApp.Spec.AddEnvironmentVariable(springBootEnvVarInfinispanUser, kogitoApp.Infinispan.Username)
+		kogitoApp.Spec.AddEnvironmentVariable(springBootEnvVarInfinispanPassword, kogitoApp.Infinispan.Password)
+		// Can be implemented when https://issues.redhat.com/browse/KOGITO-2119 is resolved
+		//kogitoApp.Spec.AddEnvironmentVariableFromSecret(springBootEnvVarInfinispanUser, kogitoExternalInfinispanSecret, usernameSecretKey)
+		//kogitoApp.Spec.AddEnvironmentVariableFromSecret(springBootEnvVarInfinispanPassword, kogitoExternalInfinispanSecret, passwordSecretKey)
+		kogitoApp.Spec.AddEnvironmentVariable(springBootEnvVarInfinispanSaslMechanism, string(v1alpha1.SASLPlain))
+	}
+}
+
+func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable, kogitoApp *framework.KogitoAppHolder) error {
+	if len(table.Rows) == 0 { // Using default configuration
+		return nil
+	}
+
+	if len(table.Rows[0].Cells) != 3 {
+		return fmt.Errorf("expected table to have exactly three columns")
+	}
+
+	var profiles []string
+
+	for _, row := range table.Rows {
+		firstColumn := getFirstColumn(row)
+		switch firstColumn {
+		case kogitoAppConfigKey:
+			parseKogitoAppConfigRow(row, kogitoApp, &profiles)
+
+		case kogitoAppBuildEnvKey:
+			kogitoApp.Spec.Build.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppRuntimeEnvKey:
+			kogitoApp.Spec.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppLabelKey:
+			kogitoApp.Spec.Service.Labels[getSecondColumn(row)] = getThirdColumn(row)
+
+		case kogitoAppBuildRequestKey:
+			kogitoApp.Spec.Build.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppBuildLimitKey:
+			kogitoApp.Spec.Build.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppRuntimeRequestKey:
+			kogitoApp.Spec.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppRuntimeLimitKey:
+			kogitoApp.Spec.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoAppInfinispanKey:
+			parseKogitoAppInfinispanRow(row, kogitoApp, &profiles)
+
+		default:
+			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
+		}
+	}
+
+	if len(profiles) > 0 {
+		kogitoApp.Spec.Build.AddEnvironmentVariable(mavenArgsAppendEnvVar, "-P"+strings.Join(profiles, ","))
+	}
+
+	addDefaultJavaOptionsIfNotProvided(kogitoApp)
+
+	return nil
+}
+
+func parseKogitoAppConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+	secondColumn := getSecondColumn(row)
+
+	switch secondColumn {
+	case kogitoAppNativeKey:
+		native := framework.MustParseEnabledDisabled(getThirdColumn(row))
+		if native {
+			kogitoApp.Spec.Build.Native = native
+			// Make sure that enough memory is allocated for builder pod in case of native build
+			kogitoApp.Spec.Build.AddResourceRequest("memory", "4Gi")
+		}
+
+	case kogitoAppPersistenceKey:
+		persistence := framework.MustParseEnabledDisabled(getThirdColumn(row))
+		if persistence {
+			*profilesPtr = append(*profilesPtr, "persistence")
+			kogitoApp.Spec.EnablePersistence = true
+		}
+
+	case kogitoAppEventsKey:
+		events := framework.MustParseEnabledDisabled(getThirdColumn(row))
+		if events {
+			*profilesPtr = append(*profilesPtr, "events")
+			kogitoApp.Spec.EnableEvents = true
+		}
+	}
+}
+
+func parseKogitoAppInfinispanRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+	secondColumn := getSecondColumn(row)
+
+	switch secondColumn {
+	case kogitoAppInfinispanUsernameKey:
+		kogitoApp.Infinispan.Username = getThirdColumn(row)
+
+	case kogitoAppInfinispanPasswordKey:
+		kogitoApp.Infinispan.Password = getThirdColumn(row)
+
+	case kogitoAppURIKey:
+		infinispanServerListVariable := quarkusEnvVarInfinispanServerList
+		if kogitoApp.Spec.Runtime == v1alpha1.SpringbootRuntimeType {
+			infinispanServerListVariable = springBootEnvVarInfinispanServerList
+		}
+		kogitoApp.Spec.AddEnvironmentVariable(infinispanServerListVariable, getThirdColumn(row))
+		*profilesPtr = append(*profilesPtr, "persistence")
+	}
+}
+
+func addDefaultJavaOptionsIfNotProvided(kogitoApp *framework.KogitoAppHolder) {
+	javaOptionsProvided := false
+	for _, env := range kogitoApp.Spec.Envs {
+		if env.Name == javaOptionsEnvVar {
+			javaOptionsProvided = true
+			break
+		}
+	}
+
+	if !javaOptionsProvided {
+		kogitoApp.Spec.AddEnvironmentVariable(javaOptionsEnvVar, "-Xmx2G")
+	}
 }

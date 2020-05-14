@@ -56,6 +56,13 @@ func toResourceList(resources string) corev1.ResourceList {
 	return resourceList
 }
 
+func getResourceRequirements(cpu, memory string) corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Limits:   corev1.ResourceList{"cpu": resource.MustParse(cpu), "memory":resource.MustParse(memory)},
+		Requests: corev1.ResourceList{"cpu": resource.MustParse(cpu), "memory":resource.MustParse(memory)},
+	}
+}
+
 func checkResourcesInBuildConfig(namespace string, buildConfigName string, expected corev1.ResourceRequirements) (bool, error) {
 	bc, err := getBuildConfig(namespace, buildConfigName)
 	if err != nil {

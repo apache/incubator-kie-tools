@@ -22,38 +22,43 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+/*
+	DataTable for Infinispan:
+	| username | developer |
+	| password | mypass    |
+*/
+
 const (
-	//DataTable first column
-	infinispanUsernameKey     = "username"
-	infinispanPasswordNameKey = "password"
+	// DataTable first column
+	infinispanUsernameKey = "username"
+	infinispanPasswordKey = "password"
+
+	externalInfinispanSecret       = "external-infinispan-secret"
+	kogitoExternalInfinispanSecret = "kogito-external-infinispan-secret"
+	usernameSecretKey              = "user"
+	passwordSecretKey              = "pass"
 )
+
+var performanceInfinispanContainerSpec = infinispan.InfinispanContainerSpec{
+	ExtraJvmOpts: "-Xmx2G",
+	Memory:       "3Gi",
+	CPU:          "1",
+}
 
 func registerInfinispanSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
+	s.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
 }
 
 func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, table *messages.PickleStepArgument_PickleTable) error {
-	infinispanSecret := "external-infinispan-secret"
-
-	if err := data.createInfinispanSecret(infinispanSecret, table); err != nil {
+	if err := createInfinispanSecret(data.Namespace, externalInfinispanSecret, table); err != nil {
 		return err
 	}
 
-	infinispan := &infinispan.Infinispan{
-		ObjectMeta: metav1.ObjectMeta{
-			Namespace: data.Namespace,
-			Name:      name,
-		},
-		Spec: infinispan.InfinispanSpec{
-			Replicas: 1,
-			Security: infinispan.InfinispanSecurity{
-				EndpointSecretName: infinispanSecret,
-			},
-		},
-	}
+	infinispan := framework.GetInfinispanStub(data.Namespace, name, externalInfinispanSecret)
+
 	if err := framework.DeployInfinispanInstance(data.Namespace, infinispan); err != nil {
 		return err
 	}
@@ -61,7 +66,25 @@ func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, tab
 	return framework.WaitForPodsWithLabel(data.Namespace, "app", "infinispan-pod", 1, 3)
 }
 
-func (data *Data) createInfinispanSecret(name string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration(name string, timeOutInMin int, table *messages.PickleStepArgument_PickleTable) error {
+	if err := createInfinispanSecret(data.Namespace, externalInfinispanSecret, table); err != nil {
+		return err
+	}
+
+	infinispan := framework.GetInfinispanStub(data.Namespace, name, externalInfinispanSecret)
+	// Add performance-specific container spec
+	infinispan.Spec.Container = performanceInfinispanContainerSpec
+
+	if err := framework.DeployInfinispanInstance(data.Namespace, infinispan); err != nil {
+		return err
+	}
+
+	return framework.WaitForInfinispanPodsToBeRunningWithConfig(data.Namespace, performanceInfinispanContainerSpec, 1, timeOutInMin)
+}
+
+// Misc methods
+
+func createInfinispanSecret(namespace, secretName string, table *messages.PickleStepArgument_PickleTable) error {
 	credentials := make(map[string]string)
 	credentials["operator"] = "supersecretoperatorpassword" // Credentials required by Infinispan operator
 
@@ -72,7 +95,7 @@ func (data *Data) createInfinispanSecret(name string, table *messages.PickleStep
 		credentials[username] = password
 	}
 
-	return framework.CreateInfinispanSecret(data.Namespace, name, credentials)
+	return framework.CreateInfinispanSecret(namespace, secretName, credentials)
 }
 
 // Table parsing
@@ -92,7 +115,7 @@ func getInfinispanCredentialsFromTable(table *messages.PickleStepArgument_Pickle
 		switch firstColumn {
 		case infinispanUsernameKey:
 			username = getSecondColumn(row)
-		case infinispanPasswordNameKey:
+		case infinispanPasswordKey:
 			password = getSecondColumn(row)
 
 		default:
