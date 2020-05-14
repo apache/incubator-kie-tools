@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kogito-tooling/core-api";
+import {
+  ChannelType,
+  ResourceContent,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList
+} from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useCallback } from "react";
 import { File } from "../common/File";
@@ -31,22 +37,29 @@ interface Props {
 }
 
 export const EmbeddedViewer = (props: Props) => {
+  const noop = useCallback((...args: any) => {
+    /*NO OP*/
+  }, []);
 
-  const noop = useCallback((...args: any) => { /*NO OP*/ }, []);
+  const onResourceContentRequest = useCallback(
+    (request: ResourceContentRequest) => {
+      if (props.onResourceContentRequest) {
+        return props.onResourceContentRequest(request);
+      }
+      return Promise.resolve(new ResourceContent(request.path, undefined));
+    },
+    [props.onResourceContentRequest]
+  );
 
-  const onResourceContentRequest = useCallback((request: ResourceContentRequest) => {
-    if (props.onResourceContentRequest) {
-      return props.onResourceContentRequest(request);
-    }
-    return Promise.resolve(new ResourceContent(request.path, undefined));
-  }, [props.onResourceContentRequest]);
-
-  const onResourceListRequest = useCallback((request: ResourceListRequest) => {
-    if (props.onResourceListRequest) {
-      return props.onResourceListRequest(request);
-    }
-    return Promise.resolve(new ResourcesList(request.pattern, []));
-  }, [props.onResourceListRequest]);
+  const onResourceListRequest = useCallback(
+    (request: ResourceListRequest) => {
+      if (props.onResourceListRequest) {
+        return props.onResourceListRequest(request);
+      }
+      return Promise.resolve(new ResourcesList(request.pattern, []));
+    },
+    [props.onResourceListRequest]
+  );
 
   return (
     <EmbeddedEditor

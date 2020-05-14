@@ -44,16 +44,17 @@ interface Props {
 export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
-  const router: EmbeddedEditorRouter = useMemo(() =>
-    new EmbeddedEditorRouter(
-      new GwtEditorRoutes(
-        {
-          dmnPath: "gwt-editors/" + EditorType.DMN,
-          bpmnPath: "gwt-editors/" + EditorType.BPMN,
-          scesimPath: "gwt-editors/" + EditorType.SCESIM
-        }
-      )
-    ), []);
+  const router: EmbeddedEditorRouter = useMemo(
+    () =>
+      new EmbeddedEditorRouter(
+        new GwtEditorRoutes({
+          dmnPath: "gwt-editors/dmn",
+          bpmnPath: "gwt-editors/bpmn",
+          scesimPath: "gwt-editors/scesim"
+        })
+      ),
+    []
+  );
 
   const onFileOpened = useCallback(fileOpened => {
     setFile(fileOpened);

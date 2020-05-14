@@ -51,9 +51,9 @@ export function App(props: Props) {
     () =>
       new EmbeddedEditorRouter(
         new GwtEditorRoutes({
-          dmnPath: "gwt-editors/" + EditorType.DMN,
-          bpmnPath: "gwt-editors/" + EditorType.BPMN,
-          scesimPath: "gwt-editors/" + EditorType.SCESIM
+          dmnPath: "gwt-editors/dmn",
+          bpmnPath: "gwt-editors/bpmn",
+          scesimPath: "gwt-editors/scesim"
         })
       ),
     []

@@ -74,8 +74,8 @@ module.exports = async (env, argv) => {
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
         { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/dmn", to: "./gwt-editors/dmn" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/gwt-editors/bpmn", to: "./gwt-editors/bpmn" }
+        { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
+        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ],
     module: {
@@ -126,10 +126,7 @@ module.exports = async (env, argv) => {
       },
       disableHostCheck: true,
       watchContentBase: true,
-      contentBase: [
-        path.join(__dirname, "./dist"),
-        path.join(__dirname, "./static")
-      ],
+      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
       port: 9001
     },

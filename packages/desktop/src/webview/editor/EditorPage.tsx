@@ -165,10 +165,13 @@ export function EditorPage(props: Props) {
   }, [savePreviewSuccessAlertVisible, closeSavePreviewSuccessAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("requestOpenedFile", (event: IpcRendererEvent, data: { action: FileSaveActions, file?: File }) => {
-      contentRequestData = data;
-      requestSaveFile();
-    });
+    electron.ipcRenderer.on(
+      "requestOpenedFile",
+      (event: IpcRendererEvent, data: { action: FileSaveActions; file?: File }) => {
+        contentRequestData = data;
+        requestSaveFile();
+      }
+    );
 
     return () => {
       electron.ipcRenderer.removeAllListeners("requestOpenedFile");
@@ -232,7 +235,7 @@ export function EditorPage(props: Props) {
       editorType: context.file?.fileType as EditorType,
       getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
       isReadOnly: false
-    }
+    };
   }, [context.file?.filePath, context.file?.fileType, context.file?.fileContent]);
 
   return (

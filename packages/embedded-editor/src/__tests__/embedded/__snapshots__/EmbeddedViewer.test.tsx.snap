@@ -2,6 +2,12 @@
 
 exports[`EmbeddedViewer EmbeddedViewer::defaults 1`] = `
 <body>
+  <div
+    id="loading-screen"
+  />
+  <div
+    id="envelopeContainer"
+  />
   <div>
     <iframe
       data-envelope-channel="ONLINE"

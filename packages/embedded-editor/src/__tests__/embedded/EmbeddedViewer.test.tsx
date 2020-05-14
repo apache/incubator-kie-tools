@@ -14,94 +14,157 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  ChannelType,
+  ContentType,
+  LanguageData,
+  ResourceContentRequest,
+  ResourceListRequest
+} from "@kogito-tooling/core-api";
+import {
+  EditorEnvelopeController,
+  ResourceContentEditorCoordinator,
+  SpecialDomElements
+} from "@kogito-tooling/microeditor-envelope";
+import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { EditorType } from "../../common/EditorTypes";
 import { File } from "../../common/File";
 import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
 import { EmbeddedViewer } from "../../embedded/EmbeddedViewer";
-import * as EnvelopeFactory from "../../embedded/EnvelopeBusOuterMessageHandlerFactory";
+import { DummyEditor } from "./DummyEditor";
 
-describe("EmbeddedViewer",
-    () => {
+const StateControlMock = jest.fn(() => ({
+  undo: jest.fn(),
+  redo: jest.fn(),
+  registry: jest.fn()
+}));
 
-        const file: File = {
-            fileName: "test",
-            editorType: EditorType.DMN,
-            getFileContents: () => Promise.resolve(""),
-            isReadOnly: false
-        };
-        const router: EmbeddedEditorRouter = new EmbeddedEditorRouter();
-        const channelType: ChannelType = ChannelType.ONLINE;
-        const envelopeFactorySpy = jest.spyOn(EnvelopeFactory, "newEnvelopeBusOuterMessageHandler")
+let stateControl: any;
 
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
+let loadingScreenContainer: HTMLElement;
+let envelopeContainer: HTMLElement;
+beforeEach(() => {
+  loadingScreenContainer = document.body.appendChild(document.createElement("div"));
+  loadingScreenContainer.setAttribute("id", "loading-screen");
 
-        test("EmbeddedViewer::defaults",
-            async () => {
-                render(
-                    <EmbeddedViewer
-                        file={file}
-                        router={router}
-                        channelType={channelType}
-                    />
-                );
+  envelopeContainer = document.body.appendChild(document.createElement("div"));
+  envelopeContainer.setAttribute("id", "envelopeContainer");
+});
 
-                expect(document.body).toMatchSnapshot();
-            });
+afterEach(() => loadingScreenContainer.remove());
 
-        test("EmbeddedViewer::envelopeFactory",
-            () => {
-                render(
-                    <EmbeddedViewer
-                        file={file}
-                        router={router}
-                        channelType={channelType}
-                    />
-                );
+const delay = (ms: number) => {
+  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
+};
 
-                expect(envelopeFactorySpy).toBeCalled();
-            });
+let controller: EditorEnvelopeController;
+let sentMessages: Array<EnvelopeBusMessage<any>>;
 
+beforeEach(() => {
+  sentMessages = [];
 
-        test("EmbeddedViewer::onResourceContentRequest",
-            () => {
-                const onResourceContentRequest = jest.fn((request: ResourceContentRequest) => Promise.resolve(undefined));
-                render(
-                    <EmbeddedViewer
-                        file={file}
-                        router={router}
-                        channelType={channelType}
-                        onResourceContentRequest={onResourceContentRequest}
-                    />
-                );
+  stateControl = new StateControlMock();
 
-                const envelopeFactory: EnvelopeBusOuterMessageHandler = envelopeFactorySpy.mock.results[0].value;
-                envelopeFactory.impl.receive_resourceContentRequest({ path: "" });
+  controller = new EditorEnvelopeController(
+    {
+      postMessage: message => {
+        sentMessages.push(message);
+      }
+    },
+    {
+      createEditor(_: LanguageData) {
+        return Promise.resolve(new DummyEditor());
+      }
+    },
+    new SpecialDomElements(),
+    stateControl,
+    {
+      render: (element, container, callback) => {
+        callback();
+      }
+    },
+    new ResourceContentEditorCoordinator()
+  );
+});
 
-                expect(onResourceContentRequest).toBeCalled();
-            });
+afterEach(() => {
+  controller.stop();
+});
 
-        test("EmbeddedViewer::onResourceListRequest",
-            () => {
-                const onResourceListRequest = jest.fn((request: ResourceListRequest) => Promise.resolve({ pattern: "", paths: [] }));
-                render(
-                    <EmbeddedViewer
-                        file={file}
-                        router={router}
-                        channelType={channelType}
-                        onResourceListRequest={onResourceListRequest}
-                    />
-                );
+async function startController(component: React.ReactElement) {
+  await controller.start(envelopeContainer);
+  return component!;
+}
 
-                const envelopeFactory: EnvelopeBusOuterMessageHandler = envelopeFactorySpy.mock.results[0].value;
-                envelopeFactory.impl.receive_resourceListRequest({ pattern: "" });
+async function incomingMessage(message: any) {
+  window.postMessage(message, window.location.origin);
+  await delay(0); //waits til next event loop iteration
+}
 
-                expect(onResourceListRequest).toBeCalled();
-            });
+describe("EmbeddedViewer", () => {
+  const file: File = {
+    fileName: "test",
+    editorType: EditorType.DMN,
+    getFileContents: () => Promise.resolve(""),
+    isReadOnly: false
+  };
+  const router: EmbeddedEditorRouter = new EmbeddedEditorRouter();
+  const channelType: ChannelType = ChannelType.ONLINE;
 
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("EmbeddedViewer::defaults", async () => {
+    render(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("EmbeddedViewer::init", async () => {
+    const render = await startController(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
+    expect(sentMessages).toEqual([
+      { type: EnvelopeBusMessageType.RETURN_INIT, data: undefined },
+      { type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined }
+    ]);
+  });
+
+  test("EmbeddedViewer::onResourceContentRequest", async () => {
+    const onResourceContentRequest = jest.fn((request: ResourceContentRequest) =>
+      Promise.resolve({ path: "", type: ContentType.TEXT })
+    );
+
+    const render = await startController(
+      <EmbeddedViewer
+        file={file}
+        router={router}
+        channelType={channelType}
+        onResourceContentRequest={onResourceContentRequest}
+      />
+    );
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: "" } });
+  });
+
+  test("EmbeddedViewer::onResourceListRequest", async () => {
+    const onResourceListRequest = jest.fn((request: ResourceListRequest) =>
+      Promise.resolve({ pattern: "", paths: [] })
+    );
+
+    const render = await startController(
+      <EmbeddedViewer
+        file={file}
+        router={router}
+        channelType={channelType}
+        onResourceListRequest={onResourceListRequest}
+      />
+    );
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: "", paths: [] } });
+  });
+});

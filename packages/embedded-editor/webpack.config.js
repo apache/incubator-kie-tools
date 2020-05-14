@@ -44,11 +44,7 @@ const commonConfig = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [
-      path.resolve("../../node_modules"),
-      path.resolve("./node_modules"),
-      path.resolve("./src")
-    ]
+    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
   }
 };
 
@@ -65,14 +61,7 @@ module.exports = [
       globalObject: "this"
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    plugins: [
-      new CopyPlugin([
-        { from: "./static/envelope", to: "./envelope" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" },
-        { from: "../kie-bc-editors-unpacked/scesim", to: "./gwt-editors/scesim" }
-      ])
-    ]
+    plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope" }])]
   },
   {
     ...commonConfig,
@@ -84,6 +73,6 @@ module.exports = [
     output: {
       path: path.resolve(__dirname, "./dist"),
       filename: "[name].js"
-    },
+    }
   }
 ];

@@ -15,7 +15,32 @@
  */
 
 import { EditorType, File as UploadFile, newFile } from "@kogito-tooling/embedded-editor";
-import { Brand, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Gallery, Page, PageHeader, PageSection, Text, TextContent, TextInput, TextVariants, Title, Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
+import {
+  Brand,
+  Bullseye,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  Form,
+  FormGroup,
+  Gallery,
+  Page,
+  PageHeader,
+  PageSection,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem
+} from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -54,7 +79,7 @@ enum UploadFileDndState {
 
 interface InputFileUrlStateType {
   urlValidation: InputFileUrlState;
-  urlToOpen: string | undefined
+  urlToOpen: string | undefined;
 }
 
 export function HomePage(props: Props) {
@@ -204,9 +229,9 @@ export function HomePage(props: Props) {
   }, [uploadFileInputState]);
 
   const createEmptyFile = useCallback(
-    (fileExtension: string) => {
-      props.onFileOpened(newFile(fileExtension as EditorType));
-      history.replace(context.routes.editor.url({ type: fileExtension }));
+    (editorType: EditorType) => {
+      props.onFileOpened(newFile(editorType));
+      history.replace(context.routes.editor.url({ type: editorType }));
     },
     [context, history]
   );
@@ -220,16 +245,16 @@ export function HomePage(props: Props) {
   }, [createEmptyFile]);
 
   const trySample = useCallback(
-    (fileExtension: string) => {
+    (editorType: EditorType) => {
       const fileName = "sample";
-      const filePath = `samples/${fileName}.${fileExtension}`;
+      const filePath = `samples/${fileName}.${editorType}`;
       props.onFileOpened({
         isReadOnly: false,
-        editorType: fileExtension as EditorType,
+        editorType: editorType,
         fileName: fileName,
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
+      history.replace(context.routes.editor.url({ type: editorType }));
     },
     [context, history]
   );

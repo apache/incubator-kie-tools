@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-<<<<<<< HEAD
 
-=======
-import { ChannelType } from "@kogito-tooling/core-api";
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
->>>>>>> Updates following peer review.
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -37,10 +32,3 @@ MicroEditorEnvelope.init({
   editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
   editorContext: { channel: ChannelType.ONLINE, operatingSystem: getOperatingSystem() }
 });
-<<<<<<< HEAD
-=======
-
-export function getChannelType(): ChannelType {
-  return frameElement.attributes.getNamedItem("data-envelope-channel")?.value as ChannelType;
-}
->>>>>>> Updates following peer review.
