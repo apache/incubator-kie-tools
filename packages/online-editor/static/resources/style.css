@@ -223,4 +223,6 @@
 
 .kogito--editor__toolbar-edited {
   color: var(--pf-global--Color--400);
+  font-size: var(--pf-global--FontSize--xl);
+  font-weight: var(--pf-global--FontSize--xl);
 }

@@ -66,6 +66,10 @@ export function EditorPage(props: Props) {
     }
   }, [isDirty]);
 
+  const closeWithoutSaving = useCallback(() => {
+    window.location.href = window.location.href.split("?")[0].split("#")[0];
+  }, []);
+
   const requestSave = useCallback(() => {
     action = ActionType.SAVE;
     editorRef.current?.requestContent();
@@ -258,7 +262,12 @@ export function EditorPage(props: Props) {
               title="Unsaved changes will be lost."
               action={<AlertActionCloseButton onClose={() => setShowUnsavedAlert(false)} />}
             >
-              Click Save to download your progress before closing. <a onClick={requestDownload}>Save.</a>
+              <div>
+                <p>
+                  Click Save to download your progress before closing. <a onClick={requestDownload}>Save</a>
+                </p>
+                <a onClick={closeWithoutSaving}> Close without saving</a>
+              </div>
             </Alert>
           </div>
         )}
