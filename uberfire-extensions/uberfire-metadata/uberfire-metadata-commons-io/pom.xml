@@ -175,13 +175,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.github.tdomzal</groupId>
-      <artifactId>junit-docker-rule</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-
-    <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-client-hotrod</artifactId>
     </dependency>
@@ -215,7 +208,6 @@
         <configuration>
           <includes>
             <include>org.uberfire.ext.metadata.io.common.*</include>
-            <include>org.uberfire.ext.metadata.io.elasticsearch.suite.*</include>
             <include>org.uberfire.ext.metadata.io.infinispan.suite.*</include>
             <include>org.uberfire.ext.metadata.io.lucene.*</include>
           </includes>
