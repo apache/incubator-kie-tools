@@ -25,6 +25,7 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
 
 interface Props {
   editorType: string;
@@ -60,8 +61,19 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
+  const isDirty = useEditorDirtyState(context.stateControl);
+  const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+
+  const onClose = useCallback(() => {
+    if (!isDirty) {
+      props.onClose();
+    } else {
+      setShowUnsavedAlert(true);
+    }
+  }, [isDirty]);
 
   const requestSaveFile = useCallback(() => {
+    setShowUnsavedAlert(false);
     contentRequestAction = ContentRequestActionType.SAVE;
     editorRef.current?.requestContent();
   }, []);
@@ -210,6 +222,7 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", () => {
+      context.stateControl.setSavedEvent();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });
@@ -244,10 +257,25 @@ export function EditorPage(props: Props) {
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onClose={props.onClose} onSave={saveFile} />
+            <EditorToolbar onClose={onClose} onSave={saveFile} />
           </StackItem>
-
           <StackItem className="pf-m-fill">
+            {showUnsavedAlert && (
+              <div className={"kogito--alert-container-unsaved"}>
+                <Alert
+                  variant="warning"
+                  title="Unsaved changes will be lost."
+                  action={<AlertActionCloseButton onClose={() => setShowUnsavedAlert(false)} />}
+                >
+                  <div>
+                    <p>
+                      Click Save to download your progress before closing. <a onClick={requestSaveFile}>Save</a>
+                    </p>
+                    <a onClick={props.onClose}> Close without saving</a>
+                  </div>
+                </Alert>
+              </div>
+            )}
             {copySuccessAlertVisible && (
               <div className={"kogito--alert-container"}>
                 <Alert

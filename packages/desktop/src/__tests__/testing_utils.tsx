@@ -15,13 +15,15 @@
  */
 
 import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
+import { StateControl } from "@kogito-tooling/editor-state-control-manager";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
     router: new EmbeddedEditorRouter(),
-    file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" }
+    file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
+    stateControl: new StateControl()
   };
   return {
     ctx: usedCtx,

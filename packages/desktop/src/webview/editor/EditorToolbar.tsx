@@ -21,6 +21,7 @@ import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } 
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
 
 interface Props {
   onSave: () => void;
@@ -29,6 +30,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const isEdited = useEditorDirtyState(context.stateControl);
 
   const editorType = useMemo(() => {
     return context.file!.fileType;
@@ -37,11 +39,18 @@ export function EditorToolbar(props: Props) {
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
   const fileNameTitle = (
-    <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
-      <Title headingLevel={"h3"} size={"xl"}>
-        {removeDirectories(context.file!.filePath)}
-      </Title>
-    </Tooltip>
+    <div>
+      <Tooltip
+        content={tooltipContent}
+        position={TooltipPosition.bottom}
+        maxWidth={"50em"}
+      >
+        <Title headingLevel={"h3"} size={"xl"} className={"kogito--editor__toolbar-title"}>
+          {removeDirectories(context.file!.filePath)}
+        </Title>
+      </Tooltip>
+      {isEdited && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+    </div>
   );
 
   const headerToolbar = (
@@ -69,7 +78,9 @@ export function EditorToolbar(props: Props) {
 
   return (
     <PageHeader
-      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />}
+      logo={
+        <Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />
+      }
       toolbar={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}
