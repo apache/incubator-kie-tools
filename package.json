@@ -1,0 +1,28 @@
+{
+  "name": "kie-tooling-store",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": [
+    "packages/**"
+  ],
+  "scripts": {
+    "bootstrap": "npx lerna bootstrap",
+    "pack-vscode:all": "npx lerna run pack --scope=vscode-extension-* --include-filtered-dependencies --stream",
+    "update-version-to": "npx lerna version --no-push --no-git-tag-version --exact --yes"
+  },
+  "devDependencies": {
+    "lerna": "3.18.3",
+    "webpack": "4.42.1",
+    "webpack-cli": "3.3.10",
+    "webpack-dev-server": "3.9.0",
+    "webpack-node-externals": "1.7.2",
+    "prettier": "1.19.1",
+    "tslint-config-prettier": "1.15.0",
+    "copy-webpack-plugin": "5.1.0",
+    "@types/vscode": "1.43.0",
+    "ts-loader": "6.2.1",
+    "typescript": "3.7.2",
+    "vsce": "1.75.0"
+  }
+}
