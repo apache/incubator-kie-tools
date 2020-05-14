@@ -23,6 +23,11 @@ import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_2.TImportedValues;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
@@ -38,6 +43,8 @@ public abstract class BaseLiteralExpressionPropertyConverterTest<T extends IsLit
     private static final String LOCAL = "local";
 
     private static final String IMPORTED_ELEMENT = "imported-element";
+
+    private static final String EXPRESSION_LANGUAGE = "expression-language";
 
     @Test
     public void testWBFromDMN() {
@@ -62,6 +69,32 @@ public abstract class BaseLiteralExpressionPropertyConverterTest<T extends IsLit
         assertThat(wb.getImportedValues().getImportedElement()).isEqualTo(IMPORTED_ELEMENT);
 
         assertThat(wb.getImportedValues().getParent()).isEqualTo(wb);
+    }
+
+    @Test
+    public void testDMNFromWB() {
+        final org.kie.workbench.common.dmn.api.definition.model.ImportedValues importedValues = new org.kie.workbench.common.dmn.api.definition.model.ImportedValues();
+        importedValues.setImportedElement(IMPORTED_ELEMENT);
+
+        final org.kie.workbench.common.dmn.api.definition.model.LiteralExpression wb = new org.kie.workbench.common.dmn.api.definition.model.LiteralExpression(
+                new Id(UUID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                importedValues,
+                new ExpressionLanguage(EXPRESSION_LANGUAGE)
+        );
+
+        final LiteralExpression dmn = LiteralExpressionPropertyConverter.dmnFromWB(wb);
+
+        assertThat(dmn.getId()).isEqualTo(UUID);
+        assertThat(dmn.getDescription()).isEqualTo(DESCRIPTION);
+        assertThat(dmn.getTypeRef().getNamespaceURI()).isEmpty();
+        assertThat(dmn.getTypeRef().getLocalPart()).isEqualTo(BuiltInType.BOOLEAN.getName());
+        assertThat(dmn.getText()).isEqualTo(TEXT);
+        assertThat(dmn.getImportedValues()).isNotNull();
+        assertThat(dmn.getImportedValues().getImportedElement()).isEqualTo(IMPORTED_ELEMENT);
+        assertThat(dmn.getExpressionLanguage()).isEqualTo(EXPRESSION_LANGUAGE);
     }
 
     protected abstract T convertWBFromDMN(final LiteralExpression dmn);

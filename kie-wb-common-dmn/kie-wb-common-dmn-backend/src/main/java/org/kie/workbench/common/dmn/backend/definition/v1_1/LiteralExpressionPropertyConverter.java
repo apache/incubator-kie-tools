@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class LiteralExpressionPropertyConverter {
 
@@ -55,6 +56,16 @@ public class LiteralExpressionPropertyConverter {
         }
         final org.kie.dmn.model.api.LiteralExpression result = new org.kie.dmn.model.v1_2.TLiteralExpression();
         result.setId(wb.getId().getValue());
+        final String description = wb.getDescription().getValue();
+        if (StringUtils.nonEmpty(description)) {
+            result.setDescription(description);
+        }
+        if (wb instanceof LiteralExpression) {
+            final String expressionLanguage = ((LiteralExpression) wb).getExpressionLanguage().getValue();
+            if (StringUtils.nonEmpty(expressionLanguage)) {
+                result.setExpressionLanguage(expressionLanguage);
+            }
+        }
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setText(wb.getText().getValue());

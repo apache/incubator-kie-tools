@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITImportedValues;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITLiteralExpression;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class LiteralExpressionPropertyConverter {
 
@@ -60,6 +61,16 @@ public class LiteralExpressionPropertyConverter {
         }
         final JSITLiteralExpression result = GWT.create(JSITLiteralExpression.class);
         result.setId(wb.getId().getValue());
+        final String description = wb.getDescription().getValue();
+        if (StringUtils.nonEmpty(description)) {
+            result.setDescription(description);
+        }
+        if (wb instanceof LiteralExpression) {
+            final String expressionLanguage = ((LiteralExpression) wb).getExpressionLanguage().getValue();
+            if (StringUtils.nonEmpty(expressionLanguage)) {
+                result.setExpressionLanguage(expressionLanguage);
+            }
+        }
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
         result.setText(wb.getText().getValue());
         final JSITImportedValues importedValues = ImportedValuesConverter.dmnFromWB(wb.getImportedValues());
