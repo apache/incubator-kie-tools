@@ -85,7 +85,6 @@ export class StateControl {
 
   public updateEventStack(event: string) {
     this.eventStack = this.eraseRedoEvents().concat(event);
-    console.log(this.eventStack)
     this.setCurrentEvent(event);
   }
 }
