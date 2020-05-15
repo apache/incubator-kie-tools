@@ -123,6 +123,7 @@ FEATURE=""
 TIMEOUT=240
 DEBUG=false
 CRDS_UPDATE=true
+KEEP_NAMESPACE=false
 LOAD_DEFAULT_CONFIG=false
 
 while (( $# ))
@@ -292,6 +293,7 @@ case $1 in
     shift
   ;;
   --keep_namespace)
+    KEEP_NAMESPACE=true
     addParam "--tests.keep-namespace"
     shift
   ;;
@@ -358,6 +360,14 @@ if ${CRDS_UPDATE}; then
   deploy_folder=`mktemp -d`
   download_remote_crds ${deploy_folder} ${MASTER_RAW_URL}
   apply_crds ${deploy_folder}
+fi
+
+if [ "${KEEP_NAMESPACE}" = "false" ]; then
+  echo "-------- Pruning namespaces"
+  cd ${SCRIPT_DIR}/../test
+  go run scripts/prune_namespaces.go
+  echo "Pruning namespaces done."
+  cd -
 fi
 
 exit ${exit_code}
