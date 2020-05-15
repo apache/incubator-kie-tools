@@ -26,10 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,9 +59,25 @@ public class LoadReposOnAppInitTest {
                                                                                  organizationalUnitService));
 
         doReturn(true).when(loadReposOnAppInit).isGitDefaultFileSystem();
-
         loadReposOnAppInit.execute();
-
         verify(configuredRepositories, times(1)).getAllConfiguredRepositories(any());
+    }
+
+    @Test
+    public void testOnlyRunInBCServerType() {
+        {
+            LoadReposOnAppInit loadReposOnInit = spy(new LoadReposOnAppInit(configuredRepositories,
+                                                                            organizationalUnitService));
+            doReturn(false).when(loadReposOnInit).isGitDefaultFileSystem();
+            loadReposOnInit.execute();
+            verify(organizationalUnitService, never()).getAllOrganizationalUnits();
+        }
+        {
+            LoadReposOnAppInit loadReposOnInit = spy(new LoadReposOnAppInit(configuredRepositories,
+                                                                            organizationalUnitService));
+            doReturn(true).when(loadReposOnInit).isGitDefaultFileSystem();
+            loadReposOnInit.execute();
+            verify(organizationalUnitService, times(1)).getAllOrganizationalUnits();
+        }
     }
 }

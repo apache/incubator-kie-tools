@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.spaces.Space;
 
 import static java.util.stream.Collectors.toList;
@@ -83,7 +83,7 @@ public class FileSystemDeleteWorker {
     @Schedule(hour = "*", minute = CRON_MINUTES, persistent = false)
     public void doRemove() {
 
-        if (this.busy) {
+        if (this.busy || !this.isDeleteWorkerEnabled()) {
             return;
         }
         this.busy = true;
@@ -98,6 +98,10 @@ public class FileSystemDeleteWorker {
         ifDebugEnabled(logger,
                        () -> logger.debug("Delete Operation finished."));
         this.busy = false;
+    }
+
+    protected boolean isDeleteWorkerEnabled() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 
     protected void removeAllDeletedRepositories() {
@@ -159,8 +163,9 @@ public class FileSystemDeleteWorker {
 
             SpaceConfigStorageImpl configStorage = (SpaceConfigStorageImpl) this.registry.get(space.getName());
             final Path configPath = configStorage.getPath();
-            final File spacePath = getSpacePath((JGitPathImpl) configPath);
-            final Path configFSPath = configPath.getFileSystem().getPath("");
+
+            final File spacePath = getSpacePath(configPath.getFileSystem().getPath("/"));
+            final Path configFSPath = configPath.getFileSystem().getPath("/");
             this.ioService.deleteIfExists(configFSPath);
             this.registry.remove(space.getName());
             this.delete(spacePath);
@@ -190,12 +195,8 @@ public class FileSystemDeleteWorker {
                          FileUtils.RECURSIVE | FileUtils.SKIP_MISSING | FileUtils.RETRY);
     }
 
-    protected File getSpacePath(JGitPathImpl configPath) {
-        final JGitPathImpl configGitPath = configPath;
-        return configGitPath.getFileSystem()
-                .getGit()
-                .getRepository()
-                .getDirectory()     // system.git
+    protected File getSpacePath(Path configPath) {
+        return configPath.toFile()// system.git
                 .getParentFile()    // system
                 .getParentFile();   //.niogit
     }
@@ -237,11 +238,8 @@ public class FileSystemDeleteWorker {
     }
 
     private File getSystemRepository() {
-        return ((JGitPathImpl) systemFS.getPath("system"))
-                .getFileSystem()
-                .getGit()
-                .getRepository()
-                .getDirectory();
+
+        return systemFS.getPath("/").toFile();
     }
 
     private void lockedOperation(Runnable runnable) {

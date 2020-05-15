@@ -44,8 +44,14 @@ import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ACLMigrationToolTest {
@@ -98,7 +104,7 @@ public class ACLMigrationToolTest {
 
         when(repo1.getIdentifier()).thenReturn("repo1");
         final Branch master = new Branch("master",
-                                   repo1root);
+                                         repo1root);
         when(repo1.getBranch("master")).thenReturn(Optional.of(master));
         when(repo1.getDefaultBranch()).thenReturn(Optional.of(master));
 
@@ -107,6 +113,8 @@ public class ACLMigrationToolTest {
         groupList.add("group1");
         groupList.add("group2");
         when(repo1.getGroups()).thenReturn(groupList);
+
+        when(migrationTool.isACLMigrationToolEnabled()).thenReturn(true);
     }
 
     @Test
@@ -141,5 +149,12 @@ public class ACLMigrationToolTest {
         assertNotNull(pc2);
         assertEquals(pc2.collection().size(),
                      1);
+    }
+
+    @Test
+    public void testMonitoringEnabled() {
+        when(migrationTool.isACLMigrationToolEnabled()).thenReturn(false);
+        migrationTool.onDeploy(new AuthorizationPolicyDeployedEvent(authorizationPolicy));
+        verify(migrationTool, never()).migrateOrgUnits(any());
     }
 }

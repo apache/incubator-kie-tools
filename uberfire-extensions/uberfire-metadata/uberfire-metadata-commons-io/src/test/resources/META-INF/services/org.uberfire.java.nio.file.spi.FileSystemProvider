@@ -30,6 +30,6 @@
 # limitations under the License.
 #
 
-org.uberfire.java.nio.fs.file.SimpleFileSystemProvider  # file system provider, also default (1st)
 org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
+org.uberfire.java.nio.fs.file.SimpleFileSystemProvider
 org.uberfire.ext.metadata.io.common.util.TestFileSystemProvider # A mock provider for unit tests

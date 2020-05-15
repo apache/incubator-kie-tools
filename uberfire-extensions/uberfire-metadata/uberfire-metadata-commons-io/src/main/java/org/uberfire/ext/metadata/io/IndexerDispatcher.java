@@ -48,6 +48,7 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 import static java.lang.String.format;
 
@@ -94,6 +95,11 @@ public class IndexerDispatcher {
      *              is supported (see {@link Indexer#supportsPath(Path)}).
      */
     public void offer(IndexableIOEvent event) {
+
+        if (!FileSystemUtils.isGitDefaultFileSystem()) {
+            return;
+        }
+
         jobs.stream()
             .filter(job -> supportsUnderlyingPath(job.indexer, event))
             .forEach(job -> {

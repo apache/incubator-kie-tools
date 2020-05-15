@@ -18,6 +18,7 @@ package org.guvnor.common.services.backend.migration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -33,6 +34,7 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionCollection;
@@ -74,10 +76,19 @@ public class ACLMigrationTool {
     }
 
     public void onDeploy(@Observes AuthorizationPolicyDeployedEvent event) {
+
+        if (!this.isACLMigrationToolEnabled()) {
+            return;
+        }
+
         AuthorizationPolicy policy = event.getPolicy();
         migrateOrgUnits(policy);
         migrateRepositories(policy);
         authorizationPolicyStorage.savePolicy(policy);
+    }
+
+    protected boolean isACLMigrationToolEnabled() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 
     private Group getGroup(String groupName) {

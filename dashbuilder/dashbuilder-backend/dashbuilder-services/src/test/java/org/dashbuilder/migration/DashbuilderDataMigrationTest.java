@@ -16,9 +16,6 @@
 
 package org.dashbuilder.migration;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +40,15 @@ import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 @RunWith(MockitoJUnitRunner.class)
 public class DashbuilderDataMigrationTest {
 
@@ -59,12 +65,12 @@ public class DashbuilderDataMigrationTest {
         targetFS = createFileSystem();
 
         dashbuilderDataMigration = spy(
-            new DashbuilderDataMigration(
-                ioService,
-                null,
-                null,
-                null,
-                null));
+                new DashbuilderDataMigration(
+                        ioService,
+                        null,
+                        null,
+                        null,
+                        null));
     }
 
     @Test
@@ -89,6 +95,23 @@ public class DashbuilderDataMigrationTest {
         checkInitialCondition();
         dashbuilderDataMigration.migrateNavigation(null, targetFS);
         checkInitialCondition();
+    }
+
+    @Test
+    public void testGitIsDefaultFileSystem() {
+        doNothing().when(dashbuilderDataMigration).runWithLock(any());
+        doReturn(true).when(dashbuilderDataMigration).isMigrationEnabled();
+        dashbuilderDataMigration.init();
+        verify(dashbuilderDataMigration, times(1)).runWithLock(any());
+    }
+
+    @Test
+    public void testGitIsNotDefaultFileSystem() {
+
+
+        doReturn(false).when(dashbuilderDataMigration).isMigrationEnabled();
+        dashbuilderDataMigration.init();
+        verify(dashbuilderDataMigration, never()).runWithLock(any());
     }
 
     @Test
@@ -211,7 +234,7 @@ public class DashbuilderDataMigrationTest {
             @Override
             public FileVisitResult visitFile(final Path path, final BasicFileAttributes attrs) throws IOException {
                 files.add(path.toString());
-                 return FileVisitResult.CONTINUE;
+                return FileVisitResult.CONTINUE;
             }
         });
 
@@ -231,10 +254,10 @@ public class DashbuilderDataMigrationTest {
 
     private FileSystem createFileSystem() {
         return ioService.newFileSystem(
-            URI.create("git://migration/temp" + new Date().getTime()),
-            new HashMap<String, Object>() {{
-                put("init", Boolean.TRUE);
-            }});
+                URI.create("git://migration/temp" + new Date().getTime()),
+                new HashMap<String, Object>() {{
+                    put("init", Boolean.TRUE);
+                }});
     }
 
     @After
@@ -252,12 +275,11 @@ public class DashbuilderDataMigrationTest {
     private void deleteFileSystem(FileSystem fs) {
         try {
             FileUtils.deleteDirectory(
-                ((JGitFileSystem) fs).getGit()
-                .getRepository()
-                .getDirectory()
-                .getAbsoluteFile()
-                .getParentFile());
-
+                    ((JGitFileSystem) fs).getGit()
+                            .getRepository()
+                            .getDirectory()
+                            .getAbsoluteFile()
+                            .getParentFile());
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }

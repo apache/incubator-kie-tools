@@ -38,6 +38,7 @@ import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
@@ -80,12 +81,18 @@ public class DashbuilderDataMigration {
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
+        if (this.isMigrationEnabled()) {
             runWithLock(() -> {
                 migrateDatasets();
                 migratePerspectives();
                 migrateNavigation();
             });
+        }
+    }
+
+    protected boolean isMigrationEnabled() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 
     private void migrateDatasets() {
@@ -206,7 +213,7 @@ public class DashbuilderDataMigration {
         }
     }
 
-    private void runWithLock(Command command) {
+    protected void runWithLock(Command command) {
         String lockName = "data-migration.lock";
         String markerName = "data-migration.done";
 

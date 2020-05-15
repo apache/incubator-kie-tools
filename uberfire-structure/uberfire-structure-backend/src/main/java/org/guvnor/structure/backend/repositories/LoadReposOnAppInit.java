@@ -16,6 +16,7 @@
 
 package org.guvnor.structure.backend.repositories;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -42,12 +43,14 @@ public class LoadReposOnAppInit {
 
         this.configuredRepositories = configuredRepositories;
         this.organizationalUnitService = organizationalUnitService;
-        this.execute();
     }
 
-    protected void execute() {
+    @PostConstruct
+    public void execute() {
         if (this.isGitDefaultFileSystem()) {
-            organizationalUnitService.getAllOrganizationalUnits().forEach(ou -> configuredRepositories.getAllConfiguredRepositories(ou.getSpace()));
+            organizationalUnitService
+                    .getAllOrganizationalUnits()
+                    .forEach(ou -> configuredRepositories.getAllConfiguredRepositories(ou.getSpace()));
         }
     }
 

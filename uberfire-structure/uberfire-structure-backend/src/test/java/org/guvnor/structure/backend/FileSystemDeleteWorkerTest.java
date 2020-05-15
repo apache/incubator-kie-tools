@@ -30,7 +30,18 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.spaces.Space;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileSystemDeleteWorkerTest {
@@ -187,5 +198,12 @@ public class FileSystemDeleteWorkerTest {
                times(1)).removeRepository(repo3);
         verify(worker,
                times(1)).removeRepository(repo4);
+    }
+
+    @Test
+    public void testMonitoringEnabled(){
+       when(worker.isDeleteWorkerEnabled()).thenReturn(false);
+        worker.doRemove();
+        verify(worker, never()).removeAllDeletedSpaces();
     }
 }

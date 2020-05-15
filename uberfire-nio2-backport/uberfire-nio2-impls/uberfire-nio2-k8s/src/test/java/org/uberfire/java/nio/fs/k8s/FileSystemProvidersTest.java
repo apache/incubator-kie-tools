@@ -47,6 +47,7 @@ public class FileSystemProvidersTest {
 
     @Test
     public void k8sFileSystemProivdeAsDefaultTests() {
+        FileSystemUtils.getConfigProps().setProperty(FileSystemUtils.SIMPLIFIED_MONITORING_ENABLED, "true");
         FileSystemUtils.getConfigProps().setProperty(FileSystemUtils.CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
         assertThat(FileSystemProviders.resolveProvider(URI.create("default:///"))).isInstanceOf(K8SFileSystemProvider.class);
         assertThat(FileSystemProviders.resolveProvider(URI.create("k8s:///"))).isInstanceOf(K8SFileSystemProvider.class);
@@ -54,5 +55,4 @@ public class FileSystemProvidersTest {
         assertThat(FileSystemProviders.getDefaultProvider()).isInstanceOf(K8SFileSystemProvider.class);
         assertThat(FileSystemProviders.installedProviders().get(0).isDefault()).isFalse();
     }
-
 }

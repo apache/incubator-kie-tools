@@ -23,6 +23,7 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 public class FileSystemUtils {
 
     public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.server.controller.openshift.enabled";
+    public static final String SIMPLIFIED_MONITORING_ENABLED = "org.appformer.server.simplified.monitoring.enabled";
     public static final String K8S_FS_SCHEME = "k8s";
     private static final String GIT_FS_SCHEME = "git";
 
@@ -39,11 +40,15 @@ public class FileSystemUtils {
         return "true".equals(getConfigProps().getProperty(CFG_KIE_CONTROLLER_OCP_ENABLED, "false"));
     }
 
+    public static boolean isSimplifiedMonitoringEnabled() {
+        return "true".equals(getConfigProps().getProperty(SIMPLIFIED_MONITORING_ENABLED, "false"));
+    }
+
     public static boolean isGitDefaultFileSystem() {
         return FileSystemProviders.getDefaultProvider().getScheme().equals(GIT_FS_SCHEME);
     }
 
     public static boolean isK8SFileSystemProviderAsDefault(FileSystemProvider provider) {
-        return isOpenShiftSupported() && K8S_FS_SCHEME.equals(provider.getScheme());
+        return K8S_FS_SCHEME.equals(provider.getScheme()) && isOpenShiftSupported() && isSimplifiedMonitoringEnabled();
     }
 }
