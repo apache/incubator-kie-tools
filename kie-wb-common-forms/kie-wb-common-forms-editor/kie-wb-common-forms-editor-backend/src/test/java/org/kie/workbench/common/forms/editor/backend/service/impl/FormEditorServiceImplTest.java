@@ -172,7 +172,7 @@ public class FormEditorServiceImplTest {
                                                           renameService,
                                                           copyService));
 
-        when(path.toURI()).thenReturn("default:///src/main/resources/test.frm");
+        when(path.toURI()).thenReturn("file:///src/main/resources/test.frm");
         when(moduleService.resolveModule(any())).thenReturn(module);
     }
 

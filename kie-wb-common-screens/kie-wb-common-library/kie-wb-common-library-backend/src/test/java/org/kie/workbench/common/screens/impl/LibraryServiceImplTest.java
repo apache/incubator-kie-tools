@@ -248,7 +248,7 @@ public class LibraryServiceImplTest {
     @Test
     public void queryingUnindexedProjectGivesUnindexedResult() throws Exception {
         Branch branch = new Branch("fake-branch",
-                                   mockPath("default:///a/b/c"));
+                                   mockPath("file:///a/b/c"));
         final WorkspaceProject project = new WorkspaceProject(ou1,
                                                               repo1,
                                                               branch,

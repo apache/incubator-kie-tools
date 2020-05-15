@@ -56,7 +56,7 @@ public abstract class AbstractFormDefinitionHelperTest<HELPER extends AbstractFo
 
     private static final String DESTINATION_FORM_NAME = "PersonShort2";
     private static final String DESTINATION_FORM_ASSET_NAME = DESTINATION_FORM_NAME + "." + FormResourceTypeDefinition.EXTENSION;
-    private static final String DESTINATION_FORM_PATH = "default:///src/main" + FORM_PATH + DESTINATION_FORM_ASSET_NAME;
+    private static final String DESTINATION_FORM_PATH = "file:///src/main" + FORM_PATH + DESTINATION_FORM_ASSET_NAME;
 
     @Mock
     protected IOService ioService;

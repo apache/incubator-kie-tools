@@ -51,13 +51,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryFileNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -79,6 +79,7 @@ import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 
 import static org.mockito.Matchers.any;
@@ -157,6 +158,8 @@ public abstract class BaseLibraryIndexingTest {
                                "false");
             System.setProperty("org.uberfire.sys.repo.monitor.disabled",
                                "true");
+            System.setProperty(FileSystemUtils.SIMPLIFIED_MONITORING_ENABLED,
+                               "false");
             System.out.println(".niogit: " + path);
 
             final URI newRepo = URI.create("git://" + repositoryName);

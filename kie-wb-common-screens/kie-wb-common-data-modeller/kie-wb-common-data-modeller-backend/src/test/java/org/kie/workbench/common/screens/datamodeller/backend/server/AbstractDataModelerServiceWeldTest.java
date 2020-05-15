@@ -48,8 +48,6 @@ public abstract class AbstractDataModelerServiceWeldTest {
         dataModelService = weldContainer.select(DataModelerService.class).get();
         moduleService = weldContainer.select(KieModuleService.class).get();
 
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
     }
 
     @After

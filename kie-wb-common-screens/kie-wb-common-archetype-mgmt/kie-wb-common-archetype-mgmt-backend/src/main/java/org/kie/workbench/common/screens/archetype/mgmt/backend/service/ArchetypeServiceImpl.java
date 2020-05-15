@@ -83,6 +83,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
@@ -160,15 +161,21 @@ public class ArchetypeServiceImpl implements ArchetypeService {
 
     @PostConstruct
     void postConstruct() {
-        maybeCreateArchetypesOU();
+        if (this.isGitDefaultFileSystem()) {
+            maybeCreateArchetypesOU();
 
-        if (isArchetypesOUAvailable()) {
-            archetypePreferencesManager.initializeCustomPreferences();
+            if (isArchetypesOUAvailable()) {
+                archetypePreferencesManager.initializeCustomPreferences();
 
-            checkKieTemplates();
+                checkKieTemplates();
 
-            validateAll();
+                validateAll();
+            }
         }
+    }
+
+    protected boolean isGitDefaultFileSystem() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 
     public void onNewOrganizationalUnitEvent(final @Observes NewOrganizationalUnitEvent newOrganizationalUnitEvent) {

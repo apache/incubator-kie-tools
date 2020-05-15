@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.impl;
 
@@ -35,6 +35,7 @@ import org.uberfire.ext.metadata.event.BatchIndexEvent;
 import org.uberfire.ext.metadata.event.IndexEvent.DeletedEvent;
 import org.uberfire.ext.metadata.event.IndexEvent.NewlyIndexedEvent;
 import org.uberfire.ext.metadata.event.IndexEvent.RenamedEvent;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 
 @ApplicationScoped
 public class LibraryAssetUpdateNotifier {
@@ -61,40 +62,50 @@ public class LibraryAssetUpdateNotifier {
     }
 
     public void notifyOnUpdatedAssets(@Observes @Named(Constants.INDEXER_ID) BatchIndexEvent event) {
+
+        if (!isUpdateNotifierEnabled()) {
+            return;
+        }
+
         // Assume that all indexed items are from the same project.
         event.getIndexEvents()
-             .stream()
-             .flatMap(evt -> {
-                 switch (evt.getKind()) {
-                    case Deleted:
-                        return Stream.of(((DeletedEvent) evt).getDeleted().getKey());
-                    case NewlyIndexed:
-                        return Stream.of(((NewlyIndexedEvent) evt).getKObject().getKey());
-                    case Renamed:
-                        return Stream.of(((RenamedEvent) evt).getTarget().getKey());
-                    default:
+                .stream()
+                .flatMap(evt -> {
+                    switch (evt.getKind()) {
+                        case Deleted:
+                            return Stream.of(((DeletedEvent) evt).getDeleted().getKey());
+                        case NewlyIndexed:
+                            return Stream.of(((NewlyIndexedEvent) evt).getKObject().getKey());
+                        case Renamed:
+                            return Stream.of(((RenamedEvent) evt).getTarget().getKey());
+                        default:
+                            return Stream.empty();
+                    }
+                })
+                .map(path -> org.uberfire.java.nio.file.Paths.get(path))
+                .filter(path -> libraryIndexer.supportsPath(path))
+                .flatMap(path -> {
+                    try {
+                        WorkspaceProject project = projectService.resolveProject(Paths.convert(path));
+                        return (project == null) ? Stream.empty() : Stream.of(project);
+                    } catch (Throwable t) {
                         return Stream.empty();
-                 }
-             })
-             .map(path -> org.uberfire.java.nio.file.Paths.get(path))
-             .filter(path -> libraryIndexer.supportsPath(path))
-             .flatMap(path -> {
-                 try {
-                     WorkspaceProject project = projectService.resolveProject(Paths.convert(path));
-                     return (project == null) ? Stream.empty() : Stream.of(project);
-                 } catch (Throwable t) {
-                     return Stream.empty();
-                 }
-             })
-             .map(project -> new ProjectAssetListUpdated(project))
-             .findFirst()
-             .ifPresent(clientEvent -> {
-                 logger.info("Sending indexing notification for project [{}].", clientEvent.getProject().getRepository().getIdentifier());
-                 assetListUpdateEvent.fire(clientEvent);
-              });
+                    }
+                })
+                .map(project -> new ProjectAssetListUpdated(project))
+                .findFirst()
+                .ifPresent(clientEvent -> {
+                    logger.info("Sending indexing notification for project [{}].", clientEvent.getProject().getRepository().getIdentifier());
+                    assetListUpdateEvent.fire(clientEvent);
+                });
     }
 
     private void onProjectIndexingFinishedEvent(@Observes IndexingFinishedEvent event) {
+
+        if (!isUpdateNotifierEnabled()) {
+            return;
+        }
+
         WorkspaceProject project = projectService.resolveProject(event.getPath());
 
         if (project == null) {
@@ -102,5 +113,9 @@ public class LibraryAssetUpdateNotifier {
         }
 
         assetListUpdateEvent.fire(new ProjectAssetListUpdated(project));
+    }
+
+    protected boolean isUpdateNotifierEnabled() {
+        return FileSystemUtils.isGitDefaultFileSystem();
     }
 }

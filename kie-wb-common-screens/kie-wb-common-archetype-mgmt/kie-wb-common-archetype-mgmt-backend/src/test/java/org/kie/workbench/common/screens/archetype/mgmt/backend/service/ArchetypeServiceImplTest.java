@@ -63,6 +63,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.api.FileSystemUtils;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.spaces.Space;
@@ -125,6 +126,7 @@ public class ArchetypeServiceImplTest {
 
         doReturn(mock(FileSystemLock.class)).when(service).createLock(any(File.class));
         doReturn(mock(Path.class)).when(service).createTempDirectory(anyString());
+        doReturn(true).when(service).isGitDefaultFileSystem();
     }
 
     @Test
@@ -548,7 +550,6 @@ public class ArchetypeServiceImplTest {
         doReturn(ArchetypeStatus.VALID).when(archetype).getStatus();
         doReturn(archetype).when(archetypeConfigStorage).loadArchetype(anyString());
 
-
         doReturn(null).when(repositoryService).getRepositoryFromSpace(any(Space.class),
                                                                       anyString());
 
@@ -897,7 +898,7 @@ public class ArchetypeServiceImplTest {
         final Repository repository = mock(Repository.class);
 
         doReturn(repository).when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                                        anyString());
+                                                                            anyString());
 
         final Git git = mock(Git.class);
         final org.eclipse.jgit.lib.Repository gitRepository = mock(org.eclipse.jgit.lib.Repository.class);
@@ -997,6 +998,14 @@ public class ArchetypeServiceImplTest {
 
         verify(archetypeConfigStorage).loadArchetype(repositoryAlias);
         assertFalse(archetype.isPresent());
+    }
+
+    @Test
+    public void testIsMonitoringEnabled() {
+        System.setProperty(FileSystemUtils.SIMPLIFIED_MONITORING_ENABLED, "true");
+        System.setProperty(FileSystemUtils.CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
+        service.postConstruct();
+        verify(service, never()).validateAll();
     }
 
     private GAV createGav() {

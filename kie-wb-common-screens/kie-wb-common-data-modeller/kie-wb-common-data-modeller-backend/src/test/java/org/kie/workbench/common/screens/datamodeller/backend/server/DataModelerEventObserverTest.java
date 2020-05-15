@@ -57,7 +57,7 @@ public class DataModelerEventObserverTest {
     @Mock
     private Path descriptorPath;
 
-    private static final String DESCRIPTOR_PATH = "default://dummy-repo/dummy-project/src/main/resources/META-INF/persistence.xml";
+    private static final String DESCRIPTOR_PATH = "file://dummy-repo/dummy-project/src/main/resources/META-INF/persistence.xml";
 
     private DataModelerEventObserver eventObserver;
     private PersistenceDescriptorModel descriptorModel;

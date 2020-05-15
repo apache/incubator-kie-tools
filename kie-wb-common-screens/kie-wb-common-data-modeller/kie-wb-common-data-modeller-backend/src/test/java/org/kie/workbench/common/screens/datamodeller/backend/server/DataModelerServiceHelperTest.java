@@ -93,7 +93,6 @@ public class DataModelerServiceHelperTest {
     @Before
     public void setUp() throws Exception {
         SimpleFileSystemProvider fileSystemProvider = new SimpleFileSystemProvider();
-        fileSystemProvider.forceAsDefault();
 
         serviceHelper = new DataModelerServiceHelper(moduleService,
                                                      ioService,

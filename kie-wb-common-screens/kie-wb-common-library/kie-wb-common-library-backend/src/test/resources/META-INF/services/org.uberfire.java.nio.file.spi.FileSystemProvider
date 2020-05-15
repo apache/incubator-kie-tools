@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 
-org.uberfire.java.nio.fs.file.SimpleFileSystemProvider  # file system provider, also default (1st)
 org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
+org.uberfire.java.nio.fs.file.SimpleFileSystemProvider
