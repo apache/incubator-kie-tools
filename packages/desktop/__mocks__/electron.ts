@@ -17,6 +17,7 @@
 import * as electron from "electron";
 
 const mockIpcRendererEvents = new Map<string, (event?: electron.IpcRendererEvent, ...args: any[]) => void>();
+const mockIpcMainEvents = new Map<string, (event?: electron.IpcMainEvent, ...args: any[]) => void>();
 
 export const ipcRenderer = {
   on(channel: string, listener: (event?: electron.IpcRendererEvent, ...args: any[]) => void) {
@@ -24,8 +25,30 @@ export const ipcRenderer = {
   },
   send(channel: string, ...args: any[]) {
     mockIpcRendererEvents.get(channel)?.(undefined, ...args);
+    mockIpcMainEvents.get(channel)?.(undefined, ...args);
   },
   removeAllListeners(channel: string) {
     mockIpcRendererEvents.delete(channel);
   }
+};
+
+export const ipcMain = {
+  on(channel: string, listener: (event: electron.IpcMainEvent, ...args: any[]) => void) {
+    mockIpcMainEvents.set(channel, listener);
+  },
+  removeAllListeners(channel: string) {
+    mockIpcMainEvents.delete(channel);
+  }
+};
+
+export class BrowserWindow {
+  constructor(options?: electron.BrowserWindowConstructorOptions) { /**/ }
+};
+
+export const showSaveDialogMock = jest.fn((browserWindow: BrowserWindow, options: electron.SaveDialogOptions) => {
+  return Promise.resolve();
+});
+
+export const dialog = {
+  showSaveDialog: showSaveDialogMock
 };
