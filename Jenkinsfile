@@ -1,3 +1,12 @@
+// Setup milestone to stop previous build from running when a new one is launched
+// The result would be:
+//  Build 1 runs and creates milestone 1
+//  While build 1 is running, suppose build 2 fires. It has milestone 1 and milestone 2. It passes 1, which causes build #1 to abort
+
+def buildNumber = env.BUILD_NUMBER as int
+if (buildNumber > 1) milestone(buildNumber - 1)
+milestone(buildNumber)
+
 pipeline{
     agent { label 'jenkins-slave'}
     stages{
