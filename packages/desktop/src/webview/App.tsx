@@ -62,14 +62,19 @@ export function App(props: Props) {
     []
   );
 
-  const closeInvalidFileTypeErrorAlert = useCallback(() => setInvalidFileTypeErrorVisible(false), []);
+  const closeInvalidFileTypeErrorAlert = useCallback(() => {
+    if (page === Pages.HOME) {
+      setInvalidFileTypeErrorVisible(false);
+    }
+  }, [page]);
 
   const openFile = useCallback(
     (fileToOpen: File) => {
+      closeInvalidFileTypeErrorAlert();
       setFile(fileToOpen);
       setPage(Pages.EDITOR);
     },
-    [page, file]
+    [page, file, closeInvalidFileTypeErrorAlert]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
