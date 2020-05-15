@@ -177,6 +177,16 @@ func cliInstall(serviceHolder *KogitoServiceHolder, cliName string, cliFlags []s
 		}
 	}
 
+	if kafkaAware, ok := serviceHolder.GetSpec().(v1alpha1.KafkaAware); ok {
+		kafkaProperties := kafkaAware.GetKafkaProperties()
+		if externalURI := kafkaProperties.ExternalURI; len(externalURI) > 0 {
+			cmd = append(cmd, "--kafka-url", externalURI)
+		}
+		if instance := kafkaProperties.Instance; len(instance) > 0 {
+			cmd = append(cmd, "--kafka-instance", instance)
+		}
+	}
+
 	_, err := ExecuteCliCommandInNamespace(serviceHolder.GetNamespace(), cmd...)
 	return err
 }

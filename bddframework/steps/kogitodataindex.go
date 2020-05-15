@@ -25,17 +25,20 @@ import (
 
 /*
 	DataTable for Data Index:
-	| infinispan      | username   | developer                 |
-	| infinispan      | password   | mypass                    |
-	| infinispan      | uri        | external-infinispan:11222 |
-	| runtime-request | cpu/memory | value                     |
-	| runtime-limit   | cpu/memory | value                     |
-	| runtime-env     | varName    | varValue                  |
+	| infinispan      | username    | developer                 |
+	| infinispan      | password    | mypass                    |
+	| infinispan      | uri         | external-infinispan:11222 |
+	| kafka           | externalURI | kafka-bootstrap:9092      |
+	| kafka           | instance    | external-kafka            |
+	| runtime-request | cpu/memory  | value                     |
+	| runtime-limit   | cpu/memory  | value                     |
+	| runtime-env     | varName     | varValue                  |
 */
 
 const (
 	// DataTable first column
 	dataIndexInfinispanKey     = "infinispan"
+	dataIndexKafkaKey          = "kafka"
 	dataIndexRuntimeRequestKey = "runtime-request"
 	dataIndexRuntimeLimitKey   = "runtime-limit"
 	dataIndexRuntimeEnvKey     = "runtime-env"
@@ -43,7 +46,9 @@ const (
 	// DataTable second column
 	dataIndexInfinispanUsernameKey = "username"
 	dataIndexInfinispanPasswordKey = "password"
-	dataIndexURIKey                = "uri"
+	dataIndexInfinispanURIKey      = "uri"
+	dataIndexKafkaExternalURIKey   = "externalURI"
+	dataIndexKafkaInstanceKey      = "instance"
 )
 
 func registerKogitoDataIndexServiceSteps(s *godog.Suite, data *Data) {
@@ -98,6 +103,9 @@ func configureDataIndexFromTable(table *messages.PickleStepArgument_PickleTable,
 		case dataIndexInfinispanKey:
 			parseDataIndexInfinispanRow(row, dataIndex)
 
+		case dataIndexKafkaKey:
+			parseDataIndexKafkaRow(row, dataIndex)
+
 		case dataIndexRuntimeEnvKey:
 			dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
 
@@ -125,7 +133,19 @@ func parseDataIndexInfinispanRow(row *messages.PickleStepArgument_PickleTable_Pi
 	case dataIndexInfinispanPasswordKey:
 		dataIndex.Infinispan.Password = getThirdColumn(row)
 
-	case dataIndexURIKey:
+	case dataIndexInfinispanURIKey:
 		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.URI = getThirdColumn(row)
+	}
+}
+
+func parseDataIndexKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, dataIndex *framework.KogitoServiceHolder) {
+	secondColumn := getSecondColumn(row)
+
+	switch secondColumn {
+	case dataIndexKafkaExternalURIKey:
+		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.KafkaProperties.ExternalURI = getThirdColumn(row)
+
+	case dataIndexKafkaInstanceKey:
+		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.KafkaProperties.Instance = getThirdColumn(row)
 	}
 }
