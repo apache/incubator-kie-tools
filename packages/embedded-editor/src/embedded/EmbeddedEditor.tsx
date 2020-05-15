@@ -72,39 +72,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
 
   //Property functions default handling
-  const onContentResponse = useCallback(
-    (content: EditorContent) => {
-      if (props.onContentResponse) {
-        props.onContentResponse(content);
-      }
-    },
-    [props.onContentResponse]
-  );
-
-  const onSetContentError = useCallback(
-    (errorMessage: string) => {
-      if (props.onSetContentError) {
-        props.onSetContentError(errorMessage);
-      }
-    },
-    [props.onSetContentError]
-  );
-
-  const onDirtyIndicatorChange = useCallback(
-    (isDirty: boolean) => {
-      if (props.onDirtyIndicatorChange) {
-        props.onDirtyIndicatorChange(isDirty);
-      }
-    },
-    [props.onDirtyIndicatorChange]
-  );
-
-  const onReady = useCallback(() => {
-    if (props.onReady) {
-      props.onReady();
-    }
-  }, [props.onReady]);
-
   const onResourceContentRequest = useCallback(
     (request: ResourceContentRequest) => {
       if (props.onResourceContentRequest) {
@@ -123,36 +90,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       return Promise.resolve(new ResourcesList(request.pattern, []));
     },
     [props.onResourceListRequest]
-  );
-
-  const onEditorUndo = useCallback(() => {
-    if (props.onEditorUndo) {
-      props.onEditorUndo();
-    }
-  }, [props.onEditorUndo]);
-
-  const onEditorRedo = useCallback(() => {
-    if (props.onEditorRedo) {
-      props.onEditorRedo();
-    }
-  }, [props.onEditorRedo]);
-
-  const onNewEdit = useCallback(
-    (edit: KogitoEdit) => {
-      if (props.onNewEdit) {
-        props.onNewEdit(edit);
-      }
-    },
-    [props.onNewEdit]
-  );
-
-  const onPreviewRequest = useCallback(
-    (previewSvg: string) => {
-      if (props.onPreviewResponse) {
-        props.onPreviewResponse(previewSvg);
-      }
-    },
-    [props.onPreviewResponse]
   );
 
   const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
@@ -175,7 +112,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           self.respond_languageRequest(props.router.getLanguageData(props.file.editorType));
         },
         receive_contentResponse(content: EditorContent) {
-          onContentResponse(content);
+          props.onContentResponse?.(content);
         },
         receive_contentRequest() {
           props.file
@@ -183,13 +120,13 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
             .then(c => self.respond_contentRequest({ content: c ?? "", path: props.file.fileName }));
         },
         receive_setContentError(errorMessage: string) {
-          onSetContentError(errorMessage);
+          props.onSetContentError?.(errorMessage);
         },
         receive_dirtyIndicatorChange(isDirty: boolean) {
-          onDirtyIndicatorChange(isDirty);
+          props.onDirtyIndicatorChange?.(isDirty);
         },
         receive_ready() {
-          onReady();
+          props.onReady?.();
         },
         receive_resourceContentRequest(request: ResourceContentRequest) {
           onResourceContentRequest(request).then(r => self.respond_resourceContent(r!));
@@ -198,20 +135,26 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: () => {
-          onEditorUndo();
+          props.onEditorUndo?.();
         },
         notify_editorRedo: () => {
-          onEditorRedo();
+          props.onEditorRedo?.();
         },
         receive_newEdit(edit: KogitoEdit) {
-          onNewEdit(edit);
+          props.onNewEdit?.(edit);
         },
         receive_previewRequest(previewSvg: string) {
-          onPreviewRequest(previewSvg);
+          props.onPreviewResponse?.(previewSvg);
         }
       })
     );
-  }, [props]);
+  }, [
+    props.router,
+    props.file.editorType,
+    props.file.fileName,
+    props.onResourceContentRequest,
+    props.onResourceListRequest
+  ]);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {

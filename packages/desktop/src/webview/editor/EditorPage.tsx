@@ -229,14 +229,15 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
-  const file = useMemo(() => {
-    return {
+  const file = useMemo(
+    () => ({
       fileName: context.file?.filePath ?? "",
       editorType: context.file?.fileType as EditorType,
       getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
       isReadOnly: false
-    };
-  }, [context.file?.filePath, context.file?.fileType, context.file?.fileContent]);
+    }),
+    [context.file?.filePath, context.file?.fileType, context.file?.fileContent]
+  );
 
   return (
     <Page className={"kogito--editor-page"}>
