@@ -20,7 +20,7 @@ export class StateControl {
   private eventStack: string[];
   private currentEvent: Event;
   private savedEvent: Event;
-  public registeredCallbacks: Array<(isDirty: boolean) => void>;
+  private registeredCallbacks: Array<(isDirty: boolean) => void>;
 
   constructor() {
     this.eventStack = [];
@@ -37,6 +37,10 @@ export class StateControl {
     if (index > -1) {
       this.registeredCallbacks.splice(index, 1);
     }
+  }
+
+  public getSavedEvent() {
+    return this.savedEvent;
   }
 
   public setSavedEvent() {
@@ -57,11 +61,19 @@ export class StateControl {
     return this.eventStack;
   }
 
+  public setEventStack(eventStack: string[]) {
+    this.eventStack = eventStack;
+  }
+
+  public getRegisteredCallbacks() {
+    return this.registeredCallbacks;
+  }
+
   public isDirty() {
     return this.currentEvent !== this.savedEvent;
   }
 
-  public undoEdit() {
+  public undoEvent() {
     const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
 
     let eventUndone: Event;
@@ -71,7 +83,7 @@ export class StateControl {
     this.setCurrentEvent(eventUndone);
   }
 
-  public redoEdit() {
+  public redoEvent() {
     const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
     if (this.eventStack[indexOfCurrentEvent + 1]) {
       const eventRedone = this.eventStack[indexOfCurrentEvent + 1];
