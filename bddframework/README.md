@@ -90,3 +90,12 @@ The program will wait until you launch the Debug mode from VS Code (next step).
 Launch debug session by selecting Run/Start Debugging from top menu.
 
 Further information [here](https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code).
+
+### Prune namespaces
+
+In case you stopped a test execution, the test framework won't delete the namespaces in the cluster. So to avoid waste of resources in the cluster, you need to manually delete these namespaces. In order to ease this, now we have a namespace history log and an utility to do this by running:
+
+```sh
+cd test
+go run scripts/prune_namespaces.go
+``` 
