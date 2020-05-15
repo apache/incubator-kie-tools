@@ -41,8 +41,6 @@ public interface ScenarioSimulationEditorWrapper {
 
     void onRunScenario(RemoteCallback<SimulationRunResult> refreshModelCallback, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, ScesimModelDescriptor simulationDescriptor, Settings settings, List<ScenarioWithIndex> toRun, Background background);
 
-    void wrappedSave(final String commitMessage);
-
     Integer getOriginalHash();
 
     void wrappedRegisterDock(final String id, final IsWidget widget);

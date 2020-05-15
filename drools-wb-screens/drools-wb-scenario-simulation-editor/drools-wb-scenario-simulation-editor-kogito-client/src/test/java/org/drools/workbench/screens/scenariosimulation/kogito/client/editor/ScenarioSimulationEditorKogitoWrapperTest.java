@@ -70,6 +70,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
@@ -145,6 +146,8 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     private ArgumentCaptor<RemoteCallback> remoteCallbackArgumentCaptor;
     @Captor
     private ArgumentCaptor<Path> pathArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<Promise.PromiseExecutorCallbackFn> promiseExecutorCallbackFnArgumentCaptor;
 
     private ScenarioSimulationEditorKogitoWrapper scenarioSimulationEditorKogitoWrapperSpy;
     private Path path = PathFactory.newPath("file.scesim", "path/");
@@ -186,6 +189,11 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
             }
 
             @Override
+            protected void marshallContent(ScenarioSimulationModel scenarioSimulationModel, Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> resolveCallbackFn) {
+                // JSInterops logic, can't be tested
+            }
+
+            @Override
             protected void resetEditorPages() {
                 //Do nothing
             }
@@ -202,8 +210,10 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     @Test
     public void getContent() {
         scenarioSimulationEditorKogitoWrapperSpy.getContent();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).getModel();
-        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).transform(eq(scenarioSimulationModelMock));
+        verify(promisesMock, times(1)).create(promiseExecutorCallbackFnArgumentCaptor.capture());
+        promiseExecutorCallbackFnArgumentCaptor.getValue().onInvoke(resolveCallBackMock, rejectCallbackFnMock);
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).prepareContent(eq(resolveCallBackMock),
+                                                                                                       eq(rejectCallbackFnMock));
     }
 
     @Test
@@ -214,6 +224,23 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).unmarshallContent(eq("value"));
         assertEquals("file.scesim", pathArgumentCaptor.getValue().getFileName());
         assertEquals("path/", pathArgumentCaptor.getValue().toURI());
+    }
+
+    @Test
+    public void prepareContent() {
+        scenarioSimulationEditorKogitoWrapperSpy.prepareContent(resolveCallBackMock, rejectCallbackFnMock);
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).synchronizeColumnsDimension(eq(simulationGridPanelMock), eq(backgroundGridPanelMock));
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).marshallContent(eq(scenarioSimulationModelMock), eq(resolveCallBackMock));
+        verify(scenarioSimulationEditorPresenterMock, never()).sendNotification(any(), any());
+    }
+
+    @Test
+    public void prepareContent_Exception() {
+        willThrow(Exception.class).given(scenarioSimulationEditorKogitoWrapperSpy).marshallContent(any(), any());
+        scenarioSimulationEditorKogitoWrapperSpy.prepareContent(resolveCallBackMock, rejectCallbackFnMock);
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).synchronizeColumnsDimension(eq(simulationGridPanelMock), eq(backgroundGridPanelMock));
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).marshallContent(eq(scenarioSimulationModelMock), eq(resolveCallBackMock));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(anyString(), eq(NotificationEvent.NotificationType.ERROR));
     }
 
     @Test
@@ -282,19 +309,6 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     public void onEditTabSelected() {
         scenarioSimulationEditorKogitoWrapperSpy.onEditTabSelected();
         verify(scenarioSimulationEditorPresenterMock, times(1)).onEditTabSelected();
-    }
-
-    @Test
-    public void wrappedSave() {
-        scenarioSimulationEditorKogitoWrapperSpy.wrappedSave("commit");
-        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).synchronizeColumnsDimension(eq(simulationGridPanelMock),
-                                                                                                                    eq(backgroundGridPanelMock));
-    }
-
-    @Test
-    public void transform() {
-        scenarioSimulationEditorKogitoWrapperSpy.transform(scenarioSimulationModelMock);
-        verify(promisesMock, times(1)).create(isA(Promise.PromiseExecutorCallbackFn.class));
     }
 
     @Test

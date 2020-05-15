@@ -241,11 +241,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     @Override
-    public void wrappedSave(String commitMessage) {
-        save(commitMessage);
-    }
-
-    @Override
     public Integer getOriginalHash() {
         return originalHash;
     }

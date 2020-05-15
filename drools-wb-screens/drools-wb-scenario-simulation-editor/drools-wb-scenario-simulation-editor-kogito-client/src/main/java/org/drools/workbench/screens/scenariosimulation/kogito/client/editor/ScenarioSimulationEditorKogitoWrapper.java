@@ -147,7 +147,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     @Override
     public Promise<String> getContent() {
-        return transform(scenarioSimulationEditorPresenter.getModel());
+        return promises.create(this::prepareContent);
     }
 
     @Override
@@ -186,6 +186,19 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 unmarshallContent(content);
             }
             success.onInvoke((Object) null);
+        } catch (Exception e) {
+            /* If any exception occurs, promise returns a failure */
+            scenarioSimulationEditorPresenter.sendNotification(e.getMessage(), NotificationEvent.NotificationType.ERROR);
+            failure.onInvoke(e.getMessage());
+        }
+    }
+
+    public void prepareContent(Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> success,
+                               Promise.PromiseExecutorCallbackFn.RejectCallbackFn failure) {
+        try {
+            synchronizeColumnsDimension(scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.SIMULATION),
+                                        scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND));
+            marshallContent(scenarioSimulationEditorPresenter.getModel(), success);
         } catch (Exception e) {
             /* If any exception occurs, promise returns a failure */
             scenarioSimulationEditorPresenter.sendNotification(e.getMessage(), NotificationEvent.NotificationType.ERROR);
@@ -337,18 +350,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     @Override
-    public void wrappedSave(String commitMessage) {
-        synchronizeColumnsDimension(scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.SIMULATION),
-                                    scenarioSimulationEditorPresenter.getContext().getScenarioGridPanelByGridWidget(GridWidget.BACKGROUND));
-    }
-
-    @Override
     public Integer getOriginalHash() {
         return super.getOriginalContentHash();
-    }
-
-    protected Promise<String> transform(final ScenarioSimulationModel resource) {
-        return promises.create((resolveCallbackFn, rejectCallbackFn) -> marshallContent(resource, resolveCallbackFn));
     }
 
     /**
