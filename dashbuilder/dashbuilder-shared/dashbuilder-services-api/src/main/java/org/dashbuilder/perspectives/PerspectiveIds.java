@@ -22,6 +22,7 @@ public interface PerspectiveIds {
     String DATA_SETS = "DataSetAuthoringPerspective";
     String GALLERY = "DisplayerGalleryPerspective";
     String CONTENT_MANAGER = "ContentManagerPerspective";
+    String DATA_TRANSFER = "DataTransferPerspective";
     String APPS = "AppsPerspective";
     String PLUGINS = "PlugInAuthoringPerspective";
     String SALES_DASHBOARD = "SalesDashboardPerspective";

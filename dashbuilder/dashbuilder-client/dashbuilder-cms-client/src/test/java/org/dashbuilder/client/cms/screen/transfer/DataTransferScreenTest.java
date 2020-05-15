@@ -23,11 +23,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dashbuilder.client.cms.screen.transfer.export.wizard.ExportWizard;
+import org.dashbuilder.transfer.DataTransferExportModel;
 import org.dashbuilder.transfer.DataTransferServices;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -44,6 +47,12 @@ public class DataTransferScreenTest {
     @Mock
     private DataTransferPopUp dataTransferPopUp;
 
+    @Mock
+    private ExportWizard exportWizard;
+    
+    @Mock
+    BusyIndicatorView busyIndicatorView;
+
     private DataTransferScreen dataTransferScreen;
 
     private CallerMock<DataTransferServices> dataTransferServicesCaller;
@@ -54,15 +63,21 @@ public class DataTransferScreenTest {
         dataTransferScreen = new DataTransferScreen(
             view,
             dataTransferPopUp,
-            dataTransferServicesCaller);
+            dataTransferServicesCaller,
+            exportWizard,
+            busyIndicatorView);
     }
 
     @Test
     public void doExportTest() throws Exception {
         String path = "path";
-        when(dataTransferServices.doExport()).thenReturn(path);
+        DataTransferExportModel exportAll = DataTransferExportModel.exportAll();
+        when(dataTransferServices.doExport(exportAll)).thenReturn(path);
+        dataTransferScreen.init();
+        
         dataTransferScreen.doExport();
-        verify(dataTransferServices).doExport();
+        
+        verify(dataTransferServices).doExport(exportAll);
         verify(view).exportOK();
         verify(view).download(path);
     }
@@ -70,9 +85,12 @@ public class DataTransferScreenTest {
     @Test
     public void doExportFailureTest() throws Exception {
         IOException exception = new IOException();
-        when(dataTransferServices.doExport()).thenThrow(exception);
+        DataTransferExportModel exportAll = DataTransferExportModel.exportAll();
+        when(dataTransferServices.doExport(exportAll)).thenThrow(exception);
+        
         dataTransferScreen.doExport();
-        verify(dataTransferServices).doExport();
+        
+        verify(dataTransferServices).doExport(exportAll);
         verify(view).exportError(exception);
     }
 

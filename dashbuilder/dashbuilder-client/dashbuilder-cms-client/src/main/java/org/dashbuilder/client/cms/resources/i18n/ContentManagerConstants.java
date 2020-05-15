@@ -109,5 +109,42 @@ public interface ContentManagerConstants extends Messages {
     String exportText();
 
     String importText();
-}
 
+    String dataTransferExportPopUpViewTitle();
+
+    String dataTransferExportError();
+
+    String loadAssetsToExport();
+
+    String pageLabel();
+
+    String pagesLabel();
+    
+    String datasetLabel();
+
+    String datasetsLabel();
+
+    String exportWizardTitle();
+
+    String loadingExportWizard();
+
+    String preparingExportDownload();
+
+    String pageMissingDataSets(String page);
+
+    String validatingExport();
+
+    String exportWizardHeadingSuccess();
+
+    String exportWizardHeadingError();
+
+    String noPagesExported();
+
+    String missingDependencies();
+
+    String nothingToExport();
+
+    String navigationHelpText();
+
+    String validationError();
+}

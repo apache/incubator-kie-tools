@@ -45,6 +45,7 @@ public interface NavTreeDefinitions {
                     .item(ENTRY_DATASETS, "Datasets", "The dataset authoring tool", false, perspective(DATA_SETS))
                     .item(ENTRY_SECURITY, "Security", "The security configuration tool", false, perspective(SECURITY))
                     .item(ENTRY_CONTENT_MGR, "Content manager", "The content manager tool", false, perspective(CONTENT_MANAGER))
+                    .item(ENTRY_CONTENT_MGR, "Data Transfer", "Allow content transference between installations", false, perspective(DATA_TRANSFER))
                     .endGroup()
                 .group(GROUP_DASHBOARDS, "Dashboards", "The default location for dashboard items", false)
                     .item(ENTRY_SALES_DASHBOARD, "Sales dashboard", null, true, perspective(SALES_DASHBOARD))

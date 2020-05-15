@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.navigation;
 
-import java.util.List;
-
 /**
  * A navigation item is a way to classify different assets, like for instance, perspectives. A tag can be referenced by other
  * tags, either as a parent or as a child. The links between different tags creates a {@link NavTree} structure

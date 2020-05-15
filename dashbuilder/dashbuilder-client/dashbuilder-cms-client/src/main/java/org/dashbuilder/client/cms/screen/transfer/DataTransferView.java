@@ -21,17 +21,16 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-
+import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
+import org.dashbuilder.client.cms.screen.transfer.export.wizard.widget.PagesTable;
 import org.dashbuilder.common.client.backend.PathUrlFactory;
 import org.dashbuilder.common.client.editor.file.FileUploadEditor;
 import org.dashbuilder.common.client.editor.file.FileUploadEditor.FileUploadEditorCallback;
 import org.dashbuilder.common.client.event.ValueChangeEvent;
-import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -55,6 +54,8 @@ public class DataTransferView implements DataTransferScreen.View, IsElement {
     private Elemental2DomUtil elem2Dom;
     private Event<NotificationEvent> workbenchNotification;
     private PathUrlFactory pathUrlFactory;
+    
+    @Inject PagesTable pagesTable;
 
     public DataTransferView() {
     }
@@ -65,6 +66,7 @@ public class DataTransferView implements DataTransferScreen.View, IsElement {
             final @DataField HTMLDivElement fileUploadContainer,
             final @DataField HTMLButtonElement btnImport,
             final @DataField HTMLButtonElement btnExport,
+            final @DataField HTMLButtonElement btnGradualExport,
             final FileUploadEditor fileUploadEditor,
             final Elemental2DomUtil elem2Dom,
             final Event<NotificationEvent> workbenchNotification,
@@ -169,6 +171,11 @@ public class DataTransferView implements DataTransferScreen.View, IsElement {
     @EventHandler("btnExport")
     public void onExport(ClickEvent event) {
         presenter.doExport();
+    }
+    
+    @EventHandler("btnGradualExport")
+    public void onGradualExport(ClickEvent event) {
+        presenter.doGradualExport();
     }
 
     void newFileUploaded(@Observes ValueChangeEvent<String> valueChangeEvent) {
