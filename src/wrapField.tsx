@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
-import { filterDOMProps } from 'uniforms';
+import { filterDOMProps } from 'uniforms/es5';
 
 filterDOMProps.register('decimal', 'minCount', 'autoValue');
 

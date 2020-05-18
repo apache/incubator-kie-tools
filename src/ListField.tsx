@@ -1,7 +1,7 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
 import { Tooltip, Split, SplitItem, Divider } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { connectField, filterDOMProps, joinName } from 'uniforms';
+import { connectField, filterDOMProps, joinName } from 'uniforms/es5';
 
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';

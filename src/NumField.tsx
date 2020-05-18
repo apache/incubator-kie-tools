@@ -1,6 +1,6 @@
 import React, { Ref } from 'react';
 import { TextInput, TextInputProps } from '@patternfly/react-core';
-import { connectField } from 'uniforms';
+import { connectField } from 'uniforms/es5';
 
 import wrapField from './wrapField';
 

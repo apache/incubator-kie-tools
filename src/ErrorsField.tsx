@@ -1,5 +1,5 @@
 import React, { HTMLProps } from 'react';
-import { useForm, filterDOMProps } from 'uniforms';
+import { useForm, filterDOMProps } from 'uniforms/es5';
 
 export type ErrorsFieldProps = HTMLProps<HTMLDivElement>;
 

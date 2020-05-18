@@ -1,5 +1,5 @@
 import React, { HTMLProps } from 'react';
-import { connectField, joinName, injectName, filterDOMProps } from 'uniforms';
+import { connectField, joinName, injectName, filterDOMProps } from 'uniforms/es5';
 
 import AutoField from './AutoField';
 

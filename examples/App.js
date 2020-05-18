@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AutoForm } from 'uniforms-patternfly/src';
+import { AutoForm } from 'uniforms-patternfly';
 
 import { CodeBlock } from './CodeBlock';
 import schema from './schema/json-schema';
