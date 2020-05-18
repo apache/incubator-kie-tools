@@ -27,11 +27,16 @@ import elemental2.core.JsRegExp;
 import jsinterop.base.Js;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoLanguages.ProvideCompletionItemsFunction;
 
+import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer.FEEL_RESERVED_KEYWORDS;
+
 public class MonacoPropertiesFactory {
 
     public static final String FEEL_LANGUAGE_ID = "feel-language";
-
     public static final String FEEL_THEME_ID = "feel-theme";
+    private static final String INSERT_TEXT_RULES_KEY = "insertTextRules";
+    private static final String LABEL_KEY = "label";
+    private static final String INSERT_TEXT_KEY = "insertText";
+    private static final String KIND_KEY = "kind";
 
     /*
      * This method returns a JavaScript object with properties specified here:
@@ -180,8 +185,7 @@ public class MonacoPropertiesFactory {
         push(root, row("[0-9]+", "feel-numeric"));
         push(root, row("(?:\\\"(?:.*?)\\\")", "feel-string"));
         push(root, row("(?:(?:[a-z ]+\\()|(?:\\()|(?:\\)))", "feel-function"));
-        push(root, row("(?:(\\bif\\b)|(\\bthen\\b)|(\\belse\\b))", "feel-keyword"));
-        push(root, row("(?:(\\bfor\\b)|(\\bin\\b)|(\\breturn\\b))", "feel-keyword"));
+        push(root, row("(?:(\\b" + String.join("\\b)|(\\b", FEEL_RESERVED_KEYWORDS) + "\\b))", "feel-keyword"));
         return root;
     }
 
@@ -189,10 +193,15 @@ public class MonacoPropertiesFactory {
 
         final JSONArray suggestionTypes = makeJSONArray();
 
+        populateKeywordSuggestions(suggestionTypes);
         populateVariableSuggestions(variableSuggestions, suggestionTypes);
         populateFunctionSuggestions(suggestionTypes);
 
         return suggestionTypes;
+    }
+
+    private void populateKeywordSuggestions(JSONArray suggestionArray) {
+        FEEL_RESERVED_KEYWORDS.forEach(reservedKeyword -> push(suggestionArray, getKeywordSuggestion(reservedKeyword)));
     }
 
     private void populateVariableSuggestions(final MonacoFEELVariableSuggestions variableSuggestions,
@@ -346,6 +355,20 @@ public class MonacoPropertiesFactory {
         push(suggestionTypes, getFunctionSuggestion("years and months duration(from, to)", "years and months duration($1, $2)"));
     }
 
+    JSONValue getKeywordSuggestion(final String keyword) {
+        final JSONObject suggestion = makeJSONObject();
+        final int completionItemKindKeyword = 17;
+        final int completionItemInsertTextRuleInsertAsSnippet = 4;
+        final JSONString keywordSuggestion = makeJSONString(keyword);
+
+        suggestion.put(KIND_KEY, makeJSONNumber(completionItemKindKeyword));
+        suggestion.put(INSERT_TEXT_RULES_KEY, makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
+        suggestion.put(LABEL_KEY, keywordSuggestion);
+        suggestion.put(INSERT_TEXT_KEY, keywordSuggestion);
+
+        return suggestion;
+    }
+
     JSONValue getFunctionSuggestion(final String label,
                                     final String insertText) {
 
@@ -353,10 +376,10 @@ public class MonacoPropertiesFactory {
         final int completionItemKindFunction = 1;
         final int completionItemInsertTextRuleInsertAsSnippet = 4;
 
-        suggestion.put("kind", makeJSONNumber(completionItemKindFunction));
-        suggestion.put("insertTextRules", makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
-        suggestion.put("label", makeJSONString(label));
-        suggestion.put("insertText", makeJSONString(insertText));
+        suggestion.put(KIND_KEY, makeJSONNumber(completionItemKindFunction));
+        suggestion.put(INSERT_TEXT_RULES_KEY, makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
+        suggestion.put(LABEL_KEY, makeJSONString(label));
+        suggestion.put(INSERT_TEXT_KEY, makeJSONString(insertText));
 
         return suggestion;
     }
@@ -368,10 +391,10 @@ public class MonacoPropertiesFactory {
         final int completionItemInsertTextRuleInsertAsSnippet = 4;
         final JSONString variableSuggestion = makeJSONString(variable);
 
-        suggestion.put("kind", makeJSONNumber(completionItemKindVariable));
-        suggestion.put("insertTextRules", makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
-        suggestion.put("label", variableSuggestion);
-        suggestion.put("insertText", variableSuggestion);
+        suggestion.put(KIND_KEY, makeJSONNumber(completionItemKindVariable));
+        suggestion.put(INSERT_TEXT_RULES_KEY, makeJSONNumber(completionItemInsertTextRuleInsertAsSnippet));
+        suggestion.put(LABEL_KEY, variableSuggestion);
+        suggestion.put(INSERT_TEXT_KEY, variableSuggestion);
 
         return suggestion;
     }

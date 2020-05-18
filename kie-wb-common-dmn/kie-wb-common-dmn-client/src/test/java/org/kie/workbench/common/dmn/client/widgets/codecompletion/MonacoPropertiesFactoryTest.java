@@ -221,8 +221,55 @@ public class MonacoPropertiesFactoryTest {
     public void testGetSuggestions() {
 
         final JSONArray expectedSuggestions = mock(JSONArray.class);
-        final List<JSONValue> functions = new ArrayList<>();
-        final List<List<String>> functionSuggestions = asList(
+        final List<JSONValue> suggestions = new ArrayList<>();
+        final List<String> variableSuggestions = buildVariableSuggestions();
+
+        when(this.variableSuggestions.getSuggestions()).thenReturn(variableSuggestions);
+
+        buildKeywordSuggestions().forEach(suggestion -> {
+            final JSONValue keyword = mock(JSONValue.class);
+            suggestions.add(keyword);
+            doReturn(keyword).when(factory).getKeywordSuggestion(suggestion);
+        });
+
+        buildFunctionSuggestions().forEach(suggestion -> {
+            final JSONValue function = mock(JSONValue.class);
+            suggestions.add(function);
+            doReturn(function).when(factory).getFunctionSuggestion(suggestion.get(0), suggestion.get(1));
+        });
+
+        variableSuggestions.forEach(suggestion -> {
+            final JSONValue variable = mock(JSONValue.class);
+            suggestions.add(variable);
+            doReturn(variable).when(factory).getVariableSuggestion(suggestion);
+        });
+
+        doReturn(expectedSuggestions).when(factory).makeJSONArray();
+
+        final JSONArray actualSuggestions = factory.getSuggestions(this.variableSuggestions);
+
+        suggestions.forEach(suggestion -> {
+            verify(factory).push(expectedSuggestions, suggestion);
+        });
+        assertEquals(expectedSuggestions, actualSuggestions);
+    }
+
+    private List<String> buildVariableSuggestions() {
+        return asList(
+                "Decision-1",
+                "Decision-2",
+                "Decision-3",
+                "Input-Data-1",
+                "Input-Data-2",
+                "Input-Data-3",
+                "Data-Type-1",
+                "Data-Type-2",
+                "Data-Type-3"
+        );
+    }
+
+    private List<List<String>> buildFunctionSuggestions() {
+        return asList(
                 asList("abs(duration)", "abs($1)"),
                 asList("abs(number)", "abs($1)"),
                 asList("after(range, value)", "after($1, $2)"),
@@ -364,40 +411,36 @@ public class MonacoPropertiesFactoryTest {
                 asList("upper case(string)", "upper case($1)"),
                 asList("week of year(date)", "week of year($1)"),
                 asList("years and months duration(from, to)", "years and months duration($1, $2)"));
-        final List<String> variableSuggestions = asList(
-                "Decision-1",
-                "Decision-2",
-                "Decision-3",
-                "Input-Data-1",
-                "Input-Data-2",
-                "Input-Data-3",
-                "Data-Type-1",
-                "Data-Type-2",
-                "Data-Type-3"
+    }
+
+    private List<String> buildKeywordSuggestions() {
+        return asList(
+                "for", "return", "if", "then", "else", "some", "every", "satisfies", "instance", "of",
+                "in", "function", "external", "or", "and", "between", "not", "null", "true", "false"
         );
+    }
 
-        when(this.variableSuggestions.getSuggestions()).thenReturn(variableSuggestions);
+    @Test
+    public void testGetKeywordSuggestion() {
 
-        functionSuggestions.forEach(suggestion -> {
-            final JSONValue function = mock(JSONValue.class);
-            functions.add(function);
-            doReturn(function).when(factory).getFunctionSuggestion(suggestion.get(0), suggestion.get(1));
-        });
+        final String keyword = "keyword";
+        final JSONValue kind = mock(JSONValue.class);
+        final JSONValue insertTextRules = mock(JSONValue.class);
+        final JSONObject expectedSuggestion = mock(JSONObject.class);
+        final JSONString keywordStringValue = mock(JSONString.class);
 
-        variableSuggestions.forEach(suggestion -> {
-            final JSONValue function = mock(JSONValue.class);
-            functions.add(function);
-            doReturn(function).when(factory).getVariableSuggestion(suggestion);
-        });
+        when(factory.makeJSONNumber(17)).thenReturn(kind);
+        when(factory.makeJSONNumber(4)).thenReturn(insertTextRules);
+        doReturn(expectedSuggestion).when(factory).makeJSONObject();
+        doReturn(keywordStringValue).when(factory).makeJSONString(keyword);
 
-        doReturn(expectedSuggestions).when(factory).makeJSONArray();
+        final JSONValue actualSuggestion = factory.getKeywordSuggestion(keyword);
 
-        final JSONArray actualSuggestions = factory.getSuggestions(this.variableSuggestions);
-
-        functions.forEach(function -> {
-            verify(factory).push(expectedSuggestions, function);
-        });
-        assertEquals(expectedSuggestions, actualSuggestions);
+        verify(expectedSuggestion).put("kind", kind);
+        verify(expectedSuggestion).put("insertTextRules", insertTextRules);
+        verify(expectedSuggestion).put("label", keywordStringValue);
+        verify(expectedSuggestion).put("insertText", keywordStringValue);
+        assertEquals(expectedSuggestion, actualSuggestion);
     }
 
     @Test
@@ -555,15 +598,17 @@ public class MonacoPropertiesFactoryTest {
         final JSONArray row3 = mock(JSONArray.class);
         final JSONArray row4 = mock(JSONArray.class);
         final JSONArray row5 = mock(JSONArray.class);
-        final JSONArray row6 = mock(JSONArray.class);
 
         doReturn(expectedRoot).when(factory).makeJSONArray();
         doReturn(row1).when(factory).row("(?:(\\btrue\\b)|(\\bfalse\\b))", "feel-boolean");
         doReturn(row2).when(factory).row("[0-9]+", "feel-numeric");
         doReturn(row3).when(factory).row("(?:\\\"(?:.*?)\\\")", "feel-string");
         doReturn(row4).when(factory).row("(?:(?:[a-z ]+\\()|(?:\\()|(?:\\)))", "feel-function");
-        doReturn(row5).when(factory).row("(?:(\\bif\\b)|(\\bthen\\b)|(\\belse\\b))", "feel-keyword");
-        doReturn(row6).when(factory).row("(?:(\\bfor\\b)|(\\bin\\b)|(\\breturn\\b))", "feel-keyword");
+        doReturn(row5).when(factory).row("(?:(\\bfor\\b)|(\\breturn\\b)|(\\bif\\b)|(\\bthen\\b)|(\\belse\\b)" +
+                                                 "|(\\bsome\\b)|(\\bevery\\b)|(\\bsatisfies\\b)|(\\binstance\\b)" +
+                                                 "|(\\bof\\b)|(\\bin\\b)|(\\bfunction\\b)|(\\bexternal\\b)|(\\bor\\b)" +
+                                                 "|(\\band\\b)|(\\bbetween\\b)|(\\bnot\\b)|(\\bnull\\b)|(\\btrue\\b)" +
+                                                 "|(\\bfalse\\b))", "feel-keyword");
 
         final JSONArray actualRoot = factory.getRoot();
 
@@ -572,7 +617,6 @@ public class MonacoPropertiesFactoryTest {
         verify(factory).push(expectedRoot, row3);
         verify(factory).push(expectedRoot, row4);
         verify(factory).push(expectedRoot, row5);
-        verify(factory).push(expectedRoot, row6);
         assertEquals(expectedRoot, actualRoot);
     }
 }

@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Stream.of;
+import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer.FEEL_RESERVED_KEYWORDS;
 
 /**
  * <p>It provides a light validation for variable names, respect to the FEEL syntax</p>
@@ -41,11 +42,6 @@ public class FEELSyntaxLightValidator {
             of(FORBIDDEN_CHARS),
             of(ALLOWED_SEPARATORS)
     ).toArray(Character[]::new);
-
-    private static final String[] RESERVED_KEYWORDS = new String[]{
-            "for", "return", "if", "then", "else", "some", "every", "satisfies", "instance", "of",
-            "in", "function", "external", "or", "and", "between", "not", "null", "true", "false"
-    };
 
     private static final Function<Character, String> CHAR_TO_STRING_MAPPER = c -> Character.toString(c);
 
@@ -70,7 +66,7 @@ public class FEELSyntaxLightValidator {
     }
 
     private static boolean firstWordIsNotReservedKeyword(final String variableName) {
-        return containsNone(variableName.split(buildSeparatorRegex())[0], RESERVED_KEYWORDS);
+        return containsNone(variableName.split(buildSeparatorRegex())[0], FEEL_RESERVED_KEYWORDS.toArray());
     }
 
     private static String buildSeparatorRegex() {
