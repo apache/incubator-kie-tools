@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../microeditor-envelope/webpackUtils");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
