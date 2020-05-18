@@ -16,60 +16,60 @@
 
 import { renderHook } from "@testing-library/react-hooks";
 import { useEditorDirtyState } from "../EditorDirtyState";
-import { StateControl } from "../StateControl";
+import { EditorStateControl } from "../EditorStateControl";
 import { act } from "react-test-renderer";
 
 describe("useEditorDirtyState", () => {
-  let stateControl: StateControl;
-  beforeEach(() => (stateControl = new StateControl()));
+  let editorStateControl: EditorStateControl;
+  beforeEach(() => (editorStateControl = new EditorStateControl()));
 
   describe("false", () => {
     it("after initialization", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       expect(result.current).toBeFalsy();
     });
 
     it("redo without any event to be redone", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.redoEvent();
+        editorStateControl.redoEvent();
       });
 
       expect(result.current).toBeFalsy();
     });
 
     it("add event and save it", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
-        stateControl.setSavedEvent();
+        editorStateControl.updateEventStack("1");
+        editorStateControl.setSavedEvent();
       });
 
       expect(result.current).toBeFalsy();
     });
 
     it("add event and undo it", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
-        stateControl.undoEvent();
+        editorStateControl.updateEventStack("1");
+        editorStateControl.undoEvent();
       });
 
       expect(result.current).toBeFalsy();
     });
 
     it("add event, save it, undo and redo", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
-        stateControl.setSavedEvent();
-        stateControl.undoEvent();
-        stateControl.redoEvent();
+        editorStateControl.updateEventStack("1");
+        editorStateControl.setSavedEvent();
+        editorStateControl.undoEvent();
+        editorStateControl.redoEvent();
       });
 
       expect(result.current).toBeFalsy();
@@ -78,35 +78,35 @@ describe("useEditorDirtyState", () => {
 
   describe("true", () => {
     it("add event without saving", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
+        editorStateControl.updateEventStack("1");
       });
 
       expect(result.current).toBeTruthy();
     });
 
     it("add event, undo and redo", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
-        stateControl.undoEvent();
-        stateControl.redoEvent();
+        editorStateControl.updateEventStack("1");
+        editorStateControl.undoEvent();
+        editorStateControl.redoEvent();
       });
 
       expect(result.current).toBeTruthy();
     });
 
     it("add event, save it, undo and new event", () => {
-      const { result } = renderHook(() => useEditorDirtyState(stateControl));
+      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
 
       act(() => {
-        stateControl.updateEventStack("1");
-        stateControl.setSavedEvent();
-        stateControl.undoEvent();
-        stateControl.updateEventStack("2");
+        editorStateControl.updateEventStack("1");
+        editorStateControl.setSavedEvent();
+        editorStateControl.undoEvent();
+        editorStateControl.updateEventStack("2");
       });
 
       expect(result.current).toBeTruthy();

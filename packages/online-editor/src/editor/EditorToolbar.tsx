@@ -33,7 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -54,7 +54,7 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-  const isEdited = useEditorDirtyState(context.stateControl);
+  const isEdited = useEditorDirtyState(context.editorStateControl);
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };

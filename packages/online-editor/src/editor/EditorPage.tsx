@@ -15,6 +15,7 @@
  */
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
@@ -25,7 +26,6 @@ import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -56,7 +56,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useEditorDirtyState(context.stateControl);
+  const isDirty = useEditorDirtyState(context.editorStateControl);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -76,11 +76,11 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestDownload = useCallback(() => {
-    context.stateControl.setSavedEvent();
+    context.editorStateControl.setSavedEvent();
     setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
-  }, [context.stateControl.setSavedEvent]);
+  }, [context.editorStateControl.setSavedEvent]);
 
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;

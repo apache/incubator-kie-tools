@@ -16,7 +16,7 @@
 
 import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { StateControl } from "@kogito-tooling/editor-state-control-manager";
+import { EditorStateControl } from "@kogito-tooling/editor-state-control";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -49,7 +49,7 @@ export function App(props: Props) {
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
   const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
-  const stateControl = useMemo(() => new StateControl(), []);
+  const editorStateControl = useMemo(() => new EditorStateControl(), []);
 
   const desktopRouter = useMemo(
     () =>
@@ -164,7 +164,7 @@ export function App(props: Props) {
       value={{
         file: file,
         router: desktopRouter,
-        stateControl: stateControl
+        editorStateControl: editorStateControl
       }}
     >
       {invalidFileTypeErrorVisible && (

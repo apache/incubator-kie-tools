@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { EditorStateControl } from "@kogito-tooling/editor-state-control";
 import { EditorType, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
@@ -31,7 +32,6 @@ import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
-import { StateControl } from "@kogito-tooling/editor-state-control-manager";
 import "../static/resources/style.css";
 
 interface Props {
@@ -56,7 +56,7 @@ export function App(props: Props) {
       ),
     []
   );
-  const stateControl = useMemo(() => new StateControl(), []);
+  const editorStateControl = useMemo(() => new EditorStateControl(), []);
 
   const onFileOpened = useCallback(fileOpened => {
     setFile(fileOpened);
@@ -84,7 +84,7 @@ export function App(props: Props) {
         external: props.external,
         senderTabId: props.senderTabId,
         githubService: props.githubService,
-        stateControl
+        editorStateControl: editorStateControl
       }}
     >
       <HashRouter>

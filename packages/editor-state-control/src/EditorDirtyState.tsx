@@ -15,15 +15,15 @@
  */
 
 import { useEffect, useState } from "react";
-import { StateControl } from "./StateControl";
+import { EditorStateControl } from "./EditorStateControl";
 
-export function useEditorDirtyState(stateControl: StateControl) {
+export function useEditorDirtyState(editorStateControl: EditorStateControl) {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    const callback = stateControl.subscribe(setIsDirty);
+    const callback = editorStateControl.subscribe(setIsDirty);
     return () => {
-      stateControl.unsubscribe(callback);
+      editorStateControl.unsubscribe(callback);
     };
   }, []);
 

@@ -25,7 +25,7 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 
 interface Props {
   editorType: string;
@@ -61,7 +61,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
-  const isDirty = useEditorDirtyState(context.stateControl);
+  const isDirty = useEditorDirtyState(context.editorStateControl);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
 
   const onClose = useCallback(() => {
@@ -222,7 +222,7 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", () => {
-      context.stateControl.setSavedEvent();
+      context.editorStateControl.setSavedEvent();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });

@@ -16,7 +16,7 @@
 
 type Event = undefined | string;
 
-export class StateControl {
+export class EditorStateControl {
   private eventStack: string[];
   private currentEvent: Event;
   private savedEvent: Event;

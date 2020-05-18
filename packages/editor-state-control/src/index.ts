@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./StateControl";
+export * from "./EditorStateControl";
 export * from "./EditorDirtyState";

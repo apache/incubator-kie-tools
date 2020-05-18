@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { EditorStateControl } from "@kogito-tooling/editor-state-control";
 import { EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import * as React from "react";
@@ -22,7 +23,6 @@ import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
-import { StateControl } from "@kogito-tooling/editor-state-control-manager";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -39,7 +39,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     external: false,
     senderTabId: undefined,
     githubService: new GithubService(),
-    stateControl: new StateControl(),
+    editorStateControl: new EditorStateControl(),
     ...ctx
   };
   return {

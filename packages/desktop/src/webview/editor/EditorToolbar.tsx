@@ -21,7 +21,7 @@ import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } 
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control-manager";
+import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 
 interface Props {
   onSave: () => void;
@@ -30,7 +30,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
-  const isEdited = useEditorDirtyState(context.stateControl);
+  const isEdited = useEditorDirtyState(context.editorStateControl);
 
   const editorType = useMemo(() => {
     return context.file!.fileType;
