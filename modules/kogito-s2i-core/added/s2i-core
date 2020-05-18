@@ -106,9 +106,9 @@ function handle_image_metadata_json() {
 function build_kogito_app() {
     cd "${S2I_SOURCE_DIR}"
 
-    nativeBuild="-Pnative"
-    if [ "${NATIVE^^}" == "FALSE" ]; then
-        nativeBuild=""
+    nativeBuild=""
+    if [ "${NATIVE^^}" == "TRUE" ]; then
+        nativeBuild="-Pnative"
     fi
 
     if [ "${SCRIPT_DEBUG}" != "true" ]; then
@@ -153,23 +153,21 @@ function build_kogito_app() {
 
 function copy_kogito_app() {
 
-    if [ "${NATIVE^^}" == "FALSE" ]; then
-        # handle quarkus java build
-        if ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
-            log_info "---> Installing jar file"
-            cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
-            if [ -d "${artifactDir}/lib" ]; then
-                log_info "---> Copying application libraries"
-                cp -r $artifactDir/lib/ $KOGITO_HOME/bin
-            fi
-        fi
-
-    elif ls $artifactDir/*-runner 1> /dev/null 2>&1; then
+    if [ "${NATIVE^^}" == "TRUE" ]; then
+      if ls $artifactDir/*-runner 1> /dev/null 2>&1; then
         # quarkus native builds
         log_info "---> Installing application binaries"
         cp -v $artifactDir/*-runner $KOGITO_HOME/bin/
         chmod +x $KOGITO_HOME/bin/*-runner
-
+      fi
+    elif ls $artifactDir/*-runner.jar 1> /dev/null 2>&1; then
+      # handle quarkus java build
+        log_info "---> Installing jar file"
+        cp -v $artifactDir/*-runner.jar $KOGITO_HOME/bin
+        if [ -d "${artifactDir}/lib" ]; then
+            log_info "---> Copying application libraries"
+            cp -r $artifactDir/lib/ $KOGITO_HOME/bin
+        fi
     else
         # handle normal java builds
         log_info "---> Installing application binaries"

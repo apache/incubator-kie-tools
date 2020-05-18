@@ -12,11 +12,10 @@ if [[ "$1" == "-h" ]]; then
     exit 0
 fi
 
-if [ "${NATIVE^^}" == "FALSE" ]; then
-    exec java ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar $KOGITO_HOME/bin/*runner.jar
-else
+if [ "${NATIVE^^}" == "TRUE" ]; then
     exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 -Djava.library.path=$KOGITO_HOME/ssl-libs \
         -Djavax.net.ssl.trustStore=$KOGITO_HOME/cacerts
+else
+    exec java ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar $KOGITO_HOME/bin/*runner.jar
 fi
-

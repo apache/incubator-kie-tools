@@ -342,6 +342,7 @@ teardown() {
 
 @test "test copy_kogito_app default quarkus native builds file present" {
 
+    NATIVE="true"
     mkdir $KOGITO_HOME/bin
     touch target/app-runner
     mkdir target/lib

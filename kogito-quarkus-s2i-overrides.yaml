@@ -16,8 +16,8 @@ envs:
   example: "true"
   description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
 - name: NATIVE
-  example: false
-  description: If set to false, perform a non native build.
+  example: true
+  description: If set to true, perform a native build.
 - name: JAVA_OPTIONS
   example: "-Dquarkus.log.level=DEBUG"
   description: JVM options passed to the Java command.

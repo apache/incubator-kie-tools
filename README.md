@@ -134,8 +134,8 @@ This image contains a helper option to better understand how to it:
 $ docker run -it quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest /home/kogito/kogito-app-launch.sh -h
 ```
 
-By default, a native build will be performed. To disable it and perform a normal java build just set the **NATIVE**
-build environment variable to **false**.
+By default, a normal java build will be performed. To perform a native build just set the **NATIVE**
+build environment variable to **true**.
 
 See the next topic for an example.
  
@@ -151,8 +151,7 @@ $ s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref master \
     --context-dir rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest \
-    rules-example:1.0 \
-    --env NATIVE=false
+    rules-example:1.0
 ...
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
