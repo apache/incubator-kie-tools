@@ -91,7 +91,7 @@ export class StateControl {
     }
   }
 
-  public eraseRedoEvents() {
+  private eraseRedoEvents() {
     return this.eventStack.slice(0, this.eventStack.indexOf(this.currentEvent!) + 1);
   }
 

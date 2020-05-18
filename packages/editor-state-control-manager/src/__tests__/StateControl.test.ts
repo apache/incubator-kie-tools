@@ -120,15 +120,14 @@ describe("StateControl", () => {
     });
   });
 
-  describe("eraseRedoEvent::StateControl", () => {
-    test("shouldn't erase", () => {
-      stateControl.eraseRedoEvents();
-      expect(stateControl.getEventStack()).toEqual([]);
+  describe("updateEventStack::StateControl", () => {
+    test("shouldn't erase events", () => {
+      stateControl.updateEventStack("1");
+      expect(stateControl.getEventStack()).toEqual(["1"]);
 
       const events = ["1", "2", "3", "4"];
       events.forEach(event => stateControl.updateEventStack(event));
 
-      stateControl.eraseRedoEvents();
       expect(stateControl.getEventStack()).toEqual(events);
     });
 
@@ -136,9 +135,9 @@ describe("StateControl", () => {
       const events = ["1", "2", "3", "4"];
       events.forEach(event => stateControl.updateEventStack(event));
       stateControl.setCurrentEvent("2");
+      stateControl.updateEventStack("5");
 
-      stateControl.setEventStack(stateControl.eraseRedoEvents());
-      expect(stateControl.getEventStack()).toEqual(["1", "2"]);
+      expect(stateControl.getEventStack()).toEqual(["1", "2", "5"]);
     });
   });
 
@@ -148,7 +147,7 @@ describe("StateControl", () => {
       expect(stateControl.getCurrentEvent()).toBeUndefined();
     });
 
-    test("should undo to previous event and mantain event stack", () => {
+    test("should undo to previous event and maintain event stack", () => {
       const events = ["1", "2", "3", "4"];
       events.forEach(event => stateControl.updateEventStack(event));
 
