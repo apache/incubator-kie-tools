@@ -400,7 +400,9 @@ export function FilesPage(props: Props) {
               }
             </CardBody>
           </Card>
-          <Card className="kogito--desktop__actions-card--wide">
+          <Card className="kogito--desktop__actions-card--wide"
+                data-ouia-component-id= "open-file-from-source"
+          >
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>
                 {i18n.filesPage.openUrl.openFromSource}

@@ -24,6 +24,8 @@
     "rebuild": "electron-rebuild -f -w sqlite3",
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest --silent --verbose",
+    "integration:test": "mocha ./src/ui-test",
+    "integration:test:clean": " yarn run build:fast && mocha ./src/ui-test",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack --mode development",
@@ -47,5 +49,13 @@
   },
   "files": [
     "**/*"
-  ]
+  ],
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-roughly": "^1.0.0",
+    "electron-chromedriver": "^8.0.0",
+    "mocha": "^7.1.2",
+    "spectron": "^9.0.0"
+  }
 }
