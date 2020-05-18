@@ -124,7 +124,7 @@ describe("EmbeddedViewer", () => {
   });
 
   test("EmbeddedViewer::init", async () => {
-    const render = await startController(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+    const r = await startController(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
 
@@ -139,7 +139,7 @@ describe("EmbeddedViewer", () => {
       Promise.resolve({ path: "", type: ContentType.TEXT })
     );
 
-    const render = await startController(
+    const r = await startController(
       <EmbeddedViewer
         file={file}
         router={router}
@@ -156,7 +156,7 @@ describe("EmbeddedViewer", () => {
       Promise.resolve({ pattern: "", paths: [] })
     );
 
-    const render = await startController(
+    const r = await startController(
       <EmbeddedViewer
         file={file}
         router={router}
