@@ -1,8 +1,5 @@
-out
-node_modules
-.vscode-test/
-*.vsix
-dist
-*.dockerimage
-*.js
-*.js.map
+node_modules/
+dist/
+coverage/
+target/
+.idea
